@@ -8,7 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Table, TableCaption, TableColumnResize } from '@ckeditor/ckeditor5-table';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { priorities } from 'ckeditor5/src/utils.js';
+import { priorities } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';

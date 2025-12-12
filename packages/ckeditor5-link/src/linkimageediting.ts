@@ -10,7 +10,7 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 import {
 	Matcher,
 	type UpcastElementEvent,
@@ -20,8 +20,8 @@ import {
 	type ViewElement,
 	type DowncastDispatcher,
 	type UpcastDispatcher
-} from 'ckeditor5/src/engine.js';
-import { toMap } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { toMap } from '@ckeditor/ckeditor5-utils';
 
 import { LinkEditing } from './linkediting.js';
 import { type LinkManualDecorator } from './utils/manualdecorator.js';

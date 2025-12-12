@@ -7,7 +7,7 @@
  * @module basic-styles/underline
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { UnderlineEditing } from './underline/underlineediting.js';
 import { UnderlineUI } from './underline/underlineui.js';
 

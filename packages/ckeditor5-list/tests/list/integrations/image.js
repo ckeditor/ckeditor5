@@ -10,7 +10,7 @@ import { modelList } from '../_utils/utils.js';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from 'ckeditor5/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import {
 	_getModelData,
 	_setModelData

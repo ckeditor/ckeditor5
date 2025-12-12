@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { isDefault, isSupported, supportedOptions, normalizeAlignmentOptions } from '../src/utils.js';
 

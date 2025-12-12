@@ -7,8 +7,8 @@
  * @module font/fontsize/fontsizeui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconFontSize } from 'ckeditor5/src/icons.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconFontSize } from '@ckeditor/ckeditor5-icons';
 import {
 	UIModel,
 	createDropdown,
@@ -18,8 +18,8 @@ import {
 	MenuBarMenuListView,
 	MenuBarMenuListItemView,
 	MenuBarMenuListItemButtonView
-} from 'ckeditor5/src/ui.js';
-import { Collection } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 import { normalizeOptions } from './utils.js';
 import { FONT_SIZE } from '../utils.js';

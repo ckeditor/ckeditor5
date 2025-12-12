@@ -8,9 +8,9 @@
  */
 import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
-import { Delete } from 'ckeditor5/src/typing.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelRange, ModelWriter } from '@ckeditor/ckeditor5-engine';
+import { Delete } from '@ckeditor/ckeditor5-typing';
 
 import { blockAutoformatEditing } from './blockautoformatediting.js';
 import { inlineAutoformatEditing } from './inlineautoformatediting.js';

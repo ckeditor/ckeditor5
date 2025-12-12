@@ -13,7 +13,7 @@ import type {
 	ModelWriter,
 	DifferItem,
 	DifferItemAttribute
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { TableWalker } from './../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js';

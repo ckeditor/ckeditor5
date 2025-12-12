@@ -7,8 +7,8 @@
  * @module highlight/highlightui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconEraser, IconMarker, IconPen } from 'ckeditor5/src/icons.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconEraser, IconMarker, IconPen } from '@ckeditor/ckeditor5-icons';
 import {
 	addToolbarToDropdown,
 	createDropdown,
@@ -21,7 +21,7 @@ import {
 	SplitButtonView,
 	ToolbarSeparatorView,
 	type DropdownView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import type { HighlightOption } from './highlightconfig.js';
 import { type HighlightCommand } from './highlightcommand.js';

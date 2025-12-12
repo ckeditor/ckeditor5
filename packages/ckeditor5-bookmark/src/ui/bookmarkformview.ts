@@ -19,18 +19,15 @@ import {
 	type InputTextView,
 	type FocusableView,
 	FormHeaderView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Locale
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
 import '../../theme/bookmarkform.css';

@@ -7,8 +7,8 @@
  * @module alignment/alignmentediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { DowncastAttributeDescriptor } from 'ckeditor5/src/engine.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import type { DowncastAttributeDescriptor } from '@ckeditor/ckeditor5-engine';
 
 import { AlignmentCommand } from './alignmentcommand.js';
 import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils.js';

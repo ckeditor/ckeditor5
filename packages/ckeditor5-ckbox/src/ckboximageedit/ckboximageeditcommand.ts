@@ -7,7 +7,7 @@
  * @module ckbox/ckboximageedit/ckboximageeditcommand
  */
 
-import { Command, PendingActions, type Editor } from 'ckeditor5/src/core.js';
+import { Command, PendingActions, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	abortableDebounce,
@@ -15,9 +15,9 @@ import {
 	retry,
 	delay,
 	type AbortableFunc
-} from 'ckeditor5/src/utils.js';
-import type { ModelElement } from 'ckeditor5/src/engine.js';
-import { Notification } from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-utils';
+import type { ModelElement } from '@ckeditor/ckeditor5-engine';
+import { Notification } from '@ckeditor/ckeditor5-ui';
 import { isEqual } from 'es-toolkit/compat';
 
 import { sendHttpRequest } from '../utils.js';

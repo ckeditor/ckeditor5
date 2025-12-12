@@ -7,9 +7,9 @@
  * @module image/imageresize/utils/getselectedimagepossibleresizerange
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import { calculateResizeHostAncestorWidth } from 'ckeditor5/src/widget.js';
+import { calculateResizeHostAncestorWidth } from '@ckeditor/ckeditor5-widget';
 import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
 import { tryCastDimensionsToUnit, tryParseDimensionWithUnit } from './tryparsedimensionwithunit.js';
 

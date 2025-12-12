@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconBold, IconItalic, IconCheck, IconCancel } from 'ckeditor5/src/icons.js';
+import { IconBold, IconItalic, IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
 import { testUtils } from '@ckeditor/ckeditor5-ui/tests/_utils/utils.js';
 
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';

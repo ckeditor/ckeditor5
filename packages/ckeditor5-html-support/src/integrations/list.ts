@@ -8,9 +8,9 @@
  */
 
 import { isEqual } from 'es-toolkit/compat';
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
-import type { GetCallback } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 import type {
 	ListEditing,
 	ListEditingPostFixerEvent,

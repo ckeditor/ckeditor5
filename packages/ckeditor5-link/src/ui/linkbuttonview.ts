@@ -8,8 +8,8 @@
  */
 
 import { IconNextArrow } from '@ckeditor/ckeditor5-icons';
-import { ButtonView, IconView } from 'ckeditor5/src/ui.js';
-import type { Locale } from 'ckeditor5/src/utils.js';
+import { ButtonView, IconView } from '@ckeditor/ckeditor5-ui';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Represents a view for a dropdown menu button.

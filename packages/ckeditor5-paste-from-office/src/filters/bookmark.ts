@@ -10,7 +10,7 @@
 import {
 	type ViewUpcastWriter,
 	type ViewDocumentFragment
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Transforms `<a>` elements which are bookmarks by moving their children after the element.

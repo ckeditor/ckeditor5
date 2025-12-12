@@ -7,7 +7,7 @@
  * @module table/tablecellwidth/tablecellwidthediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { TableEditing } from './../tableediting.js';
 import { TableCellWidthCommand } from './commands/tablecellwidthcommand.js';

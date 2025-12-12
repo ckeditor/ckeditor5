@@ -7,8 +7,8 @@
  * @module restricted-editing/restrictededitingmodeui
  */
 
-import { Plugin, type Command } from 'ckeditor5/src/core.js';
-import { IconContentLock } from 'ckeditor5/src/icons.js';
+import { Plugin, type Command } from '@ckeditor/ckeditor5-core';
+import { IconContentLock } from '@ckeditor/ckeditor5-icons';
 import {
 	UIModel,
 	createDropdown,
@@ -16,8 +16,8 @@ import {
 	MenuBarMenuListItemButtonView,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition, MenuBarMenuView, MenuBarMenuListView, MenuBarMenuListItemView
-} from 'ckeditor5/src/ui.js';
-import { Collection } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The restricted editing mode UI feature.

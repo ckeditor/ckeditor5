@@ -7,8 +7,8 @@
  * @module emoji/ui/emojigridview
  */
 
-import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
-import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, global, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { EmojiCategory, EmojiEntry } from '../emojirepository.js';
 import type { EmojiSkinToneId } from '../emojiconfig.js';
 

@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	addBackgroundStylesRules,
 	addBorderStylesRules,
@@ -22,9 +22,9 @@ import {
 	type UpcastDispatcher,
 	type UpcastElementEvent,
 	type ViewDowncastWriter
-} from 'ckeditor5/src/engine.js';
-import { first } from 'ckeditor5/src/utils.js';
-import type { ViewDocumentClipboardOutputEvent } from 'ckeditor5/src/clipboard.js';
+} from '@ckeditor/ckeditor5-engine';
+import { first } from '@ckeditor/ckeditor5-utils';
+import type { ViewDocumentClipboardOutputEvent } from '@ckeditor/ckeditor5-clipboard';
 
 import { TableEditing } from '../tableediting.js';
 import {

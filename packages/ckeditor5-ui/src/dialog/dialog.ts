@@ -499,7 +499,7 @@ export interface DialogDefinition {
  * of any dialog.
  *
  * ```js
- * import { DialogViewPosition } from 'ckeditor5/src/ui.js';
+ * import { DialogViewPosition } from '@ckeditor/ckeditor5-ui';
  *
  * // ...
  *

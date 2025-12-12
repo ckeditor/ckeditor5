@@ -7,8 +7,8 @@
  * @module table/commands/selectrowcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelRange, ModelElement } from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../tableutils.js';
 
 /**

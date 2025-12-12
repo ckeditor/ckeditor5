@@ -7,7 +7,7 @@
  * @module table/converters/table-cell-paragraph-post-fixer
  */
 
-import type { Model, ModelWriter, ModelElement, DifferItemInsert, DifferItemRemove } from 'ckeditor5/src/engine.js';
+import type { Model, ModelWriter, ModelElement, DifferItemInsert, DifferItemRemove } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Injects a table cell post-fixer into the model which inserts a `paragraph` element into empty table cells.

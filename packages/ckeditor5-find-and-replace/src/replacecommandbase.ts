@@ -7,7 +7,7 @@
  * @module find-and-replace/replacecommandbase
 */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { FindResultType } from './findandreplace.js';
 import { type FindAndReplaceState } from './findandreplacestate.js';
 

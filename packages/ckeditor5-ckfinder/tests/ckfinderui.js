@@ -9,7 +9,7 @@ import { global } from '@ckeditor/ckeditor5-utils';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
-import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
+import { IconImageAssetManager, IconBrowseFiles } from '@ckeditor/ckeditor5-icons';
 
 import { ButtonView, MenuBarMenuListItemButtonView, UIModel } from '@ckeditor/ckeditor5-ui';
 

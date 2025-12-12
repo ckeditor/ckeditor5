@@ -7,9 +7,9 @@
  * @module page-break/pagebreakui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconPageBreak } from 'ckeditor5/src/icons.js';
-import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconPageBreak } from '@ckeditor/ckeditor5-icons';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The page break UI plugin.

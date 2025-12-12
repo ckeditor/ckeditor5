@@ -14,8 +14,8 @@ import {
 	FocusCycler,
 	CollapsibleView,
 	type FocusableView
-} from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../../theme/imageinsert.css';
 

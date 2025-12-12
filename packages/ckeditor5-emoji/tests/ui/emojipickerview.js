@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { SearchInfoView, ViewCollection } from 'ckeditor5/src/ui.js';
+import { SearchInfoView, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { EmojiCategoriesView } from '../../src/ui/emojicategoriesview.js';
 import { EmojiGridView } from '../../src/ui/emojigridview.js';
 import { EmojiPickerView } from '../../src/ui/emojipickerview.js';

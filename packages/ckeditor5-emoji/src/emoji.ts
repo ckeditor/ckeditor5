@@ -7,7 +7,7 @@
  * @module emoji/emoji
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { EmojiMention } from './emojimention.js';
 import { EmojiPicker } from './emojipicker.js';
 

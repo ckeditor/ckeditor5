@@ -7,9 +7,9 @@
  * @module basic-styles/italic/italicui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconItalic } from 'ckeditor5/src/icons.js';
-import { MenuBarMenuListItemButtonView, ButtonView } from 'ckeditor5/src/ui.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconItalic } from '@ckeditor/ckeditor5-icons';
+import { MenuBarMenuListItemButtonView, ButtonView } from '@ckeditor/ckeditor5-ui';
 import { getButtonCreator } from '../utils.js';
 
 const ITALIC = 'italic';

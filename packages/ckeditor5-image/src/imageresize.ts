@@ -7,7 +7,7 @@
  * @module image/imageresize
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ImageResizeButtons } from './imageresize/imageresizebuttons.js';
 import { ImageResizeEditing } from './imageresize/imageresizeediting.js';
 import { ImageResizeHandles } from './imageresize/imageresizehandles.js';

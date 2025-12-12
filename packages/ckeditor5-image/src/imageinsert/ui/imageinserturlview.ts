@@ -13,8 +13,8 @@ import {
 	createLabeledInputText,
 	submitHandler,
 	type InputTextView
-} from 'ckeditor5/src/ui.js';
-import { KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-ui';
+import { KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The insert an image via URL view.

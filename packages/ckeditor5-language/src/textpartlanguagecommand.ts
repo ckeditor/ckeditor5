@@ -7,8 +7,8 @@
  * @module language/textpartlanguagecommand
  */
 
-import type { LanguageDirection } from 'ckeditor5/src/utils.js';
-import { Command } from 'ckeditor5/src/core.js';
+import type { LanguageDirection } from '@ckeditor/ckeditor5-utils';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { stringifyLanguageAttribute } from './utils.js';
 
 /**

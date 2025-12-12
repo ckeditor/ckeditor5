@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconMedia } from 'ckeditor5/src/icons.js';
+import { IconMedia } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { MediaEmbed } from '../src/mediaembed.js';
 import { MediaEmbedUI } from '../src/mediaembedui.js';

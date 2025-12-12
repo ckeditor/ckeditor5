@@ -7,7 +7,7 @@
  * @module table/converters/tableproperties
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type {
 	Conversion,
 	UpcastConversionApi,
@@ -15,8 +15,8 @@ import type {
 	ViewElement,
 	UpcastElementEvent,
 	Consumables
-} from 'ckeditor5/src/engine.js';
-import { first } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
 const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;

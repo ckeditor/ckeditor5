@@ -8,8 +8,8 @@
  */
 
 import { createUIComponents } from '../list/utils.js';
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconTodoList } from 'ckeditor5/src/icons.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconTodoList } from '@ckeditor/ckeditor5-icons';
 
 /**
  * The to-do list UI feature. It introduces the `'todoList'` button that

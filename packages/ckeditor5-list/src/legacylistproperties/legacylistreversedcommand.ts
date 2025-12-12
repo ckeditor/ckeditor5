@@ -7,7 +7,7 @@
  * @module list/legacylistproperties/legacylistreversedcommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { getSelectedListItems } from '../legacylist/legacyutils.js';
 
 /**

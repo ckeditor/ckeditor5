@@ -15,8 +15,8 @@ import type {
 	ViewElement,
 	ViewElementAttributes,
 	DowncastAttributeEvent
-} from 'ckeditor5/src/engine.js';
-import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import { type ImageUtils } from '../imageutils.js';
 
 /**

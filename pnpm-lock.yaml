@@ -407,9 +407,9 @@ importers:
       '@ckeditor/ckeditor5-upload':
         specifier: workspace:*
         version: link:../ckeditor5-upload
-      ckeditor5:
+      '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
-        version: link:../ckeditor5
+        version: link:../ckeditor5-utils
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -447,6 +447,9 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -462,6 +465,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -471,9 +477,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-block-quote':
         specifier: workspace:*
@@ -484,9 +487,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -508,6 +508,9 @@ importers:
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -535,9 +538,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -572,6 +572,9 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -587,12 +590,12 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -612,6 +615,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -639,9 +645,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.2.1
@@ -661,6 +664,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -676,6 +682,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -691,9 +700,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -704,9 +710,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-heading':
         specifier: workspace:*
         version: link:../ckeditor5-heading
@@ -725,6 +728,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -740,12 +746,18 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
       '@ckeditor/ckeditor5-link':
         specifier: workspace:*
         version: link:../ckeditor5-link
+      '@ckeditor/ckeditor5-typing':
+        specifier: workspace:*
+        version: link:../ckeditor5-typing
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
@@ -755,9 +767,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -783,9 +792,6 @@ importers:
       '@ckeditor/ckeditor5-editor-multi-root':
         specifier: workspace:*
         version: link:../ckeditor5-editor-multi-root
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-essentials':
         specifier: workspace:*
         version: link:../ckeditor5-essentials
@@ -813,6 +819,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -852,9 +861,6 @@ importers:
       blurhash:
         specifier: 2.0.5
         version: 2.0.5
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -889,6 +895,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -916,9 +925,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-adapter-ckfinder':
         specifier: workspace:*
@@ -944,6 +950,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1092,12 +1101,12 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-upload':
+        specifier: workspace:*
+        version: link:../ckeditor5-upload
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.2.1
@@ -1108,6 +1117,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1141,9 +1153,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -1187,6 +1196,9 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1278,9 +1290,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-clipboard':
         specifier: workspace:*
@@ -1300,6 +1309,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1324,9 +1336,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1361,6 +1370,9 @@ importers:
       '@ckeditor/ckeditor5-watchdog':
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1385,9 +1397,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1425,6 +1434,9 @@ importers:
       '@ckeditor/ckeditor5-watchdog':
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1449,9 +1461,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1486,6 +1495,9 @@ importers:
       '@ckeditor/ckeditor5-watchdog':
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1510,9 +1522,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1550,6 +1559,9 @@ importers:
       '@ckeditor/ckeditor5-watchdog':
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1574,9 +1586,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1626,6 +1635,9 @@ importers:
       '@ckeditor/ckeditor5-watchdog':
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1656,9 +1668,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1696,6 +1705,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1851,9 +1863,6 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.2.1
@@ -1867,6 +1876,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1882,6 +1894,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -1891,9 +1906,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -1913,9 +1925,6 @@ importers:
       '@ckeditor/ckeditor5-editor-multi-root':
         specifier: workspace:*
         version: link:../ckeditor5-editor-multi-root
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-essentials':
         specifier: workspace:*
         version: link:../ckeditor5-essentials
@@ -1949,6 +1958,9 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1976,9 +1988,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.2.1
@@ -2001,6 +2010,9 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2031,9 +2043,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -2140,6 +2149,9 @@ importers:
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2158,6 +2170,9 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
+      '@ckeditor/ckeditor5-enter':
+        specifier: workspace:*
+        version: link:../ckeditor5-enter
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -2170,9 +2185,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -2195,9 +2207,6 @@ importers:
       '@ckeditor/ckeditor5-editor-multi-root':
         specifier: workspace:*
         version: link:../ckeditor5-editor-multi-root
-      '@ckeditor/ckeditor5-enter':
-        specifier: workspace:*
-        version: link:../ckeditor5-enter
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
@@ -2213,6 +2222,9 @@ importers:
       '@ckeditor/ckeditor5-upload':
         specifier: workspace:*
         version: link:../ckeditor5-upload
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2228,6 +2240,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -2237,9 +2252,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-block-quote':
         specifier: workspace:*
@@ -2250,9 +2262,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -2274,6 +2283,9 @@ importers:
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2289,6 +2301,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -2301,9 +2316,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-cloud-services':
         specifier: workspace:*
@@ -2317,9 +2329,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
@@ -2329,6 +2338,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2344,6 +2356,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -2356,9 +2371,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -2372,9 +2384,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-media-embed':
         specifier: workspace:*
         version: link:../ckeditor5-media-embed
@@ -2387,6 +2396,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -2405,6 +2417,9 @@ importers:
 
   packages/ckeditor5-html-support:
     dependencies:
+      '@ckeditor/ckeditor5-clipboard':
+        specifier: workspace:*
+        version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
@@ -2435,9 +2450,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -2451,9 +2463,6 @@ importers:
       '@ckeditor/ckeditor5-block-quote':
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
-      '@ckeditor/ckeditor5-clipboard':
-        specifier: workspace:*
-        version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-cloud-services':
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
@@ -2520,6 +2529,9 @@ importers:
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2574,9 +2586,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -2653,6 +2662,9 @@ importers:
       '@ckeditor/ckeditor5-watchdog':
         specifier: workspace:*
         version: link:../ckeditor5-watchdog
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2686,9 +2698,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.2.1
@@ -2702,6 +2711,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2717,15 +2729,15 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.2.1
@@ -2733,15 +2745,15 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2763,6 +2775,9 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
+      '@ckeditor/ckeditor5-enter':
+        specifier: workspace:*
+        version: link:../ckeditor5-enter
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -2781,9 +2796,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -2809,9 +2821,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-enter':
-        specifier: workspace:*
-        version: link:../ckeditor5-enter
       '@ckeditor/ckeditor5-essentials':
         specifier: workspace:*
         version: link:../ckeditor5-essentials
@@ -2827,6 +2836,9 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2866,9 +2878,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -2951,6 +2960,9 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -2975,9 +2987,6 @@ importers:
       '@types/hast':
         specifier: 3.0.4
         version: 3.0.4
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       hast-util-from-dom:
         specifier: 5.0.1
         version: 5.0.1
@@ -3081,6 +3090,9 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3120,9 +3132,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -3151,6 +3160,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -3169,6 +3181,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
@@ -3178,9 +3193,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -3203,9 +3215,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-font':
         specifier: workspace:*
         version: link:../ckeditor5-font
@@ -3227,6 +3236,9 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3251,9 +3263,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -3297,6 +3306,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3312,6 +3324,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -3324,9 +3339,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-cloud-services':
         specifier: workspace:*
@@ -3340,9 +3352,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
@@ -3352,6 +3361,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3425,9 +3437,6 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -3486,6 +3495,9 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3501,6 +3513,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -3510,9 +3525,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -3526,9 +3538,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -3553,6 +3562,9 @@ importers:
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3565,6 +3577,9 @@ importers:
 
   packages/ckeditor5-restricted-editing:
     dependencies:
+      '@ckeditor/ckeditor5-clipboard':
+        specifier: workspace:*
+        version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
@@ -3574,15 +3589,15 @@ importers:
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
+      '@ckeditor/ckeditor5-typing':
+        specifier: workspace:*
+        version: link:../ckeditor5-typing
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
@@ -3590,9 +3605,6 @@ importers:
       '@ckeditor/ckeditor5-block-quote':
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
-      '@ckeditor/ckeditor5-clipboard':
-        specifier: workspace:*
-        version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-cloud-services':
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
@@ -3623,12 +3635,12 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
-      '@ckeditor/ckeditor5-typing':
-        specifier: workspace:*
-        version: link:../ckeditor5-typing
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3702,9 +3714,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*
@@ -3814,6 +3823,9 @@ importers:
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3841,9 +3853,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-code-block':
         specifier: workspace:*
@@ -3872,6 +3881,9 @@ importers:
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3899,9 +3911,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
     devDependencies:
       '@ckeditor/ckeditor5-cloud-services':
         specifier: workspace:*
@@ -3921,6 +3930,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -3936,6 +3948,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-html-support':
         specifier: workspace:*
         version: link:../ckeditor5-html-support
@@ -3954,9 +3969,6 @@ importers:
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -3988,9 +4000,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-essentials':
         specifier: workspace:*
         version: link:../ckeditor5-essentials
@@ -4048,6 +4057,9 @@ importers:
       '@ckeditor/ckeditor5-word-count':
         specifier: workspace:*
         version: link:../ckeditor5-word-count
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -4072,6 +4084,9 @@ importers:
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
+      '@ckeditor/ckeditor5-typing':
+        specifier: workspace:*
+        version: link:../ckeditor5-typing
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
@@ -4081,9 +4096,6 @@ importers:
       '@ckeditor/ckeditor5-widget':
         specifier: workspace:*
         version: link:../ckeditor5-widget
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -4151,12 +4163,12 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
-      '@ckeditor/ckeditor5-typing':
-        specifier: workspace:*
-        version: link:../ckeditor5-typing
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       json-diff:
         specifier: ^0.5.4
         version: 0.5.5
@@ -4191,12 +4203,12 @@ importers:
       '@ckeditor/ckeditor5-highlight':
         specifier: workspace:*
         version: link:../ckeditor5-highlight
+      '@ckeditor/ckeditor5-icons':
+        specifier: workspace:*
+        version: link:../ckeditor5-icons
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
 
   packages/ckeditor5-typing:
     dependencies:
@@ -4615,15 +4627,15 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
-      ckeditor5:
-        specifier: workspace:*
-        version: link:../ckeditor5
       es-toolkit:
         specifier: 1.39.5
         version: 1.39.5
@@ -4643,9 +4655,6 @@ importers:
       '@ckeditor/ckeditor5-editor-multi-root':
         specifier: workspace:*
         version: link:../ckeditor5-editor-multi-root
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -4667,6 +4676,9 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      ckeditor5:
+        specifier: workspace:*
+        version: link:../ckeditor5
       typescript:
         specifier: 5.3.3
         version: 5.3.3

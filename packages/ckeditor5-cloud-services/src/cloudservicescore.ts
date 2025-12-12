@@ -7,7 +7,7 @@
  * @module cloud-services/cloudservicescore
  */
 
-import { ContextPlugin } from 'ckeditor5/src/core.js';
+import { ContextPlugin } from '@ckeditor/ckeditor5-core';
 import type { TokenUrl } from './cloudservicesconfig.js';
 import { Token, type InitializedToken, type CloudServicesTokenOptions } from './token/token.js';
 import { UploadGateway } from './uploadgateway/uploadgateway.js';

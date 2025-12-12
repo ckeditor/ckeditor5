@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DowncastAttributeEvent, ModelElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
-import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+import type { DowncastAttributeEvent, ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
+import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 
 /**

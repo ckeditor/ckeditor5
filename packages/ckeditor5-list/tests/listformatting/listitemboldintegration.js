@@ -13,7 +13,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { ModelElement, _setModelData, _getModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from 'ckeditor5/src/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';

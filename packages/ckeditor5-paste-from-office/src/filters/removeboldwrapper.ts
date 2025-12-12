@@ -7,7 +7,7 @@
  * @module paste-from-office/filters/removeboldwrapper
  */
 
-import type { ViewUpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js';
+import type { ViewUpcastWriter, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Removes the `<b>` tag wrapper added by Google Docs to a copied content.

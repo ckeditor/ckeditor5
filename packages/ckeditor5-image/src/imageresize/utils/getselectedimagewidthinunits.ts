@@ -7,10 +7,10 @@
  * @module image/imageresize/utils/getselectedimagewidthinunits
  */
 
-import { Rect } from 'ckeditor5/src/utils.js';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
-import { calculateResizeHostAncestorWidth } from 'ckeditor5/src/widget.js';
-import type { Editor } from 'ckeditor5/src/core.js';
+import { calculateResizeHostAncestorWidth } from '@ckeditor/ckeditor5-widget';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import { tryCastDimensionsToUnit, tryParseDimensionWithUnit, type DimensionWithUnit } from './tryparsedimensionwithunit.js';
 import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';

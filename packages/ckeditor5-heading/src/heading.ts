@@ -7,7 +7,7 @@
  * @module heading/heading
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { HeadingEditing } from './headingediting.js';
 import { HeadingUI } from './headingui.js';

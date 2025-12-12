@@ -7,9 +7,9 @@
  * @module font/fontfamily/fontfamilyui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { Collection } from 'ckeditor5/src/utils.js';
-import { IconFontFamily } from 'ckeditor5/src/icons.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Collection } from '@ckeditor/ckeditor5-utils';
+import { IconFontFamily } from '@ckeditor/ckeditor5-icons';
 import {
 	UIModel,
 	createDropdown,
@@ -19,7 +19,7 @@ import {
 	MenuBarMenuListItemView,
 	MenuBarMenuListItemButtonView,
 	type ListDropdownButtonDefinition
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import { normalizeFontFamilies, normalizeOptions } from './utils.js';
 import { FONT_FAMILY } from '../utils.js';
