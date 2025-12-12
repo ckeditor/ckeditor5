@@ -16,10 +16,9 @@ import { confirm } from '@inquirer/prompts';
 
 import updateVersionReferences from './utils/updateversionreferences.mjs';
 import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcallback.mjs';
-import buildTsForCKEditor5Root from './utils/buildtsforckeditor5root.mjs';
+import buildCKEditor5Root from './utils/buildckeditor5root.mjs';
 import parseArguments from './utils/parsearguments.mjs';
 import isCKEditor5PackageFactory from './utils/isckeditor5packagefactory.mjs';
-import compileTypeScriptCallback from './utils/compiletypescriptcallback.mjs';
 import updatePackageEntryPoint from './utils/updatepackageentrypoint.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
@@ -146,18 +145,7 @@ const tasks = new Listr( [
 				{
 					title: 'Preparing the "ckeditor5" package files.',
 					task: () => {
-						return buildTsForCKEditor5Root();
-					}
-				},
-				{
-					title: 'Compiling TypeScript in `ckeditor5-*` packages.',
-					task: ( ctx, task ) => {
-						return releaseTools.executeInParallel( {
-							packagesDirectory: PACKAGES_DIRECTORY,
-							listrTask: task,
-							taskToExecute: compileTypeScriptCallback,
-							concurrency: cliArguments.concurrency
-						} );
+						return buildCKEditor5Root();
 					}
 				},
 				{
