@@ -32,9 +32,8 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		return;
 	}
 
-	// TODO: change src/index.ts => dist/index.js
-	const main = pkgJson.main.replace( /\.ts$/, '.js' );
-	const types = pkgJson.main.replace( /\.ts$/, '.d.ts' );
+	const main = pkgJson.main.replace( /src\/index/, 'dist/index' ).replace( /\.ts$/, '.js' );
+	const types = pkgJson.main.replace( /src\/index/, 'dist/index' ).replace( /\.ts$/, '.d.ts' );
 	const files = pkgJson.files || [];
 
 	pkgJson.main = main;
