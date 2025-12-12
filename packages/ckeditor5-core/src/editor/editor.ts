@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import { set, get } from 'es-toolkit/compat';
+import { set, get, isPlainObject } from 'es-toolkit/compat';
 
 import {
 	Config,
@@ -305,6 +305,20 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	constructor( config: EditorConfig = {} ) {
 		super();
+
+		if ( !isPlainObject( config ) ) {
+			/**
+			 * Editor configuration must be a plain JavaScript object.
+			 *
+			 * A common cause of this error is passing an Editor class (for example
+			 * `ClassicEditor`) in the `config.plugins` array. In such case, the editor
+			 * constructor is called with an Editor or Context instance instead of
+			 * the configuration object.
+			 *
+			 * @error editor-config-invalid-type
+			 */
+			throw new CKEditorError( 'editor-config-invalid-type' );
+		}
 
 		if ( 'sanitizeHtml' in config ) {
 			/**
