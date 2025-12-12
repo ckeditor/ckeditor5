@@ -223,6 +223,10 @@ Read more about all supported properties for the {@link module:table/tableconfig
 
 By default, when a table or table cell has an inline style such as `border: none` or `border-style: none`, the editor displays a dashed helper line to visually indicate the hidden border. This visualization is applied only in the editing view and does not affect the output HTML or the data stored by CKEditor&nbsp;5.
 
+The effect looks as follows:
+
+{@img assets/img/table-no-border.png 520 A table with borders set to none and helper lines.}
+
 If you prefer a true WYSIWYG experience or already implement your own border visualization logic, this behavior can be disabled using the {@link module:table/tableconfig~TableConfig#showHiddenBorders `table.showHiddenBorders`} configuration option.
 
 ```js
