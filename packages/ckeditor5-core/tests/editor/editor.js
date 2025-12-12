@@ -12,7 +12,7 @@ import { PluginCollection } from '../../src/plugincollection.js';
 import { CommandCollection } from '../../src/commandcollection.js';
 import { Command } from '../../src/command.js';
 import { EditingKeystrokeHandler } from '../../src/editingkeystrokehandler.js';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { expectToRejectWithCKEditorError, expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { testUtils } from '../../tests/_utils/utils.js';
 import { Accessibility } from '../../src/accessibility.js';
 import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
@@ -219,6 +219,17 @@ describe( 'Editor', () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { sanitizeHtml: () => {} } );
 			}, 'editor-config-sanitizehtml-not-supported' );
+		} );
+
+		it( 'should throw if `config` is not a plain object', () => {
+			const testData = [ 7, 'abc', [ 1, 2 ], () => 42, true ];
+
+			for ( const config of testData ) {
+				expectToThrowCKEditorError( () => {
+					// eslint-disable-next-line no-new
+					new TestEditor( config );
+				}, 'editor-config-invalid-type' );
+			}
 		} );
 	} );
 
@@ -1398,6 +1409,17 @@ describe( 'Editor', () => {
 					editor.fire( 'ready' );
 					return editor.destroy();
 				} );
+		} );
+
+		// #18072
+		it( 'should fail if editor class is specified as a plugin', async () => {
+			class OtherEditor extends Editor {}
+
+			const editor = new TestEditor( {
+				plugins: [ OtherEditor ]
+			} );
+
+			await expectToRejectWithCKEditorError( editor.initPlugins(), 'editor-config-invalid-type' );
 		} );
 	} );
 
