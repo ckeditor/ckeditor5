@@ -112,6 +112,11 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 			isLimit: true
 		} );
 
+		this.schema.register( '$inlineRoot', {
+			allowContentOf: '$block',
+			isLimit: true
+		} );
+
 		this.schema.register( '$container', {
 			allowIn: [ '$root', '$container' ]
 		} );
