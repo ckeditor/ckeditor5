@@ -10,10 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { type TableUtils } from '../tableutils.js';
 
-import {
-	isHeadingColumnCell,
-	updateNumericAttribute
-} from '../utils/common.js';
+import { isHeadingColumnCell } from '../utils/common.js';
 import { getHorizontallyOverlappingCells, splitVertically } from '../utils/structure.js';
 
 /**
@@ -97,7 +94,7 @@ export class SetHeaderColumnCommand extends Command {
 				}
 			}
 
-			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
+			tableUtils.setHeadingColumnsCount( writer, table, headingColumnsToSet );
 		} );
 	}
 }
