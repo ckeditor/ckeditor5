@@ -29,6 +29,7 @@
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-watchdog": "workspace:*",
+    "ckeditor5": "workspace:*",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
