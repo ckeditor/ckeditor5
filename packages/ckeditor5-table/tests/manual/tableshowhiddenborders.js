@@ -11,6 +11,8 @@ import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 import { TableProperties } from '../../src/tableproperties.js';
 import { TableCellProperties } from '../../src/tablecellproperties.js';
 
+window.editors = {};
+
 const sourceElementWithHiddenBorders = document.querySelector( '#editor-with-show-hidden-borders' );
 const sourceElementWithoutHiddenBorders = document.querySelector( '#editor-without-show-hidden-borders' );
 
@@ -29,7 +31,8 @@ const config = {
 ClassicEditor
 	.create( sourceElementWithHiddenBorders, config )
 	.then( editor => {
-		window.editorWith = editor;
+		window.editors[ 'editor-with-hidden-borders' ] = editor;
+		CKEditorInspector.attach( 'editor-with-hidden-borders', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -46,7 +49,8 @@ ClassicEditor
 		}
 	)
 	.then( editor => {
-		window.editorWithout = editor;
+		window.editors[ 'editor-without-hidden-borders' ] = editor;
+		CKEditorInspector.attach( 'editor-without-hidden-borders', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
