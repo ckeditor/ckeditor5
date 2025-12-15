@@ -314,8 +314,8 @@ First, install the necessary dependencies:
 ```bash
 npm install --save \
 	@ckeditor/ckeditor5-vue2 \
-	@ckeditor/ckeditor5-dev-translations@43 \
-	@ckeditor/ckeditor5-dev-utils@43 \
+	@ckeditor/ckeditor5-dev-translations@54 \
+	@ckeditor/ckeditor5-dev-utils@54 \
 	postcss-loader@4 \
 	raw-loader@4
 ```
