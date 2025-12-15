@@ -2492,7 +2492,7 @@ describe( 'TableUtils - selection methods', () => {
 	} );
 } );
 
-describe( 'TableUtils with tableCellTypeSupport enabled', () => {
+describe( 'TableUtils with TableCellProperties', () => {
 	let editor, model, root, tableUtils;
 
 	beforeEach( async () => {

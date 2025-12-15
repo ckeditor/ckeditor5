@@ -1950,10 +1950,7 @@ describe( 'table cell properties', () => {
 					await editor.destroy();
 
 					editor = await VirtualTestEditor.create( {
-						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
-						experimentalFlags: {
-							tableCellTypeSupport: true
-						}
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ]
 					} );
 
 					model = editor.model;

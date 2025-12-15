@@ -255,7 +255,6 @@ export class TableCellPropertiesView extends View {
 	 * @param options.backgroundColors A configuration of the background color palette used by the
 	 * {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView#backgroundInput}.
 	 * @param options.defaultTableCellProperties The default table cell properties.
-	 * @param options.isTableCellTypeSupported A flag indicating whether the table cell type is supported.
 	 */
 	constructor( locale: Locale, options: TableCellPropertiesViewOptions ) {
 		super( locale );
