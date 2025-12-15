@@ -260,7 +260,7 @@ export class TableEditing extends Plugin {
 		} );
 
 		// Make sure table <caption> is downcasted into <caption> in the data pipeline when necessary.
-		if ( editor.plugins.has( 'TableCaption' ) ) {
+		if ( editor.plugins.has( 'TableCaptionEditing' ) ) {
 			editor.conversion.for( 'dataDowncast' ).elementToElement( {
 				model: 'caption',
 				view: convertPlainTableCaption( editor ),
@@ -269,7 +269,7 @@ export class TableEditing extends Plugin {
 		}
 
 		// Handle border-style, border-color, border-width and background-color table attributes.
-		if ( editor.plugins.has( 'TableProperties' ) ) {
+		if ( editor.plugins.has( 'TablePropertiesEditing' ) ) {
 			downcastTableBorderAndBackgroundAttributes( editor );
 		}
 	}
