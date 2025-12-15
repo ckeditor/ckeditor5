@@ -7,4 +7,3 @@ closes:
 ---
 
 Introduced support for changing table cell types between `data` and `header`.
-
