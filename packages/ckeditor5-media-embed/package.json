@@ -21,8 +21,7 @@
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-widget": "workspace:*",
-    "ckeditor5": "workspace:*"
+    "@ckeditor/ckeditor5-widget": "workspace:*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
@@ -36,7 +35,8 @@
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "es-toolkit": "1.39.5",
     "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "ckeditor5": "workspace:*"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

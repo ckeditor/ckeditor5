@@ -16,13 +16,13 @@ import {
 	ListItemView,
 	ViewCollection,
 	type FocusableView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Locale
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 

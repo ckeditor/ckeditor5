@@ -67,7 +67,6 @@ export default defineConfig( [
 		},
 
 		rules: {
-			'ckeditor5-rules/ckeditor-imports': 'error',
 			'ckeditor5-rules/prevent-license-key-leak': 'error',
 			'ckeditor5-rules/license-header': [ 'error', {
 				headerLines: [
@@ -163,7 +162,6 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': 'error',
-			'ckeditor5-rules/ckeditor-imports': 'off',
 			'ckeditor5-rules/no-cross-package-imports': 'off',
 			'mocha/no-pending-tests': 'off'
 		}
@@ -188,10 +186,6 @@ export default defineConfig( [
 			globals: {
 				...globals.browser
 			}
-		},
-
-		rules: {
-			'ckeditor5-rules/ckeditor-imports': 'off'
 		}
 	},
 	{

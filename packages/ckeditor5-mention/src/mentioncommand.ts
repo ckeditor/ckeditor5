@@ -7,9 +7,9 @@
  * @module mention/mentioncommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelRange } from 'ckeditor5/src/engine.js';
-import { CKEditorError, toMap } from 'ckeditor5/src/utils.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelRange } from '@ckeditor/ckeditor5-engine';
+import { CKEditorError, toMap } from '@ckeditor/ckeditor5-utils';
 
 import { _addMentionAttributes } from './mentionediting.js';
 

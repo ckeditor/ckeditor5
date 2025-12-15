@@ -7,7 +7,7 @@
  * @module table/converters/table-caption-post-fixer
  */
 
-import type { Model, ModelWriter, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
+import type { Model, ModelWriter, ModelElement, ModelNode } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Injects a table caption post-fixer into the model.

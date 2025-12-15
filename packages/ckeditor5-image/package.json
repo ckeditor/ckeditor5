@@ -23,7 +23,6 @@
     "@ckeditor/ckeditor5-upload": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
-    "ckeditor5": "workspace:*",
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
@@ -52,7 +51,8 @@
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "ckeditor5": "workspace:*"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

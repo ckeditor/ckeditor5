@@ -13,16 +13,17 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
-    "@ckeditor/ckeditor5-widget": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
+    "@ckeditor/ckeditor5-link": "workspace:*",
+    "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
-    "@ckeditor/ckeditor5-link": "workspace:*"
+    "@ckeditor/ckeditor5-utils": "workspace:*",
+    "@ckeditor/ckeditor5-widget": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-engine": "workspace:*",
+    "ckeditor5": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",

@@ -7,7 +7,7 @@
  * @module alignment/alignment
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { AlignmentEditing } from './alignmentediting.js';
 import { AlignmentUI } from './alignmentui.js';

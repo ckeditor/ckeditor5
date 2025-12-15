@@ -6,7 +6,7 @@
 /**
  * @module table/tablewalker
  */
-import type { ModelElement, ModelPosition } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 // @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
 

@@ -7,8 +7,8 @@
  * @module image/imageupload/utils
  */
 
-import type { ViewElement } from 'ckeditor5/src/engine.js';
-import { global } from 'ckeditor5/src/utils.js';
+import type { ViewElement } from '@ckeditor/ckeditor5-engine';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { type ImageUtils } from '../imageutils.js';
 
 /**

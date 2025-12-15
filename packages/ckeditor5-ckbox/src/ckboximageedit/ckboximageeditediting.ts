@@ -7,8 +7,8 @@
  * @module ckbox/ckboximageedit/ckboximageeditediting
  */
 
-import { PendingActions, Plugin } from 'ckeditor5/src/core.js';
-import { Notification } from 'ckeditor5/src/ui.js';
+import { PendingActions, Plugin } from '@ckeditor/ckeditor5-core';
+import { Notification } from '@ckeditor/ckeditor5-ui';
 import { CKBoxImageEditCommand } from './ckboximageeditcommand.js';
 import { CKBoxEditing } from '../ckboxediting.js';
 import { CKBoxUtils } from '../ckboxutils.js';

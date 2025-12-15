@@ -7,7 +7,7 @@
  * @module special-characters/specialcharactersarrows
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { type SpecialCharacters } from './specialcharacters.js';
 
 /**

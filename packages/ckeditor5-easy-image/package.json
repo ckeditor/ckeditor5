@@ -16,8 +16,7 @@
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-upload": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "ckeditor5": "workspace:*"
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-clipboard": "workspace:*",

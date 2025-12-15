@@ -16,13 +16,13 @@
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
+    "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
-    "ckeditor5": "workspace:*",
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
@@ -33,14 +33,14 @@
     "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
-    "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "ckeditor5": "workspace:*"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

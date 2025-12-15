@@ -7,7 +7,7 @@
  * @module table/tableclipboard
  */
 
-import type { EventInfo } from 'ckeditor5/src/utils.js';
+import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import {
 	ClipboardPipeline,
@@ -17,9 +17,9 @@ import {
 	type ViewDocumentCutEvent,
 	type ViewDocumentClipboardOutputEvent,
 	type ClipboardContentInsertionEvent
-} from 'ckeditor5/src/clipboard.js';
+} from '@ckeditor/ckeditor5-clipboard';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import type {
 	ModelDocumentFragment,
@@ -32,7 +32,7 @@ import type {
 	ModelPosition,
 	ModelSelection,
 	ModelWriter
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { TableSelection } from './tableselection.js';
 import { TableWalker, type TableSlot } from './tablewalker.js';
