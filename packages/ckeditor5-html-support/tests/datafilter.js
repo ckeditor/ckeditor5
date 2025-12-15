@@ -983,13 +983,12 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
-		// Unskip it when every major browser (Chrome, Firefox, Safari) will support creating elements with this value.
-		// Currently, only Chrome supports it since v143.
+		// This test is currently only supported in Chrome since v143.
 		// See details:
 		// [x] Chrome: bugs.chromium.org/p/chromium/issues/detail?id=1334640
 		// [ ] Firefox: bugzilla.mozilla.org/show_bug.cgi?id=1773312
 		// [ ] Safari: bugs.webkit.org/show_bug.cgi?id=241419
-		it.skip( 'should not allow invalid attributes with unclosed `p` tag', () => {
+		it( 'should not allow invalid attributes with unclosed `p` tag', () => {
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( {
 				name: 'p',
@@ -1009,6 +1008,7 @@ describe( 'DataFilter', () => {
 					},
 					2: {
 						attributes: {
+							'bar<': '',
 							body: '',
 							foo: 'a'
 						}
@@ -1017,7 +1017,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal(
-				'<p zzz="a">x</p><p foo="a" body="">&nbsp;</p>'
+				'<p zzz="a">x</p><p foo="a" bar<="" body="">&nbsp;</p>'
 			);
 		} );
 	} );
