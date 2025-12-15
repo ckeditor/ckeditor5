@@ -96,7 +96,7 @@ ClassicEditor
 </info-box>
 
 <info-box>
-	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor, such as internal data structures, selection, commands, and much more.
 </info-box>
 
 ## Common API
@@ -228,5 +228,5 @@ Table alignment in the editor's output uses inline styles by default. But, you c
 The option applies to all five alignment options. Learn more about them in the {@link features/tables#table-alignment Table alignment} section.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor, such as internal data structures, selection, commands, and much more.
 </info-box>
