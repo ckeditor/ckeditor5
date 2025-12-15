@@ -19,9 +19,9 @@ overrides:
   markdown-it-toc: 'npm:@maboloshi/markdown-it-toc@1.1.1'
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
-  '@ckeditor/ckeditor5-dev-tests': 'github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-tests'
-  '@ckeditor/ckeditor5-dev-utils': 'github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils'
-  '@ckeditor/ckeditor5-dev-translations': 'github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-translations'
+  '@ckeditor/ckeditor5-dev-tests': 'github:ckeditor/ckeditor5-dev#cde7ba7&path:packages/ckeditor5-dev-tests'
+  '@ckeditor/ckeditor5-dev-utils': 'github:ckeditor/ckeditor5-dev#cde7ba7&path:packages/ckeditor5-dev-utils'
+  '@ckeditor/ckeditor5-dev-translations': 'github:ckeditor/ckeditor5-dev#cde7ba7&path:packages/ckeditor5-dev-translations'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
