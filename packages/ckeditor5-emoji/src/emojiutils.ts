@@ -27,6 +27,7 @@ const SKIN_TONE_MAP: Record<number, EmojiSkinToneId> = {
  * We skip versions with older patches, such as 15.0 instead of 15.1 etc.
  */
 const EMOJI_SUPPORT_LEVEL: Record<string, number> = {
+	'🪎': 17, // Treasure Chest.
 	'🫩': 16, // Face with bags under eyes.
 	'🫨': 15.1, // Shaking Face.
 	'🫠': 14, // Melting Face.

@@ -11,15 +11,15 @@ export default defineConfig( {
 		mockReset: true,
 		restoreMocks: true,
 		include: [
-			'./scripts-tests/**/*.@(js|mjs|cjs)'
+			'scripts-tests/**/*.@(js|mjs|cjs)'
 		],
 		exclude: [
-			'./scripts-tests/vitest.config.mjs'
+			'scripts-tests/vitest.config.mjs'
 		],
 		coverage: {
 			provider: 'v8',
 			include: [
-				'./scripts-tests/**'
+				'scripts/**'
 			],
 			reporter: [ 'text' ]
 		}
