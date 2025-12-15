@@ -7,7 +7,7 @@
  * @module paste-from-office/filters/replacemsfootnotes
  */
 
-import type { ViewDocumentFragment, ViewElement, ViewText, ViewUpcastWriter } from 'ckeditor5/src/engine.js';
+import type { ViewDocumentFragment, ViewElement, ViewText, ViewUpcastWriter } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Replaces MS Word specific footnotes references and definitions with proper elements.

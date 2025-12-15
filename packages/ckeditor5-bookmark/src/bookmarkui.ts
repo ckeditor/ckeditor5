@@ -8,7 +8,7 @@
  */
 
 import type { LinksProviderDetailedItem, LinksProviderListItem } from '@ckeditor/ckeditor5-link';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -18,17 +18,17 @@ import {
 	LabelView,
 	BalloonPanelView,
 	type ViewWithCssTransitionDisabler
-} from 'ckeditor5/src/ui.js';
-import { IconBookmark, IconRemove, IconBookmarkMedium, IconBookmarkSmall, IconPencil } from 'ckeditor5/src/icons.js';
+} from '@ckeditor/ckeditor5-ui';
+import { IconBookmark, IconRemove, IconBookmarkMedium, IconBookmarkSmall, IconPencil } from '@ckeditor/ckeditor5-icons';
 import {
 	type ModelElement,
 	type ViewDocumentSelection,
 	type ViewElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import type { DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
-import type { DeleteCommand } from 'ckeditor5/src/typing.js';
-import { isWidget, WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
+import type { DomOptimalPositionOptions } from '@ckeditor/ckeditor5-utils';
+import type { DeleteCommand } from '@ckeditor/ckeditor5-typing';
+import { isWidget, WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
 import { BookmarkFormView, type BookmarkFormViewCancelEvent, type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
 import { type UpdateBookmarkCommand } from './updatebookmarkcommand.js';

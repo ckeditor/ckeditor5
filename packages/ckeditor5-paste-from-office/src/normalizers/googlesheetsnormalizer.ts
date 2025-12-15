@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizers/googlesheetsnormalizer
  */
 
-import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewDocument } from '@ckeditor/ckeditor5-engine';
 
 import { removeXmlns } from '../filters/removexmlns.js';
 import { removeGoogleSheetsTag } from '../filters/removegooglesheetstag.js';

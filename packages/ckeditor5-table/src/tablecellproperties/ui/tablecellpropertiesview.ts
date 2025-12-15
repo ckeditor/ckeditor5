@@ -24,13 +24,13 @@ import {
 	type FocusableView,
 	type NormalizedColorOption,
 	type ColorPickerConfig
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 import {
 	IconAlignBottom,
 	IconAlignCenter,
@@ -40,7 +40,7 @@ import {
 	IconAlignRight,
 	IconAlignTop,
 	IconPreviousArrow
-} from 'ckeditor5/src/icons.js';
+} from '@ckeditor/ckeditor5-icons';
 
 import {
 	fillToolbar,
@@ -51,7 +51,6 @@ import {
 import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 import '../../../theme/formrow.css';
 import '../../../theme/tableform.css';

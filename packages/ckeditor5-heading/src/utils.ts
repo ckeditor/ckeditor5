@@ -7,7 +7,7 @@
  * @module heading/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import type { HeadingOption } from './headingconfig.js';
 

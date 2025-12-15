@@ -7,9 +7,9 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { PasteFromOfficeMSWordNormalizer } from './normalizers/mswordnormalizer.js';
 import { GoogleDocsNormalizer } from './normalizers/googledocsnormalizer.js';

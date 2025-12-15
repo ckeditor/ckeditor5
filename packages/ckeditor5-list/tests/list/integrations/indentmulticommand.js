@@ -12,7 +12,7 @@ import { IndentEditing, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Paragraph } from 'ckeditor5/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import {
 	_getModelData,
 	_setModelData

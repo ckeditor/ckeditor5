@@ -7,7 +7,7 @@
  * @module table/tablelayout
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { TableLayoutUI } from './tablelayout/tablelayoutui.js';
 
 import { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';

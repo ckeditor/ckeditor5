@@ -7,7 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { Collection } from 'ckeditor5/src/utils.js';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 import { FindAndReplace } from '../src/findandreplace.js';
 import { FindAndReplaceUI } from '../src/findandreplaceui.js';

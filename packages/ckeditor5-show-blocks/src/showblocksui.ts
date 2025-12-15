@@ -7,9 +7,9 @@
  * @module show-blocks/showblocksui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconShowBlocks } from 'ckeditor5/src/icons.js';
-import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconShowBlocks } from '@ckeditor/ckeditor5-icons';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import '../theme/showblocks.css';
 

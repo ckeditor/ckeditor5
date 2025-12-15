@@ -7,8 +7,15 @@
  * @module code-block/converters
  */
 
-import type { GetCallback } from 'ckeditor5/src/utils.js';
-import type { DowncastInsertEvent, ModelElement, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
+import type {
+	DowncastInsertEvent,
+	ModelElement,
+	Model,
+	UpcastElementEvent,
+	UpcastTextEvent,
+	EditingView
+} from '@ckeditor/ckeditor5-engine';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import { getPropertyAssociation } from './utils.js';
 

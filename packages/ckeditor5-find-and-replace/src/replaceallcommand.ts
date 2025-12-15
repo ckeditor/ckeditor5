@@ -7,7 +7,7 @@
  * @module find-and-replace/replaceallcommand
  */
 
-import { Collection } from 'ckeditor5/src/utils.js';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 import type { FindResultType } from './findandreplace.js';
 import { type FindAndReplaceUtils } from './findandreplaceutils.js';
 import { FindReplaceCommandBase } from './replacecommandbase.js';

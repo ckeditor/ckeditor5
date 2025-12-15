@@ -8,7 +8,7 @@ import { HorizontalLineEditing } from '../src/horizontallineediting.js';
 import { HorizontalLineUI } from '../src/horizontallineui.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { IconHorizontalLine } from 'ckeditor5/src/icons.js';
+import { IconHorizontalLine } from '@ckeditor/ckeditor5-icons';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 

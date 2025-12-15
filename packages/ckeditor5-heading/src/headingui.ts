@@ -7,7 +7,7 @@
  * @module heading/headingui
  */
 
-import { Plugin, type Command } from 'ckeditor5/src/core.js';
+import { Plugin, type Command } from '@ckeditor/ckeditor5-core';
 import {
 	UIModel,
 	createDropdown,
@@ -18,9 +18,9 @@ import {
 	MenuBarMenuListView,
 	MenuBarMenuView,
 	MenuBarMenuListItemButtonView
-} from 'ckeditor5/src/ui.js';
-import { Collection } from 'ckeditor5/src/utils.js';
-import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
+} from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
+import type { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 
 import { getLocalizedOptions } from './utils.js';
 import { type HeadingCommand } from './headingcommand.js';

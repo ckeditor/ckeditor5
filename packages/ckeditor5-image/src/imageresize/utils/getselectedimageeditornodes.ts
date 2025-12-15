@@ -7,8 +7,8 @@
  * @module image/imageresize/utils/getselectedimageeditornodes
  */
 
-import type { ViewElement, ModelElement } from 'ckeditor5/src/engine.js';
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { ViewElement, ModelElement } from '@ckeditor/ckeditor5-engine';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * Finds model, view and DOM element for selected image element. Returns `null` if there is no image selected.

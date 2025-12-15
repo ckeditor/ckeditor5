@@ -7,7 +7,7 @@
  * @module list/list
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ListEditing } from './list/listediting.js';
 import { ListUI } from './list/listui.js';
 

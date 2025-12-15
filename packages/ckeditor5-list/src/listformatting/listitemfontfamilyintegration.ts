@@ -7,8 +7,8 @@
  * @module list/listformatting/listitemfontfamilyintegration
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { type ViewElement } from 'ckeditor5/src/engine.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { ListEditing } from '../list/listediting.js';
 import type { ListFormatting } from '../listformatting.js';
