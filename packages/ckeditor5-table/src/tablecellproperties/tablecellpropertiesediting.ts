@@ -7,6 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
+import { priorities } from 'ckeditor5/src/utils.js';
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	addBorderStylesRules,
@@ -16,7 +17,9 @@ import {
 	type Conversion,
 	type ViewElement,
 	type UpcastConversionApi,
-	type UpcastConversionData
+	type UpcastConversionData,
+	type UpcastElementEvent,
+	type ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
@@ -30,8 +33,11 @@ import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizon
 import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
+import { TableCellTypeCommand, updateTablesHeadingAttributes } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
+import { TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -164,6 +170,9 @@ export class TableCellPropertiesEditing extends Plugin {
 			'tableCellVerticalAlignment',
 			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment! )
 		);
+
+		enableCellTypeProperty( editor );
+		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 	}
 }
 
@@ -352,4 +361,132 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 				}
 			}
 		} );
+}
+
+/**
+ * Enables the `tableCellType` attribute for table cells.
+ */
+function enableCellTypeProperty( editor: Editor ) {
+	const { model, conversion, editing } = editor;
+	const { schema } = model;
+	const tableUtils = editor.plugins.get( TableUtils );
+
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'tableCellType' ]
+	} );
+
+	schema.setAttributeProperties( 'tableCellType', {
+		isFormatting: true
+	} );
+
+	// Upcast conversion for td/th elements.
+	conversion.for( 'upcast' ).add( dispatcher => {
+		dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
+			const { writer } = conversionApi;
+			const { modelRange } = data;
+			const modelElement = modelRange?.start.nodeAfter;
+
+			if ( modelElement?.is( 'element', 'tableCell' ) ) {
+				writer.setAttribute( 'tableCellType', 'header', modelElement );
+			}
+		} );
+
+		// Table type is examined after all other cell converters, on low priority, so
+		// we double check if there is any `th` left in the table. If so, the table is converted to a content table.
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+			const { writer } = conversionApi;
+			const { modelRange } = data;
+			const modelElement = modelRange?.start.nodeAfter;
+
+			if ( modelElement?.is( 'element', 'table' ) && modelElement.getAttribute( 'tableType' ) === 'layout' ) {
+				for ( const { cell } of new TableWalker( modelElement ) ) {
+					if ( cell.getAttribute( 'tableCellType' ) === 'header' ) {
+						writer.setAttribute( 'tableType', 'content', modelElement );
+						break;
+					}
+				}
+			}
+		}, { priority: priorities.low - 1 } );
+	} );
+
+	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
+	// are consistent with the `tableCellType` attribute of the cells. `tableCellType` has priority
+	// over `headingRows` and `headingColumns` and we use it to adjust the heading sections of the table.
+	model.document.registerPostFixer( writer => {
+		// 1. Collect all tables that need to be checked.
+		const changes = model.document.differ.getChanges();
+		const tablesToCheck = new Set<ModelElement>();
+
+		for ( const change of changes ) {
+			// Check if headingRows or headingColumns changed.
+			if ( change.type === 'attribute' && ( change.attributeKey === 'headingRows' || change.attributeKey === 'headingColumns' ) ) {
+				const table = change.range.start.nodeAfter as ModelElement;
+
+				if ( table?.is( 'element', 'table' ) && table.root.rootName !== '$graveyard' ) {
+					tablesToCheck.add( table );
+				}
+			}
+
+			// Check if tableCellType changed.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const cell = change.range.start.nodeAfter as ModelElement;
+
+				if ( cell?.is( 'element', 'tableCell' ) && cell.root.rootName !== '$graveyard' ) {
+					const table = cell.findAncestor( 'table' ) as ModelElement;
+
+					if ( table ) {
+						tablesToCheck.add( table );
+					}
+				}
+			}
+
+			// Check if new headers were inserted.
+			if ( change.type === 'insert' && change.position.nodeAfter ) {
+				for ( const { item } of model.createRangeOn( change.position.nodeAfter ) ) {
+					if (
+						item.is( 'element', 'tableCell' ) &&
+						item.getAttribute( 'tableCellType' ) &&
+						item.root.rootName !== '$graveyard'
+					) {
+						const table = item.findAncestor( 'table' ) as ModelElement;
+
+						if ( table ) {
+							tablesToCheck.add( table );
+						}
+					}
+				}
+			}
+		}
+
+		// 2. Update the attributes of the collected tables.
+		return updateTablesHeadingAttributes( tableUtils, writer, tablesToCheck );
+	} );
+
+	// Refresh the table cells in the editing view when their `tableCellType` attribute changes.
+	model.document.on( 'change:data', () => {
+		const { differ } = model.document;
+		const cellsToReconvert = new Set<ModelElement>();
+
+		for ( const change of differ.getChanges() ) {
+			// If the `tableCellType` attribute changed, the entire cell needs to be re-rendered.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const tableCell = change.range.start.nodeAfter as ModelElement;
+
+				if ( tableCell.is( 'element', 'tableCell' ) ) {
+					cellsToReconvert.add( tableCell );
+				}
+			}
+		}
+
+		// Reconvert table cells that had their `tableCellType` attribute changed.
+		for ( const tableCell of cellsToReconvert ) {
+			const viewElement = editing.mapper.toViewElement( tableCell );
+			const cellType = tableCell.getAttribute( 'tableCellType' );
+			const expectedElementName = cellType === 'header' ? 'th' : 'td';
+
+			if ( viewElement?.name !== expectedElementName ) {
+				editing.reconvertItem( tableCell );
+			}
+		}
+	} );
 }

@@ -5,15 +5,14 @@
 
 .ck.ck-table-form {
 	& .ck-form__row {
-		&.ck-table-form__border-row {
+		&.ck-table-form__border-row,
+		&.ck-table-form__background-row,
+		&.ck-table-form__cell-type-row {
 			flex-wrap: wrap;
 		}
 
-		&.ck-table-form__background-row {
-			flex-wrap: wrap;
-		}
-
-		&.ck-table-form__dimensions-row {
+		&.ck-table-form__dimensions-row,
+		&.ck-table-form__cell-type-row {
 			flex-wrap: wrap;
 			align-items: center;
 
