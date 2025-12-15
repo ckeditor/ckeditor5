@@ -92,7 +92,14 @@ fetch( TOKEN_URL )
 
 		CKBoxWidget.mountUploaderWidget( document.getElementById( 'snippet-ckbox-uploader-widget' ), {
 			tokenUrl: TOKEN_URL,
-			workspaceId
+			workspaceId,
+			onUpload: asset => {
+				document.getElementById( 'ckbox-uploader-asset-code-json' ).textContent = JSON.stringify( asset, null, 2 );
+			},
+			onDelete: () => {
+				document.getElementById( 'ckbox-uploader-asset-code-json' ).textContent =
+					'Upload a file to preview its asset data in this panel.';
+			}
 		} );
 	} );
 

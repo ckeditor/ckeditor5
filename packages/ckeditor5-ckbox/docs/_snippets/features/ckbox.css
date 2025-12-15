@@ -6,6 +6,20 @@
 .ck.ck-editor {
 	margin: 0;
 }
+.ckbox-uploader-json-snippet {
+	border: 1px solid var(--color-gray-500);
+	background-color: var(--color-gray-200);
+	overflow: hidden;
+	border-radius: var(--radius-1);
+	margin: var(--spacing-7) 0;
+	padding: var(--spacing-4);
+}
+.ckbox-uploader-json-snippet code {
+	background-color: inherit;
+	white-space: pre;
+	font-size: var(--font-size-sm);
+	line-height: var(--line-height-sm);
+}
 #ckbox-button {
 	background-color: var(--ck-color-list-button-on-background);
 	color: var(--color-common-white);

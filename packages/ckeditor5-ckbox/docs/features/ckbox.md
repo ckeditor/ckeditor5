@@ -36,8 +36,12 @@ It handles file uploads and significantly reduces the effort required to build a
 		<div class='doc live-snippet'>
 			<p>
 				CKBox is not limited to CKEditor&nbsp;5 integration. The upload widget is a compact, standalone component that you can embed into any application to offload file upload functionality. To upload files, simply drag and drop them into the uploader area, or use the button to select files from your local filesystem.
+				Read more about the upload widget <a href="https://ckeditor.com/docs/ckbox/latest/features/sdk/frontend-sdk/overview.html" target="_blank">here</a>
 			</p>
 			<div id="snippet-ckbox-uploader-widget"></div>
+			<div class="ckbox-uploader-json-snippet">
+				<code id="ckbox-uploader-asset-code-json">Upload a file to preview its asset data in this panel.</code>
+			</div>
 		</div>
 	</ck:tab>
 	<ck:tab label='Standalone application'>
