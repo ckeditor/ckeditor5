@@ -168,15 +168,21 @@ export class TableCellPropertyCommand extends Command {
 }
 
 /**
- * Fired after the the {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand}
+ * Fired after the {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand}
  *
  * @eventName ~TableCellPropertyCommand#afterExecute
  */
 export type TableCellPropertyCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ {
-		writer: ModelWriter;
-		tableCells: Array<ModelElement>;
-		valueToSet: unknown;
-	} ];
+	args: [ data: TableCellPropertyCommandAfterExecuteEventData ];
+};
+
+/**
+ * The data of the
+ * {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommandAfterExecuteEvent} event.
+ */
+export type TableCellPropertyCommandAfterExecuteEventData = {
+	writer: ModelWriter;
+	tableCells: Array<ModelElement>;
+	valueToSet: unknown;
 };

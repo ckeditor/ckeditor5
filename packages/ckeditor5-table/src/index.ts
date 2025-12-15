@@ -72,7 +72,8 @@ export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from '.
 export { TableCellTypeCommand, type TableCellType } from './tablecellproperties/commands/tablecelltypecommand.js';
 export {
 	TableCellPropertyCommand,
-	type TableCellPropertyCommandAfterExecuteEvent
+	type TableCellPropertyCommandAfterExecuteEvent,
+	type TableCellPropertyCommandAfterExecuteEventData
 } from './tablecellproperties/commands/tablecellpropertycommand.js';
 
 export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent } from './tablemouse/mouseeventsobserver.js';
