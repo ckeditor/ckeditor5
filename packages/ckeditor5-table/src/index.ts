@@ -72,7 +72,6 @@ export { TableCellHeightCommand } from './tablecellproperties/commands/tablecell
 export { TableCellHorizontalAlignmentCommand } from './tablecellproperties/commands/tablecellhorizontalalignmentcommand.js';
 export { TableCellPaddingCommand } from './tablecellproperties/commands/tablecellpaddingcommand.js';
 export { TableCellVerticalAlignmentCommand } from './tablecellproperties/commands/tablecellverticalalignmentcommand.js';
-export { TableCellPropertyCommand } from './tablecellproperties/commands/tablecellpropertycommand.js';
 export { TableCellWidthCommand } from './tablecellwidth/commands/tablecellwidthcommand.js';
 export { TableAlignmentCommand } from './tableproperties/commands/tablealignmentcommand.js';
 export { TableBackgroundColorCommand } from './tableproperties/commands/tablebackgroundcolorcommand.js';
@@ -82,6 +81,12 @@ export { TableBorderWidthCommand } from './tableproperties/commands/tableborderw
 export { TableHeightCommand } from './tableproperties/commands/tableheightcommand.js';
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
 export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
+export { TableCellTypeCommand, type TableCellType } from './tablecellproperties/commands/tablecelltypecommand.js';
+export {
+	TableCellPropertyCommand,
+	type TableCellPropertyCommandAfterExecuteEvent,
+	type TableCellPropertyCommandAfterExecuteEventData
+} from './tablecellproperties/commands/tablecellpropertycommand.js';
 
 export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent } from './tablemouse/mouseeventsobserver.js';
 
