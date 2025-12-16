@@ -59,8 +59,6 @@
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
     "CHANGELOG.md"
   ],

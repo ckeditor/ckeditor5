@@ -33,8 +33,6 @@
   },
   "files": [
     "dist",
-    "src/*.js",
-    "src/*.d.ts",
     "COPYING.GPL",
     "CHANGELOG.md",
     "LICENSE.md",
