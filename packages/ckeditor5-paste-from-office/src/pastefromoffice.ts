@@ -76,8 +76,8 @@ export class PasteFromOffice extends Plugin {
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<PasteFromOfficeNormalizer> = [];
-		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
-		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TableProperties' );
+		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelListEditing' );
+		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TablePropertiesEditing' );
 		const hasExtendedTableBlockAlignment = !!this.editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' );
 
 		normalizers.push(
