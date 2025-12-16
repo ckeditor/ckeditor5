@@ -30,6 +30,6 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs"
   }
 }
