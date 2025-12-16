@@ -31,6 +31,11 @@ export class PluginCollection<TContext extends object>
 	private _contextPlugins: Map<PluginConstructor<TContext> | PluginInterface, PluginConstructor<TContext> | PluginInterface>;
 
 	/**
+	 * The set of constructors that cannot instantinate plugins. For better error detection.
+	 */
+	private static _nonPluginConstructors = new Set<Function>();
+
+	/**
 	 * Creates an instance of the plugin collection class.
 	 * Allows loading and initializing plugins and their dependencies.
 	 * Allows providing a list of already loaded plugins. These plugins will not be destroyed along with this collection.
@@ -309,10 +314,32 @@ export class PluginCollection<TContext extends object>
 						that._availablePlugins.get( plugin ) || plugin;
 				} )
 				.forEach( plugin => {
+					checkPluginConstructor( plugin );
 					checkMissingPlugin( plugin, parentPluginConstructor );
 					checkContextPlugin( plugin, parentPluginConstructor );
 					checkRemovedPlugin( plugin, parentPluginConstructor );
 				} );
+		}
+
+		function checkPluginConstructor( plugin: PluginConstructor<TContext> | string ) {
+			if ( typeof plugin !== 'function' ) {
+				return;
+			}
+
+			for ( const ctor of PluginCollection._nonPluginConstructors ) {
+				if ( ctor == plugin || plugin.prototype instanceof ctor ) {
+					/**
+					 * The provided class constructor is not a plugin.
+					 *
+					 * This error is usually caused by passing an editor, context, or command
+					 * constructor in the `config.plugins` array.
+					 *
+					 * @param {String} name The name of the provided constructor.
+					 * @error plugincollection-plugin-invalid-constructor
+					 */
+					throw new CKEditorError( 'plugincollection-plugin-invalid-constructor', context, { name: plugin.name } );
+				}
+			}
 		}
 
 		function checkMissingPlugin(
@@ -568,6 +595,17 @@ export class PluginCollection<TContext extends object>
 		}
 
 		return Promise.all( promises );
+	}
+
+	/**
+	 * Register constructors that cannot instantinate plugins.
+	 *
+	 * The purpose of it is to break the cyclical imports, like PluginCollection -> Editor -> PluginCollection.
+	 *
+	 * @internal
+	 */
+	public static _registerNonPluginConstructor( ctor: Function ): void {
+		PluginCollection._nonPluginConstructors.add( ctor );
 	}
 
 	/**

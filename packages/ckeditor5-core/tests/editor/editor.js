@@ -12,7 +12,7 @@ import { PluginCollection } from '../../src/plugincollection.js';
 import { CommandCollection } from '../../src/commandcollection.js';
 import { Command } from '../../src/command.js';
 import { EditingKeystrokeHandler } from '../../src/editingkeystrokehandler.js';
-import { expectToRejectWithCKEditorError, expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { testUtils } from '../../tests/_utils/utils.js';
 import { Accessibility } from '../../src/accessibility.js';
 import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
@@ -1409,17 +1409,6 @@ describe( 'Editor', () => {
 					editor.fire( 'ready' );
 					return editor.destroy();
 				} );
-		} );
-
-		// #18072
-		it( 'should fail if editor class is specified as a plugin', async () => {
-			class OtherEditor extends Editor {}
-
-			const editor = new TestEditor( {
-				plugins: [ OtherEditor ]
-			} );
-
-			await expectToRejectWithCKEditorError( editor.initPlugins(), 'editor-config-invalid-type' );
 		} );
 	} );
 

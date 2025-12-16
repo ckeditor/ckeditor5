@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import { set, get, isPlainObject } from 'es-toolkit/compat';
+import { set, get } from 'es-toolkit/compat';
 
 import {
 	Config,
@@ -306,9 +306,9 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	constructor( config: EditorConfig = {} ) {
 		super();
 
-		if ( !isPlainObject( config ) ) {
+		if ( typeof config !== 'object' || Array.isArray( config ) ) {
 			/**
-			 * Editor configuration must be a plain JavaScript object.
+			 * Editor configuration must be an object.
 			 *
 			 * A common cause of this error is passing an Editor class (for example
 			 * `ClassicEditor`) in the `config.plugins` array. In such case, the editor
@@ -1151,6 +1151,8 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		return response.json();
 	}
 }
+
+PluginCollection._registerNonPluginConstructor( Editor );
 
 function collectUsageData( editor: Editor ): EditorUsageData {
 	const collectedData = getEditorUsageData( editor );

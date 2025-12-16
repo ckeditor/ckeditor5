@@ -356,6 +356,8 @@ export class Context {
 	}
 }
 
+PluginCollection._registerNonPluginConstructor( Context );
+
 /**
  * The context configuration.
  */

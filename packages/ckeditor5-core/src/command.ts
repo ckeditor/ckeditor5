@@ -16,6 +16,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { type Editor } from './editor/editor.js';
+import { PluginCollection } from './plugincollection.js';
 
 /**
  * Base class for the CKEditor commands.
@@ -262,6 +263,8 @@ export class Command extends /* #__PURE__ */ ObservableMixin() {
 		this.stopListening();
 	}
 }
+
+PluginCollection._registerNonPluginConstructor( Command );
 
 /**
  * Helper function that forces command to be disabled.
