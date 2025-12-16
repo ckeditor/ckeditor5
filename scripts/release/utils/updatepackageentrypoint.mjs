@@ -49,8 +49,8 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		},
 		'./dist/*': {
 			types: './' + types,
-			import: './' + main,
-			default: './' + main
+			import: './dist/*',
+			default: './dist/*'
 		}
 	};
 
