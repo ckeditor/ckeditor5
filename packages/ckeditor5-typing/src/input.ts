@@ -128,10 +128,12 @@ export class Input extends Plugin {
 			// If view selection was specified, translate it to model selection.
 			if ( viewSelection ) {
 				modelRanges = Array.from( viewSelection.getRanges() )
+					.filter( viewRange => viewRange.root.is( 'rootElement' ) )
 					.map( viewRange => mapper.toModelRange( viewRange ) )
 					.map( modelRange => _tryFixingModelRange( modelRange, model.schema ) || modelRange );
 			}
-			else {
+
+			if ( !modelRanges || !modelRanges.length ) {
 				modelRanges = Array.from( modelSelection.getRanges() );
 			}
 
