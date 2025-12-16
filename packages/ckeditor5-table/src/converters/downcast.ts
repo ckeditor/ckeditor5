@@ -320,7 +320,7 @@ export function downcastPlainTable(
 
 	const tableAttributes: ViewElementAttributes = { class: 'table' };
 
-	if ( editor.plugins.has( 'TableProperties' ) && conversionApi.options.isClipboardPipeline ) {
+	if ( editor.plugins.has( 'TablePropertiesEditing' ) && conversionApi.options.isClipboardPipeline ) {
 		const defaultTableProperties = getNormalizedDefaultTableProperties(
 			editor.config.get( 'table.tableProperties.defaultProperties' )!,
 			{
