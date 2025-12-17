@@ -4331,9 +4331,6 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
 
   packages/ckeditor5-watchdog:
     dependencies:
