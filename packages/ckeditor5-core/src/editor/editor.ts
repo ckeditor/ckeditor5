@@ -297,6 +297,17 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
+	 * `Editor` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
+
+	/**
 	 * Creates a new instance of the editor class.
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
@@ -1151,8 +1162,6 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		return response.json();
 	}
 }
-
-PluginCollection._registerNonPluginConstructor( Editor );
 
 function collectUsageData( editor: Editor ): EditorUsageData {
 	const collectedData = getEditorUsageData( editor );

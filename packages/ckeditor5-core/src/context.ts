@@ -354,9 +354,18 @@ export class Context {
 			resolve( context.initPlugins().then( () => context ) );
 		} );
 	}
-}
 
-PluginCollection._registerNonPluginConstructor( Context );
+	/**
+	 * `Context` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
+}
 
 /**
  * The context configuration.

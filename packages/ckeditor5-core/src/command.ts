@@ -16,7 +16,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { type Editor } from './editor/editor.js';
-import { PluginCollection } from './plugincollection.js';
 
 /**
  * Base class for the CKEditor commands.
@@ -88,6 +87,17 @@ export class Command extends /* #__PURE__ */ ObservableMixin() {
 	 * Holds identifiers for {@link #forceDisabled} mechanism.
 	 */
 	private readonly _disableStack: Set<string>;
+
+	/**
+	 * `Command` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
 
 	/**
 	 * Creates a new `Command` instance.
@@ -263,8 +273,6 @@ export class Command extends /* #__PURE__ */ ObservableMixin() {
 		this.stopListening();
 	}
 }
-
-PluginCollection._registerNonPluginConstructor( Command );
 
 /**
  * Helper function that forces command to be disabled.
