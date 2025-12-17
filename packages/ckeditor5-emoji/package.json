@@ -58,7 +58,6 @@
   },
   "sideEffects": [
     "*.css",
-    "build/**/*.js",
     "dist/translations/*.umd.js"
   ]
 }
