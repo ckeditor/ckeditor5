@@ -294,3 +294,27 @@ msgstr "Tabelltype"
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
 msgstr "Alternativer for tabelltype"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Table Alignment"
+msgstr "Tabelljustering"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as an inline element, allowing text to wrap around it."
+msgid "Align table to the left with text wrapping"
+msgstr "Venstrejuster tabellen med tekstbryting"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table as a block element with no text wrapping."
+msgid "Center table with no text wrapping"
+msgstr "Sentrer tabellen uten tekstbryting"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as an inline element, allowing text to wrap around it."
+msgid "Align table to the right with text wrapping"
+msgstr "Høyrejuster tabellen med tekstbryting"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as a block element with no text wrapping."
+msgid "Align table to the left with no text wrapping"
+msgstr "Venstrejuster tabellen uten tekstbryting"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
+msgid "Align table to the right with no text wrapping"
+msgstr "Høyrejuster tabellen uten tekstbryting"

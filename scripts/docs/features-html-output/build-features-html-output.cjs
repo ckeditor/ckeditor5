@@ -158,7 +158,7 @@ function createGlobPattern() {
 
 	const paths = [
 		'packages/*',
-		`${ path.relative( CURRENT_WORK_DIRECTORY, CKEDITOR5_COMMERCIAL_PATH ) }/packages/*`,
+		`${ path.relative( CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH ) }/packages/*`,
 		...resolvedThirdPartyConfigs
 	];
 
@@ -191,7 +191,8 @@ function parseFile( file ) {
 
 	const isExternalPackage = isOutsideRoot( file.path );
 
-	const isThirdPartyPackage = !file.path.startsWith( 'packages/' ) && !isExternalPackage;
+	const relativePathFromRoot = path.relative( CKEDITOR5_ROOT_PATH, file.path );
+	const isThirdPartyPackage = !relativePathFromRoot.startsWith( 'packages/' ) && !isExternalPackage;
 
 	const sourceFileMarkup = isThirdPartyPackage ?
 		createSourceFileMarkupForThirdPartyPackage( file.path ) :

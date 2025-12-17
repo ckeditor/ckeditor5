@@ -357,6 +357,14 @@ describe( 'LinkEditing', () => {
 			expect( editor.getData() ).to.equal( '<p><a href="">foo</a>bar</p>' );
 		} );
 
+		it( 'should not assign `linkHref` attribute if missing href', () => {
+			editor.setData( '<p><a>foo</a>bar</p>' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+		} );
+
 		// The editor's role is not to filter out potentially malicious data.
 		// Its job is to not let this code be executed inside the editor (see the test in "editing pipeline conversion").
 		it( 'should output a link with a potential XSS code', () => {

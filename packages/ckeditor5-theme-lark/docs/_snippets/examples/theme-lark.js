@@ -43,7 +43,7 @@ class DarkModeCKBoxIntegration extends Plugin {
 		// Load CKBox dark theme.
 		this._ckboxLinkElement = document.createElement( 'link' );
 		this._ckboxLinkElement.rel = 'stylesheet';
-		this._ckboxLinkElement.href = 'https://cdn.ckbox.io/ckbox/latest/styles/themes/dark.css';
+		this._ckboxLinkElement.href = 'https://cdn.ckbox.io/ckbox/2.9.2/styles/themes/dark.css';
 
 		document.head.appendChild( this._ckboxLinkElement );
 

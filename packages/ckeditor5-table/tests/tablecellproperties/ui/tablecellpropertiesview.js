@@ -55,7 +55,10 @@ describe( 'table cell properties', () => {
 			view.render();
 			document.body.appendChild( view.element );
 			// [experimental] - to be deleted in v48
-			experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS );
+			experimentalView = new TableCellPropertiesViewExperimental( locale, {
+				...VIEW_OPTIONS,
+				isTableCellTypeSupported: true
+			} );
 			experimentalView.render();
 			document.body.appendChild( experimentalView.element );
 		} );
@@ -99,6 +102,25 @@ describe( 'table cell properties', () => {
 				expect( view.element.classList.contains( 'ck-table-form' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-table-cell-properties-form' ) ).to.be.true;
 				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+				// [experimental]
+				expect( experimentalView.element.classList.contains( 'ck-table-cell-properties-form_experimental' ) ).to.be.true;
+			} );
+
+			// [experimental]
+			it( 'should contain experimental CSS class when in experimental mode for table cell properties', () => {
+				const locale = { t: val => val };
+				const VIEW_OPTIONS_EXPERIMENTAL = { ...VIEW_OPTIONS, isTableCellTypeSupported: true };
+				const experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS_EXPERIMENTAL );
+
+				experimentalView.render();
+				document.body.appendChild( experimentalView.element );
+
+				expect( experimentalView.element.classList.contains(
+					'ck-table-cell-properties-form_experimental-no-cell-type'
+				) ).to.be.true;
+
+				experimentalView.element.remove();
+				experimentalView.destroy();
 			} );
 
 			it( 'should create child views (and references)', () => {
@@ -120,6 +142,7 @@ describe( 'table cell properties', () => {
 				expect( experimentalView.borderColorInput ).to.be.instanceOf( LabeledFieldView );
 				expect( experimentalView.backgroundInput ).to.be.instanceOf( LabeledFieldView );
 				expect( experimentalView.paddingInput ).to.be.instanceOf( LabeledFieldView );
+				expect( experimentalView.cellTypeDropdown ).to.be.instanceOf( LabeledFieldView );
 				expect( experimentalView.horizontalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
 				expect( experimentalView.verticalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
 
@@ -155,6 +178,25 @@ describe( 'table cell properties', () => {
 						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
 						expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
 						expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
+					} );
+
+					// [experimental]
+					it( 'should have a dedicated CSS class [experimental]', () => {
+						const locale = { t: val => val };
+						const VIEW_OPTIONS_EXPERIMENTAL = { ...VIEW_OPTIONS, isTableCellTypeSupported: true };
+						const experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS_EXPERIMENTAL );
+
+						experimentalView.render();
+						document.body.appendChild( experimentalView.element );
+
+						const row = experimentalView.element.childNodes[ 1 ];
+
+						expect( row.classList.contains(
+							'ck-table-form__border-row_experimental'
+						) ).to.be.true;
+
+						experimentalView.element.remove();
+						experimentalView.destroy();
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -328,6 +370,82 @@ describe( 'table cell properties', () => {
 							labeledInput.fieldView.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'bar' );
+						} );
+					} );
+				} );
+
+				describe( 'cell type row [experimental]', () => {
+					it( 'should be defined', () => {
+						const row = experimentalView.element.childNodes[ 2 ].children[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__cell-type-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Cell type' );
+						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.cellTypeDropdown.element );
+					} );
+
+					describe( 'cell type dropdown', () => {
+						let labeledDropdown;
+
+						beforeEach( () => {
+							labeledDropdown = experimentalView.cellTypeDropdown;
+						} );
+
+						it( 'should have properties set', () => {
+							expect( labeledDropdown.label ).to.equal( 'Cell type' );
+							expect( labeledDropdown.class ).to.equal( 'ck-table-cell-properties-form__cell-type' );
+						} );
+
+						it( 'should have a button with properties set', () => {
+							expect( labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
+							expect( labeledDropdown.fieldView.buttonView.withText ).to.be.true;
+							expect( labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
+						} );
+
+						it( 'should bind button\'s label to #cellType property', () => {
+							experimentalView.cellType = 'data';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Data cell' );
+
+							experimentalView.cellType = 'header';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Header cell' );
+						} );
+
+						it( 'should bind #isEmpty to #cellType property', () => {
+							experimentalView.cellType = 'data';
+							expect( labeledDropdown.isEmpty ).to.be.false;
+
+							experimentalView.cellType = '';
+							expect( labeledDropdown.isEmpty ).to.be.true;
+						} );
+
+						it( 'should change #cellType when executed', () => {
+							labeledDropdown.fieldView.isOpen = true;
+							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
+							expect( experimentalView.cellType ).to.equal( 'data' );
+
+							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
+							expect( experimentalView.cellType ).to.equal( 'header' );
+						} );
+
+						it( 'should come with a set of pre–defined cell types', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							expect( labeledDropdown.fieldView.listView.items.map( item => {
+								return item.children.first.label;
+							} ) ).to.have.ordered.members( [
+								'Data cell', 'Header cell'
+							] );
+						} );
+
+						it( 'listView should have properties set', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							const listView = labeledDropdown.fieldView.listView;
+
+							expect( listView.element.role ).to.equal( 'menu' );
+							expect( listView.element.ariaLabel ).to.equal( 'Cell type' );
 						} );
 					} );
 				} );
@@ -534,6 +652,13 @@ describe( 'table cell properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
 						} );
 
+						// [experimental]
+						it( 'should have a dedicated CSS class [experimental]', () => {
+							expect( experimentalView.horizontalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__horizontal-alignment-toolbar'
+							) ).to.be.true;
+						} );
+
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the left',
@@ -606,6 +731,13 @@ describe( 'table cell properties', () => {
 
 						it( 'should have an ARIA label', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
+						} );
+
+						// [experimental]
+						it( 'should have a dedicated CSS class [experimental]', () => {
+							expect( experimentalView.verticalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__vertical-alignment-toolbar'
+							) ).to.be.true;
 						} );
 
 						it( 'should bring alignment buttons', () => {
@@ -797,6 +929,7 @@ describe( 'table cell properties', () => {
 					experimentalView.borderStyleDropdown,
 					experimentalView.borderColorInput,
 					experimentalView.borderWidthInput,
+					experimentalView.cellTypeDropdown,
 					experimentalView.backgroundInput,
 					experimentalView.widthInput,
 					experimentalView.heightInput,
@@ -817,6 +950,25 @@ describe( 'table cell properties', () => {
 				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
 				sinon.assert.calledWith( spy, view.borderColorInput.element );
 				sinon.assert.calledWith( spy, view.borderWidthInput.element );
+				sinon.assert.calledWith( spy, view.backgroundInput.element );
+				sinon.assert.calledWith( spy, view.paddingInput.element );
+				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );
+				sinon.assert.calledWith( spy, view.verticalAlignmentToolbar.element );
+				sinon.assert.calledWith( spy, view.saveButtonView.element );
+				sinon.assert.calledWith( spy, view.cancelButtonView.element );
+
+				view.destroy();
+			} );
+
+			it( 'should register child views\' #element in #focusTracker [experimental]', () => {
+				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+				const view = new TableCellPropertiesViewExperimental( { t: val => val }, VIEW_OPTIONS );
+				view.render();
+
+				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
+				sinon.assert.calledWith( spy, view.borderColorInput.element );
+				sinon.assert.calledWith( spy, view.borderWidthInput.element );
+				sinon.assert.calledWith( spy, view.cellTypeDropdown.element );
 				sinon.assert.calledWith( spy, view.backgroundInput.element );
 				sinon.assert.calledWith( spy, view.paddingInput.element );
 				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );

@@ -169,7 +169,7 @@ export class PluginCollection<TContext extends object>
 	 *   * Both plugins must not depend on other plugins.
 	 * @returns A promise which gets resolved once all plugins are loaded and available in the collection.
 	 */
-	public init(
+	public async init(
 		plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 		pluginsToRemove: ReadonlyArray<PluginConstructor<TContext> | string> = [],
 		pluginsSubstitutions: ReadonlyArray<PluginConstructor<TContext>> = []
@@ -204,9 +204,10 @@ export class PluginCollection<TContext extends object>
 
 		const pluginInstances = loadPlugins( pluginConstructors );
 
-		return initPlugins( pluginInstances, 'init' )
-			.then( () => initPlugins( pluginInstances, 'afterInit' ) )
-			.then( () => pluginInstances );
+		await initPlugins( pluginInstances, 'init' );
+		await initPlugins( pluginInstances, 'afterInit' );
+
+		return pluginInstances;
 
 		function isPluginConstructor( plugin: PluginConstructor<TContext> | string | null ): plugin is PluginConstructor<TContext> {
 			return typeof plugin === 'function';
