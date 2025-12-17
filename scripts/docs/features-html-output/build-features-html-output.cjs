@@ -98,7 +98,7 @@ module.exports = function createHtmlOutputMarkup() {
 
 			return (
 				`<h3 id="${ packageName }" class="b-heading"><code class="b-inline-code">${ packageName }</code></h3>` +
-				`<p>Source file: ${ sourceFileLink }</p>` +
+				// `<p>Source file: ${ sourceFileLink }</p>` +
 				'<table class="b-table">' +
 					'<thead class="b-table__header">' +
 						'<tr>' +
