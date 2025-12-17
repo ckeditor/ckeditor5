@@ -31,7 +31,6 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
-    "typescript": "5.3.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
@@ -47,14 +46,11 @@
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

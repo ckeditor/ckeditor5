@@ -33,15 +33,12 @@
   },
   "files": [
     "dist",
-    "src/*.js",
-    "src/*.d.ts",
     "COPYING.GPL",
     "CHANGELOG.md",
     "LICENSE.md",
     "README.md"
   ],
   "scripts": {
-    "build": "tsc --build --force ./tsconfig.release.json",
     "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
   },
   "dependencies": {
@@ -112,7 +109,6 @@
     "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
     "terser-webpack-plugin": "^5.0.0",
-    "typescript": "5.3.3",
     "upath": "^2.0.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"

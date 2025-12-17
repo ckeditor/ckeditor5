@@ -35,7 +35,6 @@
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-ckfinder": "workspace:*",
     "ckeditor5": "workspace:*",
-    "typescript": "5.3.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
@@ -51,13 +50,10 @@
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

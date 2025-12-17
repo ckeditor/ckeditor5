@@ -32,7 +32,6 @@
   "files": [
     "dist",
     "lang",
-    "src",
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"

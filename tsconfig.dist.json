@@ -5,8 +5,8 @@
  */
 {
   "extends": "./tsconfig.json",
-	"compilerOptions": {
-		"module": "ESNext",
-		"moduleResolution": "bundler"
-	}
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  }
 }

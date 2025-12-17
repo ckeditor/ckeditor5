@@ -23,8 +23,7 @@
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
-    "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "typescript": "5.3.3"
+    "@ckeditor/ckeditor5-paragraph": "workspace:*"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -38,14 +37,11 @@
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }
