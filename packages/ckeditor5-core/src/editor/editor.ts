@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import { set, get, isPlainObject } from 'es-toolkit/compat';
+import { set, get } from 'es-toolkit/compat';
 
 import {
 	Config,
@@ -297,6 +297,17 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
+	 * `Editor` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
+
+	/**
 	 * Creates a new instance of the editor class.
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
@@ -306,9 +317,9 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	constructor( config: EditorConfig = {} ) {
 		super();
 
-		if ( !isPlainObject( config ) ) {
+		if ( typeof config !== 'object' || Array.isArray( config ) ) {
 			/**
-			 * Editor configuration must be a plain JavaScript object.
+			 * Editor configuration must be an object.
 			 *
 			 * A common cause of this error is passing an Editor class (for example
 			 * `ClassicEditor`) in the `config.plugins` array. In such case, the editor

@@ -5,6 +5,7 @@
 
 import { Editor } from '../src/editor/editor.js';
 import { PluginCollection } from '../src/plugincollection.js';
+import { Command } from '../src/command.js';
 import { Context } from '../src/context.js';
 import { Plugin } from '../src/plugin.js';
 import { ContextPlugin } from '../src/contextplugin.js';
@@ -469,6 +470,68 @@ describe( 'PluginCollection', () => {
 				editor,
 				{ missingPlugin: 'Baz', requiredBy: 'Foo' }
 			);
+		} );
+
+		// #18072
+		describe( 'invalid plugin types', () => {
+			it( 'should reject when `Editor` constructor is specified as a plugin', async () => {
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ Editor ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'Editor' }
+				);
+			} );
+
+			it( 'should reject when `Editor` sub-class constructor is specified as a plugin', async () => {
+				class CustomEditor extends Editor {};
+
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ CustomEditor ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'CustomEditor' }
+				);
+			} );
+
+			it( 'should reject when `Command` constructor is specified as a plugin', async () => {
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ Command ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'Command' }
+				);
+			} );
+
+			it( 'should reject when `Command` sub-class constructor is specified as a plugin', async () => {
+				class CustomCommand extends Command {};
+
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ CustomCommand ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'CustomCommand' }
+				);
+			} );
+
+			it( 'should reject when `Context` constructor is specified as a plugin', async () => {
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ Context ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'Context' }
+				);
+			} );
 		} );
 
 		it( 'should load dependency plugins using soft requirement when plugin was loaded as dependency of other plugin', () => {
