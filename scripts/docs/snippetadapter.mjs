@@ -208,6 +208,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="%BASE_PATH%/assets/global.js"></script>',
 		'<script src="https://cdn.ckbox.io/ckbox/2.9.2/ckbox.js"></script>',
+		'<script src="https://cdn.ckbox.io/uploader/2.9.2/ckboxWidget.js"></script>',
 		getLayeredStyles( 'editor', editorStylePaths )
 	];
 

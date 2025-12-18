@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { ModelElement, Batch } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, Batch, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../../tableutils.js';
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
@@ -55,6 +55,10 @@ export class TableCellPropertyCommand extends Command {
 
 		// Hardcoded defaults for layout table.
 		switch ( attributeName ) {
+			case 'tableCellType':
+				this._defaultLayoutTableValue = 'data';
+				break;
+
 			case 'tableCellBorderStyle':
 				this._defaultLayoutTableValue = 'none';
 				break;
@@ -113,6 +117,12 @@ export class TableCellPropertyCommand extends Command {
 			} else {
 				tableCells.forEach( tableCell => writer.removeAttribute( this.attributeName, tableCell ) );
 			}
+
+			this.fire<TableCellPropertyCommandAfterExecuteEvent>( 'afterExecute', {
+				writer,
+				tableCells,
+				valueToSet
+			} );
 		} );
 	}
 
@@ -156,3 +166,23 @@ export class TableCellPropertyCommand extends Command {
 		return everyCellHasAttribute ? firstCellValue : undefined;
 	}
 }
+
+/**
+ * Fired after the {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand}
+ *
+ * @eventName ~TableCellPropertyCommand#afterExecute
+ */
+export type TableCellPropertyCommandAfterExecuteEvent = {
+	name: 'afterExecute';
+	args: [ data: TableCellPropertyCommandAfterExecuteEventData ];
+};
+
+/**
+ * The data of the
+ * {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommandAfterExecuteEvent} event.
+ */
+export type TableCellPropertyCommandAfterExecuteEventData = {
+	writer: ModelWriter;
+	tableCells: Array<ModelElement>;
+	valueToSet: unknown;
+};

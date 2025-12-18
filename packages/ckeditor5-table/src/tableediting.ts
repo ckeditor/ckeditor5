@@ -40,6 +40,7 @@ import { injectTableCellParagraphPostFixer } from './converters/table-cell-parag
 
 import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
+import { isTableCellTypeEnabled } from './utils/common.js';
 
 import '../theme/tableediting.css';
 
@@ -153,11 +154,16 @@ export class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( { asWidget: true } )
+			view: downcastCell( {
+				asWidget: true,
+				cellTypeEnabled: () => isTableCellTypeEnabled( this.editor )
+			} )
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell()
+			view: downcastCell( {
+				cellTypeEnabled: () => isTableCellTypeEnabled( this.editor )
+			} )
 		} );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
@@ -222,7 +228,12 @@ export class TableEditing extends Plugin {
 		injectTableCellParagraphPostFixer( model );
 
 		this.listenTo( model.document, 'change:data', () => {
-			tableHeadingsRefreshHandler( model, editor.editing );
+			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
+			// It's because headings rows / columns are updated based on cell types which triggers their own refresh handler.
+			if ( !isTableCellTypeEnabled( editor ) ) {
+				tableHeadingsRefreshHandler( model, editor.editing );
+			}
+
 			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
@@ -249,7 +260,7 @@ export class TableEditing extends Plugin {
 		} );
 
 		// Make sure table <caption> is downcasted into <caption> in the data pipeline when necessary.
-		if ( editor.plugins.has( 'TableCaption' ) ) {
+		if ( editor.plugins.has( 'TableCaptionEditing' ) ) {
 			editor.conversion.for( 'dataDowncast' ).elementToElement( {
 				model: 'caption',
 				view: convertPlainTableCaption( editor ),
@@ -258,7 +269,7 @@ export class TableEditing extends Plugin {
 		}
 
 		// Handle border-style, border-color, border-width and background-color table attributes.
-		if ( editor.plugins.has( 'TableProperties' ) ) {
+		if ( editor.plugins.has( 'TablePropertiesEditing' ) ) {
 			downcastTableBorderAndBackgroundAttributes( editor );
 		}
 	}

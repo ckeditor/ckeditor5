@@ -128,10 +128,22 @@ export class Input extends Plugin {
 			// If view selection was specified, translate it to model selection.
 			if ( viewSelection ) {
 				modelRanges = Array.from( viewSelection.getRanges() )
+					.filter( viewRange => {
+						// On Windows 11 with the US International keyboard, events are batched.
+						// In other words, the first backtick press does not send an `insertText` event,
+						// and only the second one sends it double (batched).
+						// This causes a race condition if during the first backtick insert the element is removed from the tree,
+						// and the second event flushes changes, and it's original targetRanges,
+						// which were initially good, now refer to a removed element.
+						// This is not reproducible on Mac/Linux as they enter composition mode.
+						// See more: https://github.com/ckeditor/ckeditor5/issues/18926.
+						return viewRange.root.is( 'rootElement' );
+					} )
 					.map( viewRange => mapper.toModelRange( viewRange ) )
 					.map( modelRange => _tryFixingModelRange( modelRange, model.schema ) || modelRange );
 			}
-			else {
+
+			if ( !modelRanges || !modelRanges.length ) {
 				modelRanges = Array.from( modelSelection.getRanges() );
 			}
 

@@ -220,6 +220,17 @@ describe( 'Editor', () => {
 				new TestEditor( { sanitizeHtml: () => {} } );
 			}, 'editor-config-sanitizehtml-not-supported' );
 		} );
+
+		it( 'should throw if `config` is not a plain object', () => {
+			const testData = [ 7, 'abc', [ 1, 2 ], () => 42, true ];
+
+			for ( const config of testData ) {
+				expectToThrowCKEditorError( () => {
+					// eslint-disable-next-line no-new
+					new TestEditor( config );
+				}, 'editor-config-invalid-type' );
+			}
+		} );
 	} );
 
 	describe( 'context integration', () => {

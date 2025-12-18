@@ -18,19 +18,46 @@ It handles file uploads and significantly reduces the effort required to build a
 
 ## Demo
 
-To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
+<ck:tabs ariaLabel='CKBox demos' align='left'>
+	<ck:tab label='CKEditor 5 addon' active='true'>
+        <div class='doc live-snippet'>
+			<p>
+				To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
+			</p>
+			<div id='snippet-ckbox-ckeditor'></div>
+		</div>
+		<p>
+				<snippet-footer>
+					This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+				</snippet-footer>
+		</p>
+	</ck:tab>
+	<ck:tab label='Upload widget'>
+		<div class='doc live-snippet'>
+			<p>
+				CKBox is not limited to CKEditor&nbsp;5 integration. The upload widget is a compact, standalone component that you can embed into any application to offload file upload functionality. To upload files, simply drag and drop them into the uploader area, or use the button to select files from your local filesystem. Read more about the <a href="https://ckeditor.com/docs/ckbox/latest/features/sdk/frontend-sdk/overview.html" target="_blank">upload widget</a> in the CKBox documentation.
+			</p>
+			<div id="snippet-ckbox-uploader-widget"></div>
+			<div class="ckbox-uploader-json-snippet">
+				<code id="ckbox-uploader-asset-code-json">Upload a file to preview its asset data in this panel.</code>
+			</div>
+		</div>
+	</ck:tab>
+	<ck:tab label='Standalone application'>
+        <div class='doc live-snippet'>
+			<p>
+				CKBox can also operate as a completely standalone file manager application. This demo presents a simple button that triggers the CKBox file manager in dialog mode, demonstrating how CKBox can be integrated into any web application independently of CKEditor&nbsp;5. CKBox can be embedded as a <a target='_blank' href='https://ckeditor.com/docs/ckbox/latest/examples/display/dialog-mode.html'>dialog</a>, <a target='_blank' href='https://ckeditor.com/docs/ckbox/latest/examples/display/inline-mode.html'>an inline component</a>, or <a target='_blank' href='https://ckeditor.com/docs/ckbox/latest/examples/display/full-page-mode.html'>a full-page application</a>.
+			</p>
+			<div id='snippet-ckbox-standalone'>
+				<label>Click on the button to open the File Manager</label>
+				<button id='ckbox-button'>Open CKBox</button>
+				<div id="snippet-ckbox-standalone-root" />
+			</div>
+		</div>
+	</ck:tab>
+</ck:tabs>
 
-Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
-
-{@snippet features/ckbox}
-
-<snippet-footer>
-	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</snippet-footer>
-
-Images are embedded directly into the content, which you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
-
-You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
+{@snippet features/ckbox empty}
 
 ## How CKBox enhances CKEditor&nbsp;5
 
