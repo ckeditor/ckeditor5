@@ -285,7 +285,7 @@ export function convertPlainTableCaption( editor: Editor ): DowncastElementCreat
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.
- * @param defaultTableProperties Normalized default table properties.
+ * @param editor The editor instance.
  * @returns Created element.
  */
 export function downcastPlainTable(
