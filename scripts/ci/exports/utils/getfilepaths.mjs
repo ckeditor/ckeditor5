@@ -25,7 +25,6 @@ export function getFilePaths() {
 		.filter( file => !file.includes( 'ckeditor5-build' ) )
 		.filter( file => !file.includes( 'ckeditor5-icons/' ) )
 		.filter( file => !file.includes( 'ckeditor5-operations-compressor/' ) )
-		.filter( file => !file.includes( 'ckeditor5-collaboration/' ) ) // DLL re-exports
 		.filter( file => !file.includes( 'ckeditor5-premium-features/' ) ) // NIM re-exports
 		.sort();
 }
