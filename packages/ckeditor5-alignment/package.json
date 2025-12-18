@@ -16,8 +16,7 @@
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin",
-    "ckeditor5-dll"
+    "ckeditor5-plugin"
   ],
   "type": "module",
   "main": "src/index.ts",

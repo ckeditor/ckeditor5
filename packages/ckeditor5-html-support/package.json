@@ -20,8 +20,7 @@
     "compatibility",
     "content compatibility",
     "html support",
-    "generic html support",
-    "ckeditor5-dll"
+    "generic html support"
   ],
   "type": "module",
   "main": "src/index.ts",
