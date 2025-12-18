@@ -151,6 +151,7 @@ export { ListItemItalicIntegration } from './listformatting/listitemitalicintegr
 export { ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
 export { ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
 export { ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
+export { ListBlockIndent } from './listformatting/listblockindent.js';
 
 // TodoList/
 export { TodoList } from './todolist.js';

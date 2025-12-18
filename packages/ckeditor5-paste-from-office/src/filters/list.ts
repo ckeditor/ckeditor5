@@ -109,7 +109,9 @@ export function transformListItemLikeElementsIntoLists(
 							marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
 						}
 
-						writer.setStyle( 'padding-left', marginLeft, listElement );
+						const style = ( window as any ).listBlockIndentTestConfig.pfoUseMargin ? 'margin-left' : 'padding-left';
+
+						writer.setStyle( style, marginLeft, listElement );
 					}
 
 					// Insert the new OL/UL.
