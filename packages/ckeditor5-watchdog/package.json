@@ -2,6 +2,15 @@
   "name": "@ckeditor/ckeditor5-watchdog",
   "version": "47.3.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-watchdog"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -25,14 +34,8 @@
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*"
   },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-watchdog"
+  "scripts": {
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
@@ -40,8 +43,5 @@
     "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

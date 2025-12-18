@@ -2,6 +2,15 @@
   "name": "@ckeditor/ckeditor5-engine",
   "version": "47.3.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-engine"
+  },
   "keywords": [
     "wysiwyg",
     "rich text",
@@ -51,22 +60,13 @@
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-engine"
+  "scripts": {
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
     "lang",
     "theme",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

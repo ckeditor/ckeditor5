@@ -2,6 +2,15 @@
   "name": "@ckeditor/ckeditor5-markdown-gfm",
   "version": "47.3.0",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-markdown-gfm"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -10,12 +19,12 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
+  "type": "module",
+  "main": "src/index.ts",
   "sideEffects": [
     "*.css",
     "dist/translations/*.umd.js"
   ],
-  "type": "module",
-  "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
@@ -61,14 +70,8 @@
     "webpack-cli": "^6.0.1",
     "ckeditor5": "workspace:*"
   },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-markdown-gfm"
+  "scripts": {
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
@@ -79,8 +82,5 @@
   ],
   "depcheckIgnore": [
     "hast"
-  ],
-  "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

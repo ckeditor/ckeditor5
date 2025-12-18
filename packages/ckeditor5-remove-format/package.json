@@ -2,6 +2,15 @@
   "name": "@ckeditor/ckeditor5-remove-format",
   "version": "47.3.0",
   "description": "Remove format feature for CKEditor 5.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-remove-format"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -36,22 +45,13 @@
     "webpack-cli": "^6.0.1",
     "ckeditor5": "workspace:*"
   },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-remove-format"
+  "scripts": {
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
     "lang",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }
