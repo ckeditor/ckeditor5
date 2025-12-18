@@ -2,6 +2,14 @@
   "name": "ckeditor5",
   "version": "47.3.0",
   "description": "A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -21,26 +29,7 @@
   ],
   "type": "module",
   "main": "dist/ckeditor5.js",
-  "module": "dist/ckeditor5.js",
   "types": "src/index.d.ts",
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git"
-  },
-  "files": [
-    "dist",
-    "COPYING.GPL",
-    "CHANGELOG.md",
-    "LICENSE.md",
-    "README.md"
-  ],
-  "scripts": {
-    "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
-  },
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-alignment": "workspace:*",
@@ -112,5 +101,15 @@
     "upath": "^2.0.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
-  }
+  },
+  "scripts": {
+    "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
+  },
+  "files": [
+    "dist",
+    "COPYING.GPL",
+    "CHANGELOG.md",
+    "LICENSE.md",
+    "README.md"
+  ]
 }
