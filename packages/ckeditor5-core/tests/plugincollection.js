@@ -5,10 +5,11 @@
 
 import { Editor } from '../src/editor/editor.js';
 import { PluginCollection } from '../src/plugincollection.js';
+import { Command } from '../src/command.js';
 import { Context } from '../src/context.js';
 import { Plugin } from '../src/plugin.js';
 import { ContextPlugin } from '../src/contextplugin.js';
-import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { expectToThrowCKEditorError, expectToRejectWithCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;
@@ -74,7 +75,7 @@ describe( 'PluginCollection', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should not fail when trying to load 0 plugins (empty array)', () => {
+		it( 'should resolve successfully when trying to load 0 plugins (empty array)', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.init( [] )
@@ -247,15 +248,14 @@ describe( 'PluginCollection', () => {
 
 			let error;
 
-			try {
-				await plugins.init( [ PluginA, PluginX, PluginB ] )
-					// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
-					.then( () => {
-						throw new Error( 'Test error: this promise should not be resolved successfully' );
-					} );
-			} catch ( err ) {
-				error = err;
-			}
+			await plugins.init( [ PluginA, PluginX, PluginB ] )
+				// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
+				.then( () => {
+					throw new Error( 'Test error: this promise should not be resolved successfully' );
+				} )
+				.catch( err => {
+					error = err;
+				} );
 
 			expect( error ).to.be.an.instanceof( TestError );
 			expect( error ).to.have.property( 'message', 'Some error inside a plugin' );
@@ -264,15 +264,7 @@ describe( 'PluginCollection', () => {
 		it( 'should reject when loading non-existent plugin', async () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			try {
-				await plugins.init( [ 'NonExistentPlugin' ] )
-					// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
-					.then( () => {
-						throw new Error( 'Test error: this promise should not be resolved successfully' );
-					} );
-			} catch ( err ) {
-				assertCKEditorError( err, 'plugincollection-plugin-not-found', editor );
-			}
+			await expectToRejectWithCKEditorError( plugins.init( [ 'NonExistentPlugin' ] ), 'plugincollection-plugin-not-found', editor );
 		} );
 
 		it( 'should load chosen plugins (plugins and removePlugins are constructors)', () => {
@@ -337,24 +329,16 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should throw when context plugin requires not a context plugin', async () => {
+		it( 'should reject when context plugin requires not a context plugin', async () => {
 			class FooContextPlugin extends ContextPlugin {}
 			FooContextPlugin.requires = [ PluginA ];
 
 			const plugins = new PluginCollection( editor, [ FooContextPlugin, PluginA ] );
 
-			let error;
-
-			try {
-				await plugins.init( [ FooContextPlugin ] );
-			} catch ( err ) {
-				error = err;
-			}
-
-			assertCKEditorError( error, /^plugincollection-context-required/ );
+			await expectToRejectWithCKEditorError( plugins.init( [ FooContextPlugin ] ), /^plugincollection-context-required/ );
 		} );
 
-		it( 'should not throw when non context plugin requires context plugin', async () => {
+		it( 'should resolve successfully when non context plugin requires context plugin', async () => {
 			class FooContextPlugin extends ContextPlugin {}
 
 			class BarPlugin extends Plugin {}
@@ -367,7 +351,7 @@ describe( 'PluginCollection', () => {
 			expect( getPlugins( plugins ) ).to.length( 2 );
 		} );
 
-		it( 'should not throw when context plugin requires context plugin', async () => {
+		it( 'should resolve successfully when context plugin requires context plugin', async () => {
 			class FooContextPlugin extends ContextPlugin {}
 
 			class BarContextPlugin extends ContextPlugin {}
@@ -383,32 +367,26 @@ describe( 'PluginCollection', () => {
 		it( 'should reject when loaded plugin requires not allowed plugins', async () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			try {
-				await plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
-					// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be stil executed.
-					.then( () => {
-						throw new Error( 'Test error: this promise should not be resolved successfully' );
-					} );
-			} catch ( err ) {
-				assertCKEditorError( err, /^plugincollection-required/, editor );
-			}
+			await expectToRejectWithCKEditorError(
+				plugins.init( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] ),
+				/^plugincollection-required/,
+				editor
+			);
 		} );
 
 		it( 'should reject when loading more than one plugin with the same name', async () => {
 			const plugins = new PluginCollection( editor );
 
-			try {
-				await plugins.init( [ PluginFoo, AnotherPluginFoo ] )
-					.then( () => {
-						throw new Error( 'The `init()` method should fail.' );
-					} );
-			} catch ( err ) {
-				assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null, {
+			await expectToRejectWithCKEditorError(
+				plugins.init( [ PluginFoo, AnotherPluginFoo ] ),
+				/^plugincollection-plugin-name-conflict/,
+				null,
+				{
 					pluginName: 'Foo',
 					plugin1: PluginFoo,
 					plugin2: AnotherPluginFoo
-				} );
-			}
+				}
+			);
 		} );
 
 		it( 'should reject when loading more than one plugin with the same name (plugin requires plugin with the same name)', async () => {
@@ -416,14 +394,7 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor );
 
-			try {
-				await plugins.init( [ PluginFoo ] )
-					.then( () => {
-						throw new Error( 'The `init()` method should fail.' );
-					} );
-			} catch ( err ) {
-				assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
-			}
+			await expectToRejectWithCKEditorError( plugins.init( [ PluginFoo ] ), /^plugincollection-plugin-name-conflict/, null );
 		} );
 
 		it( 'should reject when loading more than one plugin with the same name ' +
@@ -432,14 +403,11 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			try {
-				await plugins.init( [ 'Foo', AnotherPluginFoo ] )
-					.then( () => {
-						throw new Error( 'The `init()` method should fail.' );
-					} );
-			} catch ( err ) {
-				assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
-			}
+			await expectToRejectWithCKEditorError(
+				plugins.init( [ 'Foo', AnotherPluginFoo ] ),
+				/^plugincollection-plugin-name-conflict/,
+				null
+			);
 		} );
 
 		it( 'should get plugin from external plugins instead of creating new instance', async () => {
@@ -496,15 +464,74 @@ describe( 'PluginCollection', () => {
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			try {
-				await plugins.init( [ PluginFoo ] )
-					// Throw here, so if by any chance plugins.init() was resolved correctly catch() will be still executed.
-					.then( () => {
-						throw new Error( 'Test error: this promise should not be resolved successfully' );
-					} );
-			} catch ( err ) {
-				assertCKEditorError( err, /^plugincollection-soft-required/, editor, { missingPlugin: 'Baz', requiredBy: 'Foo' } );
-			}
+			await expectToRejectWithCKEditorError(
+				plugins.init( [ PluginFoo ] ),
+				/^plugincollection-soft-required/,
+				editor,
+				{ missingPlugin: 'Baz', requiredBy: 'Foo' }
+			);
+		} );
+
+		// #18072
+		describe( 'invalid plugin types', () => {
+			it( 'should reject when `Editor` constructor is specified as a plugin', async () => {
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ Editor ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'Editor' }
+				);
+			} );
+
+			it( 'should reject when `Editor` sub-class constructor is specified as a plugin', async () => {
+				class CustomEditor extends Editor {};
+
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ CustomEditor ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'CustomEditor' }
+				);
+			} );
+
+			it( 'should reject when `Command` constructor is specified as a plugin', async () => {
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ Command ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'Command' }
+				);
+			} );
+
+			it( 'should reject when `Command` sub-class constructor is specified as a plugin', async () => {
+				class CustomCommand extends Command {};
+
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ CustomCommand ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'CustomCommand' }
+				);
+			} );
+
+			it( 'should reject when `Context` constructor is specified as a plugin', async () => {
+				const plugins = new PluginCollection( editor );
+
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ Context ] ),
+					'plugincollection-plugin-invalid-constructor',
+					editor,
+					{ name: 'Context' }
+				);
+			} );
 		} );
 
 		it( 'should load dependency plugins using soft requirement when plugin was loaded as dependency of other plugin', () => {
@@ -597,171 +624,137 @@ describe( 'PluginCollection', () => {
 					} );
 			} );
 
-			it( 'throws an error if plugin for replacement is specified as a string', async () => {
+			it( 'returns rejected promise if plugin for replacement is specified as a string', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
-				try {
-					await plugins.init( [ PluginA, PluginB ], [], [ 'A' ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-replace-plugin-invalid-type', null, {
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB ], [], [ 'A' ] ),
+					'plugincollection-replace-plugin-invalid-type',
+					null,
+					{
 						pluginItem: 'A'
-					} );
-				}
+					}
+				);
 			} );
 
-			it( 'throws an error if plugin for replacement is not named', async () => {
+			it( 'returns rejected promise if plugin for replacement is not named', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
 				const newPluginA = createPlugin( 'A' );
 				newPluginA.pluginName = undefined;
 
-				try {
-					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-replace-plugin-missing-name', null, {
-						pluginItem: newPluginA
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] ),
+					'plugincollection-replace-plugin-missing-name',
+					null,
+					{ pluginItem: newPluginA }
+				);
 			} );
 
-			it( 'throws an error if plugin for replacement requires other plugins (soft requirements)', async () => {
+			it( 'returns rejected promise if plugin for replacement requires other plugins (soft requirements)', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
 				const newPluginA = createPlugin( 'A' );
 
 				newPluginA.requires = [ 'Foo' ];
 
-				try {
-					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-cannot-have-dependencies', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] ),
+					'plugincollection-plugin-for-replacing-cannot-have-dependencies',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
-			it( 'throws an error if plugin for replacement requires other plugins (hard requirements)', async () => {
+			it( 'returns rejected promise if plugin for replacement requires other plugins (hard requirements)', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
 				const newPluginA = createPlugin( 'A' );
 
 				newPluginA.requires = [ PluginC ];
 
-				try {
-					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-cannot-have-dependencies', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] ),
+					'plugincollection-plugin-for-replacing-cannot-have-dependencies',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
-			it( 'throws an error if the replaced requires other plugins (soft requirements)', async () => {
+			it( 'returns rejected promise if the replaced requires other plugins (soft requirements)', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
 				const newPluginA = createPlugin( 'A' );
 
 				PluginA.requires = [ 'Foo' ];
 
-				try {
-					await plugins.init( [ PluginA, PluginB, PluginFoo ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-replaced-plugin-cannot-have-dependencies', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB, PluginFoo ], [], [ newPluginA ] ),
+					'plugincollection-replaced-plugin-cannot-have-dependencies',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
-			it( 'throws an error if the replaced requires other plugins (hard requirements)', async () => {
+			it( 'returns rejected promise if the replaced requires other plugins (hard requirements)', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
 				const newPluginA = createPlugin( 'A' );
 
 				PluginA.requires = [ PluginC ];
 
-				try {
-					await plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-replaced-plugin-cannot-have-dependencies', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] ),
+					'plugincollection-replaced-plugin-cannot-have-dependencies',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
-			it( 'throws an error if plugin for replacement exists (in "availablePlugins") but it will not be loaded', async () => {
+			it( 'returns rejected promise if plugin for replacement exists (in "availablePlugins") but it will not be loaded', async () => {
 				const plugins = new PluginCollection( editor, [ PluginA ] );
 
 				const newPluginA = createPlugin( 'A' );
 
-				try {
-					await plugins.init( [ PluginB ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-not-loaded', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginB ], [], [ newPluginA ] ),
+					'plugincollection-plugin-for-replacing-not-loaded',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
-			it( 'throws an error if plugin for replacement does not exist', async () => {
+			it( 'returns rejected promise if plugin for replacement does not exist', async () => {
 				const plugins = new PluginCollection( editor, [] );
 
 				const newPluginA = createPlugin( 'A' );
 
-				try {
-					await plugins.init( [ PluginB ], [], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-not-exist', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginB ], [], [ newPluginA ] ),
+					'plugincollection-plugin-for-replacing-not-exist',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
-			it( 'throws an error if replacing a removed plugin', async () => {
+			it( 'returns rejected promise if replacing a removed plugin', async () => {
 				const plugins = new PluginCollection( editor, availablePlugins );
 
 				const newPluginA = createPlugin( 'A' );
 
-				try {
-					await plugins.init( [ PluginA, PluginB ], [ 'A' ], [ newPluginA ] )
-						.then( () => {
-							throw new Error( 'Expected to be rejected.' );
-						} );
-				} catch ( err ) {
-					assertCKEditorError( err, 'plugincollection-plugin-for-replacing-not-loaded', null, {
-						pluginName: 'A'
-					} );
-				}
+				await expectToRejectWithCKEditorError(
+					plugins.init( [ PluginA, PluginB ], [ 'A' ], [ newPluginA ] ),
+					'plugincollection-plugin-for-replacing-not-loaded',
+					null,
+					{ pluginName: 'A' }
+				);
 			} );
 
 			// The Context feature has an own list of plugins that can be also substituted.
 			// Also, the context can be a part of an editor instance which means, that the context's
 			// plugins will be a part of the editor's plugins. However, the editor will not initialize the plugin,
 			// hence the substitute option could throw an error "plugincollection-plugin-for-replacing-not-loaded".
-			it( 'does not throw an error if a plugin for substitute was loaded by the Context feature', async () => {
+			it( 'does not reject with an error if a plugin for substitute was loaded by the Context feature', async () => {
 				class ContextPluginA extends ContextPlugin {
 					static get pluginName() {
 						return 'ContextPluginA';

@@ -19,13 +19,16 @@ import {
 	LabelView,
 	submitHandler,
 	ToolbarView,
+	UIModel,
 	View,
 	ViewCollection,
 	type FocusableView,
+	type ListDropdownItemDefinition,
 	type NormalizedColorOption,
 	type ColorPickerConfig
 } from '@ckeditor/ckeditor5-ui';
 import {
+	Collection,
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale,
@@ -141,6 +144,14 @@ export class TableCellPropertiesView extends View {
 	public declare verticalAlignment: string;
 
 	/**
+	 * The type of the table cell ('data' or 'header').
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	public declare cellType: string;
+
+	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
 	 */
 	public readonly options: TableCellPropertiesViewOptions;
@@ -179,6 +190,11 @@ export class TableCellPropertiesView extends View {
 	 * An input that allows specifying the table cell background color.
 	 */
 	public readonly backgroundInput: LabeledFieldView<ColorInputView>;
+
+	/**
+	 * A dropdown that allows selecting the type of the table cell (data or header).
+	 */
+	public readonly cellTypeDropdown: LabeledFieldView<FocusableView>;
 
 	/**
 	 * An input that allows specifying the table cell padding.
@@ -251,13 +267,15 @@ export class TableCellPropertiesView extends View {
 			width: '',
 			height: '',
 			horizontalAlignment: '',
-			verticalAlignment: ''
+			verticalAlignment: '',
+			cellType: ''
 		} );
 
 		this.options = options;
 
 		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
 		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
+		const { cellTypeRowLabel, cellTypeDropdown } = this._createCellTypeField();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { horizontalAlignmentToolbar, verticalAlignmentToolbar, alignmentLabel } = this._createAlignmentFields();
 
@@ -268,6 +286,7 @@ export class TableCellPropertiesView extends View {
 		this.borderWidthInput = borderWidthInput;
 		this.borderColorInput = borderColorInput;
 		this.backgroundInput = backgroundInput;
+		this.cellTypeDropdown = cellTypeDropdown;
 		this.paddingInput = this._createPaddingField();
 		this.widthInput = widthInput;
 		this.heightInput = heightInput;
@@ -313,20 +332,32 @@ export class TableCellPropertiesView extends View {
 			children: [
 				borderRowLabel,
 				borderStyleDropdown,
-				borderColorInput,
-				borderWidthInput
+				borderWidthInput,
+				borderColorInput
 			],
 			class: 'ck-table-form__border-row'
 		} ) );
 
-		// Background.
+		// Background and cell type.
 		this.children.add( new FormRowView( locale, {
-			labelView: backgroundRowLabel,
 			children: [
-				backgroundRowLabel,
-				backgroundInput
-			],
-			class: 'ck-table-form__background-row'
+				new FormRowView( locale, {
+					labelView: cellTypeRowLabel,
+					children: [
+						cellTypeRowLabel,
+						cellTypeDropdown
+					],
+					class: 'ck-table-form__cell-type-row'
+				} ),
+				new FormRowView( locale, {
+					labelView: backgroundRowLabel,
+					children: [
+						backgroundRowLabel,
+						backgroundInput
+					],
+					class: 'ck-table-form__background-row'
+				} )
+			]
 		} ) );
 
 		// Dimensions row and padding.
@@ -410,6 +441,7 @@ export class TableCellPropertiesView extends View {
 			this.borderStyleDropdown,
 			this.borderColorInput,
 			this.borderWidthInput,
+			this.cellTypeDropdown,
 			this.backgroundInput,
 			this.widthInput,
 			this.heightInput,
@@ -612,6 +644,57 @@ export class TableCellPropertiesView extends View {
 	}
 
 	/**
+	 * Create cell type field.
+	 *
+	 * * {@link #cellTypeDropdown}.
+	 *
+	 * @internal
+	 */
+	private _createCellTypeField() {
+		const locale = this.locale;
+		const t = this.t!;
+
+		const cellTypeRowLabel = new LabelView( locale );
+		cellTypeRowLabel.text = t( 'Cell type' );
+
+		const cellTypeLabels = this._cellTypeLabels;
+		const cellTypeDropdown = new LabeledFieldView( locale, createLabeledDropdown );
+
+		cellTypeDropdown.set( {
+			label: t( 'Cell type' ),
+			class: 'ck-table-cell-properties-form__cell-type'
+		} );
+
+		cellTypeDropdown.fieldView.buttonView.set( {
+			ariaLabel: t( 'Cell type' ),
+			ariaLabelledBy: undefined,
+			isOn: false,
+			withText: true,
+			tooltip: t( 'Cell type' )
+		} );
+
+		cellTypeDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'cellType', value => {
+			return cellTypeLabels[ value || 'data' ];
+		} );
+
+		cellTypeDropdown.fieldView.on( 'execute', evt => {
+			this.cellType = ( evt.source as Record<string, unknown> )._cellTypeValue as string;
+		} );
+
+		cellTypeDropdown.bind( 'isEmpty' ).to( this, 'cellType', value => !value );
+
+		addListToDropdown( cellTypeDropdown.fieldView, this._getCellTypeDefinitions(), {
+			role: 'menu',
+			ariaLabel: t( 'Cell type' )
+		} );
+
+		return {
+			cellTypeRowLabel,
+			cellTypeDropdown
+		};
+	}
+
+	/**
 	 * Creates the following form fields:
 	 *
 	 * * {@link #widthInput}.
@@ -738,7 +821,8 @@ export class TableCellPropertiesView extends View {
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
 			role: 'radiogroup',
-			ariaLabel: t( 'Horizontal text alignment toolbar' )
+			ariaLabel: t( 'Horizontal text alignment toolbar' ),
+			class: 'ck-table-cell-properties-form__horizontal-alignment-toolbar'
 		} );
 
 		fillToolbar( {
@@ -769,7 +853,8 @@ export class TableCellPropertiesView extends View {
 		verticalAlignmentToolbar.set( {
 			isCompact: true,
 			role: 'radiogroup',
-			ariaLabel: t( 'Vertical text alignment toolbar' )
+			ariaLabel: t( 'Vertical text alignment toolbar' ),
+			class: 'ck-table-cell-properties-form__vertical-alignment-toolbar'
 		} );
 
 		fillToolbar( {
@@ -849,6 +934,32 @@ export class TableCellPropertiesView extends View {
 	}
 
 	/**
+	 * Creates the cell type dropdown definitions.
+	 */
+	private _getCellTypeDefinitions(): Collection<ListDropdownItemDefinition> {
+		const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
+		const cellTypeLabels = this._cellTypeLabels;
+
+		for ( const type of [ 'data', 'header' ] ) {
+			const definition: ListDropdownItemDefinition = {
+				type: 'button',
+				model: new UIModel( {
+					_cellTypeValue: type,
+					label: cellTypeLabels[ type ],
+					role: 'menuitemradio',
+					withText: true
+				} )
+			};
+
+			definition.model.bind( 'isOn' ).to( this, 'cellType', value => value === type );
+
+			itemDefinitions.add( definition );
+		}
+
+		return itemDefinitions;
+	}
+
+	/**
 	 * Provides localized labels for {@link #horizontalAlignmentToolbar} buttons.
 	 */
 	private get _horizontalAlignmentLabels(): Record<string, string> {
@@ -878,6 +989,18 @@ export class TableCellPropertiesView extends View {
 			top: t( 'Align cell text to the top' ),
 			middle: t( 'Align cell text to the middle' ),
 			bottom: t( 'Align cell text to the bottom' )
+		};
+	}
+
+	/**
+	 * Provides localized labels for {@link #cellTypeDropdown}.
+	 */
+	private get _cellTypeLabels(): Record<string, string> {
+		const t = this.t!;
+
+		return {
+			data: t( 'Data cell' ),
+			header: t( 'Header cell' )
 		};
 	}
 }

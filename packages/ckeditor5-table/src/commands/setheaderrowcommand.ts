@@ -11,7 +11,6 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../tableutils.js';
 
-import { updateNumericAttribute } from '../utils/common.js';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure.js';
 
 /**
@@ -97,7 +96,7 @@ export class SetHeaderRowCommand extends Command {
 				}
 			}
 
-			updateNumericAttribute( 'headingRows', headingRowsToSet, table, writer, 0 );
+			tableUtils.setHeadingRowsCount( writer, table, headingRowsToSet );
 		} );
 	}
 

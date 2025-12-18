@@ -417,7 +417,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 ```bash
 yarn add \
 	raw-loader@4 \
-	@ckeditor/ckeditor5-dev-utils@43 \
+	@ckeditor/ckeditor5-dev-utils@54 \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
 	@ckeditor/ckeditor5-editor-classic \

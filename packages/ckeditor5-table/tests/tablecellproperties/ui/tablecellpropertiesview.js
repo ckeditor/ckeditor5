@@ -98,6 +98,7 @@ describe( 'table cell properties', () => {
 				expect( view.borderWidthInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.borderColorInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.backgroundInput ).to.be.instanceOf( LabeledFieldView );
+				expect( view.cellTypeDropdown ).to.be.instanceOf( LabeledFieldView );
 				expect( view.paddingInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.horizontalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
 				expect( view.verticalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
@@ -124,8 +125,8 @@ describe( 'table cell properties', () => {
 						expect( row.classList.contains( 'ck-table-form__border-row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Border' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
-						expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
-						expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
+						expect( row.childNodes[ 2 ] ).to.equal( view.borderWidthInput.element );
+						expect( row.childNodes[ 3 ] ).to.equal( view.borderColorInput.element );
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -303,9 +304,85 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
+				describe( 'cell type row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 2 ].children[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__cell-type-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Cell type' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.cellTypeDropdown.element );
+					} );
+
+					describe( 'cell type dropdown', () => {
+						let labeledDropdown;
+
+						beforeEach( () => {
+							labeledDropdown = view.cellTypeDropdown;
+						} );
+
+						it( 'should have properties set', () => {
+							expect( labeledDropdown.label ).to.equal( 'Cell type' );
+							expect( labeledDropdown.class ).to.equal( 'ck-table-cell-properties-form__cell-type' );
+						} );
+
+						it( 'should have a button with properties set', () => {
+							expect( labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
+							expect( labeledDropdown.fieldView.buttonView.withText ).to.be.true;
+							expect( labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
+						} );
+
+						it( 'should bind button\'s label to #cellType property', () => {
+							view.cellType = 'data';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Data cell' );
+
+							view.cellType = 'header';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Header cell' );
+						} );
+
+						it( 'should bind #isEmpty to #cellType property', () => {
+							view.cellType = 'data';
+							expect( labeledDropdown.isEmpty ).to.be.false;
+
+							view.cellType = '';
+							expect( labeledDropdown.isEmpty ).to.be.true;
+						} );
+
+						it( 'should change #cellType when executed', () => {
+							labeledDropdown.fieldView.isOpen = true;
+							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
+							expect( view.cellType ).to.equal( 'data' );
+
+							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
+							expect( view.cellType ).to.equal( 'header' );
+						} );
+
+						it( 'should come with a set of pre–defined cell types', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							expect( labeledDropdown.fieldView.listView.items.map( item => {
+								return item.children.first.label;
+							} ) ).to.have.ordered.members( [
+								'Data cell', 'Header cell'
+							] );
+						} );
+
+						it( 'listView should have properties set', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							const listView = labeledDropdown.fieldView.listView;
+
+							expect( listView.element.role ).to.equal( 'menu' );
+							expect( listView.element.ariaLabel ).to.equal( 'Cell type' );
+						} );
+					} );
+				} );
+
 				describe( 'background row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 2 ];
+						const row = view.element.childNodes[ 2 ].children[ 1 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
@@ -505,6 +582,12 @@ describe( 'table cell properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
 						} );
 
+						it( 'should have a dedicated CSS class', () => {
+							expect( view.horizontalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__horizontal-alignment-toolbar'
+							) ).to.be.true;
+						} );
+
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the left',
@@ -577,6 +660,12 @@ describe( 'table cell properties', () => {
 
 						it( 'should have an ARIA label', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
+						} );
+
+						it( 'should have a dedicated CSS class', () => {
+							expect( view.verticalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__vertical-alignment-toolbar'
+							) ).to.be.true;
 						} );
 
 						it( 'should bring alignment buttons', () => {
@@ -731,6 +820,7 @@ describe( 'table cell properties', () => {
 					view.borderStyleDropdown,
 					view.borderColorInput,
 					view.borderWidthInput,
+					view.cellTypeDropdown,
 					view.backgroundInput,
 					view.widthInput,
 					view.heightInput,

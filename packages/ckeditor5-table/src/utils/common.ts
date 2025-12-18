@@ -7,6 +7,7 @@
  * @module table/utils/common
  */
 
+import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	Conversion,
 	ModelElement,
@@ -19,6 +20,7 @@ import type {
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
 import { type TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
@@ -118,4 +120,65 @@ export function getSelectionAffectedTable( selection: ModelDocumentSelection ): 
 	}
 
 	return selection.getFirstPosition()!.findAncestor( 'table' )!;
+}
+
+/**
+ * Groups table cells by their parent table.
+ *
+ * @internal
+ */
+export function groupCellsByTable( tableCells: Array<ModelElement> ): Map<ModelElement, Array<ModelElement>> {
+	const tableMap = new Map<ModelElement, Array<ModelElement>>();
+
+	for ( const tableCell of tableCells ) {
+		const table = tableCell.findAncestor( 'table' ) as ModelElement;
+
+		if ( !tableMap.has( table ) ) {
+			tableMap.set( table, [] );
+		}
+
+		tableMap.get( table )!.push( tableCell );
+	}
+
+	return tableMap;
+}
+
+/**
+ * Checks if all cells in a given row or column are header cells.
+ *
+ * @internal
+ */
+export function isEntireCellsLineHeader(
+	{
+		table,
+		row,
+		column
+	}: {
+		table: ModelElement;
+		row?: number;
+		column?: number;
+	}
+): boolean {
+	const tableWalker = new TableWalker( table, { row, column } );
+
+	for ( const { cell } of tableWalker ) {
+		const cellType = cell.getAttribute( 'tableCellType' );
+
+		if ( cellType !== 'header' ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Checks whether the `tableCellType` attribute is enabled in the editor schema and the experimental flag is set.
+ *
+ * @internal
+ */
+export function isTableCellTypeEnabled( editor: Editor ): boolean {
+	const { model } = editor;
+
+	return model.schema.checkAttribute( 'tableCell', 'tableCellType' );
 }

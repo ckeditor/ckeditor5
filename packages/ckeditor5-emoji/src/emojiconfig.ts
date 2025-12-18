@@ -115,4 +115,4 @@ export interface EmojiConfig {
 
 export type EmojiSkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
 
-export type EmojiVersion = 15 | 16;
+export type EmojiVersion = 15 | 16 | 17;

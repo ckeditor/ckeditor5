@@ -14,6 +14,7 @@ import { TableSelection } from '../src/tableselection.js';
 import { TableEditing } from '../src/tableediting.js';
 import { TableUtils } from '../src/tableutils.js';
 import { TableColumnResize } from '../src/tablecolumnresize.js';
+import { TableCellPropertiesEditing } from '../src/tablecellproperties/tablecellpropertiesediting.js';
 
 import { modelTable } from './_utils/utils.js';
 import { TableWalker } from '../src/tablewalker.js';
@@ -2487,6 +2488,354 @@ describe( 'TableUtils - selection methods', () => {
 				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10' },
 				{ row: 1, column: 1, rowIndex: 1, index: 1, data: '11' }
 			] );
+		} );
+	} );
+} );
+
+describe( 'TableUtils with TableCellProperties', () => {
+	let editor, model, root, tableUtils;
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
+		tableUtils = editor.plugins.get( 'TableUtils' );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	describe( 'setHeadingRowsCount()', () => {
+		it( 'should add tableCellType="header" to new heading rows', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingRowsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should remove tableCellType="header" from removed heading rows', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ '20', '21' ]
+			], { headingRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingRowsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should accept writer as first argument', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingRowsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should stop changing cell types if a row is already not a header (when reducing heading rows)', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ],
+				[ '30', '31' ]
+			], { headingRows: 3 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				// Manually change the middle row to body cells.
+				writer.removeAttribute( 'tableCellType', table.getChild( 1 ).getChild( 0 ) );
+				writer.removeAttribute( 'tableCellType', table.getChild( 1 ).getChild( 1 ) );
+
+				tableUtils.setHeadingRowsCount( writer, table, 1 );
+			} );
+
+			// Row 0: Header (kept as header because headingRows=1)
+			// Row 1: Body (manually changed)
+			// Row 2: Header (should remain header because processing stopped at Row 1)
+			// Row 3: Body
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ],
+				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ],
+				[ '30', '31' ]
+			], { headingRows: 1 } ) );
+		} );
+	} );
+
+	describe( 'setHeadingColumnsCount()', () => {
+		it( 'should add tableCellType="header" to new heading columns', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingColumnsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should remove tableCellType="header" from removed heading columns', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+			], { headingColumns: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingColumnsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should accept writer as first argument', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingColumnsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should stop changing cell types if a column is already not a header (when reducing heading columns)', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' },
+					{ contents: '02', tableCellType: 'header' },
+					'03'
+				],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' },
+					{ contents: '12', tableCellType: 'header' },
+					'13'
+				]
+			], { headingColumns: 3 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				// Manually change the middle column to body cells.
+				writer.removeAttribute( 'tableCellType', table.getChild( 0 ).getChild( 1 ) );
+				writer.removeAttribute( 'tableCellType', table.getChild( 1 ).getChild( 1 ) );
+
+				tableUtils.setHeadingColumnsCount( writer, table, 1 );
+			} );
+
+			// Col 0: Header (kept as header because headingColumns=1)
+			// Col 1: Body (manually changed)
+			// Col 2: Header (should remain header because processing stopped at Col 1)
+			// Col 3: Body
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01', { contents: '02', tableCellType: 'header' }, '03' ],
+				[ { contents: '10', tableCellType: 'header' }, '11', { contents: '12', tableCellType: 'header' }, '13' ]
+			], { headingColumns: 1 } ) );
+		} );
+	} );
+
+	describe( 'insertRows()', () => {
+		it( 'should set tableCellType="header" when inserting at the beginning of table with heading rows', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertRows( table, { at: 0, rows: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '', tableCellType: 'header' }, { contents: '', tableCellType: 'header' } ],
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should set tableCellType="header" for cells in heading columns when inserting at the beginning', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertRows( table, { at: 0, rows: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '', tableCellType: 'header' }, '' ],
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should set tableCellType="header" for cells in heading columns when inserting at the end', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertRows( table, { at: 2 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ],
+				[ { contents: '', tableCellType: 'header' }, '' ]
+			], { headingColumns: 1 } ) );
+		} );
+	} );
+
+	describe( 'insertColumns()', () => {
+		it( 'should set tableCellType="header" when inserting at the beginning of table with heading columns', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertColumns( table, { at: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '', tableCellType: 'header' }, { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '', tableCellType: 'header' }, { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should set tableCellType="header" for cells in heading rows when inserting at the beginning', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertColumns( table, { at: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[
+					{ contents: '', tableCellType: 'header' },
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[ '', '10', '11' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should set tableCellType="header" for cells in heading rows when inserting at the end', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertColumns( table, { at: 2 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' },
+					{ contents: '', tableCellType: 'header' }
+				],
+				[ '10', '11', '' ]
+			], { headingRows: 1 } ) );
+		} );
+	} );
+
+	describe( 'removeRows()', () => {
+		it( 'should update headingRows when removing a row and the next one is all headers', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ '20', '21' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.removeRows( table, { at: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ '20', '21' ]
+			], { headingRows: 1 } ) );
+		} );
+	} );
+
+	describe( 'removeColumns()', () => {
+		it( 'should update headingColumns when removing a column and the next one is all headers', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' }, '02' ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' }, '12' ]
+			], { headingColumns: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.removeColumns( table, { at: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '01', tableCellType: 'header' }, '02' ],
+				[ { contents: '11', tableCellType: 'header' }, '12' ]
+			], { headingColumns: 1 } ) );
 		} );
 	} );
 } );

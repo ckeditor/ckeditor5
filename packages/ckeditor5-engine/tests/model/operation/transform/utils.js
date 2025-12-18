@@ -33,7 +33,7 @@ export class Client {
 		this.name = name;
 	}
 
-	init() {
+	init( editorConfig = {} ) {
 		return ModelTestEditor.create( {
 			// Typing is needed for delete command.
 			// UndoEditing is needed for undo command.
@@ -42,7 +42,8 @@ export class Client {
 			plugins: [
 				Typing, Paragraph, LegacyListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
 				ImageBlockEditing
-			]
+			],
+			...editorConfig
 		} ).then( editor => {
 			this.editor = editor;
 			this.document = editor.model.document;
@@ -87,7 +88,7 @@ export class Client {
 		this.syncedVersion = this.document.version;
 	}
 
-	setSelection( start, end ) {
+	setSelection( start, end, { bufferOperations } = {} ) {
 		if ( !end ) {
 			end = start.slice();
 		}
@@ -95,7 +96,11 @@ export class Client {
 		const startPos = this._getPosition( start );
 		const endPos = this._getPosition( end );
 
-		this.editor.model.document.selection._setTo( new ModelRange( startPos, endPos ) );
+		if ( bufferOperations ) {
+			this._processAction( 'setSelection', new ModelRange( startPos, endPos ) );
+		} else {
+			this.editor.model.document.selection._setTo( new ModelRange( startPos, endPos ) );
+		}
 	}
 
 	insert( itemString, path ) {
@@ -243,6 +248,10 @@ export class Client {
 			return this._getPositionFromSelection( type );
 		}
 
+		if ( path instanceof ModelPosition ) {
+			return path.clone();
+		}
+
 		return new ModelPosition( this.document.getRoot(), path );
 	}
 
@@ -272,13 +281,13 @@ export class Client {
 		bufferOperations( operations, this );
 	}
 
-	static get( clientName ) {
+	static get( clientName, { editorConfig } = {} ) {
 		const client = new Client( clientName );
 		client.orderNumber = clients.size;
 
 		clients.add( client );
 
-		return client.init();
+		return client.init( editorConfig ?? {} );
 	}
 }
 
