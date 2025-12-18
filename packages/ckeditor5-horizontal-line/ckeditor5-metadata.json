@@ -5,7 +5,7 @@
 			"className": "HorizontalLine",
 			"description": "Allows for inserting horizontal lines into your content. These help the authors separate and group document sections.",
 			"docs": "features/horizontal-line.html",
-			"path": "src/horizontalline.js",
+			"path": "src/horizontalline.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
