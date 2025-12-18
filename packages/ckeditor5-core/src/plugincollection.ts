@@ -309,10 +309,30 @@ export class PluginCollection<TContext extends object>
 						that._availablePlugins.get( plugin ) || plugin;
 				} )
 				.forEach( plugin => {
+					checkPluginConstructor( plugin );
 					checkMissingPlugin( plugin, parentPluginConstructor );
 					checkContextPlugin( plugin, parentPluginConstructor );
 					checkRemovedPlugin( plugin, parentPluginConstructor );
 				} );
+		}
+
+		function checkPluginConstructor( plugin: PluginConstructor<TContext> | string ) {
+			if ( typeof plugin !== 'function' ) {
+				return;
+			}
+
+			if ( ( plugin as any )._throwErrorWhenUsedAsAPlugin ) {
+				/**
+				 * The provided class constructor is not a plugin.
+				 *
+				 * This error is usually caused by passing an editor, context, or command
+				 * constructor in the `config.plugins` array.
+				 *
+				 * @param {String} name The name of the provided constructor.
+				 * @error plugincollection-plugin-invalid-constructor
+				 */
+				throw new CKEditorError( 'plugincollection-plugin-invalid-constructor', context, { name: plugin.name } );
+			}
 		}
 
 		function checkMissingPlugin(
