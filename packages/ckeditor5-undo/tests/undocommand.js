@@ -315,6 +315,34 @@ describe( 'UndoCommand', () => {
 				expect( undoingBatch instanceof Batch ).to.be.true;
 				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( undoingBatch );
 			} );
+
+			it( 'should correctly undo root attribute changes', () => {
+				const batch0 = model.createBatch();
+				undo.addBatch( batch0 );
+				model.enqueueChange( batch0, writer => {
+					writer.setAttribute( 'foo', 'A', root );
+				} );
+
+				const batch1 = model.createBatch();
+				undo.addBatch( batch1 );
+				model.enqueueChange( batch1, writer => {
+					writer.setAttribute( 'foo', 'B', root );
+				} );
+
+				const batch2 = model.createBatch();
+				undo.addBatch( batch2 );
+				model.enqueueChange( batch2, writer => {
+					writer.setAttribute( 'foo', 'A', root );
+				} );
+
+				expect( root.getAttribute( 'foo' ) ).to.equal( 'A' );
+
+				undo.execute();
+				expect( root.getAttribute( 'foo' ) ).to.equal( 'B' );
+
+				undo.execute();
+				expect( root.getAttribute( 'foo' ) ).to.equal( 'A' );
+			} );
 		} );
 
 		it( 'merges touching ranges when restoring selection', () => {
