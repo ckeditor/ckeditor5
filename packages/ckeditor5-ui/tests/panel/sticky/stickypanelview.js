@@ -626,7 +626,7 @@ describe( 'StickyPanelView', () => {
 				} );
 			} );
 
-			describe( 'if there is window scrollable and visual viewport (with visual viewport)', () => {
+			describe( 'if there is window scrollable and visual viewport', () => {
 				beforeEach( () => {
 					view.isActive = true;
 					visualViewportStub.get( () => ( {
@@ -783,7 +783,7 @@ describe( 'StickyPanelView', () => {
 				} );
 			} );
 
-			describe( 'if there is window scrollable and visual viewport and viewport top offset (with visual viewport)', () => {
+			describe( 'if there is window scrollable and visual viewport and viewport top offset', () => {
 				beforeEach( () => {
 					view.viewportTopOffset = 5;
 					view.isActive = true;
