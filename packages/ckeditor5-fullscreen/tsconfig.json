@@ -1,10 +1,12 @@
 {
-	"extends": "../../tsconfig.release.json",
+	"extends": "../../tsconfig.dist.json",
+	"compilerOptions": {
+		"rootDir": "src",
+		"types": [
+			"../../typings/types"
+		]
+	},
 	"include": [
-		"src",
-		"../../typings"
-	],
-	"exclude": [
-		"tests"
+		"src"
 	]
 }
