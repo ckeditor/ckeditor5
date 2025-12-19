@@ -417,18 +417,10 @@ describe( 'StickyPanelView', () => {
 		} );
 
 		describe( 'after scrolling', () => {
-			let visualViewportStub;
-
 			beforeEach( () => {
 				view.isActive = true;
-				visualViewportStub = sinon.stub( global.window, 'visualViewport' ).get( () => ( {
-					offsetLeft: 0,
-					offsetTop: 0
-				} ) );
-			} );
-
-			afterEach( () => {
-				visualViewportStub.restore();
+				sinon.stub( visualViewport, 'offsetLeft' ).get( () => 0 );
+				sinon.stub( visualViewport, 'offsetTop' ).get( () => 0 );
 			} );
 
 			describe( 'if there is only window scrollable', () => {
@@ -629,10 +621,9 @@ describe( 'StickyPanelView', () => {
 			describe( 'if there is window scrollable and visual viewport', () => {
 				beforeEach( () => {
 					view.isActive = true;
-					visualViewportStub.get( () => ( {
-						offsetLeft: 15,
-						offsetTop: 25
-					} ) );
+
+					sinon.stub( visualViewport, 'offsetLeft' ).get( () => 15 );
+					sinon.stub( visualViewport, 'offsetTop' ).get( () => 25 );
 				} );
 
 				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
@@ -787,10 +778,8 @@ describe( 'StickyPanelView', () => {
 				beforeEach( () => {
 					view.viewportTopOffset = 5;
 					view.isActive = true;
-					visualViewportStub.get( () => ( {
-						offsetLeft: 15,
-						offsetTop: 25
-					} ) );
+					sinon.stub( visualViewport, 'offsetLeft' ).get( () => 15 );
+					sinon.stub( visualViewport, 'offsetTop' ).get( () => 25 );
 				} );
 
 				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
