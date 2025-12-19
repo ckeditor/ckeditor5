@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Rect, global, env } from '@ckeditor/ckeditor5-utils';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import { StickyPanelView } from '../../../src/panel/sticky/stickypanelview.js';
 import { View } from '../../../src/view.js';
 import { LabelView } from '../../../src/label/labelview.js';
@@ -271,7 +271,6 @@ describe( 'StickyPanelView', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
 
-			// Set visual viewport offsets - those should be ignored on non iOS and non Safari.
 			sinon.stub( visualViewport, 'offsetLeft' ).get( () => 15 );
 			sinon.stub( visualViewport, 'offsetTop' ).get( () => 25 );
 		} );
@@ -418,11 +417,21 @@ describe( 'StickyPanelView', () => {
 		} );
 
 		describe( 'after scrolling', () => {
-			describe( 'if there is only window scrollable', () => {
-				beforeEach( () => {
-					view.isActive = true;
-				} );
+			let visualViewportStub;
 
+			beforeEach( () => {
+				view.isActive = true;
+				visualViewportStub = sinon.stub( global.window, 'visualViewport' ).get( () => ( {
+					offsetLeft: 0,
+					offsetTop: 0
+				} ) );
+			} );
+
+			afterEach( () => {
+				visualViewportStub.restore();
+			} );
+
+			describe( 'if there is only window scrollable', () => {
 				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
 					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
 
@@ -617,10 +626,13 @@ describe( 'StickyPanelView', () => {
 				} );
 			} );
 
-			describe( 'if there is window scrollable and visual viewport (iOS)', () => {
+			describe( 'if there is window scrollable and visual viewport (with visual viewport)', () => {
 				beforeEach( () => {
-					sinon.stub( env, 'isiOS' ).get( () => true );
 					view.isActive = true;
+					visualViewportStub.get( () => ( {
+						offsetLeft: 15,
+						offsetTop: 25
+					} ) );
 				} );
 
 				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
@@ -771,11 +783,14 @@ describe( 'StickyPanelView', () => {
 				} );
 			} );
 
-			describe( 'if there is window scrollable and visual viewport and viewport top offset (iOS)', () => {
+			describe( 'if there is window scrollable and visual viewport and viewport top offset (with visual viewport)', () => {
 				beforeEach( () => {
-					sinon.stub( env, 'isiOS' ).get( () => true );
 					view.viewportTopOffset = 5;
 					view.isActive = true;
+					visualViewportStub.get( () => ( {
+						offsetLeft: 15,
+						offsetTop: 25
+					} ) );
 				} );
 
 				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
@@ -1372,7 +1387,7 @@ describe( 'StickyPanelView', () => {
 
 				expect( view.isSticky ).to.be.true;
 				expect( view._stickyTopOffset ).to.not.equal( null );
-				expect( view._marginLeft ).to.equal( '-10px' );
+				expect( view._marginLeft ).to.equal( '5px' );
 			} );
 
 			it( 'is set if view._isStickyToTheBottomOfLimiter is true', () => {
@@ -1403,7 +1418,7 @@ describe( 'StickyPanelView', () => {
 
 				expect( view.isSticky ).to.be.true;
 				expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
-				expect( view._marginLeft ).to.equal( '0px' );
+				expect( view._marginLeft ).to.equal( '15px' );
 			} );
 
 			it( 'is null if view.isSticky is false', () => {
