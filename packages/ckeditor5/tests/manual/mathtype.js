@@ -17,7 +17,8 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
-import MathType from '@wiris/mathtype-ckeditor5';
+// TODO Uncomment when mathtype is using the new import style.
+// import MathType from '@wiris/mathtype-ckeditor5';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -40,8 +41,9 @@ ClassicEditor
 			Indent,
 			Mention,
 			PasteFromOffice,
-			RemoveFormat,
-			MathType
+			RemoveFormat
+			// TODO Uncomment when mathtype is using the new import style.
+			// MathType
 		],
 		toolbar: [
 			'MathType', 'ChemType', '|', 'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
