@@ -28,12 +28,9 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
-    "ckeditor5": "workspace:*",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },

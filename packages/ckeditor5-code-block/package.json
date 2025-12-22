@@ -34,7 +34,6 @@
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-html-support": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
@@ -42,9 +41,7 @@
     "@ckeditor/ckeditor5-list": "workspace:*",
     "@ckeditor/ckeditor5-markdown-gfm": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "ckeditor5": "workspace:*",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
