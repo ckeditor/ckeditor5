@@ -21,7 +21,7 @@ import type {
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
 import { type TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
-import { isHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
+import { isTableHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
 
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
@@ -165,7 +165,7 @@ export function isEntireCellsLineHeader(
 	for ( const { cell } of tableWalker ) {
 		const cellType = cell.getAttribute( 'tableCellType' ) as TableCellType;
 
-		if ( !isHeaderCellType( cellType ) ) {
+		if ( !isTableHeaderCellType( cellType ) ) {
 			return false;
 		}
 	}

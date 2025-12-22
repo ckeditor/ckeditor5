@@ -18,7 +18,7 @@ import {
 
 import { groupCellsByTable, getSelectionAffectedTable } from '../../utils/common.js';
 import { TableWalker } from '../../tablewalker.js';
-import { isHeaderCellType, type TableCellType } from '../tablecellpropertiesutils.js';
+import { isTableHeaderCellType, type TableCellType } from '../tablecellpropertiesutils.js';
 
 /**
  * The table cell type command.
@@ -185,7 +185,7 @@ function getAdjustedHeadingSectionSize(
 		// Check each cell in the current row/column.
 		for ( const { cell, row, column } of walker ) {
 			// If we find a non-header cell, this row/column can't be part of the heading section.
-			if ( !isHeaderCellType( cell.getAttribute( 'tableCellType' ) as TableCellType ) ) {
+			if ( !isTableHeaderCellType( cell.getAttribute( 'tableCellType' ) as TableCellType ) ) {
 				allCellsAreHeaders = false;
 				break;
 			}

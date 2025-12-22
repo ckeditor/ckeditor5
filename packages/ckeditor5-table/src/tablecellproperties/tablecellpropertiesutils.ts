@@ -18,7 +18,7 @@ export type TableCellType = 'data' | 'header' | `header-${ 'row' | 'column' }`;
  * @param cellType The type of the table cell.
  * @returns `true` if the cell type represents a header cell, `false` otherwise.
  */
-export function isHeaderCellType( cellType: TableCellType | undefined ): boolean {
+export function isTableHeaderCellType( cellType: TableCellType | undefined ): boolean {
 	return (
 		cellType === 'header' ||
 		cellType === 'header-row' ||

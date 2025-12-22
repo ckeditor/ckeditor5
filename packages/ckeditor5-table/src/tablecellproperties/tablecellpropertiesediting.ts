@@ -38,7 +38,7 @@ import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js
 import { enableProperty } from '../utils/common.js';
 import { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
-import { isHeaderCellType, type TableCellType } from './tablecellpropertiesutils.js';
+import { isTableHeaderCellType, type TableCellType } from './tablecellpropertiesutils.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -405,7 +405,7 @@ function enableCellTypeProperty( editor: Editor ) {
 				for ( const { cell } of new TableWalker( modelElement ) ) {
 					const tableCellType = cell.getAttribute( 'tableCellType' ) as TableCellType;
 
-					if ( isHeaderCellType( tableCellType ) ) {
+					if ( isTableHeaderCellType( tableCellType ) ) {
 						writer.setAttribute( 'tableType', 'content', modelElement );
 						break;
 					}
@@ -533,7 +533,7 @@ function enableCellTypeProperty( editor: Editor ) {
 		for ( const tableCell of cellsToReconvert ) {
 			const viewElement = editing.mapper.toViewElement( tableCell );
 			const cellType = tableCell.getAttribute( 'tableCellType' ) as TableCellType;
-			const expectedElementName = isHeaderCellType( cellType ) ? 'th' : 'td';
+			const expectedElementName = isTableHeaderCellType( cellType ) ? 'th' : 'td';
 
 			if ( viewElement?.name !== expectedElementName ) {
 				editing.reconvertItem( tableCell );

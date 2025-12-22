@@ -25,7 +25,7 @@ import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 import { TableWalker } from '../tablewalker.js';
-import { isHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
+import { isTableHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -117,7 +117,7 @@ export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled: ()
 		if ( options.cellTypeEnabled?.() ) {
 			const tableCellType = tableCell.getAttribute( 'tableCellType' ) as TableCellType;
 			const cellElementName: 'td' | 'th' = (
-				isHeaderCellType( tableCellType ) ?
+				isTableHeaderCellType( tableCellType ) ?
 					'th' :
 					'td'
 			);
