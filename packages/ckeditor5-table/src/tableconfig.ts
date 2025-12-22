@@ -249,6 +249,24 @@ export interface TableConfig {
 	 * @default true
 	 */
 	showHiddenBorders?: boolean;
+
+	/**
+	 * If set to `true`, table headers (`<th>`) will automatically receive
+	 * and update the `scope` attribute according to their position in the table.
+	 *
+	 * The table cell properties UI will include two fields that allow manually setting the header scope:
+	 *
+	 *   * `Column header cell` — sets `scope="row"` on `<th>`.
+	 *   * `Row header cell`    — sets `scope="col"` on `<th>`.
+	 *
+	 * Example:
+	 * ```ts
+	 * const tableConfig = {
+	 * 	scopedHeaders: true
+	 * };
+	 * ```
+	 */
+	scopedHeaders?: boolean;
 }
 
 /**

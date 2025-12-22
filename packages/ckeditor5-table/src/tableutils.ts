@@ -23,6 +23,7 @@ import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute, isEntireCellsLineHeader, isTableCellTypeEnabled } from './utils/common.js';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 import { getTableColumnElements } from './tablecolumnresize/utils.js';
+import { isHeaderCellType, type TableCellType } from './tablecellproperties/tablecellpropertiesutils.js';
 
 type Cell = { cell: ModelElement; rowspan: number };
 type CellsToMove = Map<number, Cell>;
@@ -1577,7 +1578,12 @@ function updateTableCellType(
 
 	if ( row >= headingRows && column >= headingColumns ) {
 		writer.removeAttribute( 'tableCellType', cell );
-	} else {
+		return;
+	}
+
+	const cellType = cell.getAttribute( 'tableCellType' ) as TableCellType;
+
+	if ( !isHeaderCellType( cellType ) ) {
 		writer.setAttribute( 'tableCellType', 'header', cell );
 	}
 }

@@ -25,6 +25,7 @@ import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 import { TableWalker } from '../tablewalker.js';
+import { isHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -114,8 +115,9 @@ export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled: ()
 	return ( tableCell, { writer } ) => {
 		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
 		if ( options.cellTypeEnabled?.() ) {
+			const tableCellType = tableCell.getAttribute( 'tableCellType' ) as TableCellType;
 			const cellElementName: 'td' | 'th' = (
-				tableCell.getAttribute( 'tableCellType' ) === 'header' ?
+				isHeaderCellType( tableCellType ) ?
 					'th' :
 					'td'
 			);
