@@ -424,10 +424,10 @@ function enableCellTypeProperty( editor: Editor ) {
 			view: ( modelAttributeValue: TableCellType ) => {
 				switch ( modelAttributeValue ) {
 					case 'header-row':
-						return { key: 'scope', value: 'col' };
+						return { key: 'scope', value: 'row' };
 
 					case 'header-column':
-						return { key: 'scope', value: 'row' };
+						return { key: 'scope', value: 'col' };
 				}
 			}
 		} );
@@ -448,11 +448,11 @@ function enableCellTypeProperty( editor: Editor ) {
 
 					switch ( scope ) {
 						case 'row':
-							writer.setAttribute( 'tableCellType', 'header-column', modelElement );
+							writer.setAttribute( 'tableCellType', 'header-row', modelElement );
 							break;
 
 						case 'col':
-							writer.setAttribute( 'tableCellType', 'header-row', modelElement );
+							writer.setAttribute( 'tableCellType', 'header-column', modelElement );
 							break;
 					}
 				}
