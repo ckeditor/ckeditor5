@@ -33,7 +33,9 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ],
-			scopedHeaders: true
+			tableCellProperties: {
+				scopedHeaders: true
+			}
 		}
 	} )
 	.then( editor => {

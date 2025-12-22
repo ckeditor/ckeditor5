@@ -188,7 +188,7 @@ export class TableUtils extends Plugin {
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
 		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
-		const scopedHeaders = this.editor.config.get( 'table.scopedHeaders' );
+		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
@@ -334,7 +334,7 @@ export class TableUtils extends Plugin {
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
 		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
-		const scopedHeaders = this.editor.config.get( 'table.scopedHeaders' );
+		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
 		model.change( writer => {
 			let headingColumns = table.getAttribute( 'headingColumns' ) as number;
@@ -1006,7 +1006,7 @@ export class TableUtils extends Plugin {
 		} = {}
 	): void {
 		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
-		const scopedHeaders = this.editor.config.get( 'table.scopedHeaders' );
+		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 		if ( headingRows === oldHeadingRows ) {
@@ -1091,7 +1091,7 @@ export class TableUtils extends Plugin {
 	): void {
 		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-		const scopedHeaders = this.editor.config.get( 'table.scopedHeaders' );
+		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
 		if ( headingColumns === oldHeadingColumns ) {
 			return;

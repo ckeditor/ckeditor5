@@ -3293,7 +3293,9 @@ describe( 'table cell properties', () => {
 				editor = await VirtualTestEditor.create( {
 					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
 					table: {
-						scopedHeaders: true
+						tableCellProperties: {
+							scopedHeaders: true
+						}
 					}
 				} );
 

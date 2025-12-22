@@ -2841,7 +2841,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 	describe( 'with scoped headers enabled', () => {
 		beforeEach( () => {
-			editor.config.set( 'table.scopedHeaders', true );
+			editor.config.set( 'table.tableCellProperties.scopedHeaders', true );
 		} );
 
 		describe( 'setHeadingRowsCount()', () => {

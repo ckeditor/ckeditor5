@@ -211,7 +211,7 @@ export class TableCellPropertiesUI extends Plugin {
 	private _createPropertiesView( defaultTableCellProperties: NormalizedDefaultProperties ) {
 		const editor = this.editor;
 		const config = editor.config.get( 'table.tableCellProperties' )!;
-		const scopedHeaders = !!editor.config.get( 'table.scopedHeaders' );
+		const scopedHeaders = !!editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors! );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );

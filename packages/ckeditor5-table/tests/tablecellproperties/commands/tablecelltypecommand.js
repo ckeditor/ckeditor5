@@ -383,7 +383,9 @@ describe( 'TableCellTypeCommand with scopedHeaders', () => {
 		editor = await ModelTestEditor.create( {
 			plugins: [ Paragraph, TableCellPropertiesEditing ],
 			table: {
-				scopedHeaders: true
+				tableCellProperties: {
+					scopedHeaders: true
+				}
 			}
 		} );
 
