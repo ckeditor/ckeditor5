@@ -997,9 +997,7 @@ describe( 'table cell properties', () => {
 				const labeledDropdown = view.cellTypeDropdown;
 				labeledDropdown.fieldView.isOpen = true;
 
-				expect( labeledDropdown.fieldView.listView.items.map( item => {
-					return item.children.first.label;
-				} ) ).to.have.ordered.members( [
+				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
 					'Data cell', 'Header cell', 'Header cell (column)', 'Header cell (row)'
 				] );
 
@@ -1010,9 +1008,7 @@ describe( 'table cell properties', () => {
 				const labeledDropdown = view.cellTypeDropdown;
 				labeledDropdown.fieldView.isOpen = true;
 
-				expect( labeledDropdown.fieldView.listView.items.map( item => {
-					return item.children.first.label;
-				} ) ).to.have.ordered.members( [
+				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
 					'Data cell', 'Header cell'
 				] );
 			} );
