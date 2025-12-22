@@ -18,7 +18,10 @@ import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 // TODO Uncomment when mathtype is using the new import style.
-// import MathType from '@wiris/mathtype-ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5';
+
+// TODO Remove when mathtype is using the new import style.
+console.log( MathType );
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
