@@ -1612,12 +1612,7 @@ function updateTableCellType(
 
 	// If scoped headers are enabled, we prefer to set 'row' or 'column' header types depending on the position.
 	if ( scopedHeaders ) {
-		const isInHeadingColumns = column < headingColumns;
-		const isInHeadingRows = row < headingRows;
-
-		if ( isInHeadingColumns && isInHeadingRows ) {
-			headerCellType = 'header';
-		} else if ( isInHeadingRows ) {
+		if ( row < headingRows ) {
 			headerCellType = 'header-column';
 		} else {
 			headerCellType = 'header-row';
