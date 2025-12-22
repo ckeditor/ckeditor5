@@ -251,15 +251,16 @@ export interface TableConfig {
 	showHiddenBorders?: boolean;
 
 	/**
-	 * If set to `true`, table headers (`<th>`) will automatically receive
-	 * and update the `scope` attribute according to their position in the table.
+	 * If set to `true`, the `scope` attribute will be applied to table headers (`<th>`) based on their position in the table.
 	 *
 	 * The table cell properties UI will include two fields that allow manually setting the header scope:
 	 *
-	 *   * `Column header cell` — sets `scope="row"` on `<th>`.
-	 *   * `Row header cell`    — sets `scope="col"` on `<th>`.
+	 *   * `Header cell (column)` — sets `scope="col"` on `<th>`.
+	 *   * `Header cell (row)`    — sets `scope="row"` on `<th>`.
 	 *
-	 * Example:
+	 * If header cell is both in a heading row and a heading column, the `col` scope will be prioritized by the header rows
+	 * and columns setting logic. In such case, the user can manually change the scope using the table cell properties UI.
+	 *
 	 * ```ts
 	 * const tableConfig = {
 	 * 	scopedHeaders: true
