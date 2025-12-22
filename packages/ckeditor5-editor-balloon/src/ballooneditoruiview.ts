@@ -38,7 +38,7 @@ export class BalloonEditorUIView extends EditorUIView {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement,
+		editableElement?: HTMLElement | string, // TODO string => create DOM element name
 		label?: string | Record<string, string>
 	) {
 		super( locale );
