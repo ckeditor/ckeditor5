@@ -1913,6 +1913,19 @@ describe( 'table cell properties', () => {
 				it( 'should register tableCellType attribute as a formatting attribute', () => {
 					expect( schema.getAttributeProperties( 'tableCellType' ).isFormatting ).to.be.true;
 				} );
+
+				it( 'should disallow tableCellType attribute in layout tables', () => {
+					model.change( writer => {
+						const table = writer.createElement( 'table', { tableType: 'layout' } );
+						const tableRow = writer.createElement( 'tableRow' );
+						const tableCell = writer.createElement( 'tableCell' );
+
+						writer.insert( tableRow, table );
+						writer.insert( tableCell, tableRow );
+
+						expect( schema.checkAttribute( tableCell, 'tableCellType' ) ).to.be.false;
+					} );
+				} );
 			} );
 
 			describe( 'upcast conversion', () => {
