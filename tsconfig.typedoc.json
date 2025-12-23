@@ -9,9 +9,6 @@
       "ckeditor5": [
         "./"
       ],
-      "ckeditor5-collaboration": [
-        "../../packages/ckeditor5-collaboration"
-      ],
       "@ckeditor/*": [
         "packages/*",
         "../../packages/*"
