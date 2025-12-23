@@ -38,12 +38,16 @@ To address this, we are introducing **experimental flags** and **experimental pl
 
 * **New table alignment options**
 
-	Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be the default in version 48.0.0.
+	Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment.
+
+	The `TableProperties` and `TableCellProperties` plugins already include their standard UI counterparts (`TablePropertiesUI` and `TableCellPropertiesUI`). To avoid conflicts, when using experimental UI plugins, you must load the editing plugins (`TablePropertiesEditing`, `TableCellPropertiesEditing`) and the experimental UI plugins separately, instead of using the "glue" plugins.
+
+	New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be the default in version 48.0.0.
 
 * **Improved table border normalization**
 
 	Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be the default in version 48.0.0.
-		
+
 * **Better deep schema validation**
 
 	After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be the default in version 48.0.0.
@@ -55,8 +59,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Table,
-			TableProperties,
-			TableCellProperties,
+			TablePropertiesEditing,
+			TableCellPropertiesEditing,
 			TablePropertiesUIExperimental,
 			TableCellPropertiesUIExperimental,
 			// Other plugins.
@@ -88,7 +92,7 @@ CKEditor AI includes three core capabilities:
 * **Quick actions**: one-click transformations for selected text, including rewriting, simplifying, expanding, summarizing, or adjusting tone. Changes appear inline with preview capabilities.
 * **Review**: automatic quality assurance that checks grammar, tone, clarity, and style across the document. Suggested changes are presented in a visual review interface where users can accept or reject individual edits or apply all approved suggestions in bulk.
 
-Power users can select their preferred model during sessions (GPT-5, Claude 3.5, Gemini 2.5, and more), while integrators maintain control over access rules and usage tiers. 
+Power users can select their preferred model during sessions (GPT-5, Claude 3.5, Gemini 2.5, and more), while integrators maintain control over access rules and usage tiers.
 
 Built as a plugin for CKEditor 5, it integrates quickly into existing applications with minimal configuration, and all AI interactions are fully observable via audit logs and optional APIs.
 
@@ -195,7 +199,7 @@ This release also brings several smaller but important enhancements and fixes:
 
 With the release of {@link features/ckeditor-ai-overview **CKEditor AI**}, the `ai.*` configuration structure has changed. Until now, the configuration object was used for the former `AIAssistant` feature.
 
-Now, this configuration space is used for all AI related features. Configuration for the `AIAssistant` was moved. The changes are: 
+Now, this configuration space is used for all AI related features. Configuration for the `AIAssistant` was moved. The changes are:
 	* `ai.aiAssistant` -> `ai.assistant`,
 	* `ai.useTheme` -> `ai.assistant.useTheme`,
 	* `ai.aws` -> `ai.assistant.adapter.aws`,
