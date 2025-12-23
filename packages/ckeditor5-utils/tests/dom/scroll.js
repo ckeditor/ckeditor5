@@ -66,6 +66,14 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 		describe( 'with ancestorOffset', () => {
 			testWithAncestorOffset();
 		} );
+
+		describe( 'with alignToTop (no force)', () => {
+			testWithOffsetAndAlignToTop();
+		} );
+
+		describe( 'with alignToTop (force)', () => {
+			testWithOffsetAndAlignToTopAndForceScroll();
+		} );
 	} );
 
 	describe( 'for a DOM Range', () => {
@@ -225,6 +233,136 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			// works like the target remained in the original position and hence scrollLeft is 300 instead
 			// of 200.
 			assertScrollPosition( secondAncestor, { scrollTop: 210, scrollLeft: 310 } );
+		} );
+	}
+
+	function testWithOffsetAndAlignToTop() {
+		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 100 } );
+		} );
+
+		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
+		} );
+
+		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, 20, firstAncestor, true );
+
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
+			stubGeometry( testUtils, target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( firstAncestor, { scrollTop: -10, scrollLeft: 100 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
+			stubGeometry( testUtils, target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 290, scrollLeft: 100 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
+			stubGeometry( testUtils, target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -10 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 210 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 210 } );
+			// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change
+			// the getBoundingClientRect geometry of the target. That's why scrolling secondAncestor
+			// works like the target remained in the original position and hence scrollLeft is 300 instead
+			// of 200.
+			assertScrollPosition( secondAncestor, { scrollTop: 190, scrollLeft: 310 } );
+		} );
+	}
+
+	function testWithOffsetAndAlignToTopAndForceScroll() {
+		it( 'should touch the #scrollTop #scrollLeft of the ancestor despite target being visible', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( firstAncestor, { scrollLeft: 100, scrollTop: 115 } );
+		} );
+
+		it( 'should not touch the #scrollTop #scrollLeft of the document.body', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( document.body, { scrollLeft: 1000, scrollTop: 1000 } );
+		} );
+
+		it( 'should not change the scroll of the ancestors of the given limiter', () => {
+			stubGeometry( testUtils, target, { top: 25, right: 75, bottom: 75, left: 25, width: 50, height: 50 } );
+
+			scrollAncestorsToShowTarget( target, 20, firstAncestor, true, true );
+
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+			assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (above)', () => {
+			stubGeometry( testUtils, target, { top: -100, right: 75, bottom: 0, left: 25, width: 50, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( firstAncestor, { scrollTop: -10, scrollLeft: 100 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (below)', () => {
+			stubGeometry( testUtils, target, { top: 200, right: 75, bottom: 300, left: 25, width: 50, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 290, scrollLeft: 100 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (left of)', () => {
+			stubGeometry( testUtils, target, { top: 0, right: 0, bottom: 100, left: -100, width: 100, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: -10 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of the ancestor to show the target (right of)', () => {
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 210 } );
+		} );
+
+		it( 'should set #scrollTop and #scrollLeft of all the ancestors', () => {
+			stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+
+			scrollAncestorsToShowTarget( target, ancestorOffset, undefined, true, true );
+			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 210 } );
+			// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change
+			// the getBoundingClientRect geometry of the target. That's why scrolling secondAncestor
+			// works like the target remained in the original position and hence scrollLeft is 300 instead
+			// of 200.
+			assertScrollPosition( secondAncestor, { scrollTop: 190, scrollLeft: 310 } );
 		} );
 	}
 
