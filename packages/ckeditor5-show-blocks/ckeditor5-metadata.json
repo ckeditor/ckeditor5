@@ -5,7 +5,7 @@
 			"className": "ShowBlocks",
 			"description": "Allows to display the HTML element names of content blocks.",
 			"docs": "features/show-blocks.html",
-			"path": "src/showblocks.js",
+			"path": "src/showblocks.ts",
 			"uiComponents": [
 				{
 					"type": "Button",

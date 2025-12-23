@@ -5,7 +5,7 @@
 			"className": "Fullscreen",
 			"description": "Opens the editor in the fullscreen mode to allow for more comfortable content editing.",
 			"docs": "features/fullscreen.html",
-			"path": "src/fullscreen.js",
+			"path": "src/fullscreen.ts",
 			"uiComponents": [
 				{
 					"type": "Button",

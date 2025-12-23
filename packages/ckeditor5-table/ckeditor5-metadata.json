@@ -5,7 +5,7 @@
 			"className": "Table",
 			"description": "Adds table creation and editing tools that help content authors bring tabular data into their documents.",
 			"docs": "features/tables/tables.html",
-			"path": "src/table.js",
+			"path": "src/table.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
@@ -185,7 +185,7 @@
 			"className": "TableToolbar",
 			"description": "Creates configurable toolbars for both the table feature and table content. They show up when the table widget or the content inside a table cell are selected.",
 			"docs": "features/tables/tables-installation.html#toolbars",
-			"path": "src/tabletoolbar.js",
+			"path": "src/tabletoolbar.ts",
 			"requires": [
 				"Table"
 			],
@@ -199,7 +199,7 @@
 			"className": "TableCaption",
 			"description": "Adds support for table captions, which inform the reader about the content of the table. Using captions is also beneficial from the accessibility point of view.",
 			"docs": "features/tables/tables-caption.html",
-			"path": "src/tablecaption.js",
+			"path": "src/tablecaption.ts",
 			"requires": [
 				"Table"
 			],
@@ -215,7 +215,7 @@
 			"className": "TableColumnResize",
 			"description": "Adds support for table column resize, which allows to set the width of each column in a table using a resize handle.",
 			"docs": "features/tables/tables-resize.html",
-			"path": "src/tablecolumnresize.js",
+			"path": "src/tablecolumnresize.ts",
 			"requires": [
 				"Table"
 			],
@@ -234,7 +234,7 @@
 			"className": "PlainTableOutput",
 			"description": "This plugin strips the `<figure>` tag which surrounds tables, and moves attributes to the `<table>` in the data downcast.",
 			"docs": "features/tables/layout-tables.html",
-			"path": "src/plaintableoutput.js",
+			"path": "src/plaintableoutput.ts",
 			"htmlOutput": [
 				{
 					"elements": [

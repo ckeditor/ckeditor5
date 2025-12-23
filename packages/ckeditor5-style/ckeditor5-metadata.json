@@ -5,7 +5,7 @@
 			"className": "Style",
 			"description": "Allows applying pre-configured styles to editor content.",
 			"docs": "features/style.html",
-			"path": "src/style.js",
+			"path": "src/style.ts",
 			"requires": [
 				"GeneralHtmlSupport"
 			],

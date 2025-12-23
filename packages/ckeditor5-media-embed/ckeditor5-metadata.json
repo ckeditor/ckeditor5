@@ -5,7 +5,7 @@
 			"className": "MediaEmbed",
 			"description": "Allows for inserting embeddable media such as YouTube or Vimeo videos, Instagram posts and tweets or Google Maps into your rich-text content.",
 			"docs": "features/media-embed.html",
-			"path": "src/mediaembed.js",
+			"path": "src/mediaembed.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
@@ -77,7 +77,7 @@
 			"className": "MediaEmbedToolbar",
 			"description": "Implements an optional toolbar for media embed that shows when the media element is selected.",
 			"docs": "features/media-embed.html",
-			"path": "src/mediaembedtoolbar.js",
+			"path": "src/mediaembedtoolbar.ts",
 			"requires": [
 				"MediaEmbed"
 			],

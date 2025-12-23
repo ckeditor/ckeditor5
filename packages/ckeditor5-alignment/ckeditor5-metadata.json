@@ -3,7 +3,7 @@
 		{
 			"name": "Alignment",
 			"className": "Alignment",
-			"path": "src/alignment.js",
+			"path": "src/alignment.ts",
 			"description": "Enables support for text alignment. You can use it to align your content to left, right and center or to justify it.",
 			"docs": "features/text-alignment.html",
 			"uiComponents": [
