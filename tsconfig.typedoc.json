@@ -7,7 +7,7 @@
     "baseUrl": ".",
     "paths": {
       "ckeditor5": [
-        "./"
+        "./packages/ckeditor5"
       ],
       "@ckeditor/*": [
         "packages/*",
