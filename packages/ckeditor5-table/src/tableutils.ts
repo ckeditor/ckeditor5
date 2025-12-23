@@ -334,7 +334,7 @@ export class TableUtils extends Plugin {
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
 		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
-		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
+		const scopedHeaders = !!this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
 		model.change( writer => {
 			let headingColumns = table.getAttribute( 'headingColumns' ) as number;
