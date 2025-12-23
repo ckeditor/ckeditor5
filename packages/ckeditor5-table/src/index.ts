@@ -70,7 +70,7 @@ export { TableHeightCommand } from './tableproperties/commands/tableheightcomman
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
 export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
 export { TableCellTypeCommand } from './tablecellproperties/commands/tablecelltypecommand.js';
-export type { TableCellType } from './tablecellproperties/tablecellpropertiesutils.js';
+export { isTableHeaderCellType, type TableCellType } from './tablecellproperties/tablecellpropertiesutils.js';
 export {
 	TableCellPropertyCommand,
 	type TableCellPropertyCommandAfterExecuteEvent,
