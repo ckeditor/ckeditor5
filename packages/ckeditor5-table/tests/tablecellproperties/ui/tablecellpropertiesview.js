@@ -998,7 +998,7 @@ describe( 'table cell properties', () => {
 				labeledDropdown.fieldView.isOpen = true;
 
 				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
-					'Data cell', 'Header cell', 'Header cell (column)', 'Header cell (row)'
+					'Data cell', 'Header cell', 'Column header', 'Row header'
 				] );
 
 				view.destroy();

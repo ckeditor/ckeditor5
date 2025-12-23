@@ -505,8 +505,8 @@ export interface TableCellPropertiesConfig {
 	 *
 	 * The table cell properties UI will include two fields that allow manually setting the header scope:
 	 *
-	 *   * `Header cell (column)` — sets `scope="col"` on `<th>`.
-	 *   * `Header cell (row)`    — sets `scope="row"` on `<th>`.
+	 *   * `Column header` — sets `scope="col"` on `<th>`.
+	 *   * `Row header`    — sets `scope="row"` on `<th>`.
 	 *
 	 * If header cell is both in a heading row and a heading column, the `col` scope will be prioritized by the header rows
 	 * and columns setting logic. In such case, the user can manually change the scope using the table cell properties UI.

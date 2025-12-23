@@ -1009,8 +1009,8 @@ export class TableCellPropertiesView extends View {
 		return {
 			data: t( 'Data cell' ),
 			header: t( 'Header cell' ),
-			'header-column': t( 'Header cell (column)' ),
-			'header-row': t( 'Header cell (row)' )
+			'header-column': t( 'Column header' ),
+			'header-row': t( 'Row header' )
 		};
 	}
 }
