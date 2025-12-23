@@ -2182,7 +2182,7 @@ setTransformation( RenameOperation, SplitOperation, ( a, b ) => {
 
 setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, context ) => {
 	if ( a.root === b.root && a.key === b.key ) {
-		if ( !context.aIsStrong || a.newValue === b.newValue ) {
+		if ( !context.aIsStrong ) {
 			return [ new NoOperation( 0 ) ];
 		} else {
 			a.oldValue = b.newValue;

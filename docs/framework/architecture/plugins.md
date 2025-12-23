@@ -79,6 +79,9 @@ The data used to generate the following tables comes from the package metadata. 
 		right: var(--spacing-1-5);
 		top: var(--spacing-1-5);
 	}
+	.doc.b-table__cell .b-inline-code {
+		white-space: wrap;
+	}
 </style>
 
 {@exec ../scripts/docs/features-html-output/build-features-html-output.cjs}
