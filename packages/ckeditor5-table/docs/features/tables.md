@@ -72,11 +72,14 @@ To create a header row or column in your table, select all cells in the row or c
 
 ## Table cell scope
 
-The `scope` attribute allows you to explicitly associate header cells with the corresponding rows or columns. This improves the accessibility of the table content for screen reader users.
+Header cells can use the `scope` attribute to explicitly associate themselves with the related row or column, which helps screen readers understand the table structure.
 
-The `scope` attribute is supported for header cells only. You can enable it by setting the {@link module:table/tableconfig~TableCellPropertiesConfig#scopedHeaders `config.table.tableCellProperties.scopedHeaders`} configuration option to `true`.
+This attribute is available only for header cells; enable it by setting the {@link module:table/tableconfig~TableCellPropertiesConfig#scopedHeaders `config.table.tableCellProperties.scopedHeaders`} configuration option to `true`.
 
-When enabled, the editor automatically assigns the `scope` attribute to header cells based on their position in the table. You can also manually change the `scope` attribute in the cell properties balloon. The dropdown will offer two additional options: **Column header** (sets `scope="col"`) and **Row header** (sets `scope="row"`).
+Once enabled, the editor assigns the `scope` attribute automatically based on a header cell's position. If you prefer, you can change it manually in the cell properties balloon. The dropdown offers two explicit options:
+
+* **Column header** – forces a header cell to describe the column and sets `scope="col"`.
+* **Row header** – forces a header cell to describe the row and sets `scope="row"`.
 
 ## Typing around tables
 
