@@ -382,6 +382,15 @@ function enableCellTypeProperty( editor: Editor ) {
 		isFormatting: true
 	} );
 
+	// Do not allow setting `tableCellType` in layout tables.
+	schema.addAttributeCheck( context => {
+		const nearestTable = Array.from( context ).reverse().find( item => item.name === 'table' );
+
+		if ( nearestTable?.getAttribute( 'tableType' ) === 'layout' ) {
+			return false;
+		}
+	}, 'tableCellType' );
+
 	// Upcast conversion for td/th elements.
 	conversion.for( 'upcast' ).add( dispatcher => {
 		dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
