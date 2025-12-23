@@ -30,7 +30,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 // A list of element names that should be treated by the Title plugin as title-like.
-// This means that an element of a type from this list will be changed to a title element
+// This means that an element of a type from this list will be changed to a `title` element
 // when it is the first element in the root.
 const titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ] );
 
@@ -74,7 +74,7 @@ export class Title extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		// To use the schema for disabling some features when the selection is inside the title element
+		// To use the schema for disabling some features when the selection is inside the `title` element
 		// it is needed to create the following structure:
 		//
 		// <title>
@@ -86,14 +86,14 @@ export class Title extends Plugin {
 		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
 		model.schema.extend( '$text', { allowIn: 'title-content' } );
 
-		// Disallow all attributes in `title-content`.
+		// Disallow all attributes in `title-content` `$text`.
 		model.schema.addAttributeCheck( context => {
 			if ( context.endsWith( 'title-content $text' ) ) {
 				return false;
 			}
 		} );
 
-		// Because `title` is represented by two elements in the model
+		// Because `title` is represented by two elements (`title` and `title-content`) in the model
 		// but only one in the view, it is needed to adjust Mapper.
 		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
 		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
@@ -106,6 +106,43 @@ export class Title extends Plugin {
 				conversionApi.consumable.consume( data.item, evt.name );
 			}
 		) );
+
+		// This converter intercepts attribute changes on `title` and redirects them to `title-content`.
+		//
+		// The `title` element in the model doesn't have a corresponding view element, only `title-content`
+		// is converted to `<h1>`. Setting an attribute on `title` would cause a downcast conversion error
+		// because there's no view element to apply it to.
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+				// Only process if the attribute change is on a `title` element.
+				if ( !data.item.is( 'element', 'title' ) ) {
+					return;
+				}
+
+				const titleElement = data.item as ModelElement;
+
+				if ( !conversionApi.consumable.consume( titleElement, evt.name ) ) {
+					return;
+				}
+
+				const titleContentElement = titleElement.getChild( 0 ) as ModelElement;
+
+				// Ensure the `title-content` element is converted to view first.
+				// This is needed because attribute conversion might run before insert conversion.
+				conversionApi.convertItem( titleContentElement );
+
+				const viewElement = conversionApi.mapper.toViewElement( titleContentElement ) as ViewElement;
+				const attributeKey = data.attributeKey;
+				const attributeNewValue = data.attributeNewValue;
+
+				// Apply the attribute to the view element.
+				if ( attributeNewValue !== null ) {
+					conversionApi.writer.setAttribute( attributeKey, attributeNewValue, viewElement );
+				} else {
+					conversionApi.writer.removeAttribute( attributeKey, viewElement );
+				}
+			} );
+		} );
 
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
@@ -134,10 +171,10 @@ export class Title extends Plugin {
 
 	/**
 	 * Returns the title of the document. Note that because this plugin does not allow any formatting inside
-	 * the title element, the output of this method will be a plain text, with no HTML tags.
+	 * the `title` element, the output of this method will be a plain text, with no HTML tags.
 	 *
 	 * It is not recommended to use this method together with features that insert markers to the
-	 * data output, like comments or track changes features. If such markers start in the title and end in the
+	 * data output, like comments or track changes features. If such markers start in the `title` and end in the
 	 * body, the result of this method might be incorrect.
 	 *
 	 * @param options Additional configuration passed to the conversion process.
@@ -194,7 +231,7 @@ export class Title extends Plugin {
 		data.mapper.bindElements( root, viewDocumentFragment );
 		data.downcastDispatcher.convert( rootRange, markers, viewWriter, options );
 
-		// Remove title element from view.
+		// Remove `title` element from view.
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );
 
 		// view -> data
@@ -247,8 +284,8 @@ export class Title extends Plugin {
 	}
 
 	/**
-	 * Model post-fixer callback that creates a title element when it is missing,
-	 * takes care of the correct position of it and removes additional title elements.
+	 * Model post-fixer callback that creates a `title` element when it is missing,
+	 * takes care of the correct position of it and removes additional `title` elements.
 	 */
 	private _fixTitleElement( writer: ModelWriter ) {
 		let changed = false;
@@ -259,7 +296,7 @@ export class Title extends Plugin {
 			const firstTitleElement = titleElements[ 0 ];
 			const firstRootChild = modelRoot.getChild( 0 ) as ModelElement;
 
-			// When title element is at the beginning of the document then try to fix additional title elements (if there are any).
+			// When `title` element is at the beginning of the document then try to fix additional `title` elements (if there are any).
 			if ( firstRootChild.is( 'element', 'title' ) ) {
 				if ( titleElements.length > 1 ) {
 					fixAdditionalTitleElements( titleElements, writer, model );
@@ -284,10 +321,10 @@ export class Title extends Plugin {
 			}
 
 			if ( titleLikeElements.has( firstRootChild.name ) ) {
-				// Change the first element in the document to the title if it can be changed (is title-like).
+				// Change the first element in the document to the `title` if it can be changed (is title-like).
 				changeElementToTitle( firstRootChild, writer, model );
 			} else {
-				// Otherwise, move the first occurrence of the title element to the beginning of the document.
+				// Otherwise, move the first occurrence of the `title` element to the beginning of the document.
 				writer.move( writer.createRangeOn( firstTitleElement ), modelRoot, 0 );
 			}
 
@@ -358,7 +395,7 @@ export class Title extends Plugin {
 			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' ) ||
 			t( 'Type or paste your content here.' );
 
-		// Attach placeholder to the view title element.
+		// Attach placeholder to the view `title-content` element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:title-content', ( evt, data, conversionApi ) => {
 			const element: PlaceholderableViewElement = conversionApi.mapper.toViewElement( data.item )!;
 
@@ -371,8 +408,8 @@ export class Title extends Plugin {
 			} );
 		} );
 
-		// Attach placeholder to first element after a title element and remove it if it's not needed anymore.
-		// First element after title can change, so we need to observe all changes keep placeholder in sync.
+		// Attach placeholder to first element after a `title` element and remove it if it's not needed anymore.
+		// First element after `title` can change, so we need to observe all changes keep placeholder in sync.
 		const bodyViewElements = new Map<string, ViewElement>();
 
 		// This post-fixer runs after the model post-fixer, so we can assume that the second child in view root will always exist.
@@ -467,7 +504,7 @@ export class Title extends Plugin {
 }
 
 /**
- * A view-to-model converter for the h1 that appears at the beginning of the document (a title element).
+ * A view-to-model converter for the `h1` that appears at the beginning of the document (a `title` element).
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param evt An object containing information about the fired event.
@@ -530,7 +567,7 @@ function isTitle( element: ModelElement ) {
 }
 
 /**
- * Changes the given element to the title element.
+ * Changes the given element to the `title` element.
  */
 function changeElementToTitle( element: ModelElement, writer: ModelWriter, model: Model ) {
 	const title = writer.createElement( 'title' );
@@ -542,7 +579,7 @@ function changeElementToTitle( element: ModelElement, writer: ModelWriter, model
 }
 
 /**
- * Loops over the list of title elements and fixes additional ones.
+ * Loops over the list of `title` elements and fixes additional ones.
  *
  * @returns Returns true when there was any change. Returns false otherwise.
  */
@@ -561,13 +598,13 @@ function fixAdditionalTitleElements( titleElements: Array<ModelElement>, writer:
 }
 
 /**
- * Changes given title element to a paragraph or removes it when it is empty.
+ * Changes given `title` element to a paragraph or removes it when it is empty.
  */
 function fixTitleElement( title: ModelElement, writer: ModelWriter, model: Model ) {
 	const child = title.getChild( 0 ) as ModelElement;
 
-	// Empty title should be removed.
-	// It is created as a result of pasting to the title element.
+	// Empty `title` should be removed.
+	// It is created as a result of pasting to the `title` element.
 	if ( child.isEmpty ) {
 		writer.remove( title );
 

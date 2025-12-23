@@ -444,6 +444,42 @@ describe( 'Input', () => {
 				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
 			} );
 
+			it( 'should use model selection if view selection is in a detached root', () => {
+				_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+
+				let detachedElement;
+
+				view.change( writer => {
+					detachedElement = writer.createContainerElement( 'p' );
+				} );
+
+				// Create a selection in the detached element.
+				const detachedSelection = view.createSelection(
+					view.createRange(
+						view.createPositionAt( detachedElement, 0 ),
+						view.createPositionAt( detachedElement, 0 )
+					)
+				);
+
+				// Fire insertText with this detached selection.
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					selection: detachedSelection,
+					preventDefault: () => {},
+					domEvent: {
+						defaultPrevented: true
+					}
+				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				// It should use the current model selection (which is in the live paragraph).
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( editor.model.document.selection ) ).to.be.true;
+			} );
+
 			it( 'should delete selected content on composition start', () => {
 				const spy = sinon.spy( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();

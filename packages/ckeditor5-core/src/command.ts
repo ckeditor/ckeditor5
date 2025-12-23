@@ -89,6 +89,17 @@ export class Command extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _disableStack: Set<string>;
 
 	/**
+	 * `Command` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
+
+	/**
 	 * Creates a new `Command` instance.
 	 *
 	 * @param editor The editor on which this command will be used.
