@@ -17,11 +17,8 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
-// TODO Uncomment when mathtype is using the new import style.
-import MathType from '@wiris/mathtype-ckeditor5';
-
-// TODO Remove when mathtype is using the new import style.
-console.log( MathType );
+// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/9079.
+// import MathType from '@wiris/mathtype-ckeditor5';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -45,7 +42,7 @@ ClassicEditor
 			Mention,
 			PasteFromOffice,
 			RemoveFormat
-			// TODO Uncomment when mathtype is using the new import style.
+			// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/9079.
 			// MathType
 		],
 		toolbar: [
