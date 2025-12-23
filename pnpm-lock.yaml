@@ -380,9 +380,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-adapter-ckfinder:
     dependencies:
@@ -429,9 +426,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-alignment:
     dependencies:
@@ -478,9 +472,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-autoformat:
     dependencies:
@@ -530,9 +521,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-autosave:
     dependencies:
@@ -561,9 +549,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-basic-styles:
     dependencies:
@@ -598,9 +583,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-block-quote:
     dependencies:
@@ -650,9 +632,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-bookmark:
     dependencies:
@@ -729,9 +708,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-ckbox:
     dependencies:
@@ -793,9 +769,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-ckfinder:
     dependencies:
@@ -836,9 +809,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-clipboard:
     dependencies:
@@ -966,9 +936,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-cloud-services:
     dependencies:
@@ -988,9 +955,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-code-block:
     dependencies:
@@ -1055,9 +1019,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-core:
     dependencies:
@@ -1119,9 +1080,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-easy-image:
     dependencies:
@@ -1153,9 +1111,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-editor-balloon:
     dependencies:
@@ -1202,9 +1157,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-editor-classic:
     dependencies:
@@ -1254,9 +1206,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-editor-decoupled:
     dependencies:
@@ -1303,9 +1252,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-editor-inline:
     dependencies:
@@ -1355,9 +1301,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-editor-multi-root:
     dependencies:
@@ -1419,9 +1362,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-emoji:
     dependencies:
@@ -1477,9 +1417,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-engine:
     dependencies:
@@ -1553,9 +1490,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-enter:
     dependencies:
@@ -1593,9 +1527,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-essentials:
     dependencies:
@@ -1630,9 +1561,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-find-and-replace:
     dependencies:
@@ -1700,9 +1628,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-font:
     dependencies:
@@ -1740,9 +1665,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-fullscreen:
     dependencies:
@@ -1867,9 +1789,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-heading:
     dependencies:
@@ -1928,9 +1847,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-highlight:
     dependencies:
@@ -1977,9 +1893,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-horizontal-line:
     dependencies:
@@ -2020,9 +1933,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-html-embed:
     dependencies:
@@ -2072,9 +1982,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-html-support:
     dependencies:
@@ -2187,18 +2094,12 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-icons:
     devDependencies:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-image:
     dependencies:
@@ -2305,9 +2206,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-indent:
     dependencies:
@@ -2342,9 +2240,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-language:
     dependencies:
@@ -2370,9 +2265,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-link:
     dependencies:
@@ -2446,9 +2338,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-list:
     dependencies:
@@ -2558,9 +2447,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-markdown-gfm:
     dependencies:
@@ -2676,9 +2562,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-media-embed:
     dependencies:
@@ -2737,9 +2620,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-mention:
     dependencies:
@@ -2798,9 +2678,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-minimap:
     dependencies:
@@ -2856,9 +2733,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-page-break:
     dependencies:
@@ -2899,9 +2773,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-paragraph:
     dependencies:
@@ -2948,9 +2819,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-paste-from-office:
     dependencies:
@@ -3018,9 +2886,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-remove-format:
     dependencies:
@@ -3073,9 +2938,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-restricted-editing:
     dependencies:
@@ -3137,9 +2999,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-select-all:
     dependencies:
@@ -3183,9 +3042,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-show-blocks:
     dependencies:
@@ -3307,9 +3163,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-source-editing:
     dependencies:
@@ -3356,9 +3209,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-special-characters:
     dependencies:
@@ -3393,9 +3243,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-style:
     dependencies:
@@ -3508,9 +3355,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-table:
     dependencies:
@@ -3608,9 +3452,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-theme-lark:
     dependencies:
@@ -3712,9 +3553,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-ui:
     dependencies:
@@ -3833,9 +3671,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-undo:
     dependencies:
@@ -3882,9 +3717,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-upload:
     dependencies:
@@ -3898,9 +3730,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-utils:
     dependencies:
@@ -4027,9 +3856,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
   packages/ckeditor5-word-count:
     dependencies:
@@ -4082,9 +3908,6 @@ importers:
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
-      webpack-cli:
-        specifier: ^6.0.1
-        version: 6.0.1(webpack@5.102.0)
 
 packages:
 
