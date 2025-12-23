@@ -62,8 +62,7 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

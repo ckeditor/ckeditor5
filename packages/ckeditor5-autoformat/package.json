@@ -36,8 +36,7 @@
     "@ckeditor/ckeditor5-horizontal-line": "workspace:*",
     "@ckeditor/ckeditor5-list": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-undo": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-undo": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

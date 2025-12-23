@@ -40,8 +40,7 @@
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-link": "workspace:*",
-    "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-paragraph": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

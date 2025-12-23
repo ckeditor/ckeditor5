@@ -38,8 +38,7 @@
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-indent": "workspace:*",
     "@ckeditor/ckeditor5-page-break": "workspace:*",
-    "@ckeditor/ckeditor5-table": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-table": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

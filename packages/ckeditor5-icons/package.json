@@ -20,7 +20,6 @@
   "type": "module",
   "main": "src/index.ts",
   "devDependencies": {
-    "webpack": "^5.94.0"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs"

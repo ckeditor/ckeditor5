@@ -32,8 +32,7 @@
     "@ckeditor/ckeditor5-link": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
-    "@ckeditor/ckeditor5-undo": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-undo": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

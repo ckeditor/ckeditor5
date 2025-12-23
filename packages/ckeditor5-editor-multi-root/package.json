@@ -39,8 +39,7 @@
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-link": "workspace:*",
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
-    "@ckeditor/ckeditor5-ckfinder": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-ckfinder": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

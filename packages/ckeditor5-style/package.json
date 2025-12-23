@@ -57,8 +57,7 @@
     "@ckeditor/ckeditor5-paste-from-office": "workspace:*",
     "@ckeditor/ckeditor5-remove-format": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
-    "@ckeditor/ckeditor5-word-count": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

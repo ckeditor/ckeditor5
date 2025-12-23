@@ -52,8 +52,7 @@
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-autosave": "workspace:*",
-    "json-diff": "^0.5.4",
-    "webpack": "^5.94.0"
+    "json-diff": "^0.5.4"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

@@ -39,8 +39,7 @@
     "@ckeditor/ckeditor5-link": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "es-toolkit": "1.39.5",
-    "webpack": "^5.94.0"
+    "es-toolkit": "1.39.5"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

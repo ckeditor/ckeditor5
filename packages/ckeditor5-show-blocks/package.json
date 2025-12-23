@@ -60,8 +60,7 @@
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-special-characters": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*",
-    "webpack": "^5.94.0"
+    "@ckeditor/ckeditor5-typing": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"
