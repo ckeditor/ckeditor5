@@ -99,7 +99,7 @@
     "webpack": "^5.94.0"
   },
   "scripts": {
-    "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
+    "build": "node ../../scripts/nim/build-ckeditor5.mjs"
   },
   "files": [
     "dist",

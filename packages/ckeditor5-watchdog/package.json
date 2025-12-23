@@ -34,7 +34,7 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*"
   },
   "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",

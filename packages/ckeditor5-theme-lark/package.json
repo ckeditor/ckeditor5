@@ -31,7 +31,7 @@
     "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "scripts": {
-    "build:dist": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/nim/banner.mjs"
+    "build": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/nim/banner.mjs"
   },
   "files": [
     "dist",

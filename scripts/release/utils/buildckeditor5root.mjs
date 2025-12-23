@@ -13,5 +13,5 @@ export default async function buildCKEditor5Root() {
 		cwd: CKEDITOR5_MAIN_PACKAGE_PATH
 	};
 
-	await tools.shExec( 'pnpm run build:dist', options );
+	await tools.shExec( 'pnpm run build', options );
 }

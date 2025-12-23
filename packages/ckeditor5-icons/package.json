@@ -23,7 +23,7 @@
     "webpack": "^5.94.0"
   },
   "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs"
   },
   "files": [
     "dist",
