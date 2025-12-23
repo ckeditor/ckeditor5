@@ -1091,7 +1091,7 @@ export class TableUtils extends Plugin {
 	): void {
 		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
+		const scopedHeaders = !!this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
 		if ( headingColumns === oldHeadingColumns ) {
 			return;
