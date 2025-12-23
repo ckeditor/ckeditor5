@@ -441,7 +441,7 @@ function enableCellTypeProperty( editor: Editor ) {
 				const { viewItem, modelRange } = data;
 
 				const modelElement = modelRange!.start.nodeAfter!;
-				const oldTableCellType = modelElement?.getAttribute( 'tableCellType' ) as TableCellType | undefined;
+				const previousTableCellType = modelElement?.getAttribute( 'tableCellType' ) as TableCellType | undefined;
 
 				if ( oldTableCellType === 'header' && consumable.consume( viewItem, { attributes: [ 'scope' ] } ) ) {
 					const scope = viewItem.getAttribute( 'scope' );
