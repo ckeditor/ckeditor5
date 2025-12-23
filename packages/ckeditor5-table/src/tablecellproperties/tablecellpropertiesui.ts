@@ -211,6 +211,7 @@ export class TableCellPropertiesUI extends Plugin {
 	private _createPropertiesView( defaultTableCellProperties: NormalizedDefaultProperties ) {
 		const editor = this.editor;
 		const config = editor.config.get( 'table.tableCellProperties' )!;
+		const scopedHeaders = !!editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors! );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
@@ -221,8 +222,10 @@ export class TableCellPropertiesUI extends Plugin {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableCellProperties,
-			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false,
+			showScopedHeaderOptions: scopedHeaders
 		} );
+
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.

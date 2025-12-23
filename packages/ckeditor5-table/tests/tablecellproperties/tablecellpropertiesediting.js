@@ -3287,5 +3287,203 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 		} );
+
+		describe( 'scoped headers', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+					table: {
+						tableCellProperties: {
+							scopedHeaders: true
+						}
+					}
+				} );
+
+				model = editor.model;
+				schema = model.schema;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			describe( 'upcast conversion', () => {
+				it( 'should upcast `th scope="col"` to `tableCellType="header-column"` attribute', () => {
+					editor.setData(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'col' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header-column' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should upcast `th scope="row"` to `tableCellType="header-row"` attribute', () => {
+					editor.setData(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'row' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should upcast `th` without scope to `tableCellType="header"` attribute', () => {
+					editor.setData(
+						viewTable( [
+							[ { contents: '00', isHeading: true }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should not upcast `th` with invalid scope', () => {
+					editor.setData(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'invalidScope' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+			} );
+
+			describe( 'downcast conversion', () => {
+				it( 'should downcast `tableCellType="header-column"` to `th scope="col"`', () => {
+					_setModelData( model, modelTable( [
+						[ { contents: '00', tableCellType: 'header-column' }, '01' ],
+						[ '10', '11' ]
+					] ) );
+
+					expect( editor.getData() ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'col' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should downcast `tableCellType="header-row"` to `th scope="row"`', () => {
+					_setModelData( model, modelTable( [
+						[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+						[ '10', '11' ]
+					] ) );
+
+					expect( editor.getData() ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'row' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should downcast `tableCellType="header"` to `th` without scope', () => {
+					_setModelData( model, modelTable( [
+						[ { contents: '00', tableCellType: 'header' }, '01' ],
+						[ '10', '11' ]
+					] ) );
+
+					expect( editor.getData() ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+			} );
+
+			describe( 'editing', () => {
+				it( 'should reconvert table cell when `tableCellType` attribute changes to `header-column`', () => {
+					editor.setData(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					model.change( writer => {
+						writer.setAttribute( 'tableCellType', 'header-column', tableCell );
+					} );
+
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'col' }, '01' ],
+							[ '10', '11' ]
+						], { asWidget: true } )
+					);
+				} );
+
+				it( 'should reconvert table cell when `tableCellType` attribute changes to `header-row`', () => {
+					editor.setData(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					model.change( writer => {
+						writer.setAttribute( 'tableCellType', 'header-row', tableCell );
+					} );
+
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'row' }, '01' ],
+							[ '10', '11' ]
+						], { asWidget: true } )
+					);
+				} );
+
+				it( 'should reconvert table cell when `tableCellType` attribute changes to `header`', () => {
+					editor.setData(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					model.change( writer => {
+						writer.setAttribute( 'tableCellType', 'header', tableCell );
+					} );
+
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true }, '01' ],
+							[ '10', '11' ]
+						], { asWidget: true } )
+					);
+				} );
+			} );
+		} );
 	} );
 } );
