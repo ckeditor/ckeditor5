@@ -38,9 +38,6 @@ export default defineConfig( [
 			'packages/*/src/lib/**',
 			'release/**',
 
-			// The CKEditor 5 core DLL build is created from JavaScript files.
-			// ESLint should not process compiled TypeScript.
-			'packages/ckeditor5/src/*.js',
 			'**/*.d.ts',
 
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
