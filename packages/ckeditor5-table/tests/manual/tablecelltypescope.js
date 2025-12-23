@@ -8,28 +8,34 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 
-import { TableProperties } from '../../src/tableproperties.js';
-import { TableCellProperties } from '../../src/tablecellproperties.js';
+import {
+	TableCellPropertiesEditing, TableCellPropertiesUI,
+	TableLayout, TablePropertiesEditing, TablePropertiesUI
+} from '../../src/index.js';
 
-const sourceElement = document.querySelector( '#editor-table-alignment' );
+const sourceElement = document.querySelector( '#editor' );
+const clonedSource = sourceElement.cloneNode( true );
+
+document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
 	.create( sourceElement, {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
-			ArticlePluginSet,
-			Alignment,
-			Indent,
-			IndentBlock,
-			TableProperties,
-			TableCellProperties
+			ArticlePluginSet, Alignment, Indent, IndentBlock,
+			TablePropertiesEditing, TablePropertiesUI,
+			TableCellPropertiesEditing, TableCellPropertiesUI,
+			TableLayout
 		],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			tableToolbar: [ 'bold', 'italic' ]
+			tableToolbar: [ 'bold', 'italic' ],
+			tableCellProperties: {
+				scopedHeaders: true
+			}
 		}
 	} )
 	.then( editor => {

@@ -15,7 +15,7 @@ import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablec
 import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
-import { assertTableStyle } from '../_utils/utils.js';
+import { assertTableClass } from '../_utils/utils.js';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesEditing integration', () => {
@@ -39,33 +39,7 @@ describe( 'table properties', () => {
 			it( 'should properly downcast table with Alignment plugin enabled', () => {
 				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-				assertTableStyle( editor, null, 'float:right;' );
-			} );
-
-			it( 'Alignment command should be disabled when table is selected', () => {
-				model.change( writer => {
-					writer.setSelection( table, 'on' );
-				} );
-
-				expect( editor.commands.get( 'alignment' ).isEnabled ).to.be.false;
-			} );
-		} );
-
-		describe( 'Alignment [experimental]', () => {
-			let table;
-
-			beforeEach( async () => {
-				editor = await createEditorWithAdditionalPlugins( [ AlignmentEditing ], true );
-
-				model = editor.model;
-
-				table = createEmptyTable();
-			} );
-
-			it( 'should properly downcast table with Alignment plugin enabled', () => {
-				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
-
-				assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+				assertTableClass( editor, null, 'table-style-align-right' );
 			} );
 
 			it( 'Alignment command should be disabled when table is selected', () => {
@@ -131,13 +105,9 @@ describe( 'table properties', () => {
 		}
 	} );
 
-	// [experimental] Update function params in v48.
-	function createEditorWithAdditionalPlugins( plugins, useExtendedTableBlockAlignment = false ) {
+	function createEditorWithAdditionalPlugins( plugins ) {
 		return VirtualTestEditor.create( {
-			plugins: [ ...plugins, TablePropertiesEditing, Paragraph, TableEditing ],
-			experimentalFlags: {
-				useExtendedTableBlockAlignment
-			}
+			plugins: [ ...plugins, TablePropertiesEditing, Paragraph, TableEditing ]
 		} );
 	}
 } );
