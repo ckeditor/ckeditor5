@@ -188,7 +188,7 @@ export class TableUtils extends Plugin {
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
 		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
-		const scopedHeaders = this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
+		const scopedHeaders = !!this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
