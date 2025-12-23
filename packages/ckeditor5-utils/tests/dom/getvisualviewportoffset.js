@@ -4,7 +4,6 @@
  */
 
 import { getVisualViewportOffset } from '../../src/dom/getvisualviewportoffset.js';
-import { env } from '../../src/env.js';
 
 describe( 'getVisualViewportOffset()', () => {
 	afterEach( () => {
@@ -17,25 +16,7 @@ describe( 'getVisualViewportOffset()', () => {
 		expect( getVisualViewportOffset() ).to.deep.equal( { left: 0, top: 0 } );
 	} );
 
-	it( 'should return 0 offsets on non Safari', () => {
-		sinon.stub( env, 'isiOS' ).get( () => false );
-		sinon.stub( env, 'isSafari' ).get( () => false );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
-
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 0, top: 0 } );
-	} );
-
-	it( 'should return offsets on iOS', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
-
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 14, top: 234 } );
-	} );
-
-	it( 'should return offsets in Safari', () => {
-		sinon.stub( env, 'isSafari' ).get( () => true );
+	it( 'should return offsets', () => {
 		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
 		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
 
@@ -43,7 +24,6 @@ describe( 'getVisualViewportOffset()', () => {
 	} );
 
 	it( 'should return round offsets', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
 		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14.3 );
 		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 233.7 );
 
@@ -51,7 +31,6 @@ describe( 'getVisualViewportOffset()', () => {
 	} );
 
 	it( 'should not return negative offset left', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
 		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => -14 );
 		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
 
@@ -59,7 +38,6 @@ describe( 'getVisualViewportOffset()', () => {
 	} );
 
 	it( 'should not return negative offset top', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
 		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
 		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => -234 );
 
