@@ -503,7 +503,7 @@ export interface TableCellPropertiesConfig {
 	/**
 	 * If set to `true`, the `scope` attribute will be applied to table headers (`<th>`) based on their position in the table.
 	 *
-	 * The table cell properties UI will include two fields that allow manually setting the header scope:
+	 * The table cell properties UI will extend a dropdown with two more options that allow manually setting the header scope:
 	 *
 	 *   * `Column header` — sets `scope="col"` on `<th>`.
 	 *   * `Row header`    — sets `scope="row"` on `<th>`.
