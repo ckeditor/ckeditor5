@@ -20,8 +20,7 @@
     "compatibility",
     "content compatibility",
     "html support",
-    "generic html support",
-    "ckeditor5-dll"
+    "generic html support"
   ],
   "type": "module",
   "main": "src/index.ts",
@@ -45,7 +44,6 @@
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
@@ -63,14 +61,10 @@
     "@ckeditor/ckeditor5-select-all": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-style": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1",
-    "ckeditor5": "workspace:*"
+    "@ckeditor/ckeditor5-typing": "workspace:*"
   },
   "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",

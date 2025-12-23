@@ -16,8 +16,7 @@
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin",
-    "ckeditor5-dll"
+    "ckeditor5-plugin"
   ],
   "type": "module",
   "main": "src/index.ts",
@@ -37,21 +36,16 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-list": "workspace:*",
-    "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
-    "ckeditor5": "workspace:*",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "@ckeditor/ckeditor5-paragraph": "workspace:*"
   },
   "scripts": {
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
