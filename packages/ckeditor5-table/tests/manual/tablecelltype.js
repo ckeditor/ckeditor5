@@ -28,7 +28,9 @@ ClassicEditor
 			TableLayout
 		],
 		toolbar: [
-			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+			'heading', '|',
+			'insertTable', 'insertTableLayout', '|',
+			'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
