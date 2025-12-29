@@ -799,6 +799,451 @@ Refresh the web page and try it yourself:
 
 {@img assets/img/tutorial-implementing-a-widget-7.png Screenshot of the simple box widget being inserted using the toolbar button.}
 
+## Adding a widget toolbar
+
+So far, you have created a simple box widget with a button to insert it into the editor. But what if you want to add some controls to the widget itself? For example, you might want to allow users to toggle some widget properties without having to delete and recreate it.
+
+In this section, you will add a contextual toolbar that appears when the simple box widget is selected. This toolbar will contain a toggle button to mark the box as "secret", which will blur its content to hide sensitive information.
+
+### Adding an attribute to the schema
+
+First, you need to extend the simple box model to support a new `secret` attribute. This attribute will be a boolean value that determines whether the box content should be blurred.
+
+Update the schema definition in the `SimpleBoxEditing` plugin:
+
+```js
+// simplebox/simpleboxediting.js
+
+// Previously imported packages.
+// ...
+
+export default class SimpleBoxEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
+	init() {
+		console.log( 'SimpleBoxEditing#init() got called' );
+
+		this._defineSchema();
+		this._defineConverters();
+
+		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
+	}
+
+	_defineSchema() {
+		const schema = this.editor.model.schema;
+
+		schema.register( 'simpleBox', {
+			inheritAllFrom: '$blockObject',
+
+			// Added: Allow the 'secret' boolean attribute on simpleBox elements.
+			allowAttributes: [ 'secret' ]
+		} );
+
+		// schema.register( 'simpleBoxTitle', {
+		// 	...
+		// } );
+		//
+		// schema.register( 'simpleBoxDescription', {
+		// 	...
+		// } );
+		//
+		// schema.addChildCheck( ( context, childDefinition ) => {
+		// 	...
+		// } );
+	}
+
+	_defineConverters() {
+		// Previously defined converters.
+		// ...
+	}
+}
+```
+
+The `allowAttributes` property tells the schema that the `simpleBox` element can have a `secret` attribute.
+
+### Creating a command
+
+Now you need to create a command that will toggle the `secret` attribute. Create a new file `makesimpleboxsecretcommand.js`:
+
+```js
+// simplebox/makesimpleboxsecretcommand.js
+
+import { Command } from 'ckeditor5';
+
+export default class MakeSimpleBoxSecretCommand extends Command {
+	refresh() {
+		const editor = this.editor;
+		const element = getClosestSelectedSimpleBoxElement( editor.model.document.selection );
+
+		// Enable the command only when a simple box is selected.
+		this.isEnabled = !!element;
+
+		// Set the command value to the current state of the 'secret' attribute.
+		this.value = !!( element && element.getAttribute( 'secret' ) );
+	}
+
+	execute( { value } ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const simpleBox = getClosestSelectedSimpleBoxElement( model.document.selection );
+
+		if ( simpleBox ) {
+			model.change( writer => {
+				if ( value ) {
+					// Set the 'secret' attribute to true when enabling.
+					writer.setAttribute( 'secret', true, simpleBox );
+				} else {
+					// Remove the attribute entirely when disabling.
+					writer.removeAttribute( 'secret', simpleBox );
+				}
+			} );
+		}
+	}
+}
+
+function getClosestSelectedSimpleBoxElement( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	// First, check if the selection is directly on a simple box.
+	if ( !!selectedElement && selectedElement.is( 'element', 'simpleBox' ) ) {
+		return selectedElement;
+	} else {
+		// Otherwise, find the closest simple box ancestor.
+		return selection.getFirstPosition().findAncestor( 'simpleBox' );
+	}
+}
+```
+
+The command checks if the selection is inside a simple box and enables itself accordingly. The `value` property reflects the current state of the `secret` attribute (either `true` or `undefined`). The `execute()` method sets the attribute to `true` when enabling or removes it entirely when disabling.
+
+<info-box>
+	This follows the common CKEditor&nbsp;5 pattern for boolean attributes: use `true` for enabled or remove the attribute entirely (resulting in `undefined`), rather than setting it to `false`. This is the same approach used by features like links and their decorators.
+</info-box>
+
+Register this command in the `SimpleBoxEditing` plugin:
+
+```js
+// simplebox/simpleboxediting.js
+
+import { Plugin, Widget, toWidget, toWidgetEditable } from 'ckeditor5';
+
+import InsertSimpleBoxCommand from './insertsimpleboxcommand';
+// Added: Import the new command.
+import MakeSimpleBoxSecretCommand from './makesimpleboxsecretcommand';
+
+export default class SimpleBoxEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
+	init() {
+		console.log( 'SimpleBoxEditing#init() got called' );
+
+		this._defineSchema();
+		this._defineConverters();
+
+		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
+
+		// Added: Register the command to toggle the secret state.
+		this.editor.commands.add( 'makeSimpleBoxSecret', new MakeSimpleBoxSecretCommand( this.editor ) );
+	}
+
+	_defineSchema() {
+		// Previously registered schema.
+		// ...
+	}
+
+	_defineConverters() {
+		// Previously defined converters.
+		// ...
+	}
+}
+```
+
+### Updating converters
+
+Next, you need to update the converters to handle the `secret` attribute. You need to convert it from the view to the model (upcast) and from the model to the view (downcast to both data and editing views).
+
+Update the `_defineConverters()` method in the `SimpleBoxEditing` plugin:
+
+```js
+// simplebox/simpleboxediting.js
+
+// Previously imported packages.
+// ...
+
+export default class SimpleBoxEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
+	init() {
+		console.log( 'SimpleBoxEditing#init() got called' );
+
+		this._defineSchema();
+		this._defineConverters();
+
+		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
+		this.editor.commands.add( 'makeSimpleBoxSecret', new MakeSimpleBoxSecretCommand( this.editor ) );
+	}
+
+	_defineSchema() {
+		// Previously registered schema.
+		// ...
+	}
+
+	_defineConverters() {                                                       
+
+		// <simpleBox> converters 
+		// (no changes)
+
+		// Changed: Set custom property for widget detection.
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'simpleBox',
+			view: ( modelElement, { writer: viewWriter } ) => {
+				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
+
+				// Set custom property to later check the view element.
+				viewWriter.setCustomProperty( 'simpleBox', true, section );
+
+				return toWidget( section, viewWriter, { label: 'simple box widget' } );
+			}
+		} );
+
+		// Added: Handle the 'secret' attribute conversion between model and view.
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				name: 'section',
+				key: 'class',
+				value: 'secret'
+			},
+			model: 'secret'
+		} );
+
+		conversion.for( 'downcast' ).attributeToAttribute( {
+			model: 'secret',
+			view: {
+				name: 'section',
+				key: 'class',
+				value: 'secret'
+			}
+		} );
+
+		// <simpleBoxTitle> converters
+		// (no changes)
+		// ...
+
+		// <simpleBoxDescription> converters
+		// (no changes)
+		// ...
+	}
+}
+```
+
+The element converters remain unchanged. The new part is the attribute conversion using `attributeToAttribute()` helper for upcast and downcast.
+
+The upcast converter maps the `secret` CSS class from the view to the `secret` attribute in the model. When the editor loads data containing `<section class="simple-box secret">`, it will create a model element with the `secret` attribute set to `true`.
+
+The downcast converter does the reverse: it converts the model's `secret` attribute to a CSS class in both the editing and data views. 
+
+Note that you also added a custom property to the widget in the editing downcast converter using {@link module:engine/view/downcastwriter~DowncastWriter#setCustomProperty `setCustomProperty()`}. This custom property serves as a marker to identify simple box widgets in the view layer. Without this property, you would need to rely solely on CSS classes or element structure, which is less reliable.
+
+You do not need to update the `createSimpleBox()` function because new simple boxes should not have the `secret` attribute by default (it will be `undefined`).
+
+### Creating the toolbar button
+
+Now you can create a button that will toggle the `secret` attribute. You will use the {@link module:ui/button/switchbuttonview~SwitchButtonView `SwitchButtonView`} class, which is a button with an on/off state.
+
+Update the `SimpleBoxUI` plugin:
+
+```js
+// simplebox/simpleboxui.js
+
+// Added: Import SwitchButtonView for the toggle button.
+import { ButtonView, SwitchButtonView, Plugin } from 'ckeditor5';
+
+export default class SimpleBoxUI extends Plugin {
+	init() {
+		console.log( 'SimpleBoxUI#init() got called' );
+
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.ui.componentFactory.add( 'simpleBox', locale => {
+			// ... existing simpleBox button code ...
+		} );
+
+		// Added: Register the "secretSimpleBox" switch button for toggling the secret state.
+		editor.ui.componentFactory.add( 'secretSimpleBox', locale => {
+			const command = editor.commands.get( 'makeSimpleBoxSecret' );
+			const switchButton = new SwitchButtonView( locale );
+
+			switchButton.set( {
+				label: t( 'Secret box' ),
+				withText: true
+			} );
+
+			// Bind the switch's state to the command's value and enabled state.
+			switchButton.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute the command when the switch is toggled.
+			this.listenTo( switchButton, 'execute', () => {
+				editor.execute( 'makeSimpleBoxSecret', { value: !command.value } );
+			} );
+
+			return switchButton;
+		} );
+	}
+}
+```
+
+The switch button is bound to the `makeSimpleBoxSecret` command. When clicked, it toggles the command's value.
+
+### Registering the widget toolbar
+
+Now you need to create a plugin that will register the widget toolbar using the {@link module:widget/widgettoolbarrepository~WidgetToolbarRepository `WidgetToolbarRepository`} plugin. This plugin manages all widget toolbars in the editor and handles their positioning and visibility.
+
+Create a new file `simpleboxtoolbar.js`:
+
+```js
+// simplebox/simpleboxtoolbar.js
+
+import { Plugin, WidgetToolbarRepository } from 'ckeditor5';
+
+export default class SimpleBoxToolbar extends Plugin {
+	static get requires() {
+		return [ WidgetToolbarRepository ];
+	}
+
+	afterInit() {
+		const editor = this.editor;
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+
+		// Register a new toolbar for the simple box widget.
+		widgetToolbarRepository.register( 'simpleBoxToolbar', {
+			// Toolbar items come from the editor configuration.
+			items: editor.config.get( 'simpleBox.toolbar' ),
+
+			// Callback to determine which view element the toolbar should be attached to.
+			getRelatedElement: getClosestSimpleBoxWidget
+		} );
+	}
+}
+
+function getClosestSimpleBoxWidget( selection ) {
+	const selectionPosition = selection.getFirstPosition();
+
+	if ( !selectionPosition ) {
+		return null;
+	}
+
+	// Check if the selected element itself is a simple box widget.
+	const viewElement = selection.getSelectedElement();
+
+	if ( viewElement && isSimpleBoxWidget( viewElement ) ) {
+		return viewElement;
+	}
+
+	// Otherwise, search up the view hierarchy for a simple box widget.
+	let parent = selectionPosition.parent;
+
+	while ( parent ) {
+		if ( parent.is( 'element' ) && isSimpleBoxWidget( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+
+	return null;
+}
+
+function isSimpleBoxWidget( viewElement ) {
+	// Check if the element has our custom property and is a widget.
+	return !!viewElement.getCustomProperty( 'simpleBox' ) && isWidget( viewElement );
+}
+```
+
+The `SimpleBoxToolbar` plugin registers a widget toolbar in the `afterInit()` method. The toolbar configuration is read from the editor configuration under the `simpleBox.toolbar` property. The `getRelatedElement` function is a callback that returns the view element to which the toolbar should be attached. It searches for the closest simple box widget in the view hierarchy.
+
+The helper function `isSimpleBoxWidget()` checks if a view element is a simple box widget by looking for the custom property you set earlier in the editing downcast converter.
+
+Now register this plugin in the master `SimpleBox` plugin:
+
+```js
+// simplebox/simplebox.js
+
+import SimpleBoxEditing from './simpleboxediting';
+import SimpleBoxUI from './simpleboxui';
+// Added: Import the new toolbar plugin.
+import SimpleBoxToolbar from './simpleboxtoolbar';
+import { Plugin } from 'ckeditor5';
+
+export default class SimpleBox extends Plugin {
+	static get requires() {
+		// Changed: Include the toolbar plugin in the requirements.
+		return [ SimpleBoxEditing, SimpleBoxUI, SimpleBoxToolbar ];
+	}
+}
+```
+
+Finally, add the toolbar configuration to the editor setup in `main.js`:
+
+```js
+// main.js
+
+import SimpleBox from './simplebox/simplebox';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic,
+			SimpleBox
+		],
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ],
+		// Added toolbar configuration.
+		simpleBox: {
+			toolbar: [ 'secretSimpleBox' ]
+		}
+	} );
+```
+
+### Styling the secret state
+
+The last step is to add CSS styles that will blur the content of a secret simple box. Add these styles to your `index.html` file:
+
+```css
+.simple-box.secret .simple-box-title,
+.simple-box.secret .simple-box-description {
+	filter: blur(4px);
+	user-select: none;
+	pointer-events: none;
+}
+
+.simple-box.secret::before {
+	content: "Secret content";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-size: 14px;
+	z-index: 1;
+}
+```
+
+These styles apply a blur effect to the title and description when the box is marked as secret. They also display a "Secret content" label on top of the blurred content.
+
+Now when you select a simple box widget, a contextual toolbar will appear with a "Secret box" toggle. Clicking it will blur the content of the box, making it unreadable. You can click it again to reveal the content.
+
+This pattern of using {@link module:widget/widgettoolbarrepository~WidgetToolbarRepository `WidgetToolbarRepository`} is used throughout CKEditor&nbsp;5 for features like images, tables, and other widgets. It provides a consistent way to add contextual controls to widgets without cluttering the main toolbar.
+
 ## Demo
 
 You can see the block widget implementation in action in the editor below. You can also check out the full [source code](#final-solution) of this tutorial if you want to develop your own block widgets.
