@@ -807,7 +807,7 @@ In this section, you will add a contextual toolbar that appears when the simple 
 
 ### Adding an attribute to the schema
 
-First, you need to extend the simple box model to support a new `secret` attribute. This attribute will be a boolean value that determines whether the box content should be blurred.
+First, you need to extend the simple box schema to support a new `secret` attribute. This attribute will be a boolean value that determines whether the box content should be blurred.
 
 Update the schema definition in the `SimpleBoxEditing` plugin:
 
@@ -865,14 +865,14 @@ The `allowAttributes` property tells the schema that the `simpleBox` element can
 
 ### Creating a command
 
-Now you need to create a command that will toggle the `secret` attribute. Create a new file `makesimpleboxsecretcommand.js`:
+Now you need to create a command that will toggle the `secret` attribute. Create a new file `togglesimpleboxsecretcommand.js`:
 
 ```js
-// simplebox/makesimpleboxsecretcommand.js
+// simplebox/togglesimpleboxsecretcommand.js
 
 import { Command } from 'ckeditor5';
 
-export default class MakeSimpleBoxSecretCommand extends Command {
+export default class ToggleSimpleBoxSecretCommand extends Command {
 	refresh() {
 		const editor = this.editor;
 		const element = getClosestSelectedSimpleBoxElement( editor.model.document.selection );
@@ -931,7 +931,7 @@ import { Plugin, Widget, toWidget, toWidgetEditable } from 'ckeditor5';
 
 import InsertSimpleBoxCommand from './insertsimpleboxcommand';
 // Added: Import the new command.
-import MakeSimpleBoxSecretCommand from './makesimpleboxsecretcommand';
+import ToggleSimpleBoxSecretCommand from './togglesimpleboxsecretcommand';
 
 export default class SimpleBoxEditing extends Plugin {
 	static get requires() {
@@ -947,7 +947,8 @@ export default class SimpleBoxEditing extends Plugin {
 		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
 
 		// Added: Register the command to toggle the secret state.
-		this.editor.commands.add( 'makeSimpleBoxSecret', new MakeSimpleBoxSecretCommand( this.editor ) );
+		this.editor.commands.add( 'toggleSimpleBoxSecret', new ToggleSimpleBoxSecretCommand( this.editor ) );
+	}
 	}
 
 	_defineSchema() {
@@ -986,7 +987,7 @@ export default class SimpleBoxEditing extends Plugin {
 		this._defineConverters();
 
 		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
-		this.editor.commands.add( 'makeSimpleBoxSecret', new MakeSimpleBoxSecretCommand( this.editor ) );
+		this.editor.commands.add( 'toggleSimpleBoxSecret', new ToggleSimpleBoxSecretCommand( this.editor ) );
 	}
 
 	_defineSchema() {
@@ -1035,7 +1036,7 @@ export default class SimpleBoxEditing extends Plugin {
 
 The element converters remain unchanged. The new part is the attribute conversion using the two-way {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `attributeToAttribute()`} helper.
 
-This single converter handles both directions: it maps the `secret` CSS class from the view to the `secret` model attribute (upcast), and converts the model's `secret` attribute back to a CSS class in both editing and data views (downcast). This is a common pattern in CKEditor&nbsp;5 for simple attribute conversions, similar to how table cells handle `colspan` and `rowspan` attributes. 
+This single converter handles both directions: it maps the `secret` CSS class from the view to the `secret` model attribute (upcast), and converts the model's `secret` attribute back to a CSS class in both editing and data views (downcast).
 
 Note that you also added a custom property to the widget in the editing downcast converter using {@link module:engine/view/downcastwriter~DowncastWriter#setCustomProperty `setCustomProperty()`}. This custom property serves as a marker to identify simple box widgets in the view layer. Without this property, you would need to rely solely on CSS classes or element structure, which is less reliable.
 
@@ -1066,7 +1067,7 @@ export default class SimpleBoxUI extends Plugin {
 
 		// Added: Register the "secretSimpleBox" switch button for toggling the secret state.
 		editor.ui.componentFactory.add( 'secretSimpleBox', locale => {
-			const command = editor.commands.get( 'makeSimpleBoxSecret' );
+			const command = editor.commands.get( 'toggleSimpleBoxSecret' );
 			const switchButton = new SwitchButtonView( locale );
 
 			switchButton.set( {
@@ -1079,7 +1080,7 @@ export default class SimpleBoxUI extends Plugin {
 
 			// Execute the command when the switch is toggled.
 			this.listenTo( switchButton, 'execute', () => {
-				editor.execute( 'makeSimpleBoxSecret', { value: !command.value } );
+				editor.execute( 'toggleSimpleBoxSecret', { value: !command.value } );
 			} );
 
 			return switchButton;
@@ -1088,7 +1089,7 @@ export default class SimpleBoxUI extends Plugin {
 }
 ```
 
-The switch button is bound to the `makeSimpleBoxSecret` command. When clicked, it toggles the command's value.
+The switch button is bound to the `toggleSimpleBoxSecret` command. When clicked, it toggles the command's value.
 
 ### Registering the widget toolbar
 

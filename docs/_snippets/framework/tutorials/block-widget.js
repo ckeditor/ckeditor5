@@ -68,7 +68,7 @@ class SimpleBoxUI extends Plugin {
 
 		// Register the "secretSimpleBox" switch button for toggling the secret state.
 		editor.ui.componentFactory.add( 'secretSimpleBox', locale => {
-			const command = editor.commands.get( 'makeSimpleBoxSecret' );
+			const command = editor.commands.get( 'toggleSimpleBoxSecret' );
 			const switchButton = new SwitchButtonView( locale );
 
 			switchButton.set( {
@@ -81,7 +81,7 @@ class SimpleBoxUI extends Plugin {
 
 			// Execute the command when the switch is toggled.
 			this.listenTo( switchButton, 'execute', () => {
-				editor.execute( 'makeSimpleBoxSecret', { value: !command.value } );
+				editor.execute( 'toggleSimpleBoxSecret', { value: !command.value } );
 			} );
 
 			return switchButton;
@@ -101,7 +101,7 @@ class SimpleBoxEditing extends Plugin {
 		this._defineConverters();
 
 		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
-		this.editor.commands.add( 'makeSimpleBoxSecret', new MakeSimpleBoxSecretCommand( this.editor ) );
+		this.editor.commands.add( 'toggleSimpleBoxSecret', new ToggleSimpleBoxSecretCommand( this.editor ) );
 	}
 
 	_defineSchema() {
@@ -270,7 +270,7 @@ function createSimpleBox( writer ) {
 	return simpleBox;
 }
 
-class MakeSimpleBoxSecretCommand extends Command {
+class ToggleSimpleBoxSecretCommand extends Command {
 	refresh() {
 		const editor = this.editor;
 		const element = getClosestSelectedSimpleBoxElement( editor.model.document.selection );
