@@ -123,8 +123,12 @@ export class TextTransformation extends Plugin {
 		const modelSelection = model.document.selection;
 
 		modelSelection.on( 'change:range', () => {
-			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !modelSelection.anchor!.parent.is( 'element', 'codeBlock' );
+			// Disable plugin when selection is inside a code block or inline code.
+			const anchor = modelSelection.anchor;
+			const isInCodeBlock = !!anchor && anchor.parent.is( 'element', 'codeBlock' );
+			const isInInlineCode = modelSelection.hasAttribute( 'code' );
+
+			this.isEnabled = !( isInCodeBlock || isInInlineCode );
 		} );
 
 		this._enableTransformationWatchers();
