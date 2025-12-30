@@ -34,6 +34,8 @@
  * node scripts/docs/generate-features-digest.mjs
  * ```
  *
+ * Note: The JSON source file was created by a one-time extraction script that has since been removed.
+ *
  * ## JSON Schema
  *
  * ### Section Structure
