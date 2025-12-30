@@ -1013,16 +1013,7 @@ export default class SimpleBoxEditing extends Plugin {
 		} );
 
 		// Added: Handle the 'secret' attribute conversion between model and view.
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				name: 'section',
-				key: 'class',
-				value: 'secret'
-			},
-			model: 'secret'
-		} );
-
-		conversion.for( 'downcast' ).attributeToAttribute( {
+		conversion.attributeToAttribute( {
 			model: 'secret',
 			view: {
 				name: 'section',
@@ -1042,11 +1033,9 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-The element converters remain unchanged. The new part is the attribute conversion using `attributeToAttribute()` helper for upcast and downcast.
+The element converters remain unchanged. The new part is the attribute conversion using the two-way {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `attributeToAttribute()`} helper.
 
-The upcast converter maps the `secret` CSS class from the view to the `secret` attribute in the model. When the editor loads data containing `<section class="simple-box secret">`, it will create a model element with the `secret` attribute set to `true`.
-
-The downcast converter does the reverse: it converts the model's `secret` attribute to a CSS class in both the editing and data views. 
+This single converter handles both directions: it maps the `secret` CSS class from the view to the `secret` model attribute (upcast), and converts the model's `secret` attribute back to a CSS class in both editing and data views (downcast). This is a common pattern in CKEditor&nbsp;5 for simple attribute conversions, similar to how table cells handle `colspan` and `rowspan` attributes. 
 
 Note that you also added a custom property to the widget in the editing downcast converter using {@link module:engine/view/downcastwriter~DowncastWriter#setCustomProperty `setCustomProperty()`}. This custom property serves as a marker to identify simple box widgets in the view layer. Without this property, you would need to rely solely on CSS classes or element structure, which is less reliable.
 

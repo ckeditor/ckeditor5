@@ -176,15 +176,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 
 		// Handle the 'secret' attribute conversion between model and view.
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				name: 'section',
-				key: 'class',
-				value: 'secret'
-			},
-			model: 'secret'
-		} );
-		conversion.for( 'downcast' ).attributeToAttribute( {
+		conversion.attributeToAttribute( {
 			model: 'secret',
 			view: {
 				name: 'section',
