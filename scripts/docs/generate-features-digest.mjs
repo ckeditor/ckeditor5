@@ -133,16 +133,6 @@
  * - "premium" - Premium/commercial feature
  * - "experiment" - Experimental feature
  * - null - Free/open-source feature
- *
- * ## Statistics
- *
- * - 9 sections (Core editing, Collaboration, Content conversion, Page management, Productivity,
- *   Configurations, Compliance, Customization, File management)
- * - 74 subsections (including 1 without link: Email editing)
- * - 82 features in card grids (including 7 in embedded content)
- * - ~155 total features
- * - 5 subsection types supported
- * - 100% automation coverage (no manual maintenance required)
  */
 
 /* eslint-env node */
