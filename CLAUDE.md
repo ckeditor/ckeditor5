@@ -168,12 +168,12 @@ pnpm reinstall                     # Clean reinstall
 
 #### Automated Tests
 ```bash
-pnpm test                         # Run all automated tests
-pnpm test -- --files=core         # Run tests for specific package
-pnpm test -- -c --files=engine    # Run with coverage
-pnpm test -- -w --files=typing    # Watch mode
-pnpm test -- -s --files=core      # With source maps for debugging
-pnpm test -- -cws --files=engine/view/  # Combined: coverage, watch, source maps
+pnpm run test                         # Run all automated tests
+pnpm run test --files=core            # Run tests for specific package
+pnpm run test -c --files=engine       # Run with coverage
+pnpm run test -w --files=typing       # Watch mode
+pnpm run test -s --files=core         # With source maps for debugging
+pnpm run test -cws --files=engine/view/  # Combined: coverage, watch, source maps
 
 # Pattern matching for --files:
 # core                  - All ckeditor5-core tests
@@ -194,13 +194,13 @@ Key options:
 
 #### Manual Tests
 ```bash
-pnpm manual                                      # Start manual test server at http://localhost:8125
-pnpm manual -- --files=core                      # Run specific package's manual tests
-pnpm manual -- --language=pl                     # Set UI language
-pnpm manual -- --additional-languages=ar,pl,es   # Add multiple languages
-pnpm manual -- --port=8888                       # Use custom port
-pnpm manual -- --disable-watch                   # Disable file watching
-pnpm manual:verify                               # Verify all manual tests via headless crawler
+pnpm run manual                                      # Start manual test server at http://localhost:8125
+pnpm run manual --files=core                         # Run specific package's manual tests
+pnpm run manual --language=pl                        # Set UI language
+pnpm run manual --additional-languages=ar,pl,es      # Add multiple languages
+pnpm run manual --port=8888                          # Use custom port
+pnpm run manual --disable-watch                      # Disable file watching
+pnpm run manual:verify                               # Verify all manual tests via headless crawler
 ```
 
 Manual tests require three files with matching names in `packages/*/tests/manual/`:
@@ -212,26 +212,26 @@ Tests use @ckeditor/ckeditor5-dev-tests (custom Karma + Webpack runner).
 
 ### Linting
 ```bash
-pnpm lint                          # ESLint for TypeScript/JavaScript
-pnpm stylelint                     # Stylelint for CSS
+pnpm run lint                          # ESLint for TypeScript/JavaScript
+pnpm run stylelint                     # Stylelint for CSS
 ```
 
 ### Building
 ```bash
-pnpm dll:build                     # Build DLL bundles
-pnpm build:dist                    # Build distribution packages
+pnpm run dll:build                     # Build DLL bundles
+pnpm run build:dist                    # Build distribution packages
 ```
 
 ### Documentation
 ```bash
-pnpm docs                            # Build full documentation
-pnpm docs -- --skip-api              # Build without API docs (faster)
-pnpm docs -- --skip-snippets         # Build without live code snippets
-pnpm docs -- --watch                 # Watch mode for guides
-pnpm docs -- --guides=framework/*    # Build specific guides (glob pattern)
-pnpm docs:api                        # Build API docs only
-pnpm docs:serve                      # Serve docs at https://localhost:8080
-pnpm docs:verify                     # Verify documentation with crawler
+pnpm run docs                            # Build full documentation
+pnpm run docs --skip-api                 # Build without API docs (faster)
+pnpm run docs --skip-snippets            # Build without live code snippets
+pnpm run docs --watch                    # Watch mode for guides
+pnpm run docs --guides=framework/*       # Build specific guides (glob pattern)
+pnpm run docs:api                        # Build API docs only
+pnpm run docs:serve                      # Serve docs at https://localhost:8080
+pnpm run docs:verify                     # Verify documentation with crawler
 ```
 
 Output: `build/docs/` directory
@@ -251,13 +251,13 @@ This provides direct access to CKEditor 5 documentation during development.
 
 ### Translations
 ```bash
-pnpm translations:synchronize      # Sync translation files
-pnpm translations:validate         # Validate translations
+pnpm run translations:synchronize      # Sync translation files
+pnpm run translations:validate         # Validate translations
 ```
 
 ### Changelog
 ```bash
-pnpm nice                          # Create changelog entry interactively
+pnpm run nice                          # Create changelog entry interactively
 ```
 
 ## Development Patterns
