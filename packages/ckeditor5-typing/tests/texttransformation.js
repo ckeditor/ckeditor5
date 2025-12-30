@@ -10,7 +10,7 @@ import { Typing } from '../src/typing.js';
 import { TextTransformation } from '../src/texttransformation.js';
 import { _setModelData, _getModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Bold, Code } from '@ckeditor/ckeditor5-basic-styles';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
@@ -199,6 +199,18 @@ describe( 'Text transformation feature', () => {
 			expect( plugin.isEnabled ).to.be.false;
 			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
+		} );
+
+		it( 'should be disabled inside inline code', () => {
+			_setModelData( model, '<paragraph><$text code="true">some [] inline code</$text></paragraph>' );
+
+			simulateTyping( '--' );
+
+			const plugin = editor.plugins.get( 'TextTransformation' );
+
+			expect( plugin.isEnabled ).to.be.false;
+			expect( _getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text code="true">some -- inline code</$text></paragraph>' );
 		} );
 
 		it( 'can undo transformation', () => {
@@ -455,7 +467,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock, UndoEditing ]
+				plugins: [ Typing, Paragraph, Bold, Code, TextTransformation, CodeBlock, UndoEditing ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
