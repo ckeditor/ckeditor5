@@ -3,6 +3,132 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * # Features Digest Automation
+ *
+ * This script automatically generates the content of docs/features/feature-digest.md from the structured
+ * data in docs/data/features-digest-source.json. It runs as a beforeHexo hook during documentation builds.
+ *
+ * ## Overview
+ *
+ * The feature-digest-source.json file contains structured data for all CKEditor 5 features (~155 features
+ * across 9 sections). During the documentation build, this script regenerates the content between the
+ * markers (<!--FEATURES_DIGEST_START--> and <!--FEATURES_DIGEST_END-->) in feature-digest.md.
+ *
+ * ## Workflow
+ *
+ * ### Adding a New Feature
+ * 1. Edit docs/data/features-digest-source.json
+ * 2. Add your feature to the appropriate section/subsection
+ * 3. Run `pnpm run docs` (the generation happens automatically via hook)
+ * 4. Commit both the JSON and generated markdown file
+ *
+ * ### Updating an Existing Feature
+ * 1. Find the feature by its `id` in features-digest-source.json
+ * 2. Edit the description, link, or badge
+ * 3. Regenerate via `pnpm run docs`
+ * 4. Commit changes
+ *
+ * ### Manually Testing Generation
+ * ```bash
+ * node scripts/docs/generate-features-digest.mjs
+ * ```
+ *
+ * ## JSON Schema
+ *
+ * ### Section Structure
+ * {
+ *   "sections": [
+ *     {
+ *       "id": "section-id",
+ *       "title": "Section Title",
+ *       "description": "Section description...",
+ *       "subsections": [...]
+ *     }
+ *   ]
+ * }
+ *
+ * ### Subsection Types
+ *
+ * #### 1. Subsection with Card Grid
+ * Multiple features displayed in a card grid layout.
+ * {
+ *   "id": "subsection-id",
+ *   "title": "Subsection Title",
+ *   "type": "subsection-with-grid",
+ *   "description": "Description...",
+ *   "features": [
+ *     {
+ *       "id": "feature-id",
+ *       "title": "Feature Name",
+ *       "badge": "premium" | null,
+ *       "description": "Feature description...",
+ *       "link": "{@link features/feature-name}"
+ *     }
+ *   ]
+ * }
+ *
+ * #### 2. Heading Badge (Simple)
+ * Feature with badge, description, and single link.
+ * {
+ *   "id": "feature-id",
+ *   "title": "Feature Name",
+ *   "type": "heading-badge",
+ *   "badge": "premium" | "experiment",
+ *   "description": "Feature description...",
+ *   "link": "{@link features/feature-name}"
+ * }
+ *
+ * #### 3. Simple Feature
+ * Basic feature with description and link.
+ * {
+ *   "id": "feature-id",
+ *   "title": "Feature Name",
+ *   "type": "simple",
+ *   "description": "Feature description...",
+ *   "link": "{@link features/feature-name}"
+ * }
+ *
+ * #### 4. Single Card
+ * Standalone card (not in grid).
+ * {
+ *   "id": "feature-id",
+ *   "title": "Feature Name",
+ *   "type": "single-card",
+ *   "badge": "premium" | null,
+ *   "description": "Feature description...",
+ *   "link": "{@link features/feature-name}"
+ * }
+ *
+ * ## Known Limitations
+ *
+ * ### Special Heading-Badge Patterns (3 features)
+ *
+ * The following features use a special pattern where a heading-badge is followed by embedded cards.
+ * These are not currently supported by the automation and must be manually maintained in the markdown file:
+ *
+ * 1. **Asynchronous collaboration** (asynchronous-collaboration) - Has heading-badge + description + single embedded card
+ * 2. **Comments** (comments) - Has heading-badge + description + card grid
+ * 3. **Content generation** (content-generation) - Has heading-badge + description + card grid
+ *
+ * For these features, the content is manually maintained in feature-digest.md outside the automation markers.
+ *
+ * ### Future Enhancement
+ *
+ * To fully automate these special cases, the extraction and generation scripts would need to be enhanced
+ * to support an optional `features` array on heading-badge types, allowing for embedded cards after
+ * the main description.
+ *
+ * ## Statistics
+ *
+ * - 9 sections (Core editing, Collaboration, Content conversion, Page management, Productivity,
+ *   Configurations, Compliance, Customization, File management)
+ * - 73 subsections
+ * - 76+ features in card grids
+ * - ~155 total features
+ * - 98% automation coverage (3 special cases manually maintained)
+ */
+
 /* eslint-env node */
 
 import fs from 'fs-extra';
