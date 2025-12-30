@@ -81,17 +81,39 @@
  *   "link": "{@link features/feature-name}"
  * }
  *
- * #### 3. Simple Feature
- * Basic feature with description and link.
+ * #### 3. Heading Badge with Embedded Content
+ * Feature with badge, description, and embedded card(s). No button link is rendered after the embedded content.
+ * {
+ *   "id": "feature-id",
+ *   "title": "Feature Name",
+ *   "type": "heading-badge-with-embedded-content",
+ *   "badge": "premium" | "experiment",
+ *   "description": "Feature description...",
+ *   "link": "{@link features/feature-name}",
+ *   "features": [
+ *     {
+ *       "id": "sub-feature-id",
+ *       "title": "Sub-feature Name",
+ *       "badge": "premium" | null,
+ *       "description": "Sub-feature description...",
+ *       "link": "{@link features/sub-feature}"
+ *     }
+ *   ]
+ * }
+ * Note: If features.length === 1, renders as single card (no columns).
+ *       If features.length > 1, renders as card grid with <ck:columns>.
+ *
+ * #### 4. Simple Feature
+ * Basic feature with description and optional link.
  * {
  *   "id": "feature-id",
  *   "title": "Feature Name",
  *   "type": "simple",
  *   "description": "Feature description...",
- *   "link": "{@link features/feature-name}"
+ *   "link": "{@link features/feature-name}" (optional)
  * }
  *
- * #### 4. Single Card
+ * #### 5. Single Card
  * Standalone card (not in grid).
  * {
  *   "id": "feature-id",
@@ -102,33 +124,25 @@
  *   "link": "{@link features/feature-name}"
  * }
  *
- * ## Known Limitations
+ * ## Special Features
  *
- * ### Special Heading-Badge Patterns (3 features)
+ * ### External Links
+ * Links that don't use {@link} syntax (e.g., https://...) automatically get `target='_blank'` attribute.
  *
- * The following features use a special pattern where a heading-badge is followed by embedded cards.
- * These are not currently supported by the automation and must be manually maintained in the markdown file:
- *
- * 1. **Asynchronous collaboration** (asynchronous-collaboration) - Has heading-badge + description + single embedded card
- * 2. **Comments** (comments) - Has heading-badge + description + card grid
- * 3. **Content generation** (content-generation) - Has heading-badge + description + card grid
- *
- * For these features, the content is manually maintained in feature-digest.md outside the automation markers.
- *
- * ### Future Enhancement
- *
- * To fully automate these special cases, the extraction and generation scripts would need to be enhanced
- * to support an optional `features` array on heading-badge types, allowing for embedded cards after
- * the main description.
+ * ### Badge Types
+ * - "premium" - Premium/commercial feature
+ * - "experiment" - Experimental feature
+ * - null - Free/open-source feature
  *
  * ## Statistics
  *
  * - 9 sections (Core editing, Collaboration, Content conversion, Page management, Productivity,
  *   Configurations, Compliance, Customization, File management)
- * - 73 subsections
- * - 76+ features in card grids
+ * - 74 subsections (including 1 without link: Email editing)
+ * - 82 features in card grids (including 7 in embedded content)
  * - ~155 total features
- * - 98% automation coverage (3 special cases manually maintained)
+ * - 5 subsection types supported
+ * - 100% automation coverage (no manual maintenance required)
  */
 
 /* eslint-env node */
