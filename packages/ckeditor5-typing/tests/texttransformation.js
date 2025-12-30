@@ -190,9 +190,9 @@ describe( 'Text transformation feature', () => {
 		} );
 
 		it( 'should be disabled inside code blocks', () => {
-			_setModelData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">some []code</codeBlock>' );
 
-			simulateTyping( '1/2' );
+			simulateTyping( '1/2 ' );
 
 			const plugin = editor.plugins.get( 'TextTransformation' );
 
@@ -202,9 +202,9 @@ describe( 'Text transformation feature', () => {
 		} );
 
 		it( 'should be disabled inside inline code', () => {
-			_setModelData( model, '<paragraph><$text code="true">some [] inline code</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text code="true">some []inline code</$text></paragraph>' );
 
-			simulateTyping( '--' );
+			simulateTyping( '-- ' );
 
 			const plugin = editor.plugins.get( 'TextTransformation' );
 
