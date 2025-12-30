@@ -338,13 +338,7 @@ CKEditor 5 follows specific code style rules enforced by ESLint and documented i
 - Boolean variables: use auxiliary verb prefix (e.g., `isDirty`, `hasChildren`, `canObserve`)
 
 **Formatting:**
-- **Indentation**: Tabs (display as 4 spaces)
-- **Max line length**: 120 characters (140 absolute max)
-- **Whitespace**: Inside parentheses and around operators
-  - `function foo( a, b )` not `function foo(a, b)`
-  - `c = ( d + e ) * 2` not `c=(d+e)*2`
-- **Strings**: Use single quotes `'string'` not `"string"`
-- **Line endings**: LF only (no CRLF)
+See the [official code style guide](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/code-style.html) for formatting rules. ESLint enforces these automatically.
 
 **Comments:**
 - Precede with blank line
