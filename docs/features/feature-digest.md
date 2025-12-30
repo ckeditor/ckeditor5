@@ -7,6 +7,23 @@ modified_at: 2024-11-20
 order: -998
 ---
 
+<!--
+This file is partially auto-generated!
+
+The content between the markers (FEATURES_DIGEST_START/END) is automatically generated from
+docs/data/features-digest-source.json during the documentation build process.
+
+To add or update features:
+1. Edit docs/data/features-digest-source.json
+2. Run `pnpm run docs` (generation happens automatically via beforeHexo hook)
+3. Commit both the JSON source and this generated file
+
+For detailed documentation on the JSON schema, workflow, and known limitations,
+see the JSDoc comments in scripts/docs/generate-features-digest.mjs
+
+DO NOT manually edit the content between the markers - your changes will be overwritten!
+-->
+
 CKEditor 5 offers over 150 various features, from basic editing capabilities like bold or italics to full-blown real-time collaboration, where multiple people can work on one document at the same time. This page collects them all and groups them into capabilities, features, and sub-features. Let's hope this list will help you grasp and easily digest everything CKEditor 5 has to offer.
 
 <!--FEATURES_DIGEST_START-->
