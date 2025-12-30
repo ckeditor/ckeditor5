@@ -501,18 +501,50 @@
         {
           "id": "asynchronous-collaboration",
           "title": "Asynchronous collaboration",
-          "type": "heading-badge",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "",
-          "link": "{@link features/collaboration}"
+          "description": "Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.",
+          "link": "{@link features/collaboration}",
+          "features": [
+            {
+              "id": "local-data-storage",
+              "title": "Local data storage",
+              "badge": "premium",
+              "description": "In asynchronous collaboration, data is maintained on the client's servers.",
+              "link": "{@link features/collaboration}"
+            }
+          ]
         },
         {
           "id": "comments",
           "title": "Comments",
-          "type": "heading-badge",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "",
-          "link": "{@link features/comments}"
+          "description": "Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.",
+          "link": "{@link features/comments}",
+          "features": [
+            {
+              "id": "comments-archive",
+              "title": "Comments archive",
+              "badge": "premium",
+              "description": "Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.",
+              "link": "{@link features/comments}"
+            },
+            {
+              "id": "comments-outside-editor",
+              "title": "Comments outside editor",
+              "badge": "premium",
+              "description": "The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.",
+              "link": "{@link features/comments-outside-editor}"
+            },
+            {
+              "id": "sidebar-modes",
+              "title": "Sidebar modes",
+              "badge": "premium",
+              "description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.",
+              "link": "{@link features/annotations-display-mode}"
+            }
+          ]
         },
         {
           "id": "mentions",
@@ -524,10 +556,33 @@
         {
           "id": "real-time-collaboration",
           "title": "Real-time collaboration",
-          "type": "heading-badge",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "",
-          "link": "{@link features/users-in-real-time-collaboration}"
+          "description": "Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.",
+          "link": "{@link features/users-in-real-time-collaboration}",
+          "features": [
+            {
+              "id": "co-authoring",
+              "title": "Co-authoring",
+              "badge": "premium",
+              "description": "Multiple user real-time editing and content creation feature.",
+              "link": "{@link features/users-in-real-time-collaboration}"
+            },
+            {
+              "id": "on-premises",
+              "title": "On-premises",
+              "badge": "premium",
+              "description": "On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.",
+              "link": "https://ckeditor.com/docs/cs/latest/onpremises/index.html"
+            },
+            {
+              "id": "saas",
+              "title": "SaaS",
+              "badge": "premium",
+              "description": "Real-time collaboration provided as a service by CKSource.",
+              "link": "https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html"
+            }
+          ]
         },
         {
           "id": "revision-history",
@@ -563,10 +618,33 @@
         {
           "id": "content-generation",
           "title": "Content generation",
-          "type": "heading-badge",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "",
-          "link": "{@link features/export-pdf}"
+          "description": "CKEditor 5 may be your universal starting point for generating content in several recognizable formats.",
+          "link": "{@link features/export-pdf}",
+          "features": [
+            {
+              "id": "export-to-pdf",
+              "title": "Export to PDF",
+              "badge": "premium",
+              "description": "Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.",
+              "link": "{@link features/export-pdf}"
+            },
+            {
+              "id": "export-to-word",
+              "title": "Export to Word",
+              "badge": "premium",
+              "description": "Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.",
+              "link": "{@link features/export-word}"
+            },
+            {
+              "id": "import-from-word",
+              "title": "Import from Word",
+              "badge": "premium",
+              "description": "Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.",
+              "link": "{@link features/import-word}"
+            }
+          ]
         },
         {
           "id": "export-with-inline-styles",
@@ -902,6 +980,12 @@
               "link": "{@link getting-started/setup/editor-types#multi-root-editor}"
             }
           ]
+        },
+        {
+          "id": "email-editing",
+          "title": "Email editing",
+          "type": "simple",
+          "description": "CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients."
         },
         {
           "id": "email-configuration-helper",

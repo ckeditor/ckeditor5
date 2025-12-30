@@ -182,6 +182,8 @@ function generateSubsection( subsection ) {
 			return generateCardGrid( subsection );
 		case 'heading-badge':
 			return generateHeadingBadge( subsection );
+		case 'heading-badge-with-embedded-content':
+			return generateHeadingBadgeWithEmbeddedContent( subsection );
 		case 'simple':
 			return generateSimpleFeature( subsection );
 		case 'single-card':
@@ -205,6 +207,7 @@ ${ cards }
 
 function generateCard( feature ) {
 	const badge = feature.badge ? ` <ck:badge variant='${ feature.badge }' />` : '';
+	const targetAttr = isExternalUrl( feature.link ) ? ' target=\'_blank\'' : '';
 
 	return `\t<ck:card>
 \t\t<ck:card-title level='4' heading-id='${ feature.id }'>
@@ -214,35 +217,88 @@ function generateCard( feature ) {
 \t\t\t${ feature.description }
 \t\t</ck:card-description>
 \t\t<ck:card-footer>
-\t\t\t<ck:button-link size='sm' variant='secondary' href='${ feature.link }'>
+\t\t\t<ck:button-link size='sm' variant='secondary' href='${ feature.link }'${ targetAttr }>
 \t\t\t\tFeature page
 \t\t\t</ck:button-link>
 \t\t</ck:card-footer>
 \t</ck:card>`;
 }
 
+function generateCardNoIndent( feature ) {
+	const badge = feature.badge ? ` <ck:badge variant='${ feature.badge }' />` : '';
+	const targetAttr = isExternalUrl( feature.link ) ? ' target=\'_blank\'' : '';
+
+	return `<ck:card>
+\t<ck:card-title level='4' heading-id='${ feature.id }'>
+\t\t${ feature.title }${ badge }
+\t</ck:card-title>
+\t<ck:card-description>
+\t\t${ feature.description }
+\t</ck:card-description>
+\t<ck:card-footer>
+\t\t<ck:button-link size='sm' variant='secondary' href='${ feature.link }'${ targetAttr }>
+\t\t\tFeature page
+\t\t</ck:button-link>
+\t</ck:card-footer>
+</ck:card>`;
+}
+
 function generateHeadingBadge( subsection ) {
+	const targetAttr = isExternalUrl( subsection.link ) ? ' target=\'_blank\'' : '';
+
 	return `<ck:heading-badge heading-id='${ subsection.id }' badge='${ subsection.badge }'>${ subsection.title }</ck:heading-badge>
 
 ${ subsection.description }
 
-<ck:button-link size='sm' variant='secondary' href='${ subsection.link }'>
+<ck:button-link size='sm' variant='secondary' href='${ subsection.link }'${ targetAttr }>
 \tFeature page
 </ck:button-link>`;
 }
 
+function generateHeadingBadgeWithEmbeddedContent( subsection ) {
+	let embeddedContent = '';
+
+	if ( subsection.features && subsection.features.length > 0 ) {
+		if ( subsection.features.length === 1 ) {
+			// Single card (no columns, no indentation, no blank line before)
+			embeddedContent = '\n' + generateCardNoIndent( subsection.features[ 0 ] );
+		} else {
+			// Multiple cards (with columns, no blank line before)
+			const cards = subsection.features.map( f => generateCard( f ) ).join( '\n\n' );
+			embeddedContent = `\n<ck:columns>
+${ cards }
+</ck:columns>`;
+		}
+	}
+
+	return `<ck:heading-badge heading-id='${ subsection.id }' badge='${ subsection.badge }'>${ subsection.title }</ck:heading-badge>
+
+${ subsection.description }
+${ embeddedContent }`;
+}
+
 function generateSimpleFeature( subsection ) {
+	// Some simple subsections don't have links (e.g., "Email editing")
+	if ( !subsection.link ) {
+		return `### ${ subsection.title }
+
+${ subsection.description }`;
+	}
+
+	const targetAttr = isExternalUrl( subsection.link ) ? ' target=\'_blank\'' : '';
+
 	return `### ${ subsection.title }
 
 ${ subsection.description }
 
-<ck:button-link size='sm' variant='secondary' href='${ subsection.link }'>
+<ck:button-link size='sm' variant='secondary' href='${ subsection.link }'${ targetAttr }>
 \tFeature page
 </ck:button-link>`;
 }
 
 function generateSingleCard( subsection ) {
 	const badge = subsection.badge ? ` <ck:badge variant='${ subsection.badge }' />` : '';
+	const targetAttr = isExternalUrl( subsection.link ) ? ' target=\'_blank\'' : '';
 
 	return `<ck:card>
 \t<ck:card-title level='4' heading-id='${ subsection.id }'>
@@ -252,11 +308,18 @@ function generateSingleCard( subsection ) {
 \t\t${ subsection.description }
 \t</ck:card-description>
 \t<ck:card-footer>
-\t\t<ck:button-link size='sm' variant='secondary' href='${ subsection.link }'>
+\t\t<ck:button-link size='sm' variant='secondary' href='${ subsection.link }'${ targetAttr }>
 \t\t\tFeature page
 \t\t</ck:button-link>
 \t</ck:card-footer>
 </ck:card>`;
+}
+
+/**
+ * Check if a URL is external (doesn't use {@link} syntax)
+ */
+function isExternalUrl( url ) {
+	return url && !url.startsWith( '{@link' );
 }
 
 // Run the function if this script is executed directly

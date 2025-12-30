@@ -874,19 +874,69 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 
 <ck:heading-badge heading-id='asynchronous-collaboration' badge='premium'>Asynchronous collaboration</ck:heading-badge>
 
+Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.
 
-
-<ck:button-link size='sm' variant='secondary' href='{@link features/collaboration}'>
-	Feature page
-</ck:button-link>
+<ck:card>
+	<ck:card-title level='4' heading-id='local-data-storage'>
+		Local data storage <ck:badge variant='premium' />
+	</ck:card-title>
+	<ck:card-description>
+		In asynchronous collaboration, data is maintained on the client's servers.
+	</ck:card-description>
+	<ck:card-footer>
+		<ck:button-link size='sm' variant='secondary' href='{@link features/collaboration}'>
+			Feature page
+		</ck:button-link>
+	</ck:card-footer>
+</ck:card>
 
 <ck:heading-badge heading-id='comments' badge='premium'>Comments</ck:heading-badge>
 
+Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.
 
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='comments-archive'>
+			Comments archive <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/comments}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/comments}'>
-	Feature page
-</ck:button-link>
+	<ck:card>
+		<ck:card-title level='4' heading-id='comments-outside-editor'>
+			Comments outside editor <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/comments-outside-editor}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='sidebar-modes'>
+			Sidebar modes <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/annotations-display-mode}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 ### Mentions
 
@@ -898,11 +948,51 @@ The mention feature supports smart autocompletion triggered by user input. Typin
 
 <ck:heading-badge heading-id='real-time-collaboration' badge='premium'>Real-time collaboration</ck:heading-badge>
 
+Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.
 
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='co-authoring'>
+			Co-authoring <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Multiple user real-time editing and content creation feature.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/users-in-real-time-collaboration}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/users-in-real-time-collaboration}'>
-	Feature page
-</ck:button-link>
+	<ck:card>
+		<ck:card-title level='4' heading-id='on-premises'>
+			On-premises <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/onpremises/index.html' target='_blank'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='saas'>
+			SaaS <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Real-time collaboration provided as a service by CKSource.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html' target='_blank'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 <ck:heading-badge heading-id='revision-history' badge='premium'>Revision history</ck:heading-badge>
 
@@ -934,11 +1024,51 @@ Collaborate also regarding different formats. With content conversions, you can 
 
 <ck:heading-badge heading-id='content-generation' badge='premium'>Content generation</ck:heading-badge>
 
+CKEditor 5 may be your universal starting point for generating content in several recognizable formats.
 
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='export-to-pdf'>
+			Export to PDF <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/export-pdf}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/export-pdf}'>
-	Feature page
-</ck:button-link>
+	<ck:card>
+		<ck:card-title level='4' heading-id='export-to-word'>
+			Export to Word <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/export-word}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='import-from-word'>
+			Import from Word <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/import-word}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 <ck:heading-badge heading-id='export-with-inline-styles' badge='premium'>Export with inline styles</ck:heading-badge>
 
@@ -1360,6 +1490,10 @@ The editor's user interface is dependent on the editor types. The editor provide
 	</ck:card>
 </ck:columns>
 
+### Email editing
+
+CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.
+
 <ck:card>
 	<ck:card-title level='4' heading-id='email-configuration-helper'>
 		Email configuration helper <ck:badge variant='premium' />
@@ -1619,7 +1753,7 @@ Select from numerous toolbar styles and over 100 plugins to tailor an editor tha
 			The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html'>
+			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html' target='_blank'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -1690,7 +1824,7 @@ Upload images to your server using the XMLHttpRequest API with a minimal editor 
 
 Upload, store, transform, optimize, and deliver images, videos, and documents with this cloud-based file handler. Upload media from local storage, web cameras, cloud services, and social networks with automated media optimization through a CDN for responsive image delivery. Popular features include adaptive image quality, automated image format conversion, progressive JPEG, and options for preview, resize, stretch, crop, content-aware crop, and setting fill color.
 
-<ck:button-link size='sm' variant='secondary' href='https://uploadcare.com/'>
+<ck:button-link size='sm' variant='secondary' href='https://uploadcare.com/' target='_blank'>
 	Feature page
 </ck:button-link>
 <!--FEATURES_DIGEST_END-->
