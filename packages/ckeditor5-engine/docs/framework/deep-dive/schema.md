@@ -530,7 +530,7 @@ It is important to remember that a block should not allow another block inside. 
 
 ### Inline elements
 
-In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
+In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios. To learn more about how text attributes work and how they are converted to inline elements in the view, see the {@link framework/deep-dive/conversion/attributes Attributes and inline formatting} guide.
 
 Currently, the {@link module:engine/model/schema~ModelSchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
