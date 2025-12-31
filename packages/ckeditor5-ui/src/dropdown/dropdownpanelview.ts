@@ -79,7 +79,9 @@ export class DropdownPanelView extends View implements DropdownPanelFocusable {
 				// Drag and drop in the panel should not break the selection in the editor.
 				// https://github.com/ckeditor/ckeditor5-ui/issues/228
 				selectstart: bind.to( evt => {
-					if ( ( evt.target as HTMLElement ).tagName.toLocaleLowerCase() === 'input' ) {
+					const target = evt.target;
+
+					if ( target instanceof Element && target.tagName.toLocaleLowerCase() === 'input' ) {
 						return;
 					}
 

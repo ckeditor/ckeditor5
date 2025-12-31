@@ -85,6 +85,21 @@ describe( 'DropdownPanelView', () => {
 						labeledInput.fieldView.element.dispatchEvent( event );
 						sinon.assert.notCalled( spy );
 					} );
+
+					it( 'handles non-element targets', () => {
+						const textNode = document.createTextNode( 'Selectable text' );
+
+						view.element.appendChild( textNode );
+
+						const event = new Event( 'selectstart', {
+							bubbles: true,
+							cancelable: true
+						} );
+						const spy = sinon.spy( event, 'preventDefault' );
+
+						textNode.dispatchEvent( event );
+						sinon.assert.calledOnce( spy );
+					} );
 				} );
 			} );
 		} );
