@@ -56,7 +56,7 @@
             {
               "id": "enhanced-source-editing",
               "title": "Enhanced source code editing",
-              "badge": null,
+              "badge": "premium",
               "description": "Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.",
               "link": "{@link features/source-editing-enhanced}"
             }
@@ -107,11 +107,55 @@
           "link": "{@link features/bookmarks}"
         },
         {
-          "id": "clipboard",
-          "title": "Clipboard",
-          "type": "simple",
-          "description": "Copy, cut, and paste content within the editor or from external sources.",
-          "link": "{@link framework/deep-dive/clipboard}"
+          "id": "clipboard-and-drag-drop",
+          "title": "Clipboard and drag and drop",
+          "type": "heading-badge-with-embedded-content",
+          "description": "Copy, cut, paste, and drag content within the editor or from external sources. The clipboard system handles rich text, plain text, and file transfers with customizable content processing pipelines.",
+          "link": "{@link framework/deep-dive/clipboard}",
+          "features": [
+            {
+              "id": "clipboard-pipelines",
+              "title": "Extensible clipboard pipelines",
+              "badge": null,
+              "description": "The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted - enabling custom data formats, content transformation, and filtering.",
+              "link": "{@link framework/deep-dive/clipboard}"
+            },
+            {
+              "id": "rich-text-paste",
+              "title": "Rich text paste",
+              "badge": null,
+              "description": "Paste rich text content from external sources while preserving formatting. The editor processes HTML content through customizable pipelines that filter and transform the content to match editor capabilities.",
+              "link": "{@link framework/deep-dive/clipboard}"
+            },
+            {
+              "id": "clipboard-file-upload",
+              "title": "File upload via clipboard",
+              "badge": null,
+              "description": "Paste images and files directly from the clipboard. Supports uploading screenshots, copied images, and other files with progress tracking and automatic placeholder insertion during upload.",
+              "link": "{@link framework/deep-dive/upload-adapter}"
+            },
+            {
+              "id": "content-filtering",
+              "title": "Content filtering",
+              "badge": null,
+              "description": "Customize how pasted content is processed and transformed. Hook into the clipboard pipeline to filter unwanted elements, transform styles, or add custom handling for specific content types like RTF.",
+              "link": "{@link framework/deep-dive/clipboard}"
+            },
+            {
+              "id": "drag-and-drop",
+              "title": "Drag and drop",
+              "badge": null,
+              "description": "Rearrange elements within a document by dragging text blocks, images, or other content types. Drop content from external sources directly into the editor.",
+              "link": "{@link features/drag-drop}"
+            },
+            {
+              "id": "drag-handle",
+              "title": "Drag handle",
+              "badge": null,
+              "description": "Visual drag handle for blocks like tables and images. Also available for all block elements via the block toolbar, making it easy to reorganize content visually.",
+              "link": "{@link getting-started/setup/toolbar#block-toolbar}"
+            }
+          ]
         },
         {
           "id": "code-blocks",
@@ -119,13 +163,6 @@
           "type": "simple",
           "description": "Supports the insertion and management of pre-formatted code snippets with distinct styling.",
           "link": "{@link features/code-blocks}"
-        },
-        {
-          "id": "drag-and-drop",
-          "title": "Drag and drop",
-          "type": "simple",
-          "description": "Rearrange elements within a document, including moving text blocks, images, or other content types.",
-          "link": "{@link features/drag-drop}"
         },
         {
           "id": "font-formatting",
@@ -224,15 +261,52 @@
               "badge": null,
               "description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
               "link": "{@link features/images-responsive}"
+            },
+            {
+              "id": "image-optimizer",
+              "title": "Image editing & optimization",
+              "badge": "premium",
+              "description": "Edit images directly in the editor with crop, rotate, flip, and filter tools. Powered by CKBox or Uploadcare integration for professional image editing.",
+              "link": "{@link features/images-image-optimizer}"
             }
           ]
         },
         {
           "id": "links",
           "title": "Links",
-          "type": "simple",
+          "type": "heading-badge-with-embedded-content",
           "description": "Facilitates the addition of hyperlinks to text, automatically converting typed or pasted URLs into clickable links, and allowing manual insertion and editing of links.",
-          "link": "{@link features/link}"
+          "link": "{@link features/link}",
+          "features": [
+            {
+              "id": "link-decorators",
+              "title": "Link decorators",
+              "badge": null,
+              "description": "Automatic and manual link decorators for target attributes, rel attributes, and custom link modifications. Add download buttons, external link indicators, and more.",
+              "link": "{@link features/link#custom-link-attributes-decorators}"
+            },
+            {
+              "id": "link-providers",
+              "title": "Link providers",
+              "badge": null,
+              "description": "Link providers supply predefined lists of links for easy access in the link UI. Register frequently used internal content like pages or assets, making them available for quick insertion without typing URLs.",
+              "link": "{@link features/link#link-providers}"
+            },
+            {
+              "id": "linking-to-bookmarks",
+              "title": "Linking to bookmarks",
+              "badge": null,
+              "description": "Create internal document links that navigate to bookmarks within the same document. Enable users to link to specific sections for easy in-document navigation.",
+              "link": "{@link features/link#linking-to-bookmarks}"
+            },
+            {
+              "id": "linking-to-images",
+              "title": "Linking to images",
+              "badge": null,
+              "description": "Wrap images with hyperlinks to make them clickable. Users can add links to images directly from the image toolbar or link panel.",
+              "link": "{@link features/images-linking}"
+            }
+          ]
         },
         {
           "id": "lists",
@@ -395,7 +469,7 @@
               "title": "Layout tables",
               "badge": "premium",
               "description": "The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.",
-              "link": "{@link features/tables-caption}"
+              "link": "{@link features/layout-tables}"
             }
           ]
         },
@@ -416,14 +490,14 @@
               "id": "bold",
               "title": "Bold",
               "badge": null,
-              "description": "Making the letters look like the good time were never gone.",
+              "description": "Apply bold formatting to emphasize important text and make it stand out.",
               "link": "{@link features/basic-styles}"
             },
             {
               "id": "code",
               "title": "Code",
               "badge": null,
-              "description": "Snippet look like a terminal from the 1990s movie.",
+              "description": "Format inline code snippets with monospace styling to distinguish code from regular text.",
               "link": "{@link features/basic-styles}"
             },
             {
@@ -437,7 +511,7 @@
               "id": "italic",
               "title": "Italic",
               "badge": null,
-              "description": "Making the letters look like seashore pines.",
+              "description": "Apply italic formatting to emphasize text or indicate titles, foreign words, and technical terms.",
               "link": "{@link features/basic-styles}"
             },
             {
@@ -451,7 +525,7 @@
               "id": "strikethrough",
               "title": "Strikethrough",
               "badge": null,
-              "description": "Never mind, will not need it anymore.",
+              "description": "Draw a line through text to indicate deletions, corrections, or deprecated content.",
               "link": "{@link features/basic-styles}"
             },
             {
@@ -465,21 +539,21 @@
               "id": "subscript",
               "title": "Subscript",
               "badge": null,
-              "description": "Fine print at the bottom, like atom numbers.",
+              "description": "Position text slightly below the baseline for chemical formulas, mathematical notation, and footnotes.",
               "link": "{@link features/basic-styles}"
             },
             {
               "id": "superscript",
               "title": "Superscript",
               "badge": null,
-              "description": "Fine print on top, like references in a book.",
+              "description": "Position text slightly above the baseline for exponents, ordinal indicators, and reference marks.",
               "link": "{@link features/basic-styles}"
             },
             {
               "id": "underline",
               "title": "Underline",
               "badge": null,
-              "description": "Stuff looks important, yo. Or like a link, too.",
+              "description": "Add an underline to text for emphasis or to indicate special terms and references.",
               "link": "{@link features/basic-styles}"
             }
           ]
@@ -543,6 +617,20 @@
               "badge": "premium",
               "description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.",
               "link": "{@link features/annotations-display-mode}"
+            },
+            {
+              "id": "comments-only-mode",
+              "title": "Comments-only mode",
+              "badge": "premium",
+              "description": "A specialized mode where users can only add comments without editing the document content. Perfect for review workflows where reviewers should provide feedback without modifying the original text.",
+              "link": "{@link features/comments-only-mode}"
+            },
+            {
+              "id": "annotations-customization",
+              "title": "Annotations customization",
+              "badge": "premium",
+              "description": "Customize annotations with custom views, templates, themes, and configurations. Tailor the comments and suggestions UI to match your application design.",
+              "link": "{@link features/annotations-custom-configuration}"
             }
           ]
         },
@@ -572,7 +660,7 @@
               "id": "on-premises",
               "title": "On-premises",
               "badge": "premium",
-              "description": "On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.",
+              "description": "On-premises real-time collaboration version to deploy to your own infrastructure. Supports private cloud deployments and hybrid configurations where some services run locally while others connect to CKEditor Cloud Services.",
               "link": "https://ckeditor.com/docs/cs/latest/onpremises/index.html"
             },
             {
@@ -587,18 +675,57 @@
         {
           "id": "revision-history",
           "title": "Revision history",
-          "type": "heading-badge",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
           "description": "The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.",
-          "link": "{@link features/revision-history}"
+          "link": "{@link features/revision-history}",
+          "features": [
+            {
+              "id": "revision-comparison",
+              "title": "Compare revisions",
+              "badge": "premium",
+              "description": "View side-by-side differences between any two revisions to understand exactly what changed.",
+              "link": "{@link features/revision-history}"
+            },
+            {
+              "id": "revision-restore",
+              "title": "Restore revisions",
+              "badge": "premium",
+              "description": "Restore any previous revision to recover earlier versions of your document.",
+              "link": "{@link features/revision-history}"
+            },
+            {
+              "id": "named-revisions",
+              "title": "Named revisions",
+              "badge": "premium",
+              "description": "Create named checkpoints to mark important milestones in your document's history.",
+              "link": "{@link features/revision-history}"
+            }
+          ]
         },
         {
           "id": "track-changes",
           "title": "Track changes",
-          "type": "heading-badge",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
           "description": "The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard.",
-          "link": "{@link features/track-changes}"
+          "link": "{@link features/track-changes}",
+          "features": [
+            {
+              "id": "track-changes-preview",
+              "title": "Preview mode",
+              "badge": "premium",
+              "description": "Preview how the document will look with all suggestions accepted or rejected.",
+              "link": "{@link features/track-changes-preview}"
+            },
+            {
+              "id": "granular-suggestions",
+              "title": "Granular suggestions",
+              "badge": "premium",
+              "description": "Fine-grained control over which changes are tracked and how suggestions are grouped.",
+              "link": "{@link features/track-changes}"
+            }
+          ]
         },
         {
           "id": "users-list-and-permissions",
@@ -707,8 +834,8 @@
             {
               "id": "content-minimap",
               "title": "Content minimap",
-              "badge": null,
-              "description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.",
+              "badge": "experiment",
+              "description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management. Particularly useful for long documents where visual navigation improves the editing experience.",
               "link": "{@link features/minimap}"
             },
             {
@@ -742,30 +869,68 @@
           "badge": "premium",
           "description": "The Table of Contents feature is a dynamic tool for organizing documents. It allows for the insertion of a linked table of contents that automatically updates in real time as the document's content changes. This means changes made to headings or structured sections within the document are reflected immediately in the table of contents, accurately representing the document structure.",
           "link": "{@link features/table-of-contents}"
+        },
+        {
+          "id": "footnotes",
+          "title": "Footnotes",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The footnotes feature allows adding and managing footnotes in the document. Create numbered references that appear at the bottom of pages, perfect for academic papers, legal documents, and publications requiring citations.",
+          "link": "{@link features/footnotes}"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "AI",
+      "description": "Enhance content creation with AI-powered writing assistance. Generate, summarize, translate, and review content with contextual AI capabilities integrated directly into the editing experience.",
+      "subsections": [
+        {
+          "id": "ckeditor-ai",
+          "title": "CKEditor AI",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.",
+          "link": "{@link features/ckeditor-ai-overview}",
+          "features": [
+            {
+              "id": "ai-chat",
+              "title": "AI Chat",
+              "badge": "premium",
+              "description": "Contextual AI chat with document awareness, web search, and reasoning capabilities.",
+              "link": "{@link features/ckeditor-ai-chat}"
+            },
+            {
+              "id": "ai-actions",
+              "title": "AI Quick Actions",
+              "badge": "premium",
+              "description": "Predefined AI commands for common tasks like summarize, translate, expand, and custom actions.",
+              "link": "{@link features/ckeditor-ai-actions}"
+            },
+            {
+              "id": "ai-review",
+              "title": "AI Review",
+              "badge": "premium",
+              "description": "AI-powered document review with grammar, style, and content suggestions.",
+              "link": "{@link features/ckeditor-ai-review}"
+            }
+          ]
+        },
+        {
+          "id": "ai-assistant-legacy",
+          "title": "AI Assistant (legacy)",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The legacy AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models. Note: This is the older version of AI integration. Consider using CKEditor AI for new implementations.",
+          "link": "{@link features/ai-assistant-overview}"
         }
       ]
     },
     {
       "id": "productivity",
       "title": "Productivity",
-      "description": "Speed up the content creation process with dedicated productivity utilities. The CKEditor AI feature brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities right into the editor.",
+      "description": "Speed up the content creation process with dedicated productivity utilities. Automate workflows, use templates, paste from external applications, and leverage powerful editing shortcuts.",
       "subsections": [
-        {
-          "id": "ai-assistant",
-          "title": "CKEditor AI",
-          "type": "heading-badge",
-          "badge": "premium",
-          "description": "By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.",
-          "link": "{@link features/ckeditor-ai-overview}"
-        },
-        {
-          "id": "ai-assistant",
-          "title": "AI Assistant (older version)",
-          "type": "heading-badge",
-          "badge": "premium",
-          "description": "The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.",
-          "link": "{@link features/ai-assistant-overview}"
-        },
         {
           "id": "automation",
           "title": "Automation",
@@ -984,16 +1149,33 @@
         {
           "id": "email-editing",
           "title": "Email editing",
-          "type": "simple",
-          "description": "CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients."
-        },
-        {
-          "id": "email-configuration-helper",
-          "title": "Email configuration helper",
+          "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "While configuring an email editor looks like a demanding task, the email configuration helper plugin is the best way to start and make this experience more manageable.",
-          "link": "{@link features/email-configuration-helper}",
-          "type": "single-card"
+          "description": "CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.",
+          "link": "{@link features/email}",
+          "features": [
+            {
+              "id": "email-configuration-helper",
+              "title": "Email configuration helper",
+              "badge": "premium",
+              "description": "Automatically verifies your editor setup for email compatibility, ensures proper HTML structure, manages content restrictions, and warns about unsupported email client features.",
+              "link": "{@link features/email-configuration-helper}"
+            },
+            {
+              "id": "layout-tables-email",
+              "title": "Layout tables",
+              "badge": "premium",
+              "description": "Tables specifically designed for structuring email content rather than presenting data. Include accessibility attributes and email-optimized styling that persists through export to various email clients.",
+              "link": "{@link features/email#layout-tables}"
+            },
+            {
+              "id": "export-inline-styles",
+              "title": "Export with inline styles",
+              "badge": "premium",
+              "description": "Converts global CSS styles into inline HTML attributes for email compatibility. Handles email-specific transformations like converting float properties to align attributes and centering tables via auto margins.",
+              "link": "{@link features/email#export-with-inline-styles}"
+            }
+          ]
         },
         {
           "id": "professionally-translated-language-packs",
@@ -1113,7 +1295,7 @@
           "title": "Restricted editing",
           "type": "heading-badge",
           "badge": "premium",
-          "description": "The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.",
+          "description": "The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. Editable regions can be defined as inline (within text) or block (entire paragraphs or sections). This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.",
           "link": "{@link features/restricted-editing}"
         },
         {
@@ -1138,6 +1320,28 @@
           "badge": "premium",
           "description": "The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions.",
           "link": "{@link features/spelling-and-grammar-checking}"
+        },
+        {
+          "id": "csp-support",
+          "title": "Content Security Policy",
+          "type": "simple",
+          "description": "Full Content Security Policy (CSP) support for secure deployments. Configure CKEditor 5 to work within strict CSP environments.",
+          "link": "{@link getting-started/setup/csp}"
+        },
+        {
+          "id": "lts-edition",
+          "title": "LTS edition",
+          "type": "simple",
+          "description": "Long-Term Support edition for enterprise environments requiring extended stability and security updates without feature changes.",
+          "link": "{@link getting-started/setup/using-lts-edition}"
+        },
+        {
+          "id": "cloud-region",
+          "title": "Cloud region selection",
+          "type": "simple",
+          "badge": "premium",
+          "description": "Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.",
+          "link": "{@link getting-started/setup/cloud-services}"
         }
       ]
     },
@@ -1165,6 +1369,20 @@
               "badge": null,
               "description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.",
               "link": "https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html"
+            },
+            {
+              "id": "plugin-api",
+              "title": "Plugin API",
+              "badge": null,
+              "description": "Create custom plugins to extend CKEditor 5 with your own features. Use the package generator to scaffold new plugins with TypeScript or JavaScript templates.",
+              "link": "{@link framework/development-tools/package-generator/using-package-generator}"
+            },
+            {
+              "id": "custom-editor-creator",
+              "title": "Custom editor creator",
+              "badge": null,
+              "description": "Create custom editor types beyond the built-in options. Implement specialized editor configurations like multi-root editors with custom toolbars and UI.",
+              "link": "{@link framework/custom-editor-creator}"
             }
           ]
         },
@@ -1172,8 +1390,15 @@
           "id": "themes",
           "title": "Themes",
           "type": "simple",
-          "description": "Customize the editor theme to match your design needs.",
+          "description": "Customize the editor theme to match your design needs. Change colors, spacing, and visual styling to integrate with your application.",
           "link": "{@link framework/theme-customization}"
+        },
+        {
+          "id": "icon-customization",
+          "title": "Icon customization",
+          "type": "simple",
+          "description": "Customize toolbar icons with your own SVG icons or icon sets to match your application branding.",
+          "link": "{@link getting-started/setup/customizing-icons}"
         },
         {
           "id": "ui-library",
@@ -1181,6 +1406,29 @@
           "type": "simple",
           "description": "The standard UI library of CKEditor 5 is @ckeditor/ckeditor5-ui. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.",
           "link": "{@link framework/architecture/ui-library}"
+        },
+        {
+          "id": "localization-framework",
+          "title": "Localization framework",
+          "type": "simple",
+          "description": "Built-in internationalization framework with 38+ professionally translated languages. Add custom translations for your plugins and UI customizations.",
+          "link": "{@link framework/deep-dive/localization}"
+        },
+        {
+          "id": "server-side-editor-api",
+          "title": "Server-side Editor API",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Execute editor operations on the server via REST API. Automate document processing, manage collaborative data, and run secure content operations without browser clients.",
+          "link": "{@link features/server-side-editor-api}"
+        },
+        {
+          "id": "webhooks",
+          "title": "Webhooks",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Receive real-time notifications about document events via webhooks. Integrate CKEditor Cloud Services with your backend systems for automated workflows.",
+          "link": "https://ckeditor.com/docs/cs/latest/guides/webhooks/overview.html"
         }
       ]
     },
@@ -1234,7 +1482,157 @@
           "type": "heading-badge",
           "badge": "premium",
           "description": "Upload, store, transform, optimize, and deliver images, videos, and documents with this cloud-based file handler. Upload media from local storage, web cameras, cloud services, and social networks with automated media optimization through a CDN for responsive image delivery. Popular features include adaptive image quality, automated image format conversion, progressive JPEG, and options for preview, resize, stretch, crop, content-aware crop, and setting fill color.",
-          "link": "https://uploadcare.com/"
+          "link": "{@link features/uploadcare}"
+        }
+      ]
+    },
+    {
+      "id": "integrations",
+      "title": "Integrations",
+      "description": "Integrate CKEditor 5 with your technology stack. Official components and guides for popular frameworks, backend platforms, and various installation methods.",
+      "subsections": [
+        {
+          "id": "frontend-frameworks",
+          "title": "Frontend frameworks",
+          "type": "subsection-with-grid",
+          "description": "Official CKEditor 5 components for popular frontend frameworks.",
+          "features": [
+            {
+              "id": "react-integration",
+              "title": "React",
+              "badge": null,
+              "description": "Official React component with hooks support. Available via npm or CDN.",
+              "link": "{@link getting-started/integrations/react-default-npm}"
+            },
+            {
+              "id": "angular-integration",
+              "title": "Angular",
+              "badge": null,
+              "description": "Official Angular component with two-way binding support.",
+              "link": "{@link getting-started/integrations/angular}"
+            },
+            {
+              "id": "vue-integration",
+              "title": "Vue.js",
+              "badge": null,
+              "description": "Support for both Vue 2 and Vue 3 with reactive data binding.",
+              "link": "{@link getting-started/integrations-cdn/vuejs-v3}"
+            },
+            {
+              "id": "svelte-integration",
+              "title": "Svelte",
+              "badge": null,
+              "description": "Svelte integration for reactive editor instances.",
+              "link": "{@link getting-started/integrations/svelte}"
+            },
+            {
+              "id": "nextjs-integration",
+              "title": "Next.js",
+              "badge": null,
+              "description": "Server-side rendering compatible Next.js integration.",
+              "link": "{@link getting-started/integrations-cdn/next-js}"
+            },
+            {
+              "id": "nuxt-integration",
+              "title": "Nuxt",
+              "badge": null,
+              "description": "Nuxt framework integration for Vue-based SSR applications.",
+              "link": "{@link getting-started/integrations-cdn/nuxt}"
+            },
+            {
+              "id": "jquery-integration",
+              "title": "jQuery",
+              "badge": null,
+              "description": "jQuery integration for legacy applications and CMS platforms that use jQuery.",
+              "link": "{@link getting-started/integrations/jquery}"
+            },
+            {
+              "id": "other-js-platforms",
+              "title": "Other JavaScript platforms",
+              "badge": null,
+              "description": "CKEditor 5 can be integrated with any JavaScript environment. Use the vanilla JavaScript guide as a starting point for custom integrations.",
+              "link": "{@link getting-started/integrations/quick-start}"
+            }
+          ]
+        },
+        {
+          "id": "backend-integrations",
+          "title": "Backend & platform integrations",
+          "type": "subsection-with-grid",
+          "description": "Integrate CKEditor 5 with popular backend frameworks and platforms.",
+          "features": [
+            {
+              "id": "laravel-integration",
+              "title": "Laravel",
+              "badge": null,
+              "description": "PHP Laravel framework integration guide.",
+              "link": "{@link getting-started/integrations/laravel}"
+            },
+            {
+              "id": "dotnet-integration",
+              "title": ".NET",
+              "badge": null,
+              "description": "ASP.NET and .NET Core integration.",
+              "link": "{@link getting-started/integrations/dotnet}"
+            },
+            {
+              "id": "spring-boot-integration",
+              "title": "Spring Boot",
+              "badge": null,
+              "description": "Java Spring Boot integration.",
+              "link": "{@link getting-started/integrations/spring-boot}"
+            },
+            {
+              "id": "sharepoint-integration",
+              "title": "SharePoint",
+              "badge": null,
+              "description": "Microsoft SharePoint integration.",
+              "link": "{@link getting-started/integrations/sharepoint}"
+            },
+            {
+              "id": "salesforce-integration",
+              "title": "Salesforce",
+              "badge": null,
+              "description": "Salesforce platform integration.",
+              "link": "{@link getting-started/integrations-cdn/salesforce}"
+            },
+            {
+              "id": "other-platforms",
+              "title": "Other platforms",
+              "badge": null,
+              "description": "CKEditor 5 can be integrated with any backend platform. Use the vanilla JavaScript guide as a starting point for custom integrations.",
+              "link": "{@link getting-started/integrations/quick-start}"
+            }
+          ]
+        },
+        {
+          "id": "installation-methods",
+          "title": "Installation methods",
+          "type": "subsection-with-grid",
+          "description": "Multiple ways to add CKEditor 5 to your project, from quick CDN scripts to full npm builds.",
+          "features": [
+            {
+              "id": "npm-installation",
+              "title": "npm / Bundler",
+              "badge": null,
+              "description": "Install via npm and bundle with Vite, Webpack, or other bundlers. Full tree-shaking support.",
+              "link": "{@link getting-started/integrations/quick-start}"
+            },
+            {
+              "id": "cdn-installation",
+              "title": "CDN",
+              "badge": null,
+              "description": "Load CKEditor 5 directly from CDN with zero build setup. ESM and UMD bundles available.",
+              "link": "{@link getting-started/integrations-cdn/quick-start}"
+            },
+            {
+              "id": "typescript-support",
+              "title": "TypeScript support",
+              "badge": null,
+              "description": "Full TypeScript support with type definitions for all APIs and configurations.",
+              "link": "{@link getting-started/setup/typescript-support}"
+            }
+          ]
         }
       ]
     }

@@ -123,7 +123,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='enhanced-source-editing'>
-			Enhanced source code editing
+			Enhanced source code editing <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
@@ -206,27 +206,101 @@ The bookmarks feature allows for adding and managing the bookmarks anchors attac
 	Feature page
 </ck:button-link>
 
-### Clipboard
+<ck:heading-badge heading-id='clipboard-and-drag-drop' badge='undefined'>Clipboard and drag and drop</ck:heading-badge>
 
-Copy, cut, and paste content within the editor or from external sources.
+Copy, cut, paste, and drag content within the editor or from external sources. The clipboard system handles rich text, plain text, and file transfers with customizable content processing pipelines.
 
-<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/clipboard}'>
-	Feature page
-</ck:button-link>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='clipboard-pipelines'>
+			Extensible clipboard pipelines
+		</ck:card-title>
+		<ck:card-description>
+			The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted - enabling custom data formats, content transformation, and filtering.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/clipboard}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='rich-text-paste'>
+			Rich text paste
+		</ck:card-title>
+		<ck:card-description>
+			Paste rich text content from external sources while preserving formatting. The editor processes HTML content through customizable pipelines that filter and transform the content to match editor capabilities.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/clipboard}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='clipboard-file-upload'>
+			File upload via clipboard
+		</ck:card-title>
+		<ck:card-description>
+			Paste images and files directly from the clipboard. Supports uploading screenshots, copied images, and other files with progress tracking and automatic placeholder insertion during upload.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/upload-adapter}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='content-filtering'>
+			Content filtering
+		</ck:card-title>
+		<ck:card-description>
+			Customize how pasted content is processed and transformed. Hook into the clipboard pipeline to filter unwanted elements, transform styles, or add custom handling for specific content types like RTF.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/clipboard}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='drag-and-drop'>
+			Drag and drop
+		</ck:card-title>
+		<ck:card-description>
+			Rearrange elements within a document by dragging text blocks, images, or other content types. Drop content from external sources directly into the editor.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/drag-drop}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='drag-handle'>
+			Drag handle
+		</ck:card-title>
+		<ck:card-description>
+			Visual drag handle for blocks like tables and images. Also available for all block elements via the block toolbar, making it easy to reorganize content visually.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/toolbar#block-toolbar}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 ### Code blocks
 
 Supports the insertion and management of pre-formatted code snippets with distinct styling.
 
 <ck:button-link size='sm' variant='secondary' href='{@link features/code-blocks}'>
-	Feature page
-</ck:button-link>
-
-### Drag and drop
-
-Rearrange elements within a document, including moving text blocks, images, or other content types.
-
-<ck:button-link size='sm' variant='secondary' href='{@link features/drag-drop}'>
 	Feature page
 </ck:button-link>
 
@@ -408,15 +482,83 @@ The image feature allows adding images of various kinds to the rich content insi
 			</ck:button-link>
 		</ck:card-footer>
 	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='image-optimizer'>
+			Image editing & optimization <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Edit images directly in the editor with crop, rotate, flip, and filter tools. Powered by CKBox or Uploadcare integration for professional image editing.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/images-image-optimizer}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 </ck:columns>
 
-### Links
+<ck:heading-badge heading-id='links' badge='undefined'>Links</ck:heading-badge>
 
 Facilitates the addition of hyperlinks to text, automatically converting typed or pasted URLs into clickable links, and allowing manual insertion and editing of links.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/link}'>
-	Feature page
-</ck:button-link>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='link-decorators'>
+			Link decorators
+		</ck:card-title>
+		<ck:card-description>
+			Automatic and manual link decorators for target attributes, rel attributes, and custom link modifications. Add download buttons, external link indicators, and more.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/link#custom-link-attributes-decorators}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='link-providers'>
+			Link providers
+		</ck:card-title>
+		<ck:card-description>
+			Link providers supply predefined lists of links for easy access in the link UI. Register frequently used internal content like pages or assets, making them available for quick insertion without typing URLs.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/link#link-providers}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='linking-to-bookmarks'>
+			Linking to bookmarks
+		</ck:card-title>
+		<ck:card-description>
+			Create internal document links that navigate to bookmarks within the same document. Enable users to link to specific sections for easy in-document navigation.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/link#linking-to-bookmarks}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='linking-to-images'>
+			Linking to images
+		</ck:card-title>
+		<ck:card-description>
+			Wrap images with hyperlinks to make them clickable. Users can add links to images directly from the image toolbar or link panel.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/images-linking}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 ### Lists
 
@@ -699,7 +841,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 			The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/tables-caption}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/layout-tables}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -724,7 +866,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Bold
 		</ck:card-title>
 		<ck:card-description>
-			Making the letters look like the good time were never gone.
+			Apply bold formatting to emphasize important text and make it stand out.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -738,7 +880,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Code
 		</ck:card-title>
 		<ck:card-description>
-			Snippet look like a terminal from the 1990s movie.
+			Format inline code snippets with monospace styling to distinguish code from regular text.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -766,7 +908,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Italic
 		</ck:card-title>
 		<ck:card-description>
-			Making the letters look like seashore pines.
+			Apply italic formatting to emphasize text or indicate titles, foreign words, and technical terms.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -794,7 +936,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Strikethrough
 		</ck:card-title>
 		<ck:card-description>
-			Never mind, will not need it anymore.
+			Draw a line through text to indicate deletions, corrections, or deprecated content.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -822,7 +964,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Subscript
 		</ck:card-title>
 		<ck:card-description>
-			Fine print at the bottom, like atom numbers.
+			Position text slightly below the baseline for chemical formulas, mathematical notation, and footnotes.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -836,7 +978,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Superscript
 		</ck:card-title>
 		<ck:card-description>
-			Fine print on top, like references in a book.
+			Position text slightly above the baseline for exponents, ordinal indicators, and reference marks.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -850,7 +992,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 			Underline
 		</ck:card-title>
 		<ck:card-description>
-			Stuff looks important, yo. Or like a link, too.
+			Add an underline to text for emphasis or to indicate special terms and references.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/basic-styles}'>
@@ -936,6 +1078,34 @@ Users can add side notes to marked fragments of the document, including text and
 			</ck:button-link>
 		</ck:card-footer>
 	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='comments-only-mode'>
+			Comments-only mode <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			A specialized mode where users can only add comments without editing the document content. Perfect for review workflows where reviewers should provide feedback without modifying the original text.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/comments-only-mode}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='annotations-customization'>
+			Annotations customization <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Customize annotations with custom views, templates, themes, and configurations. Tailor the comments and suggestions UI to match your application design.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/annotations-custom-configuration}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 </ck:columns>
 
 ### Mentions
@@ -970,7 +1140,7 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 			On-premises <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.
+			On-premises real-time collaboration version to deploy to your own infrastructure. Supports private cloud deployments and hybrid configurations where some services run locally while others connect to CKEditor Cloud Services.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/onpremises/index.html' target='_blank'>
@@ -998,17 +1168,83 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 
 The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/revision-history}'>
-	Feature page
-</ck:button-link>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='revision-comparison'>
+			Compare revisions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			View side-by-side differences between any two revisions to understand exactly what changed.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/revision-history}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='revision-restore'>
+			Restore revisions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Restore any previous revision to recover earlier versions of your document.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/revision-history}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='named-revisions'>
+			Named revisions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Create named checkpoints to mark important milestones in your document's history.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/revision-history}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 <ck:heading-badge heading-id='track-changes' badge='premium'>Track changes</ck:heading-badge>
 
 The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes}'>
-	Feature page
-</ck:button-link>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='track-changes-preview'>
+			Preview mode <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Preview how the document will look with all suggestions accepted or rejected.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes-preview}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='granular-suggestions'>
+			Granular suggestions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Fine-grained control over which changes are tracked and how suggestions are grouped.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 <ck:heading-badge heading-id='users-list-and-permissions' badge='premium'>Users list and permissions</ck:heading-badge>
 
@@ -1129,10 +1365,10 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='content-minimap'>
-			Content minimap
+			Content minimap <ck:badge variant='experiment' />
 		</ck:card-title>
 		<ck:card-description>
-			Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.
+			Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management. Particularly useful for long documents where visual navigation improves the editing experience.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/minimap}'>
@@ -1186,25 +1422,77 @@ The Table of Contents feature is a dynamic tool for organizing documents. It all
 	Feature page
 </ck:button-link>
 
-## Productivity
+<ck:heading-badge heading-id='footnotes' badge='premium'>Footnotes</ck:heading-badge>
 
-Speed up the content creation process with dedicated productivity utilities. The CKEditor AI feature brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities right into the editor.
+The footnotes feature allows adding and managing footnotes in the document. Create numbered references that appear at the bottom of pages, perfect for academic papers, legal documents, and publications requiring citations.
 
-<ck:heading-badge heading-id='ai-assistant' badge='premium'>CKEditor AI</ck:heading-badge>
-
-By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.
-
-<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-overview}'>
+<ck:button-link size='sm' variant='secondary' href='{@link features/footnotes}'>
 	Feature page
 </ck:button-link>
 
-<ck:heading-badge heading-id='ai-assistant' badge='premium'>AI Assistant (older version)</ck:heading-badge>
+## AI
 
-The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.
+Enhance content creation with AI-powered writing assistance. Generate, summarize, translate, and review content with contextual AI capabilities integrated directly into the editing experience.
+
+<ck:heading-badge heading-id='ckeditor-ai' badge='premium'>CKEditor AI</ck:heading-badge>
+
+By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.
+
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-chat'>
+			AI Chat <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Contextual AI chat with document awareness, web search, and reasoning capabilities.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-chat}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-actions'>
+			AI Quick Actions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Predefined AI commands for common tasks like summarize, translate, expand, and custom actions.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-actions}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-review'>
+			AI Review <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			AI-powered document review with grammar, style, and content suggestions.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-review}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
+
+<ck:heading-badge heading-id='ai-assistant-legacy' badge='premium'>AI Assistant (legacy)</ck:heading-badge>
+
+The legacy AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models. Note: This is the older version of AI integration. Consider using CKEditor AI for new implementations.
 
 <ck:button-link size='sm' variant='secondary' href='{@link features/ai-assistant-overview}'>
 	Feature page
 </ck:button-link>
+
+## Productivity
+
+Speed up the content creation process with dedicated productivity utilities. Automate workflows, use templates, paste from external applications, and leverage powerful editing shortcuts.
 
 ### Automation
 
@@ -1490,23 +1778,53 @@ The editor's user interface is dependent on the editor types. The editor provide
 	</ck:card>
 </ck:columns>
 
-### Email editing
+<ck:heading-badge heading-id='email-editing' badge='premium'>Email editing</ck:heading-badge>
 
 CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.
 
-<ck:card>
-	<ck:card-title level='4' heading-id='email-configuration-helper'>
-		Email configuration helper <ck:badge variant='premium' />
-	</ck:card-title>
-	<ck:card-description>
-		While configuring an email editor looks like a demanding task, the email configuration helper plugin is the best way to start and make this experience more manageable.
-	</ck:card-description>
-	<ck:card-footer>
-		<ck:button-link size='sm' variant='secondary' href='{@link features/email-configuration-helper}'>
-			Feature page
-		</ck:button-link>
-	</ck:card-footer>
-</ck:card>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='email-configuration-helper'>
+			Email configuration helper <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Automatically verifies your editor setup for email compatibility, ensures proper HTML structure, manages content restrictions, and warns about unsupported email client features.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/email-configuration-helper}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='layout-tables-email'>
+			Layout tables <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Tables specifically designed for structuring email content rather than presenting data. Include accessibility attributes and email-optimized styling that persists through export to various email clients.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/email#layout-tables}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='export-inline-styles'>
+			Export with inline styles <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Converts global CSS styles into inline HTML attributes for email compatibility. Handles email-specific transformations like converting float properties to align attributes and centering tables via auto margins.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/email#export-with-inline-styles}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 ### Professionally translated language packs
 
@@ -1692,7 +2010,7 @@ The Read-Only Mode feature enables content to be locked from editing while still
 
 <ck:heading-badge heading-id='restricted-editing' badge='premium'>Restricted editing</ck:heading-badge>
 
-The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.
+The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. Editable regions can be defined as inline (within text) or block (entire paragraphs or sections). This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.
 
 <ck:button-link size='sm' variant='secondary' href='{@link features/restricted-editing}'>
 	Feature page
@@ -1719,6 +2037,30 @@ The Word and Character Count feature provides a real-time tracking tool for moni
 The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions.
 
 <ck:button-link size='sm' variant='secondary' href='{@link features/spelling-and-grammar-checking}'>
+	Feature page
+</ck:button-link>
+
+### Content Security Policy
+
+Full Content Security Policy (CSP) support for secure deployments. Configure CKEditor 5 to work within strict CSP environments.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/csp}'>
+	Feature page
+</ck:button-link>
+
+### LTS edition
+
+Long-Term Support edition for enterprise environments requiring extended stability and security updates without feature changes.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/using-lts-edition}'>
+	Feature page
+</ck:button-link>
+
+### Cloud region selection
+
+Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/cloud-services}'>
 	Feature page
 </ck:button-link>
 
@@ -1758,13 +2100,49 @@ Select from numerous toolbar styles and over 100 plugins to tailor an editor tha
 			</ck:button-link>
 		</ck:card-footer>
 	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='plugin-api'>
+			Plugin API
+		</ck:card-title>
+		<ck:card-description>
+			Create custom plugins to extend CKEditor 5 with your own features. Use the package generator to scaffold new plugins with TypeScript or JavaScript templates.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link framework/development-tools/package-generator/using-package-generator}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='custom-editor-creator'>
+			Custom editor creator
+		</ck:card-title>
+		<ck:card-description>
+			Create custom editor types beyond the built-in options. Implement specialized editor configurations like multi-root editors with custom toolbars and UI.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link framework/custom-editor-creator}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 </ck:columns>
 
 ### Themes
 
-Customize the editor theme to match your design needs.
+Customize the editor theme to match your design needs. Change colors, spacing, and visual styling to integrate with your application.
 
 <ck:button-link size='sm' variant='secondary' href='{@link framework/theme-customization}'>
+	Feature page
+</ck:button-link>
+
+### Icon customization
+
+Customize toolbar icons with your own SVG icons or icon sets to match your application branding.
+
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/customizing-icons}'>
 	Feature page
 </ck:button-link>
 
@@ -1773,6 +2151,30 @@ Customize the editor theme to match your design needs.
 The standard UI library of CKEditor 5 is @ckeditor/ckeditor5-ui. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.
 
 <ck:button-link size='sm' variant='secondary' href='{@link framework/architecture/ui-library}'>
+	Feature page
+</ck:button-link>
+
+### Localization framework
+
+Built-in internationalization framework with 38+ professionally translated languages. Add custom translations for your plugins and UI customizations.
+
+<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/localization}'>
+	Feature page
+</ck:button-link>
+
+<ck:heading-badge heading-id='server-side-editor-api' badge='premium'>Server-side Editor API</ck:heading-badge>
+
+Execute editor operations on the server via REST API. Automate document processing, manage collaborative data, and run secure content operations without browser clients.
+
+<ck:button-link size='sm' variant='secondary' href='{@link features/server-side-editor-api}'>
+	Feature page
+</ck:button-link>
+
+<ck:heading-badge heading-id='webhooks' badge='premium'>Webhooks</ck:heading-badge>
+
+Receive real-time notifications about document events via webhooks. Integrate CKEditor Cloud Services with your backend systems for automated workflows.
+
+<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/guides/webhooks/overview.html' target='_blank'>
 	Feature page
 </ck:button-link>
 
@@ -1824,7 +2226,267 @@ Upload images to your server using the XMLHttpRequest API with a minimal editor 
 
 Upload, store, transform, optimize, and deliver images, videos, and documents with this cloud-based file handler. Upload media from local storage, web cameras, cloud services, and social networks with automated media optimization through a CDN for responsive image delivery. Popular features include adaptive image quality, automated image format conversion, progressive JPEG, and options for preview, resize, stretch, crop, content-aware crop, and setting fill color.
 
-<ck:button-link size='sm' variant='secondary' href='https://uploadcare.com/' target='_blank'>
+<ck:button-link size='sm' variant='secondary' href='{@link features/uploadcare}'>
 	Feature page
 </ck:button-link>
+
+## Integrations
+
+Integrate CKEditor 5 with your technology stack. Official components and guides for popular frameworks, backend platforms, and various installation methods.
+
+### Frontend frameworks
+
+Official CKEditor 5 components for popular frontend frameworks.
+
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='react-integration'>
+			React
+		</ck:card-title>
+		<ck:card-description>
+			Official React component with hooks support. Available via npm or CDN.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/react-default-npm}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='angular-integration'>
+			Angular
+		</ck:card-title>
+		<ck:card-description>
+			Official Angular component with two-way binding support.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/angular}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='vue-integration'>
+			Vue.js
+		</ck:card-title>
+		<ck:card-description>
+			Support for both Vue 2 and Vue 3 with reactive data binding.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations-cdn/vuejs-v3}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='svelte-integration'>
+			Svelte
+		</ck:card-title>
+		<ck:card-description>
+			Svelte integration for reactive editor instances.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/svelte}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='nextjs-integration'>
+			Next.js
+		</ck:card-title>
+		<ck:card-description>
+			Server-side rendering compatible Next.js integration.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations-cdn/next-js}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='nuxt-integration'>
+			Nuxt
+		</ck:card-title>
+		<ck:card-description>
+			Nuxt framework integration for Vue-based SSR applications.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations-cdn/nuxt}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='jquery-integration'>
+			jQuery
+		</ck:card-title>
+		<ck:card-description>
+			jQuery integration for legacy applications and CMS platforms that use jQuery.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/jquery}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='other-js-platforms'>
+			Other JavaScript platforms
+		</ck:card-title>
+		<ck:card-description>
+			CKEditor 5 can be integrated with any JavaScript environment. Use the vanilla JavaScript guide as a starting point for custom integrations.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/quick-start}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
+
+### Backend & platform integrations
+
+Integrate CKEditor 5 with popular backend frameworks and platforms.
+
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='laravel-integration'>
+			Laravel
+		</ck:card-title>
+		<ck:card-description>
+			PHP Laravel framework integration guide.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/laravel}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='dotnet-integration'>
+			.NET
+		</ck:card-title>
+		<ck:card-description>
+			ASP.NET and .NET Core integration.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/dotnet}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='spring-boot-integration'>
+			Spring Boot
+		</ck:card-title>
+		<ck:card-description>
+			Java Spring Boot integration.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/spring-boot}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='sharepoint-integration'>
+			SharePoint
+		</ck:card-title>
+		<ck:card-description>
+			Microsoft SharePoint integration.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/sharepoint}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='salesforce-integration'>
+			Salesforce
+		</ck:card-title>
+		<ck:card-description>
+			Salesforce platform integration.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations-cdn/salesforce}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='other-platforms'>
+			Other platforms
+		</ck:card-title>
+		<ck:card-description>
+			CKEditor 5 can be integrated with any backend platform. Use the vanilla JavaScript guide as a starting point for custom integrations.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/quick-start}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
+
+### Installation methods
+
+Multiple ways to add CKEditor 5 to your project, from quick CDN scripts to full npm builds.
+
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='npm-installation'>
+			npm / Bundler
+		</ck:card-title>
+		<ck:card-description>
+			Install via npm and bundle with Vite, Webpack, or other bundlers. Full tree-shaking support.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations/quick-start}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='cdn-installation'>
+			CDN
+		</ck:card-title>
+		<ck:card-description>
+			Load CKEditor 5 directly from CDN with zero build setup. ESM and UMD bundles available.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/integrations-cdn/quick-start}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='typescript-support'>
+			TypeScript support
+		</ck:card-title>
+		<ck:card-description>
+			Full TypeScript support with type definitions for all APIs and configurations.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/typescript-support}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 <!--FEATURES_DIGEST_END-->
