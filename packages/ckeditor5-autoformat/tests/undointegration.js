@@ -6,7 +6,7 @@
 import { Autoformat } from '../src/autoformat.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { BoldEditing, CodeEditing, StrikethroughEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
@@ -19,11 +19,16 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 
 import { _setModelData, _getModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Autoformat undo integration', () => {
 	let editor, model, doc;
 
 	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		stubUid();
+	} );
 
 	afterEach( () => {
 		return editor.destroy();
@@ -108,7 +113,7 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			expect( _getModelData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
@@ -120,7 +125,7 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			expect( _getModelData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
@@ -132,7 +137,7 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			expect( _getModelData( model ) ).to.equal( '<paragraph>1. []</paragraph>' );
@@ -144,7 +149,7 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>' );
 			editor.execute( 'undo' );
 			expect( _getModelData( model ) ).to.equal( '<paragraph>1) []</paragraph>' );
 		} );
@@ -193,7 +198,7 @@ describe( 'Autoformat undo integration', () => {
 						Autoformat,
 						Paragraph,
 						BoldEditing,
-						LegacyListEditing,
+						ListEditing,
 						Delete,
 						UndoEditing
 					]
@@ -229,7 +234,7 @@ describe( 'Autoformat undo integration', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>' );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
@@ -264,7 +269,7 @@ describe( 'Autoformat undo integration', () => {
 					UndoEditing,
 					Paragraph,
 					Autoformat,
-					LegacyListEditing,
+					ListEditing,
 					HeadingEditing,
 					BoldEditing,
 					ItalicEditing,
