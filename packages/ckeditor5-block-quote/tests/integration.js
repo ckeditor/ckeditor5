@@ -6,7 +6,7 @@
 import { BlockQuote } from '../src/blockquote.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
-import { LegacyList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -19,17 +19,23 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element, viewDocument;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		stubUid();
+
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ BlockQuote, Paragraph, Bold, Image, ImageCaption, LegacyList, Enter, Delete, Heading, Table ]
+				plugins: [ BlockQuote, Paragraph, Bold, Image, ImageCaption, List, Enter, Delete, Heading, Table ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -113,8 +119,8 @@ describe( 'BlockQuote integration', () => {
 			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">[]</listItem>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">[]</paragraph>' +
 				'</blockQuote>' +
 				'<paragraph>x</paragraph>'
 			);
@@ -126,7 +132,7 @@ describe( 'BlockQuote integration', () => {
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
 					'<paragraph>[]</paragraph>' +
 				'</blockQuote>' +
 				'<paragraph>x</paragraph>'
@@ -542,8 +548,8 @@ describe( 'BlockQuote integration', () => {
 	// When blockQuote with a paragraph was pasted into a list item, the item contained the paragraph. It was invalid.
 	// There is a test which checks whether blockQuote will split the list items instead of merging with.
 	describe( 'compatibility with lists', () => {
-		it( 'does not merge the paragraph with list item', () => {
-			_setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+		it( 'merges blockQuote with list item when multiBlock is enabled', () => {
+			_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="bulleted">fo[]o</paragraph>' );
 
 			const df = _parseModel(
 				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
@@ -553,12 +559,47 @@ describe( 'BlockQuote integration', () => {
 			model.insertContent( df, model.document.selection );
 
 			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">fo</paragraph>' +
+				'<blockQuote listIndent="0" listItemId="a00" listType="bulleted">' +
+				'<paragraph>xxx</paragraph>' +
+				'</blockQuote>' +
+				'<heading1 listIndent="0" listItemId="a01" listType="bulleted">yyy[]o</heading1>'
+			);
+		} );
+
+		it( 'does not merge blockQuote with list item when multiBlock is disabled', async () => {
+			const singleBlockElement = document.createElement( 'div' );
+			document.body.appendChild( singleBlockElement );
+
+			const singleBlockEditor = await ClassicTestEditor
+				.create( singleBlockElement, {
+					plugins: [ BlockQuote, Paragraph, Bold, Image, ImageCaption, List, Enter, Delete, Heading, Table ],
+					list: {
+						multiBlock: false
+					}
+				} );
+
+			const singleBlockModel = singleBlockEditor.model;
+
+			_setModelData( singleBlockModel, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+
+			const df = _parseModel(
+				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
+				singleBlockModel.schema
+			);
+
+			singleBlockModel.insertContent( df, singleBlockModel.document.selection );
+
+			expect( _getModelData( singleBlockModel ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">fo</listItem>' +
 				'<blockQuote>' +
 				'<paragraph>xxx</paragraph>' +
 				'</blockQuote>' +
 				'<heading1>yyy[]o</heading1>'
 			);
+
+			await singleBlockEditor.destroy();
+			singleBlockElement.remove();
 		} );
 	} );
 
