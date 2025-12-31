@@ -297,7 +297,7 @@
               "title": "Linking to bookmarks",
               "badge": null,
               "description": "Create internal document links that navigate to bookmarks within the same document. Enable users to link to specific sections for easy in-document navigation.",
-              "link": "{@link features/link#linking-to-bookmarks}"
+              "link": "{@link features/bookmarks#integration-with-the-link-feature}"
             },
             {
               "id": "linking-to-images",
@@ -1166,14 +1166,14 @@
               "title": "Layout tables",
               "badge": "premium",
               "description": "Tables specifically designed for structuring email content rather than presenting data. Include accessibility attributes and email-optimized styling that persists through export to various email clients.",
-              "link": "{@link features/email#layout-tables}"
+              "link": "{@link features/email#layout-tables-plugin}"
             },
             {
               "id": "export-inline-styles",
               "title": "Export with inline styles",
               "badge": "premium",
               "description": "Converts global CSS styles into inline HTML attributes for email compatibility. Handles email-specific transformations like converting float properties to align attributes and centering tables via auto margins.",
-              "link": "{@link features/email#export-with-inline-styles}"
+              "link": "{@link features/email#export-with-inline-styles-plugin}"
             }
           ]
         },
@@ -1341,7 +1341,7 @@
           "type": "simple",
           "badge": "premium",
           "description": "Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.",
-          "link": "{@link getting-started/setup/cloud-services}"
+          "link": "{@link features/cloud-services-overview}"
         }
       ]
     },

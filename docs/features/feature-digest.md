@@ -539,7 +539,7 @@ Facilitates the addition of hyperlinks to text, automatically converting typed o
 			Create internal document links that navigate to bookmarks within the same document. Enable users to link to specific sections for easy in-document navigation.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/link#linking-to-bookmarks}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/bookmarks#integration-with-the-link-feature}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -1805,7 +1805,7 @@ CKEditor 5 provides a wide variety of tools and functions for editing almost any
 			Tables specifically designed for structuring email content rather than presenting data. Include accessibility attributes and email-optimized styling that persists through export to various email clients.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/email#layout-tables}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/email#layout-tables-plugin}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -1819,7 +1819,7 @@ CKEditor 5 provides a wide variety of tools and functions for editing almost any
 			Converts global CSS styles into inline HTML attributes for email compatibility. Handles email-specific transformations like converting float properties to align attributes and centering tables via auto margins.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/email#export-with-inline-styles}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/email#export-with-inline-styles-plugin}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -2060,7 +2060,7 @@ Long-Term Support edition for enterprise environments requiring extended stabili
 
 Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.
 
-<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/cloud-services}'>
+<ck:button-link size='sm' variant='secondary' href='{@link features/cloud-services-overview}'>
 	Feature page
 </ck:button-link>
 
