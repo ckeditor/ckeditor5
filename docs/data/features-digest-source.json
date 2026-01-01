@@ -657,18 +657,25 @@
               "link": "{@link features/users-in-real-time-collaboration}"
             },
             {
-              "id": "on-premises",
-              "title": "On-premises",
+              "id": "presence-list",
+              "title": "Presence list",
               "badge": "premium",
-              "description": "On-premises real-time collaboration version to deploy to your own infrastructure. Supports private cloud deployments and hybrid configurations where some services run locally while others connect to CKEditor Cloud Services.",
-              "link": "https://ckeditor.com/docs/cs/latest/onpremises/index.html"
+              "description": "Display avatars of all currently connected users in a collapsible row. Shows who is currently viewing or editing the document in real time.",
+              "link": "{@link features/users-in-real-time-collaboration}"
             },
             {
-              "id": "saas",
-              "title": "SaaS",
+              "id": "user-selections",
+              "title": "User selections",
               "badge": "premium",
-              "description": "Real-time collaboration provided as a service by CKSource.",
-              "link": "https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html"
+              "description": "See other users' text selections and carets in real time. Each collaborator is assigned a unique color for easy identification.",
+              "link": "{@link features/users-in-real-time-collaboration}"
+            },
+            {
+              "id": "saas-or-on-premises",
+              "title": "SaaS or on-premises",
+              "badge": "premium",
+              "description": "Choose between hosted collaboration services (SaaS) or deploy to your own infrastructure (on-premises) for full control over data and compliance.",
+              "link": "https://ckeditor.com/docs/cs/latest/guides/saas-vs-on-premises.html"
             }
           ]
         },
@@ -1342,6 +1349,14 @@
           "badge": "premium",
           "description": "Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.",
           "link": "{@link features/cloud-services-overview}"
+        },
+        {
+          "id": "on-premises",
+          "title": "On-premises (Self-hosted)",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Deploy CKEditor Cloud Services to your own infrastructure. Supports private cloud deployments and hybrid configurations for organizations requiring full control over their data and infrastructure.",
+          "link": "https://ckeditor.com/docs/cs/latest/onpremises/index.html"
         }
       ]
     },

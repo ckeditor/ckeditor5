@@ -1136,28 +1136,42 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 	</ck:card>
 
 	<ck:card>
-		<ck:card-title level='4' heading-id='on-premises'>
-			On-premises <ck:badge variant='premium' />
+		<ck:card-title level='4' heading-id='presence-list'>
+			Presence list <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			On-premises real-time collaboration version to deploy to your own infrastructure. Supports private cloud deployments and hybrid configurations where some services run locally while others connect to CKEditor Cloud Services.
+			Display avatars of all currently connected users in a collapsible row. Shows who is currently viewing or editing the document in real time.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/onpremises/index.html' target='_blank'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/users-in-real-time-collaboration}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
 	</ck:card>
 
 	<ck:card>
-		<ck:card-title level='4' heading-id='saas'>
-			SaaS <ck:badge variant='premium' />
+		<ck:card-title level='4' heading-id='user-selections'>
+			User selections <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			Real-time collaboration provided as a service by CKSource.
+			See other users' text selections and carets in real time. Each collaborator is assigned a unique color for easy identification.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html' target='_blank'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/users-in-real-time-collaboration}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='saas-or-on-premises'>
+			SaaS or on-premises <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Choose between hosted collaboration services (SaaS) or deploy to your own infrastructure (on-premises) for full control over data and compliance.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/guides/saas-vs-on-premises.html' target='_blank'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -2061,6 +2075,14 @@ Long-Term Support edition for enterprise environments requiring extended stabili
 Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.
 
 <ck:button-link size='sm' variant='secondary' href='{@link features/cloud-services-overview}'>
+	Feature page
+</ck:button-link>
+
+<ck:heading-badge heading-id='on-premises' badge='premium'>On-premises (Self-hosted)</ck:heading-badge>
+
+Deploy CKEditor Cloud Services to your own infrastructure. Supports private cloud deployments and hybrid configurations for organizations requiring full control over their data and infrastructure.
+
+<ck:button-link size='sm' variant='secondary' href='https://ckeditor.com/docs/cs/latest/onpremises/index.html' target='_blank'>
 	Feature page
 </ck:button-link>
 
