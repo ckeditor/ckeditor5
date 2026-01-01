@@ -1232,11 +1232,25 @@ The track changes feature brings automatic suggestion marking for the document a
 
 <ck:columns>
 	<ck:card>
+		<ck:card-title level='4' heading-id='granular-suggestions'>
+			Granular suggestions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Track insertions, deletions, block splits, format changes, and custom changes with clear, understandable suggestion descriptions for excellent UX.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes-custom-features}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
 		<ck:card-title level='4' heading-id='track-changes-preview'>
 			Preview mode <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			Preview how the document will look with all suggestions accepted or rejected.
+			Preview how the document will look with all suggestions accepted or rejected before committing changes.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes-preview}'>
@@ -1246,11 +1260,25 @@ The track changes feature brings automatic suggestion marking for the document a
 	</ck:card>
 
 	<ck:card>
-		<ck:card-title level='4' heading-id='granular-suggestions'>
-			Granular suggestions <ck:badge variant='premium' />
+		<ck:card-title level='4' heading-id='batch-suggestions'>
+			Batch accept or discard <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			Fine-grained control over which changes are tracked and how suggestions are grouped.
+			Accept or discard all suggestions at once, or filter by author or type for efficient review workflows.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='suggestion-threads'>
+			Comment threads in suggestions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Collaborate on suggestions through threaded discussions. Team members can comment and reply directly on each suggestion.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/track-changes}'>

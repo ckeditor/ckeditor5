@@ -719,17 +719,31 @@
           "link": "{@link features/track-changes}",
           "features": [
             {
-              "id": "track-changes-preview",
-              "title": "Preview mode",
-              "badge": "premium",
-              "description": "Preview how the document will look with all suggestions accepted or rejected.",
-              "link": "{@link features/track-changes-preview}"
-            },
-            {
               "id": "granular-suggestions",
               "title": "Granular suggestions",
               "badge": "premium",
-              "description": "Fine-grained control over which changes are tracked and how suggestions are grouped.",
+              "description": "Track insertions, deletions, block splits, format changes, and custom changes with clear, understandable suggestion descriptions for excellent UX.",
+              "link": "{@link features/track-changes-custom-features}"
+            },
+            {
+              "id": "track-changes-preview",
+              "title": "Preview mode",
+              "badge": "premium",
+              "description": "Preview how the document will look with all suggestions accepted or rejected before committing changes.",
+              "link": "{@link features/track-changes-preview}"
+            },
+            {
+              "id": "batch-suggestions",
+              "title": "Batch accept or discard",
+              "badge": "premium",
+              "description": "Accept or discard all suggestions at once, or filter by author or type for efficient review workflows.",
+              "link": "{@link features/track-changes}"
+            },
+            {
+              "id": "suggestion-threads",
+              "title": "Comment threads in suggestions",
+              "badge": "premium",
+              "description": "Collaborate on suggestions through threaded discussions. Team members can comment and reply directly on each suggestion.",
               "link": "{@link features/track-changes}"
             }
           ]
