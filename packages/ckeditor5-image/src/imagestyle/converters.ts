@@ -138,7 +138,7 @@ function normalizeFloatToDefinitionStyle(
 
 	const builtinDefinition = DEFAULT_OPTIONS[ definition.name ];
 
-	if ( !builtinDefinition || !isEqual( definition, builtinDefinition ) ) {
+	if ( !isEqual( definition, builtinDefinition ) ) {
 		return;
 	}
 
