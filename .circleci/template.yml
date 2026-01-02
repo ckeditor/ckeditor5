@@ -332,6 +332,8 @@ workflows:
             branches:
               only:
                 - master
+                # TODO: Remove when this code lands on #master (see issue https://github.com/ckeditor/ckeditor5-internal/issues/4190).
+                - master-v48
                 - stable
                 - release
                 - /^release-v.*$/

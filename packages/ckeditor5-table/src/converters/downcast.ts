@@ -25,6 +25,7 @@ import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 import { TableWalker } from '../tablewalker.js';
+import { isTableHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -114,8 +115,9 @@ export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled: ()
 	return ( tableCell, { writer } ) => {
 		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
 		if ( options.cellTypeEnabled?.() ) {
+			const tableCellType = tableCell.getAttribute( 'tableCellType' ) as TableCellType;
 			const cellElementName: 'td' | 'th' = (
-				tableCell.getAttribute( 'tableCellType' ) === 'header' ?
+				isTableHeaderCellType( tableCellType ) ?
 					'th' :
 					'td'
 			);
@@ -247,11 +249,7 @@ function hasAnyAttribute( element: ModelNode ): boolean {
  */
 export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunction {
 	return ( table, conversionApi ) => {
-		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
-		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
-		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
-
-		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+		if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
 			return null;
 		}
 
@@ -264,11 +262,7 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
  */
 export function convertPlainTableCaption( editor: Editor ): DowncastElementCreatorFunction {
 	return ( modelElement, { writer, options } ) => {
-		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
-		const isClipboardPipeline = options.isClipboardPipeline;
-		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
-
-		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+		if ( !options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
 			return null;
 		}
 
@@ -387,11 +381,7 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 				const { item, attributeNewValue } = data;
 				const { mapper, writer } = conversionApi;
 
-				const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
-				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
-				const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
-
-				if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+				if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
 					return;
 				}
 

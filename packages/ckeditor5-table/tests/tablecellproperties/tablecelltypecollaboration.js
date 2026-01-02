@@ -17,10 +17,7 @@ describe( 'collaboration', () => {
 
 	beforeEach( async () => {
 		const editorConfig = {
-			plugins: [ TableEditing, TableCellPropertiesEditing, Paragraph, TableSelection ],
-			experimentalFlags: {
-				tableCellTypeSupport: true
-			}
+			plugins: [ TableEditing, TableCellPropertiesEditing, Paragraph, TableSelection ]
 		};
 
 		[ john, kate ] = await Promise.all( [
