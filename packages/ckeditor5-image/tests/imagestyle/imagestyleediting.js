@@ -383,6 +383,99 @@ describe( 'ImageStyleEditing', () => {
 							.to.equal( '<paragraph><imageInline imageStyle="alignLeft"></imageInline></paragraph>' );
 					} );
 				} );
+
+				describe( 'float style normalization', () => {
+					it( 'should convert float: left to alignLeft for inline image', () => {
+						editor.setData( '<p><img style="float: left" src="/assets/sample.png" /></p>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><imageInline imageStyle="alignLeft" src="/assets/sample.png"></imageInline></paragraph>'
+						);
+					} );
+
+					it( 'should convert float: right to alignRight for inline image', () => {
+						editor.setData( '<p><span><img style="float: right" src="/assets/sample.png" /></span></p>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><imageInline imageStyle="alignRight" src="/assets/sample.png"></imageInline></paragraph>'
+						);
+					} );
+
+					it( 'should not convert float: left if not a default style', async () => {
+						const customEditor = await VirtualTestEditor.create( {
+							plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, Paragraph ],
+							image: {
+								styles: {
+									options: [ {
+										name: 'alignLeft',
+										modelElements: [ 'imageInline' ],
+										className: 'custom-align-left'
+									} ]
+								}
+							}
+						} );
+
+						customEditor.setData( '<p><img style="float: left" src="/assets/sample.png" /></p>' );
+
+						expect( _getModelData( customEditor.model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+						);
+
+						await customEditor.destroy();
+					} );
+
+					it( 'should not convert float: center', () => {
+						editor.setData( '<p><img style="float: center" src="/assets/sample.png" /></p>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+						);
+					} );
+
+					it( 'should not convert if float style is not consumable', () => {
+						editor.conversion.for( 'upcast' ).add( dispatcher => {
+							dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.viewItem, { styles: [ 'float' ] } );
+							}, { priority: 'high' } );
+						} );
+
+						editor.setData( '<p><img style="float: left" src="/assets/sample.png" /></p>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
+						);
+					} );
+
+					it( 'should consume the float style if converted', () => {
+						const consumeSpy = testUtils.sinon.spy( ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'float' ] } ) ).to.be.false;
+						} );
+
+						editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+						editor.setData( '<p><img style="float: left" src="/assets/sample.png" /></p>' );
+
+						expect( consumeSpy ).to.be.calledOnce;
+					} );
+
+					it( 'should not set imageStyle for float when alignment styles are not configured', async () => {
+						const testEditor = await VirtualTestEditor.create( {
+							plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, Paragraph ],
+							image: {
+								styles: {
+									options: [ 'inline', 'block' ]
+								}
+							}
+						} );
+
+						testEditor.setData( '<p><img src="/assets/sample.png" style="float:left;" alt="foo"></p>' );
+
+						expect( _getModelData( testEditor.model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph><imageInline alt="foo" src="/assets/sample.png"></imageInline></paragraph>'
+						);
+
+						await testEditor.destroy();
+					} );
+				} );
 			} );
 
 			describe( 'of the block image', () => {
@@ -493,6 +586,106 @@ describe( 'ImageStyleEditing', () => {
 
 						expect( _getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '<imageBlock alt="Foo." imageStyle="alignCenter"></imageBlock>' );
+					} );
+				} );
+
+				describe( 'float style normalization', () => {
+					it( 'should convert float: left to alignBlockLeft for block image', () => {
+						editor.setData( '<figure class="image" style="float: left"><img src="/assets/sample.png" /></figure>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<imageBlock imageStyle="alignBlockLeft" src="/assets/sample.png"></imageBlock>'
+						);
+					} );
+
+					it( 'should convert float: right to alignBlockRight for block image', () => {
+						editor.setData( '<figure class="image" style="float: right"><img src="/assets/sample.png" /></figure>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<imageBlock imageStyle="alignBlockRight" src="/assets/sample.png"></imageBlock>'
+						);
+					} );
+
+					it( 'should not convert float: left if not a default style', async () => {
+						const customEditor = await VirtualTestEditor.create( {
+							plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, Paragraph ],
+							image: {
+								styles: {
+									options: [ {
+										name: 'alignBlockLeft',
+										modelElements: [ 'imageBlock' ],
+										className: 'custom-align-block-left'
+									} ]
+								}
+							}
+						} );
+
+						customEditor.setData( '<figure class="image" style="float: left"><img src="/assets/sample.png" /></figure>' );
+
+						expect( _getModelData( customEditor.model, { withoutSelection: true } ) ).to.equal(
+							'<imageBlock src="/assets/sample.png"></imageBlock>'
+						);
+
+						await customEditor.destroy();
+					} );
+
+					it( 'should not convert float: center', () => {
+						editor.setData( '<figure class="image" style="float: center"><img src="/assets/sample.png" /></figure>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<imageBlock src="/assets/sample.png"></imageBlock>'
+						);
+					} );
+
+					it( 'should not convert if float style is not consumable', () => {
+						editor.conversion.for( 'upcast' ).add( dispatcher => {
+							dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.viewItem, { styles: [ 'float' ] } );
+							}, { priority: 'high' } );
+						} );
+
+						editor.setData( '<figure class="image" style="float: left"><img src="/assets/sample.png" /></figure>' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<imageBlock src="/assets/sample.png"></imageBlock>'
+						);
+					} );
+
+					it( 'should consume the float style if converted', () => {
+						const consumeSpy = testUtils.sinon.spy( ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'float' ] } ) ).to.be.false;
+						} );
+
+						editor.data.upcastDispatcher.on( 'element:figure', consumeSpy, { priority: 'lowest' } );
+						editor.setData( '<figure class="image" style="float: left"><img src="/assets/sample.png" /></figure>' );
+
+						expect( consumeSpy ).to.be.called;
+					} );
+
+					it( 'should not set imageStyle for float when alignment styles are not configured', async () => {
+						const testEditor = await VirtualTestEditor.create( {
+							plugins: [ ImageInlineEditing, ImageBlockEditing, ImageStyleEditing, Paragraph ],
+							image: {
+								styles: {
+									options: [
+										{
+											name: 'foo-left',
+											title: 'Image on left margin',
+											className: 'image-margin-left',
+											modelElements: [ 'imageInline' ]
+										}
+									]
+								}
+							}
+						} );
+
+						testEditor.setData( '<figure class="image" style="float: left"><img src="/assets/sample.png" /></figure>' );
+
+						expect( _getModelData( testEditor.model, { withoutSelection: true } ) ).to.equal(
+							'<imageBlock src="/assets/sample.png"></imageBlock>'
+						);
+
+						await testEditor.destroy();
 					} );
 				} );
 			} );
