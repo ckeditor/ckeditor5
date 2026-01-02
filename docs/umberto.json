@@ -422,7 +422,8 @@
 	},
 	"hooks": {
 		"beforeHexo":[
-			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
+			"../scripts/docs/fetch-ckeditor5-lts-version.mjs",
+			"../scripts/docs/generate-features-digest.mjs"
 		]
 	},
 	"docsearch": {
