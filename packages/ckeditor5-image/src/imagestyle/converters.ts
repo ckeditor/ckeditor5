@@ -4,7 +4,14 @@
  */
 
 import isEqual from 'es-toolkit/compat/isEqual';
-import type { DowncastAttributeEvent, ModelElement, UpcastConversionApi, UpcastElementEvent, ViewElement } from 'ckeditor5/src/engine.js';
+import type {
+	DowncastAttributeEvent,
+	ModelElement,
+	ModelItem,
+	UpcastConversionApi,
+	UpcastElementEvent,
+	ViewElement
+} from 'ckeditor5/src/engine.js';
 import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 import { DEFAULT_OPTIONS } from './utils.js';
@@ -86,7 +93,7 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 		}
 
 		// Normalize float styles (alignLeft, alignBlockLeft, alignRight, alignBlockRight).
-		normalizeFloatToDefinitionStyle( conversionApi, viewElement, modelImageElement as ModelElement, styles );
+		normalizeFloatToDefinitionStyle( conversionApi, viewElement, modelImageElement, styles );
 	};
 }
 
@@ -99,7 +106,7 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 function normalizeFloatToDefinitionStyle(
 	conversionApi: UpcastConversionApi,
 	viewElement: ViewElement,
-	modelElement: ModelElement,
+	modelElement: ModelItem,
 	styles: Array<ImageStyleOptionDefinition>
 ) {
 	if ( !conversionApi.consumable.test( viewElement, { styles: [ 'float' ] } ) ) {
@@ -107,7 +114,7 @@ function normalizeFloatToDefinitionStyle(
 	}
 
 	let floatStyleName: string | null = null;
-	const blockStylePrefix = modelElement.name === 'imageBlock' ? 'Block' : '';
+	const blockStylePrefix = modelElement.is( 'element', 'imageBlock' ) ? 'Block' : '';
 
 	switch ( viewElement.getStyle( 'float' ) ) {
 		case 'left':
@@ -129,9 +136,9 @@ function normalizeFloatToDefinitionStyle(
 		return;
 	}
 
-	const isDefaultBuiltinDefinition = Object.values( DEFAULT_OPTIONS ).find( defaultOption => isEqual( definition, defaultOption ) );
+	const builtinDefinition = DEFAULT_OPTIONS[ definition.name ];
 
-	if ( !isDefaultBuiltinDefinition ) {
+	if ( !builtinDefinition || !isEqual( definition, builtinDefinition ) ) {
 		return;
 	}
 
