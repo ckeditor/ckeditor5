@@ -64,6 +64,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.true;
 
 		// Table row:
 		expect( model.schema.isRegistered( 'tableRow' ) ).to.be.true;
