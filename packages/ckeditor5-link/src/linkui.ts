@@ -7,15 +7,15 @@
  * @module link/linkui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { IconLink, IconPencil, IconUnlink, IconSettings } from 'ckeditor5/src/icons.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { IconLink, IconPencil, IconUnlink, IconSettings } from '@ckeditor/ckeditor5-icons';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
 	type ViewDocumentClickEvent,
 	type ViewElement,
 	type ViewPosition
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 import {
 	ButtonView,
 	SwitchButtonView,
@@ -26,10 +26,10 @@ import {
 	ToolbarView,
 	type ViewWithCssTransitionDisabler,
 	type ButtonExecuteEvent
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
-import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
-import { isWidget } from 'ckeditor5/src/widget.js';
+import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions } from '@ckeditor/ckeditor5-utils';
+import { isWidget } from '@ckeditor/ckeditor5-widget';
 
 import { LinkEditing } from './linkediting.js';
 

@@ -7,12 +7,12 @@
  * @module table/tablemouse
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { TableSelection } from './tableselection.js';
 import { MouseEventsObserver } from './tablemouse/mouseeventsobserver.js';
 import { TableUtils } from './tableutils.js';
-import type { ViewDocumentDomEventData, ModelElement } from 'ckeditor5/src/engine.js';
+import type { ViewDocumentDomEventData, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * This plugin enables a table cells' selection with the mouse.

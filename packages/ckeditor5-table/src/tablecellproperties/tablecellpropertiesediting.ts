@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import { priorities } from 'ckeditor5/src/utils.js';
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { priorities } from '@ckeditor/ckeditor5-utils';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	addBorderStylesRules,
 	addPaddingStylesRules,
@@ -20,7 +20,7 @@ import {
 	type UpcastConversionData,
 	type UpcastElementEvent,
 	type ModelElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';

@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import { type Command, Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { IconTableCellProperties } from 'ckeditor5/src/icons.js';
+import { Plugin, type Editor, type Command } from '@ckeditor/ckeditor5-core';
+import { IconTableCellProperties } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -16,8 +16,8 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type View
-} from 'ckeditor5/src/ui.js';
-import type { Batch } from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-ui';
+import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 import { TableCellPropertiesView } from './ui/tablecellpropertiesview.js';
 import {
@@ -36,7 +36,7 @@ import {
 	getNormalizedDefaultProperties,
 	type NormalizedDefaultProperties
 } from '../utils/table-properties.js';
-import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import type { GetCallback, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import { type TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 

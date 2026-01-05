@@ -7,8 +7,8 @@
  * @module link/utils/manualdecorator
  */
 
-import { ObservableMixin, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { MatcherObjectPattern } from 'ckeditor5/src/engine.js';
+import { ObservableMixin, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import type { MatcherObjectPattern } from '@ckeditor/ckeditor5-engine';
 import type { NormalizedLinkDecoratorManualDefinition } from '../utils.js';
 
 /**

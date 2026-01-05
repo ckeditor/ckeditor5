@@ -5,7 +5,7 @@
 			"className": "AutoLink",
 			"description": "Automatically turns plain text links in the document into active URLs as you write. Works for emails, too.",
 			"docs": "features/link.html#autolink-feature",
-			"path": "src/autolink.js",
+			"path": "src/autolink.ts",
 			"requires": [
 				"Link"
 			]
@@ -15,7 +15,7 @@
 			"className": "Link",
 			"description": "Brings support for inserting hyperlinks into the content and offers the UI to create and edit them.",
 			"docs": "features/link.html",
-			"path": "src/link.js",
+			"path": "src/link.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
@@ -52,7 +52,7 @@
 			"className": "LinkImage",
 			"description": "Allows adding clickable links to images for creating banners or referrers.",
 			"docs": "features/images/images-linking.html",
-			"path": "src/linkimage.js",
+			"path": "src/linkimage.ts",
 			"requires": [
 				"Link",
 				"ImageBlock"

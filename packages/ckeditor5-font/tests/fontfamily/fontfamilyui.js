@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconFontFamily } from 'ckeditor5/src/icons.js';
+import { IconFontFamily } from '@ckeditor/ckeditor5-icons';
 import { FontFamilyEditing } from '../../src/fontfamily/fontfamilyediting.js';
 import { FontFamilyUI } from '../../src/fontfamily/fontfamilyui.js';
 

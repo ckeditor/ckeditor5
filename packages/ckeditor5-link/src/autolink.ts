@@ -7,11 +7,11 @@
  * @module link/autolink
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
-import type { ModelDocumentSelectionChangeEvent, Model, ModelPosition, ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
-import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
-import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
+import type { ModelDocumentSelectionChangeEvent, Model, ModelPosition, ModelRange, ModelWriter } from '@ckeditor/ckeditor5-engine';
+import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from '@ckeditor/ckeditor5-typing';
+import type { EnterCommand, ShiftEnterCommand } from '@ckeditor/ckeditor5-enter';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils.js';
 import { LinkEditing } from './linkediting.js';

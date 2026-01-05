@@ -1,9 +1,9 @@
 {
-	"extends": "../../tsconfig.dist.json",
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"rootDir": "./src",
 		"types": [
-			"./typings/types"
+			"../../typings/types"
 		]
 	},
 	"include": [

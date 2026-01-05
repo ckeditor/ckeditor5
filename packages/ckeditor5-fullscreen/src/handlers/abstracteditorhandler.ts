@@ -7,9 +7,9 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import { BodyCollection, ButtonView, DialogViewPosition } from 'ckeditor5/src/ui.js';
-import { global, createElement, Rect, type EventInfo, ResizeObserver } from 'ckeditor5/src/utils.js';
-import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import { BodyCollection, ButtonView, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
+import { global, createElement, Rect, type EventInfo, ResizeObserver } from '@ckeditor/ckeditor5-utils';
+import type { ElementApi, Editor, EditorConfig } from '@ckeditor/ckeditor5-core';
 import { IconDocumentOutlineToggle, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 const DIALOG_OFFSET = 28;

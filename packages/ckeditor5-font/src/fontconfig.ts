@@ -7,8 +7,8 @@
  * @module font/fontconfig
  */
 
-import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
-import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine.js';
+import type { ColorOption, ColorPickerConfig } from '@ckeditor/ckeditor5-ui';
+import type { MatcherPattern, ViewElementDefinition } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The configuration of the font color and font background color features.

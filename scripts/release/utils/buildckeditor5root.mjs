@@ -6,7 +6,7 @@
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEDITOR5_MAIN_PACKAGE_PATH } from '../../constants.mjs';
 
-export default async function buildTsAndDllForCKEditor5Root() {
+export default async function buildCKEditor5Root() {
 	const options = {
 		async: true,
 		verbosity: 'silent',
@@ -14,6 +14,4 @@ export default async function buildTsAndDllForCKEditor5Root() {
 	};
 
 	await tools.shExec( 'pnpm run build', options );
-	await tools.shExec( 'pnpm run build:dist', options );
-	await tools.shExec( 'pnpm run dll:build', options );
 }

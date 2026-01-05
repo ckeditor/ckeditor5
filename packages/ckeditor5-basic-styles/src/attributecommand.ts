@@ -7,7 +7,7 @@
  * @module basic-styles/attributecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command

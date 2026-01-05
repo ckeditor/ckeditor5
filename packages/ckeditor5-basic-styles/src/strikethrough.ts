@@ -7,7 +7,7 @@
  * @module basic-styles/strikethrough
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { StrikethroughEditing } from './strikethrough/strikethroughediting.js';
 import { StrikethroughUI } from './strikethrough/strikethroughui.js';
 

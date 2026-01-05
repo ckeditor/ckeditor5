@@ -2,27 +2,33 @@
   "name": "@ckeditor/ckeditor5-markdown-gfm",
   "version": "47.3.0",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-markdown-gfm"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin",
-    "ckeditor5-dll"
-  ],
-  "sideEffects": [
-    "*.css",
-    "build/**/*.js",
-    "dist/translations/*.umd.js"
+    "ckeditor5-plugin"
   ],
   "type": "module",
   "main": "src/index.ts",
+  "sideEffects": [
+    "*.css",
+    "dist/translations/*.umd.js"
+  ],
   "dependencies": {
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@types/hast": "3.0.4",
-    "ckeditor5": "workspace:*",
     "hast-util-from-dom": "5.0.1",
     "hast-util-to-html": "9.0.5",
     "hast-util-to-mdast": "10.1.2",
@@ -43,7 +49,6 @@
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",
@@ -56,38 +61,20 @@
     "@ckeditor/ckeditor5-media-embed": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "typescript": "5.3.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-markdown-gfm"
+  "scripts": {
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
-    "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "depcheckIgnore": [
     "hast"
-  ],
-  "scripts": {
-    "dll:build": "webpack",
-    "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

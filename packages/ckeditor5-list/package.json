@@ -2,13 +2,21 @@
   "name": "@ckeditor/ckeditor5-list",
   "version": "47.3.0",
   "description": "Ordered and unordered lists feature to CKEditor 5.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-list"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin",
-    "ckeditor5-dll"
+    "ckeditor5-plugin"
   ],
   "type": "module",
   "main": "src/index.ts",
@@ -21,8 +29,7 @@
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "ckeditor5": "workspace:*"
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",
@@ -31,7 +38,6 @@
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
@@ -49,35 +55,17 @@
     "@ckeditor/ckeditor5-remove-format": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-widget": "workspace:*",
-    "typescript": "5.3.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "@ckeditor/ckeditor5-widget": "workspace:*"
   },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-list"
+  "scripts": {
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
-    "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "dll:build": "webpack",
-    "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

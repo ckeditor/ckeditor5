@@ -14,8 +14,8 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core.js';
-import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-core';
+import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';

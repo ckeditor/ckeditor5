@@ -7,7 +7,7 @@
  * @module table/utils/common
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type {
 	Conversion,
 	ModelElement,
@@ -16,7 +16,7 @@ import type {
 	ModelSchema,
 	ModelWriter,
 	ModelDocumentSelection
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
 import { type TableUtils } from '../tableutils.js';

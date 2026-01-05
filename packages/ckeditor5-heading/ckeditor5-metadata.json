@@ -5,7 +5,7 @@
 			"className": "Title",
 			"description": "Enables support for adding the title field to your document. It helps ensure that there will always be a single title field at the beginning of the document.",
 			"docs": "features/title.html",
-			"path": "src/title.js",
+			"path": "src/title.ts",
 			"htmlOutput": [
 				{
 					"elements": "h1"
@@ -17,7 +17,7 @@
 			"className": "Heading",
 			"description": "Enables support for creating headings in your content. The heading levels available are configurable.",
 			"docs": "features/headings.html",
-			"path": "src/heading.js",
+			"path": "src/heading.ts",
 			"uiComponents": [
 				{
 					"type": "Dropdown",
