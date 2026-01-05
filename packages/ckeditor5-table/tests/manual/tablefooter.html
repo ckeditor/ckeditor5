@@ -22,6 +22,76 @@
 
 			<br>
 
+			<strong>Table with multiple `tfoot` at the end</strong>
+			<figure class="table content-table">
+				<table>
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tfoot>
+						<tr>
+							<td>Foot 3</td>
+							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with `tfoot` at the beginning and the end</strong>
+			<figure class="table content-table">
+				<table>
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 3</td>
+							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with only `tfoot`</strong>
+			<figure class="table content-table">
+				<table>
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
 			<strong>Table with `thead` and `tfoot`</strong>
 			<figure class="table content-table">
 				<table>
@@ -47,6 +117,54 @@
 					</tfoot>
 				</table>
 			</figure>
+
+			<br>
+
+			<strong>Table that ends with `th` has incremented `footerRows`</strong>
+			<table class="content-table">
+				<tbody>
+					<tr>
+						<td>00</td>
+						<td>01</td>
+					</tr>
+					<tr>
+						<th>10</th>
+						<th>11</th>
+					</tr>
+				</tbody>
+			</table>
+
+			<br>
+
+			<strong>Table that begins with `th` has incremented `headingRows`</strong>
+			<table class="content-table">
+				<tbody>
+					<tr>
+						<th>00</th>
+						<th>01</th>
+					</tr>
+					<tr>
+						<td>10</td>
+						<td>11</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<br>
+
+			<strong>Table filled entirely with `th` has incremented `headingRows` and no `footerRows`</strong>
+			<table class="content-table">
+				<tbody>
+					<tr>
+						<th>00</th>
+						<th>01</th>
+					</tr>
+					<tr>
+						<th>10</th>
+						<th>11</th>
+					</tr>
+				</tbody>
+			</table>
 
 			<br>
 
