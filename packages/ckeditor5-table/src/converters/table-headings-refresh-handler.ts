@@ -13,6 +13,7 @@ import type {
 	Model
 } from 'ckeditor5/src/engine.js';
 
+import type { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
 
 /**
@@ -25,8 +26,10 @@ import { TableWalker } from '../tablewalker.js';
  *
  * @internal
  */
-export function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
+export function tableHeadingsRefreshHandler( model: Model, editing: EditingController, tableUtils: TableUtils ): void {
 	const differ = model.document.differ;
+	const rowsToReconvert = new Set<ModelElement>();
+	const cellsToReconvert = new Set<ModelElement>();
 
 	for ( const change of differ.getChanges() ) {
 		let table;
@@ -39,12 +42,12 @@ export function tableHeadingsRefreshHandler( model: Model, editing: EditingContr
 				continue;
 			}
 
-			if ( change.attributeKey != 'headingRows' && change.attributeKey != 'headingColumns' ) {
+			if ( change.attributeKey != 'headingRows' && change.attributeKey != 'headingColumns' && change.attributeKey != 'footerRows' ) {
 				continue;
 			}
 
 			table = element;
-			isRowChange = change.attributeKey == 'headingRows';
+			isRowChange = change.attributeKey == 'headingRows' || change.attributeKey == 'footerRows';
 		} else if ( change.name == 'tableRow' || change.name == 'tableCell' ) {
 			table = change.position.findAncestor( 'table' );
 			isRowChange = change.name == 'tableRow';
@@ -58,16 +61,47 @@ export function tableHeadingsRefreshHandler( model: Model, editing: EditingContr
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		const tableWalker = new TableWalker( table );
+		const totalRows = tableUtils.getRows( table );
 
 		for ( const tableSlot of tableWalker ) {
+			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
+
+			if ( !viewElement || !viewElement.is( 'element' ) ) {
+				continue;
+			}
+
+			let shouldReconvert = false;
+
 			const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 			const expectedElementName = isHeading ? 'th' : 'td';
 
-			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
+			if ( viewElement.name != expectedElementName ) {
+				shouldReconvert = true;
+			}
 
-			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
-				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as ModelElement );
+			else if ( change.type === 'attribute' && change.attributeKey === 'footerRows' ) {
+				const oldValue = ( change.attributeOldValue as number | null ) || 0;
+				const newValue = ( change.attributeNewValue as number | null ) || 0;
+
+				const minFooterRows = Math.min( oldValue, newValue );
+				const maxFooterRows = Math.max( oldValue, newValue );
+
+				if ( tableSlot.row >= totalRows - maxFooterRows && tableSlot.row <= totalRows - minFooterRows ) {
+					shouldReconvert = true;
+				}
+			}
+
+			if ( shouldReconvert ) {
+				if ( isRowChange ) {
+					rowsToReconvert.add( tableSlot.cell.parent! as ModelElement );
+				}
+
+				cellsToReconvert.add( tableSlot.cell );
 			}
 		}
+	}
+
+	for ( const row of [ ...cellsToReconvert, ...rowsToReconvert ] ) {
+		editing.reconvertItem( row );
 	}
 }

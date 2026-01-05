@@ -240,7 +240,7 @@ export class TableEditing extends Plugin {
 			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
 			// It's because headings rows / columns are updated based on cell types which triggers their own refresh handler.
 			if ( !isTableCellTypeEnabled( editor ) ) {
-				tableHeadingsRefreshHandler( model, editor.editing );
+				tableHeadingsRefreshHandler( model, editor.editing, tableUtils );
 			}
 
 			tableCellRefreshHandler( model, editor.editing );
