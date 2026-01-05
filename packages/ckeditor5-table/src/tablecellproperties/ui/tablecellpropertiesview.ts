@@ -53,6 +53,7 @@ import {
 } from '../../utils/ui/table-properties.js';
 import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TableCellPropertiesOptions } from '../../tableconfig.js';
+import type { TableCellType } from '../tablecellpropertiesutils.js';
 
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 import '../../../theme/formrow.css';
@@ -64,6 +65,7 @@ export interface TableCellPropertiesViewOptions {
 	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
 	colorPickerConfig: false | ColorPickerConfig;
+	showScopedHeaderOptions?: boolean;
 }
 
 /**
@@ -674,7 +676,7 @@ export class TableCellPropertiesView extends View {
 		} );
 
 		cellTypeDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'cellType', value => {
-			return cellTypeLabels[ value || 'data' ];
+			return cellTypeLabels[ ( value || 'data' ) as TableCellType ];
 		} );
 
 		cellTypeDropdown.fieldView.on( 'execute', evt => {
@@ -938,14 +940,19 @@ export class TableCellPropertiesView extends View {
 	 */
 	private _getCellTypeDefinitions(): Collection<ListDropdownItemDefinition> {
 		const itemDefinitions: Collection<ListDropdownItemDefinition> = new Collection();
-		const cellTypeLabels = this._cellTypeLabels;
+		const labels = this._cellTypeLabels;
+		const types: Array<TableCellType> = [ 'data', 'header' ];
 
-		for ( const type of [ 'data', 'header' ] ) {
+		if ( this.options.showScopedHeaderOptions ) {
+			types.push( 'header-column', 'header-row' );
+		}
+
+		for ( const type of types ) {
 			const definition: ListDropdownItemDefinition = {
 				type: 'button',
 				model: new UIModel( {
 					_cellTypeValue: type,
-					label: cellTypeLabels[ type ],
+					label: labels[ type ],
 					role: 'menuitemradio',
 					withText: true
 				} )
@@ -995,12 +1002,14 @@ export class TableCellPropertiesView extends View {
 	/**
 	 * Provides localized labels for {@link #cellTypeDropdown}.
 	 */
-	private get _cellTypeLabels(): Record<string, string> {
+	private get _cellTypeLabels(): Partial<Record<TableCellType, string>> {
 		const t = this.t!;
 
 		return {
 			data: t( 'Data cell' ),
-			header: t( 'Header cell' )
+			header: t( 'Header cell' ),
+			'header-column': t( 'Column header' ),
+			'header-row': t( 'Row header' )
 		};
 	}
 }

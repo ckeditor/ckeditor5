@@ -38,6 +38,7 @@ import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js
 import { enableProperty } from '../utils/common.js';
 import { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
+import { isTableHeaderCellType, type TableCellType } from './tablecellpropertiesutils.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -367,8 +368,10 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
  * Enables the `tableCellType` attribute for table cells.
  */
 function enableCellTypeProperty( editor: Editor ) {
-	const { model, conversion, editing } = editor;
+	const { model, conversion, editing, config } = editor;
 	const { schema } = model;
+
+	const scopedHeaders = !!config.get( 'table.tableCellProperties.scopedHeaders' );
 	const tableUtils = editor.plugins.get( TableUtils );
 
 	schema.extend( 'tableCell', {
@@ -379,6 +382,15 @@ function enableCellTypeProperty( editor: Editor ) {
 		isFormatting: true
 	} );
 
+	// Do not allow setting `tableCellType` in layout tables.
+	schema.addAttributeCheck( context => {
+		const nearestTable = Array.from( context ).reverse().find( item => item.name === 'table' );
+
+		if ( nearestTable?.getAttribute( 'tableType' ) === 'layout' ) {
+			return false;
+		}
+	}, 'tableCellType' );
+
 	// Upcast conversion for td/th elements.
 	conversion.for( 'upcast' ).add( dispatcher => {
 		dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
@@ -386,7 +398,7 @@ function enableCellTypeProperty( editor: Editor ) {
 			const { modelRange } = data;
 			const modelElement = modelRange?.start.nodeAfter;
 
-			if ( modelElement?.is( 'element', 'tableCell' ) ) {
+			if ( modelElement?.is( 'element', 'tableCell' ) && !modelElement.hasAttribute( 'tableCellType' ) ) {
 				writer.setAttribute( 'tableCellType', 'header', modelElement );
 			}
 		} );
@@ -400,7 +412,9 @@ function enableCellTypeProperty( editor: Editor ) {
 
 			if ( modelElement?.is( 'element', 'table' ) && modelElement.getAttribute( 'tableType' ) === 'layout' ) {
 				for ( const { cell } of new TableWalker( modelElement ) ) {
-					if ( cell.getAttribute( 'tableCellType' ) === 'header' ) {
+					const tableCellType = cell.getAttribute( 'tableCellType' ) as TableCellType;
+
+					if ( isTableHeaderCellType( tableCellType ) ) {
 						writer.setAttribute( 'tableType', 'content', modelElement );
 						break;
 					}
@@ -408,6 +422,52 @@ function enableCellTypeProperty( editor: Editor ) {
 			}
 		}, { priority: priorities.low - 1 } );
 	} );
+
+	// If scoped headers are enabled, add conversion for the `scope` attribute.
+	if ( scopedHeaders ) {
+		conversion.for( 'downcast' ).attributeToAttribute( {
+			model: {
+				name: 'tableCell',
+				key: 'tableCellType'
+			},
+			view: ( modelAttributeValue: TableCellType ) => {
+				switch ( modelAttributeValue ) {
+					case 'header-row':
+						return { key: 'scope', value: 'row' };
+
+					case 'header-column':
+						return { key: 'scope', value: 'col' };
+				}
+			}
+		} );
+
+		// Attribute to attribute conversion tend to not override existing `tableCellType` set by other converters.
+		// However, in this scenario if the previous converter set `tableCellType` to `header`, we can adjust it
+		// based on the `scope` attribute.
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on<UpcastElementEvent>( 'element:th', ( _, data, conversionApi ) => {
+				const { writer, consumable } = conversionApi;
+				const { viewItem, modelRange } = data;
+
+				const modelElement = modelRange!.start.nodeAfter!;
+				const previousTableCellType = modelElement?.getAttribute( 'tableCellType' ) as TableCellType | undefined;
+
+				if ( previousTableCellType === 'header' && consumable.consume( viewItem, { attributes: [ 'scope' ] } ) ) {
+					const scope = viewItem.getAttribute( 'scope' );
+
+					switch ( scope ) {
+						case 'row':
+							writer.setAttribute( 'tableCellType', 'header-row', modelElement );
+							break;
+
+						case 'col':
+							writer.setAttribute( 'tableCellType', 'header-column', modelElement );
+							break;
+					}
+				}
+			} );
+		} );
+	}
 
 	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
 	// are consistent with the `tableCellType` attribute of the cells. `tableCellType` has priority
@@ -481,8 +541,8 @@ function enableCellTypeProperty( editor: Editor ) {
 		// Reconvert table cells that had their `tableCellType` attribute changed.
 		for ( const tableCell of cellsToReconvert ) {
 			const viewElement = editing.mapper.toViewElement( tableCell );
-			const cellType = tableCell.getAttribute( 'tableCellType' );
-			const expectedElementName = cellType === 'header' ? 'th' : 'td';
+			const cellType = tableCell.getAttribute( 'tableCellType' ) as TableCellType;
+			const expectedElementName = isTableHeaderCellType( cellType ) ? 'th' : 'td';
 
 			if ( viewElement?.name !== expectedElementName ) {
 				editing.reconvertItem( tableCell );

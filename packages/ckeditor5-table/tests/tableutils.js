@@ -2838,4 +2838,112 @@ describe( 'TableUtils with TableCellProperties', () => {
 			], { headingColumns: 1 } ) );
 		} );
 	} );
+
+	describe( 'with scoped headers enabled', () => {
+		beforeEach( () => {
+			editor.config.set( 'table.tableCellProperties.scopedHeaders', true );
+		} );
+
+		describe( 'setHeadingRowsCount()', () => {
+			it( 'should set tableCellType="header-column" to cells in the header row', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				model.change( writer => {
+					const table = root.getChild( 0 );
+
+					tableUtils.setHeadingRowsCount( writer, table, 1 );
+				} );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+			} );
+		} );
+
+		describe( 'setHeadingColumnsCount()', () => {
+			it( 'should set tableCellType="header-row" to cells in the header column', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				model.change( writer => {
+					const table = root.getChild( 0 );
+
+					tableUtils.setHeadingColumnsCount( writer, table, 1 );
+				} );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+					[ { contents: '10', tableCellType: 'header-row' }, '11' ],
+					[ { contents: '20', tableCellType: 'header-row' }, '21' ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'should set tableCellType="header-column" to cells in the intersection of header row and header column', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				model.change( writer => {
+					const table = root.getChild( 0 );
+
+					tableUtils.setHeadingRowsCount( writer, table, 1 );
+					tableUtils.setHeadingColumnsCount( writer, table, 1 );
+				} );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+					[ { contents: '10', tableCellType: 'header-row' }, '11' ],
+					[ { contents: '20', tableCellType: 'header-row' }, '21' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+			} );
+		} );
+
+		describe( 'insertRows()', () => {
+			it( 'should set tableCellType="header-column" when inserting into header rows', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				tableUtils.insertRows( table, { at: 0, rows: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '', tableCellType: 'header-column' }, { contents: '', tableCellType: 'header-column' } ],
+					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
+			} );
+		} );
+
+		describe( 'insertColumns()', () => {
+			it( 'should set tableCellType="header-row" when inserting into header columns', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+					[ { contents: '10', tableCellType: 'header-row' }, '11' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				tableUtils.insertColumns( table, { at: 0, columns: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '', tableCellType: 'header-row' }, { contents: '00', tableCellType: 'header-row' }, '01' ],
+					[ { contents: '', tableCellType: 'header-row' }, { contents: '10', tableCellType: 'header-row' }, '11' ]
+				], { headingColumns: 2 } ) );
+			} );
+		} );
+	} );
 } );

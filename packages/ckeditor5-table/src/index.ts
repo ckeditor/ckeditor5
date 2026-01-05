@@ -69,7 +69,8 @@ export { TableBorderWidthCommand } from './tableproperties/commands/tableborderw
 export { TableHeightCommand } from './tableproperties/commands/tableheightcommand.js';
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
 export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
-export { TableCellTypeCommand, type TableCellType } from './tablecellproperties/commands/tablecelltypecommand.js';
+export { TableCellTypeCommand } from './tablecellproperties/commands/tablecelltypecommand.js';
+export { isTableHeaderCellType, type TableCellType } from './tablecellproperties/tablecellpropertiesutils.js';
 export {
 	TableCellPropertyCommand,
 	type TableCellPropertyCommandAfterExecuteEvent,

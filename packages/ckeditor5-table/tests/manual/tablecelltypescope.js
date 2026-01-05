@@ -28,13 +28,14 @@ ClassicEditor
 			TableLayout
 		],
 		toolbar: [
-			'heading', '|',
-			'insertTable', 'insertTableLayout', '|',
-			'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			tableToolbar: [ 'bold', 'italic' ]
+			tableToolbar: [ 'bold', 'italic' ],
+			tableCellProperties: {
+				scopedHeaders: true
+			}
 		}
 	} )
 	.then( editor => {

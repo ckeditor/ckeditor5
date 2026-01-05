@@ -499,6 +499,27 @@ export interface TableCellPropertiesConfig {
 	 * If set to `false` the picker will not appear.
 	 */
 	colorPicker?: false | ColorPickerConfig;
+
+	/**
+	 * If set to `true`, the `scope` attribute will be applied to table headers (`<th>`) based on their position in the table.
+	 *
+	 * The table cell properties UI will extend a dropdown with two more options that allow manually setting the header scope:
+	 *
+	 *   * `Column header` — sets `scope="col"` on `<th>`.
+	 *   * `Row header`    — sets `scope="row"` on `<th>`.
+	 *
+	 * If header cell is both in a heading row and a heading column, the `col` scope will be prioritized by the header rows
+	 * and columns setting logic. In such case, the user can manually change the scope using the table cell properties UI.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		scopedHeaders: true
+	 * 	}
+	 * };
+	 * ```
+	 */
+	scopedHeaders?: boolean;
 }
 
 /**

@@ -985,5 +985,33 @@ describe( 'table cell properties', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
+
+		describe( 'options.showScopedHeaderOptions', () => {
+			it( 'should include scoped header options when set to true', () => {
+				const view = new TableCellPropertiesView( locale, {
+					...VIEW_OPTIONS,
+					showScopedHeaderOptions: true
+				} );
+				view.render();
+
+				const labeledDropdown = view.cellTypeDropdown;
+				labeledDropdown.fieldView.isOpen = true;
+
+				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
+					'Data cell', 'Header cell', 'Column header', 'Row header'
+				] );
+
+				view.destroy();
+			} );
+
+			it( 'should not include scoped header options when set to false', () => {
+				const labeledDropdown = view.cellTypeDropdown;
+				labeledDropdown.fieldView.isOpen = true;
+
+				expect( labeledDropdown.fieldView.listView.items.map( item => item.children.first.label ) ).to.have.ordered.members( [
+					'Data cell', 'Header cell'
+				] );
+			} );
+		} );
 	} );
 } );

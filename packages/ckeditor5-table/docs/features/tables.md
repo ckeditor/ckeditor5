@@ -70,6 +70,17 @@ To create a header row or column in your table, select all cells in the row or c
 	It is easier to use the row/column property dialog to change these into headers, rather than use the cell property method.
 </info-box>
 
+## Table cell scope
+
+Header cells can use the `scope` attribute to explicitly associate themselves with the related row or column, which helps screen readers understand the table structure.
+
+This attribute is available only for header cells; enable it by setting the {@link module:table/tableconfig~TableCellPropertiesConfig#scopedHeaders `config.table.tableCellProperties.scopedHeaders`} configuration option to `true`.
+
+Once enabled, the editor assigns the `scope` attribute automatically based on a header cell's position. If you prefer, you can change it manually in the cell properties balloon. The dropdown offers two explicit options:
+
+* **Column header** – forces a header cell to describe the column and sets `scope="col"`.
+* **Row header** – forces a header cell to describe the row and sets `scope="row"`.
+
 ## Typing around tables
 
 To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
