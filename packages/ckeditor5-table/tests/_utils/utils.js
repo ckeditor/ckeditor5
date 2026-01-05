@@ -171,14 +171,17 @@ export function viewTable( tableData, attributes = {} ) {
 	} ) }</tfoot>` : '';
 
 	const tbody = tableData.length > headingRows ?
-		`<tbody>${ makeRows( tableData.slice( headingRows ), {
-			cellElement: 'td',
-			rowElement: 'tr',
-			headingElement: 'th',
-			wrappingElement: asWidget ? 'span' : 'p',
-			enforceWrapping: asWidget,
-			asWidget
-		} ) }</tbody>` : '';
+		`<tbody>${ makeRows(
+			footerRows ? tableData.slice( headingRows, -footerRows ) : tableData.slice( headingRows ),
+			{
+				cellElement: 'td',
+				rowElement: 'tr',
+				headingElement: 'th',
+				wrappingElement: asWidget ? 'span' : 'p',
+				enforceWrapping: asWidget,
+				asWidget
+			}
+		) }</tbody>` : '';
 
 	const figureAttributes = asWidget ?
 		'class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"' : 'class="table"';

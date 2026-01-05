@@ -1,3 +1,9 @@
+<style data-cke>
+	.ck-content table tfoot {
+		border: 2px solid blue;
+	}
+</style>
+
 <div style="display:flex">
 	<div>
 		<div id="editor">
@@ -71,6 +77,89 @@
 						<tr>
 							<td>Foot 3</td>
 							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+			<strong>Table with single `tfoot` between multiple `tbody`</strong>
+			<figure class="table content-table">
+				<table>
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 3</td>
+							<td>Data 4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with multiple `tfoot` between multiple `tbody` </strong>
+			<figure class="table content-table">
+				<table>
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tfoot>
+						<tr>
+							<td>Foot 3</td>
+							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 5</td>
+							<td>Foot 6</td>
+						</tr>
+					</tfoot>
+
+					<tfoot>
+						<tr>
+							<td>Foot 7</td>
+							<td>Foot 8</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 3</td>
+							<td>Data 4</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 9</td>
+							<td>Foot 10</td>
 						</tr>
 					</tfoot>
 				</table>
