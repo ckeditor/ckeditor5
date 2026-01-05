@@ -1298,12 +1298,14 @@ describe( 'HtmlComment integration', () => {
 								'<td>table cell</td>' +
 								'<!-- c10 -->' +
 							'</tr>' +
+						'</tbody>' +
+						'<tfoot>' +
 							'<tr>' +
 								'<!-- c14 -->' +
 								'<td>table cell</td>' +
 								'<!-- c15 -->' +
 							'</tr>' +
-						'</tbody>' +
+						'</tfoot>' +
 					'</table>' +
 					'<!-- c17 -->' +
 					'<!-- c16 -->' +
