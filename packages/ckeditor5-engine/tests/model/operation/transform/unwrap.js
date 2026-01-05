@@ -223,30 +223,32 @@ describe( 'transform', () => {
 		describe( 'by split', () => {
 			it( 'unwrap, then split and undo', () => {
 				// This is pretty weird case. Right now it cannot be reproduced with the features that we have.
-				john.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
-				john.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+				john.editor.model.schema.register( 'containerBlock', { inheritAllFrom: '$block' } );
+				john.editor.model.schema.extend( 'paragraph', { allowIn: 'containerBlock' } );
+				john.editor.model.schema.extend( 'blockQuote', { allowIn: 'containerBlock' } );
 
-				kate.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
-				kate.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+				kate.editor.model.schema.register( 'containerBlock', { inheritAllFrom: '$block' } );
+				kate.editor.model.schema.extend( 'paragraph', { allowIn: 'containerBlock' } );
+				kate.editor.model.schema.extend( 'blockQuote', { allowIn: 'containerBlock' } );
 
 				john.setData(
-					'<listItem>' +
+					'<containerBlock>' +
 						'<blockQuote>' +
 							'[]' +
 							'<paragraph>A</paragraph>' +
 							'<paragraph>B</paragraph>' +
 						'</blockQuote>' +
-					'</listItem>'
+					'</containerBlock>'
 				);
 
 				kate.setData(
-					'<listItem>' +
+					'<containerBlock>' +
 						'<blockQuote>' +
 							'[]' +
 							'<paragraph>A</paragraph>' +
 							'<paragraph>B</paragraph>' +
 						'</blockQuote>' +
-					'</listItem>'
+					'</containerBlock>'
 				);
 
 				john.unwrap();
@@ -254,10 +256,10 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients(
-					'<listItem>' +
+					'<containerBlock>' +
 						'<paragraph>A</paragraph>' +
 						'<paragraph>B</paragraph>' +
-					'</listItem>'
+					'</containerBlock>'
 				);
 
 				john.undo();
@@ -268,16 +270,22 @@ describe( 'transform', () => {
 
 				// Below would be the expected effect with correct wrap transformation.
 				// expectClients(
-				// 	'<listItem>' +
+				// 	'<containerBlock>' +
 				// 		'<paragraph>A</paragraph>' +
-				// 	'</listItem>' +
-				// 	'<listItem>' +
+				// 	'</containerBlock>' +
+				// 	'<containerBlock>' +
 				// 		'<paragraph>B</paragraph>' +
-				// 	'</listItem>'
+				// 	'</containerBlock>'
 				// );
 
 				expectClients(
-					'<listItem><blockQuote><paragraph>A</paragraph><paragraph>B</paragraph></blockQuote></listItem><listItem></listItem>'
+					'<containerBlock>' +
+						'<blockQuote>' +
+							'<paragraph>A</paragraph>' +
+							'<paragraph>B</paragraph>' +
+						'</blockQuote>' +
+					'</containerBlock>' +
+					'<containerBlock></containerBlock>'
 				);
 
 				kate.undo();
@@ -286,14 +294,14 @@ describe( 'transform', () => {
 
 				// Below would be the expected effect with correct wrap transformation.
 				// expectClients(
-				// 	'<listItem>' +
+				// 	'<containerBlock>' +
 				// 		'<paragraph>A</paragraph>' +
 				// 		'<paragraph>B</paragraph>' +
-				// 	'</listItem>'
+				// 	'</containerBlock>'
 				// );
 
 				expectClients(
-					'<listItem><blockQuote><paragraph>A</paragraph><paragraph>B</paragraph></blockQuote></listItem>'
+					'<containerBlock><blockQuote><paragraph>A</paragraph><paragraph>B</paragraph></blockQuote></containerBlock>'
 				);
 			} );
 		} );
