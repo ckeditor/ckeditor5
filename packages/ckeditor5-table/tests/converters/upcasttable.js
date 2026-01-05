@@ -1414,20 +1414,78 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should properly upcast `tfoot` with all cells heading', () => {
-			editor.setData(
-				'<table>' +
-					'<tfoot>' +
-						'<tr><th>11</th><th>12</th></tr>' +
-						'<tr><th>21</th><th>22</th></tr>' +
-					'</tfoot>' +
-				'</table>'
-			);
+			editor.setData( viewTable(
+				[
+					[ { contents: '11', isHeading: true }, { contents: '12', isHeading: true } ],
+					[ { contents: '21', isHeading: true }, { contents: '22', isHeading: true } ]
+				],
+				{ footerRows: 2 }
+			) );
 
 			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				modelTable( [
 					[ '11', '12' ],
 					[ '21', '22' ]
 				], { footerRows: 2 } )
+			);
+		} );
+
+		it( 'should properly upcast `tfoot` and `thead` in the same table', () => {
+			editor.setData(
+				viewTable(
+					[
+						[ { contents: '11', isHeading: true }, { contents: '12', isHeading: true } ],
+						[ '21', '22' ]
+					],
+					{ headingRows: 1, footerRows: 1 }
+				)
+			);
+
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ]
+				], { headingRows: 1, footerRows: 1 } )
+			);
+		} );
+
+		it( 'should properly upcast `tfoot`, `tbody` and `thead` in the same table', () => {
+			editor.setData(
+				viewTable(
+					[
+						[ { contents: '11', isHeading: true }, { contents: '12', isHeading: true } ],
+						[ '21', '22' ],
+						[ '31', '32' ]
+					],
+					{ headingRows: 1, footerRows: 1 }
+				)
+			);
+
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingRows: 1, footerRows: 1 } )
+			);
+		} );
+
+		it( 'should properly upcast `tfoot` (filled with `th`) and `thead` in the same table', () => {
+			editor.setData(
+				viewTable(
+					[
+						[ { contents: '11', isHeading: true }, { contents: '12', isHeading: true } ],
+						[ { contents: '21', isHeading: true }, { contents: '22', isHeading: true } ]
+					],
+					{ headingRows: 1, footerRows: 1 }
+				)
+			);
+
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ]
+				], { headingRows: 1, footerRows: 1 } )
 			);
 		} );
 	} );

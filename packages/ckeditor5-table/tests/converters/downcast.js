@@ -616,6 +616,60 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 			} );
+
+			describe( 'footerRows attribute', () => {
+				it( 'should properly downcast table with `footerRows=1`', () => {
+					_setModelData( model, modelTable( [ [ '00', '01' ] ], { footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [ [ '00', '01' ] ], { footerRows: 1 } )
+					);
+				} );
+
+				it( 'should properly downcast table with `footerRows=1` where the first `tr` is normal row', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10', '11' ]
+					], { footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						], { footerRows: 1 } )
+					);
+				} );
+
+				it( 'should properly downcast table with `headingRows` and `footerRows`', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10', '11' ],
+						[ '20', '21' ]
+					], { headingRows: 1, footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ],
+							[ '20', '21' ]
+						], { headingRows: 1, footerRows: 1 } )
+					);
+				} );
+
+				it( 'should properly downcast table with `headingColumns` and `footerRows`', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ]
+					], { headingColumns: 1, footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [
+							[ { isHeading: true, contents: '00' }, '01', '02' ],
+							[ { isHeading: true, contents: '10' }, '11', '12' ]
+						], { footerRows: 1 } )
+					);
+				} );
+			} );
 		} );
 	} );
 

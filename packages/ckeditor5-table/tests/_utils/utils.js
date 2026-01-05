@@ -170,7 +170,7 @@ export function viewTable( tableData, attributes = {} ) {
 		asWidget
 	} ) }</tfoot>` : '';
 
-	const tbody = tableData.length > headingRows ?
+	const tbody = tableData.length > headingRows + footerRows ?
 		`<tbody>${ makeRows(
 			footerRows ? tableData.slice( headingRows, -footerRows ) : tableData.slice( headingRows ),
 			{
