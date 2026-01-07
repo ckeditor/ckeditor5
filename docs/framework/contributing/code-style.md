@@ -1131,30 +1131,6 @@ export default class MyPlugin extends Plugin {
 
 The `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag is not defined.
 
-### No legacy imports
-
-This rule ensures that imports are done using the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. All imports should be done using either the `ckeditor5` package to get the editor core and all open-source plugins, or `ckeditor5-premium-features` to get the premium features.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// Import from `ckeditor5/src/*`.
-import { Plugin } from 'ckeditor5/src/core.js';
-
-// Import from individual open-source package.
-import { Plugin } from '@ckeditor/ckeditor5-core';
-
-// Import from individual premium package.
-import { AIAssistant } from '@ckeditor/ckeditor5-ai';
-```
-
-👍&nbsp; Examples of correct code for this rule:
-
-```js
-import { Plugin } from 'ckeditor5';
-import { AIAssistant } from 'ckeditor5-premium-features';
-```
-
 ### SVG imports only in the `@ckeditor/ckeditor5-icons` package
 
 This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.
