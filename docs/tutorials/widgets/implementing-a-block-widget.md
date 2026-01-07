@@ -1038,7 +1038,7 @@ The element converters remain unchanged. The new part is the attribute conversio
 
 This single converter handles both directions: it maps the `secret` CSS class from the view to the `secret` model attribute (upcast), and converts the model's `secret` attribute back to a CSS class in both editing and data views (downcast).
 
-Note that you also added a custom property to the widget in the editing downcast converter using {@link module:engine/view/downcastwriter~DowncastWriter#setCustomProperty `setCustomProperty()`}. This custom property serves as a marker to identify simple box widgets in the view layer. Without this property, you would need to rely solely on CSS classes or element structure, which is less reliable.
+Note that you also added a custom property to the widget in the editing downcast converter using {@link module:engine/view/downcastwriter~ViewDowncastWriter#setCustomProperty `setCustomProperty()`}. This custom property serves as a marker to identify simple box widgets in the view layer. Without this property, you would need to rely solely on CSS classes or element structure, which is less reliable.
 
 You do not need to update the `createSimpleBox()` function because new simple boxes should not have the `secret` attribute by default (it will be `undefined`).
 
