@@ -54,7 +54,7 @@ importers:
         version: 5.0.0
       '@ckeditor/ckeditor5-mermaid':
         specifier: ckeditor/ckeditor5-mermaid#v0.0.6
-        version: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/c6cfab620a74e823de7021478095511406ab4d08(ckeditor5@packages+ckeditor5)
+        version: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1(ckeditor5@packages+ckeditor5)
       '@ckeditor/ckeditor5-react':
         specifier: ^9.5.0
         version: 9.5.0(ckeditor5@packages+ckeditor5)(react@18.3.1)
@@ -173,8 +173,8 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       umberto:
-        specifier: ^9.1.3
-        version: 9.1.3(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: ^9.2.0
+        version: 9.2.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -4334,8 +4334,8 @@ packages:
     peerDependencies:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
 
-  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/c6cfab620a74e823de7021478095511406ab4d08':
-    resolution: {tarball: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/c6cfab620a74e823de7021478095511406ab4d08}
+  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1':
+    resolution: {tarball: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1}
     version: 0.0.4
     engines: {node: '>=22.0.0', pnpm: '>=10.14.0'}
     peerDependencies:
@@ -11276,8 +11276,8 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@9.1.3:
-    resolution: {integrity: sha512-Nv79Pz6rDI7SatMYY0vcx77GOlh0qWYrPJfq+6l2Jtxz3nlMMoFwcTh2e6T+OXHIgQAJtipDOXhKVN9g7cCEUg==}
+  umberto@9.2.0:
+    resolution: {integrity: sha512-tqNsN0OWxcq040snnnYxQOLMAg2p6owW0RDzFDytFZDJu1WoXO11qSowviX/gk7xeeVD8wBTRQtsp+dti9KREQ==}
     engines: {node: '>=24.11.0'}
 
   undici-types@7.13.0:
@@ -12737,7 +12737,7 @@ snapshots:
     dependencies:
       ckeditor5: link:packages/ckeditor5
 
-  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/c6cfab620a74e823de7021478095511406ab4d08(ckeditor5@packages+ckeditor5)':
+  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/a6d020ca6941e35e2a3110e54896d2f4096383c1(ckeditor5@packages+ckeditor5)':
     dependencies:
       ckeditor5: link:packages/ckeditor5
       lodash-es: 4.17.21
@@ -20529,7 +20529,7 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@9.1.3(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@9.2.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
