@@ -48,6 +48,25 @@ export interface TableConfig {
 	};
 
 	/**
+	 * Number of footer rows to render by default when inserting new tables.
+	 *
+	 * You can configure it like this:
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	defaultFooters: {
+	 * 		rows: 1
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * The rows property is optional, defaulting to 0 (no footer).
+	 */
+	defaultFooters?: {
+		rows?: number;
+	};
+
+	/**
 	 * Items to be placed in the table content toolbar.
 	 * The {@link module:table/tabletoolbar~TableToolbar} plugin is required to make this toolbar work.
 	 *

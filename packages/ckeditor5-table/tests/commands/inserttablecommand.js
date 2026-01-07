@@ -359,6 +359,103 @@ describe( 'InsertTableCommand', () => {
 			} );
 		} );
 
+		describe( 'auto footers', () => {
+			it( 'should insert table with given footer rows after non-empty paragraph', () => {
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+				command.execute( { rows: 3, columns: 4, footerRows: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph>foo</paragraph>' +
+					modelTable( [
+						[ '', '', '', '' ],
+						[ '', '', '', '' ],
+						[ '', '', '', '' ]
+					], { footerRows: 1 } )
+				);
+			} );
+
+			it( 'should have last row as a footer by default', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultFooters: { rows: 1 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				_setModelData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					modelTable( [
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { footerRows: 1 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should trim footer rows if greater than table rows', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultFooters: { rows: 3 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				_setModelData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					modelTable( [
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { footerRows: 2 } )
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should trim heading rows if sum of heading and footer rows is greater than table rows', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 2 },
+							defaultFooters: { rows: 2 }
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				_setModelData( model, '[]' );
+
+				command.execute( { rows: 3, columns: 3 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					modelTable( [
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1, footerRows: 2 } )
+				);
+
+				await editor.destroy();
+			} );
+		} );
+
 		describe( 'inheriting attributes', () => {
 			let editor;
 			let model, command;

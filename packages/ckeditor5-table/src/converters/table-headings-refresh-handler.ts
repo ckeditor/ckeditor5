@@ -101,7 +101,7 @@ export function tableHeadingsRefreshHandler( model: Model, editing: EditingContr
 		}
 	}
 
-	for ( const row of [ ...cellsToReconvert, ...rowsToReconvert ] ) {
-		editing.reconvertItem( row );
+	for ( const item of [ ...cellsToReconvert, ...rowsToReconvert ] ) {
+		editing.reconvertItem( item );
 	}
 }

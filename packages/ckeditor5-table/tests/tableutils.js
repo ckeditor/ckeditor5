@@ -2110,6 +2110,85 @@ describe( 'TableUtils', () => {
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 2 } ) );
 		} );
+
+		it( 'should not clamp heading rows/columns if their sum is equal to the rows/columns number', () => {
+			_setModelData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 2, columns: 2, headingRows: 2, headingColumns: 2 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 2, headingColumns: 2 } ) );
+		} );
+
+		it( 'should clamp heading rows/columns if their sum is greater than the rows/columns number', () => {
+			_setModelData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 2, columns: 2, headingRows: 3, headingColumns: 3 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 2, headingColumns: 2 } ) );
+		} );
+
+		it( 'should be possible to create table with the footer rows', () => {
+			_setModelData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, footerRows: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { footerRows: 1 } ) );
+		} );
+
+		it( 'should be possible to create table with the heading and footer rows', () => {
+			_setModelData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 4, columns: 2, headingRows: 1, footerRows: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 1, footerRows: 1 } ) );
+		} );
+
+		it( 'should reduce amount of heading rows when footer rows overlap', () => {
+			_setModelData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 2, footerRows: 2 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 1, footerRows: 2 } ) );
+		} );
 	} );
 } );
 
@@ -2600,6 +2679,44 @@ describe( 'TableUtils with tableCellTypeSupport enabled', () => {
 				[ '30', '31' ]
 			], { headingRows: 1 } ) );
 		} );
+
+		it( 'should clamp heading rows to the number of rows in the table', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingRowsCount( writer, table, 5 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should trim footer rows if heading rows + footer rows > total rows', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			], { footerRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingRowsCount( writer, table, 3 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ]
+			], { headingRows: 3 } ) );
+		} );
 	} );
 
 	describe( 'setHeadingColumnsCount()', () => {
@@ -2691,6 +2808,80 @@ describe( 'TableUtils with tableCellTypeSupport enabled', () => {
 				[ { contents: '00', tableCellType: 'header' }, '01', { contents: '02', tableCellType: 'header' }, '03' ],
 				[ { contents: '10', tableCellType: 'header' }, '11', { contents: '12', tableCellType: 'header' }, '13' ]
 			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should clamp heading columns to the number of columns in the table', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setHeadingColumnsCount( writer, table, 5 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+			], { headingColumns: 2 } ) );
+		} );
+	} );
+
+	describe( 'setFooterRowsCount()', () => {
+		it( 'should set proper `footerRows` attribute when adding footer rows', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setFooterRowsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { footerRows: 1 } ) );
+		} );
+
+		it( 'should set proper `footerRows` attribute when removing footer rows', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { footerRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setFooterRowsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { footerRows: 1 } ) );
+		} );
+
+		it( 'should trim heading rows if footerRows + headingRows > total rows', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setFooterRowsCount( writer, table, 2 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { footerRows: 2 } ) );
 		} );
 	} );
 

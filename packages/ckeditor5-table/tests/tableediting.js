@@ -205,6 +205,17 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'setTableRowHeader' ) ).to.be.instanceOf( SetHeaderRowCommand );
 	} );
 
+	describe( 'config', () => {
+		it( 'sets proper default heading rows and columns', () => {
+			expect( editor.config.get( 'table.defaultHeadings.rows' ) ).to.equal( 0 );
+			expect( editor.config.get( 'table.defaultHeadings.columns' ) ).to.equal( 0 );
+		} );
+
+		it( 'sets proper default footer rows', () => {
+			expect( editor.config.get( 'table.defaultFooters.rows' ) ).to.equal( 0 );
+		} );
+	} );
+
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should create tbody section', () => {
