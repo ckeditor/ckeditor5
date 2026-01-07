@@ -126,7 +126,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 			Enhanced source code editing <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
+			Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion, and more.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/source-editing-enhanced}'>
@@ -200,7 +200,7 @@ Block Formatting allows for the organization and emphasis of content through the
 
 <ck:heading-badge heading-id='bookmarks' badge='premium'>Bookmarks</ck:heading-badge>
 
-The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation boosting efficiency.
+The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation, boosting efficiency.
 
 <ck:button-link size='sm' variant='secondary' href='{@link features/bookmarks}'>
 	Feature page
@@ -474,7 +474,7 @@ The image feature allows adding images of various kinds to the rich content insi
 			Responsive images
 		</ck:card-title>
 		<ck:card-description>
-			The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.
+			The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different display size. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/images-responsive}'>
@@ -612,7 +612,7 @@ Lists allow the creation and management of various list types, including to-do l
 			Multi-level lists <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.
+			The multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/multi-level-lists}'>
@@ -768,7 +768,7 @@ CKEditor&nbsp;5 provides robust support for tables, with the ability to merge an
 			Nesting
 		</ck:card-title>
 		<ck:card-description>
-			CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
+			CKEditor&nbsp;5 allows nesting tables inside other tables' cells. This can be used to create advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/tables#nesting-tables}'>
@@ -824,7 +824,7 @@ CKEditor&nbsp;5 provides robust support for tables, with the ability to merge an
 			Table caption
 		</ck:card-title>
 		<ck:card-description>
-			The TableCaption plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
+			The TableCaption plugin lets you add captions to your tables. Table captions also improve accessibility as screen readers recognize them.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/tables-caption}'>
@@ -1012,7 +1012,7 @@ Backtrack or repeat actions for editing purposes.
 
 ## Collaboration
 
-Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.
+Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features, the review process should be a breeze.
 
 <ck:heading-badge heading-id='asynchronous-collaboration' badge='premium'>Asynchronous collaboration</ck:heading-badge>
 
@@ -1070,7 +1070,7 @@ Users can add side notes to marked fragments of the document, including text and
 			Sidebar modes <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.
+			There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your own UI for annotations.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/annotations-display-mode}'>
@@ -1754,7 +1754,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 			Balloon editor
 		</ck:card-title>
 		<ck:card-description>
-			Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).
+			Balloon editor is similar to the inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor}'>
@@ -1886,7 +1886,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 			Balloon toolbar
 		</ck:card-title>
 		<ck:card-description>
-			A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
+			A balloon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/toolbar#balloon-toolbar}'>
@@ -1900,7 +1900,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 			Block toolbar
 		</ck:card-title>
 		<ck:card-description>
-			The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor).
+			The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example, in certain layouts, like balloon block editor).
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/toolbar#block-toolbar}'>
@@ -1956,7 +1956,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 			Menu bar
 		</ck:card-title>
 		<ck:card-description>
-			The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.
+			The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/menubar}'>
@@ -2012,7 +2012,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 			Table contextual toolbar
 		</ck:card-title>
 		<ck:card-description>
-			The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
+			The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows, and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/tables#table-contextual-toolbar}'>
@@ -2120,7 +2120,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 
 ### Editor SDK
 
-Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.
+Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or the modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.
 
 <ck:columns>
 	<ck:card>
