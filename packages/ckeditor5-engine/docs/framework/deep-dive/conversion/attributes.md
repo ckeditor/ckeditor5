@@ -9,15 +9,15 @@ modified_at: 2025-01-30
 
 # Attributes and inline formatting
 
-In this guide we will dive deeper into how inline formatting works in CKEditor&nbsp;5 through the lens of model text attributes. To fully understand the concepts presented here, you should first study how {@link framework/deep-dive/conversion/intro conversion} works, particularly how attributes are transformed between the model and view layers.
+In this guide, we will dive deeper into how inline formatting works in CKEditor&nbsp;5 through the lens of model text attributes. To fully understand the concepts presented here, you should first study how {@link framework/deep-dive/conversion/intro conversion} works, particularly how attributes are transformed between the model and view layers.
 
 ## Inline and block content
 
 Generally speaking, there are two main types of content in the editor view and data output: inline and block.
 
-The inline content means elements like `<strong>`, `<a>`, or `<span>`. Unlike `<p>`, `<blockquote>`, or `<div>`, the inline elements do not structure the data. Instead, they format some text in a specific (visual and semantical) way. These elements are a characteristic of text. For instance, you could say that some part of the text is bold, is linked, and so on. This concept has its reflection in the model of the rich-text editor where `<a>` or `<strong>` are not represented as elements. Instead, they are the attributes of the text.
+The inline content means elements like `<strong>`, `<a>`, or `<span>`. Unlike `<p>`, `<blockquote>`, or `<div>`, the inline elements do not structure the data. Instead, they format some text in a specific (visual and semantical) way. These elements are characteristic of text. For instance, you could say that some part of the text is bold, is linked, and so on. This concept has its reflection in the model of the rich-text editor, where `<a>` or `<strong>` are not represented as elements. Instead, they are the attributes of the text.
 
-For example &mdash; in the model, you might have a `<paragraph>` element with the "Foo bar" text, where "bar" has the `bold` attribute set to `true`. A pseudo–code of this *model* data structure could look as follows:
+For example &ndash; in the model, you might have a `<paragraph>` element with the "Foo bar" text, where "bar" has the `bold` attribute set to `true`. A pseudo–code of this *model* data structure could look as follows:
 
 ```html
 <paragraph>
@@ -27,16 +27,16 @@ For example &mdash; in the model, you might have a `<paragraph>` element with th
 ```
 
 <info-box>
-	Throughout the rest of this guide the following, shorter convention will be used to represent model text attributes for the sake of clarity:
+	Throughout the rest of this guide, the following, shorter convention will be used to represent model text attributes for the sake of clarity:
 
 	```html
 	<paragraph>Foo <$text bold="true">bar</$text></paragraph>
 	```
 </info-box>
 
-Note that there is no `<strong>` or any other additional element there, it is just some text with an attribute.
+Note that there is no `<strong>` or any other additional element there; it is just some text with an attribute.
 
-So, when does this text become wrapped with a `<strong>` element? This happens during the conversion to the view. It is also important to know what type of a view element needs to be used. In the case of the elements that represent inline formatting, this should be an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}.
+So, when does this text become wrapped with a `<strong>` element? This happens during the conversion to the view. It is also important to know what type of view element needs to be used. In the case of the elements that represent inline formatting, this should be an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}.
 
 ## Conversion of multiple text attributes
 
@@ -74,11 +74,11 @@ There are two links with the same `href` attribute next to each other in the gen
 
 ## Merging attribute elements during conversion
 
-Priority is not only important for determining the nesting order of attribute elements. It also plays a crucial role in deciding whether adjacent attribute elements can be merged together during the conversion process.
+Priority is not only important for determining the nesting order of attribute elements. It also plays a crucial role in deciding whether adjacent attribute elements can be merged during the conversion process.
 
 Inline elements in the view, such as `<strong>` or `<em>`, are typically simple formatting elements without additional attributes. However, some features require more complex styling. For example, the {@link features/font Font family feature} adds a `fontFamily` attribute to text in the model. During downcast, this model attribute is converted to a view `<span>` element with a corresponding `style` attribute, which then appears as a `<span style="font-family: ...">` in the HTML output.
 
-So what would happen if several model attributes were set on the same part of the text? Take this model example where `fontSize` is used next to `fontFamily`:
+What would, then, happen if several model attributes were set on the same part of the text? Take this model example where `fontSize` is used next to `fontFamily`:
 
 ```html
 <paragraph>
