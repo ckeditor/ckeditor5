@@ -30,7 +30,7 @@ CKEditor&nbsp;5 offers over 150 various features, from basic editing capabilitie
 
 ## Core editing
 
-Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
+Core editing capability provides tools to create, edit, and style content. These are the essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders &ndash; advanced HTML editing capabilities where you can directly edit HTML elements.
 
 ### Advanced HTML Editing
 
@@ -216,7 +216,7 @@ Copy, cut, paste, and drag content within the editor or from external sources. T
 			Extensible clipboard pipelines
 		</ck:card-title>
 		<ck:card-description>
-			The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted - enabling custom data formats, content transformation, and filtering.
+			The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted &ndash; enabling custom data formats, content transformation, and filtering.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link framework/deep-dive/clipboard}'>
@@ -342,7 +342,7 @@ The font feature lets you change font family, size, and color (including backgro
 			Font family
 		</ck:card-title>
 		<ck:card-description>
-			Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.
+			Choose from a predefined set of fonts, depending on the type of content and its destination &ndash; print, screen, etc.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/font#configuring-the-font-family-feature}'>
@@ -1012,7 +1012,7 @@ Backtrack or repeat actions for editing purposes.
 
 ## Collaboration
 
-Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features, the review process should be a breeze.
+Collaborate with others &ndash; real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features, the review process should be a breeze.
 
 <ck:heading-badge heading-id='asynchronous-collaboration' badge='premium'>Asynchronous collaboration</ck:heading-badge>
 
@@ -1588,7 +1588,7 @@ Automate your workflow with CKEditor&nbsp;5 automation tools, regardless of whet
 			Autosave
 		</ck:card-title>
 		<ck:card-description>
-			The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.
+			The Autosave feature guarantees that your work is never lost. It automatically saves changes &ndash; for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/autosave}'>
@@ -2120,7 +2120,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 
 ### Editor SDK
 
-Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or the modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.
+Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or the modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector &ndash; a comprehensive suite of debugging tools &ndash; are provided, helping accelerate development work.
 
 <ck:columns>
 	<ck:card>

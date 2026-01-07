@@ -3,7 +3,7 @@
     {
       "id": "core-editing",
       "title": "Core editing",
-      "description": "Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.",
+      "description": "Core editing capability provides tools to create, edit, and style content. These are the essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders &ndash; advanced HTML editing capabilities where you can directly edit HTML elements.",
       "subsections": [
         {
           "id": "advanced-html-editing",
@@ -117,7 +117,7 @@
               "id": "clipboard-pipelines",
               "title": "Extensible clipboard pipelines",
               "badge": null,
-              "description": "The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted - enabling custom data formats, content transformation, and filtering.",
+              "description": "The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted &ndash; enabling custom data formats, content transformation, and filtering.",
               "link": "{@link framework/deep-dive/clipboard}"
             },
             {
@@ -188,7 +188,7 @@
               "id": "font-family",
               "title": "Font family",
               "badge": null,
-              "description": "Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.",
+              "description": "Choose from a predefined set of fonts, depending on the type of content and its destination &ndash; print, screen, etc.",
               "link": "{@link features/font#configuring-the-font-family-feature}"
             },
             {
@@ -204,7 +204,7 @@
           "id": "image",
           "title": "Image",
           "type": "subsection-with-grid",
-          "description": "The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subfeatures lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.",
+          "description": "The image feature allows for adding images of various kinds to the rich content inside the editor. A large set of subfeatures lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.",
           "features": [
             {
               "id": "image-alt-text",
@@ -259,7 +259,7 @@
               "id": "responsive-images",
               "title": "Responsive images",
               "badge": null,
-              "description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different display size. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
+              "description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized size versions of that image are created. The browser will automatically load one most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
               "link": "{@link features/images-responsive}"
             },
             {
@@ -570,7 +570,7 @@
     {
       "id": "collaboration",
       "title": "Collaboration",
-      "description": "Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features, the review process should be a breeze.",
+      "description": "Collaborate with others &ndash; real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features, the review process should be a breeze.",
       "subsections": [
         {
           "id": "asynchronous-collaboration",
@@ -983,7 +983,7 @@
               "id": "autosave",
               "title": "Autosave",
               "badge": null,
-              "description": "The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.",
+              "description": "The Autosave feature guarantees that your work is never lost. It automatically saves changes &ndash; for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.",
               "link": "{@link features/autosave}"
             }
           ]
@@ -1383,7 +1383,7 @@
           "id": "editor-sdk",
           "title": "Editor SDK",
           "type": "subsection-with-grid",
-          "description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or the modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.",
+          "description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or the modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector &ndash; a comprehensive suite of debugging tools &ndash; are provided, helping accelerate development work.",
           "features": [
             {
               "id": "ckeditor-5-inspector",
