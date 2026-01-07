@@ -15,14 +15,14 @@
               "id": "full-page-html",
               "title": "Full page HTML",
               "badge": "premium",
-              "description": "Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.",
+              "description": "Thanks to the full page HTML feature, you can use CKEditor&nbsp;5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.",
               "link": "{@link features/full-page-html}"
             },
             {
               "id": "general-html-support",
               "title": "General HTML Support (GHS)",
               "badge": null,
-              "description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.",
+              "description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor&nbsp;5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.",
               "link": "{@link features/general-html-support}"
             },
             {
@@ -224,7 +224,7 @@
               "id": "image-insert-via-url",
               "title": "Image insert via URL",
               "badge": null,
-              "description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.",
+              "description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor&nbsp;5 to let you insert images using URLs. This way, you can save time by adding images that are already online.",
               "link": "{@link features/images-inserting}"
             },
             {
@@ -252,7 +252,7 @@
               "id": "image-upload",
               "title": "Image upload",
               "badge": null,
-              "description": "Inserting images into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.",
+              "description": "Inserting images into content created with CKEditor&nbsp;5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.",
               "link": "{@link features/image-upload}"
             },
             {
@@ -384,7 +384,7 @@
           "title": "Mermaid",
           "type": "heading-badge",
           "badge": "experiment",
-          "description": "You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.",
+          "description": "You can create flowcharts and diagrams in CKEditor&nbsp;5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.",
           "link": "{@link features/mermaid}"
         },
         {
@@ -406,7 +406,7 @@
           "id": "tables",
           "title": "Tables",
           "type": "subsection-with-grid",
-          "description": "CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.",
+          "description": "CKEditor&nbsp;5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.",
           "features": [
             {
               "id": "columns-resizing",
@@ -433,14 +433,14 @@
               "id": "nesting",
               "title": "Nesting",
               "badge": null,
-              "description": "CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.",
+              "description": "CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.",
               "link": "{@link features/tables#nesting-tables}"
             },
             {
               "id": "styling-tables-cells",
               "title": "Styling tables & cells",
               "badge": "premium",
-              "description": "CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.",
+              "description": "CKEditor&nbsp;5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.",
               "link": "{@link features/tables-styling}"
             },
             {
@@ -484,7 +484,7 @@
           "id": "text-formatting",
           "title": "Text formatting",
           "type": "subsection-with-grid",
-          "description": "CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.",
+          "description": "CKEditor&nbsp;5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.",
           "features": [
             {
               "id": "bold",
@@ -577,7 +577,7 @@
           "title": "Asynchronous collaboration",
           "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.",
+          "description": "Asynchronous Collaboration in CKEditor&nbsp;5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.",
           "link": "{@link features/collaboration}",
           "features": [
             {
@@ -646,7 +646,7 @@
           "title": "Real-time collaboration",
           "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.",
+          "description": "Real-Time Collaboration in CKEditor&nbsp;5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.",
           "link": "{@link features/users-in-real-time-collaboration}",
           "features": [
             {
@@ -684,7 +684,7 @@
           "title": "Revision history",
           "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.",
+          "description": "The revision history feature is a document versioning tool. It allows CKEditor&nbsp;5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.",
           "link": "{@link features/revision-history}",
           "features": [
             {
@@ -768,7 +768,7 @@
           "title": "Content generation",
           "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "CKEditor 5 may be your universal starting point for generating content in several recognizable formats.",
+          "description": "CKEditor&nbsp;5 may be your universal starting point for generating content in several recognizable formats.",
           "link": "{@link features/export-pdf}",
           "features": [
             {
@@ -789,7 +789,7 @@
               "id": "import-from-word",
               "title": "Import from Word",
               "badge": "premium",
-              "description": "Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.",
+              "description": "Effortlessly transform Word documents into clean HTML within CKEditor&nbsp;5 while retaining the original styling, as well as comments and change tracking annotations.",
               "link": "{@link features/import-word}"
             }
           ]
@@ -850,7 +850,7 @@
           "id": "page-utilities",
           "title": "Page utilities",
           "type": "subsection-with-grid",
-          "description": "CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.",
+          "description": "CKEditor&nbsp;5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.",
           "features": [
             {
               "id": "content-minimap",
@@ -956,7 +956,7 @@
           "id": "automation",
           "title": "Automation",
           "type": "subsection-with-grid",
-          "description": "Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!",
+          "description": "Automate your workflow with CKEditor&nbsp;5 automation tools, regardless of whether you write, link, or save!",
           "features": [
             {
               "id": "autoformatting",
@@ -1008,7 +1008,7 @@
           "title": "Find and replace",
           "type": "heading-badge",
           "badge": "premium",
-          "description": "The Find and Replace feature in CKEditor 5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency.",
+          "description": "The Find and Replace feature in CKEditor&nbsp;5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency.",
           "link": "{@link features/find-and-replace}"
         },
         {
@@ -1030,7 +1030,7 @@
           "id": "keyboard-shortcuts",
           "title": "Keyboard shortcuts",
           "type": "simple",
-          "description": "CKEditor 5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users.",
+          "description": "CKEditor&nbsp;5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users.",
           "link": "{@link features/accessibility#keyboard-shortcuts}"
         },
         {
@@ -1069,7 +1069,7 @@
           "title": "Enhanced paste from Office",
           "type": "heading-badge",
           "badge": "premium",
-          "description": "The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor 5 without compromising on formatting.",
+          "description": "The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor&nbsp;5 without compromising on formatting.",
           "link": "{@link features/paste-from-office-enhanced}"
         },
         {
@@ -1108,7 +1108,7 @@
     {
       "id": "configurations",
       "title": "Configurations",
-      "description": "Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.",
+      "description": "Configure CKEditor&nbsp;5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.",
       "subsections": [
         {
           "id": "editor-placeholder",
@@ -1172,7 +1172,7 @@
           "title": "Email editing",
           "type": "heading-badge-with-embedded-content",
           "badge": "premium",
-          "description": "CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.",
+          "description": "CKEditor&nbsp;5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.",
           "link": "{@link features/email}",
           "features": [
             {
@@ -1202,7 +1202,7 @@
           "id": "professionally-translated-language-packs",
           "title": "Professionally translated language packs",
           "type": "simple",
-          "description": "CKEditor 5 provides 38 professionally translated language options, along with additional languages provided by community translations. CKEditor 5 also supports right-to-left (RTL) languages natively. When an RTL language is selected, the editor automatically adjusts its interface, including elements like toolbars, dropdowns, and buttons, to ensure an optimal editing experience.",
+          "description": "CKEditor&nbsp;5 provides 38 professionally translated language options, along with additional languages provided by community translations. CKEditor&nbsp;5 also supports right-to-left (RTL) languages natively. When an RTL language is selected, the editor automatically adjusts its interface, including elements like toolbars, dropdowns, and buttons, to ensure an optimal editing experience.",
           "link": "{@link getting-started/setup/ui-language}"
         },
         {
@@ -1229,7 +1229,7 @@
               "id": "classic-toolbar",
               "title": "Classic toolbar",
               "badge": null,
-              "description": "The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.",
+              "description": "The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.",
               "link": "{@link getting-started/setup/toolbar#main-editor-toolbar}"
             },
             {
@@ -1301,7 +1301,7 @@
           "id": "accessibility-support",
           "title": "Accessibility support",
           "type": "simple",
-          "description": "CKEditor 5 includes accessibility functionality designed to ensure content is accessible to all users. These features encompass keyboard navigation for easier content access without a mouse, screen reader compatibility facilitated by ARIA attributes, and semantic output markup for clearer interpretation of content structures. CKEditor 5 meets the requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at levels A and AA, as well as Section 508 of the Rehabilitation Act, as detailed in the Accessibility Conformance Report, ensuring broad accessibility compliance.",
+          "description": "CKEditor&nbsp;5 includes accessibility functionality designed to ensure content is accessible to all users. These features encompass keyboard navigation for easier content access without a mouse, screen reader compatibility facilitated by ARIA attributes, and semantic output markup for clearer interpretation of content structures. CKEditor&nbsp;5 meets the requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at levels A and AA, as well as Section 508 of the Rehabilitation Act, as detailed in the Accessibility Conformance Report, ensuring broad accessibility compliance.",
           "link": "{@link features/accessibility}"
         },
         {
@@ -1346,7 +1346,7 @@
           "id": "csp-support",
           "title": "Content Security Policy",
           "type": "simple",
-          "description": "Full Content Security Policy (CSP) support for secure deployments. Configure CKEditor 5 to work within strict CSP environments.",
+          "description": "Full Content Security Policy (CSP) support for secure deployments. Configure CKEditor&nbsp;5 to work within strict CSP environments.",
           "link": "{@link getting-started/setup/csp}"
         },
         {
@@ -1383,27 +1383,27 @@
           "id": "editor-sdk",
           "title": "Editor SDK",
           "type": "subsection-with-grid",
-          "description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.",
+          "description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.",
           "features": [
             {
               "id": "ckeditor-5-inspector",
-              "title": "CKEditor 5 inspector",
+              "title": "CKEditor&nbsp;5 inspector",
               "badge": null,
-              "description": "The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like model, view, and commands.",
+              "description": "The official CKEditor&nbsp;5 inspector provides a set of rich debugging tools for editor internals like model, view, and commands.",
               "link": "{@link framework/development-tools/inspector}"
             },
             {
               "id": "cloud-services-rest-api",
               "title": "Cloud Services REST API",
               "badge": null,
-              "description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.",
+              "description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor&nbsp;5 features, although some features can also be used directly through REST APIs.",
               "link": "https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html"
             },
             {
               "id": "plugin-api",
               "title": "Plugin API",
               "badge": null,
-              "description": "Create custom plugins to extend CKEditor 5 with your own features. Use the package generator to scaffold new plugins with TypeScript or JavaScript templates.",
+              "description": "Create custom plugins to extend CKEditor&nbsp;5 with your own features. Use the package generator to scaffold new plugins with TypeScript or JavaScript templates.",
               "link": "{@link framework/development-tools/package-generator/using-package-generator}"
             },
             {
@@ -1433,7 +1433,7 @@
           "id": "ui-library",
           "title": "UI Library",
           "type": "simple",
-          "description": "The standard UI library of CKEditor 5 is @ckeditor/ckeditor5-ui. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.",
+          "description": "The standard UI library of CKEditor&nbsp;5 is @ckeditor/ckeditor5-ui. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.",
           "link": "{@link framework/architecture/ui-library}"
         },
         {
@@ -1479,7 +1479,7 @@
           "title": "CKBox",
           "type": "heading-badge",
           "badge": "premium",
-          "description": "Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS.",
+          "description": "Securely upload, store, edit, and utilize your images and files in CKEditor&nbsp;5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS.",
           "link": "{@link features/ckbox}"
         },
         {
@@ -1518,13 +1518,13 @@
     {
       "id": "integrations",
       "title": "Integrations",
-      "description": "Integrate CKEditor 5 with your technology stack. Official components and guides for popular frameworks, backend platforms, and various installation methods.",
+      "description": "Integrate CKEditor&nbsp;5 with your technology stack. Official components and guides for popular frameworks, backend platforms, and various installation methods.",
       "subsections": [
         {
           "id": "frontend-frameworks",
           "title": "Frontend frameworks",
           "type": "subsection-with-grid",
-          "description": "Official CKEditor 5 components for popular frontend frameworks.",
+          "description": "Official CKEditor&nbsp;5 components for popular frontend frameworks.",
           "features": [
             {
               "id": "react-integration",
@@ -1579,7 +1579,7 @@
               "id": "other-js-platforms",
               "title": "Other JavaScript platforms",
               "badge": null,
-              "description": "CKEditor 5 can be integrated with any JavaScript environment. Use the vanilla JavaScript guide as a starting point for custom integrations.",
+              "description": "CKEditor&nbsp;5 can be integrated with any JavaScript environment. Use the vanilla JavaScript guide as a starting point for custom integrations.",
               "link": "{@link getting-started/integrations/quick-start}"
             }
           ]
@@ -1588,7 +1588,7 @@
           "id": "backend-integrations",
           "title": "Backend & platform integrations",
           "type": "subsection-with-grid",
-          "description": "Integrate CKEditor 5 with popular backend frameworks and platforms.",
+          "description": "Integrate CKEditor&nbsp;5 with popular backend frameworks and platforms.",
           "features": [
             {
               "id": "laravel-integration",
@@ -1629,7 +1629,7 @@
               "id": "other-platforms",
               "title": "Other platforms",
               "badge": null,
-              "description": "CKEditor 5 can be integrated with any backend platform. Use the vanilla JavaScript guide as a starting point for custom integrations.",
+              "description": "CKEditor&nbsp;5 can be integrated with any backend platform. Use the vanilla JavaScript guide as a starting point for custom integrations.",
               "link": "{@link getting-started/integrations/quick-start}"
             }
           ]
@@ -1638,7 +1638,7 @@
           "id": "installation-methods",
           "title": "Installation methods",
           "type": "subsection-with-grid",
-          "description": "Multiple ways to add CKEditor 5 to your project, from quick CDN scripts to full npm builds.",
+          "description": "Multiple ways to add CKEditor&nbsp;5 to your project, from quick CDN scripts to full npm builds.",
           "features": [
             {
               "id": "npm-installation",
@@ -1651,7 +1651,7 @@
               "id": "cdn-installation",
               "title": "CDN",
               "badge": null,
-              "description": "Load CKEditor 5 directly from CDN with zero build setup. ESM and UMD bundles available.",
+              "description": "Load CKEditor&nbsp;5 directly from CDN with zero build setup. ESM and UMD bundles available.",
               "link": "{@link getting-started/integrations-cdn/quick-start}"
             },
             {
