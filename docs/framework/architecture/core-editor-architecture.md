@@ -122,36 +122,18 @@ The important thing about commands is that every change in their state as well a
 	Read more about this mechanism in the {@link framework/deep-dive/observables Observables} deep dive guide.
 </info-box>
 
-These events make it possible to control the command from the outside. For instance, if you want to block specific commands when some condition is true (for example, according to your application logic, they should be temporarily unavailable) and there is no other, cleaner way to do that, you can block the command manually:
+These events make it possible to control the command from the outside. For instance, if you want to block specific commands when some condition is true (for example, according to your application logic, they should be temporarily unavailable) and there is no other, cleaner way to do that, you can disable the command using the built-in helper {@link module:core/command~Command#forceDisabled `forceDisabled()`} (and re-enable it with {@link module:core/command~Command#clearForceDisabled `clearForceDisabled()`}):
 
 ```js
-function disableCommand( cmd ) {
-	cmd.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
-
-	cmd.isEnabled = false;
-
-	// Make it possible to enable the command again.
-	return () => {
-		cmd.off( 'set:isEnabled', forceDisable );
-		cmd.refresh();
-	};
-
-	function forceDisable( evt ) {
-		evt.return = false;
-		evt.stop();
-	}
-}
-
-// Usage:
-
 // Disabling the command.
-const enableBold = disableCommand( editor.commands.get( 'bold' ) );
+const boldCommand = editor.commands.get( 'bold' );
+boldCommand.forceDisabled( 'MyFeature' );
 
 // Enabling the command again.
-enableBold();
+boldCommand.clearForceDisabled( 'MyFeature' );
 ```
 
-The command will now be blocked as long as you do not {@link module:utils/emittermixin~Emitter#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
+The command will remain disabled until `clearForceDisabled( 'MyFeature' )` is called and no other feature keeps it disabled, regardless of how many times `someCommand.refresh()` is called.
 
 By default, editor commands are blocked when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode. However, if your command does not change the editor data and you want it to stay enabled in the read-only mode, you can set the {@link module:core/command~Command#affectsData `affectsData`} flag to `false`:
 

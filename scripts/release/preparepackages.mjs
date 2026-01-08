@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -326,6 +326,18 @@ const tasks = new Listr( [
 					}
 				}
 			], taskOptions );
+		}
+	},
+	{
+		title: 'Verify release directory.',
+		task: async () => {
+			const isEmpty = ( await fs.readdir( RELEASE_DIRECTORY ) ).length === 0;
+
+			if ( !isEmpty ) {
+				return;
+			}
+
+			return Promise.reject( 'Release directory is empty, aborting.' );
 		}
 	},
 	{

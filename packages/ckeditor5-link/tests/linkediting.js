@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -355,6 +355,14 @@ describe( 'LinkEditing', () => {
 				.to.equal( '<paragraph><$text linkHref="">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="">foo</a>bar</p>' );
+		} );
+
+		it( 'should not assign `linkHref` attribute if missing href', () => {
+			editor.setData( '<p><a>foo</a>bar</p>' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
 
 		// The editor's role is not to filter out potentially malicious data.

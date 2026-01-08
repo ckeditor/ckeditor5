@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
 #
 # Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
@@ -318,3 +318,15 @@ msgstr "Tasaa taulukko vasemmalle ilman tekstin rivitystä"
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
 msgstr "Tasaa taulukko oikealle ilman tekstin rivitystä"
+
+msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
+msgid "Cell type"
+msgstr ""
+
+msgctxt "The label for the dropdown option for a data table cell."
+msgid "Data cell"
+msgstr ""
+
+msgctxt "The label for the dropdown option for a header table cell."
+msgid "Header cell"
+msgstr ""

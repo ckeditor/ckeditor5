@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -123,8 +123,12 @@ export class TextTransformation extends Plugin {
 		const modelSelection = model.document.selection;
 
 		modelSelection.on( 'change:range', () => {
-			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !modelSelection.anchor!.parent.is( 'element', 'codeBlock' );
+			// Disable plugin when selection is inside a code block or inline code.
+			const anchor = modelSelection.anchor;
+			const isInCodeBlock = !!anchor && anchor.parent.is( 'element', 'codeBlock' );
+			const isInInlineCode = modelSelection.hasAttribute( 'code' );
+
+			this.isEnabled = !( isInCodeBlock || isInInlineCode );
 		} );
 
 		this._enableTransformationWatchers();
