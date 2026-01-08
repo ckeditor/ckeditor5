@@ -860,6 +860,7 @@ export class TableUtils extends Plugin {
 			if ( rowspan < numberOfCells ) {
 				// We already split the cell in check one so here we split to the remaining number of cells only.
 				const cellsToInsert = numberOfCells - rowspan;
+				const rowCountBefore = this.getRows( table );
 
 				// This check is needed since we need to check if there are any cells from previous rows than spans over this cell's row.
 				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: splitCellRow } ) ];
@@ -891,6 +892,14 @@ export class TableUtils extends Plugin {
 
 				if ( headingRows > splitCellRow ) {
 					updateNumericAttribute( 'headingRows', headingRows + cellsToInsert, table, writer );
+				}
+
+				// Update footer rows if split cell is in footer section.
+				const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+				const footerIndex = rowCountBefore - footerRows;
+
+				if ( footerIndex <= splitCellRow ) {
+					updateNumericAttribute( 'footerRows', footerRows + cellsToInsert, table, writer );
 				}
 			}
 		} );

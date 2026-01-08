@@ -280,6 +280,125 @@ describe( 'TableUtils', () => {
 			], { headingRows: 2 } ) );
 		} );
 
+		it( 'should expand rowspan of a cell that overlaps inserted rows (footer)', () => {
+			// +----+----+----+----+
+			// | 00      | 02 | 03 |
+			// +         +----+----+
+			// |         | 12 | 13 |
+			// +----+----+----+----+ <-- footer rows begin
+			// | 10      | 22 | 23 |
+			// +----+----+----+----+
+			//                     ^-- heading columns
+			_setModelData( model, modelTable( [
+				[ { contents: '00', colspan: 2, rowspan: 2 }, '02', '03' ],
+				[ '12', '13' ],
+				[ { contents: '10[]', colspan: 2 }, '22', '23' ]
+			], { headingColumns: 3, footerRows: 1 } ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 3 } );
+
+			// +----+----+----+----+
+			// | 00      | 02 | 03 |
+			// +         +----+----+
+			// |         |    |    |
+			// +         +----+----+
+			// |         |    |    |
+			// +         +----+----+
+			// |         |    |    |
+			// +         +----+----+
+			// |         | 12 | 13 |
+			// +----+----+----+----+ <-- footer rows begin
+			// | 10      | 22 | 23 |
+			// +----+----+----+----+
+			//                     ^-- heading columns
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', colspan: 2, rowspan: 5 }, '02', '03' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '12', '13' ],
+				[ { contents: '10[]', colspan: 2 }, '22', '23' ]
+			], { headingColumns: 3, footerRows: 1 } ) );
+		} );
+
+		it( 'should not expand rowspan of a cell that does not overlap inserted rows (footer)', () => {
+			// +----+----+----+
+			// | 00 | 01 | 02 |
+			// +----+----+----+ <-- footer rows begin
+			// | 10 | 11 | 12 |
+			// +    +----+----+
+			// |    | 21 | 22 |
+			// +----+----+----+
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { contents: '10[]', rowspan: 2 }, '11', '12' ],
+				[ '21', '22' ]
+			], { footerRows: 2 } ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 3 } );
+
+			// +----+----+----+
+			// | 00 | 01 | 02 |
+			// +----+----+----+
+			// |    |    |    |
+			// +----+----+----+
+			// |    |    |    |
+			// +----+----+----+
+			// |    |    |    |
+			// +----+----+----+ <-- footer rows begin
+			// | 10 | 11 | 12 |
+			// +    +----+----+
+			// |    | 21 | 22 |
+			// +----+----+----+
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				[ '00', '01', '02' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ { contents: '10[]', rowspan: 2 }, '11', '12' ],
+				[ '21', '22' ]
+			], { footerRows: 2 } ) );
+		} );
+
+		it( 'should properly calculate columns if previous row has colspans', () => {
+			// +----+----+----+
+			// | 00           |
+			// +----+----+----+ <-- footer rows begin
+			// | 10 | 11 | 12 |
+			// +    +----+----+
+			// |    | 21 | 22 |
+			// +----+----+----+
+			_setModelData( model, modelTable( [
+				[ { contents: '00[]', colspan: 3 } ],
+				[ { contents: '10', rowspan: 2 }, '11', '12' ],
+				[ '21', '22' ]
+			], { footerRows: 2 } ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 3 } );
+
+			// +----+----+----+
+			// | 00           |
+			// +----+----+----+
+			// |    |    |    |
+			// +----+----+----+
+			// |    |    |    |
+			// +----+----+----+
+			// |    |    |    |
+			// +----+----+----+ <-- footer rows begin
+			// | 10 | 11 | 12 |
+			// +    +----+----+
+			// |    | 21 | 22 |
+			// +----+----+----+
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00[]', colspan: 3 } ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ { contents: '10', rowspan: 2 }, '11', '12' ],
+				[ '21', '22' ]
+			], { footerRows: 2 } ) );
+		} );
+
 		it( 'should insert rows at the end of a table', () => {
 			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -921,6 +1040,24 @@ describe( 'TableUtils', () => {
 				[ { colspan: 3, contents: '00' }, '01' ],
 				[ '10[]', '', '', '11' ]
 			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should split table cell from a footer section', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20[]', '21', '22' ]
+			], { footerRows: 1 } ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 2, 0 ] ), 3 );
+
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20[]', { rowspan: 3, contents: '21' }, { rowspan: 3, contents: '22' } ],
+				[ '' ],
+				[ '' ]
+			], { footerRows: 3 } ) );
 		} );
 
 		it( 'should split cells in a table with a non-row element', () => {
@@ -1584,6 +1721,83 @@ describe( 'TableUtils', () => {
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '20', '21' ]
+				] ) );
+			} );
+
+			it( 'should change footer rows if removing a footer row', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 2 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+			} );
+
+			it( 'should change footer rows if removing a footer row (and cell above is row-spanned)', () => {
+				_setModelData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 2 } ],
+					[ '10' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 2 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', { contents: '01', rowspan: 2 } ],
+					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should support removing multiple footers (removed rows in footer section)', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { footerRows: 3 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { footerRows: 1 } ) );
+			} );
+
+			it( 'should support removing multiple footers (removed rows in footer and body section)', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ],
+					[ '40', '41' ]
+				], { footerRows: 3 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 3 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '40', '41' ]
+				], { footerRows: 1 } ) );
+			} );
+
+			it( 'should support removing mixed footer and cell rows', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ]
 				] ) );
 			} );
 
