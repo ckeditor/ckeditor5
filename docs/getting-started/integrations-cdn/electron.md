@@ -4,12 +4,12 @@ meta-title: Using the CKEditor 5 WYSIWYG editor with Electron from CDN | CKEdito
 meta-description: Integrate the CKEditor 5 rich-text editor with Electron using CDN. Follow step-by-step instructions for fast installation and setup.
 order: 140
 menu-title: Electron
-modified_at: 2025-12-19
+modified_at: 2026-01-08
 ---
 
-# Integrating CKEditor&nbsp;5 with Electron using CDN
+# Integrating CKEditor&nbsp;5 with Electron from CDN
 
-[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to build cross-platform desktop applications using web technologies like HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
+[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to created cross-platform desktop applications using web technologies such as HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
 
 {@snippet getting-started/use-builder}
 
@@ -18,11 +18,11 @@ modified_at: 2025-12-19
 This guide will show you how to integrate CKEditor&nbsp;5 with an Electron application using the CDN. If you are new to Electron, check out their [official tutorial](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
 
 
-### Setting up Electron project
+### Setting up an Electron project
 
 The quickest way to set up an Electron project is to use Electron Forge's `create-electron-app` command. [Follow the Getting Started guide](https://www.electronforge.io/) to create the application. 
-  
-When executing `npx create-electron-app@latest my-app` in the terminal, you will be prompted to choose bundler and language. For the sake of this tutorial, we have chosen to use Vite and vanilla JavaScript.
+	
+When executing `npx create-electron-app@latest my-app` in the terminal, you will be prompted to choose a bundler and a language. For the sake of this tutorial, we have chosen to use Vite and vanilla JavaScript.
 
 When the setup is finished, you should be able to go to the app's directory and run it by executing:
 
@@ -31,11 +31,11 @@ cd my-app
 npm start
 ```
 
-## Integrating CKEditor&nbsp;5 with Electron using ZIP archive
+## Integrating CKEditor&nbsp;5 with Electron using the ZIP archive
 
 ### Project structure
 
-After following all steps described in previous points, your app's structure should resemble this one:
+AAfter following all the steps described so far, your app's structure should resemble this one:
 
 ```plain
 ├── forge.config.js
@@ -55,66 +55,65 @@ After following all steps described in previous points, your app's structure sho
 
 ### Implementing the editor
 
-Inside the `src/` foder create a new file `editor.js` with the following content:
+Inside the `src/` folder, create a new file `editor.js` with the following content:
 
 ```js
 const {
-    ClassicEditor,
-    Essentials,
-    Bold,
-    Italic,
-    Font,
-    Paragraph
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
 } = CKEDITOR;
 
 const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        licenseKey: '<YOUR_LICENSE_KEY>',
-        plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-        toolbar: [
-            'undo', 'redo', '|', 'bold', 'italic', '|',
-            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-            'formatPainter'
-        ]
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
-
+		.create( document.querySelector( '#editor' ), {
+				licenseKey: '<YOUR_LICENSE_KEY>',
+				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+				toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+						'formatPainter'
+				]
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
 ```
 
-This code imports all necessary CKEditor 5 plugins and initializes editor instance with provided configuration.
-  
+This code imports all the necessary CKEditor 5 plugins and initializes editor instance with the provided configuration.
+	
 Now modify the `index.html` file so it looks like this:
 
 ```html
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Hello World!</title>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello World!</title>
 
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 
-    <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 	<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
-  </head>
-  <body>
-    <h1>Hello Electron and CKEditor 5!</h1>
-    <p>Welcome to your Electron application. Below you should see a working instance of CKEditor 5:</p>
+	</head>
+	<body>
+		<h1>Hello Electron and CKEditor 5!</h1>
+		<p>Welcome to your Electron application. Below you should see a working instance of CKEditor 5:</p>
 
-    <div id="editor"></div>
+		<div id="editor"></div>
 
-    <script src="./src/editor.js"></script>
+		<script src="./src/editor.js"></script>
 
-    <script type="module" src="/src/renderer.js"></script>
-  </body>
+		<script type="module" src="/src/renderer.js"></script>
+	</body>
 </html>
 ```
 
-Here we adjusted the structure to include the `<div>` placeholder for the editor instance. We have also added CDN links to the editor's styles, source files and finally `editor.js` file, which is responsible for tying everything together and initializing the editor.
+Here we adjusted the structure to include the `<div>` placeholder for the editor instance. We have also added CDN links to the editor's styles, source files, and finally the `editor.js` file, which is responsible for tying everything together and initializing the editor.
 
 You can now execute `npm start` to run the Electron app. It should automatically open a window with an editor instance ready to be used:
 
