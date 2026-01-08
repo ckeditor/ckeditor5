@@ -280,6 +280,40 @@ describe( 'TableUtils', () => {
 			], { headingRows: 2 } ) );
 		} );
 
+		it( 'should update table footer rows attribute when inserting row in footer section', () => {
+			_setModelData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { footerRows: 2 } ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
+
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '', '' ],
+				[ '31', '32' ]
+			], { footerRows: 3 } ) );
+		} );
+
+		it( 'should not update table footer rows attribute when inserting row before footer section', () => {
+			_setModelData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { footerRows: 2 } ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+				[ '11[]', '12' ],
+				[ '', '' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { footerRows: 2 } ) );
+		} );
+
 		it( 'should expand rowspan of a cell that overlaps inserted rows (footer)', () => {
 			// +----+----+----+----+
 			// | 00      | 02 | 03 |
@@ -3096,6 +3130,26 @@ describe( 'TableUtils with tableCellTypeSupport enabled', () => {
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { footerRows: 2 } ) );
+		} );
+
+		it( 'should remove "header" type from former heading rows when adjusting heading rows', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ]
+			], { headingRows: 3 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				tableUtils.setFooterRowsCount( writer, table, 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ '20', '21' ]
+			], { headingRows: 2, footerRows: 1 } ) );
 		} );
 	} );
 

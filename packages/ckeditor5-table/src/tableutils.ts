@@ -212,11 +212,17 @@ export class TableUtils extends Plugin {
 
 		model.change( writer => {
 			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			let footerRows = table.getAttribute( 'footerRows' ) as number || 0;
 			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
 				headingRows += rowsToInsert;
+			}
+
+			// Inserting rows inside footer section requires to update `footerRows` attribute as the footer section will grow.
+			if ( insertAt > rows - footerRows ) {
+				footerRows += rowsToInsert;
 			}
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
@@ -289,6 +295,7 @@ export class TableUtils extends Plugin {
 				}
 			}
 
+			this.setFooterRowsCount( writer, table, footerRows );
 			this.setHeadingRowsCount( writer, table, headingRows, {
 				// No need to update cell types again, as they were already set during insertion.
 				updateCellType: false
@@ -1002,11 +1009,9 @@ export class TableUtils extends Plugin {
 
 		// If footer rows and heading rows overlap, adjust heading rows.
 		if ( headingRows + truncatedFooterRows > totalRows ) {
-			const newFooterRows = this.getRows( table ) - truncatedFooterRows;
+			const newHeadingRows = totalRows - truncatedFooterRows;
 
-			// Transform old `th` cells back to `td` in the rows that are no longer in heading section,
-			// and disable auto expanding just in case.
-			this.setHeadingRowsCount( writer, table, newFooterRows );
+			this.setHeadingRowsCount( writer, table, newHeadingRows );
 		}
 	}
 
@@ -1031,13 +1036,13 @@ export class TableUtils extends Plugin {
 		writer: ModelWriter,
 		table: ModelElement,
 		headingRows: number,
-		options: {
-			updateCellType?: boolean;
-			resetFormerHeadingCells?: boolean;
-			autoExpand?: boolean;
-		} = {}
+		options: UpdateTableHeadingsOptions = {}
 	): void {
-		const { updateCellType = true, resetFormerHeadingCells = true, autoExpand = true } = options;
+		const {
+			updateCellType = true,
+			resetFormerHeadingCells = true,
+			autoExpand = true
+		} = options;
 
 		const totalRows = this.getRows( table );
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
@@ -1054,7 +1059,7 @@ export class TableUtils extends Plugin {
 		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
 
 		if ( truncatedHeadingRows + footerRows > totalRows ) {
-			const newFooterRows = Math.max( 0, totalRows - truncatedHeadingRows );
+			const newFooterRows = totalRows - truncatedHeadingRows;
 
 			this.setFooterRowsCount( writer, table, newFooterRows );
 		}
@@ -1130,13 +1135,13 @@ export class TableUtils extends Plugin {
 		writer: ModelWriter,
 		table: ModelElement,
 		headingColumns: number,
-		options: {
-			updateCellType?: boolean;
-			resetFormerHeadingCells?: boolean;
-			autoExpand?: boolean;
-		} = {}
+		options: UpdateTableHeadingsOptions = {}
 	): void {
-		const { updateCellType = true, resetFormerHeadingCells = true, autoExpand = true } = options;
+		const {
+			updateCellType = true,
+			resetFormerHeadingCells = true,
+			autoExpand = true
+		} = options;
 
 		const totalColumns = this.getColumns( table );
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
@@ -1426,6 +1431,15 @@ export class TableUtils extends Plugin {
 		return firstCellIsInFooter === lastCellIsInFooter;
 	}
 }
+
+/**
+ * Options for the {@link TableUtils#setHeadingRowsCount} and {@link TableUtils#setHeadingColumnsCount} methods.
+ */
+export type UpdateTableHeadingsOptions = {
+	updateCellType?: boolean;
+	resetFormerHeadingCells?: boolean;
+	autoExpand?: boolean;
+};
 
 /**
  * Creates empty rows at the given index in an existing table.

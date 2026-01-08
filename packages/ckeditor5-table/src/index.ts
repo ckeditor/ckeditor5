@@ -32,7 +32,7 @@ export { TableClipboard } from './tableclipboard.js';
 export { TableMouse } from './tablemouse.js';
 export { TableKeyboard } from './tablekeyboard.js';
 export { TableSelection } from './tableselection.js';
-export { TableUtils, type TableIndexesObject } from './tableutils.js';
+export { TableUtils, type TableIndexesObject, type UpdateTableHeadingsOptions } from './tableutils.js';
 export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
