@@ -19,6 +19,27 @@
 	.simple-box-title {
 		margin-bottom: 10px;
 	}
+
+	.simple-box.secret .simple-box-title,
+	.simple-box.secret .simple-box-description {
+		filter: blur(4px);
+		user-select: none;
+		pointer-events: none;
+	}
+
+	.simple-box.secret::before {
+		content: "Secret content";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: rgba(0, 0, 0, 0.7);
+		color: white;
+		padding: 8px 16px;
+		border-radius: 4px;
+		font-size: 14px;
+		z-index: 1;
+	}
 </style>
 
 <div class="ck ck-content" id="snippet-block-widget">

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -1912,6 +1912,19 @@ describe( 'table cell properties', () => {
 
 				it( 'should register tableCellType attribute as a formatting attribute', () => {
 					expect( schema.getAttributeProperties( 'tableCellType' ).isFormatting ).to.be.true;
+				} );
+
+				it( 'should disallow tableCellType attribute in layout tables', () => {
+					model.change( writer => {
+						const table = writer.createElement( 'table', { tableType: 'layout' } );
+						const tableRow = writer.createElement( 'tableRow' );
+						const tableCell = writer.createElement( 'tableCell' );
+
+						writer.insert( tableRow, table );
+						writer.insert( tableCell, tableRow );
+
+						expect( schema.checkAttribute( tableCell, 'tableCellType' ) ).to.be.false;
+					} );
 				} );
 			} );
 

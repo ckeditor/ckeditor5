@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -381,6 +381,15 @@ function enableCellTypeProperty( editor: Editor ) {
 	schema.setAttributeProperties( 'tableCellType', {
 		isFormatting: true
 	} );
+
+	// Do not allow setting `tableCellType` in layout tables.
+	schema.addAttributeCheck( context => {
+		const nearestTable = Array.from( context ).reverse().find( item => item.name === 'table' );
+
+		if ( nearestTable?.getAttribute( 'tableType' ) === 'layout' ) {
+			return false;
+		}
+	}, 'tableCellType' );
 
 	// Upcast conversion for td/th elements.
 	conversion.for( 'upcast' ).add( dispatcher => {
