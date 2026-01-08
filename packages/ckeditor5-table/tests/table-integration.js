@@ -8,7 +8,7 @@ import { Widget } from '@ckeditor/ckeditor5-widget';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -19,14 +19,20 @@ import {
 
 import { TableEditing } from '../src/tableediting.js';
 import { modelTable, viewTable } from './_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Table feature – integration', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'with clipboard', () => {
 		let editor, clipboard;
 
 		beforeEach( () => {
+			stubUid();
+
 			return ClassicTestEditor
-				.create( '', { plugins: [ Paragraph, TableEditing, LegacyListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
+				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -67,7 +73,7 @@ describe( 'Table feature – integration', () => {
 			} );
 
 			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
-				[ '<listItem listIndent="0" listType="bulleted">bar[]</listItem>' ]
+				[ '<paragraph listIndent="0" listItemId="a00" listType="bulleted">bar[]</paragraph>' ]
 			] ) );
 		} );
 
@@ -162,7 +168,7 @@ describe( 'Table feature – integration', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor
-				.create( '', { plugins: [ Paragraph, TableEditing, LegacyListEditing, BlockQuoteEditing, Widget, Typing ] } )
+				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Typing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
