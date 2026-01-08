@@ -103,8 +103,14 @@ describe( 'image utils', () => {
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
-		it( 'should return "imageInline" when the selected listItem in the selection is empty', () => {
+		it( 'should return "imageInline" when the selected listItem in the selection is empty (legacy lists)', () => {
 			_setModelData( model, '<listItem>[]</listItem>' );
+
+			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
+		} );
+
+		it( 'should return "imageInline" when the selected paragraph with listItemId in the selection is empty', () => {
+			_setModelData( model, '<paragraph listItemId="a00" listIndent="0" listType="bulleted">[]</paragraph>' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );

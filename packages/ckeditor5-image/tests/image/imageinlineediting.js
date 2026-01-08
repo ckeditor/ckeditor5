@@ -9,7 +9,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ViewDataTransfer, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
@@ -636,7 +636,7 @@ describe( 'ImageInlineEditing', () => {
 					Clipboard,
 					LinkImage,
 					Paragraph,
-					LegacyListEditing
+					ListEditing
 				]
 			} );
 
@@ -672,14 +672,14 @@ describe( 'ImageInlineEditing', () => {
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
 
-			_setModelData( model, '<listItem listType="bulleted" listIndent="0"></listItem>' );
+			_setModelData( model, '<paragraph listIndent="0" listItemId="000" listType="bulleted"></paragraph>' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">' +
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
 					'<imageInline src="/assets/sample.png"></imageInline>[]' +
-				'</listItem>'
+				'</paragraph>'
 			);
 		} );
 
@@ -898,7 +898,7 @@ describe( 'ImageInlineEditing', () => {
 					Clipboard,
 					LinkImage,
 					Paragraph,
-					LegacyListEditing
+					ListEditing
 				]
 			} );
 

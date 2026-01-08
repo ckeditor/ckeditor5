@@ -126,9 +126,12 @@ export function determineImageTypeForInsertionAtSelection(
 		return 'imageBlock';
 	}
 
+	// TODO: Remove `firstBlock.name == 'listItem'` once legacy lists are removed.
+	const isListItem = firstBlock.name == 'listItem' || firstBlock.hasAttribute( 'listItemId' );
+
 	// A block image should also be inserted into an empty block element
 	// (that is not an empty list item so the list won't get split).
-	if ( firstBlock.isEmpty && firstBlock.name != 'listItem' ) {
+	if ( firstBlock.isEmpty && !isListItem ) {
 		return 'imageBlock';
 	}
 
