@@ -203,20 +203,31 @@ function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirect
 	const table = tableRow.parent as ModelElement;
 
 	const rowIndex = table.getChildIndex( tableRow )!;
+	const rows = tableUtils.getRows( table );
 
 	// Don't search for mergeable cell if direction points out of the table.
-	if ( ( direction == 'down' && rowIndex === tableUtils.getRows( table ) - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
+	if ( ( direction == 'down' && rowIndex === rows - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
 		return null;
 	}
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-	const isMergeWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
-	const isMergeWithHeadCell = direction == 'up' && rowIndex === headingRows;
+	const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+	const footerIndex = rows - footerRows;
+
+	const isMergeUpWithBodyCell = direction == 'up' && rowIndex === footerIndex;
+	const isMergeUpWithHeadCell = direction == 'up' && rowIndex === headingRows;
+
+	const isMergeDownWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
+	const isMergeDownWithFootCell = direction == 'down' && rowIndex === footerIndex - 1;
 
 	// Don't search for mergeable cell if direction points out of the current table section.
-	if ( headingRows && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+	if ( headingRows && ( isMergeDownWithBodyCell || isMergeUpWithHeadCell ) ) {
+		return null;
+	}
+
+	if ( footerRows && ( isMergeUpWithBodyCell || isMergeDownWithFootCell ) ) {
 		return null;
 	}
 

@@ -491,7 +491,10 @@ export class TableUtils extends Plugin {
 			// 2d. Adjust heading rows if removed rows were in a heading section.
 			updateHeadingRows( table, indexesObject, writer );
 
-			// 2e. Remove empty columns (without anchored cells) if there are any.
+			// 2e. Adjust footer rows if removed rows were in a footer section.
+			updateFooterRows( table, rowCount, indexesObject, writer );
+
+			// 2f. Remove empty columns (without anchored cells) if there are any.
 			if ( !removeEmptyColumns( table, this ) ) {
 				// If there wasn't any empty columns then we still need to check if this wasn't called
 				// because of cleaning empty rows and we only removed one of them.
@@ -1371,12 +1374,17 @@ export class TableUtils extends Plugin {
 	 */
 	private _areCellInTheSameTableSection( tableCells: Array<ModelElement> ): boolean {
 		const table = tableCells[ 0 ].findAncestor( 'table' )!;
+		const totalRows = this.getRows( table );
 
 		const rowIndexes = this.getRowIndexes( tableCells );
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string ) || 0;
+		const footerRows = parseInt( table.getAttribute( 'footerRows' ) as string ) || 0;
 
 		// Calculating row indexes is a bit cheaper so if this check fails we can't merge.
-		if ( !this._areIndexesInSameSection( rowIndexes, headingRows ) ) {
+		if (
+			!this._areIndexesInSameHeadingSection( rowIndexes, headingRows ) ||
+			!this._areIndexesInSameFooterSection( rowIndexes, totalRows, footerRows )
+		) {
 			return false;
 		}
 
@@ -1384,17 +1392,29 @@ export class TableUtils extends Plugin {
 		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) as string ) || 0;
 
 		// Similarly cells must be in same column section.
-		return this._areIndexesInSameSection( columnIndexes, headingColumns );
+		return this._areIndexesInSameHeadingSection( columnIndexes, headingColumns );
 	}
 
 	/**
 	 * Unified check if table rows/columns indexes are in the same heading/body section.
 	 */
-	private _areIndexesInSameSection( { first, last }: TableIndexesObject, headingSectionSize: number ): boolean {
+	private _areIndexesInSameHeadingSection( { first, last }: TableIndexesObject, headingSectionSize: number ): boolean {
 		const firstCellIsInHeading = first < headingSectionSize;
 		const lastCellIsInHeading = last < headingSectionSize;
 
 		return firstCellIsInHeading === lastCellIsInHeading;
+	}
+
+	/**
+	 * Unified check if table rows indexes are in the same footer/body section.
+	 */
+	private _areIndexesInSameFooterSection( { first, last }: TableIndexesObject, totalRows: number, footerRows: number ): boolean {
+		const footerStartIndex = totalRows - footerRows;
+
+		const firstCellIsInFooter = first >= footerStartIndex;
+		const lastCellIsInFooter = last >= footerStartIndex;
+
+		return firstCellIsInFooter === lastCellIsInFooter;
 	}
 }
 
@@ -1493,6 +1513,24 @@ function updateHeadingRows( table: ModelElement, { first, last }: TableIndexesOb
 		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
 
 		updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+	}
+}
+
+/**
+ * Calculates a new footer rows value for removing rows from footer section.
+ */
+function updateFooterRows( table: ModelElement, totalRows: number, { first, last }: TableIndexesObject, writer: ModelWriter ) {
+	if ( !table.hasAttribute( 'footerRows' ) ) {
+		return;
+	}
+
+	const footerRows = table.getAttribute( 'footerRows' ) as number;
+	const footerIndex = totalRows - footerRows;
+
+	if ( last >= footerIndex ) {
+		const newRows = first >= footerIndex ? footerRows - ( last - first + 1 ) : totalRows - 1 - last;
+
+		updateNumericAttribute( 'footerRows', newRows, table, writer, 0 );
 	}
 }
 

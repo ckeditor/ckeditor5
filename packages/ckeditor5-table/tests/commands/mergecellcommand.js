@@ -575,6 +575,37 @@ describe( 'MergeCellCommand', () => {
 
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			describe( 'when the footer section is in the table', () => {
+				it( 'should be false if mergeable cell is in other table section then current cell', () => {
+					_setModelData( model, modelTable( [
+						[ '00[]', '01' ],
+						[ '10', '11' ]
+					], { footerRows: 1 } ) );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be true when merging within footer section', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10[]', '11' ],
+						[ '20', '21' ]
+					], { footerRows: 2 } ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be false if merging header section with footer section', () => {
+					_setModelData( model, modelTable( [
+						[ '00[]', '01' ],
+						[ '10', '11' ],
+						[ '20', '21' ]
+					], { headingRows: 1, footerRows: 1 } ) );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+			} );
 		} );
 
 		describe( 'value', () => {
@@ -798,6 +829,28 @@ describe( 'MergeCellCommand', () => {
 				], { headingRows: 1 } ) );
 			} );
 
+			it( 'should adjust footer rows if empty row was removed ', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +----+----+ <-- footer rows start
+				// | 10 | 11 |
+				// +    +----+
+				// |    | 21 |
+				// +----+----+
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ { contents: '10', rowspan: 2 }, '[]11' ],
+					[ '21' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '10', '<paragraph>[11</paragraph><paragraph>21]</paragraph>' ]
+				], { footerRows: 1 } ) );
+			} );
+
 			it( 'should create one undo step (1 batch)', () => {
 				// +----+----+
 				// | 00 | 01 |
@@ -881,6 +934,27 @@ describe( 'MergeCellCommand', () => {
 
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			describe( 'when the footer section is in the table', () => {
+				it( 'should be false if mergeable cell is in other table section then current cell', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10[]', '11' ]
+					], { footerRows: 1 } ) );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be true when merging within footer section', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10', '11' ],
+						[ '20[]', '21' ]
+					], { footerRows: 2 } ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+			} );
 		} );
 
 		describe( 'value', () => {
@@ -943,6 +1017,16 @@ describe( 'MergeCellCommand', () => {
 
 			it( 'should be undefined if not in a cell', () => {
 				_setModelData( model, '<paragraph>11[]</paragraph>' );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be undefined if mergable cell is in other table section (footer)', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '02' ],
+					[ { rowspan: 2, contents: '10[]' }, '12' ],
+					[ '21', '22' ]
+				], { footerRows: 2 } ) );
 
 				expect( command.value ).to.be.undefined;
 			} );
@@ -1101,6 +1185,28 @@ describe( 'MergeCellCommand', () => {
 					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>' ],
 					[ '20', '21' ]
 				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should adjust footer rows if empty row was removed ', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +----+----+
+				// | 10 | 11 |
+				// +    +----+ <-- footer rows start (row 1 and 2)
+				// |    | 21 |
+				// +----+----+
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ { contents: '10', rowspan: 2 }, '11' ],
+					[ '[]21' ]
+				], { footerRows: 2 } ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '10', '<paragraph>[11</paragraph><paragraph>21]</paragraph>' ]
+				], { footerRows: 1 } ) );
 			} );
 
 			it( 'should create one undo step (1 batch)', () => {
