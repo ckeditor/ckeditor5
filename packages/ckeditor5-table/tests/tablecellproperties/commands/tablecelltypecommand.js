@@ -376,5 +376,41 @@ describe( 'TableCellTypeCommand', () => {
 				], { headingColumns: 1, headingRows: 1 } ) );
 			} );
 		} );
+
+		describe( 'integration with table footers', () => {
+			it( 'should increment headingRows up to the footer', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', isSelected: true } ],
+					[ { contents: '20' } ]
+				], { headingRows: 1, footerRows: 1 } ) );
+
+				command.execute( { value: 'header' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20' } ]
+				], { headingRows: 2, footerRows: 1 } ) );
+			} );
+
+			it( 'should not increment headingRows to overlap with footerRows', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ],
+					[ { contents: '30', isSelected: true } ]
+				], { headingRows: 3, footerRows: 1 } ) );
+
+				command.execute( { value: 'header' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ],
+					[ { contents: '30', tableCellType: 'header' } ]
+				], { headingRows: 3, headingColumns: 1, footerRows: 1 } ) );
+			} );
+		} );
 	} );
 } );
