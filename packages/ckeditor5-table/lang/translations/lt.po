@@ -318,3 +318,15 @@ msgstr "Išlyginti lentelę į kairę be teksto apvyniojimo"
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
 msgstr "Išlyginti lentelę į dešinę be teksto apvyniojimo"
+
+msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
+msgid "Cell type"
+msgstr ""
+
+msgctxt "The label for the dropdown option for a data table cell."
+msgid "Data cell"
+msgstr ""
+
+msgctxt "The label for the dropdown option for a header table cell."
+msgid "Header cell"
+msgstr ""
