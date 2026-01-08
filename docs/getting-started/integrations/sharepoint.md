@@ -181,18 +181,18 @@ You should now be able to use the rich-text editor with SharePoint:
 * When using Rooster JS React in SharePoint with the SPFx Framework, after inserting a link, the <kbd>Enter</kbd> key may stop working. Adding `data-sp-a11y-skipkeys='all'` in the div wrapping the editor should fix the problem. (See [issue](https://github.com/SharePoint/sp-dev-docs/issues/9438)).
 * When using CKEditor&nbsp;5 inside a Fluent UI `Dialog` or `Modal` component, image resizing handles might not work because the `Layer` component captures mouse events. To fix this, enable event bubbling in the `modalProps`:
 
-  ```typescript
-  <Dialog
-      modalProps={ {
-          layerProps: {
-			  // Enable event bubbling to allow CKEditor 5 resize handles to work.
-              eventBubblingEnabled: true
-          }
-      } }
-  >
-      {/* ... */}
-  </Dialog>
-  ```
+```typescript
+<Dialog
+	modalProps={ {
+		layerProps: {
+			// Enable event bubbling to allow CKEditor 5 resize handles to work.
+			eventBubblingEnabled: true
+		}
+	} }
+>
+	{/* ... */}
+</Dialog>
+```
 
 ## Additional resources
 
