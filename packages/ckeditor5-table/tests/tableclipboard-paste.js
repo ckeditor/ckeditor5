@@ -8,7 +8,7 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line';
 import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-image';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Input } from '@ckeditor/ckeditor5-typing';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -21,6 +21,7 @@ import { TableWalker } from '../src/tablewalker.js';
 
 import { TableClipboard } from '../src/tableclipboard.js';
 import { TableColumnResize } from '../src/tablecolumnresize.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils, getUniqueMarkerNameStub;
@@ -28,6 +29,8 @@ describe( 'table clipboard', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		stubUid();
+
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 	} );
@@ -3871,7 +3874,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles mixed nested content in table cell', async () => {
-			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, LegacyListEditing ] );
+			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
 
 			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -3896,12 +3899,12 @@ describe( 'table clipboard', () => {
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[
 					'<imageBlock src="/assets/sample.png"></imageBlock>' +
-					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">bar</paragraph>' +
 					'<blockQuote>' +
 					'<paragraph>baz</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
+					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a03" listType="bulleted">bar</paragraph>' +
 					'</blockQuote>',
 					'ab',
 					'02' ],
