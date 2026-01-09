@@ -137,4 +137,4 @@ ViewText.prototype.is = function( type: string ): boolean {
 		type === 'text' || type === 'view:text' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type === 'node' || type === 'view:node';
-};
+} as any;

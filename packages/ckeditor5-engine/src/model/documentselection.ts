@@ -498,7 +498,7 @@ ModelDocumentSelection.prototype.is = function( type: string ): boolean {
 		type == 'model:selection' ||
 		type == 'documentSelection' ||
 		type == 'model:documentSelection';
-};
+} as any;
 
 /**
  * Fired when selection range(s) changed.

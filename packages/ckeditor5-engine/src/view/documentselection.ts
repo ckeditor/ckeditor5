@@ -400,7 +400,7 @@ ViewDocumentSelection.prototype.is = function( type: string ): boolean {
 		type == 'documentSelection' ||
 		type == 'view:selection' ||
 		type == 'view:documentSelection';
-};
+} as any;
 
 /**
  * Fired whenever selection ranges are changed through {@link ~ViewDocumentSelection Selection API}.

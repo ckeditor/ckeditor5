@@ -173,4 +173,4 @@ ViewTextProxy.prototype.is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'view:$textProxy' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'view:textProxy';
-};
+} as any;

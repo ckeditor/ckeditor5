@@ -695,7 +695,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 // Proper overload would interfere with that.
 ViewSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'view:selection';
-};
+} as any;
 
 /**
  * Additional options for {@link ~ViewSelection}.
