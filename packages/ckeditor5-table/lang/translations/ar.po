@@ -321,12 +321,12 @@ msgstr "محاذاة الجدول إلى اليمين دون التفاف الن
 
 msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
 msgid "Cell type"
-msgstr ""
+msgstr "نوع الخلية"
 
 msgctxt "The label for the dropdown option for a data table cell."
 msgid "Data cell"
-msgstr ""
+msgstr "خلية البيانات"
 
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
-msgstr ""
+msgstr "خلية العنوان"

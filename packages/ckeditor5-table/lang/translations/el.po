@@ -321,12 +321,12 @@ msgstr "Στοίχιση πίνακα στα δεξιά χωρίς αναδίπ�
 
 msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
 msgid "Cell type"
-msgstr ""
+msgstr "Τύπος κελιού"
 
 msgctxt "The label for the dropdown option for a data table cell."
 msgid "Data cell"
-msgstr ""
+msgstr "Κελί δεδομένων"
 
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
-msgstr ""
+msgstr "Κελί κεφαλίδας"

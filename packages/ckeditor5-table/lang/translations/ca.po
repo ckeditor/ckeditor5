@@ -321,12 +321,12 @@ msgstr "Alinear la taula a la dreta sense ajustament de text"
 
 msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
 msgid "Cell type"
-msgstr ""
+msgstr "Tipus de cel·la"
 
 msgctxt "The label for the dropdown option for a data table cell."
 msgid "Data cell"
-msgstr ""
+msgstr "Cel·la de dades"
 
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
-msgstr ""
+msgstr "Cel·la de capçalera"
