@@ -43,3 +43,8 @@ In the following guides, you will learn how to create the right converter for ea
 * **{@link framework/deep-dive/conversion/helpers/intro Conversion helpers}**
 
 	There are plenty of ways to transform data between model and view. To help you do this as efficiently as possible, we provided many functions that speed up this process. This chapter will help you choose the right helper for the job.
+
+* **{@link framework/deep-dive/conversion/attributes Attributes and inline formatting}**
+
+	Understand how text attributes map to inline elements, how nesting and merging work, and what to watch for when integrating formatting features.
+
