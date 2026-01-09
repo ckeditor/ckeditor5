@@ -5,17 +5,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import path from 'path';
+import path from 'node:path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 
-buildApiDocs()
-	.catch( err => {
-		console.error( err );
-		process.exitCode = 1;
-	} );
-
-async function buildApiDocs() {
+try {
 	console.log( 'Started building API.' );
 
 	await build( {
@@ -55,4 +49,7 @@ async function buildApiDocs() {
 	} );
 
 	console.log( 'Finished building API.' );
+} catch ( error ) {
+	console.error( error );
+	process.exitCode = 1;
 }

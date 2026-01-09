@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { npm } from '@ckeditor/ckeditor5-dev-utils';
 import semver from 'semver';

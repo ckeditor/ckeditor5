@@ -60,7 +60,6 @@ commands:
           environment:
             PUPPETEER_SKIP_DOWNLOAD: true
           command: pnpm install --frozen-lockfile
-      - prepare_environment_variables_commands
 
   checkout_command:
     description: "Clone the CKEditor 5 repository with limited depth and branches"
@@ -90,22 +89,10 @@ commands:
               circleci-agent step halt
             fi
 
-  prepare_environment_variables_commands:
-    description: "Prepare non-secret environment variables"
-    steps:
-      - run:
-          name: Prepare environment variables
-          command: |
-            #!/bin/bash
-
-            echo export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG="ckeditor/ckeditor5" >> $BASH_ENV
-            echo export CKE5_GITHUB_REPOSITORY_SLUG="$INTEGRATION_CI_ORGANIZATION/$INTEGRATION_CI_REPOSITORY" >> $BASH_ENV
-            echo export CKE5_COMMIT_SHA1=$CIRCLE_SHA1 >> $BASH_ENV
-
 jobs:
   cke5_manual:
     docker:
-      - image: cimg/node:22.12.0-browsers
+      - image: cimg/node:24.11.0-browsers
     resource_class: large
     steps:
       - checkout_command
@@ -124,7 +111,7 @@ jobs:
 
   cke5_validators:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - checkout_command
@@ -151,6 +138,10 @@ jobs:
           command: node scripts/ci/check-manual-tests-directory-structure.mjs
       - run:
           when: always
+          name: Validate license files
+          command: pnpm run validate-license-files --verbose
+      - run:
+          when: always
           name: Execute ESLint
           command: pnpm run lint
       - run:
@@ -172,7 +163,7 @@ jobs:
 
   cke5_coverage:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -189,7 +180,7 @@ jobs:
 
   cke5_trigger_release_process:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -212,25 +203,23 @@ jobs:
             fi
       - run:
           name: Trigger CKEditor 5 release job
-          environment:
-            CKE5_GITHUB_RELEASE_BRANCH: << pipeline.git.branch >>
-          command: pnpm ckeditor5-dev-ci-trigger-circle-build
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build --slug ckeditor/ckeditor5-commercial --trigger-repository-slug ckeditor/ckeditor5 --release-branch << pipeline.git.branch >>
 
   cke5_trigger_uber_ci:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - community_verification_command
       - checkout_command
       - bootstrap_repository_command
       - run:
-          name: Trigger the Uber CI
-          command: pnpm ckeditor5-dev-ci-trigger-circle-build
+          name: Trigger the Commercial CI
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build --slug ckeditor/ckeditor5-commercial --trigger-repository-slug ckeditor/ckeditor5
 
   release_prepare:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: large
     steps:
       - checkout_command
@@ -248,7 +237,7 @@ jobs:
 
   notify_ci_failure:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     parameters:
       hideAuthor:
@@ -259,16 +248,13 @@ jobs:
       - checkout_command
       - bootstrap_repository_command
       - run:
-          environment:
-            CKE5_SLACK_NOTIFY_HIDE_AUTHOR: << parameters.hideAuthor >>
-            CKE5_PIPELINE_NUMBER: << pipeline.number >>
           name: Waiting for other jobs to finish and sending notification on failure
-          command: pnpm ckeditor5-dev-ci-circle-workflow-notifier
+          command: pnpm ckeditor5-dev-ci-circle-workflow-notifier --task "pnpm ckeditor5-dev-ci-notify-circle-status --pipeline-id << pipeline.number >> --hide-author << parameters.hideAuthor >>"
           no_output_timeout: 2h
 
   stale_bot:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - checkout_command

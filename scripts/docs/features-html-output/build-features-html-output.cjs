@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-const fs = require( 'fs' );
-const path = require( 'path' );
+const fs = require( 'node:fs' );
+const path = require( 'node:path' );
 const glob = require( 'glob' );
 const { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } = require( '../../constants.mjs' );
 
@@ -158,7 +158,7 @@ function createGlobPattern() {
 
 	const paths = [
 		'packages/*',
-		`${ path.relative( CURRENT_WORK_DIRECTORY, CKEDITOR5_COMMERCIAL_PATH ) }/packages/*`,
+		`${ path.relative( CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH ) }/packages/*`,
 		...resolvedThirdPartyConfigs
 	];
 
@@ -191,7 +191,8 @@ function parseFile( file ) {
 
 	const isExternalPackage = isOutsideRoot( file.path );
 
-	const isThirdPartyPackage = !file.path.startsWith( 'packages/' ) && !isExternalPackage;
+	const relativePathFromRoot = path.relative( CKEDITOR5_ROOT_PATH, file.path );
+	const isThirdPartyPackage = !relativePathFromRoot.startsWith( 'packages/' ) && !isExternalPackage;
 
 	const sourceFileMarkup = isThirdPartyPackage ?
 		createSourceFileMarkupForThirdPartyPackage( file.path ) :

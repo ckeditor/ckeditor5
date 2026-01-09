@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { rm, copyFile } from 'fs/promises';
+import { rm, copyFile } from 'node:fs/promises';
 import chalk from 'chalk';
 import {
 	dist,

@@ -4,7 +4,7 @@
  */
 
 import fs from 'fs-extra';
-import { parseArgs } from 'util';
+import { parseArgs } from 'node:util';
 import chalk from 'chalk';
 import upath from 'upath';
 import { parse } from 'acorn';
