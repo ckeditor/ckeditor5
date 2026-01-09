@@ -8,7 +8,7 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
-import { LegacyList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 
@@ -24,7 +24,7 @@ describe( 'Alignment integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Alignment, BlockQuote, Paragraph, Heading, Image, ImageCaption, LegacyList, Enter, Delete ]
+				plugins: [ Alignment, BlockQuote, Paragraph, Heading, Image, ImageCaption, List, Enter, Delete ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -82,13 +82,16 @@ describe( 'Alignment integration', () => {
 			expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
 		} );
 
-		it( 'does work inside blockQuote on listItem', () => {
-			_setModelData( model, '<blockQuote><listItem listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>' );
+		it( 'does work inside blockQuote on list item', () => {
+			_setModelData(
+				model,
+				'<blockQuote><paragraph listIndent="0" listItemId="a" listType="numbered">Foo[]</paragraph></blockQuote>'
+			);
 
 			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<blockQuote><listItem alignment="center" listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>'
+				'<blockQuote><paragraph alignment="center" listIndent="0" listItemId="a" listType="numbered">Foo[]</paragraph></blockQuote>'
 			);
 		} );
 	} );
