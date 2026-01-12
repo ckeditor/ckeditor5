@@ -14,7 +14,7 @@ modified_at: 2026-01-12
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
 
-## Update to CKEditor&nbsp;5 v47.3.0
+## Update to CKEditor&nbsp;5 v47.4.0
 
 Released on 14 January, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.4.0))
 
@@ -22,15 +22,17 @@ This is a minor update focused on improving content editing workflows and data c
 
 ### Experimental table cell type support
 
-We are introducing an experimental `tableCellTypeSupport`<!-- add API link once it's ready --> flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the update guide.
+We are introducing an experimental {@link module:table/tablecellproperties/commands/tablecelltypecommand~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
+
+The fully functional editor UI for cell type support will be available with next major CKEditor&nbsp;5 version.
 
 ### Hidden table borders visualization
 
-We are introducing a new `config.table.showHiddenBorders`<!-- add API link once it's ready --> configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. For strict WYSIWYG scenarios where you want the editing view to match the output exactly, this visualization can be disabled.
+We are introducing a new {@link features/tables-styling#helper-lines-when-border-style-is-set-to-none `config.table.showHiddenBorders`} configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. For strict WYSIWYG scenarios where you want the editing view to match the output exactly, this visualization can be disabled.
 
 ### Email compatibility improvements
 
-We added an inline-styles transformation that improves the appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email inline-styles transformers can replace figures (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
+We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email.html#email-specific-style-transformations) with better appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email styles transformers can replace `figure` (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
 
 ### Updated the Emoji plugin dataset
 
