@@ -73,7 +73,6 @@
     "listr2": "^8.0.0",
     "local-web-server": "^5.4.0",
     "minimist": "^1.2.8",
-    "mkdirp": "^3.0.0",
     "nyc": "^17.1.0",
     "postcss-loader": "^8.0.0",
     "publint": "^0.3.4",
@@ -90,9 +89,7 @@
     "umberto": "^9.2.0",
     "upath": "^2.0.0",
     "vitest": "^3.2.4",
-    "wait-on": "^8.0.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "wait-on": "^8.0.3"
   },
   "scripts": {
     "nice": "ckeditor5-dev-changelog-create-entry",
@@ -107,7 +104,6 @@
     "docs:api": "node scripts/docs/workers/build-api-docs.mjs",
     "docs:ckeditor5": "node scripts/docs/workers/build-core.mjs",
     "docs:ckeditor5-premium-features": "node scripts/docs/workers/build-commercial.mjs",
-    "docs:content-styles": "node -e \"import( './scripts/docs/build-content-styles.mjs' ).then( m => m.default() );\"",
     "docs:serve": "ws --directory ./build/docs/ --compress --https --port 8080",
     "docs:verify": "node ./scripts/web-crawler/index.mjs --docs",
     "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
