@@ -103,22 +103,6 @@ export class CodeBlockHighlight extends Plugin {
 		this._registerModelChangeListener();
 	}
 
-	public afterInit(): void {
-		const editor = this.editor;
-
-		// Highlight after a short delay to ensure editor is fully ready
-		setTimeout( () => {
-			this._highlightAllCodeBlocks();
-		}, 100 );
-
-		// Also highlight when data is set programmatically
-		editor.data.on( 'set', () => {
-			setTimeout( () => {
-				this._highlightAllCodeBlocks();
-			}, 0 );
-		} );
-	}
-
 	/**
 	 * Get syntax highlights using lowlight for the given code and language.
 	 */
@@ -147,6 +131,7 @@ export class CodeBlockHighlight extends Plugin {
 	private _registerModelChangeListener(): void {
 		const model = this.editor.model;
 
+		// Listen for content changes (typing, paste, etc.)
 		this.listenTo( model.document, 'change:data', () => {
 			const selection = model.document.selection;
 			const position = selection.getFirstPosition();
@@ -163,6 +148,23 @@ export class CodeBlockHighlight extends Plugin {
 				requestAnimationFrame( () => {
 					this._highlightCodeBlock( codeBlock );
 				} );
+			}
+		} );
+
+		// Listen for codeBlock insertions (including language changes)
+		this.listenTo( model.document, 'change:data', () => {
+			// Check if any codeBlock was inserted
+			const changes = model.document.differ.getChanges();
+
+			for ( const change of changes ) {
+				if ( change.type === 'insert' ) {
+					// Check if the inserted element is a codeBlock
+					const item = change.position.nodeAfter;
+					if ( item && item.is( 'element', 'codeBlock' ) ) {
+						// Highlight the newly inserted code block
+						setTimeout( () => this._highlightCodeBlock( item ) );
+					}
+				}
 			}
 		} );
 	}
@@ -217,28 +219,6 @@ export class CodeBlockHighlight extends Plugin {
 			}
 		}
 		return text;
-	}
-
-	/**
-	 * Highlight all code blocks in the document.
-	 */
-	private _highlightAllCodeBlocks(): void {
-		const model = this.editor.model;
-		const root = model.document.getRoot();
-
-		if ( !root ) {
-			return;
-		}
-
-		// Create a range in the root and get all items
-		const range = model.createRangeIn( root );
-
-		// Iterate through all items in the range
-		for ( const item of range.getItems() ) {
-			if ( item.is( 'element', 'codeBlock' ) ) {
-				this._highlightCodeBlock( item );
-			}
-		}
 	}
 
 	/**
