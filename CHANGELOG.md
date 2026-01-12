@@ -19,7 +19,7 @@ We are introducing a new `config.table.showHiddenBorders` configuration option (
 
 #### Email compatibility improvements
 
-We added an [inline-styles transformation](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/conversion/attributes.html) that improves the appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email inline-styles transformers can replace figures (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
+We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email.html#email-specific-style-transformations) with better appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email styles transformers can replace `figure` (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
 
 #### Other improvements and fixes
 
