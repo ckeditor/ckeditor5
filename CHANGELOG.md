@@ -3,6 +3,41 @@ Changelog
 
 ## [47.4.0](https://github.com/ckeditor/ckeditor5/compare/v47.3.0...v47.4.0) (January 14, 2025)
 
+We are happy to announce the release of CKEditor 5 v47.4.0.
+
+### Release highlights
+
+This is a minor update focused on improving content editing workflows and data compatibility. We are introducing better visualization for table borders, enhanced image alignment handling, and several improvements to AI and email features.
+
+#### Experimental table cell type support
+
+We are introducing an experimental `tableCellTypeSupport` flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the update guide.
+
+#### Hidden table borders visualization
+
+We are introducing a new `config.table.showHiddenBorders` configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. For strict WYSIWYG scenarios where you want the editing view to match the output exactly, this visualization can be disabled.
+
+#### Email compatibility improvements
+
+We added an inline-styles transformation that improves the appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email inline-styles transformers can replace figures (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
+
+#### Other improvements and fixes
+
+- Fixed multiple issues in the AI features, including improved tooltips for web search sources in AI Chat, proper handling of Quick Actions when opening the AI Chat panel, resolved loading state issues in the AI Review sidebar, and others.
+- The editor now recognizes CSS `float` style on images (e.g., `style="float: left"` or `style="float: right"`) and automatically maps it to left/right image alignment. This works for both inline and block images, improving compatibility when pasting content from external sources or loading legacy content. If custom image styles are configured, they take precedence over the float style.
+- The Emoji plugin can now be used with the Emoji v17.0 dataset, which has been uploaded to the CKEditor CDN. This update does not change the default emoji version used by CKEditor.
+
+#### Incoming old installation methods sunset reminder
+
+Please note that the old installation methods will only remain available up to CKEditor 5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+
+In CKEditor 5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor 5.
+
+If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
+
+1. [Migrate to the new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html), which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor 5 releases.
+2. Consider [CKEditor 5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+
 ### Features
 
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Added support for visualizing hidden table and table cell borders through a new configuration option: `table.showHiddenBorders` (enabled by default). The editor now detects inline `border:none` and `border-style:none` declarations on table and cell elements and renders dashed helper borders in the editing view. This visualization can be disabled for strict WYSIWYG scenarios. Closes [#19039](https://github.com/ckeditor/ckeditor5/issues/19039).
