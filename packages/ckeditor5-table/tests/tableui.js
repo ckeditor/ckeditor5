@@ -250,9 +250,15 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal(
-				[ 'Header row', '|', 'Insert row above', 'Insert row below', 'Delete row', 'Select row' ]
-			);
+			expect( labels ).to.deep.equal( [
+				'Header row',
+				'Footer row',
+				'|',
+				'Insert row above',
+				'Insert row below',
+				'Delete row',
+				'Select row'
+			] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
@@ -261,22 +267,25 @@ describe( 'TableUI', () => {
 			const items = dropdown.listView.items;
 
 			const setRowHeaderCommand = editor.commands.get( 'setTableRowHeader' );
+			const setTableFooterRowCommand = editor.commands.get( 'setTableFooterRow' );
 			const insertRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
 			const insertRowAboveCommand = editor.commands.get( 'insertTableRowAbove' );
 			const removeRowCommand = editor.commands.get( 'removeTableRow' );
 			const selectRowCommand = editor.commands.get( 'selectTableRow' );
 
 			setRowHeaderCommand.isEnabled = true;
+			setTableFooterRowCommand.isEnabled = true;
 			insertRowBelowCommand.isEnabled = true;
 			insertRowAboveCommand.isEnabled = true;
 			removeRowCommand.isEnabled = true;
 			selectRowCommand.isEnabled = true;
 
 			expect( items.first.children.first.isEnabled ).to.be.true;
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 6 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setRowHeaderCommand.isEnabled = false;
@@ -284,23 +293,28 @@ describe( 'TableUI', () => {
 			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
+			setTableFooterRowCommand.isEnabled = false;
+
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
 			insertRowAboveCommand.isEnabled = false;
 
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertRowBelowCommand.isEnabled = false;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			removeRowCommand.isEnabled = false;
 
-			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			selectRowCommand.isEnabled = false;
 
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 6 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
@@ -309,7 +323,7 @@ describe( 'TableUI', () => {
 
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.listView.items.get( 2 ).children.last.fire( 'execute' );
+			dropdown.listView.items.get( 3 ).children.last.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );

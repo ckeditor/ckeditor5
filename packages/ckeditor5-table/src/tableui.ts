@@ -180,6 +180,14 @@ export class TableUI extends Plugin {
 						bindIsOn: true
 					}
 				},
+				{
+					type: 'switchbutton',
+					model: {
+						commandName: 'setTableFooterRow',
+						label: t( 'Footer row' ),
+						bindIsOn: true
+					}
+				},
 				{ type: 'separator' },
 				{
 					type: 'button',
