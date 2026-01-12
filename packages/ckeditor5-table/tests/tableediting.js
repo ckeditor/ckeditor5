@@ -22,6 +22,7 @@ import { SplitCellCommand } from '../src/commands/splitcellcommand.js';
 import { MergeCellCommand } from '../src/commands/mergecellcommand.js';
 import { SetHeaderRowCommand } from '../src/commands/setheaderrowcommand.js';
 import { SetHeaderColumnCommand } from '../src/commands/setheadercolumncommand.js';
+import { SetFooterRowCommand } from '../src/commands/setfooterrowcommand.js';
 import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed';
 
 describe( 'TableEditing', () => {
@@ -203,6 +204,10 @@ describe( 'TableEditing', () => {
 
 	it( 'adds setRowHeader command', () => {
 		expect( editor.commands.get( 'setTableRowHeader' ) ).to.be.instanceOf( SetHeaderRowCommand );
+	} );
+
+	it( 'adds setFooterRow command', () => {
+		expect( editor.commands.get( 'setTableFooterRow' ) ).to.be.instanceOf( SetFooterRowCommand );
 	} );
 
 	describe( 'config', () => {

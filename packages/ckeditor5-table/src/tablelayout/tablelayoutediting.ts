@@ -98,6 +98,9 @@ export class TableLayoutEditing extends Plugin {
 
 		// Disallow adding `headingColumns` attribute to layout table.
 		schema.addAttributeCheck( layoutTableCheck, 'headingColumns' );
+
+		// Disallow adding `footerRows` attribute to layout table.
+		schema.addAttributeCheck( layoutTableCheck, 'footerRows' );
 	}
 
 	/**

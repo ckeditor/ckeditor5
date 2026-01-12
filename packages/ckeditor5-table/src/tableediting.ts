@@ -29,6 +29,7 @@ import { MergeCellCommand } from './commands/mergecellcommand.js';
 import { RemoveRowCommand } from './commands/removerowcommand.js';
 import { RemoveColumnCommand } from './commands/removecolumncommand.js';
 import { SetHeaderRowCommand } from './commands/setheaderrowcommand.js';
+import { SetFooterRowCommand } from './commands/setfooterrowcommand.js';
 import { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
 import { MergeCellsCommand } from './commands/mergecellscommand.js';
 import { SelectRowCommand } from './commands/selectrowcommand.js';
@@ -230,6 +231,7 @@ export class TableEditing extends Plugin {
 
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
+		editor.commands.add( 'setTableFooterRow', new SetFooterRowCommand( editor ) );
 
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
