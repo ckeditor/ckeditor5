@@ -38,6 +38,7 @@ import { TableUtils } from '../src/tableutils.js';
 
 import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
 import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
+import { injectTableStructurePostFixer } from './converters/table-structure-post-fixer.js';
 
 import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
@@ -238,6 +239,7 @@ export class TableEditing extends Plugin {
 
 		injectTableLayoutPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
+		injectTableStructurePostFixer( editor );
 
 		this.listenTo( model.document, 'change:data', () => {
 			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
