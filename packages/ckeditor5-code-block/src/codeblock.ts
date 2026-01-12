@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 
 import { CodeBlockEditing } from './codeblockediting.js';
 import { CodeBlockUI } from './codeblockui.js';
+import { CodeBlockHighlight } from './codeblockhighlight.js';
 
 /**
  * The code block plugin.
@@ -26,7 +27,7 @@ export class CodeBlock extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ CodeBlockEditing, CodeBlockUI ] as const;
+		return [ CodeBlockEditing, CodeBlockUI, CodeBlockHighlight ] as const;
 	}
 
 	/**
