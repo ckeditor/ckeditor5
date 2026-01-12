@@ -224,7 +224,7 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 ## Generating content styles
 
-Content styles define how editor content is rendered outside of the editing context.
+Content styles let you customize the appearance of editor content presented to the readers.
 
 For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css CSS setup} guide.
 
