@@ -35,7 +35,7 @@ npm start
 
 ### Preparing the ZIP package with CKEditor&nbsp;5
 
-Now it is time to prepare a ZIP package with CKEditor 5 that will be used inside your Electron app. CKEditor&nbsp;5 offers an Online Builder that allows you to configure your editor easily through a user-friendly interface. The Online Builder provides a convenient way to select features, plugins, and customize the toolbar according to your specific requirements without writing any code.
+Now it is time to prepare a ZIP package with CKEditor&nbsp;5 that will be used inside your Electron app. CKEditor&nbsp;5 offers an Online Builder that allows you to configure your editor easily through a user-friendly interface. The Online Builder provides a convenient way to select features, plugins, and customize the toolbar according to your specific requirements without writing any code.
 
 To create your custom CKEditor&nbsp;5 build, visit the [CKEditor&nbsp;5 Online Builder](https://ckeditor.com/ckeditor-5/builder/). After choosing all desired features and settings for your editor, you will reach the final step where you can choose the preferred technology and integration method. For Electron integration, select "Vanilla JavaScript" and "Self-hosted (ZIP)". In the last step, download the ZIP archive containing the editor.
 
