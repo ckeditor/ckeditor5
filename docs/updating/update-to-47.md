@@ -24,11 +24,11 @@ This is a minor update focused on improving content editing workflows and data c
 
 We are introducing an experimental {@link module:table/tablecellproperties/commands/tablecelltypecommand~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
 
-The fully functional editor UI for cell type support will be available with next major CKEditor&nbsp;5 version.
+The fully functional editor UI for cell type support will be available with the next major CKEditor&nbsp;5 version.
 
 ### Hidden table borders visualization
 
-We are introducing a new {@link features/tables-styling#helper-lines-when-border-style-is-set-to-none `config.table.showHiddenBorders`} configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. For strict WYSIWYG scenarios where you want the editing view to match the output exactly, this visualization can be disabled.
+We are introducing a new {@link features/tables-styling#helper-lines-when-border-style-is-set-to-none `config.table.showHiddenBorders`} configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. This visualization can be disabled for strict WYSIWYG scenarios where you want the editing view to match the output exactly.
 
 ### Email compatibility improvements
 
@@ -36,7 +36,7 @@ We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor
 
 ### Updated the Emoji plugin dataset
 
-The Emoji plugin can now be used with the Emoji v17.0 dataset, which has been uploaded to the CKEditor CDN. This update does not change the default emoji version used by CKEditor&nbsp;5.
+The Emoji plugin can now utilize the Emoji v17.0 dataset, available on the CKEditor CDN. This update does not change the default emoji version used by CKEditor&nbsp;5.
 
 [EXPAND]
 
