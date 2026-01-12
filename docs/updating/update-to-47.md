@@ -22,32 +22,37 @@ This is a minor update focused on improving content editing workflows and data c
 
 ### Experimental table cell type support
 
-We are introducing an experimental `tableCellTypeSupport` flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the update guide.
+We are introducing an experimental `tableCellTypeSupport`<!-- add API link once it's ready --> flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the update guide.
 
 ### Hidden table borders visualization
 
-We are introducing a new `config.table.showHiddenBorders` configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. For strict WYSIWYG scenarios where you want the editing view to match the output exactly, this visualization can be disabled.
+We are introducing a new `config.table.showHiddenBorders`<!-- add API link once it's ready --> configuration option (enabled by default) that helps editors work with tables that have hidden borders. When the editor detects inline `border:none` or `border-style:none` declarations on table and cell elements, it renders dashed helper borders in the editing view. This makes it easier to see the table structure while editing without affecting the output data. For strict WYSIWYG scenarios where you want the editing view to match the output exactly, this visualization can be disabled.
 
 ### Email compatibility improvements
 
 We added an inline-styles transformation that improves the appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email inline-styles transformers can replace figures (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
 
+### Updated the Emoji plugin dataset
+
+The Emoji plugin can now be used with the Emoji v17.0 dataset, which has been uploaded to the CKEditor CDN. This update does not change the default emoji version used by CKEditor&nbsp;5.
+
+[EXPAND]
+
 ### Other improvements and fixes
 
-- Fixed multiple issues in the AI features, including improved tooltips for web search sources in AI Chat, proper handling of Quick Actions when opening the AI Chat panel, resolved loading state issues in the AI Review sidebar, and others.
-- The editor now recognizes CSS `float` style on images (e.g., `style="float: left"` or `style="float: right"`) and automatically maps it to left/right image alignment. This works for both inline and block images, improving compatibility when pasting content from external sources or loading legacy content. If custom image styles are configured, they take precedence over the float style.
-- The Emoji plugin can now be used with the Emoji v17.0 dataset, which has been uploaded to the CKEditor CDN. This update does not change the default emoji version used by CKEditor.
+* Fixed multiple issues in the AI features, including improved tooltips for web search sources in AI Chat, proper handling of Quick Actions when opening the AI Chat panel, resolved loading state issues in the AI Review sidebar, and others.
+* The editor now recognizes CSS `float` style on images (e.g., `style="float: left"` or `style="float: right"`) and automatically maps it to left/right image alignment. This works for both inline and block images, improving compatibility when pasting content from external sources or loading legacy content. If custom image styles are configured, they take precedence over the float style.
 
 ### Incoming old installation methods sunset reminder
 
-Please note that the old installation methods will only remain available up to CKEditor 5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+Please note that the old installation methods will only remain available up to CKEditor&nbsp;5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
 
-In CKEditor 5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor 5.
+In CKEditor&nbsp;5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor&nbsp;5.
 
 If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
 
-1. [Migrate to the new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html), which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor 5 releases.
-2. Consider [CKEditor 5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+1. {@link updating/nim-migration/migration-to-new-installation-methods Migrate to the new installation methods}, which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor&nbsp;5 releases.
+2. Consider [CKEditor&nbsp;5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
 
 ## Update to CKEditor&nbsp;5 v47.3.0
 
@@ -119,7 +124,7 @@ This release introduces expanded CKEditor AI feature, new Footnotes features and
 
 ### CKEditor AI
 
-We are introducing {@link features/ckeditor-ai-overview CKEditor AI}, a powerful writing assistant that brings AI-powered content creation directly into CKEditor 5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
+We are introducing {@link features/ckeditor-ai-overview CKEditor AI}, a powerful writing assistant that brings AI-powered content creation directly into CKEditor&nbsp;5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
 
 CKEditor AI includes three core capabilities:
 
@@ -129,9 +134,9 @@ CKEditor AI includes three core capabilities:
 
 Power users can select their preferred model during sessions (GPT-5, Claude 3.5, Gemini 2.5, and more), while integrators maintain control over access rules and usage tiers.
 
-Built as a plugin for CKEditor 5, it integrates quickly into existing applications with minimal configuration, and all AI interactions are fully observable via audit logs and optional APIs.
+Built as a plugin for CKEditor&nbsp;5, it integrates quickly into existing applications with minimal configuration, and all AI interactions are fully observable via audit logs and optional APIs.
 
-CKEditor AI is available as a premium add-on to all paid CKEditor 5 plans with a transparent subscription-plus-usage pricing model. A 14-day trial is available with access to all premium features.
+CKEditor AI is available as a premium add-on to all paid CKEditor&nbsp;5 plans with a transparent subscription-plus-usage pricing model. A 14-day trial is available with access to all premium features.
 
 ### Footnotes (⭐)
 
@@ -185,7 +190,7 @@ Released on 1 October, 2025. ([See full release notes](https://github.com/ckedit
 
 ### CKEditor AI (early access)
 
-We are introducing {@link features/ckeditor-ai-overview **CKEditor AI**}, a set of versatile AI-powered features that integrate directly into CKEditor 5. It brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities, right into the editor. With **CKEditor AI**, users will no longer need to switch between the editor and AI tools.
+We are introducing {@link features/ckeditor-ai-overview **CKEditor AI**}, a set of versatile AI-powered features that integrate directly into CKEditor&nbsp;5. It brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities, right into the editor. With **CKEditor AI**, users will no longer need to switch between the editor and AI tools.
 
 Three features are available in this early access phase:
 
@@ -199,13 +204,13 @@ CKEditor AI is available as part of our **free trial** in early access.
 
 ### Long-term Support (⭐)
 
-We are introducing the **CKEditor 5 LTS (Long-term Support) Edition**, giving teams up to 3 years of stability with guaranteed updates.
+We are introducing the **CKEditor&nbsp;5 LTS (Long-term Support) Edition**, giving teams up to 3 years of stability with guaranteed updates.
 
 The first LTS release is **v47.0.0** (October 2025). It will receive **6 months of active development** with new features and fixes, then **2.5 years of maintenance** with security and critical compatibility updates.
 
 For **v47.x**, the Maintenance phase starts in **April 2026**. From then the next versions in the v47.x line will be available only under a **commercial LTS Edition license**. Therefore, starting in April, integrators without an LTS license should migrate to v48.x (the next regular release).
 
-If you need long-term stability, [contact sales](https://ckeditor.com/contact-sales/) or read more about the {@link getting-started/setup/using-lts-edition CKEditor 5 LTS Edition}.
+If you need long-term stability, [contact sales](https://ckeditor.com/contact-sales/) or read more about the {@link getting-started/setup/using-lts-edition CKEditor&nbsp;5 LTS Edition}.
 
 ### Updated content navigation with <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
 
