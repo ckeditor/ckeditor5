@@ -62,6 +62,7 @@ export { SelectColumnCommand } from './commands/selectcolumncommand.js';
 export { SelectRowCommand } from './commands/selectrowcommand.js';
 export { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
 export { SetHeaderRowCommand } from './commands/setheaderrowcommand.js';
+export { SetFooterRowCommand } from './commands/setfooterrowcommand.js';
 export { SplitCellCommand } from './commands/splitcellcommand.js';
 export { ToggleTableCaptionCommand } from './tablecaption/toggletablecaptioncommand.js';
 export { TableCellBackgroundColorCommand } from './tablecellproperties/commands/tablecellbackgroundcolorcommand.js';

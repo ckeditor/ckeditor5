@@ -65,7 +65,8 @@ import type {
 	TableBorderWidthCommand,
 	TableHeightCommand,
 	TableWidthCommand,
-	TableCellTypeCommand
+	TableCellTypeCommand,
+	SetFooterRowCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-engine' {
@@ -157,6 +158,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		selectTableRow: SelectRowCommand;
 		setTableColumnHeader: SetHeaderColumnCommand;
 		setTableRowHeader: SetHeaderRowCommand;
+		setFooterRow: SetFooterRowCommand;
 		splitTableCellVertically: SplitCellCommand;
 		splitTableCellHorizontally: SplitCellCommand;
 		toggleTableCaption: ToggleTableCaptionCommand;
