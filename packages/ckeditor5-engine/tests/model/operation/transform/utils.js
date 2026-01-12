@@ -1,11 +1,10 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -33,16 +32,17 @@ export class Client {
 		this.name = name;
 	}
 
-	init() {
+	init( editorConfig = {} ) {
 		return ModelTestEditor.create( {
 			// Typing is needed for delete command.
 			// UndoEditing is needed for undo command.
 			// Block plugins are needed for proper data serializing.
 			// BoldEditing is needed for bold command.
 			plugins: [
-				Typing, Paragraph, LegacyListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
+				Typing, Paragraph, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
 				ImageBlockEditing
-			]
+			],
+			...editorConfig
 		} ).then( editor => {
 			this.editor = editor;
 			this.document = editor.model.document;
@@ -87,7 +87,7 @@ export class Client {
 		this.syncedVersion = this.document.version;
 	}
 
-	setSelection( start, end ) {
+	setSelection( start, end, { bufferOperations } = {} ) {
 		if ( !end ) {
 			end = start.slice();
 		}
@@ -95,7 +95,11 @@ export class Client {
 		const startPos = this._getPosition( start );
 		const endPos = this._getPosition( end );
 
-		this.editor.model.document.selection._setTo( new ModelRange( startPos, endPos ) );
+		if ( bufferOperations ) {
+			this._processAction( 'setSelection', new ModelRange( startPos, endPos ) );
+		} else {
+			this.editor.model.document.selection._setTo( new ModelRange( startPos, endPos ) );
+		}
 	}
 
 	insert( itemString, path ) {
@@ -243,6 +247,10 @@ export class Client {
 			return this._getPositionFromSelection( type );
 		}
 
+		if ( path instanceof ModelPosition ) {
+			return path.clone();
+		}
+
 		return new ModelPosition( this.document.getRoot(), path );
 	}
 
@@ -272,13 +280,13 @@ export class Client {
 		bufferOperations( operations, this );
 	}
 
-	static get( clientName ) {
+	static get( clientName, { editorConfig } = {} ) {
 		const client = new Client( clientName );
 		client.orderNumber = clients.size;
 
 		clients.add( client );
 
-		return client.init();
+		return client.init( editorConfig ?? {} );
 	}
 }
 

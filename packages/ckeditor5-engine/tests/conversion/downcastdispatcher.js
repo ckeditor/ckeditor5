@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -1258,6 +1258,33 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should fire event for marker if element has no view element', () => {
+			root._removeChildren( 0, root.childCount );
+
+			// Create a model element that doesn't have a view element mapping.
+			const titleContent = new ModelText( 'abc' );
+			const title = new ModelElement( 'title', null, titleContent );
+
+			root._appendChild( [ title ] );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 1 ) );
+				writer.addMarker( 'name', { range, usingOperation: false } );
+				writer.setSelection( title, 0 );
+			} );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
+
+			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;

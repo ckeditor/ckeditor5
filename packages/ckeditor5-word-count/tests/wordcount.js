@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -13,7 +13,7 @@ import { _setModelData, ModelPosition } from '@ckeditor/ckeditor5-engine';
 import { add as addTranslations, _clearTranslations, env } from '@ckeditor/ckeditor5-utils';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-image';
 
@@ -29,7 +29,7 @@ describe( 'WordCount', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [
-					WordCount, Paragraph, ShiftEnter, TableEditing, LegacyListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
+					WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
 				]
 			} )
 			.then( _editor => {
@@ -182,8 +182,11 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'should not count the list item number/bullet as a word', () => {
-				_setModelData( model, '<listItem listType="numbered" listIndent="0">Foo</listItem>' +
-				'<listItem listType="bulleted" listIndent="0">bar</listItem>' );
+				_setModelData(
+					model,
+					'<paragraph listIndent="0" listItemId="000" listType="numbered">Foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+				);
 
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 2 );

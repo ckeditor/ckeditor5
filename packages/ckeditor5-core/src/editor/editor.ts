@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -297,6 +297,17 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
+	 * `Editor` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
+
+	/**
 	 * Creates a new instance of the editor class.
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
@@ -305,6 +316,20 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	constructor( config: EditorConfig = {} ) {
 		super();
+
+		if ( typeof config !== 'object' || Array.isArray( config ) ) {
+			/**
+			 * Editor configuration must be an object.
+			 *
+			 * A common cause of this error is passing an Editor class (for example
+			 * `ClassicEditor`) in the `config.plugins` array. In such case, the editor
+			 * constructor is called with an Editor or Context instance instead of
+			 * the configuration object.
+			 *
+			 * @error editor-config-invalid-type
+			 */
+			throw new CKEditorError( 'editor-config-invalid-type' );
+		}
 
 		if ( 'sanitizeHtml' in config ) {
 			/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -916,9 +916,19 @@ function shouldMarkerChangeBeConverted(
 
 	const hasCustomHandling = ( ancestors as Array<ModelElement> ).some( element => {
 		if ( range.containsItem( element ) ) {
-			const viewElement = mapper.toViewElement( element )!;
+			const viewElement = mapper.toViewElement( element );
 
-			return !!viewElement.getCustomProperty( 'addHighlight' );
+			if ( viewElement ) {
+				return !!viewElement.getCustomProperty( 'addHighlight' );
+			}
+			// Technically, a marker can be created on an element that doesn't have a corresponding view element.
+			// This happens, for example, with the `title` element, which exists in the model but doesn't have
+			// a direct view representation (only its child `title-content` is converted to `<h1>` in the view).
+			// In such cases, we return `false` to indicate that there's no custom handling, allowing the marker
+			// conversion to proceed normally.
+			else {
+				return false;
+			}
 		}
 	} );
 

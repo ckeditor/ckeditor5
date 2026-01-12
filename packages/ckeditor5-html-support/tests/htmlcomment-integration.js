@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -23,7 +23,7 @@ import { IndentBlock, IndentEditing } from '@ckeditor/ckeditor5-indent';
 
 import { LinkEditing, LinkImageEditing } from '@ckeditor/ckeditor5-link';
 
-import { LegacyListEditing, LegacyListPropertiesEditing, LegacyTodoListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing, ListPropertiesEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
 
 import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed';
 
@@ -603,7 +603,7 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, LegacyListEditing, LegacyListPropertiesEditing, LegacyTodoListEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListPropertiesEditing, TodoListEditing ]
 				} );
 		}
 
@@ -617,7 +617,7 @@ describe( 'HtmlComment integration', () => {
 				'<ul><li><!-- c2 --></li></ul>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ol><li><!-- c1 -->&nbsp;</li></ol>' +
 				'<ul><li><!-- c2 -->&nbsp;</li></ul>'
 			);
@@ -648,7 +648,14 @@ describe( 'HtmlComment integration', () => {
 				'<!-- c11 -->'
 			);
 
-			expect( editor.getData() ).to.equal(
+			// Unlike legacy lists, the new list system does not filter out comments between list tags
+			// (<ol>/<ul>) and list items (<li>). In legacy lists, a `cleanList` converter removed such comments
+			// during upcast. In the new system, these comments (c2, c5, c7, c10) are preserved and may be
+			// repositioned during conversion since <ol>/<ul> are not model elements but view attribute elements.
+			// Comments inside <li> elements (c3, c4, c8, c9) and comments outside lists (c1, c6, c11) are preserved
+			// but may appear in different positions.
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+				'<!-- c2 -->' +
 				'<!-- c1 -->' +
 				'<ol>' +
 					'<li>' +
@@ -657,7 +664,9 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c4 -->' +
 					'</li>' +
 				'</ol>' +
+				'<!-- c7 -->' +
 				'<!-- c6 -->' +
+				'<!-- c5 -->' +
 				'<ul>' +
 					'<li>' +
 						'<!-- c8 -->' +
@@ -665,7 +674,8 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c9 -->' +
 					'</li>' +
 				'</ul>' +
-				'<!-- c11 -->'
+				'<!-- c11 -->' +
+				'<!-- c10 -->'
 			);
 		} );
 
@@ -688,10 +698,14 @@ describe( 'HtmlComment integration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			// In the new list system, comments between list tags and list items (c2, c6) are preserved
+			// but may be repositioned. Comments in list items that contain only nested lists (c1, c7) are
+			// converted to markers on empty paragraph blocks. These empty paragraphs with markers are preserved
+			// as bogus paragraphs in the data output (wrapped in <p> tags with &nbsp;).
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
-						'<!-- c1 -->' +
+						'<p><!-- c2 --><!-- c1 -->&nbsp;</p>' +
 						'<ul>' +
 							'<li>' +
 								'<!-- c3 -->' +
@@ -699,6 +713,7 @@ describe( 'HtmlComment integration', () => {
 								'<!-- c4 -->' +
 							'</li>' +
 						'</ul>' +
+						'<p><!-- c7 --><!-- c6 -->&nbsp;</p>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -750,7 +765,7 @@ describe( 'HtmlComment integration', () => {
 			// 	'</ul>'
 			// );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
 						'<!-- c1 -->' +
@@ -777,7 +792,7 @@ describe( 'HtmlComment integration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ul style="list-style-type:circle;">' +
 					'<li>' +
 						'<!-- c1 -->' +
