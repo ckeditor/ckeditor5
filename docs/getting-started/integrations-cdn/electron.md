@@ -59,28 +59,28 @@ Inside the `src/` folder, create a new file `editor.js` with the following conte
 
 ```js
 const {
-		ClassicEditor,
-		Essentials,
-		Bold,
-		Italic,
-		Font,
-		Paragraph
+	ClassicEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
 } = CKEDITOR;
 
 const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
-		.create( document.querySelector( '#editor' ), {
-				licenseKey: '<YOUR_LICENSE_KEY>',
-				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-				toolbar: [
-						'undo', 'redo', '|', 'bold', 'italic', '|',
-						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-						'formatPainter'
-				]
-		} )
-		.then( /* ... */ )
-		.catch( /* ... */ );
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+			'formatPainter'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 This code imports all the necessary CKEditor 5 plugins and initializes the editor instance with the provided configuration.
