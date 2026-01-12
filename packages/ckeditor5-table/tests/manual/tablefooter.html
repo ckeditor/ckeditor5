@@ -1,4 +1,12 @@
-<div style="display:flex">
+<style>
+	.container {
+		display: grid;
+		grid-template-columns: 700px 400px;
+		gap: 4em;
+	}
+</style>
+
+<div class="container">
 	<div>
 		<div id="editor">
 			<strong>Table with `tfoot`</strong>
@@ -202,7 +210,7 @@
 			</figure>
 		</div>
 	</div>
-	<div style="padding-left: 2em;">
+	<div>
 		<h2>Source data</h2>
 
 		<div id="cloned-source" class="ck-content"></div>
