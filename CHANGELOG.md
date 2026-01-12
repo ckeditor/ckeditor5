@@ -85,7 +85,6 @@ If your project still relies on old installation methods, now is a good time to 
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: The `Editor` class constructor now detects if the provided `EditorConfig` is not an object. Closes [#18072](https://github.com/ckeditor/ckeditor5/issues/18072).
 
   The common source of this error is when an editor class (e.g., `ClassicEditor`) is mistakenly included in the plugins list when initializing Editor.
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced the experimental `useExtendedTableBlockAlignment` flag enabling block table alignments. Updated table balloons to reflect this behavior and better match the editor design, visible when using the new `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` plugins. See [#3225](https://github.com/ckeditor/ckeditor5/issues/3225).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced the experimental `tableCellTypeSupport` flag to enable changing table cell types between `data` and `header`. To use this change, besides the flag, the `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` plugins must be used. See [#16730](https://github.com/ckeditor/ckeditor5/issues/16730).
 * Removes operation and time limits from trial license.
 
@@ -286,6 +285,7 @@ Read more about these experimental features [in the documentation](https://ckedi
   during `model.insertContent()` operations, ensuring that inserted content fully complies with the editor’s schema even in complex
   or nested contexts.
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Added support for passing `consume` parameter to `ListEditing#registerDowncastStrategy` method which allows to control whether the downcasted element should be consumed or not. It also disables consume checks for the downcasted element to allow defining side effects without consuming the model attribute.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced the experimental `useExtendedTableBlockAlignment` flag enabling block table alignments. Updated table balloons to reflect this behavior and better match the editor design, visible when using the new `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` plugins. See [#3225](https://github.com/ckeditor/ckeditor5/issues/3225).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added experimental support for importing HTML tables with the `[border="0"]` attribute. Tables with this attribute are now automatically converted to borderless tables in the editor by applying `border-style: none` to both table and table cell elements. Closes [#19038](https://github.com/ckeditor/ckeditor5/issues/19038).
 
   This change needs to be enabled by setting `experimentalFlags.upcastTableBorderZeroAttributes` to `true`. In the next major release, this flag will be removed and the upcast will be performed by default.
