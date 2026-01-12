@@ -11,7 +11,7 @@ This is a minor update focused on improving content editing workflows and data c
 
 #### Experimental table cell type support
 
-We are introducing an experimental `tableCellTypeSupport` flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html#update-to-ckeditor-5-v4740).
+We are introducing an experimental `tableCellTypeSupport` flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html#experimental-table-cell-type-support).
 
 #### Hidden table borders visualization
 
