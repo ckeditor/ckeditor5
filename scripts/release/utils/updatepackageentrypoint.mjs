@@ -58,14 +58,6 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		pkgJson.exports[ './build/*' ] = './build/*';
 	}
 
-	if ( await checkPathExists( path.join( packagePath, 'lang' ) ) ) {
-		pkgJson.exports[ './lang/*' ] = './lang/*';
-	}
-
-	if ( await checkPathExists( path.join( packagePath, 'theme' ) ) ) {
-		pkgJson.exports[ './theme/*' ] = './theme/*';
-	}
-
 	if ( files.includes( 'ckeditor5-metadata.json' ) ) {
 		pkgJson.exports[ './ckeditor5-metadata.json' ] = './ckeditor5-metadata.json';
 	}

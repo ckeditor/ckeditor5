@@ -41,7 +41,6 @@
   },
   "files": [
     "dist",
-    "lang",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ]
