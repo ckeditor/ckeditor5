@@ -9,7 +9,7 @@ modified_at: 2026-01-08
 
 # Integrating CKEditor&nbsp;5 with Electron from ZIP
 
-[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to build cross-platform desktop applications using web technologies such as HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
+[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to create cross-platform desktop applications using web technologies such as HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
 
 {@snippet getting-started/use-builder}
 
@@ -35,7 +35,7 @@ npm start
 
 ### Preparing the ZIP package with CKEditor&nbsp;5
 
-Now it is time to prepare a ZIP package with CKEditor&nbsp;5 that will be used inside your Electron app. CKEditor&nbsp;5 offers an Online Builder that allows you to easily configure your editor through a user-friendly interface. The Online Builder provides a convenient way to select features, plugins, and customize the toolbar according to your specific requirements without writing any code.
+Now it is time to prepare a ZIP package with CKEditor 5 that will be used inside your Electron app. CKEditor&nbsp;5 offers an Online Builder that allows you to configure your editor easily through a user-friendly interface. The Online Builder provides a convenient way to select features, plugins, and customize the toolbar according to your specific requirements without writing any code.
 
 To create your custom CKEditor&nbsp;5 build, visit the [CKEditor&nbsp;5 Online Builder](https://ckeditor.com/ckeditor-5/builder/). After choosing all desired features and settings for your editor, you will reach the final step where you can choose the preferred technology and integration method. For Electron integration, select "Vanilla JavaScript" and "Self-hosted (ZIP)". In the last step, download the ZIP archive containing the editor.
 
@@ -66,7 +66,7 @@ With `ckeditor5-builder` being the unzipped folder downloaded from the [Online B
 
 ### Implementing the editor
 
-Inside the `src/` foder create a new file `editor.js` with the following content:
+Inside the `src/` folder, create a new file `editor.js` with the following content:
 
 ```js
 const {
