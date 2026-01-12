@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2025-12-01
+modified_at: 2026-01-12
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -13,6 +13,12 @@ modified_at: 2025-12-01
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v47.3.0
+
+Released on 14 January, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.4.0))
+
+TODO
 
 ## Update to CKEditor&nbsp;5 v47.3.0
 
