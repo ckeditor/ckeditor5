@@ -1,11 +1,10 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -40,7 +39,7 @@ export class Client {
 			// Block plugins are needed for proper data serializing.
 			// BoldEditing is needed for bold command.
 			plugins: [
-				Typing, Paragraph, LegacyListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
+				Typing, Paragraph, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
 				ImageBlockEditing
 			],
 			...editorConfig

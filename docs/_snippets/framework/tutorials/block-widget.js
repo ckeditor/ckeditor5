@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -14,16 +14,19 @@ import {
 	Command,
 	Plugin,
 	ButtonView,
+	SwitchButtonView,
 	Widget,
 	toWidget,
-	toWidgetEditable
+	toWidgetEditable,
+	WidgetToolbarRepository,
+	isWidget
 } from 'ckeditor5';
 
 import { getViewportTopOffsetConfig } from '@snippets/index.js';
 
 class SimpleBox extends Plugin {
 	static get requires() {
-		return [ SimpleBoxEditing, SimpleBoxUI ];
+		return [ SimpleBoxEditing, SimpleBoxUI, SimpleBoxToolbar ];
 	}
 }
 
@@ -62,6 +65,27 @@ class SimpleBoxUI extends Plugin {
 
 			return buttonView;
 		} );
+
+		// Register the "secretSimpleBox" switch button for toggling the secret state.
+		editor.ui.componentFactory.add( 'secretSimpleBox', locale => {
+			const command = editor.commands.get( 'toggleSimpleBoxSecret' );
+			const switchButton = new SwitchButtonView( locale );
+
+			switchButton.set( {
+				label: t( 'Secret box' ),
+				withText: true
+			} );
+
+			// Bind the switch's properties to the command.
+			switchButton.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute the command when the switch is toggled.
+			this.listenTo( switchButton, 'execute', () => {
+				editor.execute( 'toggleSimpleBoxSecret', { value: !command.value } );
+			} );
+
+			return switchButton;
+		} );
 	}
 }
 
@@ -77,6 +101,7 @@ class SimpleBoxEditing extends Plugin {
 		this._defineConverters();
 
 		this.editor.commands.add( 'insertSimpleBox', new InsertSimpleBoxCommand( this.editor ) );
+		this.editor.commands.add( 'toggleSimpleBoxSecret', new ToggleSimpleBoxSecretCommand( this.editor ) );
 	}
 
 	_defineSchema() {
@@ -87,7 +112,10 @@ class SimpleBoxEditing extends Plugin {
 			isObject: true,
 
 			// Allow in places where other blocks are allowed (e.g. directly in the root).
-			allowWhere: '$block'
+			allowWhere: '$block',
+
+			// Allow the 'secret' attribute on simpleBox elements.
+			allowAttributes: [ 'secret' ]
 		} );
 
 		schema.register( 'simpleBoxTitle', {
@@ -140,7 +168,20 @@ class SimpleBoxEditing extends Plugin {
 			view: ( modelElement, { writer: viewWriter } ) => {
 				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
 
+				// Set custom property to later check the view element.
+				viewWriter.setCustomProperty( 'simpleBox', true, section );
+
 				return toWidget( section, viewWriter, { label: 'simple box widget' } );
+			}
+		} );
+
+		// Handle the 'secret' attribute conversion between model and view.
+		conversion.attributeToAttribute( {
+			model: 'secret',
+			view: {
+				name: 'section',
+				key: 'class',
+				value: 'secret'
 			}
 		} );
 
@@ -229,11 +270,96 @@ function createSimpleBox( writer ) {
 	return simpleBox;
 }
 
+class ToggleSimpleBoxSecretCommand extends Command {
+	refresh() {
+		const editor = this.editor;
+		const element = getClosestSelectedSimpleBoxElement( editor.model.document.selection );
+
+		this.isEnabled = !!element;
+		this.value = !!( element && element.getAttribute( 'secret' ) );
+	}
+
+	execute( { value } ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const simpleBox = getClosestSelectedSimpleBoxElement( model.document.selection );
+
+		if ( simpleBox ) {
+			model.change( writer => {
+				if ( value ) {
+					writer.setAttribute( 'secret', true, simpleBox );
+				} else {
+					writer.removeAttribute( 'secret', simpleBox );
+				}
+			} );
+		}
+	}
+}
+
+function getClosestSelectedSimpleBoxElement( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	if ( !!selectedElement && selectedElement.is( 'element', 'simpleBox' ) ) {
+		return selectedElement;
+	} else {
+		return selection.getFirstPosition().findAncestor( 'simpleBox' );
+	}
+}
+
+class SimpleBoxToolbar extends Plugin {
+	static get requires() {
+		return [ WidgetToolbarRepository ];
+	}
+
+	afterInit() {
+		const editor = this.editor;
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+
+		widgetToolbarRepository.register( 'simpleBoxToolbar', {
+			items: editor.config.get( 'simpleBox.toolbar' ),
+			getRelatedElement: getClosestSimpleBoxWidget
+		} );
+	}
+}
+
+function getClosestSimpleBoxWidget( selection ) {
+	const selectionPosition = selection.getFirstPosition();
+
+	if ( !selectionPosition ) {
+		return null;
+	}
+
+	const viewElement = selection.getSelectedElement();
+
+	if ( viewElement && isSimpleBoxWidget( viewElement ) ) {
+		return viewElement;
+	}
+
+	let parent = selectionPosition.parent;
+
+	while ( parent ) {
+		if ( parent.is( 'element' ) && isSimpleBoxWidget( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+
+	return null;
+}
+
+function isSimpleBoxWidget( viewElement ) {
+	return !!viewElement.getCustomProperty( 'simpleBox' ) && isWidget( viewElement );
+}
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-block-widget' ), {
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, SimpleBox ],
 		toolbar: {
 			items: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]
+		},
+		simpleBox: {
+			toolbar: [ 'secretSimpleBox' ]
 		},
 		ui: {
 			viewportOffset: {

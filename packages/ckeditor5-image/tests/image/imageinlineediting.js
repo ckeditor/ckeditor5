@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,10 +9,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ViewDataTransfer, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageTypeCommand } from '../../src/image/imagetypecommand.js';
@@ -28,6 +29,8 @@ describe( 'ImageInlineEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
+		stubUid();
+
 		editor = await VirtualTestEditor.create( {
 			plugins: [ ImageInlineEditing, Paragraph ]
 		} );
@@ -636,7 +639,7 @@ describe( 'ImageInlineEditing', () => {
 					Clipboard,
 					LinkImage,
 					Paragraph,
-					LegacyListEditing
+					ListEditing
 				]
 			} );
 
@@ -666,20 +669,18 @@ describe( 'ImageInlineEditing', () => {
 			);
 		} );
 
-		it( 'should paste or drop a block image as inline in the empty list item', () => {
+		it( 'should replace an empty list item with a block image as a list item', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
 
-			_setModelData( model, '<listItem listType="bulleted" listIndent="0"></listItem>' );
+			_setModelData( model, '<paragraph listIndent="0" listItemId="000" listType="bulleted"></paragraph>' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">' +
-					'<imageInline src="/assets/sample.png"></imageInline>[]' +
-				'</listItem>'
+				'[<imageBlock listIndent="0" listItemId="a00" listType="bulleted" src="/assets/sample.png"></imageBlock>]'
 			);
 		} );
 
@@ -898,7 +899,7 @@ describe( 'ImageInlineEditing', () => {
 					Clipboard,
 					LinkImage,
 					Paragraph,
-					LegacyListEditing
+					ListEditing
 				]
 			} );
 

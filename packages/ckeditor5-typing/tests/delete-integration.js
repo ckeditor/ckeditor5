@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,7 +9,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { LegacyList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -171,7 +171,7 @@ describe( 'Delete integration', () => {
 
 			return ClassicEditor
 				.create( element, {
-					plugins: [ Typing, Heading, LegacyList, Image, ImageCaption, Paragraph, BlockQuote ]
+					plugins: [ Typing, Heading, List, Image, ImageCaption, Paragraph, BlockQuote ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -187,13 +187,13 @@ describe( 'Delete integration', () => {
 
 		it( 'should not throw an error if content with the image is being removed', () => {
 			_setModelData( model,
-				'<listItem listIndent="0" listType="numbered">OL List i[tem 1</listItem>' +
-				'<listItem listIndent="0" listType="numbered">OL List item 2</listItem>]' +
+				'<paragraph listIndent="0" listItemId="000" listType="numbered">OL List i[tem 1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="001" listType="numbered">OL List item 2</paragraph>]' +
 				'<imageBlock alt="bar" imageStyle="side" src="/assets/sample.png"><caption>[Caption</caption></imageBlock>' +
 				'<blockQuote>' +
 					'<paragraph>Quote</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">Quoted UL List item 1</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">Quote]d UL List item 2</listItem>' +
+					'<paragraph listIndent="0" listItemId="002" listType="bulleted">Quoted UL List item 1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="003" listType="bulleted">Quote]d UL List item 2</paragraph>' +
 					'<paragraph>Quote</paragraph>' +
 				'</blockQuote>'
 			);
