@@ -1433,7 +1433,8 @@ export class TableUtils extends Plugin {
 }
 
 /**
- * Options for the {@link TableUtils#setHeadingRowsCount} and {@link TableUtils#setHeadingColumnsCount} methods.
+ * Options for the {@link module:table/tableutils~TableUtils#setHeadingRowsCount} and
+ * {@link module:table/tableutils~TableUtils#setHeadingColumnsCount} methods.
  */
 export type UpdateTableHeadingsOptions = {
 	updateCellType?: boolean;
