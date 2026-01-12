@@ -9,7 +9,7 @@ modified_at: 2026-01-08
 
 # Integrating CKEditor&nbsp;5 with Electron from CDN
 
-[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to created cross-platform desktop applications using web technologies such as HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
+[Electron](https://www.electronjs.org/) is an open-source framework that allows developers to create cross-platform desktop applications using web technologies such as HTML, CSS, and JavaScript. It combines the Node.js runtime and the Chromium rendering engine, enabling a single codebase to be used for cross-platform apps that work on Windows, macOS, and Linux.
 
 {@snippet getting-started/use-builder}
 
@@ -35,7 +35,7 @@ npm start
 
 ### Project structure
 
-AAfter following all the steps described so far, your app's structure should resemble this one:
+After following all the steps described so far, your app's structure should resemble this one:
 
 ```plain
 ├── forge.config.js
@@ -83,7 +83,7 @@ ClassicEditor
 		.catch( /* ... */ );
 ```
 
-This code imports all the necessary CKEditor 5 plugins and initializes editor instance with the provided configuration.
+This code imports all the necessary CKEditor 5 plugins and initializes the editor instance with the provided configuration.
 	
 Now modify the `index.html` file so it looks like this:
 
