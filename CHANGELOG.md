@@ -41,7 +41,7 @@ If your project still relies on old installation methods, now is a good time to 
 ### Features
 
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Added support for visualizing hidden table and table cell borders through a new configuration option: `table.showHiddenBorders` (enabled by default). The editor now detects inline `border:none` and `border-style:none` declarations on table and cell elements and renders dashed helper borders in the editing view. This visualization can be disabled for strict WYSIWYG scenarios. Closes [#19039](https://github.com/ckeditor/ckeditor5/issues/19039).
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added a new tooltip for web search sources in AI Chat.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added a new tooltip for web search sources in the AI Chat.
 
   The tooltip now displays the full link, favicon, and link title.
 * **[email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)**: Added an inline-styles transformation that improves the appearance of resized inline images in classic Outlook clients.
@@ -59,13 +59,13 @@ If your project still relies on old installation methods, now is a good time to 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Review sidebar is no longer stuck in loading state for specific AI API responses with no real changes in the content.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Chat related Quick Actions now open the AI Chat if it is closed or if another tab is currently active.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI feature now functions correctly when used with the Title plugin.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The document will no longer be added to the context automatically when it is disabled via `ai.chat.context.document.enabled` config.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Quick Actions that use AI Chat are now hidden when the document context is disabled via `ai.chat.context.document.enabled` config, as they require the document to function properly.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The document will no longer be added to the context automatically when it is disabled via the `ai.chat.context.document.enabled` config.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Quick Actions that use AI Chat are now hidden when the document context is disabled via the `ai.chat.context.document.enabled` config, as they require the document to function properly.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Editor toolbar is now always visible when AI Review suggestion is accepted or dismissed.
-* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: The footnotes' definitions are no longer lost when pasting content that lacks `application/ckeditor5-footnotes` data but contains footnote references and definitions. The plugin now extracts and merges footnote definitions from the pasted content, ensuring that existing footnotes are preserved and new ones are added correctly.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The editor and its UI now recognize the CSS `float` style on images (e.g. `style="float: left"` or `style="float: right"`) and map it to left/right image alignment. This applies to both inline and block images. If custom image styles are configured then the `float` style is ignored. Closes [#19521](https://github.com/ckeditor/ckeditor5/issues/19521).
+* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: The footnotes' definitions are no longer lost when pasting content that lacks the `application/ckeditor5-footnotes` data but contains footnote references and definitions. The plugin now extracts and merges footnote definitions from the pasted content, ensuring that existing footnotes are preserved and new ones are added correctly.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The editor and its UI now recognize the CSS `float` style on images (e.g. `style="float: left"` or `style="float: right"`) and map it to left/right image alignment. This applies to both inline and block images. If custom image styles are configured, then the `float` style is ignored. Closes [#19521](https://github.com/ckeditor/ckeditor5/issues/19521).
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Fixed an issue where setting editor data with multiple images or images mixed with text inside a single link would result in only the first image being preserved and the rest of the content being removed. Closes [#18961](https://github.com/ckeditor/ckeditor5/issues/18961).
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Added a `strict-origin-when-cross-origin` attribute to the `iframe` tag when embedding YouTube videos. It corresponds with the YouTube documentation and resolves occurences of error 153 when embedding YouTube videos.
+* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Added a `strict-origin-when-cross-origin` attribute to the `iframe` tag when embedding YouTube videos. It corresponds with the YouTube documentation and resolves occurrences of error 153 when embedding YouTube videos.
 
   Thanks to [@ampaze](https://github.com/ampaze).
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Fixed a crash in pagination that occurred when a to-do list item was the first element in the editor.
@@ -73,12 +73,12 @@ If your project still relies on old installation methods, now is a good time to 
 * **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Stopped the revision history loading overlay spinner from animating while hidden. Closes [ckeditor/ckeditor5#19558](https://github.com/ckeditor/ckeditor5/issues/19558).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Fixed incorrect table rows moving as header row when preceding rows are not header rows. Closes [#19431](https://github.com/ckeditor/ckeditor5/issues/19431).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The default alignment for table headers in the output has been set to left to match the editing view and ensure consistent rendering across all browsers. Closes [#19454](https://github.com/ckeditor/ckeditor5/issues/19454).
-* **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Disable text transformations inside inline code so automatic text trasformation does not convert typed text. Closes [#19557](https://github.com/ckeditor/ckeditor5/issues/19557).
+* **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Disable text transformations inside inline code so automatic text transformation does not convert typed text. Closes [#19557](https://github.com/ckeditor/ckeditor5/issues/19557).
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Guarded dropdown panel selection handling against non-element targets to avoid errors when selecting text. Closes [#19565](https://github.com/ckeditor/ckeditor5/issues/19565).
 
 ### Other changes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Track Changes suggestion markers are always grayed out in AI review, even if active.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The Track Changes suggestion markers are always grayed out in AI review, even if active.
 
   This makes it easier to navigate when review check is active in content with many Track Changes suggestions and keeps full focus on changes created by AI.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI models displayed in Review and Chat are now sorted by their model family.
