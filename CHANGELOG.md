@@ -11,7 +11,7 @@ This is a minor update focused on improving content editing workflows and data c
 
 #### Experimental table cell type support
 
-We are introducing an experimental `tableCellTypeSupport` flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the update guide.
+We are introducing an experimental `tableCellTypeSupport` flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. Read more about how to enable it in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html#update-to-ckeditor-5-v4740).
 
 #### Hidden table borders visualization
 
@@ -19,13 +19,13 @@ We are introducing a new `config.table.showHiddenBorders` configuration option (
 
 #### Email compatibility improvements
 
-We added an inline-styles transformation that improves the appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email inline-styles transformers can replace figures (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
+We added an [inline-styles transformation](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/conversion/attributes.html) that improves the appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email inline-styles transformers can replace figures (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
 
 #### Other improvements and fixes
 
-- Fixed multiple issues in the AI features, including improved tooltips for web search sources in AI Chat, proper handling of Quick Actions when opening the AI Chat panel, resolved loading state issues in the AI Review sidebar, and others.
-- The editor now recognizes CSS `float` style on images (e.g., `style="float: left"` or `style="float: right"`) and automatically maps it to left/right image alignment. This works for both inline and block images, improving compatibility when pasting content from external sources or loading legacy content. If custom image styles are configured, they take precedence over the float style.
-- The Emoji plugin can now be used with the Emoji v17.0 dataset, which has been uploaded to the CKEditor CDN. This update does not change the default emoji version used by CKEditor.
+* Fixed multiple issues in the [AI features](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html), including improved tooltips for web search sources in AI Chat, proper handling of Quick Actions when opening the AI Chat panel, resolved loading state issues in the AI Review sidebar, and others.
+* The editor now recognizes CSS `float` style on images (e.g., `style="float: left"` or `style="float: right"`) and automatically maps it to left/right image alignment. This works for both inline and block images, improving compatibility when pasting content from external sources or loading legacy content. If custom image styles are configured, they take precedence over the float style.
+* The Emoji plugin can now be used with the [Emoji v17.0 dataset](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html#updated-the-emoji-plugin-dataset), which has been uploaded to the CKEditor CDN. This update does not change the default emoji version used by CKEditor.
 
 #### Incoming old installation methods sunset reminder
 
