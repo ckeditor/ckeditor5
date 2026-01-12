@@ -38,7 +38,19 @@ We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor
 
 The Emoji plugin can now utilize the Emoji v17.0 dataset, available on the CKEditor CDN. This update does not change the default emoji version used by CKEditor&nbsp;5.
 
-To use the new dataset, download the [Emoji `json` database from the CKEditor&nbsp;5 CDN](https://cdn.ckeditor.com/ckeditor5/data/emoji/17/en.json). Then, follow the steps described in the {@link features/emoji#emoji-source Emoji source section of the feature guide}.
+To use the new dataset, download the [Emoji `json` database from the CKEditor&nbsp;5 CDN](https://cdn.ckeditor.com/ckeditor5/data/emoji/17/en.json). Place the downloaded file in your application’s assets folder, for example `public/emoji/en.json` (The specific location may vary depending on your framework and setup). Update the configuration option definitionsUrl to point to the URL of your assets, for example:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		emoji: {
+			definitionsUrl: 'https://example.com/emoji-definitions.json'
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ### Other improvements and fixes
 
