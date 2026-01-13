@@ -60,8 +60,8 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 					null,
 					writer.createSlot( element =>
 						element.is( 'element', 'tableRow' ) &&
-							element.index! >= headingRows &&
-							element.index! < tableUtils.getRows( table ) - footerRows
+						element.index! >= headingRows &&
+						element.index! < tableUtils.getRows( table ) - footerRows
 					)
 				)
 			);

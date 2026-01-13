@@ -125,7 +125,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		selectTableRow: SelectRowCommand;
 		setTableColumnHeader: SetHeaderColumnCommand;
 		setTableRowHeader: SetHeaderRowCommand;
-		setFooterRow: SetFooterRowCommand;
+		setTableFooterRow: SetFooterRowCommand;
 		splitTableCellVertically: SplitCellCommand;
 		splitTableCellHorizontally: SplitCellCommand;
 		toggleTableCaption: ToggleTableCaptionCommand;
