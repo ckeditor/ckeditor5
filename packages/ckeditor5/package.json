@@ -28,9 +28,24 @@
     "framework"
   ],
   "type": "module",
-  "main": "dist/ckeditor5.js",
-  "module": "dist/ckeditor5.js",
-  "types": "src/index.d.ts",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/ckeditor5.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/ckeditor5.js"
+      },
+      "./*": "./dist/*",
+      "./browser/*": null,
+      "./package.json": "./package.json"
+    }
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-alignment": "workspace:*",

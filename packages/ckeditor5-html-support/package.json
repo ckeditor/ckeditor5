@@ -23,7 +23,21 @@
     "generic html support"
   ],
   "type": "module",
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dist/*": "./src/*",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": "./dist/index.js",
+      "./dist/*": "./dist/*",
+      "./package.json": "./package.json"
+    }
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
