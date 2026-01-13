@@ -23,8 +23,7 @@
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"
   },

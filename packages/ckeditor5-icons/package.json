@@ -19,8 +19,7 @@
   ],
   "type": "module",
   "main": "src/index.ts",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs && node ../../scripts/update-icons-typings.mjs"
   },
