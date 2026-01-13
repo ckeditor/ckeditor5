@@ -70,7 +70,8 @@ export interface TableConfig {
 	/**
 	 * Enables support for table footers (`<tfoot>`).
 	 *
-	 * When set to `true`, the editor will register the `footerRows` table attribute and upcast footer rows from the data.
+	 * When set to `true`, the editor will upcast and downcast `<tfoot>` elements, and the footer toggle will be visible
+	 * in the table row dropdown.
 	 * When set to `false` (default), footer rows are ignored and the footer toggle is hidden in the table row dropdown.
 	 *
 	 * @default false
