@@ -7,7 +7,7 @@
  * @module paste-from-office/filters/replacetabswithinprewithspaces
  */
 
-import type { ViewDocumentFragment, ViewUpcastWriter, ViewText, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDocumentFragment, ViewUpcastWriter, ViewText, ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Replaces tab characters with spaces in text nodes that are inside elements styled with `white-space: pre-wrap`.

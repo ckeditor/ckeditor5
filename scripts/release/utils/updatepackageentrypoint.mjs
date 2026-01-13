@@ -17,15 +17,15 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	if ( pkgJson.name === 'ckeditor5' ) {
 		pkgJson.exports = {
 			'.': {
-				'types': './src/index.d.ts',
+				'types': './dist/index.d.ts',
 				'import': './dist/ckeditor5.js'
 			},
 			'./*': './dist/*',
 			'./browser/*': null,
-			'./build/*': './build/*',
-			'./src/*': './src/*',
 			'./package.json': './package.json'
 		};
+
+		pkgJson.types = 'dist/index.d.ts';
 
 		return fs.writeJson( packageJsonPath, pkgJson );
 	}
@@ -34,8 +34,8 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		return;
 	}
 
-	const main = pkgJson.main.replace( /\.ts$/, '.js' );
-	const types = pkgJson.main.replace( /\.ts$/, '.d.ts' );
+	const main = pkgJson.main.replace( /src\/index/, 'dist/index' ).replace( /\.ts$/, '.js' );
+	const types = pkgJson.main.replace( /src\/index/, 'dist/index' ).replace( /\.ts$/, '.d.ts' );
 	const files = pkgJson.files || [];
 
 	pkgJson.main = main;
@@ -48,20 +48,9 @@ export default async function updatePackageEntryPoint( packagePath ) {
 			default: './' + main
 		},
 		'./dist/*': {
-			/**
-			 * To avoid problems caused by having two different copies of the declaration
-			 * files, the new installation methods will temporarily use those from the
-			 * old installation methods. Once the old methods are removed, the declaration
-			 * files will be moved to the `dist` directory.
-			 */
 			types: './' + types,
 			import: './dist/*',
 			default: './dist/*'
-		},
-		'./src/*': {
-			types: './src/*.d.ts',
-			import: './src/*',
-			default: './src/*'
 		}
 	};
 

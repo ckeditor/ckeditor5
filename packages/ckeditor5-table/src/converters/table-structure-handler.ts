@@ -11,7 +11,7 @@ import type {
 	EditingController,
 	ModelElement,
 	Model
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import type { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';

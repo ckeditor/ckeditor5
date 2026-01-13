@@ -7,9 +7,9 @@
  * @module table/tablecaption/tablecaptionediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { ModelElement, enableViewPlaceholder } from 'ckeditor5/src/engine.js';
-import { toWidgetEditable } from 'ckeditor5/src/widget.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ModelElement, enableViewPlaceholder } from '@ckeditor/ckeditor5-engine';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 
 import { injectTableCaptionPostFixer } from '../converters/table-caption-post-fixer.js';
 import { ToggleTableCaptionCommand } from './toggletablecaptioncommand.js';

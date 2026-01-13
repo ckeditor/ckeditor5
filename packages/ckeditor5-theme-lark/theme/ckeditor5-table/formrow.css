@@ -20,9 +20,5 @@
 
 	&.ck-table-form__action-row {
 		margin-top: var(--ck-spacing-large);
-
-		& .ck-button .ck-button__label {
-			color: var(--ck-color-text);
-		}
 	}
 }

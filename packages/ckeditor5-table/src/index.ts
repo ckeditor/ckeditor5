@@ -37,18 +37,6 @@ export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
 
-// [experimental] Remove in the v48.
-export { TablePropertiesUIExperimental } from './tableproperties/tablepropertiesuiexperimental.js';
-export {
-	TablePropertiesViewExperimental,
-	type TablePropertiesViewOptionsExperimental
-} from './tableproperties/ui/tablepropertiesviewexperimental.js';
-export { TableCellPropertiesUIExperimental } from './tablecellproperties/tablecellpropertiesuiexperimental.js';
-export {
-	TableCellPropertiesViewExperimental,
-	type TableCellPropertiesViewOptionsExperimental
-} from './tablecellproperties/ui/tablecellpropertiesviewexperimental.js';
-
 export { InsertColumnCommand } from './commands/insertcolumncommand.js';
 export { InsertRowCommand } from './commands/insertrowcommand.js';
 export { InsertTableCommand } from './commands/inserttablecommand.js';
@@ -82,7 +70,8 @@ export { TableBorderWidthCommand } from './tableproperties/commands/tableborderw
 export { TableHeightCommand } from './tableproperties/commands/tableheightcommand.js';
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
 export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
-export { TableCellTypeCommand, type TableCellType } from './tablecellproperties/commands/tablecelltypecommand.js';
+export { TableCellTypeCommand } from './tablecellproperties/commands/tablecelltypecommand.js';
+export { isTableHeaderCellType, type TableCellType } from './tablecellproperties/tablecellpropertiesutils.js';
 export {
 	TableCellPropertyCommand,
 	type TableCellPropertyCommandAfterExecuteEvent,

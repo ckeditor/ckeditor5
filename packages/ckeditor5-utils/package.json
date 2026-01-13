@@ -2,12 +2,20 @@
   "name": "@ckeditor/ckeditor5-utils",
   "version": "47.3.0",
   "description": "Miscellaneous utilities used by CKEditor 5.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-utils"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib",
-    "ckeditor5-dll"
+    "ckeditor5-lib"
   ],
   "type": "module",
   "main": "src/index.ts",
@@ -18,31 +26,15 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
-    "@ckeditor/ckeditor5-engine": "workspace:*",
-    "typescript": "5.3.3"
+    "@ckeditor/ckeditor5-engine": "workspace:*"
   },
-  "depcheckIgnore": [
-    "typescript"
-  ],
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-utils"
+  "scripts": {
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

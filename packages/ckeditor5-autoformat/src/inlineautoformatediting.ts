@@ -18,15 +18,15 @@
  * @module autoformat/inlineautoformatediting
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type {
 	ModelDocumentChangeEvent,
 	Model,
 	ModelPosition,
 	ModelRange,
 	ModelWriter
-} from 'ckeditor5/src/engine.js';
-import type { Delete, LastTextLineData } from 'ckeditor5/src/typing.js';
+} from '@ckeditor/ckeditor5-engine';
+import type { Delete, LastTextLineData } from '@ckeditor/ckeditor5-typing';
 
 import { type Autoformat } from './autoformat.js';
 

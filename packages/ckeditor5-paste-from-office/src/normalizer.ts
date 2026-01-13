@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizer
  */
 
-import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
+import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
 import type { PasteOfficeHtmlParseResult } from './filters/parse.js';
 
 /**

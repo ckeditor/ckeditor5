@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconHeading2 } from 'ckeditor5/src/icons.js';
+import { IconHeading2 } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingButtonsUI } from '../src/headingbuttonsui.js';

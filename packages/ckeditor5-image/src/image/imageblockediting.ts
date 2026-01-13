@@ -7,9 +7,13 @@
  * @module image/image/imageblockediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
-import { ViewUpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import {
+	ClipboardPipeline,
+	type ClipboardInputTransformationEvent,
+	type ClipboardContentInsertionEvent
+} from '@ckeditor/ckeditor5-clipboard';
+import { ViewUpcastWriter, type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import {
 	downcastImageAttribute,

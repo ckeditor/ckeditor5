@@ -9,9 +9,8 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 
 import {
-	TableCellPropertiesEditing, TableCellPropertiesUIExperimental,
-	TableLayout,
-	TablePropertiesEditing, TablePropertiesUIExperimental
+	TableCellPropertiesEditing, TableCellPropertiesUI,
+	TableLayout, TablePropertiesEditing, TablePropertiesUI
 } from '../../src/index.js';
 
 const sourceElement = document.querySelector( '#editor' );
@@ -24,8 +23,8 @@ ClassicEditor
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet, Alignment, Indent, IndentBlock,
-			TablePropertiesEditing, TablePropertiesUIExperimental,
-			TableCellPropertiesEditing, TableCellPropertiesUIExperimental,
+			TablePropertiesEditing, TablePropertiesUI,
+			TableCellPropertiesEditing, TableCellPropertiesUI,
 			TableLayout
 		],
 		toolbar: [
@@ -36,10 +35,6 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ]
-		},
-		experimentalFlags: {
-			useExtendedTableBlockAlignment: true,
-			tableCellTypeSupport: true
 		}
 	} )
 	.then( editor => {

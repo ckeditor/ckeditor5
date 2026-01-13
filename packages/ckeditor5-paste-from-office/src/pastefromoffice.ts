@@ -7,9 +7,9 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { PasteFromOfficeMSWordNormalizer } from './normalizers/mswordnormalizer.js';
 import { GoogleDocsNormalizer } from './normalizers/googledocsnormalizer.js';
@@ -78,14 +78,12 @@ export class PasteFromOffice extends Plugin {
 		const normalizers: Array<PasteFromOfficeNormalizer> = [];
 		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelListEditing' );
 		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TablePropertiesEditing' );
-		const hasExtendedTableBlockAlignment = !!this.editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' );
 
 		normalizers.push(
 			new PasteFromOfficeMSWordNormalizer(
 				viewDocument,
 				hasMultiLevelListPlugin,
-				hasTablePropertiesPlugin,
-				hasExtendedTableBlockAlignment
+				hasTablePropertiesPlugin
 			)
 		);
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );

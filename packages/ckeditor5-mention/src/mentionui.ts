@@ -10,19 +10,19 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
 import type {
 	ViewDocumentKeyDownEvent,
 	Marker,
 	ModelPosition
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	CKEditorError,
@@ -32,9 +32,9 @@ import {
 	keyCodes,
 	logWarning,
 	type DomOptimalPositionOptions
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
-import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
+import { TextWatcher, type TextWatcherMatchedEvent } from '@ckeditor/ckeditor5-typing';
 
 import { debounce } from 'es-toolkit/compat';
 

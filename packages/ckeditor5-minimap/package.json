@@ -2,44 +2,8 @@
   "name": "@ckeditor/ckeditor5-minimap",
   "version": "47.3.0",
   "description": "Content minimap feature for CKEditor 5.",
-  "keywords": [
-    "ckeditor",
-    "ckeditor5",
-    "ckeditor 5",
-    "ckeditor5-feature",
-    "ckeditor5-plugin",
-    "ckeditor5-dll"
-  ],
-  "type": "module",
-  "main": "src/index.ts",
-  "dependencies": {
-    "@ckeditor/ckeditor5-core": "workspace:*",
-    "@ckeditor/ckeditor5-engine": "workspace:*",
-    "@ckeditor/ckeditor5-ui": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "ckeditor5": "workspace:*"
-  },
-  "devDependencies": {
-    "@ckeditor/ckeditor5-alignment": "workspace:*",
-    "@ckeditor/ckeditor5-basic-styles": "workspace:*",
-    "@ckeditor/ckeditor5-cloud-services": "workspace:*",
-    "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
-    "@ckeditor/ckeditor5-easy-image": "workspace:*",
-    "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
-    "@ckeditor/ckeditor5-font": "workspace:*",
-    "@ckeditor/ckeditor5-fullscreen": "workspace:*",
-    "@ckeditor/ckeditor5-image": "workspace:*",
-    "@ckeditor/ckeditor5-indent": "workspace:*",
-    "@ckeditor/ckeditor5-page-break": "workspace:*",
-    "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
-    "typescript": "5.3.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
-  },
-  "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -47,19 +11,43 @@
     "url": "https://github.com/ckeditor/ckeditor5.git",
     "directory": "packages/ckeditor5-minimap"
   },
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*",
+    "@ckeditor/ckeditor5-ui": "workspace:*",
+    "@ckeditor/ckeditor5-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "workspace:*",
+    "@ckeditor/ckeditor5-basic-styles": "workspace:*",
+    "@ckeditor/ckeditor5-cloud-services": "workspace:*",
+    "@ckeditor/ckeditor5-code-block": "workspace:*",
+    "@ckeditor/ckeditor5-easy-image": "workspace:*",
+    "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
+    "@ckeditor/ckeditor5-font": "workspace:*",
+    "@ckeditor/ckeditor5-fullscreen": "workspace:*",
+    "@ckeditor/ckeditor5-image": "workspace:*",
+    "@ckeditor/ckeditor5-indent": "workspace:*",
+    "@ckeditor/ckeditor5-page-break": "workspace:*",
+    "@ckeditor/ckeditor5-table": "workspace:*"
+  },
+  "scripts": {
+    "build": "node ../../scripts/nim/build-package.mjs"
+  },
   "files": [
     "dist",
     "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
     "theme",
-    "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "dll:build": "webpack",
-    "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

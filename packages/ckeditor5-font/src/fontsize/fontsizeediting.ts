@@ -7,13 +7,13 @@
  * @module font/fontsize/fontsizeediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import {
 	isLengthStyleValue,
 	isPercentageStyleValue,
 	type ViewElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { FontSizeCommand } from './fontsizecommand.js';
 import { normalizeOptions } from './utils.js';

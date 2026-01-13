@@ -224,15 +224,9 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 ## Generating content styles
 
-It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To do that, execute:
+Content styles let you customize the appearance of editor content presented to the readers.
 
-```
-pnpm docs:content-styles
-```
-
-The style sheet will be saved in the `build/content-styles` folder.
-
-To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
+For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css CSS setup} guide.
 
 ## Additional information for contributors
 

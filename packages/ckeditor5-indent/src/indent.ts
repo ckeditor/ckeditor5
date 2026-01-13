@@ -7,7 +7,7 @@
  * @module indent/indent
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { IndentEditing } from './indentediting.js';
 import { IndentUI } from './indentui.js';

@@ -7,9 +7,9 @@
  * @module emoji/emojimention
  */
 
-import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { Typing } from 'ckeditor5/src/typing.js';
+import { logWarning, type LocaleTranslate } from '@ckeditor/ckeditor5-utils';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 import type { MentionFeed, MentionFeedObjectItem, MentionItemRenderer } from '@ckeditor/ckeditor5-mention';
 
 import { EmojiRepository } from './emojirepository.js';

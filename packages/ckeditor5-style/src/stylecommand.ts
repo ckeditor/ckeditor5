@@ -7,9 +7,9 @@
  * @module style/stylecommand
  */
 
-import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { logWarning, first } from 'ckeditor5/src/utils.js';
+import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { logWarning, first } from '@ckeditor/ckeditor5-utils';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import {

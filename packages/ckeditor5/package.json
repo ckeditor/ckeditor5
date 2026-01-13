@@ -2,6 +2,14 @@
   "name": "ckeditor5",
   "version": "47.3.0",
   "description": "A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -23,32 +31,6 @@
   "main": "dist/ckeditor5.js",
   "module": "dist/ckeditor5.js",
   "types": "src/index.d.ts",
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git"
-  },
-  "files": [
-    "dist",
-    "src/*.js",
-    "src/*.d.ts",
-    "build/ckeditor5-dll.js",
-    "build/ckeditor5-dll.manifest.json",
-    "build/translations/*.js",
-    "COPYING.GPL",
-    "CHANGELOG.md",
-    "LICENSE.md",
-    "README.md"
-  ],
-  "scripts": {
-    "predll:build": "pnpm run build",
-    "dll:build": "webpack",
-    "build": "tsc --build --force ./tsconfig.release.json",
-    "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
-  },
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-alignment": "workspace:*",
@@ -112,14 +94,14 @@
     "@ckeditor/ckeditor5-widget": "workspace:*",
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
-  "devDependencies": {
-    "@ckeditor/ckeditor5-dev-translations": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
-    "@wiris/mathtype-ckeditor5": "^8.13.1",
-    "terser-webpack-plugin": "^5.0.0",
-    "typescript": "5.3.3",
-    "upath": "^2.0.0",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
-  }
+  "scripts": {
+    "build": "node ../../scripts/nim/build-ckeditor5.mjs"
+  },
+  "files": [
+    "dist",
+    "COPYING.GPL",
+    "CHANGELOG.md",
+    "LICENSE.md",
+    "README.md"
+  ]
 }

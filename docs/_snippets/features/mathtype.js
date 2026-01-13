@@ -12,7 +12,8 @@ import {
 	CKBox,
 	CKBoxImageEdit
 } from 'ckeditor5';
-import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
+// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/9079.
+// import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 import {
 	TOKEN_URL,
 	CS_CONFIG,
@@ -31,8 +32,9 @@ ClassicEditor
 			PictureEditing,
 			ImageUpload,
 			ImageInsert,
-			CloudServices,
-			MathType
+			CloudServices
+			// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/9079.
+			// MathType
 		],
 		toolbar: {
 			items: [

@@ -7,8 +7,8 @@
  * @module code-block/codeblockui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { Collection } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 import {
 	UIModel,
 	SplitButtonView,
@@ -19,8 +19,8 @@ import {
 	MenuBarMenuView,
 	MenuBarMenuListItemView,
 	type ListDropdownButtonDefinition
-} from 'ckeditor5/src/ui.js';
-import { IconCodeBlock } from 'ckeditor5/src/icons.js';
+} from '@ckeditor/ckeditor5-ui';
+import { IconCodeBlock } from '@ckeditor/ckeditor5-icons';
 
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 

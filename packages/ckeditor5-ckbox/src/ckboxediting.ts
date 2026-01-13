@@ -7,7 +7,7 @@
  * @module ckbox/ckboxediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	ModelRange,
 	type ModelDocumentSelection,
@@ -19,8 +19,8 @@ import {
 	type UpcastElementEvent,
 	type ViewElement,
 	type ModelWriter
-} from 'ckeditor5/src/engine.js';
-import { logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { logError, type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig.js';
 

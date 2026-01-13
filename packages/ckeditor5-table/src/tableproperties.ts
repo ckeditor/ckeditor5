@@ -7,7 +7,7 @@
  * @module table/tableproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { TablePropertiesEditing } from './tableproperties/tablepropertiesediting.js';
 import { TablePropertiesUI } from './tableproperties/tablepropertiesui.js';

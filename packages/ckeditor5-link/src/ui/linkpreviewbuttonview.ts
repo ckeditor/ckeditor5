@@ -7,8 +7,8 @@
  * @module link/ui/linkpreviewbuttonview
  */
 
-import { ButtonView } from 'ckeditor5/src/ui.js';
-import type { Locale } from 'ckeditor5/src/utils.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The link button class. Rendered as an `<a>` tag with link opening in a new tab.

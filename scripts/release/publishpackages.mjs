@@ -66,9 +66,6 @@ const tasks = new Listr( [
 					'@ckeditor/ckeditor5-theme-lark': [
 						// Like in defaults, this package does not contain the UI layer. Hence, it is not required to publish the directory.
 						'lang',
-						// This package does not contain any source code, but only styles in the `theme` directory.
-						// Hence, `theme` is not optional.
-						'src',
 						// Like in defaults, this package does not define features.
 						'ckeditor5-metadata.json'
 					]

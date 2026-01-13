@@ -7,8 +7,8 @@
  * @module table/tableconfig
  */
 
-import type { ToolbarConfigItem } from 'ckeditor5/src/core.js';
-import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
+import type { ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
+import type { ColorOption, ColorPickerConfig } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.
@@ -364,7 +364,7 @@ export interface TablePropertiesConfig {
 	 * const tableConfig = {
 	 * 	tableProperties: {
 	 * 		alignment: {
-	 * 			useInlineStyles: false // Use CSS classes instead of inline styles
+	 * 			useInlineStyles: true // Use inline styles instead of CSS classes
 	 * 		}
 	 * 	}
 	 * };
@@ -518,6 +518,27 @@ export interface TableCellPropertiesConfig {
 	 * If set to `false` the picker will not appear.
 	 */
 	colorPicker?: false | ColorPickerConfig;
+
+	/**
+	 * If set to `true`, the `scope` attribute will be applied to table headers (`<th>`) based on their position in the table.
+	 *
+	 * The table cell properties UI will extend a dropdown with two more options that allow manually setting the header scope:
+	 *
+	 *   * `Column header` — sets `scope="col"` on `<th>`.
+	 *   * `Row header`    — sets `scope="row"` on `<th>`.
+	 *
+	 * If header cell is both in a heading row and a heading column, the `col` scope will be prioritized by the header rows
+	 * and columns setting logic. In such case, the user can manually change the scope using the table cell properties UI.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		scopedHeaders: true
+	 * 	}
+	 * };
+	 * ```
+	 */
+	scopedHeaders?: boolean;
 }
 
 /**
@@ -688,10 +709,10 @@ export interface TableAlignmentConfig {
 	/**
 	 * Whether to use inline styles for table alignment in the editor output.
 	 *
-	 * * When `true` (default), the alignment is rendered as inline styles.
-	 * * When `false`, the alignment is rendered as CSS classes.
+	 * * When `true`, the alignment is rendered as inline styles.
+	 * * When `false` (default), the alignment is rendered as CSS classes.
 	 *
-	 * @default true
+	 * @default false
 	 */
 	useInlineStyles?: boolean;
 }

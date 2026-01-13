@@ -19,14 +19,14 @@ import {
 	CollapsibleView,
 	type InputNumberView,
 	type FocusableView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
 import type { NormalizedListPropertiesConfig } from '../utils/config.js';
 

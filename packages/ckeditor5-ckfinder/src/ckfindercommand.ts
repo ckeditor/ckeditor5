@@ -7,9 +7,9 @@
  * @module ckfinder/ckfindercommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { CKEditorError } from 'ckeditor5/src/utils.js';
-import type { Notification } from 'ckeditor5/src/ui.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Notification } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing CKFinder editing feature}

@@ -7,8 +7,8 @@
  * @module style/ui/stylegridbuttonview
  */
 
-import type { Locale } from 'ckeditor5/src/utils.js';
-import { ButtonView, View } from 'ckeditor5/src/ui.js';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { ButtonView, View } from '@ckeditor/ckeditor5-ui';
 
 import type { NormalizedStyleDefinition } from '../styleutils.js';
 

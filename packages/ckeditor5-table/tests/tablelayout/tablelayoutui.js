@@ -14,7 +14,6 @@ import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js'
 import { InsertTableView } from '../../src/ui/inserttableview.js';
 import { IconTableLayout, IconTableProperties } from '@ckeditor/ckeditor5-icons';
 import { TableProperties } from '../../src/tableproperties.js';
-import { TablePropertiesUIExperimental } from '../../src/tableproperties/tablepropertiesuiexperimental.js';
 import { TableTypeCommand } from '../../src/tablelayout/commands/tabletypecommand.js';
 import { TableUI } from '../../src/tableui.js';
 
@@ -310,40 +309,6 @@ describe( 'TableLayoutUI', () => {
 			const dropdown = editor.ui.componentFactory.has( 'tableProperties' );
 
 			expect( dropdown ).to.be.false;
-		} );
-	} );
-
-	describe( 'tableProperties dropdown extending (experimental)', () => {
-		let tablePropertiesDropdown;
-
-		beforeEach( async () => {
-			await editor.destroy();
-
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [ TableProperties, TablePropertiesUIExperimental, TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
-			} );
-
-			const command = new TableTypeCommand( editor );
-			sinon.spy( command, 'execute' );
-			editor.commands.add( 'tableType', command );
-
-			tablePropertiesDropdown = editor.ui.componentFactory.create( 'tableProperties' );
-			tablePropertiesDropdown.render();
-
-			document.body.appendChild( tablePropertiesDropdown.element );
-
-			tablePropertiesDropdown.isOpen = true;
-		} );
-
-		afterEach( () => {
-			tablePropertiesDropdown?.element.remove();
-
-			return editor.destroy();
-		} );
-
-		it( 'should register tableProperties dropdown with a split button', () => {
-			expect( tablePropertiesDropdown.buttonView ).to.be.instanceOf( SplitButtonView );
-			expect( tablePropertiesDropdown.buttonView.tooltip ).to.equal( 'Choose table type' );
 		} );
 	} );
 

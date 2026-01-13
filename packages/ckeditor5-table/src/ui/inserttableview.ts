@@ -7,9 +7,9 @@
  * @module table/ui/inserttableview
  */
 
-import { View, ButtonView, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { View, ButtonView, addKeyboardHandlingForGrid, type ViewCollection } from '@ckeditor/ckeditor5-ui';
 
-import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils.js';
+import { KeystrokeHandler, FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import './../../theme/inserttable.css';
 

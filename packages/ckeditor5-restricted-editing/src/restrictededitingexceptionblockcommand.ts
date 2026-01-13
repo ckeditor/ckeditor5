@@ -7,9 +7,9 @@
  * @module restricted-editing/restrictededitingexceptionblockcommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
-import { first } from 'ckeditor5/src/utils.js';
-import type { ModelDocumentFragment, ModelElement, ModelPosition, ModelRange, ModelSchema, ModelWriter } from 'ckeditor5/src/engine.js';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { first } from '@ckeditor/ckeditor5-utils';
+import type { ModelDocumentFragment, ModelElement, ModelPosition, ModelRange, ModelSchema, ModelWriter } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The command that toggles exception blocks for the restricted editing.

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { FileRepository } from 'ckeditor5/src/upload.js';
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { ModelPosition } from 'ckeditor5/src/engine.js';
+import { FileRepository } from '@ckeditor/ckeditor5-upload';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import type { ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 import { type ImageUtils } from '../imageutils.js';
 

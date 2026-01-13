@@ -7,8 +7,8 @@
  * @module table/tablelayout/tablelayoutediting
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import type { ClipboardContentInsertionEvent, ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import type {
 	DowncastDispatcher,
 	UpcastDispatcher,
@@ -16,7 +16,7 @@ import type {
 	ViewElement,
 	ModelSchemaContext,
 	ModelWriter
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { InsertTableLayoutCommand } from './../commands/inserttablelayoutcommand.js';
 import { TableColumnResize } from '../tablecolumnresize.js';
@@ -252,10 +252,7 @@ function upcastLayoutTable( editor: Editor, preferredExternalTableType: TableTyp
 			conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
 
 			// Layout tables have no border, so it's equitable to consume the border="0" attribute.
-			if (
-				editor.config.get( 'experimentalFlags.upcastTableBorderZeroAttributes' ) &&
-				viewTable.getAttribute( 'border' ) === '0'
-			) {
+			if ( viewTable.getAttribute( 'border' ) === '0' ) {
 				conversionApi.consumable.consume( viewTable, { attributes: [ 'border' ] } );
 			}
 

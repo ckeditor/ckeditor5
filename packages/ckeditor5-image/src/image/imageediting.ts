@@ -7,7 +7,7 @@
  * @module image/image/imageediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ImageLoadObserver } from './imageloadobserver.js';
 import { InsertImageCommand } from './insertimagecommand.js';
 import { ReplaceImageSourceCommand } from './replaceimagesourcecommand.js';
