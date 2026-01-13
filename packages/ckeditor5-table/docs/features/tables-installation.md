@@ -65,6 +65,26 @@ Check the table with default headers applied to both the first row and the first
 
 {@snippet features/table-default-headings}
 
+### Enable table footers
+
+To enable table footers, set the optional table configuration property `useTfootElement` as follows:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		table: {
+			useTfootElement: true
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+The option also enables UI for table footers. You can set a footer row similarly to the header row by using the switch button in the table toolbar.
+
+{@img assets/img/table-footer.png 724 Table footer.}
+
 ### Disallow nesting tables
 
 By default, the editor allows nesting a table inside another table's cell.
