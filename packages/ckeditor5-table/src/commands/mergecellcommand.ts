@@ -220,7 +220,7 @@ function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirect
 	const isMergeUpWithHeadCell = direction == 'up' && rowIndex === headingRows;
 
 	const isMergeDownWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
-	const isMergeDownWithFootCell = direction == 'down' && rowIndex === footerIndex - 1;
+	const isMergeDownWithFootCell = direction == 'down' && ( rowIndex + rowspan ) === footerIndex;
 
 	// Don't search for mergeable cell if direction points out of the current table section.
 	if ( headingRows && ( isMergeDownWithBodyCell || isMergeUpWithHeadCell ) ) {

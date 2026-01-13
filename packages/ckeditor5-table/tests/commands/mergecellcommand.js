@@ -586,6 +586,16 @@ describe( 'MergeCellCommand', () => {
 					expect( command.isEnabled ).to.be.false;
 				} );
 
+				it( 'should be false when current cell spans into footer section', () => {
+					_setModelData( model, modelTable( [
+						[ { rowspan: 2, contents: '00[]' }, '01' ],
+						[ '11' ],
+						[ '20', '21' ]
+					], { footerRows: 1 } ) );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
 				it( 'should be true when merging within footer section', () => {
 					_setModelData( model, modelTable( [
 						[ '00', '01' ],
@@ -685,6 +695,25 @@ describe( 'MergeCellCommand', () => {
 					[ '12' ],
 					[ '21', '22' ]
 				], { headingRows: 2 } ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be undefined when current cell spans into footer section', () => {
+				_setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00[]' }, '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { footerRows: 1 } ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be undefined if mergeable cell is in footer section when current cell is colspanned', () => {
+				_setModelData( model, modelTable( [
+					[ { colspan: 2, contents: '00[]' } ],
+					[ '10', '11' ]
+				], { footerRows: 1 } ) );
 
 				expect( command.value ).to.be.undefined;
 			} );
