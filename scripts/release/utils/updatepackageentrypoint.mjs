@@ -34,7 +34,10 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		return;
 	}
 
-	const main = pkgJson.main.replace( /src\/index/, 'dist/index' ).replace( /\.ts$/, '.js' );
+	const main = pkgJson.main
+		.replace( './theme/theme.css', 'dist/index.css' ) // TODO this is just to test it the CI works.
+		.replace( /src\/index/, 'dist/index' )
+		.replace( /\.ts$/, '.js' );
 	const types = pkgJson.main.replace( /src\/index/, 'dist/index' ).replace( /\.ts$/, '.d.ts' );
 	const files = pkgJson.files || [];
 
