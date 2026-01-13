@@ -26,7 +26,10 @@ describe( 'TableElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, ClipboardPipeline ]
+				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, ClipboardPipeline ],
+				table: {
+					enableFooters: true
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;

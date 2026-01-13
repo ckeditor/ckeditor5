@@ -41,7 +41,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, BlockQuoteEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, BlockQuoteEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -148,7 +151,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, HeadingEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, HeadingEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -209,7 +215,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, HighlightEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, HighlightEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -296,7 +305,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, HtmlEmbedEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, HtmlEmbedEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -351,7 +363,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -443,7 +458,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, IndentEditing, IndentBlock ]
+					plugins: [ HtmlComment, Essentials, Paragraph, IndentEditing, IndentBlock ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -496,6 +514,9 @@ describe( 'HtmlComment integration', () => {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, ImageBlockEditing, ImageInlineEditing, LinkEditing, LinkImageEditing ],
+					table: {
+						enableFooters: true
+					},
 					link: {
 						addTargetToExternalLinks: true
 					}
@@ -603,7 +624,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListPropertiesEditing, TodoListEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListPropertiesEditing, TodoListEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -811,6 +835,9 @@ describe( 'HtmlComment integration', () => {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, MediaEmbedEditing ],
+					table: {
+						enableFooters: true
+					},
 					mediaEmbed: {
 						previewsInData: true,
 						providers: [
@@ -911,7 +938,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph ]
+					plugins: [ HtmlComment, Essentials, Paragraph ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -1003,7 +1033,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, SourceEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, SourceEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -1109,7 +1142,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, TableEditing, TableCaption ]
+					plugins: [ HtmlComment, Essentials, Paragraph, TableEditing, TableCaption ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -1409,7 +1445,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph ]
+					plugins: [ HtmlComment, Essentials, Paragraph ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
