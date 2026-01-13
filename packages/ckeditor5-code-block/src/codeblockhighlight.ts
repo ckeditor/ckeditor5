@@ -14,7 +14,8 @@ import type {
 	ViewDowncastWriter,
 	ModelElement,
 	ViewElement,
-	ViewText
+	ViewText,
+	ModelPosition
 } from 'ckeditor5/src/engine.js';
 
 import { common, createLowlight } from 'lowlight';
@@ -37,6 +38,12 @@ interface HighlightNode {
 
 /**
  * The code block highlight plugin.
+ *
+ * Strategy: LINE-LEVEL HIGHLIGHTING
+ * - Only re-highlights the current line being edited (where cursor is)
+ * - Other lines remain stable (no DOM changes)
+ * - Triggers on word boundaries (space, punctuation)
+ * - Full re-highlight on paste/initialization
  */
 export class CodeBlockHighlight extends Plugin {
 	/**
@@ -50,24 +57,19 @@ export class CodeBlockHighlight extends Plugin {
 	private _highlightedElements = new Set<ViewAttributeElement>();
 
 	/**
-	 * Flag to prevent infinite loops in post-fixer.
-	 */
-	private _isHighlighting = false;
-
-	/**
 	 * Last highlighted text per code block to avoid unnecessary re-highlighting.
 	 */
 	private _lastHighlightedText = new Map<ModelElement, string>();
 
 	/**
-	 * Flag to indicate if we're doing initial highlighting (to prevent cleanup)
+	 * Set of code blocks pending FULL highlighting in the next post-fixer run.
 	 */
-	private _isInitializing = false;
+	private _pendingFullHighlights = new Set<ModelElement>();
 
 	/**
-	 * Flag to enable cleanup listeners only after first user interaction
+	 * Map of code blocks to specific line numbers that need re-highlighting.
 	 */
-	private _cleanupEnabled = false;
+	private _pendingLineHighlights = new Map<ModelElement, Set<number>>();
 
 	/**
 	 * @inheritDoc
@@ -96,11 +98,14 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	public init(): void {
-		// DON'T register cleanup listeners yet - test if they're causing the issue
-		// this._registerCleanupListeners();
+		// Register view post-fixer for applying highlights at safe timing
+		this._registerViewPostFixer();
 
-		// Listen for changes in the model to schedule highlighting
+		// Listen for model changes to schedule highlighting
 		this._registerModelChangeListener();
+
+		// Register cleanup listeners to remove highlights before re-conversion
+		this._registerCleanupListeners();
 	}
 
 	/**
@@ -108,16 +113,9 @@ export class CodeBlockHighlight extends Plugin {
 	 */
 	private _getLowlightHighlight( language: string, code: string ): Array<HighlightNode> {
 		try {
-			// Call lowlight.highlight() with language and code
-			// Returns: { type: 'root', children: [...], data: { language, relevance } }
 			const result = this.lowlight.highlight( language, code );
-
-			// Return the children array which contains the highlighted nodes
-			// Cast to our HighlightNode type (lowlight's structure is compatible)
 			return ( result.children || [] ) as Array<HighlightNode>;
 		} catch {
-			// Language not supported or highlighting failed
-			// Return plain text without highlighting
 			return [ {
 				type: 'text',
 				value: code
@@ -126,84 +124,347 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
+	 * Register view post-fixer to apply syntax highlighting at safe timing.
+	 */
+	private _registerViewPostFixer(): void {
+		const view = this.editor.editing.view;
+		const mapper = this.editor.editing.mapper;
+
+		view.document.registerPostFixer( writer => {
+			let changed = false;
+
+			// Process FULL highlights first (initialization, paste, language change)
+			for ( const codeBlock of this._pendingFullHighlights ) {
+				const viewElement = mapper.toViewElement( codeBlock );
+				if ( !viewElement ) {
+					continue;
+				}
+
+				const codeElement = this._findCodeElement( viewElement );
+				if ( !codeElement ) {
+					continue;
+				}
+
+				// Get FULL code block text
+				const code = this._getTextFromModelElement( codeBlock );
+				const language = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
+
+				// Get highlights from lowlight with FULL context
+				const highlights = this._getLowlightHighlight( language, code );
+
+				// Clear all classes from existing spans
+				this._clearHighlightClasses( codeElement, writer );
+
+				// Apply new highlights to entire code block
+				this._applyHighlightsToViewElement( codeElement, highlights, writer );
+
+				// Remember what we highlighted
+				this._lastHighlightedText.set( codeBlock, code );
+
+				changed = true;
+			}
+
+			// Process LINE-LEVEL highlights (typing)
+			for ( const [ codeBlock, lineNumbers ] of this._pendingLineHighlights.entries() ) {
+				const viewElement = mapper.toViewElement( codeBlock );
+				if ( !viewElement ) {
+					continue;
+				}
+
+				const codeElement = this._findCodeElement( viewElement );
+				if ( !codeElement ) {
+					continue;
+				}
+
+				// Get FULL code block text (lowlight needs context)
+				const fullCode = this._getTextFromModelElement( codeBlock );
+				const language = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
+
+				// Get highlights from lowlight with FULL context
+				const fullHighlights = this._getLowlightHighlight( language, fullCode );
+
+				// Apply highlights ONLY to the specified lines
+				for ( const lineNumber of lineNumbers ) {
+					this._highlightSpecificLine( codeElement, fullCode, fullHighlights, lineNumber, writer );
+				}
+
+				changed = true;
+			}
+
+			// Clear pending highlights after processing
+			this._pendingFullHighlights.clear();
+			this._pendingLineHighlights.clear();
+
+			return changed;
+		} );
+	}
+
+	/**
 	 * Register listener for model document changes.
 	 */
 	private _registerModelChangeListener(): void {
 		const model = this.editor.model;
 
-		// Listen for content changes (typing, paste, etc.)
 		this.listenTo( model.document, 'change:data', () => {
 			const selection = model.document.selection;
 			const position = selection.getFirstPosition();
+			const changes = model.document.differ.getChanges();
 
-			if ( !position || !position.parent.is( 'element', 'codeBlock' ) ) {
+			// Check for inserted code blocks (paste, undo, language change)
+			let hasInsertedCodeBlock = false;
+			for ( const change of changes ) {
+				if ( change.type === 'insert' ) {
+					const item = change.position.nodeAfter;
+					if ( item && item.is( 'element', 'codeBlock' ) ) {
+						// Full highlight for new code blocks
+						this._pendingFullHighlights.add( item );
+						hasInsertedCodeBlock = true;
+					}
+				}
+			}
+
+			// If code blocks were inserted, trigger immediate highlight
+			if ( hasInsertedCodeBlock ) {
+				this.editor.editing.view.forceRender();
 				return;
 			}
 
-			const codeBlock = position.parent as ModelElement;
+			// For typing in code blocks: line-level highlighting on word boundaries
+			if ( position && position.parent.is( 'element', 'codeBlock' ) ) {
+				const codeBlock = position.parent as ModelElement;
+				const currentText = this._getTextFromModelElement( codeBlock );
+				const lastText = this._lastHighlightedText.get( codeBlock );
 
-			// Check if we should highlight immediately based on what was typed
-			if ( this._shouldHighlightImmediately( codeBlock ) ) {
-				// Use requestAnimationFrame to avoid blocking the typing
-				requestAnimationFrame( () => {
-					this._highlightCodeBlock( codeBlock );
-				} );
-			}
-		} );
+				// Check if we should highlight (word boundary detection)
+				if ( currentText !== lastText && this._shouldHighlightAfterTyping( currentText ) ) {
+					// Get the line number where cursor is
+					const lineNumber = this._getLineNumberAtPosition( position );
 
-		// Listen for codeBlock insertions (including language changes)
-		this.listenTo( model.document, 'change:data', () => {
-			// Check if any codeBlock was inserted
-			const changes = model.document.differ.getChanges();
-
-			for ( const change of changes ) {
-				if ( change.type === 'insert' ) {
-					// Check if the inserted element is a codeBlock
-					const item = change.position.nodeAfter;
-					if ( item && item.is( 'element', 'codeBlock' ) ) {
-						// Highlight the newly inserted code block
-						setTimeout( () => this._highlightCodeBlock( item ) );
+					// Schedule line-level highlight
+					if ( !this._pendingLineHighlights.has( codeBlock ) ) {
+						this._pendingLineHighlights.set( codeBlock, new Set() );
 					}
+					this._pendingLineHighlights.get( codeBlock )!.add( lineNumber );
+
+					// Update last highlighted text
+					this._lastHighlightedText.set( codeBlock, currentText );
+
+					// Trigger view render
+					this.editor.editing.view.forceRender();
 				}
 			}
 		} );
 	}
 
 	/**
-	 * Determine if we should highlight immediately based on the current context.
+	 * Determine if we should highlight after typing.
+	 * Triggers on word boundaries: space, punctuation, etc.
 	 */
-	private _shouldHighlightImmediately( codeBlock: ModelElement ): boolean {
-		// Check if content has changed
-		const currentText = this._getTextFromModelElement( codeBlock );
-		const lastText = this._lastHighlightedText.get( codeBlock );
-
-		// Always highlight if this is the first time or content changed significantly (paste, delete)
-		if ( !lastText ) {
-			return true;
-		}
-
-		// Don't highlight if text hasn't changed (e.g., cursor movement)
-		if ( currentText === lastText ) {
+	private _shouldHighlightAfterTyping( text: string ): boolean {
+		if ( text.length === 0 ) {
 			return false;
 		}
 
-		// Don't highlight if content changed significantly (will be handled by paste/undo)
-		if ( Math.abs( currentText.length - lastText.length ) > 1 ) {
-			return true;
-		}
+		const lastChar = text[ text.length - 1 ];
+		const wordBoundaries = /[\s.,;:!?(){}[\]<>=+\-*/%&|^~`'"\\]/;
 
-		// Only highlight when a word boundary character was just typed
-		// Check the last character of the entire text
-		if ( currentText.length > 0 ) {
-			const lastCharInText = currentText[ currentText.length - 1 ];
-			const wordBoundaries = /[\s.,;:!?(){}[\]<>=+\-*/%&|^~`'"]/;
+		return wordBoundaries.test( lastChar );
+	}
 
-			if ( wordBoundaries.test( lastCharInText ) ) {
-				return true;
+	/**
+	 * Get the line number (0-based) at the given position in a code block.
+	 */
+	private _getLineNumberAtPosition( position: ModelPosition ): number {
+		const codeBlock = position.parent as ModelElement;
+		let lineNumber = 0;
+		let offsetSoFar = 0;
+
+		for ( const child of codeBlock.getChildren() ) {
+			if ( child.is( 'element', 'softBreak' ) ) {
+				if ( offsetSoFar < position.offset ) {
+					lineNumber++;
+				}
+				offsetSoFar++;
+			} else if ( child.is( '$text' ) ) {
+				offsetSoFar += child.data.length;
 			}
 		}
 
-		return false;
+		return lineNumber;
+	}
+
+	/**
+	 * Highlight a specific line in the code block.
+	 *
+	 * Strategy:
+	 * 1. Get line boundaries (start/end offsets)
+	 * 2. Extract highlights for that line from full lowlight output
+	 * 3. Only modify spans within that line
+	 */
+	private _highlightSpecificLine(
+		codeElement: ViewElement,
+		fullCode: string,
+		fullHighlights: Array<HighlightNode>,
+		lineNumber: number,
+		writer: ViewDowncastWriter
+	): void {
+		// Split full code into lines
+		const lines = fullCode.split( '\n' );
+		if ( lineNumber >= lines.length ) {
+			return;
+		}
+
+		// Calculate character offsets for this line
+		let lineStartOffset = 0;
+		for ( let i = 0; i < lineNumber; i++ ) {
+			lineStartOffset += lines[ i ].length + 1; // +1 for newline
+		}
+		const lineEndOffset = lineStartOffset + lines[ lineNumber ].length;
+
+		// Find view text nodes for this line
+		const lineTextNodes = this._getTextNodesInRange( codeElement, lineStartOffset, lineEndOffset );
+
+		// Clear classes from spans in this line only
+		for ( const { parent } of lineTextNodes ) {
+			if ( parent.is( 'attributeElement' ) && parent.hasAttribute( 'class' ) ) {
+				writer.removeAttribute( 'class', parent );
+			}
+		}
+
+		// Extract highlight segments for this line from full highlights
+		const lineHighlights = this._extractHighlightsForRange( fullHighlights, lineStartOffset, lineEndOffset );
+
+		// Apply highlights to this line
+		this._applyHighlightsToRange( lineTextNodes, lineHighlights, lineStartOffset, writer );
+	}
+
+	/**
+	 * Get text nodes within a specific character range.
+	 */
+	private _getTextNodesInRange(
+		element: ViewElement,
+		rangeStart: number,
+		rangeEnd: number
+	): Array<{ node: ViewText; start: number; end: number; parent: ViewElement | ViewAttributeElement }> {
+		const textNodes: Array<{ node: ViewText; start: number; end: number; parent: ViewElement | ViewAttributeElement }> = [];
+		let currentOffset = 0;
+
+		const collectTextNodes = ( el: ViewElement | ViewAttributeElement ) => {
+			for ( const child of el.getChildren() ) {
+				if ( child.is( '$text' ) ) {
+					const nodeLength = child.data.length;
+					const nodeStart = currentOffset;
+					const nodeEnd = currentOffset + nodeLength;
+
+					// Check if this text node overlaps with our range
+					if ( nodeStart < rangeEnd && nodeEnd > rangeStart ) {
+						textNodes.push( {
+							node: child,
+							start: nodeStart,
+							end: nodeEnd,
+							parent: el
+						} );
+					}
+
+					currentOffset += nodeLength;
+				} else if ( child.is( 'element', 'br' ) ) {
+					currentOffset += 1;
+				} else if ( child.is( 'attributeElement' ) ) {
+					collectTextNodes( child );
+				}
+			}
+		};
+
+		collectTextNodes( element );
+		return textNodes;
+	}
+
+	/**
+	 * Extract highlight segments that fall within a specific character range.
+	 */
+	private _extractHighlightsForRange(
+		highlights: Array<HighlightNode>,
+		rangeStart: number,
+		rangeEnd: number
+	): Array<{ start: number; end: number; className: string }> {
+		const segments: Array<{ start: number; end: number; className: string }> = [];
+		let charPosition = 0;
+
+		for ( const highlight of highlights ) {
+			if ( highlight.type === 'text' && highlight.value ) {
+				charPosition += highlight.value.length;
+			} else if ( highlight.type === 'element' && highlight.children ) {
+				const textValue = this._extractTextFromHighlightNode( highlight );
+				const segStart = charPosition;
+				const segEnd = charPosition + textValue.length;
+
+				// Check if this segment overlaps with our range
+				if ( segStart < rangeEnd && segEnd > rangeStart ) {
+					const className = highlight.properties?.className?.join( ' ' ) || '';
+					segments.push( {
+						start: Math.max( segStart, rangeStart ),
+						end: Math.min( segEnd, rangeEnd ),
+						className
+					} );
+				}
+
+				charPosition += textValue.length;
+			}
+		}
+
+		return segments;
+	}
+
+	/**
+	 * Apply highlight segments to text nodes in a specific range.
+	 */
+	private _applyHighlightsToRange(
+		textNodes: Array<{ node: ViewText; start: number; end: number; parent: ViewElement | ViewAttributeElement }>,
+		segments: Array<{ start: number; end: number; className: string }>,
+		rangeStart: number,
+		writer: ViewDowncastWriter
+	): void {
+		// Process segments in reverse order
+		for ( let i = segments.length - 1; i >= 0; i-- ) {
+			const segment = segments[ i ];
+
+			// Find text nodes that overlap with this segment
+			const affectedNodes = textNodes.filter( node =>
+				node.start < segment.end && node.end > segment.start
+			);
+
+			// Process nodes in reverse order
+			for ( let j = affectedNodes.length - 1; j >= 0; j-- ) {
+				const nodeInfo = affectedNodes[ j ];
+
+				// Check if already wrapped in span
+				if ( nodeInfo.parent.is( 'attributeElement' ) ) {
+					// Reuse span - just update classes
+					if ( segment.className ) {
+						writer.setAttribute( 'class', segment.className, nodeInfo.parent );
+						this._highlightedElements.add( nodeInfo.parent );
+					}
+				} else {
+					// Need to wrap - calculate relative positions
+					const relativeStart = Math.max( 0, segment.start - nodeInfo.start );
+					const relativeEnd = Math.min( nodeInfo.node.data.length, segment.end - nodeInfo.start );
+
+					if ( relativeStart < relativeEnd ) {
+						try {
+							const startPosition = writer.createPositionAt( nodeInfo.node, relativeStart );
+							const endPosition = writer.createPositionAt( nodeInfo.node, relativeEnd );
+							const range = writer.createRange( startPosition, endPosition );
+
+							const attributeElement = writer.createAttributeElement( 'span', { class: segment.className } );
+							writer.wrap( range, attributeElement );
+							this._highlightedElements.add( attributeElement );
+						} catch {
+							// Skip if wrapping fails
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -222,231 +483,47 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Highlight a single code block.
+	 * Clear all classes from existing highlight spans.
 	 */
-	private _highlightCodeBlock( codeBlock: ModelElement ): void {
-		if ( this._isHighlighting ) {
-			return;
-		}
+	private _clearHighlightClasses( viewElement: ViewElement, writer: ViewDowncastWriter ): void {
+		const attributeElements: Array<ViewAttributeElement> = [];
 
-		this._isHighlighting = true;
-
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const mapper = editor.editing.mapper;
-		const model = editor.model;
-
-		// Save the current model selection position
-		const modelSelection = model.document.selection;
-		const modelPosition = modelSelection.getFirstPosition();
-		let savedOffset: number | null = null;
-		let isInThisCodeBlock = false;
-
-		// Check if selection is in this code block and save offset
-		if ( modelPosition && modelPosition.parent === codeBlock ) {
-			savedOffset = modelPosition.offset;
-			isInThisCodeBlock = true;
-		}
-
-		view.change( writer => {
-			// Get the view element for this code block (the <code> element)
-			const viewCodeElement = mapper.toViewElement( codeBlock );
-			if ( !viewCodeElement ) {
-				this._isHighlighting = false;
-				return;
-			}
-
-			// Find the actual <code> element
-			const codeElement = this._findCodeElement( viewCodeElement );
-			if ( !codeElement ) {
-				this._isHighlighting = false;
-				return;
-			}
-
-			// Get all text content from the view element
-			const text = this._getTextFromViewElement( codeElement );
-
-			// Store the text we're highlighting
-			this._lastHighlightedText.set( codeBlock, text );
-
-			// Clear existing highlights in the entire code block
-			this._clearHighlightsInViewElement( codeElement, writer );
-
-			// Get the language attribute from the code block model
-			const language = codeBlock.getAttribute( 'language' ) as string || 'plaintext';
-
-			// Get highlights using lowlight with the specified language
-			const highlights = this._getLowlightHighlight( language, text );
-
-			// Apply highlights
-			this._applyHighlightsToViewElement( codeElement, highlights, writer );
-		} );
-
-		// Restore the selection position in the model after a brief delay
-		// This ensures the view has been updated before we restore the selection
-		if ( isInThisCodeBlock && savedOffset !== null ) {
-			const offsetToRestore = savedOffset; // Capture non-null value for closure
-			setTimeout( () => {
-				model.change( writer => {
-					const newPosition = writer.createPositionAt( codeBlock, offsetToRestore );
-					writer.setSelection( newPosition );
-				} );
-			}, 0 );
-		}
-
-		this._isHighlighting = false;
-	}
-
-	/**
-	 * Get text content from a view element.
-	 */
-	private _getTextFromViewElement( element: ViewElement ): string {
-		let text = '';
-		for ( const child of element.getChildren() ) {
-			if ( child.is( '$text' ) ) {
-				text += child.data;
-			} else if ( child.is( 'element', 'br' ) ) {
-				text += '\n';
-			} else if ( child.is( 'element' ) ) {
-				// Recursively get text from child elements (for existing highlights)
-				text += this._getTextFromViewElement( child );
-			}
-		}
-		return text;
-	}
-
-	/**
-	 * Clear all highlights in a view element.
-	 */
-	private _clearHighlightsInViewElement( viewElement: ViewElement, writer: ViewDowncastWriter ): void {
-		const elementsToRemove: Array<ViewAttributeElement> = [];
-
-		// Collect all highlighted elements
-		for ( const item of this._highlightedElements ) {
-			// Check if this element is a descendant of the viewElement
-			let parent = item.parent;
-			while ( parent ) {
-				if ( parent === viewElement ) {
-					elementsToRemove.push( item );
-					break;
+		const collectAttributeElements = ( element: ViewElement | ViewAttributeElement ) => {
+			for ( const child of element.getChildren() ) {
+				if ( child.is( 'attributeElement' ) ) {
+					attributeElements.push( child );
+					collectAttributeElements( child );
+				} else if ( child.is( 'element' ) && child.name !== 'br' ) {
+					collectAttributeElements( child );
 				}
-				parent = parent.parent;
 			}
-		}
+		};
 
-		// Remove highlights
-		for ( const element of elementsToRemove ) {
-			try {
-				writer.unwrap( writer.createRangeOn( element ), element );
-				this._highlightedElements.delete( element );
-			} catch {
-				// Element might already be removed or invalid
-				this._highlightedElements.delete( element );
+		collectAttributeElements( viewElement );
+
+		for ( const element of attributeElements ) {
+			if ( element.hasAttribute( 'class' ) ) {
+				writer.removeAttribute( 'class', element );
 			}
 		}
 	}
 
 	/**
-	 * Apply highlights to a view element.
+	 * Apply highlights to entire view element (full highlight).
 	 */
 	private _applyHighlightsToViewElement(
 		codeElement: ViewElement,
 		highlights: Array<HighlightNode>,
 		writer: ViewDowncastWriter
 	): void {
-		// Build a flat list of text nodes and their positions
-		const textNodes: Array<{ node: ViewText; start: number; end: number }> = [];
-		let currentOffset = 0;
+		// Get all text nodes
+		const textNodes = this._getTextNodesInRange( codeElement, 0, Number.MAX_SAFE_INTEGER );
 
-		const collectTextNodes = ( element: ViewElement | ViewAttributeElement ) => {
-			for ( const child of element.getChildren() ) {
-				if ( child.is( '$text' ) ) {
-					const nodeLength = child.data.length;
-					textNodes.push( {
-						node: child,
-						start: currentOffset,
-						end: currentOffset + nodeLength
-					} );
-					currentOffset += nodeLength;
-				} else if ( child.is( 'element', 'br' ) ) {
-					// Treat <br> as newline character
-					currentOffset += 1;
-				} else if ( child.is( 'element' ) || child.is( 'attributeElement' ) ) {
-					// Recursively collect from child elements
-					// BUT don't collect from old highlight spans - they should have been cleared
-					collectTextNodes( child );
-				}
-			}
-		};
+		// Extract all highlight segments
+		const segments = this._extractHighlightsForRange( highlights, 0, Number.MAX_SAFE_INTEGER );
 
-		collectTextNodes( codeElement );
-
-		// Build a list of segments to highlight with their positions
-		interface SegmentToHighlight {
-			start: number;
-			end: number;
-			className: string;
-			tagName: string;
-		}
-		const segmentsToHighlight: Array<SegmentToHighlight> = [];
-
-		let charPosition = 0;
-		for ( const highlight of highlights ) {
-			if ( highlight.type === 'text' && highlight.value ) {
-				charPosition += highlight.value.length;
-			} else if ( highlight.type === 'element' && highlight.children ) {
-				const textValue = this._extractTextFromHighlightNode( highlight );
-				const startPos = charPosition;
-				const endPos = charPosition + textValue.length;
-
-				const className = highlight.properties?.className?.join( ' ' ) || '';
-				segmentsToHighlight.push( {
-					start: startPos,
-					end: endPos,
-					className,
-					tagName: highlight.tagName || 'span'
-				} );
-
-				charPosition += textValue.length;
-			}
-		}
-
-		// IMPORTANT: Wrap in REVERSE order (from end to start)
-		// This prevents earlier wraps from invalidating text node references for later wraps
-		for ( let i = segmentsToHighlight.length - 1; i >= 0; i-- ) {
-			const segment = segmentsToHighlight[ i ];
-
-			// Find text nodes that contain this range
-			const affectedNodes = textNodes.filter( node =>
-				node.start < segment.end && node.end > segment.start
-			);
-
-			// Wrap the text in these nodes (also in reverse order)
-			for ( let j = affectedNodes.length - 1; j >= 0; j-- ) {
-				const nodeInfo = affectedNodes[ j ];
-				const relativeStart = Math.max( 0, segment.start - nodeInfo.start );
-				const relativeEnd = Math.min( nodeInfo.node.data.length, segment.end - nodeInfo.start );
-
-				if ( relativeStart < relativeEnd && relativeStart < nodeInfo.node.data.length ) {
-					try {
-						const startPosition = writer.createPositionAt( nodeInfo.node, relativeStart );
-						const endPosition = writer.createPositionAt( nodeInfo.node, relativeEnd );
-						const range = writer.createRange( startPosition, endPosition );
-
-						const attributeElement = writer.createAttributeElement(
-							segment.tagName,
-							{ class: segment.className }
-						);
-
-						writer.wrap( range, attributeElement );
-						this._highlightedElements.add( attributeElement );
-					} catch ( error ) {
-						// Skip if wrapping fails
-						console.warn( 'Failed to wrap text node:', error );
-					}
-				}
-			}
-		}
+		// Apply highlights
+		this._applyHighlightsToRange( textNodes, segments, 0, writer );
 	}
 
 	/**
@@ -466,8 +543,6 @@ export class CodeBlockHighlight extends Plugin {
 	 * Find the <code> element inside a <pre> element.
 	 */
 	private _findCodeElement( element: ViewElement ): ViewElement | null {
-		// The structure is <pre><code>...</code></pre>
-		// The viewElement might be the <code> itself or we need to find it
 		if ( element.name === 'code' ) {
 			return element;
 		}
@@ -490,16 +565,6 @@ export class CodeBlockHighlight extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
 			const removeHighlights = () => {
-				// Don't cleanup if not enabled yet
-				if ( !this._cleanupEnabled ) {
-					return;
-				}
-
-				// Don't cleanup during highlighting or initialization
-				if ( this._isHighlighting || this._isInitializing ) {
-					return;
-				}
-
 				view.change( writer => {
 					const elementsArray = Array.from( this._highlightedElements );
 					for ( const element of elementsArray ) {
@@ -507,7 +572,6 @@ export class CodeBlockHighlight extends Plugin {
 							writer.unwrap( writer.createRangeOn( element ), element );
 							this._highlightedElements.delete( element );
 						} catch {
-							// Element might already be removed
 							this._highlightedElements.delete( element );
 						}
 					}
@@ -520,4 +584,3 @@ export class CodeBlockHighlight extends Plugin {
 		} );
 	}
 }
-
