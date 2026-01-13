@@ -40,7 +40,7 @@ import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer
 import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
 import { injectTableStructurePostFixer } from './converters/table-structure-post-fixer.js';
 
-import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
+import { tableStructureRefreshHandler } from './converters/table-structure-handler.js';
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 import { isTableCellTypeEnabled } from './utils/common.js';
 
@@ -245,7 +245,7 @@ export class TableEditing extends Plugin {
 			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
 			// It's because headings rows / columns are updated based on cell types which triggers their own refresh handler.
 			if ( !isTableCellTypeEnabled( editor ) ) {
-				tableHeadingsRefreshHandler( model, editor.editing, tableUtils );
+				tableStructureRefreshHandler( model, editor.editing, tableUtils );
 			}
 
 			tableCellRefreshHandler( model, editor.editing );

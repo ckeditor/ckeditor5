@@ -26,7 +26,7 @@ import { TableWalker } from '../tablewalker.js';
  *
  * @internal
  */
-export function tableHeadingsRefreshHandler( model: Model, editing: EditingController, tableUtils: TableUtils ): void {
+export function tableStructureRefreshHandler( model: Model, editing: EditingController, tableUtils: TableUtils ): void {
 	const differ = model.document.differ;
 	const rowsToReconvert = new Set<ModelElement>();
 	const cellsToReconvert = new Set<ModelElement>();
