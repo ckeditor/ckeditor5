@@ -11,6 +11,11 @@
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
+  "engines": {
+    "node": ">=24.11.0",
+    "pnpm": ">=10.17.0",
+    "yarn": "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -28,11 +33,6 @@
     "real-time",
     "framework"
   ],
-  "engines": {
-    "node": ">=24.11.0",
-    "pnpm": ">=10.17.0",
-    "yarn": "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"
-  },
   "devDependencies": {
     "@babel/parser": "^7.23.3",
     "@ckeditor/ckeditor5-dev-build-tools": "^54.3.0",
