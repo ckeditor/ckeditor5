@@ -222,7 +222,7 @@ export class TableUtils extends Plugin {
 			}
 
 			// Inserting rows inside footer section requires to update `footerRows` attribute as the footer section will grow.
-			if ( insertAt > rows - footerRows ) {
+			if ( footerRows && insertAt > rows - footerRows ) {
 				footerRows += rowsToInsert;
 			}
 
@@ -386,8 +386,6 @@ export class TableUtils extends Plugin {
 
 					rowIndex++;
 				}
-
-				return;
 			} else {
 				const tableWalker = new TableWalker( table, { column: insertAt, includeAllSlots: true } );
 
