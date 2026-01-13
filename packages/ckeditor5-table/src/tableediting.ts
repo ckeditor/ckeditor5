@@ -98,15 +98,14 @@ export class TableEditing extends Plugin {
 		editor.config.define( 'table.enableFooters', false );
 
 		const areTableFootersEnabled = !!editor.config.get( 'table.enableFooters' );
-		const upcastTableAttributes: Array<string> = [ 'headingRows', 'headingColumns' ];
-
-		if ( areTableFootersEnabled ) {
-			upcastTableAttributes.push( 'footerRows' );
-		}
 
 		schema.register( 'table', {
 			inheritAllFrom: '$blockObject',
-			allowAttributes: upcastTableAttributes
+			allowAttributes: [
+				'headingRows',
+				'headingColumns',
+				...areTableFootersEnabled ? [ 'footerRows' ] : []
+			]
 		} );
 
 		schema.register( 'tableRow', {
@@ -128,16 +127,13 @@ export class TableEditing extends Plugin {
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable( { enableFooters: areTableFootersEnabled } ) );
 
-		const downcastTableAttributes = [ 'headingRows' ];
-
-		if ( areTableFootersEnabled ) {
-			downcastTableAttributes.push( 'footerRows' );
-		}
-
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: downcastTableAttributes
+				attributes: [
+					'headingRows',
+					...areTableFootersEnabled ? [ 'footerRows' ] : []
+				]
 			},
 			view: downcastTable( tableUtils, {
 				asWidget: true,
@@ -147,7 +143,10 @@ export class TableEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: downcastTableAttributes
+				attributes: [
+					'headingRows',
+					...areTableFootersEnabled ? [ 'footerRows' ] : []
+				]
 			},
 			view: downcastTable( tableUtils, {
 				additionalSlots: this._additionalSlots
