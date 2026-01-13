@@ -1015,11 +1015,17 @@ export class TableUtils extends Plugin {
 	 * * If number of footer rows is greater than the number of rows in the table, it will be truncated to the number of rows.
 	 * * If footer rows and heading rows overlap, the number of heading rows will be adjusted
 	 *
+	 * It'll have no effect if {@link module:table/tableconfig~TableConfig#enableFooters `table.enableFooters`} is set to `false`.
+	 *
 	 * @param writer The model writer.
 	 * @param table The table model element.
 	 * @param footerRows The number of footer rows to set.
 	 */
 	public setFooterRowsCount( writer: ModelWriter, table: ModelElement, footerRows: number ): void {
+		if ( !this.editor.config.get( 'table.enableFooters' ) ) {
+			return;
+		}
+
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const totalRows = this.getRows( table );
 

@@ -26,7 +26,10 @@ describe( 'TableUtils', () => {
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableEditing, TableUtils, TableColumnResize ]
+			plugins: [ Paragraph, TableEditing, TableUtils, TableColumnResize ],
+			table: {
+				enableFooters: true
+			}
 		} );
 
 		model = editor.model;
@@ -2824,7 +2827,10 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
+			plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ],
+			table: {
+				enableFooters: true
+			}
 		} );
 
 		model = editor.model;

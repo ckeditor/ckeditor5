@@ -65,7 +65,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.false;
 
 		// Table row:
 		expect( model.schema.isRegistered( 'tableRow' ) ).to.be.true;
@@ -206,11 +206,15 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'setTableRowHeader' ) ).to.be.instanceOf( SetHeaderRowCommand );
 	} );
 
-	it( 'adds setFooterRow command', () => {
-		expect( editor.commands.get( 'setTableFooterRow' ) ).to.be.instanceOf( SetFooterRowCommand );
+	it( 'does not add setFooterRow command by default', () => {
+		expect( editor.commands.get( 'setTableFooterRow' ) ).to.be.undefined;
 	} );
 
 	describe( 'config', () => {
+		it( 'disables table footers by default', () => {
+			expect( editor.config.get( 'table.enableFooters' ) ).to.be.false;
+		} );
+
 		it( 'sets proper default heading rows and columns', () => {
 			expect( editor.config.get( 'table.defaultHeadings.rows' ) ).to.equal( 0 );
 			expect( editor.config.get( 'table.defaultHeadings.columns' ) ).to.equal( 0 );
@@ -218,6 +222,36 @@ describe( 'TableEditing', () => {
 
 		it( 'sets proper default footer rows', () => {
 			expect( editor.config.get( 'table.defaultFooters.rows' ) ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'when footers are enabled', () => {
+		let footerEditor, footerModel;
+
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ TableEditing, Paragraph, ImageBlockEditing, MediaEmbedEditing ],
+					table: {
+						enableFooters: true
+					}
+				} )
+				.then( newEditor => {
+					footerEditor = newEditor;
+					footerModel = newEditor.model;
+				} );
+		} );
+
+		afterEach( async () => {
+			await footerEditor.destroy();
+		} );
+
+		it( 'allows footerRows table attribute', () => {
+			expect( footerModel.schema.checkAttribute( [ '$root', 'table' ], 'footerRows' ) ).to.be.true;
+		} );
+
+		it( 'adds setFooterRow command', () => {
+			expect( footerEditor.commands.get( 'setTableFooterRow' ) ).to.be.instanceOf( SetFooterRowCommand );
 		} );
 	} );
 

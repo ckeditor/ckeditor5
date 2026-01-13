@@ -24,6 +24,66 @@ describe( 'TableUI', () => {
 		addTranslations( 'pl', {} );
 	} );
 
+	describe( 'tableRow dropdown (footers enabled)', () => {
+		let dropdown, footerEditor, footerElement;
+
+		beforeEach( () => {
+			footerElement = document.createElement( 'div' );
+			document.body.appendChild( footerElement );
+
+			return ClassicTestEditor
+				.create( footerElement, {
+					plugins: [ TableEditing, TableUI, Paragraph ],
+					table: {
+						enableFooters: true
+					}
+				} )
+				.then( newEditor => {
+					footerEditor = newEditor;
+					dropdown = footerEditor.ui.componentFactory.create( 'tableRow' );
+
+					dropdown.render();
+					document.body.appendChild( dropdown.element );
+				} );
+		} );
+
+		afterEach( () => {
+			dropdown.element.remove();
+			footerElement.remove();
+
+			return footerEditor.destroy();
+		} );
+
+		it( 'should show footer row toggle', () => {
+			dropdown.isOpen = true;
+
+			const labels = dropdown.listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
+
+			expect( labels ).to.deep.equal( [
+				'Header row',
+				'Footer row',
+				'|',
+				'Insert row above',
+				'Insert row below',
+				'Delete row',
+				'Select row'
+			] );
+		} );
+
+		it( 'should bind footer toggle to footer command', () => {
+			dropdown.isOpen = true;
+
+			const items = dropdown.listView.items;
+			const footerCommand = footerEditor.commands.get( 'setTableFooterRow' );
+
+			footerCommand.isEnabled = true;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+
+			footerCommand.isEnabled = false;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+		} );
+	} );
+
 	after( () => {
 		_clearTranslations();
 	} );
@@ -252,7 +312,6 @@ describe( 'TableUI', () => {
 
 			expect( labels ).to.deep.equal( [
 				'Header row',
-				'Footer row',
 				'|',
 				'Insert row above',
 				'Insert row below',
@@ -267,25 +326,22 @@ describe( 'TableUI', () => {
 			const items = dropdown.listView.items;
 
 			const setRowHeaderCommand = editor.commands.get( 'setTableRowHeader' );
-			const setTableFooterRowCommand = editor.commands.get( 'setTableFooterRow' );
 			const insertRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
 			const insertRowAboveCommand = editor.commands.get( 'insertTableRowAbove' );
 			const removeRowCommand = editor.commands.get( 'removeTableRow' );
 			const selectRowCommand = editor.commands.get( 'selectTableRow' );
 
 			setRowHeaderCommand.isEnabled = true;
-			setTableFooterRowCommand.isEnabled = true;
 			insertRowBelowCommand.isEnabled = true;
 			insertRowAboveCommand.isEnabled = true;
 			removeRowCommand.isEnabled = true;
 			selectRowCommand.isEnabled = true;
 
 			expect( items.first.children.first.isEnabled ).to.be.true;
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 6 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setRowHeaderCommand.isEnabled = false;
@@ -293,28 +349,23 @@ describe( 'TableUI', () => {
 			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			setTableFooterRowCommand.isEnabled = false;
-
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
-
 			insertRowAboveCommand.isEnabled = false;
 
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertRowBelowCommand.isEnabled = false;
-			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			removeRowCommand.isEnabled = false;
 
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			selectRowCommand.isEnabled = false;
 
-			expect( items.get( 6 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 

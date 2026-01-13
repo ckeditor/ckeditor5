@@ -18,7 +18,10 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return ClassicTestEditor
 			.create( '', {
-				plugins: [ TableEditing, Paragraph, ImageBlockEditing, Widget ]
+				plugins: [ TableEditing, Paragraph, ImageBlockEditing, Widget ],
+				table: {
+					enableFooters: true
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;

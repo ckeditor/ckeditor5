@@ -61,10 +61,21 @@ export interface TableConfig {
 	 * ```
 	 *
 	 * The rows property is optional, defaulting to 0 (no footer).
+	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
 	 */
 	defaultFooters?: {
 		rows?: number;
 	};
+
+	/**
+	 * Enables support for table footers (`<tfoot>`).
+	 *
+	 * When set to `true`, the editor will register the `footerRows` table attribute and upcast footer rows from the data.
+	 * When set to `false` (default), footer rows are ignored and the footer toggle is hidden in the table row dropdown.
+	 *
+	 * @default false
+	 */
+	enableFooters?: boolean;
 
 	/**
 	 * Items to be placed in the table content toolbar.

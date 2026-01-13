@@ -18,7 +18,10 @@ describe( 'InsertTableCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing ]
+				plugins: [ Paragraph, TableEditing ],
+				table: {
+					enableFooters: true
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -360,6 +363,32 @@ describe( 'InsertTableCommand', () => {
 		} );
 
 		describe( 'auto footers', () => {
+			it( 'should ignore footer rows option when footers are disabled', async () => {
+				const editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							enableFooters: false
+						}
+					} );
+
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
+
+				_setModelData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 2, footerRows: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					modelTable( [
+						[ '', '' ],
+						[ '', '' ]
+					] )
+				);
+
+				await editor.destroy();
+			} );
+
 			it( 'should insert table with given footer rows after non-empty paragraph', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -380,6 +409,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
+							enableFooters: true,
 							defaultFooters: { rows: 1 }
 						}
 					} );
@@ -406,6 +436,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
+							enableFooters: true,
 							defaultFooters: { rows: 3 }
 						}
 					} );
@@ -432,6 +463,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
+							enableFooters: true,
 							defaultHeadings: { rows: 2 },
 							defaultFooters: { rows: 2 }
 						}

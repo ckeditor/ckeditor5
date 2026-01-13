@@ -5033,7 +5033,10 @@ describe( 'table clipboard', () => {
 
 	async function createEditor( extraPlugins = [] ) {
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, ...extraPlugins ]
+			plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, ...extraPlugins ],
+			table: {
+				enableFooters: true
+			}
 		} );
 
 		model = editor.model;

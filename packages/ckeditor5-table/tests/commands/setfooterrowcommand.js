@@ -19,7 +19,10 @@ describe( 'SetFooterRowCommand', () => {
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableEditing, TableSelection ]
+			plugins: [ Paragraph, TableEditing, TableSelection ],
+			table: {
+				enableFooters: true
+			}
 		} );
 
 		model = editor.model;
@@ -76,7 +79,10 @@ describe( 'SetFooterRowCommand', () => {
 
 			beforeEach( async () => {
 				editor = await ModelTestEditor.create( {
-					plugins: [ Paragraph, TableEditing, TableSelection, TableLayoutEditing ]
+					plugins: [ Paragraph, TableEditing, TableSelection, TableLayoutEditing ],
+					table: {
+						enableFooters: true
+					}
 				} );
 
 				model = editor.model;

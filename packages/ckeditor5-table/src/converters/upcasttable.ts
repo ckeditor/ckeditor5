@@ -78,10 +78,12 @@ export function upcastTableFigure() {
  *
  * This conversion helper converts the table element as well as table rows.
  *
+ * @param options Conversion options.
+ * @param options.enableFooters If set to `true` the `footerRows` attribute will be upcasted.
  * @returns Conversion helper.
  * @internal
  */
-export function upcastTable() {
+export function upcastTable( options: { enableFooters?: boolean } ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -104,7 +106,7 @@ export function upcastTable() {
 				attributes.headingRows = headingRows;
 			}
 
-			if ( footerRows ) {
+			if ( options.enableFooters && footerRows ) {
 				attributes.footerRows = footerRows;
 			}
 

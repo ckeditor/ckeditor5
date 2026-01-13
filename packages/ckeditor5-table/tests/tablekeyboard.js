@@ -30,7 +30,10 @@ describe( 'TableKeyboard', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ]
+			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ],
+			table: {
+				enableFooters: true
+			}
 		} );
 
 		model = editor.model;
