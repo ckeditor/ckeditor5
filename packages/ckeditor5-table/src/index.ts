@@ -105,7 +105,7 @@ export type { DowncastTableOptions as _DowncastTableOptions } from './converters
 export { injectTableCaptionPostFixer as _injectTableCaptionPostFixer } from './converters/table-caption-post-fixer.js';
 export { injectTableCellParagraphPostFixer as _injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
 export { tableCellRefreshHandler as _tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
-export { tableStructureRefreshHandler as _tableStructureRefreshHandler } from './converters/table-structure-handler.js';
+export { tableStructureRefreshHandler as _tableStructureRefreshHandler } from './converters/table-structure-refresh-handler.js';
 export { injectTableLayoutPostFixer as _injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
 export {
 	upcastStyleToAttribute as _upcastNormalizedTableStyleToAttribute,

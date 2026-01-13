@@ -40,7 +40,7 @@ import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer
 import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
 import { injectTableStructurePostFixer } from './converters/table-structure-post-fixer.js';
 
-import { tableStructureRefreshHandler } from './converters/table-structure-handler.js';
+import { tableStructureRefreshHandler } from './converters/table-structure-refresh-handler.js';
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 import { isTableCellTypeEnabled } from './utils/common.js';
 

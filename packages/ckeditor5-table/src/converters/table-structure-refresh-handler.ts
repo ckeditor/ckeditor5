@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/table-headings-refresh-handler
+ * @module table/converters/table-structure-refresh-handler
  */
 
 import type {
