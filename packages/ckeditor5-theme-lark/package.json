@@ -17,17 +17,16 @@
     "ckeditor 5",
     "ckeditor5-theme"
   ],
-  "main": "./src/index.ts",
+  "main": "./theme/index.css",
   "exports": {
-    ".": "./src/index.ts",
+    ".": "./theme/index.css",
     "./dist/*": "./src/*",
     "./*": "./*"
   },
   "publishConfig": {
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./dist/index.css",
     "exports": {
-      ".": "./dist/index.js",
+      ".": "./dist/index.css",
       "./dist/*": "./dist/*",
       "./package.json": "./package.json"
     }
