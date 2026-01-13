@@ -61,7 +61,7 @@ export interface TableConfig {
 	 * ```
 	 *
 	 * The rows property is optional, defaulting to 0 (no footer).
-	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
+	 * This option is ignored when {@link module:table/tableconfig~TableConfig#useTfootElement `config.table.useTfootElement`} is `false`.
 	 */
 	defaultFooters?: {
 		rows?: number;
@@ -75,7 +75,7 @@ export interface TableConfig {
 	 *
 	 * @default false
 	 */
-	enableFooters?: boolean;
+	useTfootElement?: boolean;
 
 	/**
 	 * Items to be placed in the table content toolbar.

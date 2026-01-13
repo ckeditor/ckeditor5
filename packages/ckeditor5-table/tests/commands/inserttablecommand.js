@@ -20,7 +20,7 @@ describe( 'InsertTableCommand', () => {
 			.create( {
 				plugins: [ Paragraph, TableEditing ],
 				table: {
-					enableFooters: true
+					useTfootElement: true
 				}
 			} )
 			.then( newEditor => {
@@ -368,7 +368,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							enableFooters: false
+							useTfootElement: false
 						}
 					} );
 
@@ -409,7 +409,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							enableFooters: true,
+							useTfootElement: true,
 							defaultFooters: { rows: 1 }
 						}
 					} );
@@ -436,7 +436,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							enableFooters: true,
+							useTfootElement: true,
 							defaultFooters: { rows: 3 }
 						}
 					} );
@@ -463,7 +463,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							enableFooters: true,
+							useTfootElement: true,
 							defaultHeadings: { rows: 2 },
 							defaultFooters: { rows: 2 }
 						}

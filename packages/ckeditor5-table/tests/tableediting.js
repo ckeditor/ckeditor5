@@ -212,7 +212,7 @@ describe( 'TableEditing', () => {
 
 	describe( 'config', () => {
 		it( 'disables table footers by default', () => {
-			expect( editor.config.get( 'table.enableFooters' ) ).to.be.false;
+			expect( editor.config.get( 'table.useTfootElement' ) ).to.be.false;
 		} );
 
 		it( 'sets proper default heading rows and columns', () => {
@@ -233,7 +233,7 @@ describe( 'TableEditing', () => {
 				.create( {
 					plugins: [ TableEditing, Paragraph, ImageBlockEditing, MediaEmbedEditing ],
 					table: {
-						enableFooters: true
+						useTfootElement: true
 					}
 				} )
 				.then( newEditor => {

@@ -1111,7 +1111,7 @@ describe( 'HtmlComment integration', () => {
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, TableEditing, TableCaption ],
 					table: {
-						enableFooters: true
+						useTfootElement: true
 					}
 				} );
 		}

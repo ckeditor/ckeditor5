@@ -32,7 +32,7 @@ ClassicEditor
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			enableFooters: true,
+			useTfootElement: true,
 			tableToolbar: [ 'bold', 'italic' ],
 			tableCellProperties: {
 				scopedHeaders: true

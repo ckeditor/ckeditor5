@@ -35,7 +35,7 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ],
-			enableFooters: true
+			useTfootElement: true
 		}
 	} )
 	.then( editor => {

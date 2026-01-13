@@ -95,16 +95,16 @@ export class TableEditing extends Plugin {
 		const conversion = editor.conversion;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		editor.config.define( 'table.enableFooters', false );
+		editor.config.define( 'table.useTfootElement', false );
 
-		const areTableFootersEnabled = !!editor.config.get( 'table.enableFooters' );
+		const useFooterElement = !!editor.config.get( 'table.useTfootElement' );
 
 		schema.register( 'table', {
 			inheritAllFrom: '$blockObject',
 			allowAttributes: [
 				'headingRows',
 				'headingColumns',
-				...areTableFootersEnabled ? [ 'footerRows' ] : []
+				...useFooterElement ? [ 'footerRows' ] : []
 			]
 		} );
 
@@ -125,14 +125,14 @@ export class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( upcastTableFigure() );
 
 		// Table conversion.
-		conversion.for( 'upcast' ).add( upcastTable( { enableFooters: areTableFootersEnabled } ) );
+		conversion.for( 'upcast' ).add( upcastTable( { enableFooters: useFooterElement } ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
 				attributes: [
 					'headingRows',
-					...areTableFootersEnabled ? [ 'footerRows' ] : []
+					...useFooterElement ? [ 'footerRows' ] : []
 				]
 			},
 			view: downcastTable( tableUtils, {
@@ -145,7 +145,7 @@ export class TableEditing extends Plugin {
 				name: 'table',
 				attributes: [
 					'headingRows',
-					...areTableFootersEnabled ? [ 'footerRows' ] : []
+					...useFooterElement ? [ 'footerRows' ] : []
 				]
 			},
 			view: downcastTable( tableUtils, {
@@ -247,7 +247,7 @@ export class TableEditing extends Plugin {
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
-		if ( areTableFootersEnabled ) {
+		if ( useFooterElement ) {
 			editor.commands.add( 'setTableFooterRow', new SetFooterRowCommand( editor ) );
 		}
 

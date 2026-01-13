@@ -53,7 +53,7 @@ export class InsertTableCommand extends Command {
 	 * {@link module:table/tableconfig~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`} table config.
 	 * @param options.footerRows The number of footer rows. If not provided it will default to
 	 * {@link module:table/tableconfig~TableConfig#defaultFooters `config.table.defaultFooters.footerRows`} table config.
-	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
+	 * This option is ignored when {@link module:table/tableconfig~TableConfig#useTfootElement `config.table.useTfootElement`} is `false`.
 	 * @fires execute
 	 */
 	public override execute(
@@ -68,7 +68,7 @@ export class InsertTableCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
-		const areTableFootersEnabled = !!editor.config.get( 'table.enableFooters' );
+		const areTableFootersEnabled = !!editor.config.get( 'table.useTfootElement' );
 
 		const defaultRows = editor.config.get( 'table.defaultHeadings.rows' );
 		const defaultColumns = editor.config.get( 'table.defaultHeadings.columns' );

@@ -5035,7 +5035,7 @@ describe( 'table clipboard', () => {
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, ...extraPlugins ],
 			table: {
-				enableFooters: true
+				useTfootElement: true
 			}
 		} );
 
