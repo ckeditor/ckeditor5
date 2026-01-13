@@ -17,7 +17,6 @@
     "ckeditor 5",
     "ckeditor5-theme"
   ],
-  "main": "./theme/theme.css",
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "workspace:*"
   },
