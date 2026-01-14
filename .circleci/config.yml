@@ -26,7 +26,7 @@ parameters:
     default: false
   chromeVersion:
     type: string
-    default: "142.0.7444.59"
+    default: "143.0.7499.109"
 
 orbs:
   continuation: circleci/continuation@0.1.2
@@ -49,7 +49,7 @@ commands:
             ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Checkout code (single branch)
-          command: git clone --single-branch --depth 1 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+          command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
 
 jobs:
   generate_configuration:
