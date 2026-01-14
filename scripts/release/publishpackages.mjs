@@ -53,20 +53,7 @@ const tasks = new Listr( [
 				optionalEntries: {
 					// The `#default` key is used for all packages that do not have own definition.
 					default: [
-						// Some of CKEditor 5 features do not contain the UI layer.
-						// Hence, it is not required to publish the directory.
-						'lang',
-						// Some of CKEditor 5 features do not define styles or icons.
-						'theme',
 						// The CKEditor 5 framework does not define features.
-						'ckeditor5-metadata.json'
-					],
-
-					// Package-specific definition of optional files and directories.
-					'@ckeditor/ckeditor5-theme-lark': [
-						// Like in defaults, this package does not contain the UI layer. Hence, it is not required to publish the directory.
-						'lang',
-						// Like in defaults, this package does not define features.
 						'ckeditor5-metadata.json'
 					]
 				},

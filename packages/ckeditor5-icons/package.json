@@ -39,7 +39,6 @@
   },
   "files": [
     "dist",
-    "theme",
     "CHANGELOG.md"
   ]
 }

@@ -76,8 +76,6 @@
   },
   "files": [
     "dist",
-    "lang",
-    "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ]
