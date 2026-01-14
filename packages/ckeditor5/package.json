@@ -109,6 +109,9 @@
     "@ckeditor/ckeditor5-widget": "workspace:*",
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
+  "devDependencies": {
+    "@wiris/mathtype-ckeditor5": "^8.13.1"
+  },
   "scripts": {
     "build": "node ../../scripts/nim/build-ckeditor5.mjs"
   },
