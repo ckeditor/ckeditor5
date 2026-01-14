@@ -33,7 +33,7 @@ import { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
 import { MergeCellsCommand } from './commands/mergecellscommand.js';
 import { SelectRowCommand } from './commands/selectrowcommand.js';
 import { SelectColumnCommand } from './commands/selectcolumncommand.js';
-import { TableUtils } from '../src/tableutils.js';
+import { TableUtils } from './tableutils.js';
 
 import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
 import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
