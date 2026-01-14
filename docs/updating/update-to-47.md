@@ -22,7 +22,7 @@ This is a minor update focused on improving content editing workflows and data c
 
 ### Experimental table cell type support
 
-We are introducing an experimental {@link module:table/tablecellproperties/commands/tablecelltypecommand~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
+We are introducing an experimental {@link module:table/tablecellproperties/tablecellpropertiesutils~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
 
 The fully functional editor UI for cell type support will be available with the next major CKEditor&nbsp;5 version.
 
