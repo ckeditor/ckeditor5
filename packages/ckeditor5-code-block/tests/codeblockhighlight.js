@@ -13,6 +13,20 @@ import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils.js';
 
+/**
+ * Helper to get model data with text and selection only (ignoring codeHighlight attributes).
+ * Strips out <$text codeHighlight="..."> wrappers to focus on content and selection position.
+ */
+function getModelTextWithSelection( model ) {
+	const fullData = _getModelData( model );
+
+	// Remove all <$text codeHighlight="..."> and </$text> tags
+	// Keep the text content and selection markers ([], {}, etc.)
+	return fullData
+		.replace( /<\$text codeHighlight="[^"]*">/g, '' )
+		.replace( /<\/\$text>/g, '' );
+}
+
 describe( 'CodeBlockHighlight', () => {
 	let editor, element, model, view, domRoot;
 
@@ -54,7 +68,133 @@ describe( 'CodeBlockHighlight', () => {
 	} );
 
 	describe( 'syntax highlighting', () => {
-		it( '🐛 BUG: selection jumps and highlighting fails when typing "console.log(\\"test\\");" (real DOM typing)', async () => {
+		it( 'should highlight code in real-time without visible selection jumps when typing "console.l"', async () => {
+			_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
+
+			// Type "console" rapidly
+			for ( const char of 'console' ) {
+				fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: char } );
+				await new Promise( resolve => setTimeout( resolve, 10 ) );
+			}
+
+			// Type "." immediately after
+			fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: '.' } );
+			await new Promise( resolve => setTimeout( resolve, 50 ) );
+
+			// Verify state before typing "l"
+			expect( getModelTextWithSelection( model ) ).to.equal(
+				'<codeBlock language="javascript">console.[]</codeBlock>',
+				'Selection should be after "." before typing "l"'
+			);
+
+			// Type "l"
+			fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: 'l' } );
+
+			// Wait for all operations to complete
+			await new Promise( resolve => setTimeout( resolve, 50 ) );
+
+			// Verify final selection is correct
+			expect( getModelTextWithSelection( model ) ).to.equal(
+				'<codeBlock language="javascript">console.l[]</codeBlock>',
+				'Final selection should be after "l" (not before it)'
+			);
+
+			// Verify highlighting is applied correctly in the view (what users see)
+			const viewData = _getViewData( view, { withoutSelection: true } );
+
+			expect( viewData ).to.include(
+				'<span class="hljs-variable language_">console</span>',
+				'"console" should be highlighted'
+			);
+
+			expect( viewData ).to.include(
+				'<span class="hljs-property">l</span>',
+				'"l" should be highlighted as property'
+			);
+
+			// Verify punctuation is not wrapped
+			expect( viewData ).to.match( /console<\/span>\.<span/, '"." should be plain text between spans' );
+		} );
+
+		it( 'should maintain correct selection when typing "console.l" step by step', async () => {
+			_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
+
+			// Step 1: Type "console" - should highlight after "e"
+			for ( const char of 'console' ) {
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'insertText',
+					data: char
+				} );
+				await new Promise( resolve => setTimeout( resolve, 50 ) );
+			}
+
+			// Verify we have "console" and selection is at the end
+			expect( getModelTextWithSelection( model ) ).to.equal(
+				'<codeBlock language="javascript">console[]</codeBlock>',
+				'After typing "console", selection should be at the end'
+			);
+
+			// Step 2: Type "." - this triggers highlighting of "console"
+			fireBeforeInputDomEvent( domRoot, {
+				inputType: 'insertText',
+				data: '.'
+			} );
+			await new Promise( resolve => setTimeout( resolve, 50 ) );
+
+			// Verify selection is still at the end after "."
+			expect( getModelTextWithSelection( model ) ).to.equal(
+				'<codeBlock language="javascript">console.[]</codeBlock>',
+				'After typing ".", selection should be after the dot'
+			);
+
+			// Verify "console" is now highlighted
+			const viewAfterDot = _getViewData( view, { withoutSelection: true } );
+			expect( viewAfterDot ).to.include(
+				'<span class="hljs-variable language_">console</span>',
+				'"console" should be highlighted after typing "."'
+			);
+
+			// Step 3: Type "l" - THIS IS WHERE THE BUG OCCURS
+			// Track all selection changes during this operation
+			const selectionChanges = [];
+			const selectionListener = () => {
+				selectionChanges.push( {
+					time: Date.now(),
+					model: _getModelData( model ),
+					view: _getViewData( view )
+				} );
+			};
+
+			model.document.selection.on( 'change', selectionListener );
+
+			fireBeforeInputDomEvent( domRoot, {
+				inputType: 'insertText',
+				data: 'l'
+			} );
+
+			// Wait for all operations to complete
+			await new Promise( resolve => setTimeout( resolve, 100 ) );
+
+			model.document.selection.off( 'change', selectionListener );
+
+			// Check final state (what users see)
+			const modelAfterL = getModelTextWithSelection( model );
+
+			// Selection should stay at "console.l[]"
+			expect( modelAfterL ).to.equal(
+				'<codeBlock language="javascript">console.l[]</codeBlock>',
+				'After typing "l", selection should be after "l"'
+			);
+
+			// Verify "l" is highlighted in the view
+			const viewAfterL = _getViewData( view, { withoutSelection: true } );
+			expect( viewAfterL ).to.include(
+				'<span class="hljs-property">l</span>',
+				'"l" should be highlighted as a property'
+			);
+		} );
+
+		it( 'should highlight code in real-time while typing full statement "console.log(\\"test\\");"', async () => {
 			_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
 
 			// Type the full statement character by character with real DOM events
@@ -73,7 +213,7 @@ describe( 'CodeBlockHighlight', () => {
 				await new Promise( resolve => setTimeout( resolve, 50 ) );
 
 				// After each character, verify selection is at the end
-				const modelData = _getModelData( model );
+				const modelData = getModelTextWithSelection( model );
 
 				// The BUG: Selection jumps at word boundaries (., (, ), etc.)
 				// Expected: console.log("test");[]
@@ -99,7 +239,7 @@ describe( 'CodeBlockHighlight', () => {
 			await new Promise( resolve => setTimeout( resolve, 100 ) );
 
 			// Final verification
-			expect( _getModelData( model ) ).to.equal(
+			expect( getModelTextWithSelection( model ) ).to.equal(
 				'<codeBlock language="javascript">console.log("test");[]</codeBlock>',
 				'Selection should be at the end of the statement'
 			);
@@ -175,6 +315,42 @@ describe( 'CodeBlockHighlight', () => {
 			// Verify plain text (punctuation) is not highlighted
 			expect( viewData ).to.match( /color<\/span>:\s+/ );
 			expect( viewData ).to.include( 'red;' );
+		} );
+
+		it( 'should re-highlight code when language attribute changes', () => {
+			// Start with JavaScript code
+			_setModelData( model,
+				'<codeBlock language="javascript">const x = 10;[]</codeBlock>'
+			);
+
+			const viewAfterJS = _getViewData( view, { withoutSelection: true } );
+
+			// Verify JavaScript highlighting
+			expect( viewAfterJS ).to.include( '<span class="hljs-keyword">const</span>' );
+
+			// Change language to plaintext
+			model.change( writer => {
+				const codeBlock = model.document.getRoot().getChild( 0 );
+				writer.setAttribute( 'language', 'plaintext', codeBlock );
+			} );
+
+			const viewAfterPlaintext = _getViewData( view, { withoutSelection: true } );
+
+			// Verify highlighting is removed (plaintext has no highlights)
+			expect( viewAfterPlaintext ).to.not.include( '<span class="hljs-keyword">const</span>' );
+			expect( viewAfterPlaintext ).to.not.include( '<span class="hljs' );
+			expect( viewAfterPlaintext ).to.include( 'const x = 10;' );
+
+			// Change language back to JavaScript
+			model.change( writer => {
+				const codeBlock = model.document.getRoot().getChild( 0 );
+				writer.setAttribute( 'language', 'javascript', codeBlock );
+			} );
+
+			const viewAfterJSAgain = _getViewData( view, { withoutSelection: true } );
+
+			// Verify JavaScript highlighting is back
+			expect( viewAfterJSAgain ).to.include( '<span class="hljs-keyword">const</span>' );
 		} );
 	} );
 } );
