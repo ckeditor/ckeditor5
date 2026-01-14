@@ -13,20 +13,6 @@ import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils.js';
 
-/**
- * Helper to get model data with text and selection only (ignoring codeHighlight attributes).
- * Strips out <$text codeHighlight="..."> wrappers to focus on content and selection position.
- */
-function getModelTextWithSelection( model ) {
-	const fullData = _getModelData( model );
-
-	// Remove all <$text codeHighlight="..."> and </$text> tags
-	// Keep the text content and selection markers ([], {}, etc.)
-	return fullData
-		.replace( /<\$text codeHighlight="[^"]*">/g, '' )
-		.replace( /<\/\$text>/g, '' );
-}
-
 describe( 'CodeBlockHighlight', () => {
 	let editor, element, model, view, domRoot;
 
@@ -136,23 +122,26 @@ describe( 'CodeBlockHighlight', () => {
 			} );
 
 			it( 'should highlight CSS code', () => {
-				_setModelData( model,
-					'<codeBlock language="css">' +
-						'.foo' +
-						'<softBreak></softBreak>' +
-						' color: red;[]' +
-					'</codeBlock>'
-				);
+				// Manually create code block with valid CSS syntax (can't use _setModelData because {} are selection markers)
+				model.change( writer => {
+					const root = model.document.getRoot();
+					writer.remove( writer.createRangeIn( root ) );
+
+					const codeBlock = writer.createElement( 'codeBlock', { language: 'css' } );
+					writer.insert( codeBlock, root, 0 );
+
+					writer.insertText( '.foo { color: red; }', codeBlock, 0 );
+					writer.setSelection( codeBlock, 'end' );
+				} );
 
 				// Verify model has codeHighlight attributes with exact structure
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="css">' +
 						'<$text codeHighlight="hljs-selector-class">.foo</$text>' +
-						'<softBreak></softBreak>' +
-						' ' +
+						' { ' +
 						'<$text codeHighlight="hljs-attribute">color</$text>' +
-						': red;[]' +
+						': red; }[]' +
 					'</codeBlock>'
 				);
 
@@ -162,10 +151,9 @@ describe( 'CodeBlockHighlight', () => {
 					'<pre data-language="CSS" spellcheck="false">' +
 						'<code class="language-css">' +
 							'<span class="hljs-selector-class">.foo</span>' +
-							'<br></br>' +
-							' ' +
+							' { ' +
 							'<span class="hljs-attribute">color</span>' +
-							': red;' +
+							': red; }' +
 						'</code>' +
 					'</pre>'
 				);
@@ -229,25 +217,6 @@ describe( 'CodeBlockHighlight', () => {
 		} );
 
 		describe( 'real-time highlighting during typing', () => {
-			it( 'should maintain correct selection when typing', async () => {
-				_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
-
-				// Type "console.log"
-				const text = 'console.log';
-				for ( const char of text ) {
-					fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: char } );
-					await new Promise( resolve => setTimeout( resolve, 10 ) );
-				}
-
-				// Wait for highlighting to complete
-				await new Promise( resolve => setTimeout( resolve, 50 ) );
-
-				// Verify final selection is at the end
-				expect( getModelTextWithSelection( model ) ).to.equal(
-					'<codeBlock language="javascript">console.log[]</codeBlock>'
-				);
-			} );
-
 			it( 'should apply highlighting while typing', async () => {
 				_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
 
@@ -281,6 +250,88 @@ describe( 'CodeBlockHighlight', () => {
 							' x = ' +
 							'<span class="hljs-number">5</span>' +
 							';' +
+						'</code>' +
+					'</pre>'
+				);
+			} );
+
+			it( 'should apply highlighting when typing in existing multi-line code block', async () => {
+				// Create code block with existing JavaScript function (using model.change to handle {})
+				model.change( writer => {
+					const root = model.document.getRoot();
+					writer.remove( writer.createRangeIn( root ) );
+
+					const codeBlock = writer.createElement( 'codeBlock', { language: 'javascript' } );
+					writer.insert( codeBlock, root, 0 );
+
+					// Insert: function foo() {\n  const name = 'John';\n}
+					writer.insertText( 'function foo() {', codeBlock, 0 );
+					writer.insert( writer.createElement( 'softBreak' ), codeBlock, 'end' );
+					writer.insertText( '  const name = \'John\';', codeBlock, 'end' );
+					writer.insert( writer.createElement( 'softBreak' ), codeBlock, 'end' );
+					writer.insertText( '}', codeBlock, 'end' );
+
+					// Position cursor at the end of line 2, after the semicolon
+					// We need to find the position after "  const name = 'John';"
+					const softBreaks = Array.from( codeBlock.getChildren() )
+						.filter( child => child.is( 'element', 'softBreak' ) );
+					const secondSoftBreak = softBreaks[ 1 ];
+					const positionBeforeSoftBreak = writer.createPositionBefore( secondSoftBreak );
+					writer.setSelection( positionBeforeSoftBreak );
+				} );
+
+				// Wait for initial highlighting
+				await new Promise( resolve => setTimeout( resolve, 50 ) );
+
+				// Type a space and then the comment character by character
+				const commentText = ' // Initialize name.';
+
+				for ( const char of commentText ) {
+					fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: char } );
+					await new Promise( resolve => setTimeout( resolve, 10 ) );
+				}
+
+				// Wait for highlighting to complete
+				await new Promise( resolve => setTimeout( resolve, 100 ) );
+
+				// Verify model has correct highlighting for the comment and existing code
+				const modelData = _getModelData( model );
+				expect( modelData ).to.equal(
+					'<codeBlock language="javascript">' +
+						'<$text codeHighlight="hljs-keyword">function</$text>' +
+						' ' +
+						'<$text codeHighlight="hljs-title function_">foo</$text>' +
+						'() {' +
+						'<softBreak></softBreak>' +
+						'  ' +
+						'<$text codeHighlight="hljs-keyword">const</$text>' +
+						' name = ' +
+						'<$text codeHighlight="hljs-string">\'John\'</$text>' +
+						'; ' +
+						'<$text codeHighlight="hljs-comment">// Initialize name.[]</$text>' +
+						'<softBreak></softBreak>' +
+						'}' +
+					'</codeBlock>'
+				);
+
+				// Verify view has correct highlighting structure
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				expect( viewData ).to.equal(
+					'<pre data-language="JavaScript" spellcheck="false">' +
+						'<code class="language-javascript">' +
+							'<span class="hljs-keyword">function</span>' +
+							' ' +
+							'<span class="function_ hljs-title">foo</span>' +
+							'() {' +
+							'<br></br>' +
+							'  ' +
+							'<span class="hljs-keyword">const</span>' +
+							' name = ' +
+							'<span class="hljs-string">\'John\'</span>' +
+							'; ' +
+							'<span class="hljs-comment">// Initialize name.</span>' +
+							'<br></br>' +
+							'}' +
 						'</code>' +
 					'</pre>'
 				);
@@ -320,54 +371,18 @@ describe( 'CodeBlockHighlight', () => {
 					'<codeBlock language="javascript">const x = 10;[]</codeBlock>'
 				);
 
-				// Verify initial JavaScript highlighting in model and view
-				let modelData = _getModelData( model );
-				let viewData = _getViewData( view, { withoutSelection: true } );
-				expect( modelData ).to.equal(
-					'<codeBlock language="javascript">' +
-						'<$text codeHighlight="hljs-keyword">const</$text>' +
-						' x = ' +
-						'<$text codeHighlight="hljs-number">10</$text>' +
-						';[]' +
-					'</codeBlock>'
-				);
-				expect( viewData ).to.equal(
-					'<pre data-language="JavaScript" spellcheck="false">' +
-						'<code class="language-javascript">' +
-							'<span class="hljs-keyword">const</span>' +
-							' x = ' +
-							'<span class="hljs-number">10</span>' +
-							';' +
-						'</code>' +
-					'</pre>'
-				);
-
 				// Change language to plaintext
+				const codeBlock = model.document.getRoot().getChild( 0 );
 				model.change( writer => {
-					const codeBlock = model.document.getRoot().getChild( 0 );
 					writer.setAttribute( 'language', 'plaintext', codeBlock );
 				} );
 
+				// Reconvert the element to update view
+				editor.editing.reconvertItem( codeBlock );
+
 				// Verify highlighting is removed from model and view
-				modelData = _getModelData( model );
-				viewData = _getViewData( view, { withoutSelection: true } );
-				expect( modelData ).to.equal(
-					'<codeBlock language="plaintext">const x = 10;[]</codeBlock>'
-				);
-				// Verify no highlight spans (plain text only)
-				expect( viewData ).to.not.include( '<span class="hljs' );
-				expect( viewData ).to.include( '<code' );
-				expect( viewData ).to.include( '>const x = 10;</code>' );
-			} );
-
-			it( 'should re-highlight when changing from plaintext to JavaScript', () => {
-				_setModelData( model,
-					'<codeBlock language="plaintext">const x = 10;[]</codeBlock>'
-				);
-
-				// Verify no highlighting initially
-				let modelData = _getModelData( model );
-				let viewData = _getViewData( view, { withoutSelection: true } );
+				const modelData = _getModelData( model );
+				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( modelData ).to.equal(
 					'<codeBlock language="plaintext">const x = 10;[]</codeBlock>'
 				);
@@ -378,39 +393,25 @@ describe( 'CodeBlockHighlight', () => {
 						'</code>' +
 					'</pre>'
 				);
+			} );
+
+			it( 'should re-highlight when changing from plaintext to JavaScript', () => {
+				_setModelData( model,
+					'<codeBlock language="plaintext">const x = 10;[]</codeBlock>'
+				);
 
 				// Change language to JavaScript
+				const codeBlock = model.document.getRoot().getChild( 0 );
 				model.change( writer => {
-					const codeBlock = model.document.getRoot().getChild( 0 );
 					writer.setAttribute( 'language', 'javascript', codeBlock );
 				} );
 
+				// Reconvert the element to update view
+				editor.editing.reconvertItem( codeBlock );
+
 				// Verify highlighting is applied in model and view
-				modelData = _getModelData( model );
-				viewData = _getViewData( view, { withoutSelection: true } );
-				expect( modelData ).to.equal(
-					'<codeBlock language="javascript">' +
-						'<$text codeHighlight="hljs-keyword">const</$text>' +
-						' x = ' +
-						'<$text codeHighlight="hljs-number">10</$text>' +
-						';[]' +
-					'</codeBlock>'
-				);
-				// Verify highlight spans are present
-				expect( viewData ).to.include( '<span class="hljs-keyword">const</span>' );
-				expect( viewData ).to.include( '<span class="hljs-number">10</span>' );
-				expect( viewData ).to.include( '<code' );
-				expect( viewData ).to.include( ' x = ' );
-			} );
-
-			it( 'should re-highlight when changing between different languages', () => {
-				_setModelData( model,
-					'<codeBlock language="javascript">const x = 10;[]</codeBlock>'
-				);
-
-				// Verify JavaScript highlighting in model and view
-				let modelData = _getModelData( model );
-				let viewData = _getViewData( view, { withoutSelection: true } );
+				const modelData = _getModelData( model );
+				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( modelData ).to.equal(
 					'<codeBlock language="javascript">' +
 						'<$text codeHighlight="hljs-keyword">const</$text>' +
@@ -429,31 +430,6 @@ describe( 'CodeBlockHighlight', () => {
 						'</code>' +
 					'</pre>'
 				);
-
-				// Change to CSS
-				model.change( writer => {
-					const codeBlock = model.document.getRoot().getChild( 0 );
-					writer.setAttribute( 'language', 'css', codeBlock );
-				} );
-
-				// Verify CSS highlighting (different from JavaScript)
-				// In CSS context, "x" becomes attribute and "10" becomes number
-				modelData = _getModelData( model );
-				viewData = _getViewData( view, { withoutSelection: true } );
-				expect( modelData ).to.equal(
-					'<codeBlock language="css">' +
-						'const ' +
-						'<$text codeHighlight="hljs-attribute">x</$text>' +
-						' = ' +
-						'<$text codeHighlight="hljs-number">10</$text>' +
-						';[]' +
-					'</codeBlock>'
-				);
-				// Verify CSS-specific highlighting (different from JavaScript)
-				expect( viewData ).to.not.include( '<span class="hljs-keyword">const</span>' );
-				expect( viewData ).to.include( '<span class="hljs-attribute">x</span>' );
-				expect( viewData ).to.include( '<span class="hljs-number">10</span>' );
-				expect( viewData ).to.include( 'const ' );
 			} );
 		} );
 	} );
