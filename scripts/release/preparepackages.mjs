@@ -19,7 +19,6 @@ import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcall
 import buildCKEditor5Root from './utils/buildckeditor5root.mjs';
 import parseArguments from './utils/parsearguments.mjs';
 import isCKEditor5PackageFactory from './utils/isckeditor5packagefactory.mjs';
-import updatePackageEntryPoint from './utils/updatepackageentrypoint.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
 import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
@@ -196,17 +195,6 @@ const tasks = new Listr( [
 								{ overwrite: true }
 							);
 						}
-					}
-				},
-				{
-					title: 'Updating entries in `package.json`.',
-					task: ( ctx, task ) => {
-						return releaseTools.executeInParallel( {
-							packagesDirectory: RELEASE_DIRECTORY,
-							listrTask: task,
-							taskToExecute: updatePackageEntryPoint,
-							concurrency: cliArguments.concurrency
-						} );
 					}
 				},
 				{

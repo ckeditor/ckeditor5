@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "47.3.0",
+  "version": "47.4.0",
   "description": "A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -28,9 +28,24 @@
     "framework"
   ],
   "type": "module",
-  "main": "dist/ckeditor5.js",
-  "module": "dist/ckeditor5.js",
-  "types": "src/index.d.ts",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/ckeditor5.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/ckeditor5.js"
+      },
+      "./*": "./dist/*",
+      "./browser/*": null,
+      "./package.json": "./package.json"
+    }
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-alignment": "workspace:*",
@@ -93,6 +108,9 @@
     "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
     "@ckeditor/ckeditor5-word-count": "workspace:*"
+  },
+  "devDependencies": {
+    "@wiris/mathtype-ckeditor5": "^8.13.1"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-ckeditor5.mjs"

@@ -17,8 +17,7 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
-// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/9079.
-// import MathType from '@wiris/mathtype-ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -41,9 +40,8 @@ ClassicEditor
 			Indent,
 			Mention,
 			PasteFromOffice,
-			RemoveFormat
-			// TODO: https://github.com/ckeditor/ckeditor5-commercial/issues/9079.
-			// MathType
+			RemoveFormat,
+			MathType
 		],
 		toolbar: [
 			'MathType', 'ChemType', '|', 'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
