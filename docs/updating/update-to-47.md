@@ -24,6 +24,29 @@ This is a minor update focused on improving content editing workflows and data c
 
 We are introducing an experimental {@link module:table/tablecellproperties/tablecellpropertiesutils~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
 
+```js-diff
+ ClassicEditor
+ 	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Essentials,
+			Paragraph,
+			Table,
+-			TableProperties,
+-			TableCellProperties
++			TablePropertiesEditing,
++			TablePropertiesUIExperimental,
++			TableCellPropertiesEditing,
++			TableCellPropertiesUIExperimental
+		],
+		experimentalFlags: {
+			// ... other experimental flags ...
++			tableCellTypeSupport: true
+		}
+ 	} )
+ 	.then( /* ... */ )
+ 	.catch( /* ... */ );
+```
+
 The fully functional editor UI for cell type support will be available with the next major CKEditor&nbsp;5 version.
 
 ### Hidden table borders visualization
