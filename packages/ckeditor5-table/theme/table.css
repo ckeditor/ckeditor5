@@ -1,11 +1,16 @@
 /*
- * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 .ck-content {
+	/* Ensure that table header text is aligned to the start by default. See https://github.com/ckeditor/ckeditor5/issues/19454. */
+	& .table th {
+		text-align: start;
+	}
+
 	/* Text alignment of the table header should match the editor settings and override the native browser styling,
-	when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638 */
+	when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638. */
 	&[dir="rtl"] .table th {
 		text-align: right;
 	}

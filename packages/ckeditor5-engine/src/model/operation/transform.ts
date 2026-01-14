@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -2182,7 +2182,7 @@ setTransformation( RenameOperation, SplitOperation, ( a, b ) => {
 
 setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, context ) => {
 	if ( a.root === b.root && a.key === b.key ) {
-		if ( !context.aIsStrong || a.newValue === b.newValue ) {
+		if ( !context.aIsStrong ) {
 			return [ new NoOperation( 0 ) ];
 		} else {
 			a.oldValue = b.newValue;
