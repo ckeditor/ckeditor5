@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-theme-lark",
-  "version": "47.3.0",
+  "version": "47.4.0",
   "description": "A bright theme for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -17,7 +17,20 @@
     "ckeditor 5",
     "ckeditor5-theme"
   ],
-  "main": "./theme/theme.css",
+  "main": "./theme/index.css",
+  "exports": {
+    ".": "./theme/index.css",
+    "./dist/*": "./src/*",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/index.css",
+    "exports": {
+      ".": "./dist/index.css",
+      "./dist/*": "./dist/*",
+      "./package.json": "./package.json"
+    }
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "workspace:*"
   },

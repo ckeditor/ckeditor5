@@ -318,3 +318,15 @@ msgstr "Aliniere tabel la stânga fără înfășurarea textului"
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
 msgstr "Aliniere tabel la dreapta fără înfășurarea textului"
+
+msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
+msgid "Cell type"
+msgstr "Tipul celulei"
+
+msgctxt "The label for the dropdown option for a data table cell."
+msgid "Data cell"
+msgstr "Celulă de date"
+
+msgctxt "The label for the dropdown option for a header table cell."
+msgid "Header cell"
+msgstr "Celulă antet"

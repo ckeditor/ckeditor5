@@ -318,3 +318,15 @@ msgstr "표를 왼쪽으로 정렬하고 텍스트 줄 바꿈 없음"
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
 msgstr "표를 오른쪽으로 정렬하고 텍스트 줄 바꿈 없음"
+
+msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
+msgid "Cell type"
+msgstr "셀 유형"
+
+msgctxt "The label for the dropdown option for a data table cell."
+msgid "Data cell"
+msgstr "데이터 셀"
+
+msgctxt "The label for the dropdown option for a header table cell."
+msgid "Header cell"
+msgstr "헤더 셀"

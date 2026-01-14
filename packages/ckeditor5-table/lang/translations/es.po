@@ -318,3 +318,15 @@ msgstr "Alinear la tabla a la izquierda sin ajuste de texto"
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
 msgstr "Alinear la tabla a la derecha sin ajuste de texto"
+
+msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
+msgid "Cell type"
+msgstr "Tipo de celda"
+
+msgctxt "The label for the dropdown option for a data table cell."
+msgid "Data cell"
+msgstr "Celda de datos"
+
+msgctxt "The label for the dropdown option for a header table cell."
+msgid "Header cell"
+msgstr "Celda de encabezado"

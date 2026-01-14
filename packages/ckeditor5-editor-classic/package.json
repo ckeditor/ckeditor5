@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-classic",
-  "version": "47.3.0",
+  "version": "47.4.0",
   "description": "Classic editor implementation for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -18,7 +18,21 @@
     "ckeditor5-editor"
   ],
   "type": "module",
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dist/*": "./src/*",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": "./dist/index.js",
+      "./dist/*": "./dist/*",
+      "./package.json": "./package.json"
+    }
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
