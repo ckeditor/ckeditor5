@@ -367,6 +367,10 @@ importers:
       '@ckeditor/ckeditor5-word-count':
         specifier: workspace:*
         version: link:../ckeditor5-word-count
+    devDependencies:
+      '@wiris/mathtype-ckeditor5':
+        specifier: ^8.13.1
+        version: 8.14.0(ckeditor5@packages+ckeditor5)
 
   packages/ckeditor5-adapter-ckfinder:
     dependencies:
