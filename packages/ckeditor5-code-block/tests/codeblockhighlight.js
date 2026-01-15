@@ -432,5 +432,56 @@ describe( 'CodeBlockHighlight', () => {
 				);
 			} );
 		} );
+
+		describe( 'cleanup on structure changes', () => {
+			it( 'should remove highlight attributes when merging code block into paragraph', () => {
+				_setModelData( model,
+					'<paragraph>Foobar</paragraph>' +
+					'<codeBlock language="javascript">[]const test = "test";</codeBlock>'
+				);
+
+				// Execute backspace to merge code block with paragraph
+				editor.execute( 'delete', { direction: 'backward' } );
+
+				// Verify model has no codeHighlight attributes
+				const modelData = _getModelData( model );
+				expect( modelData ).to.equal(
+					'<paragraph>Foobar[]const test = "test";</paragraph>'
+				);
+
+				// Verify view has no highlight spans
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				expect( viewData ).to.equal(
+					'<p>Foobarconst test = "test";</p>'
+				);
+			} );
+
+			it( 'should remove highlight attributes when changing code block to paragraph', () => {
+				_setModelData( model,
+					'<codeBlock language="javascript">' +
+						'const test = "test";' +
+						'<softBreak></softBreak>' +
+						'let i = 0;[]' +
+					'</codeBlock>'
+				);
+
+				// Execute codeBlock command to toggle it off (changes to paragraphs)
+				editor.execute( 'codeBlock' );
+
+				// Verify model has no codeHighlight attributes (split into paragraphs)
+				const modelData = _getModelData( model );
+				expect( modelData ).to.equal(
+					'<paragraph>const test = "test";</paragraph>' +
+					'<paragraph>let i = 0;[]</paragraph>'
+				);
+
+				// Verify view has no highlight spans
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				expect( viewData ).to.equal(
+					'<p>const test = "test";</p>' +
+					'<p>let i = 0;</p>'
+				);
+			} );
+		} );
 	} );
 } );

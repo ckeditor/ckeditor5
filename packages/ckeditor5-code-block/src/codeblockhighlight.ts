@@ -158,27 +158,41 @@ export class CodeBlockHighlight extends Plugin {
 
 	/**
 	 * Register model post-fixer to remove codeHighlight attributes outside code blocks.
-	 * This handles cases where text with highlights is moved/merged into other elements.
+	 * This is necessary because schema.addAttributeCheck() only prevents adding NEW disallowed attributes,
+	 * but doesn't automatically remove EXISTING attributes when content is moved/merged (e.g., deleting a code block).
+	 *
+	 * Uses differ to track only affected elements for optimal performance.
 	 */
 	private _registerCleanupPostFixer(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
 		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
+			const affectedElements = new Set<ModelElement>();
+
+			// First pass: identify elements that might have stray codeHighlight attributes
+			for ( const change of changes ) {
+				if ( change.type === 'insert' || change.type === 'remove' ) {
+					const parent = change.position.parent;
+
+					// Track non-code-block parents where content was added/removed
+					if ( parent && parent.is( 'element' ) && !parent.is( 'element', 'codeBlock' ) ) {
+						affectedElements.add( parent );
+					}
+				}
+			}
+
+			// Second pass: clean up only affected elements
 			let changed = false;
 
-			// Check all text nodes in all roots
-			for ( const root of model.document.getRoots() ) {
-				const range = writer.createRangeIn( root );
-
-				for ( const item of range.getItems() ) {
-					// Only check text nodes with codeHighlight attribute
+			for ( const element of affectedElements ) {
+				for ( const item of writer.createRangeIn( element ).getItems() ) {
 					if ( ( item.is( '$text' ) || item.is( '$textProxy' ) ) && item.hasAttribute( 'codeHighlight' ) ) {
-						// Check if this text is inside a codeBlock
+						// Check if this text is inside a codeBlock (don't remove if it is)
 						const parent = item.parent;
 						const isInCodeBlock = parent && parent.is( 'element', 'codeBlock' );
 
-						// If not in a code block, remove the attribute
 						if ( !isInCodeBlock ) {
 							writer.removeAttribute( 'codeHighlight', item );
 							changed = true;
