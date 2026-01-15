@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -13,7 +13,7 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
-const editorData = {
+const editorElements = {
 	intro: document.querySelector( '#editor-intro' ),
 	content: document.querySelector( '#editor-content' ),
 	outro: document.querySelector( '#editor-outro' ),
@@ -24,7 +24,7 @@ let editor;
 
 function initEditor() {
 	MultiRootEditor
-		.create( editorData, {
+		.create( {}, {
 			plugins: [
 				Paragraph, Heading, Bold, Italic,
 				Image, ImageInsert, AutoImage, LinkImage,
@@ -34,16 +34,6 @@ function initEditor() {
 				'heading', '|', 'bold', 'italic', 'undo', 'redo', '|',
 				'insertImage', 'insertTable', 'blockQuote'
 			],
-			modelRootElementName: {
-				intro: '$inlineRoot',
-				outro: '$root',
-				signature: '$inlineRoot'
-			},
-			viewRootElementName: { // TODO this is ignored as original element is reused
-				intro: 'h2',
-				outro: 'blockquote',
-				signature: 'em'
-			},
 			image: {
 				toolbar: [
 					'imageStyle:inline', 'imageStyle:block',
@@ -58,6 +48,17 @@ function initEditor() {
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
+
+			newEditor.on( 'addRoot', ( evt, root ) => {
+				editorElements[ root.rootName ].replaceWith( newEditor.createEditable( root, {
+					editableElementName: editorElements[ root.rootName ].tagName.toLowerCase()
+				} ) );
+			} );
+
+			newEditor.addRoot( 'intro', { data: editorElements.intro.innerHTML, elementName: '$inlineRoot' } );
+			newEditor.addRoot( 'content', { data: editorElements.content.innerHTML } );
+			newEditor.addRoot( 'outro', { data: editorElements.outro.innerHTML } );
+			newEditor.addRoot( 'signature', { data: editorElements.signature.innerHTML, elementName: '$inlineRoot' } );
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
 			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
