@@ -16,7 +16,7 @@ import type {
 
 import { common, createLowlight } from 'lowlight';
 
-// Import highlight.js theme for syntax highlighting styles
+// Import the GitHub theme for syntax highlighting (provides CSS classes like hljs-keyword, hljs-string, etc.).
 import 'highlight.js/styles/github.css';
 
 /**
@@ -37,17 +37,16 @@ interface HighlightNode {
  */
 interface HighlightSegment {
 	text: string;
-	classes: string | null; // Space-separated class names, or null for no highlight
+	classes: string | null; // Space-separated class names (e.g., "hljs-keyword"), or null for plain text.
 }
 
 /**
- * The code block highlight plugin.
+ * The code block syntax highlighting plugin.
  *
- * MODEL-BASED STRATEGY:
- * - Works at the model level using text attributes
- * - Applies `codeHighlight` attribute to text nodes with highlight classes
- * - Conversion handles rendering to view automatically
- * - No manual view manipulation = no selection jumps!
+ * Uses a model-based strategy to apply syntax highlighting:
+ * - Operates at the model level using the `codeHighlight` text attribute.
+ * - Applies highlight classes based on the lowlight library (highlight.js wrapper).
+ * - Conversion handles rendering to the editing view automatically.
  */
 export class CodeBlockHighlight extends Plugin {
 	/**
@@ -56,7 +55,9 @@ export class CodeBlockHighlight extends Plugin {
 	public readonly lowlight: ReturnType<typeof createLowlight>;
 
 	/**
-	 * Track last highlighted state (text + language) for each code block to avoid redundant re-analysis.
+	 * Tracks the last highlighted state (text and language) for each code block.
+	 *
+	 * Used to avoid redundant re-analysis when the content hasn't changed.
 	 */
 	private _lastHighlightedState = new Map<ModelElement, { text: string; language: string }>();
 
@@ -87,50 +88,50 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	public init(): void {
-		// Define schema: allow codeHighlight attribute on text, only inside codeBlock
+		// Define schema: allow codeHighlight attribute on text, only inside codeBlock.
 		this._defineSchema();
 
-		// Define conversions: model attribute -> editing view span (no data conversion)
+		// Define conversions: model attribute -> editing view span (no data conversion).
 		this._defineConverters();
 
-		// Register model post-fixer to apply highlights
+		// Register model post-fixer to apply highlights.
 		this._registerModelPostFixer();
 
-		// Register model post-fixer to remove invalid codeHighlight attributes
+		// Register model post-fixer to remove invalid codeHighlight attributes.
 		this._registerCleanupPostFixer();
 	}
 
 	/**
-	 * Define schema for codeHighlight attribute.
+	 * Defines the schema for the codeHighlight attribute.
 	 */
 	private _defineSchema(): void {
 		const schema = this.editor.model.schema;
 
-		// Allow codeHighlight attribute on $text
+		// Allow the codeHighlight attribute on $text nodes.
 		schema.extend( '$text', {
 			allowAttributes: 'codeHighlight'
 		} );
 
-		// Set attribute properties
+		// Set attribute properties to control behavior.
 		schema.setAttributeProperties( 'codeHighlight', {
-			copyOnEnter: false, // New text after Enter should not inherit highlight
-			isFormatting: false // This is not user-applied formatting
+			copyOnEnter: false, // New text after Enter should not inherit highlight.
+			isFormatting: false // This is not user-applied formatting.
 		} );
 
-		// Only allow codeHighlight inside codeBlock
+		// Restrict the codeHighlight attribute to text inside code blocks only.
 		schema.addAttributeCheck( ( context, attributeName ) => {
 			if ( attributeName !== 'codeHighlight' ) {
 				return true;
 			}
 
-			// Check if we're inside a codeBlock using endsWith
-			// Context is like: "$root > codeBlock > $text"
+			// Check if we're inside a codeBlock element.
+			// Context is like: "$root > codeBlock > $text" or "$root > codeBlock > $textProxy".
 			return context.endsWith( 'codeBlock $text' ) || context.endsWith( 'codeBlock $textProxy' );
 		} );
 	}
 
 	/**
-	 * Define conversions for codeHighlight attribute.
+	 * Defines conversions for the codeHighlight attribute.
 	 */
 	private _defineConverters(): void {
 		const editor = this.editor;
@@ -143,24 +144,23 @@ export class CodeBlockHighlight extends Plugin {
 					return null;
 				}
 
-				// attributeValue is space-separated class names
+				// The attribute value contains space-separated class names from highlight.js (e.g. "hljs-keyword").
 				return writer.createAttributeElement( 'span', {
 					class: attributeValue
 				} );
 			},
 			converterPriority: 'high'
 		} );
-
-		// NO data downcast - we want clean data without highlights
-		// NO upcast - we'll recompute highlights on load
 	}
 
 	/**
-	 * Register model post-fixer to remove codeHighlight attributes outside code blocks.
-	 * This is necessary because schema.addAttributeCheck() only prevents adding NEW disallowed attributes,
-	 * but doesn't automatically remove EXISTING attributes when content is moved/merged (e.g., deleting a code block).
+	 * Registers a model post-fixer to remove stray codeHighlight attributes.
 	 *
-	 * Uses differ to track only affected elements for optimal performance.
+	 * This is necessary because `schema.addAttributeCheck()` only prevents adding new disallowed attributes
+	 * but doesn't automatically remove existing attributes when content is moved or merged
+	 * (e.g., when a code block is deleted and its content is merged into a paragraph).
+	 *
+	 * The post-fixer uses the differ to track only affected elements for optimal performance.
 	 */
 	private _registerCleanupPostFixer(): void {
 		const editor = this.editor;
@@ -170,25 +170,25 @@ export class CodeBlockHighlight extends Plugin {
 			const changes = model.document.differ.getChanges();
 			const affectedElements = new Set<ModelElement>();
 
-			// First pass: identify elements that might have stray codeHighlight attributes
+			// Identify elements that might have stray codeHighlight attributes.
 			for ( const change of changes ) {
 				if ( change.type === 'insert' || change.type === 'remove' ) {
 					const parent = change.position.parent;
 
-					// Track non-code-block parents where content was added/removed
+					// Track non-code-block parents where content was added or removed.
 					if ( parent && parent.is( 'element' ) && !parent.is( 'element', 'codeBlock' ) ) {
 						affectedElements.add( parent );
 					}
 				}
 			}
 
-			// Second pass: clean up only affected elements
+			// Remove codeHighlight attributes from text nodes outside code blocks.
 			let changed = false;
 
 			for ( const element of affectedElements ) {
 				for ( const item of writer.createRangeIn( element ).getItems() ) {
 					if ( ( item.is( '$text' ) || item.is( '$textProxy' ) ) && item.hasAttribute( 'codeHighlight' ) ) {
-						// Check if this text is inside a codeBlock (don't remove if it is)
+						// Double-check that this text is not inside a code block.
 						const parent = item.parent;
 						const isInCodeBlock = parent && parent.is( 'element', 'codeBlock' );
 
@@ -205,7 +205,10 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Register model post-fixer to analyze and apply highlights.
+	 * Registers a model post-fixer to apply syntax highlighting to code blocks.
+	 *
+	 * The post-fixer uses the differ to identify only affected code blocks (those that were inserted,
+	 * modified, or had content changes) to minimize performance impact during editing.
 	 */
 	private _registerModelPostFixer(): void {
 		const editor = this.editor;
@@ -215,37 +218,38 @@ export class CodeBlockHighlight extends Plugin {
 			const changes = model.document.differ.getChanges();
 			const affectedCodeBlocks = new Set<ModelElement>();
 
-			// Identify code blocks that need re-highlighting
+			// Identify code blocks that need re-highlighting based on model changes.
 			for ( const change of changes ) {
 				if ( change.type === 'insert' ) {
 					const insertedItem = change.position.nodeAfter;
 
-					// A code block element was inserted
+					// Track newly inserted code blocks (initialization, paste, or conversion).
 					if ( insertedItem && insertedItem.is( 'element', 'codeBlock' ) ) {
 						affectedCodeBlocks.add( insertedItem );
 					}
 
-					// Content was inserted inside a code block (typing, paste)
+					// Track code blocks where content was inserted (typing, paste).
 					const parent = change.position.parent;
 
 					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
 						affectedCodeBlocks.add( parent );
 					}
 				} else if ( change.type === 'remove' ) {
-					// Content was removed from inside a code block (delete, backspace)
+					// Track code blocks where content was removed (delete, backspace).
 					const parent = change.position.parent;
+
 					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
 						affectedCodeBlocks.add( parent );
 					}
 				}
 			}
 
-			// Early exit if no code blocks affected
+			// Early exit if no code blocks were affected by the changes.
 			if ( affectedCodeBlocks.size === 0 ) {
 				return false;
 			}
 
-			// Highlight only affected code blocks
+			// Process each affected code block and apply highlights.
 			let changed = false;
 
 			for ( const codeBlock of affectedCodeBlocks ) {
@@ -264,12 +268,17 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Check if a code block needs re-highlighting.
+	 * Checks if a code block needs re-highlighting.
+	 *
+	 * @param codeBlock The code block element to check.
+	 * @param currentText Current text content of the code block.
+	 * @param currentLanguage Current language attribute value.
+	 * @returns Returns `true` if the code block should be re-highlighted.
 	 */
 	private _shouldHighlightCodeBlock( codeBlock: ModelElement, currentText: string, currentLanguage: string ): boolean {
 		const lastState = this._lastHighlightedState.get( codeBlock );
 
-		// Re-highlight if text changed OR language changed OR never highlighted before
+		// Re-highlight if never highlighted before or if text or language changed.
 		if ( !lastState ) {
 			return true;
 		}
@@ -278,7 +287,13 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Highlight a code block by applying codeHighlight attributes.
+	 * Highlights a code block by applying codeHighlight attributes to text ranges.
+	 *
+	 * @param codeBlock The code block element to highlight.
+	 * @param code Text content of the code block.
+	 * @param language Programming language for syntax highlighting.
+	 * @param writer Model writer instance for applying changes.
+	 * @returns Returns `true` if any changes were made to the model.
 	 */
 	private _highlightCodeBlock(
 		codeBlock: ModelElement,
@@ -286,13 +301,13 @@ export class CodeBlockHighlight extends Plugin {
 		language: string,
 		writer: ModelWriter
 	): boolean {
-		// Get highlight segments from lowlight
+		// Get highlight segments from lowlight.
 		const segments = this._getHighlightSegments( language, code );
 
-		// Apply highlights to the code block
+		// Apply highlights to the code block.
 		const changed = this._applyHighlightsToCodeBlock( codeBlock, segments, code.length, writer );
 
-		// Remember what we highlighted (both text and language)
+		// Cache the highlighted state to avoid redundant re-analysis.
 		this._lastHighlightedState.set( codeBlock, {
 			text: code,
 			language
@@ -302,7 +317,11 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Get highlight segments from lowlight.
+	 * Gets highlight segments from lowlight for a given code and language.
+	 *
+	 * @param language Programming language identifier (e.g., 'javascript', 'python').
+	 * @param code Source code to analyze.
+	 * @returns Array of text segments with optional highlight classes.
 	 */
 	private _getHighlightSegments( language: string, code: string ): Array<HighlightSegment> {
 		try {
@@ -311,26 +330,29 @@ export class CodeBlockHighlight extends Plugin {
 
 			return this._extractSegmentsFromNodes( nodes );
 		} catch {
-			// If lowlight fails, return plain text
+			// If lowlight fails (unsupported language or parsing error), return plain text.
 			return [ { text: code, classes: null } ];
 		}
 	}
 
 	/**
-	 * Extract text segments with classes from lowlight nodes.
+	 * Extracts text segments with classes from lowlight's node tree.
+	 *
+	 * @param nodes Array of highlight nodes from lowlight output.
+	 * @returns Array of flattened text segments.
 	 */
 	private _extractSegmentsFromNodes( nodes: Array<HighlightNode> ): Array<HighlightSegment> {
 		const segments: Array<HighlightSegment> = [];
 
 		for ( const node of nodes ) {
 			if ( node.type === 'text' && node.value ) {
-				// Plain text, no highlight
+				// Plain text node without highlighting.
 				segments.push( {
 					text: node.value,
 					classes: null
 				} );
 			} else if ( node.type === 'element' && node.children ) {
-				// Highlighted element
+				// Highlighted element node (e.g., keyword, string, comment).
 				const classes = node.properties?.className?.join( ' ' ) || null;
 				const childText = this._extractTextFromNode( node );
 
@@ -347,7 +369,10 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Extract text content from a highlight node.
+	 * Recursively extracts text content from a highlight node tree.
+	 *
+	 * @param node Highlight node to extract text from.
+	 * @returns Concatenated text content.
 	 */
 	private _extractTextFromNode( node: HighlightNode ): string {
 		if ( node.type === 'text' && node.value ) {
@@ -356,9 +381,11 @@ export class CodeBlockHighlight extends Plugin {
 
 		if ( node.children ) {
 			let text = '';
+
 			for ( const child of node.children ) {
 				text += this._extractTextFromNode( child );
 			}
+
 			return text;
 		}
 
@@ -366,7 +393,13 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Apply highlight segments to a code block.
+	 * Applies highlight segments to a code block by setting codeHighlight attributes on text ranges.
+	 *
+	 * @param codeBlock The code block element to apply highlights to.
+	 * @param segments Array of highlight segments from lowlight, each containing text and optional CSS classes.
+	 * @param actualLength Total character length of the code block text (used for bounds checking).
+	 * @param writer Model writer instance for applying changes.
+	 * @returns Returns `true` if any changes were made to the model.
 	 */
 	private _applyHighlightsToCodeBlock(
 		codeBlock: ModelElement,
@@ -375,33 +408,28 @@ export class CodeBlockHighlight extends Plugin {
 		writer: ModelWriter
 	): boolean {
 		let changed = false;
-
-		// Process each segment
 		let currentOffset = 0;
 
 		for ( const segment of segments ) {
 			const segmentLength = segment.text.length;
 
-			// Safety check: don't go beyond actual text
+			// Safety check: ensure we don't exceed the actual text length.
 			if ( currentOffset + segmentLength > actualLength ) {
 				break;
 			}
 
-			// Create range for this segment
+			// Create a range for this segment.
 			const range = writer.createRange(
 				writer.createPositionAt( codeBlock, currentOffset ),
 				writer.createPositionAt( codeBlock, currentOffset + segmentLength )
 			);
 
-			// Apply or remove codeHighlight attribute on the entire range
+			// Apply or remove the codeHighlight attribute based on segment type.
 			if ( segment.classes ) {
-				// Apply highlight
 				writer.setAttribute( 'codeHighlight', segment.classes, range );
-
 				changed = true;
 			} else {
-				// In this case, the text is plain text, so we need to remove the highlight.
-				// Remove highlight only if any item in range has the attribute
+				// For plain text segments, remove highlight only if present to avoid unnecessary operations.
 				let hasAttribute = false;
 
 				for ( const item of range.getItems() ) {
@@ -413,7 +441,6 @@ export class CodeBlockHighlight extends Plugin {
 
 				if ( hasAttribute ) {
 					writer.removeAttribute( 'codeHighlight', range );
-
 					changed = true;
 				}
 			}
@@ -425,7 +452,13 @@ export class CodeBlockHighlight extends Plugin {
 	}
 
 	/**
-	 * Get text content from a model element (code block).
+	 * Extracts text content from a model element (code block).
+	 *
+	 * Converts the code block's content into a flat string representation where softBreak elements
+	 * are converted to newline characters for lowlight processing.
+	 *
+	 * @param element The code block model element.
+	 * @returns Flattened text content with newlines.
 	 */
 	private _getTextFromModelElement( element: ModelElement ): string {
 		const parts: Array<string> = [];

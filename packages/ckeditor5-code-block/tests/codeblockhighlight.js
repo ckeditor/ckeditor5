@@ -28,7 +28,8 @@ describe( 'CodeBlockHighlight', () => {
 				editor = newEditor;
 				model = editor.model;
 				view = editor.editing.view;
-				// Get the DOM root for firing real DOM events
+
+				// Get the DOM root for simulating real DOM typing events.
 				domRoot = view.domRoots.get( 'main' );
 			} );
 	} );
@@ -55,6 +56,8 @@ describe( 'CodeBlockHighlight', () => {
 
 	describe( 'syntax highlighting', () => {
 		describe( 'initialization', () => {
+			// Tests verifying that code blocks are properly highlighted when the editor initializes.
+
 			it( 'should highlight JavaScript code on initialization', () => {
 				_setModelData( model,
 					'<codeBlock language="javascript">' +
@@ -64,7 +67,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify model has codeHighlight attributes with exact structure
+				// Verify that the model has codeHighlight attributes applied correctly.
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="javascript">' +
@@ -80,7 +83,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify view has exact structure with highlight spans
+				// Verify that the view renders the highlighted code correctly.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="JavaScript" spellcheck="false">' +
@@ -104,13 +107,13 @@ describe( 'CodeBlockHighlight', () => {
 					'<codeBlock language="plaintext">just some text[]</codeBlock>'
 				);
 
-				// Verify model does NOT have codeHighlight attributes (plain text only)
+				// Verify that the model does NOT have codeHighlight attributes (plain text only).
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="plaintext">just some text[]</codeBlock>'
 				);
 
-				// Verify view has no highlight spans (plain text only)
+				// Verify that the view has no highlight spans (plain text only).
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="Plain text" spellcheck="false">' +
@@ -122,7 +125,8 @@ describe( 'CodeBlockHighlight', () => {
 			} );
 
 			it( 'should highlight CSS code', () => {
-				// Manually create code block with valid CSS syntax (can't use _setModelData because {} are selection markers)
+				// Create a code block with valid CSS syntax.
+				// Use model.change() instead of _setModelData() because curly braces {...} are treated as selection markers.
 				model.change( writer => {
 					const root = model.document.getRoot();
 					writer.remove( writer.createRangeIn( root ) );
@@ -134,7 +138,7 @@ describe( 'CodeBlockHighlight', () => {
 					writer.setSelection( codeBlock, 'end' );
 				} );
 
-				// Verify model has codeHighlight attributes with exact structure
+				// Verify that the model has codeHighlight attributes for CSS syntax.
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="css">' +
@@ -145,7 +149,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify view has exact CSS highlighting structure
+				// Verify that the view renders CSS highlighting correctly.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="CSS" spellcheck="false">' +
@@ -170,7 +174,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify model has codeHighlight attributes with exact structure
+				// Verify that the model has codeHighlight attributes applied to all lines.
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="javascript">' +
@@ -191,7 +195,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify view has exact multi-line structure
+				// Verify that the view renders all lines with correct highlighting.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="JavaScript" spellcheck="false">' +
@@ -217,20 +221,25 @@ describe( 'CodeBlockHighlight', () => {
 		} );
 
 		describe( 'real-time highlighting during typing', () => {
-			it( 'should apply highlighting while typing', async () => {
+			// Tests syntax highlighting behavior as users type code in real-time.
+			// Verifies that highlights are applied correctly without causing selection issues.
+
+			it( 'should apply syntax highlighting as user types a code statement', async () => {
 				_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
 
-				// Type "const x = 5;"
+				// Simulate typing "const x = 5;" character by character.
 				const text = 'const x = 5;';
+
 				for ( const char of text ) {
 					fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: char } );
+					// Small delay to allow the typing queue to process input.
 					await new Promise( resolve => setTimeout( resolve, 10 ) );
 				}
 
-				// Wait for highlighting to complete
+				// Wait for the post-fixer to apply syntax highlighting.
 				await new Promise( resolve => setTimeout( resolve, 50 ) );
 
-				// Verify model has codeHighlight attributes with exact structure
+				// Verify that the model has codeHighlight attributes applied correctly.
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="javascript">' +
@@ -241,7 +250,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify view has exact highlighting structure
+				// Verify that the view renders the highlighted code correctly.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="JavaScript" spellcheck="false">' +
@@ -255,8 +264,9 @@ describe( 'CodeBlockHighlight', () => {
 				);
 			} );
 
-			it( 'should apply highlighting when typing in existing multi-line code block', async () => {
-				// Create code block with existing JavaScript function (using model.change to handle {})
+			it( 'should apply syntax highlighting when typing comments in an existing multi-line code block', async () => {
+				// Create a code block containing a JavaScript function with multiple lines.
+				// Use model.change() instead of _setModelData() because curly braces {...} are treated as selection markers.
 				model.change( writer => {
 					const root = model.document.getRoot();
 					writer.remove( writer.createRangeIn( root ) );
@@ -264,15 +274,14 @@ describe( 'CodeBlockHighlight', () => {
 					const codeBlock = writer.createElement( 'codeBlock', { language: 'javascript' } );
 					writer.insert( codeBlock, root, 0 );
 
-					// Insert: function foo() {\n  const name = 'John';\n}
+					// Insert the JavaScript function: function foo() {\n  const name = 'John';\n}
 					writer.insertText( 'function foo() {', codeBlock, 0 );
 					writer.insert( writer.createElement( 'softBreak' ), codeBlock, 'end' );
 					writer.insertText( '  const name = \'John\';', codeBlock, 'end' );
 					writer.insert( writer.createElement( 'softBreak' ), codeBlock, 'end' );
 					writer.insertText( '}', codeBlock, 'end' );
 
-					// Position cursor at the end of line 2, after the semicolon
-					// We need to find the position after "  const name = 'John';"
+					// Position the cursor at the end of line 2, after the semicolon.
 					const softBreaks = Array.from( codeBlock.getChildren() )
 						.filter( child => child.is( 'element', 'softBreak' ) );
 					const secondSoftBreak = softBreaks[ 1 ];
@@ -280,21 +289,22 @@ describe( 'CodeBlockHighlight', () => {
 					writer.setSelection( positionBeforeSoftBreak );
 				} );
 
-				// Wait for initial highlighting
+				// Wait for initial highlighting to complete.
 				await new Promise( resolve => setTimeout( resolve, 50 ) );
 
-				// Type a space and then the comment character by character
+				// Simulate typing a JavaScript comment character by character.
 				const commentText = ' // Initialize name.';
 
 				for ( const char of commentText ) {
 					fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: char } );
+					// Small delay to allow the typing queue to process input.
 					await new Promise( resolve => setTimeout( resolve, 10 ) );
 				}
 
-				// Wait for highlighting to complete
+				// Wait for the post-fixer to apply syntax highlighting to the comment.
 				await new Promise( resolve => setTimeout( resolve, 100 ) );
 
-				// Verify model has correct highlighting for the comment and existing code
+				// Verify that the model has correct highlighting for the comment and existing code.
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<codeBlock language="javascript">' +
@@ -314,7 +324,7 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Verify view has correct highlighting structure
+				// Verify that the view renders the comment and code with correct highlighting.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="JavaScript" spellcheck="false">' +
@@ -337,20 +347,22 @@ describe( 'CodeBlockHighlight', () => {
 				);
 			} );
 
-			it( 'should not wrap all text in highlight spans', async () => {
+			it( 'should leave plain text (operators, spaces, punctuation) unhighlighted', async () => {
 				_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
 
-				// Type "const x = 5;"
+				// Simulate typing "const x = 5;" character by character.
 				const text = 'const x = 5;';
+
 				for ( const char of text ) {
 					fireBeforeInputDomEvent( domRoot, { inputType: 'insertText', data: char } );
+					// Small delay to allow the typing queue to process input.
 					await new Promise( resolve => setTimeout( resolve, 10 ) );
 				}
 
-				// Wait for highlighting to complete
+				// Wait for the post-fixer to apply syntax highlighting.
 				await new Promise( resolve => setTimeout( resolve, 50 ) );
 
-				// Verify view has plain text between spans (operators, spaces, semicolon not wrapped)
+				// Verify that the view has plain text between spans (operators, spaces, semicolon are not wrapped).
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<pre data-language="JavaScript" spellcheck="false">' +
@@ -366,21 +378,23 @@ describe( 'CodeBlockHighlight', () => {
 		} );
 
 		describe( 'language changes', () => {
-			it( 'should re-highlight when changing from JavaScript to plaintext', () => {
+			// Tests verifying that syntax highlighting is updated when the code block language changes.
+
+			it( 'should remove syntax highlighting when changing language from JavaScript to plaintext', () => {
 				_setModelData( model,
 					'<codeBlock language="javascript">const x = 10;[]</codeBlock>'
 				);
 
-				// Change language to plaintext
+				// Change the language attribute to plaintext.
 				const codeBlock = model.document.getRoot().getChild( 0 );
 				model.change( writer => {
 					writer.setAttribute( 'language', 'plaintext', codeBlock );
 				} );
 
-				// Reconvert the element to update view
+				// Reconvert the element to update the view.
 				editor.editing.reconvertItem( codeBlock );
 
-				// Verify highlighting is removed from model and view
+				// Verify that highlighting is removed from both model and view.
 				const modelData = _getModelData( model );
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( modelData ).to.equal(
@@ -395,21 +409,21 @@ describe( 'CodeBlockHighlight', () => {
 				);
 			} );
 
-			it( 'should re-highlight when changing from plaintext to JavaScript', () => {
+			it( 'should apply syntax highlighting when changing language from plaintext to JavaScript', () => {
 				_setModelData( model,
 					'<codeBlock language="plaintext">const x = 10;[]</codeBlock>'
 				);
 
-				// Change language to JavaScript
+				// Change the language attribute to JavaScript.
 				const codeBlock = model.document.getRoot().getChild( 0 );
 				model.change( writer => {
 					writer.setAttribute( 'language', 'javascript', codeBlock );
 				} );
 
-				// Reconvert the element to update view
+				// Reconvert the element to update the view.
 				editor.editing.reconvertItem( codeBlock );
 
-				// Verify highlighting is applied in model and view
+				// Verify that highlighting is applied correctly in both model and view.
 				const modelData = _getModelData( model );
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( modelData ).to.equal(
@@ -434,29 +448,32 @@ describe( 'CodeBlockHighlight', () => {
 		} );
 
 		describe( 'cleanup on structure changes', () => {
+			// Tests verifying that codeHighlight attributes are properly removed when code blocks
+			// are deleted, merged, or converted to other element types.
+
 			it( 'should remove highlight attributes when merging code block into paragraph', () => {
 				_setModelData( model,
 					'<paragraph>Foobar</paragraph>' +
 					'<codeBlock language="javascript">[]const test = "test";</codeBlock>'
 				);
 
-				// Execute backspace to merge code block with paragraph
+				// Execute backspace to merge the code block with the preceding paragraph.
 				editor.execute( 'delete', { direction: 'backward' } );
 
-				// Verify model has no codeHighlight attributes
+				// Verify that the model has no codeHighlight attributes after merging.
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<paragraph>Foobar[]const test = "test";</paragraph>'
 				);
 
-				// Verify view has no highlight spans
+				// Verify that the view has no highlight spans after merging.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<p>Foobarconst test = "test";</p>'
 				);
 			} );
 
-			it( 'should remove highlight attributes when changing code block to paragraph', () => {
+			it( 'should remove highlight attributes when converting code block to paragraphs', () => {
 				_setModelData( model,
 					'<codeBlock language="javascript">' +
 						'const test = "test";' +
@@ -465,17 +482,17 @@ describe( 'CodeBlockHighlight', () => {
 					'</codeBlock>'
 				);
 
-				// Execute codeBlock command to toggle it off (changes to paragraphs)
+				// Execute the codeBlock command to toggle it off (converts to paragraphs).
 				editor.execute( 'codeBlock' );
 
-				// Verify model has no codeHighlight attributes (split into paragraphs)
+				// Verify that the model has no codeHighlight attributes (lines split into paragraphs).
 				const modelData = _getModelData( model );
 				expect( modelData ).to.equal(
 					'<paragraph>const test = "test";</paragraph>' +
 					'<paragraph>let i = 0;[]</paragraph>'
 				);
 
-				// Verify view has no highlight spans
+				// Verify that the view has no highlight spans after conversion.
 				const viewData = _getViewData( view, { withoutSelection: true } );
 				expect( viewData ).to.equal(
 					'<p>const test = "test";</p>' +
