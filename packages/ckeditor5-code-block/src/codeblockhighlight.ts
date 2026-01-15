@@ -288,7 +288,7 @@ export class CodeBlockHighlight extends Plugin {
 		const segments = this._getHighlightSegments( language, code );
 
 		// Apply highlights to the code block
-		const changed = this._applyHighlightsToCodeBlock( codeBlock, segments, writer );
+		const changed = this._applyHighlightsToCodeBlock( codeBlock, segments, code.length, writer );
 
 		// Remember what we highlighted (both text and language)
 		this._lastHighlightedState.set( codeBlock, {
@@ -363,25 +363,12 @@ export class CodeBlockHighlight extends Plugin {
 	private _applyHighlightsToCodeBlock(
 		codeBlock: ModelElement,
 		segments: Array<HighlightSegment>,
+		actualLength: number,
 		writer: ModelWriter
 	): boolean {
 		let changed = false;
 
-		// Get actual text length to ensure we don't go out of bounds
-		const actualText = this._getTextFromModelElement( codeBlock );
-		const actualLength = actualText.length;
-
-		// Calculate total segment length
-		const segmentsTotalLength = segments.reduce( ( sum, seg ) => sum + seg.text.length, 0 );
-
-		// Safety check: if segments don't match actual text, skip highlighting
-		if ( segmentsTotalLength !== actualLength ) {
-			// This can happen if post-fixer runs while text is being modified
-			return false;
-		}
-
 		// Process each segment
-		// (each character = 1 position, each softBreak = 1 position like \n)
 		let currentOffset = 0;
 
 		for ( const segment of segments ) {
