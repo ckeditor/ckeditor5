@@ -221,13 +221,14 @@ export class CodeBlockHighlight extends Plugin {
 				if ( change.type === 'insert' ) {
 					const insertedItem = change.position.nodeAfter;
 
-					// A code block element was inserted (or reconverted)
+					// A code block element was inserted
 					if ( insertedItem && insertedItem.is( 'element', 'codeBlock' ) ) {
 						affectedCodeBlocks.add( insertedItem );
 					}
 
 					// Content was inserted inside a code block (typing, paste)
 					const parent = change.position.parent;
+
 					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
 						affectedCodeBlocks.add( parent );
 					}
@@ -238,7 +239,6 @@ export class CodeBlockHighlight extends Plugin {
 						affectedCodeBlocks.add( parent );
 					}
 				}
-				// No need for 'attribute' case - reconvertItem handles it via remove+insert
 			}
 
 			// Early exit if no code blocks affected
@@ -252,6 +252,7 @@ export class CodeBlockHighlight extends Plugin {
 			for ( const codeBlock of affectedCodeBlocks ) {
 				if ( this._shouldHighlightCodeBlock( codeBlock ) ) {
 					const wasChanged = this._highlightCodeBlock( codeBlock, writer );
+
 					changed = changed || wasChanged;
 				}
 			}
@@ -305,6 +306,7 @@ export class CodeBlockHighlight extends Plugin {
 		try {
 			const result = this.lowlight.highlight( language, code );
 			const nodes = ( result.children || [] ) as Array<HighlightNode>;
+
 			return this._extractSegmentsFromNodes( nodes );
 		} catch {
 			// If lowlight fails, return plain text
@@ -378,55 +380,22 @@ export class CodeBlockHighlight extends Plugin {
 			return false;
 		}
 
-		// Build a map of text offsets to model offsets (accounting for softBreak elements)
-		const textOffsetToModelOffset = new Map<number, number>();
-		let textOffset = 0;
-		let modelOffset = 0;
-
-		for ( const child of codeBlock.getChildren() ) {
-			if ( child.is( '$text' ) || child.is( '$textProxy' ) ) {
-				const textLength = ( child as ModelText ).data.length;
-				for ( let i = 0; i <= textLength; i++ ) {
-					textOffsetToModelOffset.set( textOffset + i, modelOffset + i );
-				}
-				textOffset += textLength;
-				modelOffset += textLength;
-			} else if ( child.is( 'element', 'softBreak' ) ) {
-				// Map the \n position in text to the softBreak position in model
-				textOffsetToModelOffset.set( textOffset, modelOffset );
-				textOffset++; // \n in text
-				modelOffset++; // softBreak element
-			}
-		}
-
-		// Ensure the final position is also mapped
-		textOffsetToModelOffset.set( textOffset, modelOffset );
-
-		// Process each segment using text offsets
-		let textOffsetCurrent = 0;
+		// Process each segment
+		// (each character = 1 position, each softBreak = 1 position like \n)
+		let currentOffset = 0;
 
 		for ( const segment of segments ) {
 			const segmentLength = segment.text.length;
 
 			// Safety check: don't go beyond actual text
-			if ( textOffsetCurrent + segmentLength > actualLength ) {
+			if ( currentOffset + segmentLength > actualLength ) {
 				break;
 			}
 
-			// Convert text offsets to model offsets
-			const startModelOffset = textOffsetToModelOffset.get( textOffsetCurrent );
-			const endModelOffset = textOffsetToModelOffset.get( textOffsetCurrent + segmentLength );
-
-			// Safety check: if offsets are not found, skip this segment
-			// This can happen if the model structure changed during the post-fixer run
-			if ( startModelOffset === undefined || endModelOffset === undefined ) {
-				break;
-			}
-
-			// Find text nodes in this range
+			// Create range for this segment
 			const range = writer.createRange(
-				writer.createPositionAt( codeBlock, startModelOffset ),
-				writer.createPositionAt( codeBlock, endModelOffset )
+				writer.createPositionAt( codeBlock, currentOffset ),
+				writer.createPositionAt( codeBlock, currentOffset + segmentLength )
 			);
 
 			// Apply or remove codeHighlight attribute
@@ -436,13 +405,13 @@ export class CodeBlockHighlight extends Plugin {
 					const currentHighlight = textNode.getAttribute( 'codeHighlight' );
 
 					if ( segment.classes ) {
-						// Apply highlight
+						// Apply highlight if highlight classes are present. It means the text is highlighted
 						if ( currentHighlight !== segment.classes ) {
 							writer.setAttribute( 'codeHighlight', segment.classes, textNode );
 							changed = true;
 						}
 					} else {
-						// Remove highlight
+						// Remove highlight if no highlight classes are present. It means the text is plain text
 						if ( currentHighlight ) {
 							writer.removeAttribute( 'codeHighlight', textNode );
 							changed = true;
@@ -451,7 +420,7 @@ export class CodeBlockHighlight extends Plugin {
 				}
 			}
 
-			textOffsetCurrent += segmentLength;
+			currentOffset += segmentLength;
 		}
 
 		return changed;
