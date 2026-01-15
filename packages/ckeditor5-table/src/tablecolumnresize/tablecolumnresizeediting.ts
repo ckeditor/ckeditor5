@@ -77,6 +77,7 @@ type ResizingData = {
 		viewColgroup: ViewElement;
 		viewLeftColumn: ViewElement;
 		viewRightColumn?: ViewElement;
+		viewColumns: Array<ViewElement>;
 	};
 	widths: {
 		viewFigureParentWidth: number;
@@ -84,7 +85,9 @@ type ResizingData = {
 		tableWidth: number;
 		leftColumnWidth: number;
 		rightColumnWidth?: number;
+		allColumnWidths: Array<number>;
 	};
+	leftColumnIndex: number;
 };
 
 /**
@@ -765,14 +768,17 @@ export class TableColumnResizeEditing extends Plugin {
 				viewFigure,
 				viewLeftColumn,
 				viewRightColumn,
-				viewResizer
+				viewResizer,
+				viewColumns
 			},
 			widths: {
 				viewFigureParentWidth,
 				tableWidth,
 				leftColumnWidth,
-				rightColumnWidth
-			}
+				rightColumnWidth,
+				allColumnWidths
+			},
+			leftColumnIndex
 		} = this._resizingData!;
 
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
@@ -797,15 +803,27 @@ export class TableColumnResizeEditing extends Plugin {
 		}
 
 		this.editor.editing.view.change( writer => {
-			const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
-
-			writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
-
 			if ( isRightEdge ) {
-				const tableWidthAsPercentage = toPrecision( ( tableWidth + dx ) * 100 / viewFigureParentWidth );
+				const newTableWidth = tableWidth + dx;
+				const tableWidthAsPercentage = toPrecision( newTableWidth * 100 / viewFigureParentWidth );
 
 				writer.setStyle( 'width', `${ tableWidthAsPercentage }%`, viewFigure );
+
+				for ( let i = 0; i < allColumnWidths.length; i++ ) {
+					let columnWidth = allColumnWidths[ i ];
+
+					if ( i === leftColumnIndex ) {
+						columnWidth += dx;
+					}
+
+					const columnWidthAsPercentage = toPrecision( columnWidth * 100 / newTableWidth );
+					writer.setStyle( 'width', `${ columnWidthAsPercentage }%`, viewColumns[ i ] );
+				}
 			} else {
+				const leftColumnWidthAsPercentage = toPrecision( ( leftColumnWidth + dx ) * 100 / tableWidth );
+
+				writer.setStyle( 'width', `${ leftColumnWidthAsPercentage }%`, viewLeftColumn );
+
 				const rightColumnWidthAsPercentage = toPrecision( ( rightColumnWidth! - dx ) * 100 / tableWidth );
 
 				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn! );
@@ -941,6 +959,7 @@ export class TableColumnResizeEditing extends Plugin {
 		const viewFigure = viewTable.findAncestor( 'figure' ) as ViewElement;
 		const viewColgroup = [ ...viewTable.getChildren() as IterableIterator<ViewElement> ]
 			.find( viewCol => viewCol.is( 'element', 'colgroup' ) )!;
+		const viewColumns = Array.from( viewColgroup.getChildren() ) as Array<ViewElement>;
 		const viewLeftColumn = viewColgroup.getChild( leftColumnIndex ) as ViewElement;
 		const viewRightColumn = isRightEdge ? undefined : viewColgroup.getChild( leftColumnIndex + 1 ) as ViewElement;
 
@@ -965,15 +984,18 @@ export class TableColumnResizeEditing extends Plugin {
 				viewFigure,
 				viewColgroup,
 				viewLeftColumn,
-				viewRightColumn
+				viewRightColumn,
+				viewColumns
 			},
 			widths: {
 				viewFigureParentWidth,
 				viewFigureWidth,
 				tableWidth,
 				leftColumnWidth,
-				rightColumnWidth
-			}
+				rightColumnWidth,
+				allColumnWidths: columnWidths
+			},
+			leftColumnIndex
 		};
 	}
 

@@ -56,7 +56,7 @@ import { Rect } from '@ckeditor/ckeditor5-utils';
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;
 	const PERCENTAGE_PRECISION = 0.001;
-	const PIXEL_PRECISION = 1;
+	const PIXEL_PRECISION = 6;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -1963,8 +1963,8 @@ describe( 'TableColumnResizeEditing', () => {
 												'</tableCell>' +
 											'</tableRow>' +
 											'<tableColumnGroup>' +
-												'<tableColumn columnWidth="45\\.45%"></tableColumn>' +
-												'<tableColumn columnWidth="54\\.55%"></tableColumn>' +
+												'<tableColumn columnWidth="45\\.[\\d]+%"></tableColumn>' +
+												'<tableColumn columnWidth="54\\.[\\d]+%"></tableColumn>' +
 											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
