@@ -26,7 +26,7 @@ parameters:
     default: false
   chromeVersion:
     type: string
-    default: "143.0.7499.109"
+    default: "144.0.7559.59"
 
 orbs:
   continuation: circleci/continuation@0.1.2
