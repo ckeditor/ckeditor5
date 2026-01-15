@@ -213,20 +213,46 @@ export class CodeBlockHighlight extends Plugin {
 		const model = editor.model;
 
 		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
+			const affectedCodeBlocks = new Set<ModelElement>();
+
+			// Identify code blocks that need re-highlighting
+			for ( const change of changes ) {
+				if ( change.type === 'insert' ) {
+					const insertedItem = change.position.nodeAfter;
+
+					// A code block element was inserted (or reconverted)
+					if ( insertedItem && insertedItem.is( 'element', 'codeBlock' ) ) {
+						affectedCodeBlocks.add( insertedItem );
+					}
+
+					// Content was inserted inside a code block (typing, paste)
+					const parent = change.position.parent;
+					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
+						affectedCodeBlocks.add( parent );
+					}
+				} else if ( change.type === 'remove' ) {
+					// Content was removed from inside a code block (delete, backspace)
+					const parent = change.position.parent;
+					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
+						affectedCodeBlocks.add( parent );
+					}
+				}
+				// No need for 'attribute' case - reconvertItem handles it via remove+insert
+			}
+
+			// Early exit if no code blocks affected
+			if ( affectedCodeBlocks.size === 0 ) {
+				return false;
+			}
+
+			// Highlight only affected code blocks
 			let changed = false;
 
-			// Find all code blocks in the document
-			for ( const root of model.document.getRoots() ) {
-				for ( const codeBlock of root.getChildren() ) {
-					if ( !codeBlock.is( 'element', 'codeBlock' ) ) {
-						continue;
-					}
-
-					// Check if this code block needs re-highlighting
-					if ( this._shouldHighlightCodeBlock( codeBlock ) ) {
-						const wasChanged = this._highlightCodeBlock( codeBlock, writer );
-						changed = changed || wasChanged;
-					}
+			for ( const codeBlock of affectedCodeBlocks ) {
+				if ( this._shouldHighlightCodeBlock( codeBlock ) ) {
+					const wasChanged = this._highlightCodeBlock( codeBlock, writer );
+					changed = changed || wasChanged;
 				}
 			}
 
