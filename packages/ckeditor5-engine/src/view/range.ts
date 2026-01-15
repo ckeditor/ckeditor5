@@ -512,7 +512,7 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 // Proper overload would interfere with that.
 ViewRange.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'view:range';
-};
+} as any;
 
 /**
  * Function used by getEnlarged and getTrimmed methods.

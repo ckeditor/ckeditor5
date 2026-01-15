@@ -74,7 +74,7 @@ export class ViewRootEditableElement extends ViewEditableElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewRootEditableElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewRootEditableElement.prototype.is = function( this: ViewRootEditableElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'view:rootElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -91,4 +91,4 @@ ViewRootEditableElement.prototype.is = function( type: string, name?: string ): 
 			type === 'element' || type === 'view:element'
 		);
 	}
-};
+} as any;

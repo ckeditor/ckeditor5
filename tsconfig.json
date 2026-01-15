@@ -25,7 +25,6 @@
     "module": "esnext",
     "target": "es2022",
     "sourceMap": true,
-    "allowJs": true,
     "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true

@@ -304,7 +304,7 @@ export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeChe
 // Proper overload would interfere with that.
 ViewNode.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'view:node';
-};
+} as any;
 
 /**
  * Fired when list of {@link module:engine/view/element~ViewElement elements} children, attributes or text changes.

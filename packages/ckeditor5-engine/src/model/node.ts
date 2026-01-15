@@ -436,7 +436,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 // Proper overload would interfere with that.
 ModelNode.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'model:node';
-};
+} as any;
 
 /**
  * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
