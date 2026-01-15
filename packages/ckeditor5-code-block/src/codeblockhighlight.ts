@@ -11,8 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { CodeBlockEditing } from './codeblockediting.js';
 import type {
 	ModelElement,
-	ModelWriter,
-	ModelText
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { common, createLowlight } from 'lowlight';
@@ -250,8 +249,11 @@ export class CodeBlockHighlight extends Plugin {
 			let changed = false;
 
 			for ( const codeBlock of affectedCodeBlocks ) {
-				if ( this._shouldHighlightCodeBlock( codeBlock ) ) {
-					const wasChanged = this._highlightCodeBlock( codeBlock, writer );
+				const currentText = this._getTextFromModelElement( codeBlock );
+				const currentLanguage = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
+
+				if ( this._shouldHighlightCodeBlock( codeBlock, currentText, currentLanguage ) ) {
+					const wasChanged = this._highlightCodeBlock( codeBlock, currentText, currentLanguage, writer );
 
 					changed = changed || wasChanged;
 				}
@@ -264,9 +266,7 @@ export class CodeBlockHighlight extends Plugin {
 	/**
 	 * Check if a code block needs re-highlighting.
 	 */
-	private _shouldHighlightCodeBlock( codeBlock: ModelElement ): boolean {
-		const currentText = this._getTextFromModelElement( codeBlock );
-		const currentLanguage = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
+	private _shouldHighlightCodeBlock( codeBlock: ModelElement, currentText: string, currentLanguage: string ): boolean {
 		const lastState = this._lastHighlightedState.get( codeBlock );
 
 		// Re-highlight if text changed OR language changed OR never highlighted before
@@ -280,10 +280,12 @@ export class CodeBlockHighlight extends Plugin {
 	/**
 	 * Highlight a code block by applying codeHighlight attributes.
 	 */
-	private _highlightCodeBlock( codeBlock: ModelElement, writer: ModelWriter ): boolean {
-		const language = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
-		const code = this._getTextFromModelElement( codeBlock );
-
+	private _highlightCodeBlock(
+		codeBlock: ModelElement,
+		code: string,
+		language: string,
+		writer: ModelWriter
+	): boolean {
 		// Get highlight segments from lowlight
 		const segments = this._getHighlightSegments( language, code );
 
@@ -351,9 +353,15 @@ export class CodeBlockHighlight extends Plugin {
 		if ( node.type === 'text' && node.value ) {
 			return node.value;
 		}
+
 		if ( node.children ) {
-			return node.children.map( child => this._extractTextFromNode( child ) ).join( '' );
+			let text = '';
+			for ( const child of node.children ) {
+				text += this._extractTextFromNode( child );
+			}
+			return text;
 		}
+
 		return '';
 	}
 
@@ -385,25 +393,28 @@ export class CodeBlockHighlight extends Plugin {
 				writer.createPositionAt( codeBlock, currentOffset + segmentLength )
 			);
 
-			// Apply or remove codeHighlight attribute
-			for ( const item of range.getItems() ) {
-				if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
-					const textNode = item as ModelText;
-					const currentHighlight = textNode.getAttribute( 'codeHighlight' );
+			// Apply or remove codeHighlight attribute on the entire range
+			if ( segment.classes ) {
+				// Apply highlight
+				writer.setAttribute( 'codeHighlight', segment.classes, range );
 
-					if ( segment.classes ) {
-						// Apply highlight if highlight classes are present. It means the text is highlighted
-						if ( currentHighlight !== segment.classes ) {
-							writer.setAttribute( 'codeHighlight', segment.classes, textNode );
-							changed = true;
-						}
-					} else {
-						// Remove highlight if no highlight classes are present. It means the text is plain text
-						if ( currentHighlight ) {
-							writer.removeAttribute( 'codeHighlight', textNode );
-							changed = true;
-						}
+				changed = true;
+			} else {
+				// In this case, the text is plain text, so we need to remove the highlight.
+				// Remove highlight only if any item in range has the attribute
+				let hasAttribute = false;
+
+				for ( const item of range.getItems() ) {
+					if ( ( item.is( '$text' ) || item.is( '$textProxy' ) ) && item.hasAttribute( 'codeHighlight' ) ) {
+						hasAttribute = true;
+						break;
 					}
+				}
+
+				if ( hasAttribute ) {
+					writer.removeAttribute( 'codeHighlight', range );
+
+					changed = true;
 				}
 			}
 
@@ -417,14 +428,16 @@ export class CodeBlockHighlight extends Plugin {
 	 * Get text content from a model element (code block).
 	 */
 	private _getTextFromModelElement( element: ModelElement ): string {
-		let text = '';
+		const parts: Array<string> = [];
+
 		for ( const child of element.getChildren() ) {
 			if ( child.is( '$text' ) || child.is( '$textProxy' ) ) {
-				text += child.data;
+				parts.push( child.data );
 			} else if ( child.is( 'element', 'softBreak' ) ) {
-				text += '\n';
+				parts.push( '\n' );
 			}
 		}
-		return text;
+
+		return parts.join( '' );
 	}
 }
