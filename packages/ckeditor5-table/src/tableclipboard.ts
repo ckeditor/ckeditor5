@@ -357,7 +357,7 @@ export class TableClipboard extends Plugin {
 
 		const areHeadingRowsIntersectingSelection = selection.firstRow < headingRows && headingRows <= selection.lastRow;
 		const areHeadingColumnsIntersectingSelection = selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn;
-		const areFooterRowsIntersectingSelection = selection.lastRow >= footerIndex && footerIndex >= selection.firstRow;
+		const areFooterRowsIntersectingSelection = selection.firstRow < footerIndex && footerIndex <= selection.lastRow;
 
 		if ( areHeadingRowsIntersectingSelection ) {
 			const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
