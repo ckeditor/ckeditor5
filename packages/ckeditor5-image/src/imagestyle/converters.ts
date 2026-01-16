@@ -92,7 +92,7 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 			}
 		}
 
-		// Normalize float styles (alignLeft, alignBlockLeft, alignRight, alignBlockRight).
+		// Normalize float styles (alignLeft, alignRight).
 		normalizeFloatToDefinitionStyle( conversionApi, viewElement, modelImageElement, styles );
 	};
 }
@@ -100,7 +100,7 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 /**
  * A helper function that attempts to convert the `float` CSS style into a corresponding `imageStyle` attribute.
  *
- * It maps `float: left` and `float: right` to standard alignment styles (e.g. `'alignLeft'`, `'alignBlockRight'`),
+ * It maps `float: left` and `float: right` to standard alignment styles (e.g. `'alignLeft'`, `'alignRight'`),
  * but only if the target style definition matches one of the {@link module:image/image/utils~DEFAULT_OPTIONS default options}.
  */
 function normalizeFloatToDefinitionStyle(
