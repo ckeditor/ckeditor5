@@ -318,3 +318,15 @@ msgstr "Metin kaydırma yapmadan tabloyu sola hizala"
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
 msgstr "Metin kaydırma yapmadan tabloyu sağa hizala"
+
+msgctxt "The label for the dropdown that allows configuring the type of a table cell (data or header)."
+msgid "Cell type"
+msgstr "Hücre türü"
+
+msgctxt "The label for the dropdown option for a data table cell."
+msgid "Data cell"
+msgstr "Veri hücresi"
+
+msgctxt "The label for the dropdown option for a header table cell."
+msgid "Header cell"
+msgstr "Başlık hücresi"

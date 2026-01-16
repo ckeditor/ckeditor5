@@ -4,7 +4,7 @@ meta-title: Table and cell styling tools | CKEditor 5 Documentation
 meta-description: Style tables in CKEditor 5 with custom classes, alignment, and formatting options to match your document’s design and improve readability.
 category: tables
 order: 20
-modified_at: 2022-05-19
+modified_at: 2026-01-08
 badges: [ premium ]
 ---
 
