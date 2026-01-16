@@ -1,60 +1,123 @@
-<h2>Semantic–oriented images</h2>
-<div id="editor-semantic">
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-	<figure class="image">
-		<img src="sample.jpg" alt="" />
-	</figure>
+<style>
+	.row {
+		display: flex;
+		gap: 20px;
+		margin-bottom: 20px;
+	}
+	.column {
+		flex: 1;
+		min-width: 0;
+	}
+	.preview-box {
+		border: 1px solid #c4c4c4;
+		background: #fcfcfc;
+		height: 100%;
+		width: 100%;
+	}
+</style>
 
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-	<p></p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/100px-Run.svg.png" alt="Example image" style="width: 20px;"> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Image alignment:</p>
-	<p>
-		<img alt="Right align" src="game_boy.jpg" style="float:right; height:75px; width:75px" />
-		Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
-		<img alt="Left align" src="game_boy.jpg" style="float:left; height:75px; width:75px" />
-		Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
-	</p>
+<h2>Semantic–oriented images</h2>
+<div class="row">
+	<div class="column">
+		<div id="editor-semantic">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+			<figure class="image">
+				<img src="sample.jpg" alt="" />
+			</figure>
+
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+			<p></p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/100px-Run.svg.png" alt="Example image" style="width: 20px;"> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p>Image alignment:</p>
+			<p>
+				<img alt="Right align" src="game_boy.jpg" style="float:right; height:75px; width:75px" />
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+				<img alt="Left align" src="game_boy.jpg" style="float:left; height:75px; width:75px" />
+				Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
+			</p>
+			<figure class="image" style="float: left">
+				<img src="sample.jpg" alt="Left aligned block image" />
+			</figure>
+			<p>
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+			<figure class="image" style="float: right">
+				<img src="sample.jpg" alt="Right aligned block image" />
+			</figure>
+			<p>
+				Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi.
+			</p>
+		</div>
+	</div>
+	<div class="column">
+		<div id="preview-semantic" class="preview-box ck-content"></div>
+	</div>
 </div>
 
 <h2>Formatting–oriented images</h2>
-<div id="editor-formatting">
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-	<figure class="image">
-		<img src="sample.jpg" alt="" />
-	</figure>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-	<p></p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor<img class="image-style-align-left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/100px-Run.svg.png" alt="Example image" style="width: 20px;"> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Image alignment:</p>
-	<figure class="image" style="float: right">
-		<img src="sample.jpg" alt="Right aligned block image" />
-	</figure>
-	<p>
-		<img alt="Right align" src="game_boy.jpg" style="float:right; height:75px; width:75px" />
-		Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
-		<img alt="Left align" src="game_boy.jpg" style="float:left; height:75px; width:75px" />
-		Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
-	</p>
+<div class="row">
+	<div class="column">
+		<div id="editor-formatting">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+			<figure class="image">
+				<img src="sample.jpg" alt="" />
+			</figure>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+			<p></p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor<img class="image-style-align-left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/100px-Run.svg.png" alt="Example image" style="width: 20px;"> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p>Image alignment:</p>
+			<figure class="image" style="float: right">
+				<img src="sample.jpg" alt="Right aligned block image" />
+			</figure>
+			<p>
+				<img alt="Right align" src="game_boy.jpg" style="float:right; height:75px; width:75px" />
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+				<img alt="Left align" src="game_boy.jpg" style="float:left; height:75px; width:75px" />
+				Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
+			</p>
+			<figure class="image" style="float: left">
+				<img src="sample.jpg" alt="Left aligned block image" />
+			</figure>
+			<p>
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+		</div>
+	</div>
+	<div class="column">
+		<div id="preview-formatting" class="preview-box ck-content"></div>
+	</div>
 </div>
 
 <h2>Declarative drop-downs</h2>
-<div id="editor-with-dropdown">
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-	<figure class="image">
-		<img src="sample.jpg" alt="" />
-	</figure>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-	<p></p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor<img class="image-style-align-left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/100px-Run.svg.png" alt="Example image" style="width: 20px;"> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Image alignment:</p>
-	<figure class="image" style="float: right">
-		<img src="sample.jpg" alt="Right aligned block image" />
-	</figure>
-	<p>
-		<img alt="Right align" src="game_boy.jpg" style="float:right; height:75px; width:75px" />
-		Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
-		<img alt="Left align" src="game_boy.jpg" style="float:left; height:75px; width:75px" />
-		Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
-	</p>
+<div class="row">
+	<div class="column">
+		<div id="editor-with-dropdown">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+			<figure class="image">
+				<img src="sample.jpg" alt="" />
+			</figure>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+			<p></p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor<img class="image-style-align-left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Run.svg/100px-Run.svg.png" alt="Example image" style="width: 20px;"> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p>Image alignment:</p>
+			<figure class="image" style="float: right">
+				<img src="sample.jpg" alt="Right aligned block image" />
+			</figure>
+			<p>
+				<img alt="Right align" src="game_boy.jpg" style="float:right; height:75px; width:75px" />
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+				<img alt="Left align" src="game_boy.jpg" style="float:left; height:75px; width:75px" />
+				Fusce euismod, urna eu tincidunt consectetur, nisi nisl lacinia mi,
+			</p>
+			<figure class="image" style="float: left">
+				<img src="sample.jpg" alt="Left aligned block image" />
+			</figure>
+			<p>
+				Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.
+			</p>
+		</div>
+	</div>
+	<div class="column">
+		<div id="preview-with-dropdown" class="preview-box ck-content"></div>
+	</div>
 </div>
