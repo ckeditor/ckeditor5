@@ -52,7 +52,7 @@ export class InsertTableCommand extends Command {
 	 * @param options.headingColumns The number of heading columns. If not provided it will default to
 	 * {@link module:table/tableconfig~TableConfig#defaultHeadings `config.table.defaultHeadings.columns`} table config.
 	 * @param options.footerRows The number of footer rows. If not provided it will default to
-	 * {@link module:table/tableconfig~TableConfig#defaultFooters `config.table.defaultFooters.footerRows`} table config.
+	 * {@link module:table/tableconfig~TableConfig#defaultFooters `config.table.defaultFooters.rows`} table config.
 	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
 	 * @fires execute
 	 */
@@ -72,7 +72,7 @@ export class InsertTableCommand extends Command {
 
 		const defaultRows = editor.config.get( 'table.defaultHeadings.rows' );
 		const defaultColumns = editor.config.get( 'table.defaultHeadings.columns' );
-		const defaultFooterRows = areTableFootersEnabled ? editor.config.get( 'table.defaultFooters.rows' ) : 0;
+		const defaultFooterRows = editor.config.get( 'table.defaultFooters.rows' );
 
 		if ( options.headingRows === undefined && defaultRows ) {
 			options.headingRows = defaultRows;
