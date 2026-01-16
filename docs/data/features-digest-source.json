@@ -1,0 +1,1669 @@
+{
+  "sections": [
+    {
+      "id": "core-editing",
+      "title": "Core editing",
+      "description": "Core editing capability provides tools to create, edit, and style content. These are the essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders &ndash; advanced HTML editing capabilities where you can directly edit HTML elements.",
+      "subsections": [
+        {
+          "id": "advanced-html-editing",
+          "title": "Advanced HTML Editing",
+          "type": "subsection-with-grid",
+          "description": "Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.",
+          "features": [
+            {
+              "id": "full-page-html",
+              "title": "Full page HTML",
+              "badge": "premium",
+              "description": "Thanks to the full page HTML feature, you can use CKEditor&nbsp;5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.",
+              "link": "{@link features/full-page-html}"
+            },
+            {
+              "id": "general-html-support",
+              "title": "General HTML Support (GHS)",
+              "badge": null,
+              "description": "With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor&nbsp;5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.",
+              "link": "{@link features/general-html-support}"
+            },
+            {
+              "id": "html-comments",
+              "title": "HTML comment",
+              "badge": null,
+              "description": "By default, the editor filters out all HTML comments on initialization. The HTML comment feature lets developers keep HTML comments in the document without displaying them to the user.",
+              "link": "{@link features/html-comments}"
+            },
+            {
+              "id": "html-embed",
+              "title": "HTML embed",
+              "badge": "premium",
+              "description": "The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.",
+              "link": "{@link features/html-embed}"
+            },
+            {
+              "id": "show-blocks",
+              "title": "Show blocks",
+              "badge": null,
+              "description": "The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.",
+              "link": "{@link features/show-blocks}"
+            },
+            {
+              "id": "source-editing",
+              "title": "Source code editing",
+              "badge": null,
+              "description": "The source editing feature lets you view and edit the source of your document.",
+              "link": "{@link features/source-editing}"
+            },
+            {
+              "id": "enhanced-source-editing",
+              "title": "Enhanced source code editing",
+              "badge": "premium",
+              "description": "Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion, and more.",
+              "link": "{@link features/source-editing-enhanced}"
+            }
+          ]
+        },
+        {
+          "id": "block-formatting",
+          "title": "Block formatting",
+          "type": "subsection-with-grid",
+          "description": "Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.",
+          "features": [
+            {
+              "id": "block-quote",
+              "title": "Block quote",
+              "badge": null,
+              "description": "The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.",
+              "link": "{@link features/block-quote}"
+            },
+            {
+              "id": "headings",
+              "title": "Headings/paragraph",
+              "badge": null,
+              "description": "The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.",
+              "link": "{@link features/headings}"
+            },
+            {
+              "id": "horizontal-line",
+              "title": "Horizontal line",
+              "badge": null,
+              "description": "The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.",
+              "link": "{@link features/horizontal-line}"
+            },
+            {
+              "id": "indent",
+              "title": "Block indentation",
+              "badge": null,
+              "description": "The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.",
+              "link": "{@link features/indent}"
+            }
+          ]
+        },
+        {
+          "id": "bookmarks",
+          "title": "Bookmarks",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation, boosting efficiency.",
+          "link": "{@link features/bookmarks}"
+        },
+        {
+          "id": "clipboard-and-drag-drop",
+          "title": "Clipboard and drag and drop",
+          "type": "heading-badge-with-embedded-content",
+          "description": "Copy, cut, paste, and drag content within the editor or from external sources. The clipboard system handles rich text, plain text, and file transfers with customizable content processing pipelines.",
+          "link": "{@link framework/deep-dive/clipboard}",
+          "features": [
+            {
+              "id": "clipboard-pipelines",
+              "title": "Extensible clipboard pipelines",
+              "badge": null,
+              "description": "The clipboard uses input and output pipelines for processing content. Hook into these event-driven pipelines to customize how content is copied, cut, or pasted &ndash; enabling custom data formats, content transformation, and filtering.",
+              "link": "{@link framework/deep-dive/clipboard}"
+            },
+            {
+              "id": "rich-text-paste",
+              "title": "Rich text paste",
+              "badge": null,
+              "description": "Paste rich text content from external sources while preserving formatting. The editor processes HTML content through customizable pipelines that filter and transform the content to match editor capabilities.",
+              "link": "{@link framework/deep-dive/clipboard}"
+            },
+            {
+              "id": "clipboard-file-upload",
+              "title": "File upload via clipboard",
+              "badge": null,
+              "description": "Paste images and files directly from the clipboard. Supports uploading screenshots, copied images, and other files with progress tracking and automatic placeholder insertion during upload.",
+              "link": "{@link framework/deep-dive/upload-adapter}"
+            },
+            {
+              "id": "content-filtering",
+              "title": "Content filtering",
+              "badge": null,
+              "description": "Customize how pasted content is processed and transformed. Hook into the clipboard pipeline to filter unwanted elements, transform styles, or add custom handling for specific content types like RTF.",
+              "link": "{@link framework/deep-dive/clipboard}"
+            },
+            {
+              "id": "drag-and-drop",
+              "title": "Drag and drop",
+              "badge": null,
+              "description": "Rearrange elements within a document by dragging text blocks, images, or other content types. Drop content from external sources directly into the editor.",
+              "link": "{@link features/drag-drop}"
+            },
+            {
+              "id": "drag-handle",
+              "title": "Drag handle",
+              "badge": null,
+              "description": "Visual drag handle for blocks like tables and images. Also available for all block elements via the block toolbar, making it easy to reorganize content visually.",
+              "link": "{@link getting-started/setup/toolbar#block-toolbar}"
+            }
+          ]
+        },
+        {
+          "id": "code-blocks",
+          "title": "Code blocks",
+          "type": "simple",
+          "description": "Supports the insertion and management of pre-formatted code snippets with distinct styling.",
+          "link": "{@link features/code-blocks}"
+        },
+        {
+          "id": "font-formatting",
+          "title": "Font formatting",
+          "type": "subsection-with-grid",
+          "description": "The font feature lets you change font family, size, and color (including background color). All of these options are configurable.",
+          "features": [
+            {
+              "id": "font-background-color",
+              "title": "Font background color",
+              "badge": null,
+              "description": "Effortlessly make the words stand out even more with a colored background.",
+              "link": "{@link features/font#configuring-the-font-color-and-font-background-color-features}"
+            },
+            {
+              "id": "font-color",
+              "title": "Font color",
+              "badge": null,
+              "description": "Effortlessly make the letters stand out with their own color.",
+              "link": "{@link features/font#configuring-the-font-color-and-font-background-color-features}"
+            },
+            {
+              "id": "font-family",
+              "title": "Font family",
+              "badge": null,
+              "description": "Choose from a predefined set of fonts, depending on the type of content and its destination &ndash; print, screen, etc.",
+              "link": "{@link features/font#configuring-the-font-family-feature}"
+            },
+            {
+              "id": "font-size",
+              "title": "Font size",
+              "badge": null,
+              "description": "Easily control the size of the letters.",
+              "link": "{@link features/font#configuring-the-font-size-feature}"
+            }
+          ]
+        },
+        {
+          "id": "image",
+          "title": "Image",
+          "type": "subsection-with-grid",
+          "description": "The image feature allows for adding images of various kinds to the rich content inside the editor. A large set of subfeatures lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.",
+          "features": [
+            {
+              "id": "image-alt-text",
+              "title": "Image alt text",
+              "badge": null,
+              "description": "Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.",
+              "link": "{@link features/images-text-alternative}"
+            },
+            {
+              "id": "image-captions",
+              "title": "Image captions",
+              "badge": null,
+              "description": "Add optional captions for images, which are shown below the picture.",
+              "link": "{@link features/images-captions}"
+            },
+            {
+              "id": "image-insert-via-url",
+              "title": "Image insert via URL",
+              "badge": null,
+              "description": "You can insert images by uploading them directly from your disk, but you can also configure CKEditor&nbsp;5 to let you insert images using URLs. This way, you can save time by adding images that are already online.",
+              "link": "{@link features/images-inserting}"
+            },
+            {
+              "id": "image-linking",
+              "title": "Image linking",
+              "badge": null,
+              "description": "The LinkImage plugin lets you use images as links.",
+              "link": "{@link features/images-linking}"
+            },
+            {
+              "id": "image-resize",
+              "title": "Image resize",
+              "badge": "premium",
+              "description": "The image resize feature lets you change the width of images in your content. It is implemented by the ImageResize plugin.",
+              "link": "{@link features/images-resizing}"
+            },
+            {
+              "id": "image-styles",
+              "title": "Image styles",
+              "badge": null,
+              "description": "The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.",
+              "link": "{@link features/images-styles}"
+            },
+            {
+              "id": "image-upload",
+              "title": "Image upload",
+              "badge": null,
+              "description": "Inserting images into content created with CKEditor&nbsp;5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.",
+              "link": "{@link features/image-upload}"
+            },
+            {
+              "id": "responsive-images",
+              "title": "Responsive images",
+              "badge": null,
+              "description": "The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized size versions of that image are created. The browser will automatically load one most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.",
+              "link": "{@link features/images-responsive}"
+            },
+            {
+              "id": "image-optimizer",
+              "title": "Image editing & optimization",
+              "badge": "premium",
+              "description": "Edit images directly in the editor with crop, rotate, flip, and filter tools. Powered by CKBox or Uploadcare integration for professional image editing.",
+              "link": "{@link features/images-image-optimizer}"
+            }
+          ]
+        },
+        {
+          "id": "links",
+          "title": "Links",
+          "type": "heading-badge-with-embedded-content",
+          "description": "Facilitates the addition of hyperlinks to text, automatically converting typed or pasted URLs into clickable links, and allowing manual insertion and editing of links.",
+          "link": "{@link features/link}",
+          "features": [
+            {
+              "id": "link-decorators",
+              "title": "Link decorators",
+              "badge": null,
+              "description": "Automatic and manual link decorators for target attributes, rel attributes, and custom link modifications. Add download buttons, external link indicators, and more.",
+              "link": "{@link features/link#custom-link-attributes-decorators}"
+            },
+            {
+              "id": "link-providers",
+              "title": "Link providers",
+              "badge": null,
+              "description": "Link providers supply predefined lists of links for easy access in the link UI. Register frequently used internal content like pages or assets, making them available for quick insertion without typing URLs.",
+              "link": "{@link features/link#link-providers}"
+            },
+            {
+              "id": "linking-to-bookmarks",
+              "title": "Linking to bookmarks",
+              "badge": null,
+              "description": "Create internal document links that navigate to bookmarks within the same document. Enable users to link to specific sections for easy in-document navigation.",
+              "link": "{@link features/bookmarks#integration-with-the-link-feature}"
+            },
+            {
+              "id": "linking-to-images",
+              "title": "Linking to images",
+              "badge": null,
+              "description": "Wrap images with hyperlinks to make them clickable. Users can add links to images directly from the image toolbar or link panel.",
+              "link": "{@link features/images-linking}"
+            }
+          ]
+        },
+        {
+          "id": "lists",
+          "title": "Lists",
+          "type": "subsection-with-grid",
+          "description": "Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.",
+          "features": [
+            {
+              "id": "list-indentation",
+              "title": "List indentation",
+              "badge": null,
+              "description": "Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).",
+              "link": "{@link features/lists-editing#indenting-lists}"
+            },
+            {
+              "id": "list-start-index",
+              "title": "List start index",
+              "badge": "premium",
+              "description": "The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.",
+              "link": "{@link features/lists-properties#list-start-index}"
+            },
+            {
+              "id": "list-styles",
+              "title": "List styles",
+              "badge": "premium",
+              "description": "The list style feature introduces more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown.",
+              "link": "{@link features/lists-properties#list-styles}"
+            },
+            {
+              "id": "multi-level-lists",
+              "title": "Multi-level lists",
+              "badge": "premium",
+              "description": "The multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.",
+              "link": "{@link features/multi-level-lists}"
+            },
+            {
+              "id": "nested-lists",
+              "title": "Nested lists",
+              "badge": null,
+              "description": "Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).",
+              "link": "{@link features/lists-editing#indenting-lists}"
+            },
+            {
+              "id": "ordered-lists",
+              "title": "Ordered lists",
+              "badge": null,
+              "description": "The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.",
+              "link": "{@link features/lists}"
+            },
+            {
+              "id": "reversed-list",
+              "title": "Reversed list",
+              "badge": "premium",
+              "description": "The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).",
+              "link": "{@link features/lists-properties#reversed-list}"
+            },
+            {
+              "id": "to-do-lists",
+              "title": "To-do lists",
+              "badge": null,
+              "description": "The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of bulleted and numbered lists, so you can nest a to-do list together with any combination of other lists.",
+              "link": "{@link features/todo-lists}"
+            },
+            {
+              "id": "unordered-lists",
+              "title": "Unordered lists",
+              "badge": null,
+              "description": "The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.",
+              "link": "{@link features/lists}"
+            }
+          ]
+        },
+        {
+          "id": "mermaid",
+          "title": "Mermaid",
+          "type": "heading-badge",
+          "badge": "experiment",
+          "description": "You can create flowcharts and diagrams in CKEditor&nbsp;5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.",
+          "link": "{@link features/mermaid}"
+        },
+        {
+          "id": "remove-formatting",
+          "title": "Remove formatting",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The remove format feature lets you quickly remove any text formatting applied using inline HTML elements and CSS styles, like basic text styles (bold, italic) or font family, size, and color. This feature does not remove block-level formatting (headings, images) or semantic data (links).",
+          "link": "{@link features/remove-format}"
+        },
+        {
+          "id": "select-all",
+          "title": "Select all",
+          "type": "simple",
+          "description": "Enables the selection of all content within the editor with a single command or shortcut.",
+          "link": "{@link features/select-all}"
+        },
+        {
+          "id": "tables",
+          "title": "Tables",
+          "type": "subsection-with-grid",
+          "description": "CKEditor&nbsp;5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.",
+          "features": [
+            {
+              "id": "columns-resizing",
+              "title": "Column resizing",
+              "badge": "premium",
+              "description": "The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width.",
+              "link": "{@link features/tables-resize}"
+            },
+            {
+              "id": "insert-delete-columns-rows",
+              "title": "Insert/delete columns & rows",
+              "badge": null,
+              "description": "The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.",
+              "link": "{@link features/tables#table-contextual-toolbar}"
+            },
+            {
+              "id": "merge-split-cells",
+              "title": "Merge & split cells",
+              "badge": null,
+              "description": "The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.",
+              "link": "{@link features/tables#table-contextual-toolbar}"
+            },
+            {
+              "id": "nesting",
+              "title": "Nesting",
+              "badge": null,
+              "description": "CKEditor&nbsp;5 allows nesting tables inside other tables' cells. This can be used to create advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.",
+              "link": "{@link features/tables#nesting-tables}"
+            },
+            {
+              "id": "styling-tables-cells",
+              "title": "Styling tables & cells",
+              "badge": "premium",
+              "description": "CKEditor&nbsp;5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.",
+              "link": "{@link features/tables-styling}"
+            },
+            {
+              "id": "table-headers",
+              "title": "Table headers",
+              "badge": null,
+              "description": "To make every inserted table have n number of rows and columns as table headers by default, set an optional table configuration property defaultHeadings.",
+              "link": "{@link features/tables#default-table-headers}"
+            },
+            {
+              "id": "table-selection",
+              "title": "Table selection",
+              "badge": null,
+              "description": "The TableSelection plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the Table plugin.",
+              "link": "{@link features/tables#table-selection}"
+            },
+            {
+              "id": "table-caption",
+              "title": "Table caption",
+              "badge": null,
+              "description": "The TableCaption plugin lets you add captions to your tables. Table captions also improve accessibility as screen readers recognize them.",
+              "link": "{@link features/tables-caption}"
+            },
+            {
+              "id": "layout-tables",
+              "title": "Layout tables",
+              "badge": "premium",
+              "description": "The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.",
+              "link": "{@link features/layout-tables}"
+            }
+          ]
+        },
+        {
+          "id": "text-alignment",
+          "title": "Text alignment",
+          "type": "simple",
+          "description": "Allows the adjustment of text alignment to the left, right, center, or justify and permits the alteration of indentation.",
+          "link": "{@link features/text-alignment}"
+        },
+        {
+          "id": "text-formatting",
+          "title": "Text formatting",
+          "type": "subsection-with-grid",
+          "description": "CKEditor&nbsp;5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.",
+          "features": [
+            {
+              "id": "bold",
+              "title": "Bold",
+              "badge": null,
+              "description": "Apply bold formatting to emphasize important text and make it stand out.",
+              "link": "{@link features/basic-styles}"
+            },
+            {
+              "id": "code",
+              "title": "Code",
+              "badge": null,
+              "description": "Format inline code snippets with monospace styling to distinguish code from regular text.",
+              "link": "{@link features/basic-styles}"
+            },
+            {
+              "id": "highlight",
+              "title": "Highlight",
+              "badge": null,
+              "description": "Highlight makes important content stand out, either with font color or background fill.",
+              "link": "{@link features/highlight}"
+            },
+            {
+              "id": "italic",
+              "title": "Italic",
+              "badge": null,
+              "description": "Apply italic formatting to emphasize text or indicate titles, foreign words, and technical terms.",
+              "link": "{@link features/basic-styles}"
+            },
+            {
+              "id": "line-height",
+              "title": "Line height",
+              "badge": "premium",
+              "description": "The line height feature lets you adjust the vertical spacing between lines of text, controlling how tightly or loosely text is packed within paragraphs.",
+              "link": "{@link features/line-height}"
+            },
+            {
+              "id": "strikethrough",
+              "title": "Strikethrough",
+              "badge": null,
+              "description": "Draw a line through text to indicate deletions, corrections, or deprecated content.",
+              "link": "{@link features/basic-styles}"
+            },
+            {
+              "id": "styles",
+              "title": "Styles",
+              "badge": null,
+              "description": "The styles feature lets you easily apply predefined styles available for block and inline content.",
+              "link": "{@link features/style}"
+            },
+            {
+              "id": "subscript",
+              "title": "Subscript",
+              "badge": null,
+              "description": "Position text slightly below the baseline for chemical formulas, mathematical notation, and footnotes.",
+              "link": "{@link features/basic-styles}"
+            },
+            {
+              "id": "superscript",
+              "title": "Superscript",
+              "badge": null,
+              "description": "Position text slightly above the baseline for exponents, ordinal indicators, and reference marks.",
+              "link": "{@link features/basic-styles}"
+            },
+            {
+              "id": "underline",
+              "title": "Underline",
+              "badge": null,
+              "description": "Add an underline to text for emphasis or to indicate special terms and references.",
+              "link": "{@link features/basic-styles}"
+            }
+          ]
+        },
+        {
+          "id": "undo-redo",
+          "title": "Undo/redo",
+          "type": "simple",
+          "description": "Backtrack or repeat actions for editing purposes.",
+          "link": "{@link features/undo-redo}"
+        }
+      ]
+    },
+    {
+      "id": "collaboration",
+      "title": "Collaboration",
+      "description": "Collaborate with others &ndash; real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features, the review process should be a breeze.",
+      "subsections": [
+        {
+          "id": "asynchronous-collaboration",
+          "title": "Asynchronous collaboration",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "Asynchronous Collaboration in CKEditor&nbsp;5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.",
+          "link": "{@link features/collaboration}",
+          "features": [
+            {
+              "id": "local-data-storage",
+              "title": "Local data storage",
+              "badge": "premium",
+              "description": "In asynchronous collaboration, data is maintained on the client's servers.",
+              "link": "{@link features/collaboration}"
+            }
+          ]
+        },
+        {
+          "id": "comments",
+          "title": "Comments",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.",
+          "link": "{@link features/comments}",
+          "features": [
+            {
+              "id": "comments-archive",
+              "title": "Comments archive",
+              "badge": "premium",
+              "description": "Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.",
+              "link": "{@link features/comments}"
+            },
+            {
+              "id": "comments-outside-editor",
+              "title": "Comments outside editor",
+              "badge": "premium",
+              "description": "The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.",
+              "link": "{@link features/comments-outside-editor}"
+            },
+            {
+              "id": "sidebar-modes",
+              "title": "Sidebar modes",
+              "badge": "premium",
+              "description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your own UI for annotations.",
+              "link": "{@link features/annotations-display-mode}"
+            },
+            {
+              "id": "comments-only-mode",
+              "title": "Comments-only mode",
+              "badge": "premium",
+              "description": "A specialized mode where users can only add comments without editing the document content. Perfect for review workflows where reviewers should provide feedback without modifying the original text.",
+              "link": "{@link features/comments-only-mode}"
+            },
+            {
+              "id": "annotations-customization",
+              "title": "Annotations customization",
+              "badge": "premium",
+              "description": "Customize annotations with custom views, templates, themes, and configurations. Tailor the comments and suggestions UI to match your application design.",
+              "link": "{@link features/annotations-custom-configuration}"
+            }
+          ]
+        },
+        {
+          "id": "mentions",
+          "title": "Mentions",
+          "type": "simple",
+          "description": "The mention feature supports smart autocompletion triggered by user input. Typing a predetermined marker, like @ or #, prompts a panel to appear, offering autocomplete suggestions.",
+          "link": "{@link features/mentions}"
+        },
+        {
+          "id": "real-time-collaboration",
+          "title": "Real-time collaboration",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "Real-Time Collaboration in CKEditor&nbsp;5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.",
+          "link": "{@link features/users-in-real-time-collaboration}",
+          "features": [
+            {
+              "id": "co-authoring",
+              "title": "Co-authoring",
+              "badge": "premium",
+              "description": "Multiple user real-time editing and content creation feature.",
+              "link": "{@link features/users-in-real-time-collaboration}"
+            },
+            {
+              "id": "presence-list",
+              "title": "Presence list",
+              "badge": "premium",
+              "description": "Display avatars of all currently connected users in a collapsible row. Shows who is currently viewing or editing the document in real time.",
+              "link": "{@link features/users-in-real-time-collaboration}"
+            },
+            {
+              "id": "user-selections",
+              "title": "User selections",
+              "badge": "premium",
+              "description": "See other users' text selections and carets in real time. Each collaborator is assigned a unique color for easy identification.",
+              "link": "{@link features/users-in-real-time-collaboration}"
+            },
+            {
+              "id": "saas-or-on-premises",
+              "title": "SaaS or on-premises",
+              "badge": "premium",
+              "description": "Choose between hosted collaboration services (SaaS) or deploy to your own infrastructure (on-premises) for full control over data and compliance.",
+              "link": "https://ckeditor.com/docs/cs/latest/guides/saas-vs-on-premises.html"
+            }
+          ]
+        },
+        {
+          "id": "revision-history",
+          "title": "Revision history",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "The revision history feature is a document versioning tool. It allows CKEditor&nbsp;5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.",
+          "link": "{@link features/revision-history}",
+          "features": [
+            {
+              "id": "revision-comparison",
+              "title": "Compare revisions",
+              "badge": "premium",
+              "description": "View side-by-side differences between any two revisions to understand exactly what changed.",
+              "link": "{@link features/revision-history}"
+            },
+            {
+              "id": "revision-restore",
+              "title": "Restore revisions",
+              "badge": "premium",
+              "description": "Restore any previous revision to recover earlier versions of your document.",
+              "link": "{@link features/revision-history}"
+            },
+            {
+              "id": "named-revisions",
+              "title": "Named revisions",
+              "badge": "premium",
+              "description": "Create named checkpoints to mark important milestones in your document's history.",
+              "link": "{@link features/revision-history}"
+            }
+          ]
+        },
+        {
+          "id": "track-changes",
+          "title": "Track changes",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard.",
+          "link": "{@link features/track-changes}",
+          "features": [
+            {
+              "id": "granular-suggestions",
+              "title": "Granular suggestions",
+              "badge": "premium",
+              "description": "Track insertions, deletions, block splits, format changes, and custom changes with clear, understandable suggestion descriptions for excellent UX.",
+              "link": "{@link features/track-changes-custom-features}"
+            },
+            {
+              "id": "track-changes-preview",
+              "title": "Preview mode",
+              "badge": "premium",
+              "description": "Preview how the document will look with all suggestions accepted or rejected before committing changes.",
+              "link": "{@link features/track-changes-preview}"
+            },
+            {
+              "id": "batch-suggestions",
+              "title": "Batch accept or discard",
+              "badge": "premium",
+              "description": "Accept or discard all suggestions at once, or filter by author or type for efficient review workflows.",
+              "link": "{@link features/track-changes}"
+            },
+            {
+              "id": "suggestion-threads",
+              "title": "Comment threads in suggestions",
+              "badge": "premium",
+              "description": "Collaborate on suggestions through threaded discussions. Team members can comment and reply directly on each suggestion.",
+              "link": "{@link features/track-changes}"
+            }
+          ]
+        },
+        {
+          "id": "users-list-and-permissions",
+          "title": "Users list and permissions",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Users plugin and related plugins let you manage user data and permissions. This is essential when many users are working on the same document.",
+          "link": "{@link features/users}"
+        }
+      ]
+    },
+    {
+      "id": "content-conversion-embedding",
+      "title": "Content conversion & embedding",
+      "description": "Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.",
+      "subsections": [
+        {
+          "id": "content-generation",
+          "title": "Content generation",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "CKEditor&nbsp;5 may be your universal starting point for generating content in several recognizable formats.",
+          "link": "{@link features/export-pdf}",
+          "features": [
+            {
+              "id": "export-to-pdf",
+              "title": "Export to PDF",
+              "badge": "premium",
+              "description": "Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.",
+              "link": "{@link features/export-pdf}"
+            },
+            {
+              "id": "export-to-word",
+              "title": "Export to Word",
+              "badge": "premium",
+              "description": "Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.",
+              "link": "{@link features/export-word}"
+            },
+            {
+              "id": "import-from-word",
+              "title": "Import from Word",
+              "badge": "premium",
+              "description": "Effortlessly transform Word documents into clean HTML within CKEditor&nbsp;5 while retaining the original styling, as well as comments and change tracking annotations.",
+              "link": "{@link features/import-word}"
+            }
+          ]
+        },
+        {
+          "id": "export-with-inline-styles",
+          "title": "Export with inline styles",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The `ExportInlineStyles` plugin applies the styles defined by CSS style sheets directly on HTML elements.",
+          "link": "{@link features/export-with-inline-styles}"
+        },
+        {
+          "id": "markdown-output",
+          "title": "Markdown output",
+          "type": "simple",
+          "description": "Enable Markdown as the default output format instead of HTML with the Markdown plugin. Combined with Autoformatting, CKEditor becomes an efficient Markdown editor, allowing the creation of text documents using the simplified formatting syntax favored by developers.",
+          "link": "{@link features/markdown}"
+        },
+        {
+          "id": "media-embed",
+          "title": "Media embed",
+          "type": "simple",
+          "description": "Use the insert media button in the toolbar to embed media. Pasting a media URL directly into the editor content automatically embeds the media.",
+          "link": "{@link features/media-embed}"
+        },
+        {
+          "id": "paste-markdown",
+          "title": "Paste Markdown",
+          "type": "heading-badge",
+          "badge": "experiment",
+          "description": "The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.",
+          "link": "{@link features/paste-markdown}"
+        },
+        {
+          "id": "xml-output",
+          "title": "XML output",
+          "type": "simple",
+          "description": "Turn your content into parsable XML files for automation and cross-platform interoperability.",
+          "link": "{@link module:engine/dataprocessor/xmldataprocessor~XmlDataProcessor}"
+        }
+      ]
+    },
+    {
+      "id": "page-management",
+      "title": "Page management",
+      "description": "Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.",
+      "subsections": [
+        {
+          "id": "document-outline",
+          "title": "Document outline",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Document Outline feature automatically detects and lists document headings in a sidebar, enabling faster navigation through large documents. Headings are organized in a structured list, so users can click and jump to different sections quickly. This feature also allows for customization of the outline's location within the user interface, catering to different user preferences for workspace layout.",
+          "link": "{@link features/document-outline}"
+        },
+        {
+          "id": "page-utilities",
+          "title": "Page utilities",
+          "type": "subsection-with-grid",
+          "description": "CKEditor&nbsp;5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.",
+          "features": [
+            {
+              "id": "content-minimap",
+              "title": "Content minimap",
+              "badge": "experiment",
+              "description": "Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management. Particularly useful for long documents where visual navigation improves the editing experience.",
+              "link": "{@link features/minimap}"
+            },
+            {
+              "id": "document-title",
+              "title": "Document title",
+              "badge": null,
+              "description": "Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents.",
+              "link": "{@link features/title}"
+            },
+            {
+              "id": "page-break",
+              "title": "Page break",
+              "badge": "premium",
+              "description": "Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.",
+              "link": "{@link features/page-break}"
+            }
+          ]
+        },
+        {
+          "id": "pagination",
+          "title": "Pagination",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Pagination feature visually indicates where pages begin and end within a document. This feature is designed to assist users in preparing their documents for printing or export to various document formats, ensuring that the transition between pages is seamless and accurately reflected in the final output. Users may adjust content distribution across pages as they like, ensuring well-organized documents with presented content, whether in digital form or print. By providing a clear view of how text and elements will appear page-by-page, Pagination aids in the creation of professional and polished documents.",
+          "link": "{@link features/pagination}"
+        },
+        {
+          "id": "table-of-contents",
+          "title": "Table of contents",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Table of Contents feature is a dynamic tool for organizing documents. It allows for the insertion of a linked table of contents that automatically updates in real time as the document's content changes. This means changes made to headings or structured sections within the document are reflected immediately in the table of contents, accurately representing the document structure.",
+          "link": "{@link features/table-of-contents}"
+        },
+        {
+          "id": "footnotes",
+          "title": "Footnotes",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The footnotes feature allows adding and managing footnotes in the document. Create numbered references that appear at the bottom of pages, perfect for academic papers, legal documents, and publications requiring citations.",
+          "link": "{@link features/footnotes}"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "AI",
+      "description": "Enhance content creation with AI-powered writing assistance. Generate, summarize, translate, and review content with contextual AI capabilities integrated directly into the editing experience.",
+      "subsections": [
+        {
+          "id": "ckeditor-ai",
+          "title": "CKEditor AI",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.",
+          "link": "{@link features/ckeditor-ai-overview}",
+          "features": [
+            {
+              "id": "ai-chat",
+              "title": "AI Chat",
+              "badge": "premium",
+              "description": "Contextual AI chat with document awareness, web search, and reasoning capabilities.",
+              "link": "{@link features/ckeditor-ai-chat}"
+            },
+            {
+              "id": "ai-actions",
+              "title": "AI Quick Actions",
+              "badge": "premium",
+              "description": "Predefined AI commands for common tasks like summarize, translate, expand, and custom actions.",
+              "link": "{@link features/ckeditor-ai-actions}"
+            },
+            {
+              "id": "ai-review",
+              "title": "AI Review",
+              "badge": "premium",
+              "description": "AI-powered document review with grammar, style, and content suggestions.",
+              "link": "{@link features/ckeditor-ai-review}"
+            }
+          ]
+        },
+        {
+          "id": "ai-assistant-legacy",
+          "title": "AI Assistant (legacy)",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The legacy AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models. Note: This is the older version of AI integration. Consider using CKEditor AI for new implementations.",
+          "link": "{@link features/ai-assistant-overview}"
+        }
+      ]
+    },
+    {
+      "id": "productivity",
+      "title": "Productivity",
+      "description": "Speed up the content creation process with dedicated productivity utilities. Automate workflows, use templates, paste from external applications, and leverage powerful editing shortcuts.",
+      "subsections": [
+        {
+          "id": "automation",
+          "title": "Automation",
+          "type": "subsection-with-grid",
+          "description": "Automate your workflow with CKEditor&nbsp;5 automation tools, regardless of whether you write, link, or save!",
+          "features": [
+            {
+              "id": "autoformatting",
+              "title": "Autoformatting",
+              "badge": null,
+              "description": "Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.",
+              "link": "{@link features/autoformat}"
+            },
+            {
+              "id": "autolink",
+              "title": "Autolink",
+              "badge": null,
+              "description": "With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.",
+              "link": "{@link features/link#autolink-feature}"
+            },
+            {
+              "id": "automatic-text-transformations",
+              "title": "Automatic text transformations",
+              "badge": null,
+              "description": "The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.",
+              "link": "{@link features/text-transformation}"
+            },
+            {
+              "id": "autosave",
+              "title": "Autosave",
+              "badge": null,
+              "description": "The Autosave feature guarantees that your work is never lost. It automatically saves changes &ndash; for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.",
+              "link": "{@link features/autosave}"
+            }
+          ]
+        },
+        {
+          "id": "case-change",
+          "title": "Case change",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Case Change feature simplifies adjusting text cases within a document. With just a single click, users can shift text between UPPERCASE, lowercase, and Title Case options. The case transformation can be applied to various text blocks (paragraph, heading, or list item) by placing the cursor within the block. Alternatively, users can select a specific fragment of text they wish to modify. This feature enhances the editing workflow by removing the need for manual case adjustments.",
+          "link": "{@link features/case-change}"
+        },
+        {
+          "id": "emoji",
+          "title": "Emoji",
+          "type": "simple",
+          "description": "The Emoji feature lets you insert emojis into the document from the editor toolbar, or on the go while writing the content.",
+          "link": "{@link features/emoji}"
+        },
+        {
+          "id": "find-and-replace",
+          "title": "Find and replace",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Find and Replace feature in CKEditor&nbsp;5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency.",
+          "link": "{@link features/find-and-replace}"
+        },
+        {
+          "id": "format-painter",
+          "title": "Format painter",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Format Painter feature lets users clone formatting from one section and apply it to others within a document. This tool speeds up maintaining style consistency across the document. Once initiated, Format Painter can continue to apply the copied formatting to multiple sections consecutively. This \"continuous painting\" ensures a uniform style is achieved quickly without the need to repeatedly select the formatting options for each new section.",
+          "link": "{@link features/format-painter}"
+        },
+        {
+          "id": "fullscreen-mode",
+          "title": "Fullscreen mode",
+          "type": "simple",
+          "description": "The fullscreen mode lets you temporarily expand the editor to the whole browser viewport, giving you more space to comfortably edit content and use editor's UI features.",
+          "link": "{@link features/fullscreen}"
+        },
+        {
+          "id": "keyboard-shortcuts",
+          "title": "Keyboard shortcuts",
+          "type": "simple",
+          "description": "CKEditor&nbsp;5 supports various keyboard shortcuts that boost productivity and provide necessary accessibility to screen reader users.",
+          "link": "{@link features/accessibility#keyboard-shortcuts}"
+        },
+        {
+          "id": "math-type",
+          "title": "MathType",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Math Equations allows you to add properly formatted mathematical notation and chemical formulas to your documents. This feature supports the inclusion of math equations, which can be handwritten on a tablet and automatically converted into well-formed digital text. It also offers simple numbering of equations and the ability to customize with various fonts and colors, enhancing readability and presentation in your content.",
+          "link": "{@link features/math-equations}"
+        },
+        {
+          "id": "merge-fields",
+          "title": "Merge fields",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Merge Fields allows the inclusion of placeholders in your content, facilitating the creation of document templates, especially useful for email templates and document automation. These placeholders can later be replaced with dynamic values by the customer's application, enabling tasks like mass email distribution or generation of personalized documents.",
+          "link": "{@link features/merge-fields}"
+        },
+        {
+          "id": "paste-from-google-docs",
+          "title": "Paste from Google Docs",
+          "type": "simple",
+          "description": "Paste from Google Docs allows you to paste content from Google Docs and preserve its original structure and formatting.",
+          "link": "{@link features/paste-from-google-docs}"
+        },
+        {
+          "id": "paste-from-office",
+          "title": "Paste from Office",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature.",
+          "link": "{@link features/paste-from-office}"
+        },
+        {
+          "id": "enhanced-paste-from-office",
+          "title": "Enhanced paste from Office",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor&nbsp;5 without compromising on formatting.",
+          "link": "{@link features/paste-from-office-enhanced}"
+        },
+        {
+          "id": "paste-plain-text",
+          "title": "Paste plain text",
+          "type": "simple",
+          "description": "The Paste as Plain Text feature strips formatting from the pasted text. This feature ensures that text pasted into the document adopts the style of the surrounding content, effectively described as \"pasting without formatting.\" Additionally, it intelligently converts double-line breaks into paragraphs and single-line breaks into soft breaks, aiding in maintaining the structural integrity of the document.",
+          "link": "{@link features/paste-plain-text}"
+        },
+        {
+          "id": "slash-commands",
+          "title": "Slash commands",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Slash Commands feature lets users insert block elements and apply styles using just the keyboard. By pressing the / key, a panel with suggested commands appears, enabling quick and mouse-free actions. Users can filter through these commands by typing additional phrases after the /, making it easier to find specific commands. Additionally, the option to customize personal commands is available, allowing for a tailored editing experience.",
+          "link": "{@link features/slash-commands}"
+        },
+        {
+          "id": "special-characters",
+          "title": "Special characters",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Special Characters feature lets you insert a variety of unique symbols and characters into your document. This includes mathematical operators, currency symbols, punctuation, graphic symbols like arrows or bullets, and Unicode letters that are not typically available on standard keyboards, such as umlauts or diacritics. Additionally, the feature supports the insertion of emojis. This tool is particularly useful for enhancing the detail and accuracy of content that requires specialized symbols.",
+          "link": "{@link features/special-characters}"
+        },
+        {
+          "id": "templates",
+          "title": "Templates",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Templates feature enables the insertion of predefined content structures into documents, ranging from small content pieces, like formatted tables, to complete document frameworks, like formal letter templates. Templates accelerate the document creation process while ensuring adherence to the company's content and document policies.",
+          "link": "{@link features/template}"
+        }
+      ]
+    },
+    {
+      "id": "configurations",
+      "title": "Configurations",
+      "description": "Configure CKEditor&nbsp;5 to your liking. Choose the editor type, modify the toolbar, and select a language from our translated language packs.",
+      "subsections": [
+        {
+          "id": "editor-placeholder",
+          "title": "Editor placeholder",
+          "type": "simple",
+          "description": "You can prompt the user to input content by displaying a configurable placeholder text when the editor is empty. This works similarly to the native DOM placeholder attribute used by inputs. Not to be confused with content placeholder.",
+          "link": "{@link features/editor-placeholder}"
+        },
+        {
+          "id": "editor-ui-types",
+          "title": "Editor UI types",
+          "type": "subsection-with-grid",
+          "description": "The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.",
+          "features": [
+            {
+              "id": "balloon-block-editor",
+              "title": "Balloon block editor",
+              "badge": null,
+              "description": "Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.",
+              "link": "{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor}"
+            },
+            {
+              "id": "balloon-editor",
+              "title": "Balloon editor",
+              "badge": null,
+              "description": "Balloon editor is similar to the inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).",
+              "link": "{@link getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor}"
+            },
+            {
+              "id": "classic-editor",
+              "title": "Classic editor",
+              "badge": null,
+              "description": "Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.",
+              "link": "{@link getting-started/setup/editor-types#classic-editor}"
+            },
+            {
+              "id": "decoupled-editor",
+              "title": "Decoupled editor",
+              "badge": null,
+              "description": "The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.",
+              "link": "{@link getting-started/setup/editor-types#decoupled-editor-document}"
+            },
+            {
+              "id": "inline-editor",
+              "title": "Inline editor",
+              "badge": null,
+              "description": "The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.",
+              "link": "{@link getting-started/setup/editor-types#inline-editor}"
+            },
+            {
+              "id": "multi-root-editor",
+              "title": "Multi-root editor",
+              "badge": null,
+              "description": "The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are \"connected.\" All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.",
+              "link": "{@link getting-started/setup/editor-types#multi-root-editor}"
+            }
+          ]
+        },
+        {
+          "id": "email-editing",
+          "title": "Email editing",
+          "type": "heading-badge-with-embedded-content",
+          "badge": "premium",
+          "description": "CKEditor&nbsp;5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.",
+          "link": "{@link features/email}",
+          "features": [
+            {
+              "id": "email-configuration-helper",
+              "title": "Email configuration helper",
+              "badge": "premium",
+              "description": "Automatically verifies your editor setup for email compatibility, ensures proper HTML structure, manages content restrictions, and warns about unsupported email client features.",
+              "link": "{@link features/email-configuration-helper}"
+            },
+            {
+              "id": "layout-tables-email",
+              "title": "Layout tables",
+              "badge": "premium",
+              "description": "Tables specifically designed for structuring email content rather than presenting data. Include accessibility attributes and email-optimized styling that persists through export to various email clients.",
+              "link": "{@link features/email#layout-tables-plugin}"
+            },
+            {
+              "id": "export-inline-styles",
+              "title": "Export with inline styles",
+              "badge": "premium",
+              "description": "Converts global CSS styles into inline HTML attributes for email compatibility. Handles email-specific transformations like converting float properties to align attributes and centering tables via auto margins.",
+              "link": "{@link features/email#export-with-inline-styles-plugin}"
+            }
+          ]
+        },
+        {
+          "id": "professionally-translated-language-packs",
+          "title": "Professionally translated language packs",
+          "type": "simple",
+          "description": "CKEditor&nbsp;5 provides 38 professionally translated language options, along with additional languages provided by community translations. CKEditor&nbsp;5 also supports right-to-left (RTL) languages natively. When an RTL language is selected, the editor automatically adjusts its interface, including elements like toolbars, dropdowns, and buttons, to ensure an optimal editing experience.",
+          "link": "{@link getting-started/setup/ui-language}"
+        },
+        {
+          "id": "toolbar-and-menus",
+          "title": "Toolbar and menus",
+          "type": "subsection-with-grid",
+          "description": "The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously.",
+          "features": [
+            {
+              "id": "balloon-toolbar",
+              "title": "Balloon toolbar",
+              "badge": null,
+              "description": "A balloon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.",
+              "link": "{@link getting-started/setup/toolbar#balloon-toolbar}"
+            },
+            {
+              "id": "block-toolbar",
+              "title": "Block toolbar",
+              "badge": null,
+              "description": "The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example, in certain layouts, like balloon block editor).",
+              "link": "{@link getting-started/setup/toolbar#block-toolbar}"
+            },
+            {
+              "id": "classic-toolbar",
+              "title": "Classic toolbar",
+              "badge": null,
+              "description": "The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.",
+              "link": "{@link getting-started/setup/toolbar#main-editor-toolbar}"
+            },
+            {
+              "id": "collapsible-toolbar",
+              "title": "Collapsible toolbar",
+              "badge": null,
+              "description": "Collapsible toolbar for UI space efficiency.",
+              "link": "{@link getting-started/setup/toolbar#extended-toolbar-configuration-format}"
+            },
+            {
+              "id": "image-contextual-toolbar",
+              "title": "Image contextual toolbar",
+              "badge": null,
+              "description": "The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.",
+              "link": "{@link features/images-overview#image-contextual-toolbar}"
+            },
+            {
+              "id": "menu-bar",
+              "title": "Menu bar",
+              "badge": null,
+              "description": "The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.",
+              "link": "{@link getting-started/setup/menubar}"
+            },
+            {
+              "id": "multiline-toolbar",
+              "title": "Multiline toolbar",
+              "badge": null,
+              "description": "Multiline toolbar for easy access to all functions.",
+              "link": "{@link getting-started/setup/toolbar#multiline-wrapping-toolbar}"
+            },
+            {
+              "id": "nesting-toolbars-in-dropdowns",
+              "title": "Nesting toolbars in dropdowns",
+              "badge": null,
+              "description": "Nested toolbars for space efficiency and task-oriented access.",
+              "link": "{@link getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars}"
+            },
+            {
+              "id": "wide-sidebar",
+              "title": "Wide sidebar",
+              "badge": null,
+              "description": "There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations.",
+              "link": "{@link features/annotations-display-mode#wide-sidebar}"
+            },
+            {
+              "id": "table-contextual-toolbar",
+              "title": "Table contextual toolbar",
+              "badge": null,
+              "description": "The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows, and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.",
+              "link": "{@link features/tables#table-contextual-toolbar}"
+            }
+          ]
+        },
+        {
+          "id": "watchdog",
+          "title": "Watchdog",
+          "type": "simple",
+          "description": "The watchdog utility protects you from data loss in case the editor crashes. It saves your content just before the crash and creates a new instance of the editor with your content intact.",
+          "link": "{@link features/watchdog}"
+        }
+      ]
+    },
+    {
+      "id": "compliance",
+      "title": "Compliance",
+      "description": "Make your content accessible to any person or restrict it to specific users.",
+      "subsections": [
+        {
+          "id": "accessibility-support",
+          "title": "Accessibility support",
+          "type": "simple",
+          "description": "CKEditor&nbsp;5 includes accessibility functionality designed to ensure content is accessible to all users. These features encompass keyboard navigation for easier content access without a mouse, screen reader compatibility facilitated by ARIA attributes, and semantic output markup for clearer interpretation of content structures. CKEditor&nbsp;5 meets the requirements of the Web Content Accessibility Guidelines (WCAG) 2.2 at levels A and AA, as well as Section 508 of the Rehabilitation Act, as detailed in the Accessibility Conformance Report, ensuring broad accessibility compliance.",
+          "link": "{@link features/accessibility}"
+        },
+        {
+          "id": "read-only-support",
+          "title": "Read-only support",
+          "type": "simple",
+          "description": "The Read-Only Mode feature enables content to be locked from editing while still allowing it to be viewed. This mode is often used for restricting editing access based on user roles, allowing only specific users or groups to view the content without being able to modify it. Common uses include viewing sensitive documents like financial reports, software logs, or copyrighted stories that should not be altered but need to be accessible for copying or by screen readers. This mode can be toggled on and off by system triggers.",
+          "link": "{@link features/read-only}"
+        },
+        {
+          "id": "restricted-editing",
+          "title": "Restricted editing",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. Editable regions can be defined as inline (within text) or block (entire paragraphs or sections). This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.",
+          "link": "{@link features/restricted-editing}"
+        },
+        {
+          "id": "text-part-language",
+          "title": "Text Part Language",
+          "type": "simple",
+          "description": "The Text Part Language feature allows users to specify the language of individual sections of text. This capability helps in creating documents that include multiple languages by ensuring that browsers and screen readers correctly interpret each part according to its designated language. This feature is particularly valuable for content that contains text in varying directions, such as an English document with Arabic citations. It supports the WCAG 3.1.2 Language of Parts specification, facilitating the creation of more accessible and comprehensible multilingual content.",
+          "link": "{@link features/language}"
+        },
+        {
+          "id": "word-and-character-counter",
+          "title": "Word and character counter",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Word and Character Count feature provides a real-time tracking tool for monitoring the number of words and characters within the editor. This functionality assists in managing content length and ensuring it meets specific requirements or limits.",
+          "link": "{@link features/word-count}"
+        },
+        {
+          "id": "wproofreader",
+          "title": "WProofreader",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions.",
+          "link": "{@link features/spelling-and-grammar-checking}"
+        },
+        {
+          "id": "csp-support",
+          "title": "Content Security Policy",
+          "type": "simple",
+          "description": "Full Content Security Policy (CSP) support for secure deployments. Configure CKEditor&nbsp;5 to work within strict CSP environments.",
+          "link": "{@link getting-started/setup/csp}"
+        },
+        {
+          "id": "lts-edition",
+          "title": "LTS edition",
+          "type": "simple",
+          "description": "Long-Term Support edition for enterprise environments requiring extended stability and security updates without feature changes.",
+          "link": "{@link getting-started/setup/using-lts-edition}"
+        },
+        {
+          "id": "cloud-region",
+          "title": "Cloud region selection",
+          "type": "simple",
+          "badge": "premium",
+          "description": "Choose between EU and US cloud regions for CKEditor Cloud Services to meet data residency requirements and comply with regional data protection regulations.",
+          "link": "{@link features/cloud-services-overview}"
+        },
+        {
+          "id": "on-premises",
+          "title": "On-premises (Self-hosted)",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Deploy CKEditor Cloud Services to your own infrastructure. Supports private cloud deployments and hybrid configurations for organizations requiring full control over their data and infrastructure.",
+          "link": "https://ckeditor.com/docs/cs/latest/onpremises/index.html"
+        }
+      ]
+    },
+    {
+      "id": "customization",
+      "title": "Customization",
+      "description": "Customize your editor even further. Use components and helpers from our UI library to create a UI that will match your design system.",
+      "subsections": [
+        {
+          "id": "editor-sdk",
+          "title": "Editor SDK",
+          "type": "subsection-with-grid",
+          "description": "Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or the modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor&nbsp;5 Inspector &ndash; a comprehensive suite of debugging tools &ndash; are provided, helping accelerate development work.",
+          "features": [
+            {
+              "id": "ckeditor-5-inspector",
+              "title": "CKEditor&nbsp;5 inspector",
+              "badge": null,
+              "description": "The official CKEditor&nbsp;5 inspector provides a set of rich debugging tools for editor internals like model, view, and commands.",
+              "link": "{@link framework/development-tools/inspector}"
+            },
+            {
+              "id": "cloud-services-rest-api",
+              "title": "Cloud Services REST API",
+              "badge": null,
+              "description": "The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor&nbsp;5 features, although some features can also be used directly through REST APIs.",
+              "link": "https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html"
+            },
+            {
+              "id": "plugin-api",
+              "title": "Plugin API",
+              "badge": null,
+              "description": "Create custom plugins to extend CKEditor&nbsp;5 with your own features. Use the package generator to scaffold new plugins with TypeScript or JavaScript templates.",
+              "link": "{@link framework/development-tools/package-generator/using-package-generator}"
+            },
+            {
+              "id": "custom-editor-creator",
+              "title": "Custom editor creator",
+              "badge": null,
+              "description": "Create custom editor types beyond the built-in options. Implement specialized editor configurations like multi-root editors with custom toolbars and UI.",
+              "link": "{@link framework/custom-editor-creator}"
+            }
+          ]
+        },
+        {
+          "id": "themes",
+          "title": "Themes",
+          "type": "simple",
+          "description": "Customize the editor theme to match your design needs. Change colors, spacing, and visual styling to integrate with your application.",
+          "link": "{@link framework/theme-customization}"
+        },
+        {
+          "id": "icon-customization",
+          "title": "Icon customization",
+          "type": "simple",
+          "description": "Customize toolbar icons with your own SVG icons or icon sets to match your application branding.",
+          "link": "{@link getting-started/setup/customizing-icons}"
+        },
+        {
+          "id": "ui-library",
+          "title": "UI Library",
+          "type": "simple",
+          "description": "The standard UI library of CKEditor&nbsp;5 is @ckeditor/ckeditor5-ui. It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.",
+          "link": "{@link framework/architecture/ui-library}"
+        },
+        {
+          "id": "localization-framework",
+          "title": "Localization framework",
+          "type": "simple",
+          "description": "Built-in internationalization framework with 38+ professionally translated languages. Add custom translations for your plugins and UI customizations.",
+          "link": "{@link framework/deep-dive/localization}"
+        },
+        {
+          "id": "server-side-editor-api",
+          "title": "Server-side Editor API",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Execute editor operations on the server via REST API. Automate document processing, manage collaborative data, and run secure content operations without browser clients.",
+          "link": "{@link features/server-side-editor-api}"
+        },
+        {
+          "id": "webhooks",
+          "title": "Webhooks",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Receive real-time notifications about document events via webhooks. Integrate CKEditor Cloud Services with your backend systems for automated workflows.",
+          "link": "https://ckeditor.com/docs/cs/latest/guides/webhooks/overview.html"
+        }
+      ]
+    },
+    {
+      "id": "file-management",
+      "title": "File management",
+      "description": "Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.",
+      "subsections": [
+        {
+          "id": "base64-upload-adapter",
+          "title": "Base64 Upload Adapter",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Convert inserted images into Base64-encoded strings in the editor output. Images are stored with other content in the database without server-side processing.",
+          "link": "{@link features/base64-upload-adapter}"
+        },
+        {
+          "id": "ckbox",
+          "title": "CKBox",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Securely upload, store, edit, and utilize your images and files in CKEditor&nbsp;5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS.",
+          "link": "{@link features/ckbox}"
+        },
+        {
+          "id": "ckfinder",
+          "title": "CKFinder",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.",
+          "link": "{@link features/ckfinder}"
+        },
+        {
+          "id": "custom-upload-adapter",
+          "title": "Custom Upload Adapter",
+          "type": "simple",
+          "description": "Have your own file management solution? Use this adapter to integrate your preferred software with CKEditor.",
+          "link": "{@link features/custom-upload-adapter}"
+        },
+        {
+          "id": "simple-upload-adapter",
+          "title": "Simple Upload Adapter",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Upload images to your server using the XMLHttpRequest API with a minimal editor configuration.",
+          "link": "{@link features/simple-upload-adapter}"
+        },
+        {
+          "id": "uploadcare",
+          "title": "Uploadcare",
+          "type": "heading-badge",
+          "badge": "premium",
+          "description": "Upload, store, transform, optimize, and deliver images, videos, and documents with this cloud-based file handler. Upload media from local storage, web cameras, cloud services, and social networks with automated media optimization through a CDN for responsive image delivery. Popular features include adaptive image quality, automated image format conversion, progressive JPEG, and options for preview, resize, stretch, crop, content-aware crop, and setting fill color.",
+          "link": "{@link features/uploadcare}"
+        }
+      ]
+    },
+    {
+      "id": "integrations",
+      "title": "Integrations",
+      "description": "Integrate CKEditor&nbsp;5 with your technology stack. Official components and guides for popular frameworks, backend platforms, and various installation methods.",
+      "subsections": [
+        {
+          "id": "frontend-frameworks",
+          "title": "Frontend frameworks",
+          "type": "subsection-with-grid",
+          "description": "Official CKEditor&nbsp;5 components for popular frontend frameworks.",
+          "features": [
+            {
+              "id": "react-integration",
+              "title": "React",
+              "badge": null,
+              "description": "Official React component with hooks support. Available via npm or CDN.",
+              "link": "{@link getting-started/integrations/react-default-npm}"
+            },
+            {
+              "id": "angular-integration",
+              "title": "Angular",
+              "badge": null,
+              "description": "Official Angular component with two-way binding support.",
+              "link": "{@link getting-started/integrations/angular}"
+            },
+            {
+              "id": "vue-integration",
+              "title": "Vue.js",
+              "badge": null,
+              "description": "Support for both Vue 2 and Vue 3 with reactive data binding.",
+              "link": "{@link getting-started/integrations-cdn/vuejs-v3}"
+            },
+            {
+              "id": "svelte-integration",
+              "title": "Svelte",
+              "badge": null,
+              "description": "Svelte integration for reactive editor instances.",
+              "link": "{@link getting-started/integrations/svelte}"
+            },
+            {
+              "id": "nextjs-integration",
+              "title": "Next.js",
+              "badge": null,
+              "description": "Server-side rendering compatible Next.js integration.",
+              "link": "{@link getting-started/integrations-cdn/next-js}"
+            },
+            {
+              "id": "nuxt-integration",
+              "title": "Nuxt",
+              "badge": null,
+              "description": "Nuxt framework integration for Vue-based SSR applications.",
+              "link": "{@link getting-started/integrations-cdn/nuxt}"
+            },
+            {
+              "id": "jquery-integration",
+              "title": "jQuery",
+              "badge": null,
+              "description": "jQuery integration for legacy applications and CMS platforms that use jQuery.",
+              "link": "{@link getting-started/integrations/jquery}"
+            },
+            {
+              "id": "other-js-platforms",
+              "title": "Other JavaScript platforms",
+              "badge": null,
+              "description": "CKEditor&nbsp;5 can be integrated with any JavaScript environment. Use the vanilla JavaScript guide as a starting point for custom integrations.",
+              "link": "{@link getting-started/integrations/quick-start}"
+            }
+          ]
+        },
+        {
+          "id": "backend-integrations",
+          "title": "Backend & platform integrations",
+          "type": "subsection-with-grid",
+          "description": "Integrate CKEditor&nbsp;5 with popular backend frameworks and platforms.",
+          "features": [
+            {
+              "id": "laravel-integration",
+              "title": "Laravel",
+              "badge": null,
+              "description": "PHP Laravel framework integration guide.",
+              "link": "{@link getting-started/integrations/laravel}"
+            },
+            {
+              "id": "dotnet-integration",
+              "title": ".NET",
+              "badge": null,
+              "description": "ASP.NET and .NET Core integration.",
+              "link": "{@link getting-started/integrations/dotnet}"
+            },
+            {
+              "id": "spring-boot-integration",
+              "title": "Spring Boot",
+              "badge": null,
+              "description": "Java Spring Boot integration.",
+              "link": "{@link getting-started/integrations/spring-boot}"
+            },
+            {
+              "id": "sharepoint-integration",
+              "title": "SharePoint",
+              "badge": null,
+              "description": "Microsoft SharePoint integration.",
+              "link": "{@link getting-started/integrations/sharepoint}"
+            },
+            {
+              "id": "salesforce-integration",
+              "title": "Salesforce",
+              "badge": null,
+              "description": "Salesforce platform integration.",
+              "link": "{@link getting-started/integrations-cdn/salesforce}"
+            },
+            {
+              "id": "other-platforms",
+              "title": "Other platforms",
+              "badge": null,
+              "description": "CKEditor&nbsp;5 can be integrated with any backend platform. Use the vanilla JavaScript guide as a starting point for custom integrations.",
+              "link": "{@link getting-started/integrations/quick-start}"
+            }
+          ]
+        },
+        {
+          "id": "installation-methods",
+          "title": "Installation methods",
+          "type": "subsection-with-grid",
+          "description": "Multiple ways to add CKEditor&nbsp;5 to your project, from quick CDN scripts to full npm builds.",
+          "features": [
+            {
+              "id": "npm-installation",
+              "title": "npm / Bundler",
+              "badge": null,
+              "description": "Install via npm and bundle with Vite, Webpack, or other bundlers. Full tree-shaking support.",
+              "link": "{@link getting-started/integrations/quick-start}"
+            },
+            {
+              "id": "cdn-installation",
+              "title": "CDN",
+              "badge": null,
+              "description": "Load CKEditor&nbsp;5 directly from CDN with zero build setup. ESM and UMD bundles available.",
+              "link": "{@link getting-started/integrations-cdn/quick-start}"
+            },
+            {
+              "id": "typescript-support",
+              "title": "TypeScript support",
+              "badge": null,
+              "description": "Full TypeScript support with type definitions for all APIs and configurations.",
+              "link": "{@link getting-started/setup/typescript-support}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
