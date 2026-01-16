@@ -2081,7 +2081,11 @@ describe( 'TableColumnResizeEditing', () => {
 				}
 
 				editor = await createEditor( {
-					language: 'ar'
+					language: 'ar',
+					translations: [ { ar: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					} } ]
 				} );
 
 				model = editor.model;
