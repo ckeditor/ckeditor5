@@ -311,9 +311,11 @@ export function downcastPlainTable(
 	const tableUtils = editor.plugins.get( TableUtils );
 
 	const writer = conversionApi.writer;
+	const totalRows = tableUtils.getRows( table );
+
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 	const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
-	const footerIndex = tableUtils.getRows( table ) as number - footerRows;
+	const footerIndex = totalRows - footerRows;
 
 	// Table head rows slot.
 	const headRowsSlot = writer.createSlot( ( element: ModelNode ) =>
@@ -351,7 +353,7 @@ export function downcastPlainTable(
 		tableContentElements.push( theadElement );
 	}
 
-	if ( headingRows + footerRows < table.childCount ) {
+	if ( headingRows + footerRows < totalRows ) {
 		tableContentElements.push( tbodyElement );
 	}
 
