@@ -8,6 +8,7 @@ import { CodeBlockEditing } from '../src/codeblockediting.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -22,7 +23,7 @@ describe( 'CodeBlockHighlight', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ CodeBlockEditing, CodeBlockHighlight, Paragraph, Typing ]
+				plugins: [ CodeBlockEditing, CodeBlockHighlight, Paragraph, Typing, ClipboardPipeline ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -441,6 +442,77 @@ describe( 'CodeBlockHighlight', () => {
 							' x = ' +
 							'<span class="hljs-number">10</span>' +
 							';' +
+						'</code>' +
+					'</pre>'
+				);
+			} );
+		} );
+
+		describe( 'paste integration', () => {
+			// Tests verifying that pasted code is properly highlighted in code blocks.
+
+			it( 'should apply syntax highlighting to multi-line JavaScript code pasted into empty code block', () => {
+				_setModelData( model, '<codeBlock language="javascript">[]</codeBlock>' );
+
+				// Create a mock clipboard data transfer with multi-line JavaScript code.
+				const dataTransferMock = {
+					getData: sinon.stub().withArgs( 'text/plain' ).returns(
+						'function greet(name) {\n' +
+						'  console.log("Hello, " + name);\n' +
+						'}'
+					)
+				};
+
+				// Simulate paste event.
+				view.document.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					stop: sinon.spy()
+				} );
+
+				// Verify that the model has codeHighlight attributes applied correctly to the pasted code.
+				const modelData = _getModelData( model );
+				expect( modelData ).to.equal(
+					'<codeBlock language="javascript">' +
+						'<$text codeHighlight="hljs-keyword">function</$text>' +
+						' ' +
+						'<$text codeHighlight="hljs-title function_">greet</$text>' +
+						'(' +
+						'<$text codeHighlight="hljs-params">name</$text>' +
+						') {' +
+						'<softBreak></softBreak>' +
+						'  ' +
+						'<$text codeHighlight="hljs-variable language_">console</$text>' +
+						'.' +
+						'<$text codeHighlight="hljs-title function_">log</$text>' +
+						'(' +
+						'<$text codeHighlight="hljs-string">"Hello, "</$text>' +
+						' + name);' +
+						'<softBreak></softBreak>' +
+						'}[]' +
+					'</codeBlock>'
+				);
+
+				// Verify that the view renders the pasted code with correct highlighting.
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				expect( viewData ).to.equal(
+					'<pre data-language="JavaScript" spellcheck="false">' +
+						'<code class="language-javascript">' +
+							'<span class="hljs-keyword">function</span>' +
+							' ' +
+							'<span class="function_ hljs-title">greet</span>' +
+							'(' +
+							'<span class="hljs-params">name</span>' +
+							') {' +
+							'<br></br>' +
+							'  ' +
+							'<span class="hljs-variable language_">console</span>' +
+							'.' +
+							'<span class="function_ hljs-title">log</span>' +
+							'(' +
+							'<span class="hljs-string">"Hello, "</span>' +
+							' + name);' +
+							'<br></br>' +
+							'}' +
 						'</code>' +
 					'</pre>'
 				);
