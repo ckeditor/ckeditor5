@@ -1,36 +1,85 @@
-/*
- * The base configuration used by all other configuration.
- *
- * Be careful when updating this file. It may affect building docs, preparing DLLs, executing tests, or impacts the release process.
- */
 {
-  "compilerOptions": {
-    /**
-     * TypeScript automagically loads typings from all "@types/*" packages if the "compilerOptions.types" array is not defined in
-     * this file. However, if some dependencies have "@types/*" packages as their dependencies, they'll also be loaded as well.
-     * As a result, TypeScript loaded "@types/node" which we don't want to use, because it allows using Node.js specific APIs that
-     * are not available in the browsers.
-     *
-     * To avoid such issues, we defined this empty "types" to disable automatic inclusion of the "@types/*" packages.
-     */
-    "types": [],
-    "lib": [
-      "ES2022", // Must match the "target"
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "noImplicitAny": true,
-    "noImplicitOverride": true,
-    "strict": true,
-    "module": "esnext",
-    "target": "es2022",
-    "sourceMap": true,
-    "moduleResolution": "bundler",
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "include": [
-    "**/*.ts",
-    "./typings/"
-  ]
+	"compilerOptions": {
+		"types": [
+			"./typings/types"
+		],
+		"lib": [
+			"ES2022",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"strict": true,
+		"module": "esnext",
+		"target": "es2022",
+		"sourceMap": true,
+		"moduleResolution": "bundler",
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"files": [],
+	"references": [
+		{ "path": "./packages/ckeditor5-adapter-ckfinder" },
+		{ "path": "./packages/ckeditor5-alignment" },
+		{ "path": "./packages/ckeditor5-autoformat" },
+		{ "path": "./packages/ckeditor5-autosave" },
+		{ "path": "./packages/ckeditor5-basic-styles" },
+		{ "path": "./packages/ckeditor5-block-quote" },
+		{ "path": "./packages/ckeditor5-bookmark" },
+		{ "path": "./packages/ckeditor5-ckbox" },
+		{ "path": "./packages/ckeditor5-ckfinder" },
+		{ "path": "./packages/ckeditor5-clipboard" },
+		{ "path": "./packages/ckeditor5-cloud-services" },
+		{ "path": "./packages/ckeditor5-code-block" },
+		{ "path": "./packages/ckeditor5-core" },
+		{ "path": "./packages/ckeditor5-easy-image" },
+		{ "path": "./packages/ckeditor5-editor-balloon" },
+		{ "path": "./packages/ckeditor5-editor-classic" },
+		{ "path": "./packages/ckeditor5-editor-decoupled" },
+		{ "path": "./packages/ckeditor5-editor-inline" },
+		{ "path": "./packages/ckeditor5-editor-multi-root" },
+		{ "path": "./packages/ckeditor5-emoji" },
+		{ "path": "./packages/ckeditor5-engine" },
+		{ "path": "./packages/ckeditor5-enter" },
+		{ "path": "./packages/ckeditor5-essentials" },
+		{ "path": "./packages/ckeditor5-find-and-replace" },
+		{ "path": "./packages/ckeditor5-font" },
+		{ "path": "./packages/ckeditor5-fullscreen" },
+		{ "path": "./packages/ckeditor5-heading" },
+		{ "path": "./packages/ckeditor5-highlight" },
+		{ "path": "./packages/ckeditor5-horizontal-line" },
+		{ "path": "./packages/ckeditor5-html-embed" },
+		{ "path": "./packages/ckeditor5-html-support" },
+		{ "path": "./packages/ckeditor5-icons" },
+		{ "path": "./packages/ckeditor5-image" },
+		{ "path": "./packages/ckeditor5-indent" },
+		{ "path": "./packages/ckeditor5-language" },
+		{ "path": "./packages/ckeditor5-link" },
+		{ "path": "./packages/ckeditor5-list" },
+		{ "path": "./packages/ckeditor5-markdown-gfm" },
+		{ "path": "./packages/ckeditor5-media-embed" },
+		{ "path": "./packages/ckeditor5-mention" },
+		{ "path": "./packages/ckeditor5-minimap" },
+		{ "path": "./packages/ckeditor5-page-break" },
+		{ "path": "./packages/ckeditor5-paragraph" },
+		{ "path": "./packages/ckeditor5-paste-from-office" },
+		{ "path": "./packages/ckeditor5-remove-format" },
+		{ "path": "./packages/ckeditor5-restricted-editing" },
+		{ "path": "./packages/ckeditor5-select-all" },
+		{ "path": "./packages/ckeditor5-show-blocks" },
+		{ "path": "./packages/ckeditor5-source-editing" },
+		{ "path": "./packages/ckeditor5-special-characters" },
+		{ "path": "./packages/ckeditor5-style" },
+		{ "path": "./packages/ckeditor5-table" },
+		{ "path": "./packages/ckeditor5-typing" },
+		{ "path": "./packages/ckeditor5-ui" },
+		{ "path": "./packages/ckeditor5-undo" },
+		{ "path": "./packages/ckeditor5-upload" },
+		{ "path": "./packages/ckeditor5-utils" },
+		{ "path": "./packages/ckeditor5-watchdog" },
+		{ "path": "./packages/ckeditor5-widget" },
+		{ "path": "./packages/ckeditor5-word-count" },
+		{ "path": "./packages/ckeditor5" }
+	]
 }

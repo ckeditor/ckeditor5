@@ -1,3 +1,16 @@
 {
-	"extends": "../../tsconfig.packages.json"
+	"extends": "../../tsconfig.packages.json",
+	"references": [
+		{ "path": "../ckeditor5-clipboard" },
+		{ "path": "../ckeditor5-core" },
+		{ "path": "../ckeditor5-engine" },
+		{ "path": "../ckeditor5-enter" },
+		{ "path": "../ckeditor5-heading" },
+		{ "path": "../ckeditor5-image" },
+		{ "path": "../ckeditor5-list" },
+		{ "path": "../ckeditor5-remove-format" },
+		{ "path": "../ckeditor5-table" },
+		{ "path": "../ckeditor5-utils" },
+		{ "path": "../ckeditor5-widget" }
+	]
 }

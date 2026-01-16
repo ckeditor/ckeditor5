@@ -1,0 +1,12 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"types": ["@types/node"],
+		// Bump to "ES2024" when we upgrade to TS 5.7.
+		// https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
+		"lib": ["ES2023"],
+		"module": "NodeNext",
+		"checkJs": true
+	},
+	"include": ["**/*"]
+}

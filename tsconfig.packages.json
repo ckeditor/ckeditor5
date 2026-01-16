@@ -5,8 +5,11 @@
       "${configDir}/../../typings/types"
     ],
     "rootDir": "${configDir}/src",
+    "composite": true,
+	"declaration": true
   },
   "include": [
     "${configDir}/src"
-  ]
+  ],
+  "references": []
 }

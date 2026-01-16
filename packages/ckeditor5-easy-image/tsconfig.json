@@ -1,3 +1,9 @@
 {
-	"extends": "../../tsconfig.packages.json"
+	"extends": "../../tsconfig.packages.json",
+	"references": [
+		{ "path": "../ckeditor5-cloud-services" },
+		{ "path": "../ckeditor5-core" },
+		{ "path": "../ckeditor5-upload" },
+		{ "path": "../ckeditor5-utils" }
+	]
 }
