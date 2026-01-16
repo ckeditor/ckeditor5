@@ -38,6 +38,7 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
 		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
+		const totalRows = tableUtils.getRows( table );
 
 		// Table head slot.
 		if ( headingRows > 0 ) {
@@ -52,7 +53,7 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 		}
 
 		// Table body slot.
-		if ( headingRows + footerRows < tableUtils.getRows( table ) ) {
+		if ( headingRows + footerRows < totalRows ) {
 			writer.insert(
 				writer.createPositionAt( tableElement, 'end' ),
 				writer.createContainerElement(
@@ -61,7 +62,7 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 					writer.createSlot( element =>
 						element.is( 'element', 'tableRow' ) &&
 						element.index! >= headingRows &&
-						element.index! < tableUtils.getRows( table ) - footerRows
+						element.index! < totalRows - footerRows
 					)
 				)
 			);
@@ -76,7 +77,7 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 					null,
 					writer.createSlot( element =>
 						element.is( 'element', 'tableRow' ) &&
-						element.index! >= tableUtils.getRows( table ) - footerRows
+						element.index! >= totalRows - footerRows
 					)
 				)
 			);
