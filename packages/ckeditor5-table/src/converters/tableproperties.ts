@@ -234,44 +234,42 @@ export function upcastBorderStyles(
 		}
 	} ) );
 
-	if ( editor.config.get( 'experimentalFlags.upcastTableBorderZeroAttributes' ) ) {
-		// If parent table has `border="0"` attribute then set border style to `none`
-		// all table cells of that table and table itself.
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
-				const { modelRange, viewItem } = data;
+	// If parent table has `border="0"` attribute then set border style to `none`
+	// all table cells of that table and table itself.
+	conversion.for( 'upcast' ).add( dispatcher => {
+		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
+			const { modelRange, viewItem } = data;
 
-				const viewTable = (
-					viewItem.is( 'element', 'table' ) ?
-						viewItem :
-						viewItem.findAncestor( 'table' )
-				)!;
+			const viewTable = (
+				viewItem.is( 'element', 'table' ) ?
+					viewItem :
+					viewItem.findAncestor( 'table' )
+			)!;
 
-				// If something already consumed the border attribute on the nearest table element, skip the conversion.
-				if ( !conversionApi.consumable.test( viewTable, { attributes: 'border' } ) ) {
-					return;
-				}
+			// If something already consumed the border attribute on the nearest table element, skip the conversion.
+			if ( !conversionApi.consumable.test( viewTable, { attributes: 'border' } ) ) {
+				return;
+			}
 
-				// Ignore tables with border different than "0".
-				if ( viewTable.getAttribute( 'border' ) !== '0' ) {
-					return;
-				}
+			// Ignore tables with border different than "0".
+			if ( viewTable.getAttribute( 'border' ) !== '0' ) {
+				return;
+			}
 
-				const modelElement = modelRange?.start?.nodeAfter;
+			const modelElement = modelRange?.start?.nodeAfter;
 
-				// If model element has already border style attribute, skip the conversion.
-				if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
-					return;
-				}
+			// If model element has already border style attribute, skip the conversion.
+			if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+				return;
+			}
 
-				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
+			conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
 
-				if ( viewItem.is( 'element', 'table' ) ) {
-					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
-				}
-			} );
+			if ( viewItem.is( 'element', 'table' ) ) {
+				conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
+			}
 		} );
-	}
+	} );
 }
 
 /**

@@ -123,6 +123,50 @@ describe( 'PlainTableOutput', () => {
 				);
 			} );
 
+			it( 'should create footer rows', () => {
+				_setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ],
+					[ '5', '6' ]
+				], { footerRows: 2 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<tbody>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+						'</tbody>' +
+						'<tfoot>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+							'<tr><td>5</td><td>6</td></tr>' +
+						'</tfoot>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should create footer rows and heading rows', () => {
+				_setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ],
+					[ '5', '6' ],
+					[ '7', '8' ]
+				], { headingRows: 1, footerRows: 2 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<thead>' +
+							'<tr><th>1</th><th>2</th></tr>' +
+						'</thead>' +
+						'<tbody>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+						'</tbody>' +
+						'<tfoot>' +
+							'<tr><td>5</td><td>6</td></tr>' +
+							'<tr><td>7</td><td>8</td></tr>' +
+						'</tfoot>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should work when heading rows number is bigger than number of rows', () => {
 				_setModelData( model, modelTable( [
 					[ '1', '2' ],
@@ -135,6 +179,22 @@ describe( 'PlainTableOutput', () => {
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
 						'</thead>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should work when footer rows number is bigger than number of rows', () => {
+				_setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ]
+				], { footerRows: 3 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<tfoot>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+						'</tfoot>' +
 					'</table>'
 				);
 			} );

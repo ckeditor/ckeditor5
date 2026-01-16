@@ -46,6 +46,7 @@
 		border: 1px double hsl(0, 0%, 70%);
 
 		& > thead,
+		& > tfoot,
 		& > tbody {
 			/* The linter is disabled here because linter is confused when resolving the `table.table:not(.layout-table)`
 			and `figure.table:not(.layout-table) > table` selectors combined with below selectors.

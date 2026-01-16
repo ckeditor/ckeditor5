@@ -149,6 +149,7 @@ export function viewTable( tableData, attributes = {} ) {
 	}
 
 	const headingRows = attributes.headingRows || 0;
+	const footerRows = attributes.footerRows || 0;
 	const asWidget = !!attributes.asWidget;
 
 	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), {
@@ -160,21 +161,33 @@ export function viewTable( tableData, attributes = {} ) {
 		asWidget
 	} ) }</thead>` : '';
 
-	const tbody = tableData.length > headingRows ?
-		`<tbody>${ makeRows( tableData.slice( headingRows ), {
-			cellElement: 'td',
-			rowElement: 'tr',
-			headingElement: 'th',
-			wrappingElement: asWidget ? 'span' : 'p',
-			enforceWrapping: asWidget,
-			asWidget
-		} ) }</tbody>` : '';
+	const tfoot = footerRows > 0 ? `<tfoot>${ makeRows( tableData.slice( -footerRows ), {
+		cellElement: 'td',
+		rowElement: 'tr',
+		headingElement: 'th',
+		wrappingElement: asWidget ? 'span' : 'p',
+		enforceWrapping: asWidget,
+		asWidget
+	} ) }</tfoot>` : '';
+
+	const tbody = tableData.length > headingRows + footerRows ?
+		`<tbody>${ makeRows(
+			footerRows ? tableData.slice( headingRows, -footerRows ) : tableData.slice( headingRows ),
+			{
+				cellElement: 'td',
+				rowElement: 'tr',
+				headingElement: 'th',
+				wrappingElement: asWidget ? 'span' : 'p',
+				enforceWrapping: asWidget,
+				asWidget
+			}
+		) }</tbody>` : '';
 
 	const figureAttributes = asWidget ?
 		'class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"' : 'class="table"';
 	const widgetHandler = '<div class="ck ck-widget__selection-handle"></div>';
 
-	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
+	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }${ tfoot }</table></figure>`;
 }
 
 /**

@@ -581,10 +581,7 @@ describe( 'table properties', () => {
 						await editor.destroy();
 
 						editor = await VirtualTestEditor.create( {
-							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
-							experimentalFlags: {
-								upcastTableBorderZeroAttributes: true
-							}
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ]
 						} );
 
 						model = editor.model;

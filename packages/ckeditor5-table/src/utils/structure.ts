@@ -109,6 +109,9 @@ export function cropTableToDimensions(
 	// Adjust heading rows & columns in cropped table if crop selection includes headings parts.
 	addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer );
 
+	// Adjust footer rows in cropped table if crop selection includes footer rows.
+	addFootersToCroppedTable( croppedTable, sourceTable, startRow, endRow, writer );
+
 	return croppedTable;
 }
 
@@ -321,7 +324,11 @@ export function trimTableCellIfNeeded(
  * Sets proper heading attributes to a cropped table.
  */
 function addHeadingsToCroppedTable(
-	croppedTable: ModelElement, sourceTable: ModelElement, startRow: number, startColumn: number, writer: ModelWriter
+	croppedTable: ModelElement,
+	sourceTable: ModelElement,
+	startRow: number,
+	startColumn: number,
+	writer: ModelWriter
 ) {
 	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) as string || '0' );
 
@@ -336,6 +343,36 @@ function addHeadingsToCroppedTable(
 		const headingColumnsInCrop = headingColumns - startColumn;
 		updateNumericAttribute( 'headingColumns', headingColumnsInCrop, croppedTable, writer, 0 );
 	}
+}
+
+/**
+ * Sets footer row attributes to a cropped table.
+ */
+function addFootersToCroppedTable(
+	croppedTable: ModelElement,
+	sourceTable: ModelElement,
+	startRow: number,
+	endRow: number,
+	writer: ModelWriter
+) {
+	const maxRows = Array
+		.from( sourceTable.getChildren() )
+		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
+
+	const footerRows = parseInt( sourceTable.getAttribute( 'footerRows' ) as string || '0' );
+	const footerIndex = maxRows - footerRows;
+
+	if ( footerRows < 1 ) {
+		return;
+	}
+
+	let footerRowsInCrop = 0;
+
+	if ( endRow >= footerIndex ) {
+		footerRowsInCrop = endRow - Math.max( footerIndex, startRow ) + 1;
+	}
+
+	updateNumericAttribute( 'footerRows', footerRowsInCrop, croppedTable, writer, 0 );
 }
 
 /**

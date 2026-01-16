@@ -9,8 +9,8 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 
 import {
-	TableCellPropertiesEditing, TableCellPropertiesUI,
-	TableLayout, TablePropertiesEditing, TablePropertiesUI
+	TableCellPropertiesEditing, TableCellPropertiesUI, TableLayout,
+	TablePropertiesEditing, TablePropertiesUI
 } from '../../src/index.js';
 
 const sourceElement = document.querySelector( '#editor' );

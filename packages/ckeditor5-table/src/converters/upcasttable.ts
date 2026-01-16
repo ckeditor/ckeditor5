@@ -78,10 +78,12 @@ export function upcastTableFigure() {
  *
  * This conversion helper converts the table element as well as table rows.
  *
+ * @param options Conversion options.
+ * @param options.enableFooters If set to `true` the `footerRows` attribute will be upcasted.
  * @returns Conversion helper.
  * @internal
  */
-export function upcastTable() {
+export function upcastTable( options: { enableFooters?: boolean } ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -91,10 +93,10 @@ export function upcastTable() {
 				return;
 			}
 
-			const { rows, headingRows, headingColumns } = scanTable( viewTable );
+			const { rows, headingRows, headingColumns, footerRows } = scanTable( viewTable );
 
 			// Only set attributes if values is greater then 0.
-			const attributes: { headingColumns?: number; headingRows?: number } = {};
+			const attributes: { headingColumns?: number; headingRows?: number; footerRows?: number } = {};
 
 			if ( headingColumns ) {
 				attributes.headingColumns = headingColumns;
@@ -102,6 +104,10 @@ export function upcastTable() {
 
 			if ( headingRows ) {
 				attributes.headingRows = headingRows;
+			}
+
+			if ( options.enableFooters && footerRows ) {
+				attributes.footerRows = footerRows;
 			}
 
 			const table = conversionApi.writer.createElement( 'table', attributes );
@@ -220,14 +226,20 @@ function scanTable( viewTable: ViewElement ) {
 	// </table>
 	//
 	// But browsers will render rows in order as: 1 as the heading and 2 and 3 as the body.
-	const headRows = [];
-	const bodyRows = [];
+	const headRows: Array<ViewElement> = [];
+	const bodyRows: Array<ViewElement> = [];
+	const footRows: Array<ViewElement> = [];
 
 	// Currently the editor does not support more then one <thead> section.
 	// Only the first <thead> from the view will be used as a heading row and the others will be converted to body rows.
-	let firstTheadElement;
+	let firstTheadElement: ViewElement | null = null;
+	let firstTfoot: { element: ViewElement | null; rows: Array<ViewElement> } | null = null;
 
-	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<ViewElement> ) ) {
+	const tableChildren = Array.from( viewTable.getChildren() as IterableIterator<ViewElement> );
+
+	for ( let childIndex = 0; childIndex < tableChildren.length; childIndex++ ) {
+		const tableChild = tableChildren[ childIndex ];
+
 		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
 		// The else is for future purposes (mainly `<caption>`).
 		if ( tableChild.name !== 'tbody' && tableChild.name !== 'thead' && tableChild.name !== 'tfoot' ) {
@@ -249,10 +261,69 @@ function scanTable( viewTable: ViewElement ) {
 		// Keep tracking of the previous row columns count to improve detection of heading rows.
 		let maxPrevColumns = null;
 
+		// Let's lazy evaluate whether all preceding rows are footers.
+		// We don't want to perform this check for each row if not needed.
+		let arePrecedingChildrenFooters: boolean | null = null;
+
 		for ( const tr of trs ) {
 			const trColumns = Array
 				.from( tr.getChildren() )
 				.filter( el => el.is( 'element', 'td' ) || el.is( 'element', 'th' ) );
+
+			// There's tricky part. Having multiple `<tfoot>` elements is invalid HTML, However, browsers
+			// will handle them anyway and render them at the specific positions in the table (it ignores order of `tfoot` tags).
+			//
+			// Let's consider the following table:
+			//
+			// <table>
+			//   <tfoot><!-- FOOT-ROW-1 --></tfoot>
+			//   <tfoot><!-- FOOT-ROW-2 --></tfoot>
+			//   <thead><!-- HEAD-ROW-1 --></thead>
+			//   <tbody><!-- BODY-ROW-1 --></tbody>
+			//   <tfoot><!-- FOOT-ROW-3 --></tfoot>
+			// </table>
+			//
+			// Browsers tend to use first encountered `<tfoot>` as the actual footer and render it at the bottom of the table. Other
+			// `<tfoot>` elements are rendered at the position they appear in the DOM. In other words, the `FOOT-ROW-1` will be
+			// rendered after all body rows and `FOOT-ROW-3`.
+			//
+			// The tricky part is that from the user perspective, `FOOT-ROW-3` and moved to the bottom `FOOT-ROW-1`, are visually
+			// the same footer. So we should merge them together into `footRows` array and set proper `footerRows` attribute.
+			//
+			// The rest of foot rows (`FOOT-ROW-2` in the example) should be treated as normal body rows.
+			//
+			// The problem is that we iterate over table children in order, so we don't know if there will be another `<tfoot>`
+			// later in the table. We'll lazy look ahead to check if all following siblings are `<tfoot>` elements.
+			if ( tableChild.name === 'tfoot' ) {
+				firstTfoot ||= { element: tableChild, rows: trs };
+				shouldAccumulateHeadingRows = false;
+
+				// Fast check - is this the first `<tfoot>` element? If so, then it's definitely a footer row.
+				const isFirstTfoot = firstTfoot.element === tableChild;
+
+				// Slow check - are all preceding rows foot rows?
+				if ( !isFirstTfoot && arePrecedingChildrenFooters === null ) {
+					for ( let i = childIndex; i < tableChildren.length; i++ ) {
+						arePrecedingChildrenFooters = tableChildren[ i ].name === 'tfoot';
+
+						if ( !arePrecedingChildrenFooters ) {
+							break;
+						}
+					}
+				}
+
+				// If it's the first `<tfoot>` we can just put the row in `footRows`.
+				if ( isFirstTfoot ) {
+					footRows.push( tr );
+					continue;
+				}
+
+				// However, if it's not the first `<tfoot>` we need to put it's children before the first row of the first `<tfoot>`.
+				if ( arePrecedingChildrenFooters !== false ) {
+					footRows.splice( footRows.length - firstTfoot.rows.length, 0, tr );
+					continue;
+				}
+			}
 
 			// This <tr> is a child of a first <thead> element.
 			if (
@@ -308,7 +379,8 @@ function scanTable( viewTable: ViewElement ) {
 	return {
 		headingRows: headRows.length,
 		headingColumns: headingColumns || 0,
-		rows: [ ...headRows, ...bodyRows ]
+		footerRows: footRows.length,
+		rows: [ ...headRows, ...bodyRows, ...footRows ]
 	};
 }
 
