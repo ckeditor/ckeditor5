@@ -114,15 +114,14 @@ function normalizeFloatToDefinitionStyle(
 	}
 
 	let floatStyleName: string | null = null;
-	const blockStylePrefix = modelElement.is( 'element', 'imageBlock' ) ? 'Block' : '';
 
 	switch ( viewElement.getStyle( 'float' ) ) {
 		case 'left':
-			floatStyleName = `align${ blockStylePrefix }Left`;
+			floatStyleName = 'alignLeft';
 			break;
 
 		case 'right':
-			floatStyleName = `align${ blockStylePrefix }Right`;
+			floatStyleName = 'alignRight';
 			break;
 	}
 
