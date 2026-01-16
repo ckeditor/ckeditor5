@@ -4131,6 +4131,38 @@ describe( 'table clipboard', () => {
 				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
+			it( 'should not split cells if selection starts at footer boundary', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '30', '31', '32', '33', '34', '35' ],
+					[ '40', '41', '42', '43', '44', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { footerRows: 3, headingColumns: 3 } ) );
+
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 3, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 0 ] )
+				);
+
+				pasteTable( [
+					[ { contents: 'aa', rowspan: 2 }, 'ab' ],
+					[ 'bb' ]
+				] );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ { contents: 'aa', rowspan: 2 }, 'ab', '32', '33', '34', '35' ],
+					[ 'bb', '42', '43', '44', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { footerRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+			} );
+
 			function assertSelectionRangesSorted() {
 				const selectionRanges = Array.from( model.document.selection.getRanges() );
 				const selectionRangesSorted = selectionRanges.slice().sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
