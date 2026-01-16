@@ -60,7 +60,7 @@ export class TableUI extends Plugin {
 		const t = this.editor.t;
 		const contentLanguageDirection = editor.locale.contentLanguageDirection;
 		const isContentLtr = contentLanguageDirection === 'ltr';
-		const areTableFootersEnabled = !!editor.config.get( 'table.useTfootElement' );
+		const areTableFootersEnabled = !!editor.config.get( 'table.enableFooters' );
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
 			const command: InsertTableCommand = editor.commands.get( 'insertTable' )!;

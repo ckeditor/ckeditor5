@@ -32,7 +32,7 @@ describe( 'TableKeyboard', () => {
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ],
 			table: {
-				useTfootElement: true
+				enableFooters: true
 			}
 		} );
 

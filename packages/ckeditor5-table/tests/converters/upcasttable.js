@@ -20,7 +20,7 @@ describe( 'upcastTable()', () => {
 			.create( '', {
 				plugins: [ TableEditing, Paragraph, ImageBlockEditing, Widget ],
 				table: {
-					useTfootElement: true
+					enableFooters: true
 				}
 			} )
 			.then( newEditor => {

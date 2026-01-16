@@ -95,9 +95,9 @@ export class TableEditing extends Plugin {
 		const conversion = editor.conversion;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		editor.config.define( 'table.useTfootElement', false );
+		editor.config.define( 'table.enableFooters', false );
 
-		const useFooterElement = !!editor.config.get( 'table.useTfootElement' );
+		const useFooterElement = !!editor.config.get( 'table.enableFooters' );
 
 		schema.register( 'table', {
 			inheritAllFrom: '$blockObject',

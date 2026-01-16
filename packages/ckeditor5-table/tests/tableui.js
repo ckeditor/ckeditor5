@@ -35,7 +35,7 @@ describe( 'TableUI', () => {
 				.create( footerElement, {
 					plugins: [ TableEditing, TableUI, Paragraph ],
 					table: {
-						useTfootElement: true
+						enableFooters: true
 					}
 				} )
 				.then( newEditor => {

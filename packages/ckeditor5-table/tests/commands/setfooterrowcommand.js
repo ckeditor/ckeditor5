@@ -21,7 +21,7 @@ describe( 'SetFooterRowCommand', () => {
 		editor = await ModelTestEditor.create( {
 			plugins: [ Paragraph, TableEditing, TableSelection ],
 			table: {
-				useTfootElement: true
+				enableFooters: true
 			}
 		} );
 
@@ -81,7 +81,7 @@ describe( 'SetFooterRowCommand', () => {
 				editor = await ModelTestEditor.create( {
 					plugins: [ Paragraph, TableEditing, TableSelection, TableLayoutEditing ],
 					table: {
-						useTfootElement: true
+						enableFooters: true
 					}
 				} );
 

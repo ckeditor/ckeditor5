@@ -67,14 +67,14 @@ Check the table with default headers applied to both the first row and the first
 
 ### Enable table footers
 
-To enable table footers, set the optional table configuration property `useTfootElement` as follows:
+To enable table footers, set the optional table configuration property `enableFooters` as follows:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
 		table: {
-			useTfootElement: true
+			enableFooters: true
 		}
 	} )
 	.then( /* ... */ )
