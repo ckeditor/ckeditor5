@@ -17,7 +17,7 @@ import type {
 import { common, createLowlight } from 'lowlight';
 
 // Import the GitHub theme for syntax highlighting (provides CSS classes like hljs-keyword, hljs-string, etc.).
-import 'highlight.js/styles/github.css';
+import 'highlight.js/styles/a11y-light.css';
 
 /**
  * Highlight node structure (simplified from lowlight output).
