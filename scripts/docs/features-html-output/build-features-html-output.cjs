@@ -312,7 +312,7 @@ function createApiLink( packageData, plugin ) {
 	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
 
 	const packagePath = plugin.path
-		.replace( /(^src\/)|(\.js$)/g, '' )
+		.replace( /(^src\/)|(\.ts$)/g, '' )
 		.replace( /\//g, '_' );
 
 	const link = `../../api/module_${ shortPackageName }_${ packagePath }-${ plugin.className }.html`;

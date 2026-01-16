@@ -306,9 +306,6 @@ function createEditor( number, table, type ) {
 			save( editor ) {
 				createTableInPre( number, editor.getData(), type );
 			}
-		},
-		experimentalFlags: {
-			tableCellTypeSupport: true
 		}
 	};
 

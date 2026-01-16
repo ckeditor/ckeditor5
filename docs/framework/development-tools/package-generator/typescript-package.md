@@ -259,7 +259,7 @@ To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/c
 
 ### Why are the predefined ESLint rules recommended
 
-To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link getting-started/advanced/dll-builds DLL guide} and {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
+To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link getting-started/advanced/dll-builds DLL guide}.
 
 ## Translations
 

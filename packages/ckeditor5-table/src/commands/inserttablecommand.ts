@@ -7,14 +7,14 @@
  * @module table/commands/inserttablecommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 import type {
 	ModelDocumentSelection,
 	ModelSchema,
 	ModelSelection,
 	ModelElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../tableutils.js';
 
 /**

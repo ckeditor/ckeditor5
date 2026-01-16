@@ -5,7 +5,7 @@
 			"className": "Highlight",
 			"description": "Offers the text marking tools (pens and markers) useful when reviewing content or highlighting it for future reference.",
 			"docs": "features/highlight.html",
-			"path": "src/highlight.js",
+			"path": "src/highlight.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",

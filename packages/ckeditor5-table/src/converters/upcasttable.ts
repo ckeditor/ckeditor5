@@ -7,11 +7,11 @@
  * @module table/converters/upcasttable
  */
 
-import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
+import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from '@ckeditor/ckeditor5-engine';
 
 import { createEmptyTableCell } from '../utils/common.js';
 import { getViewTableFromWrapper } from '../utils/structure.js';
-import { first } from 'ckeditor5/src/utils.js';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Returns a function that converts the table view representation:

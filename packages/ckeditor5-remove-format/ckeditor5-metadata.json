@@ -5,7 +5,7 @@
 			"className": "RemoveFormat",
 			"description": "Allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles like basic text styles (bold, italic, etc.), font family, size, and color and similar.",
 			"docs": "features/remove-format.html",
-			"path": "src/removeformat.js",
+			"path": "src/removeformat.ts",
 			"uiComponents": [
 				{
 					"type": "Button",

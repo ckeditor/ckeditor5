@@ -16,7 +16,7 @@ The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-pack
 To create a new package without installing the tool, simply execute the following command:
 
 ```bash
-npx ckeditor5-package-generator <packageName> [--use-npm] [--use-pnpm] [--use-yarn] [--installation-methods <current|current-and-legacy>] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
+npx ckeditor5-package-generator <packageName> [--use-npm] [--use-pnpm] [--use-yarn] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
 ```
 
 The `<packageName>` argument is required and must obey these rules:
@@ -36,13 +36,6 @@ Available modifiers for the command are:
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
-* `--installation-methods` &ndash; (values: `current` | `current-and-legacy`) choose which installation methods of CKEditor 5 do you want to support? If omitted, the script will ask the user to choose manually.
-
-## Choosing the method
-
-Currently, a package can be generated in one of two modes of supported installation methods for CKEditor&nbsp;5 :
-* The package will only support the current installation methods if the value for the `--installation-methods` flag is set to `current`. This approach makes it easier to create CKEditor&nbsp;5 plugin at the cost of not supporting the old installation methods.
-* The package generator creates bundles for both the current installation methods and {@link getting-started/legacy-getting-started/quick-start legacy installation methods} if the value for the `--installation-methods` flag is set to `current-and-legacy`.
 
 ## Using the package
 

@@ -20,7 +20,7 @@ import { ImageUploadUI } from '../../src/imageupload/imageuploadui.js';
 import { ImageUploadEditing } from '../../src/imageupload/imageuploadediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-import { IconImageUpload } from 'ckeditor5/src/icons.js';
+import { IconImageUpload } from '@ckeditor/ckeditor5-icons';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';

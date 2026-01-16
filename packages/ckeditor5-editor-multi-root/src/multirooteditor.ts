@@ -12,7 +12,7 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
 import {
 	CKEditorError,
@@ -23,7 +23,7 @@ import {
 	isFeatureBlockedByLicenseKey,
 	type CollectionAddEvent,
 	type DecoratedMethodEvent
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
 import { MultiRootEditorUI } from './multirooteditorui.js';
 import { MultiRootEditorUIView } from './multirooteditoruiview.js';
@@ -34,7 +34,7 @@ import {
 	type ViewRootEditableElement,
 	type ModelWriter,
 	type ModelCanEditAtEvent
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * The multi-root editor implementation.

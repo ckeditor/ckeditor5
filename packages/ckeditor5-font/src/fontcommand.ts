@@ -7,8 +7,8 @@
  * @module font/fontcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { type Batch, type ModelWriter } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { type Batch, type ModelWriter } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The base font command.

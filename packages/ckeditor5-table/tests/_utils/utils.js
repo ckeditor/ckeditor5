@@ -233,6 +233,22 @@ export function assertTableStyle( editor, tableStyle, figureStyle ) {
 }
 
 /**
+ * An assertion helper for testing the `<table>` CSS class.
+ */
+export function assertTableClass( editor, tableClass, figureClass ) {
+	const tableClassEntry = tableClass ? ` class="${ tableClass }"` : '';
+	const figureClassEntry = figureClass ? ` ${ figureClass }` : '';
+
+	expect( editor.getData() ).to.equalMarkup(
+		`<figure class="table${ figureClassEntry }">` +
+			`<table${ tableClassEntry }>` +
+				'<tbody><tr><td>foo</td></tr></tbody>' +
+			'</table>' +
+		'</figure>'
+	);
+}
+
+/**
  * An assertion helper for testing the `<td>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
