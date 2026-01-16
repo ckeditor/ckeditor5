@@ -54,18 +54,14 @@ export interface TableConfig {
 	 *
 	 * ```ts
 	 * const tableConfig = {
-	 * 	defaultFooters: {
-	 * 		rows: 1
-	 * 	}
+	 * 	defaultFooters: 1
 	 * };
 	 * ```
 	 *
 	 * The rows property is optional, defaulting to 0 (no footer).
 	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
 	 */
-	defaultFooters?: {
-		rows?: number;
-	};
+	defaultFooters?: number;
 
 	/**
 	 * Enables support for table footers (`<tfoot>`).

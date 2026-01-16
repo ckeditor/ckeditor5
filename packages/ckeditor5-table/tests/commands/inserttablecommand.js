@@ -410,7 +410,7 @@ describe( 'InsertTableCommand', () => {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
 							enableFooters: true,
-							defaultFooters: { rows: 1 }
+							defaultFooters: 1
 						}
 					} );
 
@@ -437,7 +437,7 @@ describe( 'InsertTableCommand', () => {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
 							enableFooters: true,
-							defaultFooters: { rows: 3 }
+							defaultFooters: 3
 						}
 					} );
 
@@ -465,7 +465,7 @@ describe( 'InsertTableCommand', () => {
 						table: {
 							enableFooters: true,
 							defaultHeadings: { rows: 2 },
-							defaultFooters: { rows: 2 }
+							defaultFooters: 2
 						}
 					} );
 

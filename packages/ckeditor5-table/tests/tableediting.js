@@ -221,7 +221,7 @@ describe( 'TableEditing', () => {
 		} );
 
 		it( 'sets proper default footer rows', () => {
-			expect( editor.config.get( 'table.defaultFooters.rows' ) ).to.equal( 0 );
+			expect( editor.config.get( 'table.defaultFooters' ) ).to.equal( 0 );
 		} );
 	} );
 

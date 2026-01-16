@@ -213,7 +213,7 @@ export class TableEditing extends Plugin {
 		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
 		editor.config.define( 'table.defaultHeadings.columns', 0 );
-		editor.config.define( 'table.defaultFooters.rows', 0 );
+		editor.config.define( 'table.defaultFooters', 0 );
 		editor.config.define( 'table.showHiddenBorders', true );
 
 		if ( editor.config.get( 'table.showHiddenBorders' ) ) {
