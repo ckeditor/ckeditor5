@@ -11,6 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { CodeBlockEditing } from './codeblockediting.js';
 import type {
 	ModelElement,
+	ModelItem,
 	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
@@ -87,6 +88,9 @@ export class CodeBlockHighlight extends Plugin {
 		this.lowlight = createLowlight( common );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		// Define schema: allow codeHighlight attribute on text, only inside codeBlock.
 		this._defineSchema();
@@ -96,9 +100,15 @@ export class CodeBlockHighlight extends Plugin {
 
 		// Register model post-fixer to apply highlights.
 		this._registerModelPostFixer();
+	}
 
-		// Register model post-fixer to remove invalid codeHighlight attributes.
-		this._registerCleanupPostFixer();
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		super.destroy();
+
+		this._lastHighlightedState.clear();
 	}
 
 	/**
@@ -119,15 +129,7 @@ export class CodeBlockHighlight extends Plugin {
 		} );
 
 		// Restrict the codeHighlight attribute to text inside code blocks only.
-		schema.addAttributeCheck( ( context, attributeName ) => {
-			if ( attributeName !== 'codeHighlight' ) {
-				return true;
-			}
-
-			// Check if we're inside a codeBlock element.
-			// Context is like: "$root > codeBlock > $text" or "$root > codeBlock > $textProxy".
-			return context.endsWith( 'codeBlock $text' ) || context.endsWith( 'codeBlock $textProxy' );
-		} );
+		schema.addAttributeCheck( context => context.endsWith( 'codeBlock $text' ), 'codeHighlight' );
 	}
 
 	/**
@@ -140,75 +142,20 @@ export class CodeBlockHighlight extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).attributeToElement( {
 			model: 'codeHighlight',
 			view: ( attributeValue, { writer } ) => {
-				if ( !attributeValue ) {
-					return null;
-				}
-
 				// The attribute value contains space-separated class names from highlight.js (e.g. "hljs-keyword").
 				return writer.createAttributeElement( 'span', {
 					class: attributeValue
 				} );
-			},
-			converterPriority: 'high'
+			}
 		} );
 	}
 
 	/**
-	 * Registers a model post-fixer to remove stray codeHighlight attributes.
+	 * Registers a model post-fixer to apply syntax highlighting to code blocks and remove stray codeHighlight attributes.
 	 *
-	 * This is necessary because `schema.addAttributeCheck()` only prevents adding new disallowed attributes
-	 * but doesn't automatically remove existing attributes when content is moved or merged
-	 * (e.g., when a code block is deleted and its content is merged into a paragraph).
-	 *
-	 * The post-fixer uses the differ to track only affected elements for optimal performance.
-	 */
-	private _registerCleanupPostFixer(): void {
-		const editor = this.editor;
-		const model = editor.model;
-
-		model.document.registerPostFixer( writer => {
-			const changes = model.document.differ.getChanges();
-			const affectedElements = new Set<ModelElement>();
-
-			// Identify elements that might have stray codeHighlight attributes.
-			for ( const change of changes ) {
-				if ( change.type === 'insert' || change.type === 'remove' ) {
-					const parent = change.position.parent;
-
-					// Track non-code-block parents where content was added or removed.
-					if ( parent && parent.is( 'element' ) && !parent.is( 'element', 'codeBlock' ) ) {
-						affectedElements.add( parent );
-					}
-				}
-			}
-
-			// Remove codeHighlight attributes from text nodes outside code blocks.
-			let changed = false;
-
-			for ( const element of affectedElements ) {
-				for ( const item of writer.createRangeIn( element ).getItems() ) {
-					if ( ( item.is( '$text' ) || item.is( '$textProxy' ) ) && item.hasAttribute( 'codeHighlight' ) ) {
-						// Double-check that this text is not inside a code block.
-						const parent = item.parent;
-						const isInCodeBlock = parent && parent.is( 'element', 'codeBlock' );
-
-						if ( !isInCodeBlock ) {
-							writer.removeAttribute( 'codeHighlight', item );
-							changed = true;
-						}
-					}
-				}
-			}
-
-			return changed;
-		} );
-	}
-
-	/**
-	 * Registers a model post-fixer to apply syntax highlighting to code blocks.
-	 *
-	 * The post-fixer uses the differ to identify only affected code blocks (those that were inserted,
-	 * modified, or had content changes) to minimize performance impact during editing.
+	 * Additionally, removal of invalid codeHighlight attributes is necessary because `schema.addAttributeCheck()`
+	 * only prevents adding new disallowed attributes but doesn't automatically remove existing attributes
+	 * when content is moved or merged (e.g., when a code block is deleted and its content is merged into a paragraph).
 	 */
 	private _registerModelPostFixer(): void {
 		const editor = this.editor;
@@ -216,50 +163,59 @@ export class CodeBlockHighlight extends Plugin {
 
 		model.document.registerPostFixer( writer => {
 			const changes = model.document.differ.getChanges();
+			const strayNodes = new Set<ModelItem>();
 			const affectedCodeBlocks = new Set<ModelElement>();
+			let changed = false;
 
 			// Identify code blocks that need re-highlighting based on model changes.
 			for ( const change of changes ) {
 				if ( change.type === 'insert' ) {
-					const insertedItem = change.position.nodeAfter;
+					// In case of merged text nodes, check the entire inserted subtree.
+					const insertedItem = change.position.nodeAfter || change.position.parent as ModelElement;
 
-					// Track newly inserted code blocks (initialization, paste, or conversion).
-					if ( insertedItem && insertedItem.is( 'element', 'codeBlock' ) ) {
-						affectedCodeBlocks.add( insertedItem );
+					for ( const item of writer.createRangeOn( insertedItem ).getItems() ) {
+						// Track newly inserted code blocks (initialization, paste, or conversion).
+						if ( item.is( 'element', 'codeBlock' ) ) {
+							affectedCodeBlocks.add( item );
+						}
+
+						// Remove codeHighlight attributes from nodes outside code blocks.
+						if ( item.hasAttribute( 'codeHighlight' ) && !item.parent!.is( 'element', 'codeBlock' ) ) {
+							strayNodes.add( item );
+						}
 					}
+				}
 
-					// Track code blocks where content was inserted (typing, paste).
+				// Track code blocks where content was inserted or removed (typing, paste, delete, backspace).
+				if ( change.type === 'insert' || change.type === 'remove' ) {
 					const parent = change.position.parent;
 
-					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
-						affectedCodeBlocks.add( parent );
-					}
-				} else if ( change.type === 'remove' ) {
-					// Track code blocks where content was removed (delete, backspace).
-					const parent = change.position.parent;
-
-					if ( parent && parent.is( 'element', 'codeBlock' ) ) {
+					if ( parent?.is( 'element', 'codeBlock' ) ) {
 						affectedCodeBlocks.add( parent );
 					}
 				}
 			}
 
-			// Early exit if no code blocks were affected by the changes.
-			if ( affectedCodeBlocks.size === 0 ) {
-				return false;
+			// Remove stray codeHighlight attributes outside code blocks.
+			if ( strayNodes.size ) {
+				for ( const item of strayNodes ) {
+					writer.removeAttribute( 'codeHighlight', item );
+					changed = true;
+				}
 			}
 
-			// Process each affected code block and apply highlights.
-			let changed = false;
+			// Re-highlight affected code blocks.
+			if ( affectedCodeBlocks.size ) {
+				for ( const codeBlock of affectedCodeBlocks ) {
+					const currentText = this._getTextFromModelElement( codeBlock );
+					const currentLanguage = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
 
-			for ( const codeBlock of affectedCodeBlocks ) {
-				const currentText = this._getTextFromModelElement( codeBlock );
-				const currentLanguage = ( codeBlock.getAttribute( 'language' ) as string ) || 'plaintext';
-
-				if ( this._shouldHighlightCodeBlock( codeBlock, currentText, currentLanguage ) ) {
-					const wasChanged = this._highlightCodeBlock( codeBlock, currentText, currentLanguage, writer );
-
-					changed = changed || wasChanged;
+					if (
+						this._shouldHighlightCodeBlock( codeBlock, currentText, currentLanguage ) &&
+						this._highlightCodeBlock( codeBlock, currentText, currentLanguage, writer )
+					) {
+						changed = true;
+					}
 				}
 			}
 
@@ -383,6 +339,7 @@ export class CodeBlockHighlight extends Plugin {
 			let text = '';
 
 			for ( const child of node.children ) {
+				// TODO This does not handle nested elements with different classes correctly. Is it a real case?
 				text += this._extractTextFromNode( child );
 			}
 
@@ -429,20 +386,8 @@ export class CodeBlockHighlight extends Plugin {
 				writer.setAttribute( 'codeHighlight', segment.classes, range );
 				changed = true;
 			} else {
-				// For plain text segments, remove highlight only if present to avoid unnecessary operations.
-				let hasAttribute = false;
-
-				for ( const item of range.getItems() ) {
-					if ( ( item.is( '$text' ) || item.is( '$textProxy' ) ) && item.hasAttribute( 'codeHighlight' ) ) {
-						hasAttribute = true;
-						break;
-					}
-				}
-
-				if ( hasAttribute ) {
-					writer.removeAttribute( 'codeHighlight', range );
-					changed = true;
-				}
+				writer.removeAttribute( 'codeHighlight', range );
+				changed = true;
 			}
 
 			currentOffset += segmentLength;
@@ -464,7 +409,7 @@ export class CodeBlockHighlight extends Plugin {
 		const parts: Array<string> = [];
 
 		for ( const child of element.getChildren() ) {
-			if ( child.is( '$text' ) || child.is( '$textProxy' ) ) {
+			if ( child.is( '$text' ) ) {
 				parts.push( child.data );
 			} else if ( child.is( 'element', 'softBreak' ) ) {
 				parts.push( '\n' );
