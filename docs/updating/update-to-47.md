@@ -14,6 +14,132 @@ modified_at: 2026-01-12
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v47.5.0
+
+Released on TODO. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
+
+### Changes to the visual appearance of the AI Chat feed structure
+
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestions in conversation has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+Please make sure to update your integrations to use the new DOM structure.
+
+Notable changes:
+* "Apply all" and "Suggest all" buttons are now separate buttons instead of a dropdown.
+* The toolbar with bulk "Apply" and "Suggest" ("Apply all" and "Suggest all") buttons belongs to the `.ck-ai-suggestion__body` element (previously in `.ck-ai-chat__feed__item`).
+* The `.ck-ai-suggestion__body__content-part__content` has been replaced by `.ck-content.ck-ai-suggestion-streamable-content`.
+
+**Old DOM structure**
+
+```
+div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
+├── div.ck-ai-suggestion__container.ck-rounded-corners
+│   ├── div.ck-ai-suggestion__header
+│   │   ├── span ("Change N" label)
+│   │   └── button.ck-button.ck-ai-suggestion__header__show-changes-toggle
+│   └── div.ck-ai-suggestion__body
+│       └── div.ck-ai-suggestion__body__content-parts
+│           ├── div.ck-ai-suggestion__body__content-part.ck-ai-suggestion__body__content-part_pending
+│           │   ├── div.ck-ai-suggestion__body__content-part__title
+│           │   │   ├── span.ck-ai-suggestion__body__content-part__title__label
+│           │   │   └── div.ck-toolbar
+│           │   │       └── div.ck-toolbar__items (Toolbar with "Preview", "Insert as suggestion", "Reject" buttons)
+│           │   │           ├── button.ck-button
+│           │   │           └── ...
+│           │   └── div.ck-content.ck-ai-suggestion__body__content-part__content
+│           │       └── (Content of the suggestion part)
+│           └── ... Other changes suggested by the AI ...
+└── div.ck-ai-chat__feed__ai-suggestion__actions
+    └── div.ck-splitbutton.ck-ai-chat__feed__ai-suggestion__actions (Dropdown with "Apply all", bulk "Suggest", and "Preview" buttons)
+        ├── button.ck-button.ck-splitbutton__action
+        └── button.ck-button.ck-splitbutton__arrow
+```
+
+**New DOM structure**
+
+```
+div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
+└── div.ck-ai-suggestion__container.ck-rounded-corners
+    ├── div.ck-ai-suggestion__header
+    │   ├── span ("Suggestion N" label)
+    │   └── button.ck-button.ck-ai-suggestion__header__show-changes-toggle
+    └── div.ck-ai-suggestion__body
+        ├── div.ck-ai-suggestion__body__content-parts
+        │   ├── div.ck-ai-suggestion__body__content-part.ck-ai-suggestion__body__content-part_pending
+        │   │   ├── div.ck-ai-suggestion__body__content-part__title
+        │   │   │   ├── span.ck-ai-suggestion__body__content-part__title__label
+        │   │   │   └── div.ck-toolbar.ck-ai-suggestion-content-part-toolbar
+        │   │   │       └── div.ck-toolbar__items (Toolbar with "Apply change", "Add as suggestion", and "Reject change" buttons)
+        │   │   │           ├── button.ck-button
+        │   │   │           └── ...
+        │   │   └── div.ck-content.ck-ai-suggestion-streamable-content
+        │   │       └── (Content of the suggestion part)
+        │   └── ... Other changes suggested by the AI ...
+        └── div.ck-ai-chat__feed__ai-suggestion__actions (Separate buttons for bulk "Apply" and "Suggest")
+            ├── button.ck-button.ck-ai-button-primary
+            └── button.ck-button.ck-ai-button-secondary
+```
+
+### Changes to the visual appearance of the AI Chat suggestion preview dialog window
+
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestion {@link features/ckeditor-ai-chat#previewing-changes preview dialog window} has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+Please make sure to update your integrations to use the new DOM structure.
+
+**Old DOM structure**
+
+```
+div.ck-dialog.ai-balloon.ai-balloon-rotator
+├── div.ck-form__header
+│   ├── button.ck-button.ck-off (Previous suggestion button)
+│   ├── h2.ck-form__header__label (Suggestion title)
+│   ├── button.ck-button.ck-off (Next suggestion button)
+│   └── button.ck-button.ck-off (Close button)
+└── div.ck-dialog__content
+    └── div.ai-balloon-content
+        ├── div.ck-ai-suggestion__container.ck-rounded-corners
+        │   └── div.ck-ai-suggestion__body
+        │       ├── div.ck-ai-suggestion__body__content-parts
+        │       │   └── div.ck-ai-suggestion__body__content-part.ck-ai-suggestion__body__content-part_pending.ck-ai-suggestion__body__content-part_active
+        │       │       └── div.ck-content.ck-ai-suggestion__body__content-part__content
+        │       │           └── (Content of the suggestion)
+        │       └── div.ck-toolbar.ck-ai-mini-toolbar
+        │           └── div.ck-toolbar__items
+        │               └── button.ck-button (Show changes button)
+        ├── div.ck-ai-balloon__disclaimer
+        │   └── p.ck-ai-balloon__disclaimer-content
+        └── div.ck-toolbar.ck-ai-balloon__toolbar
+            └── div.ck-toolbar__items
+                ├── button.ck-button.ck-ai-button-primary ("Apply" button)
+                └── button.ck-button.ck-ai-button-secondary ("Suggest" button)
+```
+
+**New DOM structure**
+
+```
+div.ck-dialog.ck-ai-balloon.ck-ai-chat-balloon
+├── div.ck-form__header
+│   ├── button.ck-button.ck-off (Previous suggestion button)
+│   ├── button.ck-button.ck-off (Next suggestion button)
+│   ├── h2.ck-form__header__label (Suggestion title)
+│   └── button.ck-button.ck-off (Close button)
+└── div.ck-dialog__content
+    └── div.ck-ai-chat-balloon-main.ck-ai-chat-balloon-main_state_pending
+        ├── div.ck-content.ck-ai-suggestion-streamable-content
+        │   └── (Content of the suggestion)
+        └── div.ck-ai-chat-balloon__toolbar-container
+            ├── div.ck-toolbar.ck-ai-suggestion-content-part-toolbar
+            │   └── div.ck-toolbar__items
+            │       ├── button.ck-button ("Apply change" button)
+            │       ├── button.ck-button ("Add as suggestion" button)
+            │       └── button.ck-button ("Reject change" button)
+            ├── div.ck-ai-suggestion__content-part-state.ck-ai-suggestion__content-part-state_pending.ck-hidden
+            │   └── span.ck-ai-suggestion__content-part-state__label
+            └── div.ck-toolbar.ck-ai-mini-toolbar
+                └── div.ck-toolbar__items
+                    └── button.ck-button ("Show changes" button)
+```
+
 ## Update to CKEditor&nbsp;5 v47.4.0
 
 Released on 14 January, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.4.0))
