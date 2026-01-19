@@ -4,6 +4,7 @@ meta-title: Paste from Google Docs | CKEditor 5 Documentation
 meta-description: CKEditor 5 lets you handle content that you paste from Google Docs.
 category: features-pasting
 order: 20
+badges: [ premium ]
 ---
 
 # Pasting content from Google Docs
