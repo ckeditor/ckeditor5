@@ -18,6 +18,8 @@ overrides:
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
   'qs@^6.0.0': '^6.14.1'
+  'diff@<8': '^8.0.3'
+  tar: '^7.5.3' # To be removed 2026-01-21.
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
@@ -25,6 +27,7 @@ minimumReleaseAgeExclude:
   - '@cksource/*'
   - '*ckeditor5*'
   - 'umberto'
+  - tar # To be removed 2026-01-21.
 
 shellEmulator: true
 shamefullyHoist: true

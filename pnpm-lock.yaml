@@ -9,6 +9,8 @@ overrides:
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
   qs@^6.0.0: ^6.14.1
+  diff@<8: ^8.0.3
+  tar: ^7.5.3
 
 importers:
 
@@ -8281,16 +8283,8 @@ packages:
   di@0.0.1:
     resolution: {integrity: sha512-uJaamHkagcZtHPqCIHZxnFrXlunQXgBOsZSUOWwFw31QJCAbyTBoHMW75YOTur5ZNx8pIeAKgf6GWIgaqqiLhA==}
 
-  diff@4.0.2:
-    resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
-    engines: {node: '>=0.3.1'}
-
-  diff@7.0.0:
-    resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
-    engines: {node: '>=0.3.1'}
-
-  diff@8.0.2:
-    resolution: {integrity: sha512-sSuxWU5j5SR9QQji/o2qMvqRNYRDOcBTgsJ/DeCf4iSN4gW+gNMXM7wFIP+fdXZxoNiAnHUTGjCr+TSWXdRDKg==}
+  diff@8.0.3:
+    resolution: {integrity: sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ==}
     engines: {node: '>=0.3.1'}
 
   difflib@0.2.4:
@@ -12014,8 +12008,8 @@ packages:
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
 
-  tar@7.5.1:
-    resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
+  tar@7.5.3:
+    resolution: {integrity: sha512-ENg5JUHUm2rDD7IvKNFGzyElLXNjachNLp6RaGf4+JOgxXHkqA+gq81ZAMCUmtMtqBsoU62lcp6S27g1LCYGGQ==}
     engines: {node: '>=18'}
 
   terser-webpack-plugin@5.3.14:
@@ -13502,7 +13496,7 @@ snapshots:
 
   '@ckeditor/ckeditor5-dev-license-checker@54.2.1':
     dependencies:
-      diff: 8.0.2
+      diff: 8.0.3
       upath: 2.0.1
 
   '@ckeditor/ckeditor5-dev-release-tools@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
@@ -15754,7 +15748,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.3
       ssri: 12.0.0
-      tar: 7.5.1
+      tar: 7.5.3
       unique-filename: 4.0.0
 
   cacache@20.0.1:
@@ -16674,11 +16668,7 @@ snapshots:
 
   di@0.0.1: {}
 
-  diff@4.0.2: {}
-
-  diff@7.0.0: {}
-
-  diff@8.0.2: {}
+  diff@8.0.3: {}
 
   difflib@0.2.4:
     dependencies:
@@ -19261,7 +19251,7 @@ snapshots:
       browser-stdout: 1.3.1
       chokidar: 4.0.3
       debug: 4.4.3(supports-color@8.1.1)
-      diff: 7.0.0
+      diff: 8.0.3
       escape-string-regexp: 4.0.0
       find-up: 5.0.0
       glob: 10.5.0
@@ -19358,7 +19348,7 @@ snapshots:
       nopt: 8.1.0
       proc-log: 5.0.0
       semver: 7.7.2
-      tar: 7.5.1
+      tar: 7.5.3
       tinyglobby: 0.2.15
       which: 5.0.0
     transitivePeerDependencies:
@@ -19667,7 +19657,7 @@ snapshots:
       promise-retry: 2.0.1
       sigstore: 4.0.0
       ssri: 12.0.0
-      tar: 7.5.1
+      tar: 7.5.3
     transitivePeerDependencies:
       - supports-color
 
@@ -20871,7 +20861,7 @@ snapshots:
       '@sinonjs/commons': 1.8.6
       '@sinonjs/fake-timers': 6.0.1
       '@sinonjs/samsam': 5.3.1
-      diff: 4.0.2
+      diff: 8.0.3
       nise: 4.1.0
       supports-color: 7.2.0
 
@@ -21289,7 +21279,7 @@ snapshots:
     transitivePeerDependencies:
       - react-native-b4a
 
-  tar@7.5.1:
+  tar@7.5.3:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
