@@ -46,7 +46,10 @@ export default defineConfig( [
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
 
 			// This file includes JSX which eslint can't parse without additional configuration.
-			'docs/_snippets/framework/tutorials/using-react-in-widget.js'
+			'docs/_snippets/framework/tutorials/using-react-in-widget.js',
+
+			// Memory leak detection server files.
+			'tests/memory/assets/'
 		]
 	},
 	{
