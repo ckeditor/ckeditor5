@@ -27,9 +27,9 @@ const EDITOR_NAMES = [
 ];
 
 const TEST_TIMEOUT = 300_000;
-const MEMORY_THRESHOLD = 1_024_000; // 1 MB
+const MEMORY_THRESHOLD = 1024 * 1024; // 1 MB
 
-const bytesToMB = bytes => Math.round( ( bytes / 1024 / 1024 ) * 100 ) / 100;
+const bytesToMiB = bytes => Math.round( ( bytes / 1024 / 1024 ) * 100 ) / 100;
 
 async function main() {
 	const server = await startServer();
@@ -56,10 +56,10 @@ async function main() {
 
 				results.push( {
 					Editor: editorName,
-					'Baseline (MB)': bytesToMB( result.baseline ),
-					'Growth (MB)': bytesToMB( result.memoryDifference ),
-					'Tail Growth (MB)': bytesToMB( result.tailGrowth ),
-					Status: isLeaking ? '❌' : '✅'
+					'Baseline (MB)': bytesToMiB( result.baseline ),
+					'Growth (MB)': bytesToMiB( result.memoryDifference ),
+					'Tail Growth (MB)': bytesToMiB( result.tailGrowth ),
+					Status: isLeaking ? '✗' : '✓'
 				} );
 
 				process.stdout.write( isLeaking ? styleText( 'red', 'leaking\n' ) : styleText( 'green', 'done\n' ) );
@@ -71,7 +71,7 @@ async function main() {
 					'Baseline (MB)': '-',
 					'Growth (MB)': '-',
 					'Tail Growth (MB)': '-',
-					Status: '❌ (error)'
+					Status: '✗ (error)'
 				} );
 
 				process.stdout.write( styleText( 'red', 'failed with the following error\n' ) );
@@ -90,7 +90,7 @@ async function main() {
 	console.log( styleText( 'bold', '* Baseline: ' ) + 'Initial memory after warmup.' );
 	console.log( styleText( 'bold', '* Growth: ' ) + 'Total growth from baseline to end.' );
 	console.log( styleText( 'bold', '* Tail Growth: ' ) + 'Difference in the last few samples (indicates if memory has stabilized).' );
-	console.log( styleText( 'dim', `Threshold: ${ bytesToMB( MEMORY_THRESHOLD ) } MB` ) );
+	console.log( styleText( 'dim', `Threshold: ${ bytesToMiB( MEMORY_THRESHOLD ) } MB` ) );
 	console.table( results );
 
 	if ( hasFailure ) {
