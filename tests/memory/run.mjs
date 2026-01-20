@@ -44,13 +44,13 @@ async function main() {
 		browser = await startBrowser();
 
 		for ( const editorName of EDITOR_NAMES ) {
-			process.stdout.write( `Testing ${ editorName }... ` );
+			console.log( `Testing ${ editorName }... ` );
 
 			try {
 				const result = await runTestInPage( browser, `${ baseUrl }/index.html`, editorName, TEST_TIMEOUT );
-				const isLeaking = result.memoryDifference > MEMORY_THRESHOLD || result.tailGrowth > MEMORY_THRESHOLD;
+				const exceedsThreshold = result.memoryDifference > MEMORY_THRESHOLD || result.tailGrowth > MEMORY_THRESHOLD;
 
-				if ( isLeaking ) {
+				if ( exceedsThreshold ) {
 					hasFailure = true;
 				}
 
@@ -59,10 +59,8 @@ async function main() {
 					'Baseline (MB)': bytesToMiB( result.baseline ),
 					'Growth (MB)': bytesToMiB( result.memoryDifference ),
 					'Tail Growth (MB)': bytesToMiB( result.tailGrowth ),
-					Status: isLeaking ? '✗' : '✓'
+					Status: exceedsThreshold ? 'Exceeds threshold' : 'OK'
 				} );
-
-				process.stdout.write( isLeaking ? styleText( 'red', 'leaking\n' ) : styleText( 'green', 'done\n' ) );
 			} catch ( error ) {
 				hasFailure = true;
 
@@ -71,10 +69,9 @@ async function main() {
 					'Baseline (MB)': '-',
 					'Growth (MB)': '-',
 					'Tail Growth (MB)': '-',
-					Status: '✗ (error)'
+					Status: 'Error'
 				} );
 
-				process.stdout.write( styleText( 'red', 'failed with the following error\n' ) );
 				console.error( error.message );
 			}
 		}
