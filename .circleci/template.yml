@@ -110,7 +110,9 @@ jobs:
             bash scripts/check-manual-tests.sh -r ckeditor5-root
       - run:
           name: Check if there are no memory leaks
-          command: pnpm run test:memory
+          command: |
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
+            pnpm run test:memory
   
   cke5_validators:
     docker:

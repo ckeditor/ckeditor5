@@ -27,7 +27,7 @@ const EDITOR_NAMES = [
 ];
 
 const TEST_TIMEOUT = 300_000;
-const MEMORY_THRESHOLD = 1e6; // 1 MB
+const MEMORY_THRESHOLD = 1_024_000; // 1 MB
 
 const bytesToMB = bytes => Math.round( ( bytes / 1024 / 1024 ) * 100 ) / 100;
 
