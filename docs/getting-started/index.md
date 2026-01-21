@@ -60,4 +60,4 @@ You may also take the {@link tutorials/crash-course/editor step-by-step tutorial
 
 ## Legacy installation methods
 
-Before version 42.0.0, CKEditor&nbsp;5 used different installation methods. If, for whatever reason, you wish to use these older versions &ndash; while it is not advised &ndash; you can have a look at the {@link getting-started/legacy-getting-started/quick-start legacy installation guides}. Otherwise, please see the {@link updating/nim-migration/migration-to-new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide.
+Please consider using new installation methods {@link updating/nim-migration/migration-to-new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide.

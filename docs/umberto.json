@@ -558,41 +558,6 @@
 					"id": "licensing",
 					"slug": "licensing",
 					"order": 50
-				},
-				{
-					"name": "Legacy installation methods",
-					"id": "legacy",
-					"slug": "legacy",
-					"order": 60,
-					"folded": true,
-					"categories": [
-						{
-							"name": "Basics",
-							"id": "installation-methods",
-							"slug": "installation-methods",
-							"order": 70
-						},
-						{
-							"name": "Advanced concepts",
-							"id": "advanced",
-							"slug": "advanced",
-							"order": 80,
-							"categories": [
-								{
-									"name": "Alternative setups",
-									"id": "alternative-setups",
-									"slug": "alternative-setups",
-									"order": 90
-								}
-							]
-						},
-						{
-							"name": "Integrations",
-							"id": "legacy-integrations",
-							"slug": "legacy-integrations",
-							"order": 90
-						}
-					]
 				}
 			]
 		},

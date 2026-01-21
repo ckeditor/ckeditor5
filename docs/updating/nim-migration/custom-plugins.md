@@ -48,7 +48,7 @@ Next, as required by the JavaScript modules (ESM), you must add the missing file
 
 ```diff
 - import { Plugin } from 'ckeditor5/src/core';
-+ import { Plugin } from 'ckeditor5/src/core.js';
++ import { Plugin } from 'ckeditor5';
 
 -import SomePlugin from './src/someplugin';
 +import SomePlugin from './src/someplugin.js';
