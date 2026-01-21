@@ -111,15 +111,13 @@ function getModelElementText( node: ModelNode ): string {
 		return node.data;
 	}
 
-	if ( node.is( 'element' ) ) {
-		let text = '';
+	let text = '';
 
+	if ( node.is( 'element' ) ) {
 		for ( const child of node.getChildren() ) {
 			text += getModelElementText( child );
 		}
-
-		return text;
 	}
 
-	return '';
+	return text;
 }
