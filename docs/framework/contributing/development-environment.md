@@ -81,7 +81,7 @@ You can read more about the {@link framework/contributing/testing-environment Te
 
 ## Building DLLs
 
-Some manual tests require DLL builds. To learn more about DLL builds, read the {@link getting-started/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+Some manual tests require DLL builds. To learn more about DLL builds, read the {@link updating/nim-migration/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
 
 ```
 pnpm run dll:build

@@ -113,7 +113,7 @@ Starting from v29.0.0, the existing {@link module:image/image~Image} plugin load
 * The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it uses the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
-	**Note:** It is possible to load only one of these plugins, but only when {@link getting-started/advanced/integrating-from-source-webpack building the editor from source}.
+	**Note:** It is possible to load only one of these plugins, but only when building the editor from source.
 </info-box>
 
 ### Image caption
@@ -134,7 +134,7 @@ Since the appearance of the image in the document depends on the image type (blo
 	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default dropdowns} are provided.
 	* In the editor configuration, you can declare a {@link module:image/imageconfig~ImageStyleDropdownDefinition custom dropdown}.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link getting-started/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link getting-started/setup/css content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
 
 * The format of the `config.image.styles` has changed. You must wrap the list of the styles with the `options` array. Read more about the {@link module:image/imageconfig~ImageConfig#styles `image.styles` configuration}.
 
@@ -317,7 +317,7 @@ The {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatica
 
 This decoupling does not have an impact on integrations using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 
-However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that build the editor from source, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -341,7 +341,7 @@ The {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically 
 
 This decoupling does not have an impact on integrations using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 
-However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
+However, for integrations that build the editor from source, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfider';

@@ -26,20 +26,6 @@ The height of the editing area can be easily controlled with CSS.
 
 If you are using the new installation methods introduced in CKEditor&nbsp;5 v42.0.0, you can check out our dedicated {@link getting-started/setup/customizing-icons icon customization} guide.
 
-Otherwise, the easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon, use the following code in your `webpack.config.js`:
-
-```js
-// ...
-plugins: [
-	new webpack.NormalModuleReplacementPlugin(
-		/bold\.svg/,
-		'/absolute/path/to/my/icon.svg'
-	)
-]
-```
-
-Learn more about {@link getting-started/advanced/integrating-from-source-webpack#webpack-configuration building CKEditor 5 using webpack}.
-
 ### How to add an attribute to the editor editable in DOM?
 
 If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer}:

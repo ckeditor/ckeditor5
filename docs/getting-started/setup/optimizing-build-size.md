@@ -43,7 +43,7 @@ For example, if you are using the classic editor type with the bold, italic, and
 	Note the `/dist/index.js` part of the import paths. This is important to ensure that the editor functions are imported from the correct files.
 </info-box>
 
-To find the correct package names, see the {@link getting-started/legacy-getting-started/legacy-imports#finding-individual-packages Finding individual packages} guide. Alternatively, if you are using an IDE with TypeScript support, you can use the `Go to Definition` feature to find the package names.
+To find the correct package names, see the {@link features/index features section}. Alternatively, if you are using an IDE with TypeScript support, you can use the `Go to Definition` feature to find the package names.
 
 ### Styles
 

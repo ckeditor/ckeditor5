@@ -105,7 +105,7 @@ expect( selection ).to.not.have.attribute( 'linkHref' );
 To start the manual tests server, use the `pnpm run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
 
 <info-box hint>
-	You can read more about the DLL builds in a {@link getting-started/advanced/dll-builds dedicated guide}.
+	You can read more about the DLL builds in a {@link updating/nim-migration/dll-builds dedicated guide}.
 </info-box>
 
 The `pnpm run manual` task accepts the following options:
