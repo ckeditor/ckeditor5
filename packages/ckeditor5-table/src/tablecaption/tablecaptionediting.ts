@@ -12,7 +12,7 @@ import { ModelElement, enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 
 import { injectTableCaptionPostFixer } from '../converters/table-caption-post-fixer.js';
-import { injectTableCaptionAriaLabelPostFixer } from '../converters/table-caption-aria-label-post-fixer.js';
+import { injectTableCaptionAriaLabelHandler } from '../converters/table-caption-aria-label-handler.js';
 import { ToggleTableCaptionCommand } from './toggletablecaptioncommand.js';
 import { isTable, matchTableCaptionViewElement } from './utils.js';
 import type { TableEditing } from '../tableediting.js';
@@ -118,7 +118,7 @@ export class TableCaptionEditing extends Plugin {
 		} );
 
 		injectTableCaptionPostFixer( editor.model );
-		injectTableCaptionAriaLabelPostFixer( editor );
+		injectTableCaptionAriaLabelHandler( editor );
 	}
 
 	/**

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/table-caption-aria-label-post-fixer
+ * @module table/converters/table-caption-aria-label-handler
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
@@ -12,16 +12,16 @@ import type { DifferItem, ModelElement } from 'ckeditor5/src/engine.js';
 import { getCaptionText } from '../tablecaption/utils.js';
 
 /**
- * Injects a post-fixer that updates the `aria-label` attribute on table view elements
+ * Injects a listener that updates the `aria-label` attribute on table view elements
  * based on their caption content.
  *
  * @internal
  */
-export function injectTableCaptionAriaLabelPostFixer( editor: Editor ): void {
+export function injectTableCaptionAriaLabelHandler( editor: Editor ): void {
 	const model = editor.model;
 	const { mapper, view } = editor.editing;
 
-	model.document.registerPostFixer( () => {
+	model.document.on( 'change:data', () => {
 		const tablesToUpdate = collectAffectedTables( model.document.differ.getChanges() );
 
 		for ( const table of tablesToUpdate ) {
@@ -46,8 +46,6 @@ export function injectTableCaptionAriaLabelPostFixer( editor: Editor ): void {
 				}
 			} );
 		}
-
-		return false;
 	} );
 }
 
