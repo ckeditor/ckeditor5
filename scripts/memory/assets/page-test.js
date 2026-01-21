@@ -4,7 +4,7 @@
  */
 
 /**
- * Browser-side test logic for CKEditor 5 memory leak testing.
+ * Browser-side test logic for memory leak testing.
  *
  * This script runs inside the Puppeteer-controlled browser and performs the actual
  * editor create/destroy cycles while sampling memory usage.
@@ -20,12 +20,12 @@
 
 import * as CKEDITOR from 'ckeditor5';
 
-const CYCLE_COUNT = 5;
-const CYCLE_PAUSE = 1000;
-const MEMORY_SAMPLES = 5;
-const WARMUP_CYCLE_COUNT = 3;
+const CYCLE_COUNT = 10;
+const CYCLE_PAUSE = 100;
+const MEMORY_SAMPLES = 3;
+const WARMUP_CYCLE_COUNT = 5;
 const PLATEAU_SAMPLE_COUNT = 3;
-const GARBAGE_COLLECTOR_TIMEOUT = 500;
+const GARBAGE_COLLECTOR_TIMEOUT = 100;
 
 const EDITOR_CONFIG = {
 	licenseKey: 'GPL',
@@ -120,9 +120,14 @@ async function collectMemoryStatsStable( samples = MEMORY_SAMPLES ) {
 	const values = [];
 
 	for ( let i = 0; i < samples; i++ ) {
-		window.gc?.();
+		window.gc();
 
+		// Wait for a frame boundary so DOM/rendering work triggered by the previous step
+		// can progress (rAF/layout/style/paint are typically coordinated around frames).
 		await nextFrame();
+
+		// Give the engine a short idle window for GC and deferred cleanup to run before sampling.
+		// (GC isn't guaranteed, but this reduces measurement noise.)
 		await timeout( GARBAGE_COLLECTOR_TIMEOUT );
 
 		values.push( await readUsedMemory() );
@@ -149,9 +154,21 @@ async function createAndDestroy( createEditor ) {
 	const editor = await createEditor( element );
 	await editor.destroy();
 
+	// Flush the microtask queue (Promise callbacks) scheduled during destroy().
+	// This helps run any "cleanup in then()" logic before we continue.
 	await Promise.resolve();
+
+	// Yield to the macrotask queue (setTimeout/message events). This lets any cleanup
+	// scheduled via timers run (or get scheduled) before we take a measurement.
 	await timeout( 0 );
+
+	// Wait for a frame boundary. Many DOM-related follow-ups (layout/style recalcs,
+	// rAF callbacks, painting) are coordinated around frames, so this helps the browser
+	// settle after DOM mutations.
 	await nextFrame();
+
+	// Yield once more to catch cleanup that was scheduled by the previous macrotask/frame
+	// (e.g. destroy() -> timer -> timer, or work queued from rAF).
 	await timeout( 0 );
 
 	element.remove();

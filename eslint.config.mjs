@@ -49,7 +49,7 @@ export default defineConfig( [
 			'docs/_snippets/framework/tutorials/using-react-in-widget.js',
 
 			// Memory leak detection server files.
-			'tests/memory/assets/'
+			'scripts/memory/assets/'
 		]
 	},
 	{
@@ -182,6 +182,23 @@ export default defineConfig( [
 	},
 	{
 		files: [ '**/docs/**/*.@(js|cjs|mjs)' ],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules
+		},
+
+		languageOptions: {
+			globals: {
+				...globals.browser
+			}
+		},
+
+		rules: {
+			'ckeditor5-rules/ckeditor-imports': 'off'
+		}
+	},
+	{
+		files: [ 'scripts/memory/assets/*.js' ],
 
 		plugins: {
 			'ckeditor5-rules': ckeditor5Rules

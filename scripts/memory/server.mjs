@@ -6,7 +6,7 @@
 /**
  * A lightweight HTTP server tailored for memory testing.
  *
- * It serves assets from the `tests/memory/assets` directory and injects security headers
+ * It serves assets from the `scripts/memory/assets` directory and injects security headers
  * required for high-resolution memory measurement in Chromium.
  *
  * Security / hardening notes:
@@ -26,12 +26,10 @@
  */
 
 import { createServer } from 'node:http';
-import { fileURLToPath } from 'node:url';
 import { readFile, realpath } from 'node:fs/promises';
 import { join, resolve, sep, extname } from 'node:path';
 
-const ROOT_DIR = fileURLToPath( new URL( '../..', import.meta.url ) );
-const ASSETS_DIR = resolve( join( ROOT_DIR, 'tests/memory/assets' ) );
+const ASSETS_DIR = join( import.meta.dirname, 'assets' );
 
 const CONTENT_TYPES = new Map( [
 	[ '.html', 'text/html; charset=utf-8' ],

@@ -131,7 +131,7 @@
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",
     "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
-    "test:memory": "node ./tests/memory/run.mjs",
+    "test:memory": "node ./scripts/memory/test-memory-leaks.mjs",
     "validate-license-files": "node ./scripts/ci/validate-license-files.mjs"
   },
   "lint-staged": {
