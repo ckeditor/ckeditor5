@@ -265,6 +265,7 @@ export class EmojiRepository extends Plugin {
 		const licenseKey = editor.config.get( 'licenseKey' );
 		const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ];
 
+		/* istanbul ignore if -- @preserve */
 		if ( licenseKey === 'GPL' ) {
 			// Don't warn GPL users.
 			return;

@@ -73,7 +73,12 @@ describe( 'EmojiMention', () => {
 		} );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
+			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+
+			// To prevent warnings from EmojiRepository about mixing commercial license with CDN.
+			emoji: {
+				definitionsUrl: 'cdn'
+			}
 		} );
 
 		mockEmojiRepositoryValues( editor );
@@ -130,6 +135,9 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				},
 				mention: {
 					feeds: [
 						{
@@ -165,6 +173,9 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				},
 				mention: {
 					feeds: [
 						{
@@ -204,6 +215,9 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				},
 				mergeFields: {
 					prefix: ':'
 				}
@@ -230,11 +244,17 @@ describe( 'EmojiMention', () => {
 		document.body.appendChild( editor1Element );
 
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmojiMention, Mention ]
+			plugins: [ EmojiMention, Mention ],
+			emoji: {
+				definitionsUrl: 'cdn'
+			}
 		} );
 
 		const editor1 = await ClassicTestEditor.create( editor1Element, {
 			plugins: [ EmojiMention, Mention ],
+			emoji: {
+				definitionsUrl: 'cdn'
+			},
 			mention: {
 				feeds: editor.config.get( 'mention.feeds' )
 			}
@@ -255,7 +275,10 @@ describe( 'EmojiMention', () => {
 		document.body.appendChild( editorElement );
 
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ EmojiMention, Mention ]
+			plugins: [ EmojiMention, Mention ],
+			emoji: {
+				definitionsUrl: 'cdn'
+			}
 		} );
 
 		expect( editor.config.get( 'mention.feeds' ).length ).to.equal( 1 );
@@ -373,6 +396,9 @@ describe( 'EmojiMention', () => {
 
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				},
 				mention: {
 					feeds: [
 						{
@@ -414,7 +440,10 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				}
 			} );
 
 			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
@@ -629,7 +658,10 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, Paragraph, Essentials, Mention ]
+				plugins: [ EmojiMention, Paragraph, Essentials, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				}
 			} );
 
 			editor.plugins.get( 'EmojiMention' )._isEmojiRepositoryAvailable = false;
@@ -712,7 +744,10 @@ describe( 'EmojiMention', () => {
 			document.body.appendChild( editorElement );
 
 			const editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, Mention ]
+				plugins: [ EmojiMention, Mention ],
+				emoji: {
+					definitionsUrl: 'cdn'
+				}
 			} );
 
 			mockEmojiRepositoryValues( editor );
@@ -812,7 +847,8 @@ describe( 'EmojiMention', () => {
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
 				emoji: {
-					skinTone: 'medium'
+					skinTone: 'medium',
+					definitionsUrl: 'cdn'
 				}
 			} );
 
@@ -855,7 +891,8 @@ describe( 'EmojiMention', () => {
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ],
 				emoji: {
-					skinTone: 'medium'
+					skinTone: 'medium',
+					definitionsUrl: 'cdn'
 				}
 			} );
 

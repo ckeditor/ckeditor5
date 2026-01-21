@@ -171,6 +171,7 @@ export {
 } from './unicode.js';
 
 export { decodeLicenseKey } from './decodelicensekey.js';
+export { isFeatureAllowedByLicenseKey } from './isfeatureallowedbylicensekey.js';
 export { isFeatureBlockedByLicenseKey } from './isfeatureblockedbylicensekey.js';
 
 export { version, releaseDate } from './version.js';

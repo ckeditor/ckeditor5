@@ -29,9 +29,19 @@ export function generateLicenseKey( options = {} ) {
 	const expirationTimestamp = isExpired ? releaseTimestamp - 10 * day : releaseTimestamp + 10 * day;
 	const todayTimestamp = ( expirationTimestamp + daysAfterExpiration * day );
 
-	const payload = {};
+	const payload = {
+		features: [ 'LTS' ]
+	};
 
-	[ 'licensedHosts', 'licenseType', 'usageEndpoint', 'distributionChannel', 'whiteLabel', 'removeFeatures' ].forEach( prop => {
+	[
+		'licensedHosts',
+		'licenseType',
+		'usageEndpoint',
+		'distributionChannel',
+		'whiteLabel',
+		'features',
+		'removeFeatures'
+	].forEach( prop => {
 		if ( prop in options ) {
 			payload[ prop ] = options[ prop ];
 		}

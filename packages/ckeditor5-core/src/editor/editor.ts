@@ -19,6 +19,7 @@ import {
 	uid,
 	crc32,
 	decodeLicenseKey,
+	isFeatureAllowedByLicenseKey,
 	isFeatureBlockedByLicenseKey,
 	type Locale,
 	type LocaleTranslate,
@@ -497,9 +498,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			}
 
 			if ( licenseKey == 'GPL' ) {
-				if ( distributionChannel == 'cloud' ) {
-					blockEditor( 'distributionChannel' );
-				}
+				blockEditor( 'lts' );
 
 				return;
 			}
@@ -514,6 +513,12 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( !hasAllRequiredFields( licensePayload ) ) {
 				blockEditor( 'invalid' );
+
+				return;
+			}
+
+			if ( !isFeatureAllowedByLicenseKey( licensePayload, 'LTS' ) ) {
+				blockEditor( 'lts' );
 
 				return;
 			}
@@ -1132,6 +1137,25 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				throw new CKEditorError( 'license-key-invalid-distribution-channel' );
 			}
 
+			if ( reason == 'lts' ) {
+				/**
+				 * You are running [CKEditor 5 Long Term Support Edition (LTS)](https://ckeditor.com/ckeditor-5-lts/),
+				 * but the provided license key does not include access to the LTS version, or the key is invalid.
+				 *
+				 * Please ensure that it is copied correctly from the [Customer Portal](http://portal.ckeditor.com/),
+				 * and if the issue persists, please [contact our customer support](https://ckeditor.com/contact/).
+				 *
+				 * In case you intended to use the [LTS Edition](https://ckeditor.com/ckeditor-5-lts/),
+				 * but have not yet made a purchase, please [contact our sales team](https://ckeditor.com/contact-sales/)
+				 *
+				 * If you did not intend to use LTS, please switch to non-lts edition, for example,
+				 * the [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html) build.
+				 *
+				 * @error license-key-lts-not-allowed
+				 */
+				throw new CKEditorError( 'license-key-lts-not-allowed' );
+			}
+
 			/* istanbul ignore next -- @preserve */
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const unreachable: never = reason;
@@ -1201,7 +1225,8 @@ export type LicenseErrorReason =
 	'trialLimit' |
 	'developmentLimit' |
 	'usageLimit' |
-	'distributionChannel';
+	'distributionChannel' |
+	'lts';
 
 /**
  * Fired when the {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional
@@ -1268,20 +1293,4 @@ export type EditorDestroyEvent = {
  * ```
  *
  * @error editor-wrong-element
- */
-
-/**
- * You are running [CKEditor 5 Long Term Support Edition (LTS)](https://ckeditor.com/ckeditor-5-lts/),
- * but the provided license key does not include access to the LTS version, or the key is invalid.
- *
- * Please ensure that it is copied correctly from the [Customer Portal](http://portal.ckeditor.com/),
- * and if the issue persists, please [contact our customer support](https://ckeditor.com/contact/).
- *
- * In case you intended to use the [LTS Edition](https://ckeditor.com/ckeditor-5-lts/),
- * but have not yet made a purchase, please [contact our sales team](https://ckeditor.com/contact-sales/)
- *
- * If you did not intend to use LTS, please switch to non-lts edition, for example,
- * the [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html) build.
- *
- * @error license-key-lts-not-allowed
  */

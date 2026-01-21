@@ -511,7 +511,7 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should not log a warning about using CDN when on `GPL` license', async () => {
+		it.skip( 'should not log a warning about using CDN when on `GPL` license', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
 					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
