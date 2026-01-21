@@ -4,12 +4,9 @@ Software License Agreement
 **CKEditor&nbsp;5 Watchdog feature** (https://github.com/ckeditor/ckeditor5)<br>
 Copyright (c) 2003–2026, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).
 
 Sources of Intellectual Property Included in CKEditor&nbsp;5
 ------------------------------------------------------------
