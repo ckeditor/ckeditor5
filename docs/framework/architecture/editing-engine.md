@@ -74,8 +74,10 @@ editor.model.change(writer => {
 });
 ```
 
-<info-box>
-	All document structure changes happen through {@link module:engine/model/operation/operation~Operation operations}. This concept comes from Operational Transformation (OT), a technology that enables collaboration. OT requires the system to transform every operation by every other operation to determine the result of concurrently applied operations. Because OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model (not the flat, array-like models typical in OT), the set of potential semantic changes is more complex. Operations are grouped in {@link module:engine/model/batch~Batch batches}, which you can think of as single undo steps.
+<info-box important>
+	All document structure changes happen through {@link module:engine/model/operation/operation~Operation operations}. This concept comes from Operational Transformation (OT), a technology that enables collaboration. This approach requires the system to transform every operation by every other operation to determine the result of concurrently applied operations.
+	
+	However, OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model and not the flat, array-like models typical in OT. Due to this, the set of potential semantic changes is more complex. Operations are hence grouped in {@link module:engine/model/batch~Batch batches}, which you can think of as single undo steps.
 </info-box>
 
 ### Text attributes
@@ -224,7 +226,7 @@ editor.editing.view.document;   // The editing view's document
 editor.data;                    // The data pipeline (DataController)
 ```
 
-<info-box>
+<info-box important>
 	The data pipeline does not have a document and a view controller. It operates on detached view structures created for processing data.
 
 	The data pipeline is much simpler than the editing pipeline. In the following sections, we'll discuss the editing view.
@@ -273,7 +275,7 @@ editor.editing.view.change(writer => {
 });
 ```
 
-<info-box>
+<info-box important>
 	There are two view writers:
 
 	* {@link module:engine/view/downcastwriter~ViewDowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
@@ -343,7 +345,7 @@ Additionally, some features add their own observers. For instance, the {@link mo
 
 You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~EditingView#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: [https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer](https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer).
 
-<info-box>
+<info-box important>
 	Since all events are by default fired on {@link module:engine/view/document~ViewDocument}, we recommend that third-party packages prefix their events with a project identifier to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
 </info-box>
 
@@ -363,9 +365,9 @@ Let's look at the diagram of the engine's MVC architecture and see where each co
 
 ### Data pipeline
 
-{@link framework/deep-dive/conversion/upcast **Data upcasting**} is a process that starts in the bottom right corner of the diagram (in the view layer), passes from the data view through a converter (green box) in the controller layer to the model document in the top right corner. As you can see, it goes from bottom to top, hence "upcasting." Also, it is handled by the data pipeline (the right branch of the diagram), hence "data upcasting." Note: Data upcasting is also used to process pasted content (which is similar to loading data).
+{@link framework/deep-dive/conversion/upcast **Data upcasting**} is a process that starts in the bottom-right corner of the diagram (in the view layer), passes from the data view through a converter (green box) in the controller layer to the model document in the top-right corner. As you can see, it goes from bottom to top, hence "upcasting." Also, it is handled by the data pipeline (the right branch of the diagram), hence "data upcasting." Note: Data upcasting is also used to process pasted content (which is similar to loading data).
 
-{@link framework/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to data upcasting. It starts in the top right corner and goes down to the bottom right corner. Again, the conversion process name matches the direction and the pipeline.
+{@link framework/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to data upcasting. It starts in the top-right corner and goes down to the bottom-right corner. Again, the conversion process name matches the direction and the pipeline.
 
 ### Editing pipeline
 
