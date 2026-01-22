@@ -10,7 +10,6 @@ overrides:
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
   qs@^6.0.0: ^6.14.1
   diff@<8: ^8.0.3
-  tar: ^7.5.3
 
 importers:
 
@@ -7365,8 +7364,8 @@ packages:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
     engines: {node: ^4.5.0 || >= 5.9}
 
-  baseline-browser-mapping@2.8.10:
-    resolution: {integrity: sha512-uLfgBi+7IBNay8ECBO2mVMGZAc1VgZWEChxm4lv+TobGdG82LnXMjuNGo/BSSZZL4UmkWhxEHP2f5ziLNwGWMA==}
+  baseline-browser-mapping@2.9.15:
+    resolution: {integrity: sha512-kX8h7K2srmDyYnXRIppo4AH/wYgzWVCs+eKr3RusRSQ5PvRYoEFmR/I0PbdTjKFAoKqp5+kbxnNTFO9jOfSVJg==}
     hasBin: true
 
   basic-auth@2.0.1:
@@ -15657,7 +15656,7 @@ snapshots:
 
   base64id@2.0.0: {}
 
-  baseline-browser-mapping@2.8.10: {}
+  baseline-browser-mapping@2.9.15: {}
 
   basic-auth@2.0.1:
     dependencies:
@@ -15713,7 +15712,7 @@ snapshots:
 
   browserslist@4.26.3:
     dependencies:
-      baseline-browser-mapping: 2.8.10
+      baseline-browser-mapping: 2.9.15
       caniuse-lite: 1.0.30001746
       electron-to-chromium: 1.5.228
       node-releases: 2.0.21
