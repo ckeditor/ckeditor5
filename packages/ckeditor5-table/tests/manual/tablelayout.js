@@ -68,7 +68,12 @@ const config = {
 	table: {
 		contentToolbar: [
 			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-		]
+		],
+		tableProperties: {
+			defaultProperties: {
+				alignment: 'right'
+			}
+		}
 	},
 	htmlSupport: {
 		allow: [
