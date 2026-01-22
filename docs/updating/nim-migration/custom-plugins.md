@@ -31,7 +31,7 @@ To ensure that all the dependencies are up-to-date and that the build process is
 2. Copy the `src`, `tests`, and `sample` folders of your plugin into the new project.
 3. Re-add all the external `dependencies`, `devDependencies`, and `peerDependencies` specific to your plugin to the `package.json` file.
 
-When you run the CLI, choose the option that supports the new installation methods. It generates the modern build setup and the imports used across the new ecosystem.
+When you run the CLI, it generates the modern build setup and the imports used across the new ecosystem.
 
 The main changes we have introduced in the new package generator are:
 
@@ -67,7 +67,7 @@ npm run lint -- --fix
 
 ### Remove `src` folders from the import paths
 
-For some time now, we have strongly discouraged importing from the `src` folder of the `@ckeditor/ckeditor5-*` packages. Instead, you should import from the package roots because they provide better TypeScript support and because the `src` folders will be removed in the future. In projects using the new installation methods, import from the `ckeditor5` package whenever possible.
+For some time now, we have strongly discouraged importing from the `src` folder of the `@ckeditor/ckeditor5-*` packages. Instead, you should import from the package roots because they provide better TypeScript support and because the `src` folders are now removed. Always import from the `ckeditor5`.
 
 ```js
 // ❌
