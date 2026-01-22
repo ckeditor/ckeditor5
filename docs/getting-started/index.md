@@ -57,7 +57,3 @@ If you are familiar with our previous, discontinued product and would like to sw
 Once you install your copy of CKEditor&nbsp;5, take some time to {@link getting-started/setup/configuration configure it} before first use. Set up data-saving methods, editor toolbars, and UI.
 
 You may also take the {@link tutorials/crash-course/editor step-by-step tutorial} that will guide you through the installation and configuration of the editor.
-
-## Legacy installation methods
-
-Please consider using new installation methods {@link updating/nim-migration/migration-to-new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide.

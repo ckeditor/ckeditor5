@@ -19,9 +19,8 @@ An overview of the project's directory structure:
 ├─ lang
 │  └─ contexts.json        # Entries used for creating translations.
 ├─ sample
-│  ├─ (*) dll.html         # The editor initialized using the DLL builds.
-│  ├─ index.html           # The sample file.
-│  └─ ckeditor.js          # The editor initialization script.
+│  ├─ index.html           # The HTML file for the development sample.
+│  └─ index.js             # Editor setup used when running the `start` command.
 ├─ scripts
 │  └─ build-dist.mjs       # Script creates `npm` and browser builds for your plugin.
 ├─ src
@@ -30,12 +29,13 @@ An overview of the project's directory structure:
 │  └─ **/*.js              # All JavaScript source files should be saved here.
 ├─ tests
 │  ├─ pluginname.js
-│  ├─ index.js             # Tests for the plugin.
 │  └─ **/*.js              # All tests should be saved here.
 ├─ theme
 │  ├─ icons
 │  │  ├─ ckeditor.svg      # The CKEditor 5 icon displayed in the toolbar.
 │  │  └─ **/*.svg          # All icon files should be saved here.
+│  ├─ styles
+│  │  └─ **/*.css          # All stylesheet files should be saved here.
 │  └─ **/*.css             # All CSS files should be saved here.
 │
 ├─ .editorconfig           # See link below for details.

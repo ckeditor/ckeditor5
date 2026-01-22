@@ -79,19 +79,6 @@ To help test localized editors, the task accepts two optional configurations: `-
 
 You can read more about the {@link framework/contributing/testing-environment Testing environment}.
 
-## Building DLLs
-
-Some manual tests require DLL builds. To learn more about DLL builds, read the {@link updating/nim-migration/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
-
-```
-pnpm run dll:build
-```
-
-This task accepts the following arguments:
-
-* `--verbose` &ndash; Displays the full output of the scripts, including the webpack output. *Errors are displayed even if this argument is not used.*
-* `--dev` &ndash; Enables `development` mode in webpack and disables the code minimization which makes it easier to read the output.
-
 ## Generating documentation
 
 To build the documentation, you need to run the `docs` task:

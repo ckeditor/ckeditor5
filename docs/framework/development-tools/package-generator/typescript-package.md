@@ -19,24 +19,24 @@ An overview of the project's directory structure:
 ├─ lang
 │  └─ contexts.json        # Entries used for creating translations.
 ├─ sample
-│  ├─ (*) dll.html         # The editor initialized using the DLL builds.
-│  ├─ index.html           # The sample file.
-│  └─ ckeditor.ts          # The editor initialization script.
+│  ├─ index.html           # The HTML file for the development sample.
+│  └─ index.ts             # Editor setup used when running the `start` command.
 ├─ scripts
 │  └─ build-dist.mjs       # Script creates `npm` and browser builds for your plugin.
 ├─ src
 │  ├─ pluginname.ts        # The plugin with example functionality.
-│  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` module.
+│  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` package.
 │  ├─ index.ts             # The modules exported by the package when using the DLL builds.
 │  └─ **/*.ts              # All TypeScript source files should be saved here.
 ├─ tests
 │  ├─ pluginname.ts
-│  ├─ index.ts             # Tests for the plugin.
 │  └─ **/*.ts              # All tests should be saved here.
 ├─ theme
 │  ├─ icons
 │  │  ├─ ckeditor.svg      # The CKEditor&nbsp;5 icon displayed in the toolbar.
 │  │  └─ **/*.svg          # All icon files should be saved here.
+│  ├─ styles
+│  │  └─ **/*/css          # All stylesheet files should be saved here.
 │  └─ **/*.css             # All CSS files should be saved here.
 ├─ typings
 │  └─ **/*.d.ts            # Files containing type definitions.

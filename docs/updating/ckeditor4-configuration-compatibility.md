@@ -535,7 +535,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins"><code>plugins</code></a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link framework/architecture/plugins plugins} and {@glink getting-started/installation/cloud/quick-start custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link framework/architecture/plugins plugins} and {@glink updating/nim-migration/customized-builds.html custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource"><code>protectedSource</code></a></td>
