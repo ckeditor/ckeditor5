@@ -1178,7 +1178,7 @@ export class TableUtils extends Plugin {
 
 		let truncatedHeadingColumns = Math.min( headingColumns, totalColumns );
 
-		if ( headingColumns === oldHeadingColumns ) {
+		if ( truncatedHeadingColumns === oldHeadingColumns ) {
 			return;
 		}
 
