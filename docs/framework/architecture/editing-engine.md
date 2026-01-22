@@ -75,7 +75,7 @@ editor.model.change(writer => {
 ```
 
 <info-box>
-	All document structure changes happen through {@link module:engine/model/operation/operation~Operation operations}. This concept comes from Operational Transformation (OT), a technology that enables collaboration. OT requires the system to transform every operation by every other operation to determine the result of concurrently applied operations. Because OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model (not the flat, array-like models typical in OT), the set of potential semantic changes is more complex. Operations are grouped in batches, which you can think of as single undo steps.
+	All document structure changes happen through {@link module:engine/model/operation/operation~Operation operations}. This concept comes from Operational Transformation (OT), a technology that enables collaboration. OT requires the system to transform every operation by every other operation to determine the result of concurrently applied operations. Because OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model (not the flat, array-like models typical in OT), the set of potential semantic changes is more complex. Operations are grouped in {@link module:engine/model/batch~Batch batches}, which you can think of as single undo steps.
 </info-box>
 
 ### Text attributes
@@ -117,7 +117,7 @@ if you have a selection before the letter "b" (`"Foo ^bar"`), is this position i
 
 How does CKEditor&nbsp;5 know that the selection should "be bold" in the case described above? This matters because it determines whether typed text will be bold.
 
-The selection also has attributes. If the selection is at `"Foo ^bar"` with the attribute `bold=true`, you know the user will type bold text.
+The selection also {@link module:engine/model/selection~ModelSelection#setAttribute has attributes}. If the selection is at `"Foo ^bar"` with the attribute `bold=true`, you know the user will type bold text.
 
 ### Indexes and offsets
 
@@ -196,7 +196,7 @@ By default, editor plugins configure the schema. We recommend that every editor 
 
 **Current limitation:** There is no straightforward way to override the schema pre-configured by features. If you want to override default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance. However, this requires rebuilding the editor.
 
-Access the schema instance at `editor.model.schema`. For an extensive guide on using the schema API, see the Schema deep dive guide.
+Access the schema instance at {@link module:engine/model/model~Model#schema `editor.model.schema`} For an extensive guide on using the schema API, see the Schema deep dive guide.
 
 ## View
 
@@ -263,7 +263,7 @@ We'll explain [conversion](#conversion) later in this guide. For now, just know 
 
 Do not change the view manually unless you really know what you are doing. If the view needs to change, in most cases the model should change first. Then, the changes you apply to the model are converted to the view by specific converters ([conversion](#conversion) is covered below).
 
-You may need to change the view manually if the cause of the change is not represented in the model. For example, the model does not store information about focus, which is a property of the view. When focus changes, and you want to represent that in an element is a class, you need to change that class manually.
+You may need to change the view manually if the cause of the change is not represented in the model. For example, the model does not store information about focus, which is a {@link module:engine/view/document~ViewDocument#isFocused property of the view}. When focus changes, and you want to represent that in an element is a class, you need to change that class manually.
 
 For that, like in the model, use the `change()` block (of the view) where you will have access to the view downcast writer.
 
@@ -278,7 +278,7 @@ editor.editing.view.change(writer => {
 
 	* {@link module:engine/view/downcastwriter~ViewDowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
 	* {@link module:engine/view/upcastwriter~ViewUpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (for example, pasted content) which usually happens before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
-  </info-box>
+</info-box>
 
 ### Positions
 
