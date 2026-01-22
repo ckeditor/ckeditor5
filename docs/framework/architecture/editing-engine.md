@@ -16,8 +16,8 @@ The editing engine uses a Model-View-Controller (MVC) architecture. While the en
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-The architecture has three layers: **model**, **controller**, and **view**. There's one **model document** that gets **converted** into two separate views: the **editing view** and the **data view**. These views represent different things:
-* The editing view shows the content users see and interact with in the browser
+The architecture has three layers: **model**, **controller**, and **view**. There is one **model document** that gets **converted** into two separate views: the **editing view** and the **data view**. These views represent different things:
+* The editing view shows the content users see in the browser and interact with
 * The data view handles the editor's input and output data in a format the data processor understands
 
 Both views use virtual DOM structures (custom, DOM-like structures) that converters and features work with. These structures are then **rendered** to the actual DOM.
@@ -28,11 +28,11 @@ Let's explore each layer separately.
 
 ## Model
 
-The model uses a DOM-like tree structure made of elements and text nodes. Unlike the actual DOM, both elements and text nodes in the model can have attributes.
+The model uses a DOM-like tree structure made of {@link module:engine/model/element~ModelElement elements} and {@link module:engine/model/text~ModelText text nodes}. Unlike the actual DOM, both elements and text nodes in the model can have attributes.
 
-Like the DOM, the model structure lives inside a document that contains root elements. The model and view can both have multiple roots. The document also holds the selection and the history of changes.
+Like the DOM, the model structure lives inside a {@link module:engine/model/document~ModelDocument document} that contains {@link module:engine/model/document~ModelDocument#roots root elements}. The model and view can both have multiple roots. The document also holds the {@link module:engine/model/documentselection~ModelDocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}.
 
-The document, its schema, and document markers are all properties of the `Model` class. You can access an instance of the `Model` class through `editor.model`. Besides holding these properties, the model provides the API for changing the document and its markers.
+The document, its {@link module:engine/model/schema~ModelSchema schema} and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model} class. You can access an instance of the `Model` class through {@link module:core/editor/editor~Editor#model `editor.model`}. Besides holding these properties, the model provides the API for changing the document and its markers.
 
 ```js
 editor.model;                       // -> The data model
@@ -44,7 +44,7 @@ editor.model.schema;                // -> The model's schema
 
 ### Changing the model
 
-You can only change the document structure, selection, and create elements using the model writer. Access the writer instance in `change()` and `enqueueChange()` blocks.
+You can only change the document structure, selection, and create elements using the {@link module:engine/model/writer~ModelWriter model writer} Access the writer instance in the {@link module:engine/model/writer~ModelWriter model writer} blocks.
 
 ```js
 // Inserts text "foo" at the selection position
@@ -75,7 +75,7 @@ editor.model.change(writer => {
 ```
 
 <info-box>
-	All document structure changes happen through operations. This concept comes from Operational Transformation (OT), a technology that enables collaboration. OT requires the system to transform every operation by every other operation to determine the result of concurrently applied operations. Because OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model (not the flat, array-like models typical in OT), the set of potential semantic changes is more complex. Operations are grouped in batches, which you can think of as single undo steps.
+	All document structure changes happen through {@link module:engine/model/operation/operation~Operation operations}. This concept comes from Operational Transformation (OT), a technology that enables collaboration. OT requires the system to transform every operation by every other operation to determine the result of concurrently applied operations. Because OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model (not the flat, array-like models typical in OT), the set of potential semantic changes is more complex. Operations are grouped in batches, which you can think of as single undo steps.
 </info-box>
 
 ### Text attributes
@@ -194,7 +194,7 @@ Features and the engine use this information to make processing decisions. The s
 
 By default, editor plugins configure the schema. We recommend that every editor feature comes with rules that enable and pre-configure it. This ensures plugin users can enable features without worrying about reconfiguring their schema.
 
-**Current limitation:** There's no straightforward way to override the schema pre-configured by features. If you want to override default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance. However, this requires rebuilding the editor.
+**Current limitation:** There is no straightforward way to override the schema pre-configured by features. If you want to override default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance. However, this requires rebuilding the editor.
 
 Access the schema instance at `editor.model.schema`. For an extensive guide on using the schema API, see the Schema deep dive guide.
 
@@ -229,7 +229,7 @@ editor.data;                    // The data pipeline (DataController)
 
 	The data pipeline is much simpler than the editing pipeline. In the following sections, we'll discuss the editing view.
 
-	Check out the {@link module:engine/controller/editingcontroller~EditingController}'s and {@link module:engine/controller/datacontroller~DataController}'s API documentation for more details.
+	Refer to the {@link module:engine/controller/editingcontroller~EditingController}'s and {@link module:engine/controller/datacontroller~DataController}'s API documentation for more details.
 </info-box>
 
 ### Element types and custom data
@@ -261,9 +261,9 @@ We'll explain [conversion](#conversion) later in this guide. For now, just know 
 
 ### Changing the view
 
-Do not change the view manually unless you really know what you are doing. If the view needs to change, in most cases the model should change first. Then the changes you apply to the model are converted to the view by specific converters ([conversion](#conversion) is covered below).
+Do not change the view manually unless you really know what you are doing. If the view needs to change, in most cases the model should change first. Then, the changes you apply to the model are converted to the view by specific converters ([conversion](#conversion) is covered below).
 
-You may need to change the view manually if the cause of the change is not represented in the model. For example, the model does not store information about focus, which is a property of the view. When focus changes and you want to represent that in an element is class, you need to change that class manually.
+You may need to change the view manually if the cause of the change is not represented in the model. For example, the model does not store information about focus, which is a property of the view. When focus changes, and you want to represent that in an element is a class, you need to change that class manually.
 
 For that, like in the model, use the `change()` block (of the view) where you will have access to the view downcast writer.
 
@@ -277,14 +277,14 @@ editor.editing.view.change(writer => {
 	There are two view writers:
 
 	* {@link module:engine/view/downcastwriter~ViewDowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
-	* {@link module:engine/view/upcastwriter~ViewUpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (for example, pasted content) which happens usually before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
+	* {@link module:engine/view/upcastwriter~ViewUpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (for example, pasted content) which usually happens before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
   </info-box>
 
 ### Positions
 
 Like [in the model](#positions-ranges-and-selections), there are 3 levels of classes in the view that describe points in the view structure: **positions**, **ranges**, and **selections**. A position is a single point in the document. A range consists of two positions (start and end). A selection consists of one or more ranges and has a direction (left to right or right to left).
 
-A view range is similar to its[DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html). View positions are represented by a parent and an offset in that parent. This means, unlike model offsets, view offsets describe:
+A view range is similar to its [DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html). View positions are represented by a parent and an offset in that parent. This means, unlike model offsets, view offsets describe:
 
 * Points between child nodes of the position's parent if it is an element
 * Or points between characters of a text node if the position's parent is a text node
@@ -308,7 +308,6 @@ As you can see, two of these positions represent what you might consider the sam
 Some browsers (Safari, Chrome, and Opera) consider them identical when used in a selection and often normalize the first position (anchored in an element) to a position anchored in a text node (the second position). Do not be surprised if the view selection is not directly where you expect it to be. The good news is that the CKEditor&nbsp;5 renderer can tell that two positions are identical and avoids unnecessarily re-rendering the DOM selection.
 
 <info-box>
-
 	Sometimes in the documentation you will find positions marked in HTML with `{}` and `[]` characters. The difference is that `{}` indicates positions anchored in text nodes and `[]` indicates positions in elements. For instance:
 
 	```html
@@ -324,7 +323,7 @@ The inconvenient representation of DOM positions is yet another reason to think 
 
 To create a safer and more useful abstraction over native DOM events, the view implements the concept of {@link module:engine/view/observer/observer~Observer observers}. This improves the editor's testability and simplifies listeners added by editor features by transforming native events into a more useful form.
 
-An observer listens to one or more DOM events, does preliminary processing, and then fires a custom event on the {@link module:engine/view/document~ViewDocument view document}. An observer creates an abstraction not only on the event itself but also on its data. Ideally, an event is consumer should not have any access to the native DOM.
+An observer listens to one or more DOM events, does preliminary processing, and then fires a custom event on the {@link module:engine/view/document~ViewDocument view document}. An observer creates an abstraction not only on the event itself, but also on its data. Ideally, an event is consumer should not have any access to the native DOM.
 
 By default, the view adds these observers:
 
@@ -338,14 +337,14 @@ By default, the view adds these observers:
 
 Additionally, some features add their own observers. For instance, the {@link module:clipboard/clipboard~Clipboard clipboard feature} adds {@link module:clipboard/clipboardobserver~ClipboardObserver}.
 
-<info-box>
-	For a complete list of events fired by observers, check the `ViewDocument` API documentation's list of events.
+<info-box tip>
+	For a complete list of events fired by observers, check the {@link module:engine/view/document~ViewDocument}'s list of events.
 </info-box>
 
 You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~EditingView#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: [https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer](https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer).
 
 <info-box>
-	Since all events are by default fired on `ViewDocument`, we recommend that third-party packages prefix their events with a project identifier to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
+	Since all events are by default fired on {@link module:engine/view/document~ViewDocument}, we recommend that third-party packages prefix their events with a project identifier to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
 </info-box>
 
 ## Conversion
