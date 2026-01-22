@@ -4,7 +4,7 @@ meta-title: Package generator JavaScript package content | CKEditor 5 Framework 
 meta-description: Learn how to generate a standalone JavaScript package with the CKEditor 5 package generator, including setup and build configuration.
 category: package-generator
 order: 42
-modified_at: 2024-06-27
+modified_at: 2026-01-21
 ---
 
 # JavaScript package content
@@ -49,10 +49,6 @@ An overview of the project's directory structure:
 ├─ README.md               # Description of your project and usage instructions.
 └─ vitest.config.js        # Vitest configuration file.
 ```
-
-<info-box warning>
-	(*) This file is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
-</info-box>
 
 Guides for developing some of the files:
 
@@ -150,43 +146,6 @@ Examples:
 npm run build:dist
 ```
 
-### `dll:build` (*)
-
-<info-box warning>
-	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
-</info-box>
-
-Creates a DLL-compatible package build which can be loaded into an editor using {@link updating/nim-migration/dll-builds DLL builds}.
-
-Examples:
-
-```bash
-# Build the DLL file that is ready to publish.
-npm run dll:build
-
-# Build the DLL file and listen to changes in its sources.
-npm run dll:build -- --watch
-```
-
-### `dll:serve` (*)
-
-<info-box warning>
-	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
-</info-box>
-
-Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link updating/nim-migration/dll-builds DLL builds}.
-
-Examples:
-
-```bash
-# Starts the HTTP server and opens the browser.
-npm run dll:serve
-```
-
-<info-box hint>
-    You can run `npm run dll:build -- --watch` and `npm run dll:serve` in two separate command terminals. That way, after you save your changes and reload the page, the content will update.
-</info-box>
-
 ### `translations:synchronize`
 
 Synchronizes translation messages (arguments of the `t()` function) by performing the following steps:
@@ -227,9 +186,6 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 * `prepare` &ndash; Triggers during package creation and before publishing.
 
 This script creates npm and browser builds of your plugin.
-<info-box warning>
-	If during the package creation the `--installation-methods` flag value was set to `current` the script creates npm and browser build only without CKEditor&nbsp;5's legacy installation methods.
-</info-box>
 
 ## How to change ESLint configuration
 
