@@ -921,7 +921,7 @@ function getClosestSelectedSimpleBoxElement( selection ) {
 
 The command checks if the selection is inside a simple box and enables itself accordingly. The `value` property reflects the current state of the `secret` attribute (either `true` or `undefined`). 
 
-The `execute()` method accepts an optional `options` parameter with a `value` property. If no value is provided, the command automatically toggles the current state (this is why it's called a "toggle" command). You can also explicitly pass a value if needed, but for most use cases, calling `editor.execute( 'toggleSimpleBoxSecret' )` without parameters is sufficient.
+The `execute()` method accepts an optional `options` parameter with a `value` property. If no value is provided, the command automatically toggles the current state (hence its name, a "toggle" command). You can also explicitly pass a value if needed, but for most use cases, calling `editor.execute( 'toggleSimpleBoxSecret' )` without parameters is sufficient.
 
 <info-box>
 	This follows the common CKEditor&nbsp;5 pattern for boolean attributes: use `true` for enabled or remove the attribute entirely (resulting in `undefined`), rather than setting it to `false`. This is the same approach used by features like links and their decorators.
