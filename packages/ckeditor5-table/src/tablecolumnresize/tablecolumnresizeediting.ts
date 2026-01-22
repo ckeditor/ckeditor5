@@ -942,7 +942,7 @@ export class TableColumnResizeEditing extends Plugin {
 
 		const isRightEdge = leftColumnIndex === lastColumnIndex;
 		const isLtrContent = editor.locale.contentLanguageDirection !== 'rtl';
-		const isTableCentered = tableAlignement === 'center';
+		const isTableCentered = tableAlignment === 'center';
 
 		const viewTable = viewLeftCell.findAncestor( 'table' )!;
 		const viewFigure = viewTable.findAncestor( 'figure' ) as ViewElement;
