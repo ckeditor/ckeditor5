@@ -91,10 +91,10 @@ async function syncPackageReferences( pkg: PackageInfo, packageMap: Map<string, 
 async function syncRootReferences( packages: Array<PackageInfo>, checkOnly: boolean ) {
 	const references = packages
 		.slice()
-		.sort( ( first, second ) => first.packageJson.name.localeCompare( second.packageJson.name ) )
 		.map( pkg => ( {
 			path: normalizeReferencePath( relative( cwd, pkg.packageDir ) )
-		} ) );
+		} ) )
+		.sort( ( first, second ) => first.path.localeCompare( second.path ) );
 
 	const tsconfigPath = join( cwd, 'tsconfig.json' );
 	const tsconfig = await readJson( tsconfigPath );

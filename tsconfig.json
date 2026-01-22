@@ -20,6 +20,7 @@
 	},
 	"files": [],
 	"references": [
+		{ "path": "./packages/ckeditor5" },
 		{ "path": "./packages/ckeditor5-adapter-ckfinder" },
 		{ "path": "./packages/ckeditor5-alignment" },
 		{ "path": "./packages/ckeditor5-autoformat" },
@@ -79,7 +80,6 @@
 		{ "path": "./packages/ckeditor5-utils" },
 		{ "path": "./packages/ckeditor5-watchdog" },
 		{ "path": "./packages/ckeditor5-widget" },
-		{ "path": "./packages/ckeditor5-word-count" },
-		{ "path": "./packages/ckeditor5" }
+		{ "path": "./packages/ckeditor5-word-count" }
 	]
 }
