@@ -22,10 +22,6 @@ The height of the editing area can be easily controlled with CSS.
 }
 ```
 
-### How to customize the CKEditor&nbsp;5 icons?
-
-If you are using the new installation methods introduced in CKEditor&nbsp;5 v42.0.0, you can check out our dedicated {@link getting-started/setup/customizing-icons icon customization} guide.
-
 ### How to add an attribute to the editor editable in DOM?
 
 If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer}:
