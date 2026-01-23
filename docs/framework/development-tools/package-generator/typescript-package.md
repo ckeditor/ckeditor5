@@ -21,8 +21,6 @@ An overview of the project's directory structure:
 ├─ sample
 │  ├─ index.html           # The HTML file for the development sample.
 │  └─ index.ts             # Editor setup used when running the `start` command.
-├─ scripts
-│  └─ build-dist.mjs       # Script creates `npm` and browser builds for your plugin.
 ├─ src
 │  ├─ pluginname.ts        # The plugin with example functionality.
 │  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` package.
@@ -42,19 +40,17 @@ An overview of the project's directory structure:
 │  └─ **/*.d.ts            # Files containing type definitions.
 │
 ├─ .editorconfig           # See link below for details.
-├─ .eslintrc.cjs           # ESLint configuration file.
 ├─ .gitattributes          # See link below for details.
 ├─ .gitignore              # See link below for details.
 ├─ .stylelintrc            # Stylelint configuration file.
 ├─ ckeditor5-metadata.json # See link below for details.
+├─ eslint.config.js        # ESLint configuration file.
 ├─ LICENSE.md              # All created packages fall under the MIT license.
 ├─ package.json            # See link below for details.
 ├─ tsconfig.json           # General TypeScript configuration.
-├─ tsconfig.dist.json      # Override for options from `tsconfig.json` file during `npm` and browser builds.
-├─ tsconfig.test.json      # Override for options from `tsconfig.json` file while executing tests.
-├─ tsconfig.release.json   # Override for options from `tsconfig.json` file during release process.
+├─ tsconfig.build.json     # Override for options from `tsconfig.json` file during `npm` and browser builds.
 ├─ README.md               # Description of your project and usage instructions.
-└─ vitest.config.ts        # Vitest configuration file.
+└─ vite.config.ts          # Vite configuration file.
 
 ```
 

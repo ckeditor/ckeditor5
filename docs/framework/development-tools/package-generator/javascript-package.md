@@ -21,8 +21,6 @@ An overview of the project's directory structure:
 ├─ sample
 │  ├─ index.html           # The HTML file for the development sample.
 │  └─ index.js             # Editor setup used when running the `start` command.
-├─ scripts
-│  └─ build-dist.mjs       # Script creates `npm` and browser builds for your plugin.
 ├─ src
 │  ├─ pluginname.js        # The plugin with example functionality.
 │  ├─ index.js             # The modules exported by the package.
@@ -39,15 +37,15 @@ An overview of the project's directory structure:
 │  └─ **/*.css             # All CSS files should be saved here.
 │
 ├─ .editorconfig           # See link below for details.
-├─ .eslintrc.cjs           # ESLint configuration file.
 ├─ .gitattributes          # See link below for details.
 ├─ .gitignore              # See link below for details.
 ├─ .stylelintrc            # Stylelint configuration file.
 ├─ ckeditor5-metadata.json # See link below for details.
+├─ eslint.config.js        # ESLint configuration file.
 ├─ LICENSE.md              # All created packages fall under the MIT license.
 ├─ package.json            # See link below for details.
 ├─ README.md               # Description of your project and usage instructions.
-└─ vitest.config.js        # Vitest configuration file.
+└─ vite.config.js          # Vite configuration file.
 ```
 
 Guides for developing some of the files:
