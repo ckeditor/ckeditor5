@@ -26,10 +26,10 @@ There are two available types of watchdogs:
 
 ## Usage
 
-<info-box>
+<info-box important>
 	Note: Watchdog requires access to the editor creation process.
 
-	You can use watchdog only in setups where the editor instance is created programmatically (for example, via Editor.create() or a custom creator callback).
+	You can use watchdog only in setups where the editor instance is created programmatically (for example, via `Editor.create()` or a custom creator callback).
 
 	Prebuilt editors and framework integrations are supported as long as a creator function is provided or the integration exposes watchdog configuration.
 
