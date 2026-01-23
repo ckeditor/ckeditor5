@@ -58,7 +58,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.
+Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the [toolbar section](https://ckeditor.com/docs/ckeditor5/42.0.0/updating/guides/update-to-29.html#image-toolbar) of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.
 
 See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
 
@@ -96,8 +96,8 @@ While the image feature does not provide native image editing support, the {@lin
 
 The `Image` plugin registers:
 
-* The {@link module:image/image/insertimagecommand~InsertImageCommand `insertImage`} command (alias: `imageInsert`). 
-* The {@link module:image/imageconfig~ImageInsertConfig `insertImage`} dropdown component (to use in the toolbar). 
+* The {@link module:image/image/insertimagecommand~InsertImageCommand `insertImage`} command (alias: `imageInsert`).
+* The {@link module:image/imageconfig~ImageInsertConfig `insertImage`} dropdown component (to use in the toolbar).
 
 <info-box note>
 	The basic image plugin is minimal and provides the foundation for the image ecosystem. Subplugins register most UI components (buttons, toolbars) and additional commands. See the feature guides linked in the [Image features](#image-features) section for more information about their APIs.

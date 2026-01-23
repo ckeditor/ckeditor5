@@ -361,7 +361,7 @@ export class PluginCollection<TContext extends object>
 				 *
 				 * Soft requirements were introduced in version 26.0.0. If you happen to stumble upon this error
 				 * when upgrading to version 26.0.0, read also the
-				 * {@glink updating/guides/update-to-26 Migration to 26.0.0} guide.
+				 * [Migration to 26.0.0](https://ckeditor.com/docs/ckeditor5/42.0.0/updating/guides/update-to-26.html) guide.
 				 *
 				 * @error plugincollection-soft-required
 				 * @param {string} missingPlugin The name of the required plugin.

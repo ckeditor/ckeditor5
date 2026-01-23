@@ -805,7 +805,8 @@ export type NormalizedPropertyPattern = [
  * }
  * ```
  *
- * Refer to the {@glink updating/guides/update-to-29##update-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * Refer to the
+ * [Migration to v29.1.0](https://ckeditor.com/docs/ckeditor5/42.0.0/updating/guides/update-to-29.html#update-to-ckeditor-5-v2910) guide
  * and {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param pattern Pattern with missing properties.
@@ -837,7 +838,8 @@ export type NormalizedPropertyPattern = [
  * }
  * ```
  *
- * Refer to the {@glink updating/guides/update-to-29##update-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * Refer to the
+ * [Migration to v29.1.0](https://ckeditor.com/docs/ckeditor5/42.0.0/updating/guides/update-to-29.html#update-to-ckeditor-5-v2910) guide
  * and the {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param pattern Pattern with missing properties.
