@@ -52,11 +52,11 @@ Next, as required by the JavaScript modules (ESM), you must add the missing file
 +import SomePlugin from './src/someplugin.js';
 ```
 
-Imports from the package roots should not be changed.
+Imports from the package roots should be changed to `ckeditor5`.
 
-```js
-// ✅
-import { Plugin } from '@ckeditor/ckeditor5-core';
+```diff
+- import { Plugin } from '@ckeditor/ckeditor5-core';
++ import { Plugin } from 'ckeditor5';
 ```
 
 If you run the following command, the `ckeditor5-rules/require-file-extensions-in-imports` eslint rule should fix most, if not all, problems related to missing file extensions.
@@ -73,14 +73,14 @@ For some time now, we have strongly discouraged importing from the `src` folder 
 // ❌
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-// ✅
+// ❌
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // ✅
 import { Plugin } from 'ckeditor5';
 ```
 
-Note that the names of the exports may differ between the `src` folder and the package root. In the above example, the named `Plugin` import from `@ckeditor/ckeditor5-core/src/plugin.js` will be exported under the same name from `@ckeditor/ckeditor5-core` and `ckeditor5`, but this is not guaranteed. In cases where the names do not match, you will need to modify the import accordingly.
+Note that the names of the exports may differ between the `src` folder and the package root. In the above example, the named `Plugin` import from `@ckeditor/ckeditor5-core/src/plugin.js` will be exported under the same name from `ckeditor5`, but this is not guaranteed. In cases where the names do not match, you will need to modify the import accordingly.
 
 There may also be cases where something you imported from the `src` folder is not exported from the package root. In such cases, please create a new issue in the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose) so we can consider adding the missing exports.
 
@@ -101,7 +101,7 @@ import undo from '@ckeditor/ckeditor5-icons/theme/undo.svg';
 console.log( undo );
 
 // ✅
-import { IconUndo } from '@ckeditor/ckeditor5-icons';
+import { IconUndo } from 'ckeditor5';
 
 console.log( IconUndo );
 ```
