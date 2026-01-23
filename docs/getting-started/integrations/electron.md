@@ -4,7 +4,7 @@ meta-title: Using the CKEditor 5 WYSIWYG editor with Electron from ZIP archive |
 meta-description: Integrate the CKEditor 5 rich-text editor with Electron using ZIP archive. Follow step-by-step instructions for fast installation and setup.
 order: 140
 menu-title: Electron
-modified_at: 2026-01-08
+modified_at: 2026-01-23
 ---
 
 # Integrating CKEditor&nbsp;5 with Electron from ZIP
