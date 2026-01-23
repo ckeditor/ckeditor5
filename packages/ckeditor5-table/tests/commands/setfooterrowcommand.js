@@ -269,10 +269,6 @@ describe( 'SetFooterRowCommand', () => {
 
 				command.execute();
 
-				// Rows 1 and 2 selected. 10 (row 1) and 20 (row 2).
-				// We want rows 1, 2, 3 to become footer. 3 is automatically footer if 1 is footer.
-				// footerRows = 3.
-
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ],
@@ -339,13 +335,6 @@ describe( 'SetFooterRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
 				);
 
-				// Rows 1, 2 selected. current footer 3 (rows 1, 2, 3).
-				// Value is true.
-				// Execute should set it to end after selection.
-				// Selected last row is 2.
-				// Footer should start after row 2. So row 3 (last one).
-				// footerRows = 1.
-
 				command.execute();
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
@@ -385,19 +374,6 @@ describe( 'SetFooterRowCommand', () => {
 				[ '30' ]
 			], { footerRows: 1 } ) );
 
-			// Row 1 selected. footerRows: 1 (row 3).
-			// Value is false.
-			// forceValue is false.
-			// Should do nothing as it matches intent? Or just set value to false (unset all footers)?
-			// Wait, forceValue means "Set footer state to false".
-			// If I forceValue=false on a non-footer row, it should probably ensure this row is NOT a footer.
-			// But the command sets the footer attribute for the table.
-			// If forceValue=false, it means we want to UNSET footer for the selected row.
-			// Since row 1 is NOT a footer, nothing should happen?
-			// Let's check logic:
-			// if ( options.forceValue === this.value ) return;
-			// Here value is false. forceValue is false. Return. Correct.
-
 			command.execute( { forceValue: false } );
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
@@ -409,36 +385,11 @@ describe( 'SetFooterRowCommand', () => {
 		} );
 
 		it( 'should fix rowspaned cells on the edge of an table footer section', () => {
-			// Row 1 selected.
-			// Set footer rows to cover row 1 and 2. footerRows = 2.
-			// But '10' covers row 1 and 2.
-			// Wait, if I set footerRows=2, start is row 1.
-			// Does '10' overlap the boundary?
-			// Boundary is between row 0 and 1.
-			// '10' starts at row 1. It is below the boundary. No split needed.
-
-			// Let's create a case where it DOES overlap.
-			// Table 3 rows.
-			// Cell in row 0 spans 2 rows (0, 1).
-			// Mark row 1 as footer. (Rows 1, 2).
-			// Boundary is between 0 and 1.
-			// Cell spans 0-1. Checks overlap at row 1. Yes.
-
 			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01' ],
 				[ '[]11' ],
 				[ '21', '22' ]
 			] ) );
-
-			// Select row 1.
-			// Execute -> value is false.
-			// footerRowsToSet = 2 (rows 1, 2).
-			// Footer start row = 3 - 2 = 1.
-			// Overlap check at row 1.
-			// Cell '00' is at row 0, rowspan 2. End row 1.
-			// Ranges: [0, 1].
-			// Overlas row 1? Yes.
-			// Should split.
 
 			command.execute();
 
@@ -457,15 +408,6 @@ describe( 'SetFooterRowCommand', () => {
 				[ '31' ],
 				[ '41' ]
 			] ) );
-
-			// 5 rows.
-			// Select row 2 ('21').
-			// Footer rows = 3 (rows 2, 3, 4).
-			// Split at row 2.
-			// '00' spans 0-4.
-			// Should split at 2.
-			// Top cell: 0-1 (rowspan 2).
-			// Bottom cell: 2-4 (rowspan 3).
 
 			command.execute();
 
