@@ -134,7 +134,7 @@ Examples:
 npm run stylelint
 ```
 
-### `build:dist`
+### `build`
 
 Creates npm and browser builds of your plugin. These builds can be added to the editor by following the {@link getting-started/setup/configuration Configuring CKEditor&nbsp;5 features} guide.
 
@@ -142,7 +142,7 @@ Examples:
 
 ```bash
 # Builds the `npm` and browser files thats are ready to publish.
-npm run build:dist
+npm run build
 ```
 
 ### `translations:synchronize`
