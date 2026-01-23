@@ -1469,8 +1469,37 @@ export class TableUtils extends Plugin {
  * {@link module:table/tableutils~TableUtils#setHeadingColumnsCount} methods.
  */
 export type UpdateTableHeadingsOptions = {
+
+	/**
+	 * If set to `false` it will only update the `headingRows`/`headingColumns` attribute
+	 * without updating the cell types in the table.
+	 *
+	 * This option has no effect if {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing}
+	 * is not loaded.
+	 *
+	 * @default true
+	 */
 	updateCellType?: boolean;
+
+	/**
+	 * If set to `true`, it will check if the rows/columns that are no longer in the heading section
+	 * should be updated to body cells.
+	 *
+	 * This option has no effect if {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing}
+	 * is not loaded.
+	 *
+	 * @default true
+	 */
 	resetFormerHeadingCells?: boolean;
+
+	/**
+	 * If set to `true`, it will check if the following rows/columns look like a header and expand the heading section.
+	 *
+	 * This option has no effect if {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing}
+	 * is not loaded.
+	 *
+	 * @default true
+	 */
 	autoExpand?: boolean;
 };
 
