@@ -66,7 +66,7 @@ import { Plugin } from 'ckeditor5';
 import MyPlugin from './myplugin.js';
 ```
 
-To integrate the generated build with your editor, follow the {@link getting-started/setup/configuration Configuring CKEditor 5 features} guide.
+To integrate the generated build with your editor, follow the {@link getting-started/setup/configuration Configuring CKEditor&nbsp;5 features} guide.
 
 You can check out what is available inside your package depending on the language you used:
 * {@link framework/development-tools/package-generator/javascript-package JavaScript}

@@ -82,7 +82,7 @@ import { Plugin } from 'ckeditor5';
 
 Note that the names of the exports may differ between the `src` folder and the package root. In the above example, the named `Plugin` import from `@ckeditor/ckeditor5-core/src/plugin.js` will be exported under the same name from `@ckeditor/ckeditor5-core` and `ckeditor5`, but this is not guaranteed. In cases where the names do not match, you will need to modify the import accordingly.
 
-There may also be cases where something you imported from the `src` folder is not exported from the package root. In such cases, please create a new issue in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose) so we can consider adding the missing exports.
+There may also be cases where something you imported from the `src` folder is not exported from the package root. In such cases, please create a new issue in the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose) so we can consider adding the missing exports.
 
 If you run the following command, the `ckeditor5-rules/allow-imports-only-from-main-package-entry-point` eslint rule will list all the places where you need to update the imports.
 
@@ -146,7 +146,7 @@ Once you have updated all the imports, it is time to build and validate the bund
 
 3. Repeat the above step for the `dist/browser/index.js` file, but this time you should only see imports from `ckeditor5` or `ckeditor5-premium-features`. All other imports including external dependencies should be bundled with the plugin
 
-If you see imports in the second or third step that are not explicitly mentioned, check where the imports come from in the source code and if they have been updated according to the above migration steps. If this is the case and the imports in the generated bundle are still incorrect, please create a new issue in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
+If you see imports in the second or third step that are not explicitly mentioned, check where the imports come from in the source code and if they have been updated according to the above migration steps. If this is the case and the imports in the generated bundle are still incorrect, please create a new issue in the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
 
 ## How to use your plugin in new installation methods?
 

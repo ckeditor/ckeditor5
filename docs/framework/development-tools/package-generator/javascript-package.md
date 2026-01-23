@@ -137,7 +137,7 @@ npm run stylelint
 
 ### `build:dist`
 
-Creates npm and browser builds of your plugin. These builds can be added to the editor by following the {@link getting-started/setup/configuration Configuring CKEditor 5 features} guide.
+Creates npm and browser builds of your plugin. These builds can be added to the editor by following the {@link getting-started/setup/configuration Configuring CKEditor&nbsp;5 features} guide.
 
 Examples:
 
@@ -193,7 +193,7 @@ To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/c
 
 ### Why are the predefined ESLint rules recommended
 
-To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link updating/nim-migration/dll-builds DLL guide}.
+To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link updating/nim-migration/dll-builds Migrating from DLL builds} guide.
 
 ## Translations
 
