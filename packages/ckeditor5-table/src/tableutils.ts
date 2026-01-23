@@ -143,16 +143,16 @@ export class TableUtils extends Plugin {
 
 		createEmptyRows( writer, table, 0, rows, columns );
 
+		if ( options.footerRows ) {
+			this.setFooterRowsCount( writer, table, options.footerRows );
+		}
+
 		if ( options.headingRows ) {
 			this.setHeadingRowsCount( writer, table, options.headingRows );
 		}
 
 		if ( options.headingColumns ) {
 			this.setHeadingColumnsCount( writer, table, options.headingColumns );
-		}
-
-		if ( options.footerRows ) {
-			this.setFooterRowsCount( writer, table, options.footerRows );
 		}
 
 		return table;

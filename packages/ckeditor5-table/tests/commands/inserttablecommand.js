@@ -458,7 +458,7 @@ describe( 'InsertTableCommand', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should trim heading rows if sum of heading and footer rows is greater than table rows', async () => {
+			it( 'should trim footer rows if sum of heading and footer rows is greater than table rows', async () => {
 				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
@@ -481,7 +481,7 @@ describe( 'InsertTableCommand', () => {
 						[ '', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ]
-					], { headingRows: 1, footerRows: 2 } )
+					], { headingRows: 2, footerRows: 1 } )
 				);
 
 				await editor.destroy();
