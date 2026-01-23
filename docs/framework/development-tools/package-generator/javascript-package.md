@@ -35,7 +35,6 @@ An overview of the project's directory structure:
 │  ├─ styles
 │  │  └─ **/*.css          # All stylesheet files should be saved here.
 │  └─ **/*.css             # All CSS files should be saved here.
-│
 ├─ .editorconfig           # See link below for details.
 ├─ .gitattributes          # See link below for details.
 ├─ .gitignore              # See link below for details.

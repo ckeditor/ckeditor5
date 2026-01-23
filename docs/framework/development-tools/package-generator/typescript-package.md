@@ -38,7 +38,6 @@ An overview of the project's directory structure:
 │  └─ **/*.css             # All CSS files should be saved here.
 ├─ typings
 │  └─ **/*.d.ts            # Files containing type definitions.
-│
 ├─ .editorconfig           # See link below for details.
 ├─ .gitattributes          # See link below for details.
 ├─ .gitignore              # See link below for details.
@@ -47,11 +46,10 @@ An overview of the project's directory structure:
 ├─ eslint.config.js        # ESLint configuration file.
 ├─ LICENSE.md              # All created packages fall under the MIT license.
 ├─ package.json            # See link below for details.
+├─ README.md               # Description of your project and usage instructions.
 ├─ tsconfig.json           # General TypeScript configuration.
 ├─ tsconfig.build.json     # Override for options from `tsconfig.json` file during `npm` and browser builds.
-├─ README.md               # Description of your project and usage instructions.
 └─ vite.config.ts          # Vite configuration file.
-
 ```
 
 Guides for developing some of the files:
