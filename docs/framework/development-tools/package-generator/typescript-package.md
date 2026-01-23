@@ -80,21 +80,11 @@ The following scripts are available in the package.
 
 Starts an HTTP server with the live-reload mechanism that allows previewing and testing of plugins available in the package.
 
-When the server has been started, the default browser will open the developer sample. You can turn this off by passing the `--no-open` option to that command.
-
-You can also define the language that will translate the created editor by specifying the `--language [LANG]` option. It defaults to `'en'`.
-
 Examples:
 
 ```bash
 # Starts the server and opens the browser.
 npm run start
-
-# Disable auto-opening the browser.
-npm run start -- --no-open
-
-# Create the editor with the interface in German.
-npm run start -- --language=de
 ```
 
 ### `test`
