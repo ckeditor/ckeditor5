@@ -26,7 +26,12 @@ describe( 'downcast converters', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing, UndoEditing ] } );
+		editor = await VirtualTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, UndoEditing ],
+			table: {
+				enableFooters: true
+			}
+		} );
 
 		model = editor.model;
 		root = model.document.getRoot( 'main' );
@@ -132,7 +137,7 @@ describe( 'downcast converters', () => {
 
 				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
 				expect( viewTableAfter ).to.not.equal( viewTableBefore );
-				expect( viewTableRow0After ).to.not.equal( viewTableRow0Before );
+				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
 				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
 				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
 				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
@@ -213,9 +218,9 @@ describe( 'downcast converters', () => {
 				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
 				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
 
-				// Only last row is updated.
-				expect( viewTableRow1After ).to.not.equal( viewTableRow1Before );
-				expect( viewTableCell1After ).to.not.equal( viewTableCell1Before );
+				// Only last row is updated but elements are reused.
+				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
 			} );
 
 			it( 'should reconvert if remove `footerRows` attribute', () => {
@@ -293,9 +298,9 @@ describe( 'downcast converters', () => {
 				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
 				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
 
-				// Only last row is updated.
-				expect( viewTableRow1After ).to.not.equal( viewTableRow1Before );
-				expect( viewTableCell1After ).to.not.equal( viewTableCell1Before );
+				// Only last row is updated but elements are reused.
+				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
 			} );
 		} );
 

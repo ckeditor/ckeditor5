@@ -13,7 +13,6 @@ import type {
 	Model
 } from '@ckeditor/ckeditor5-engine';
 
-import type { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
 
 /**
@@ -26,14 +25,13 @@ import { TableWalker } from '../tablewalker.js';
  *
  * @internal
  */
-export function tableStructureRefreshHandler( model: Model, editing: EditingController, tableUtils: TableUtils ): void {
+export function tableStructureRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 	const rowsToReconvert = new Set<ModelElement>();
 	const cellsToReconvert = new Set<ModelElement>();
 
 	for ( const change of differ.getChanges() ) {
 		let table;
-		let isRowChange = false;
 
 		if ( change.type == 'attribute' ) {
 			const element = change.range.start.nodeAfter;
@@ -42,26 +40,39 @@ export function tableStructureRefreshHandler( model: Model, editing: EditingCont
 				continue;
 			}
 
-			if ( change.attributeKey != 'headingRows' && change.attributeKey != 'headingColumns' && change.attributeKey != 'footerRows' ) {
+			if (
+				change.attributeKey != 'headingRows' &&
+				change.attributeKey != 'headingColumns' &&
+				change.attributeKey != 'footerRows'
+			) {
 				continue;
 			}
 
 			table = element;
-			isRowChange = change.attributeKey == 'headingRows' || change.attributeKey == 'footerRows';
-		} else if ( change.name == 'tableRow' || change.name == 'tableCell' ) {
+		}
+		else if ( change.name == 'tableRow' || change.name == 'tableCell' ) {
 			table = change.position.findAncestor( 'table' );
-			isRowChange = change.name == 'tableRow';
 		}
 
 		if ( !table ) {
 			continue;
 		}
 
+		// Mark row to be reconverted when it was moved around so that `<th>` and `<td>` elements can be updated.
+		// TODO This should be handled in the engine. A moved row was reused in the view
+		//  and differ does not allow refresh of cells in inserted row.
+		if (
+			change.type == 'insert' &&
+			change.name == 'tableRow' &&
+			editing.mapper.toViewElement( change.position.nodeAfter as ModelElement )
+		) {
+			rowsToReconvert.add( change.position.parent as ModelElement );
+		}
+
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		const tableWalker = new TableWalker( table );
-		const totalRows = tableUtils.getRows( table );
 
 		for ( const tableSlot of tableWalker ) {
 			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
@@ -70,38 +81,20 @@ export function tableStructureRefreshHandler( model: Model, editing: EditingCont
 				continue;
 			}
 
-			let shouldReconvert = false;
-
 			const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 			const expectedElementName = isHeading ? 'th' : 'td';
 
 			if ( viewElement.name != expectedElementName ) {
-				shouldReconvert = true;
-			}
-
-			else if ( change.type === 'attribute' && change.attributeKey === 'footerRows' ) {
-				const oldValue = ( change.attributeOldValue as number | null ) || 0;
-				const newValue = ( change.attributeNewValue as number | null ) || 0;
-
-				const minFooterRows = Math.min( oldValue, newValue );
-				const maxFooterRows = Math.max( oldValue, newValue );
-
-				if ( tableSlot.row >= totalRows - maxFooterRows && tableSlot.row <= totalRows - minFooterRows ) {
-					shouldReconvert = true;
-				}
-			}
-
-			if ( shouldReconvert ) {
-				if ( isRowChange ) {
-					rowsToReconvert.add( tableSlot.cell.parent! as ModelElement );
-				}
-
 				cellsToReconvert.add( tableSlot.cell );
 			}
 		}
 	}
 
-	for ( const item of [ ...cellsToReconvert, ...rowsToReconvert ] ) {
+	for ( const item of rowsToReconvert ) {
+		editing.reconvertItem( item );
+	}
+
+	for ( const item of cellsToReconvert ) {
 		editing.reconvertItem( item );
 	}
 }
