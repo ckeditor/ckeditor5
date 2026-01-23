@@ -1,11 +1,20 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DowncastAttributeEvent, ModelElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import isEqual from 'es-toolkit/compat/isEqual';
+import type {
+	DowncastAttributeEvent,
+	ModelElement,
+	ModelItem,
+	UpcastConversionApi,
+	UpcastElementEvent,
+	ViewElement
+} from 'ckeditor5/src/engine.js';
 import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
+import { DEFAULT_OPTIONS } from './utils.js';
 
 /**
  * @module image/imagestyle/converters
@@ -82,7 +91,59 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
 			}
 		}
+
+		// Normalize float styles (alignLeft, alignBlockLeft, alignRight, alignBlockRight).
+		normalizeFloatToDefinitionStyle( conversionApi, viewElement, modelImageElement, styles );
 	};
+}
+
+/**
+ * A helper function that attempts to convert the `float` CSS style into a corresponding `imageStyle` attribute.
+ *
+ * It maps `float: left` and `float: right` to standard alignment styles (e.g. `'alignLeft'`, `'alignBlockRight'`),
+ * but only if the target style definition matches one of the {@link module:image/image/utils~DEFAULT_OPTIONS default options}.
+ */
+function normalizeFloatToDefinitionStyle(
+	conversionApi: UpcastConversionApi,
+	viewElement: ViewElement,
+	modelElement: ModelItem,
+	styles: Array<ImageStyleOptionDefinition>
+) {
+	if ( !conversionApi.consumable.test( viewElement, { styles: [ 'float' ] } ) ) {
+		return;
+	}
+
+	let floatStyleName: string | null = null;
+	const blockStylePrefix = modelElement.is( 'element', 'imageBlock' ) ? 'Block' : '';
+
+	switch ( viewElement.getStyle( 'float' ) ) {
+		case 'left':
+			floatStyleName = `align${ blockStylePrefix }Left`;
+			break;
+
+		case 'right':
+			floatStyleName = `align${ blockStylePrefix }Right`;
+			break;
+	}
+
+	if ( !floatStyleName ) {
+		return;
+	}
+
+	const definition = getStyleDefinitionByName( floatStyleName, styles );
+
+	if ( !definition ) {
+		return;
+	}
+
+	const builtinDefinition = DEFAULT_OPTIONS[ definition.name ];
+
+	if ( !isEqual( definition, builtinDefinition ) ) {
+		return;
+	}
+
+	conversionApi.writer.setAttribute( 'imageStyle', floatStyleName, modelElement );
+	conversionApi.consumable.consume( viewElement, { styles: [ 'float' ] } );
 }
 
 /**

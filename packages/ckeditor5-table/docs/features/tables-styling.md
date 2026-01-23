@@ -4,7 +4,7 @@ meta-title: Table and cell styling tools | CKEditor 5 Documentation
 meta-description: Style tables in CKEditor 5 with custom classes, alignment, and formatting options to match your document’s design and improve readability.
 category: tables
 order: 20
-modified_at: 2022-05-19
+modified_at: 2026-01-08
 badges: [ premium ]
 ---
 
@@ -218,6 +218,26 @@ Read more about all supported properties for the {@link module:table/tableconfig
 <info-box>
 	The default table and table cell styles **do** impact the {@link getting-started/setup/getting-and-setting-data#replacing-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
+
+### Helper lines when border style is set to none
+
+By default, when a table or table cell has an inline style such as `border: none` or `border-style: none`, the editor displays a dashed helper line to visually indicate the hidden border. This visualization is applied only in the editing view and does not affect the output HTML or the data stored by CKEditor&nbsp;5.
+
+The effect looks as follows:
+
+{@img assets/img/table-no-border.png 520 A table with borders set to none and helper lines.}
+
+If you prefer a true WYSIWYG experience or already implement your own border visualization logic, this behavior can be disabled using the {@link module:table/tableconfig~TableConfig#showHiddenBorders `table.showHiddenBorders`} configuration option.
+
+```js
+const tableConfig = {
+	table: {
+		showHiddenBorders: false
+	}
+};
+```
+
+When disabled, tables and cells with `border: none` will remain completely borderless in the editing view, matching their rendered output.
 
 ## Common API
 
