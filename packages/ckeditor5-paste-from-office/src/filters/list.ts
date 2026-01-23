@@ -59,9 +59,34 @@ export function transformListItemLikeElementsIntoLists(
 		listItemElements: Array<ViewElement>;
 	}> = [];
 
+	const topLevelListInfo: {
+		marginLeft: string;
+		canSetMarginOnList: boolean;
+		topLevelListItems: Array<ViewElement>;
+	} = {
+		marginLeft: '',
+		canSetMarginOnList: true,
+		topLevelListItems: []
+	};
+
 	for ( const itemLikeElement of itemLikeElements ) {
 		if ( itemLikeElement.indent !== undefined ) {
 			if ( !isListContinuation( itemLikeElement ) ) {
+				if ( topLevelListInfo.canSetMarginOnList && topLevelListInfo.topLevelListItems.length > 0 ) {
+					// Apply margin-left to the top-level list if all its items have the same margin-left.
+					writer.setStyle( 'margin-left', topLevelListInfo.marginLeft, stack[ 0 ].listElement );
+
+					// Remove margin-left from all top-level list items.
+					for ( const topLevelListItem of topLevelListInfo.topLevelListItems ) {
+						writer.removeStyle( 'margin-left', topLevelListItem );
+					}
+				}
+
+				// Reset top-level list info.
+				topLevelListInfo.marginLeft = '';
+				topLevelListInfo.canSetMarginOnList = true;
+				topLevelListInfo.topLevelListItems = [];
+
 				stack.length = 0;
 			}
 
@@ -98,21 +123,21 @@ export function transformListItemLikeElementsIntoLists(
 					const listElement = createNewEmptyList( listStyle, writer, hasMultiLevelListPlugin );
 
 					// Apply list padding only if we have margins for the item and the parent item.
-					if (
-						isPx( itemLikeElement.marginLeft ) &&
-						( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) )
-					) {
-						let marginLeft = itemLikeElement.marginLeft;
+					// if (
+					// 	isPx( itemLikeElement.marginLeft ) &&
+					// 	( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) )
+					// ) {
+					// 	let marginLeft = itemLikeElement.marginLeft;
 
-						if ( indent > 0 ) {
-							// Convert the padding from absolute to relative.
-							marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
-						}
+					// 	if ( indent > 0 ) {
+					// 		// Convert the padding from absolute to relative.
+					// 		marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
+					// 	}
 
-						const style = ( window as any ).listBlockIndentTestConfig.pfoUseMargin ? 'margin-left' : 'padding-left';
+					// 	const style = ( window as any ).listBlockIndentTestConfig.pfoUseMargin ? 'margin-left' : 'padding-left';
 
-						writer.setStyle( style, marginLeft, listElement );
-					}
+					// 	writer.setStyle( style, marginLeft, listElement );
+					// }
 
 					// Insert the new OL/UL.
 					if ( stack.length == 0 ) {
@@ -143,6 +168,75 @@ export function transformListItemLikeElementsIntoLists(
 			// Use LI if it is already it or create a new LI element.
 			// https://github.com/ckeditor/ckeditor5/issues/15964
 			const listItem = itemLikeElement.element.name == 'li' ? itemLikeElement.element : writer.createElement( 'li' );
+
+			const listItemOriginalMarginLeft = itemLikeElement.marginLeft;
+
+			if ( listItemOriginalMarginLeft !== undefined ) {
+				const listItemMarginLeftPx = isPx( listItemOriginalMarginLeft ) ?
+					parseFloat( listItemOriginalMarginLeft ) :
+					parseFloat( convertCssLengthToPx( listItemOriginalMarginLeft ) );
+
+				// itemLikeElement.marginLeft = toPx( listItemMarginLeftPx );
+				// const listIndentPx = stack.length * 40; // TODO: take from config.
+				let listIndentPx = 0;
+
+				// for ( let i = 0; i < stack.length; i++ ) {
+				// 	const stackMarginLeft = stack[ i ].listItemElements.length > 0 ?
+				// 		stack[ i ].listItemElements[ stack[ i ].listItemElements.length - 1 ].getStyle( 'margin-left' ) :
+				// 		undefined;
+
+				// 	// if ( stackMarginLeft ) { // TODO: check if in px.
+				// 	// 	listIndentPx += parseFloat( stackMarginLeft ) + 40; // TODO: take from config.
+				// 	// }
+
+				// 	if ( stackMarginLeft ) { // TODO: check if in px.
+				// 		listIndentPx += listItemMarginLeftPx - parseFloat( stackMarginLeft );
+				// 	}
+
+				// 	listIndentPx -= 40; // TODO: take from config.
+				// }
+
+				let stackMarginLeft;
+				// const isNewList = stack.length > 0 && stack[ stack.length - 1 ].listItemElements.length === 0;
+
+				if ( stack.length > 1 ) {
+					const prevStackLevel = stack[ stack.length - 2 ].listItemElements;
+					stackMarginLeft = prevStackLevel.length > 0 ?
+						prevStackLevel[ prevStackLevel.length - 1 ].getStyle( 'margin-left' ) :
+						undefined;
+				}
+
+				// if ( stackMarginLeft ) { // TODO: check if in px.
+				// 	listIndentPx += parseFloat( stackMarginLeft ) + 40; // TODO: take from config.
+				// }
+
+				if ( stackMarginLeft ) { // TODO: check if in px.
+					listIndentPx += parseFloat( stackMarginLeft );
+				}
+
+				listIndentPx += stack.length * 40; // TODO: take from config.
+
+				const adjustedListItemIndent = listItemMarginLeftPx - listIndentPx;
+				const valueToSet = adjustedListItemIndent !== 0 ? toPx( adjustedListItemIndent ) : undefined;
+
+				if ( valueToSet ) {
+					writer.setStyle( 'margin-left', valueToSet, listItem );
+				}
+			}
+
+			if ( indent == 0 && topLevelListInfo.canSetMarginOnList ) {
+				const listItemMarginLeft = listItem.getStyle( 'margin-left' );
+
+				if ( topLevelListInfo.marginLeft === '' && listItemMarginLeft !== undefined ) {
+					topLevelListInfo.marginLeft = listItemMarginLeft;
+				}
+
+				if ( listItemMarginLeft !== topLevelListInfo.marginLeft ) {
+					topLevelListInfo.canSetMarginOnList = false;
+				}
+
+				topLevelListInfo.topLevelListItems.push( listItem );
+			}
 
 			// Append the LI to OL/UL.
 			writer.appendChild( listItem, stack[ indent ].listElement );
@@ -177,6 +271,16 @@ export function transformListItemLikeElementsIntoLists(
 			} else {
 				stack.length = 0;
 			}
+		}
+	}
+
+	if ( topLevelListInfo.canSetMarginOnList && topLevelListInfo.topLevelListItems.length > 0 ) {
+		// Apply margin-left to the top-level list if all its items have the same margin-left.
+		writer.setStyle( 'margin-left', topLevelListInfo.marginLeft, stack[ 0 ].listElement );
+
+		// Remove margin-left from all top-level list items.
+		for ( const topLevelListItem of topLevelListInfo.topLevelListItems ) {
+			writer.removeStyle( 'margin-left', topLevelListItem );
 		}
 	}
 }

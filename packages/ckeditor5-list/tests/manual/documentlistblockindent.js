@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -33,44 +33,48 @@ import { ListProperties } from '../../src/listproperties.js';
 import { ListBlockIndent } from '../../src/listformatting/listblockindent.js';
 
 const INITIAL_DATA = `
-	<p>List with <code>margin-left</code>:</p>
-	<ol style="margin-left: 40px;">
-		<li>aaa
-			<ol style="margin-left: 40px;">
+	<h3>Margins on ol/ul and li:</h3>
+	<ol style="margin-left: 70px;">
+		<li style="margin-left: 50px;">aaa
+			<ol style="margin-left: 60px;">
 				<li>bbb</li>
+				<li style="margin-left: 80px;">ccc</li>
+				<li style="margin-left: 50px;">ddd</li>
 			</ol>
 		</li>
-		<li>ccc</li>
+		<li style="margin-left: 20px;">eee</li>
 	</ol>
 
-	<p>List with <code>padding-left</code>:</p>
-	<ol style="padding-left: 40px;">
+	<h3>Simple list (no indents):</h3>
+	<ol>
 		<li>aaa
-			<ol style="padding-left: 40px;">
+			<ol>
 				<li>bbb</li>
+				<li>ccc</li>
+				<li>ddd</li>
 			</ol>
 		</li>
-		<li>ccc</li>
+		<li>eee</li>
 	</ol>
 `;
 
 const editorElement = document.querySelector( '#editor' );
 
 const controls = {
-	useMargin: document.querySelector( '#useMargin' ),
+	// useMargin: document.querySelector( '#useMargin' ),
 	ghs: document.querySelector( '#ghs' ),
 	pfo: document.querySelector( '#pfo' ),
-	pfoUseMargin: document.querySelector( '#pfoUseMargin' ),
-	indent: document.querySelector( '#indent' ),
+	// pfoUseMargin: document.querySelector( '#pfoUseMargin' ),
+	// indent: document.querySelector( '#indent' ),
 	indentBlock: document.querySelector( '#indentBlock' ),
 	listBlockIndent: document.querySelector( '#listBlockIndent' )
 };
 
-controls.useMargin.checked = true;
+// controls.useMargin.checked = true;
 controls.ghs.checked = false;
 controls.pfo.checked = true;
-controls.pfoUseMargin.checked = false;
-controls.indent.checked = true;
+// controls.pfoUseMargin.checked = false;
+// controls.indent.checked = true;
 controls.indentBlock.checked = true;
 controls.listBlockIndent.checked = true;
 
@@ -92,9 +96,9 @@ function getEditorConfig() {
 		plugins.push( GeneralHtmlSupport );
 	}
 
-	if ( controls.indent.checked ) {
-		plugins.push( Indent );
-	}
+	// if ( controls.indent.checked ) {
+	plugins.push( Indent );
+	// }
 
 	if ( controls.indentBlock.checked ) {
 		plugins.push( IndentBlock );
@@ -180,17 +184,17 @@ function getEditorConfig() {
 	};
 
 	config.indentBlock = {
-		...( config.indentBlock || {} ),
-		useMargin: controls.useMargin.checked
+		...( config.indentBlock || {} )
+		// useMargin: controls.useMargin.checked
 	};
 
 	return config;
 }
 
 function createEditor() {
-	window.listBlockIndentTestConfig = {
-		pfoUseMargin: controls.pfoUseMargin.checked
-	};
+	// window.listBlockIndentTestConfig = {
+	// 	pfoUseMargin: controls.pfoUseMargin.checked
+	// };
 
 	const initialize = () =>
 		ClassicEditor.create( editorElement, getEditorConfig() )

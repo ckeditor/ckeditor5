@@ -8,11 +8,11 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
 import type { ListUtils } from '../list/listutils.js';
 
 import type { IndentBehavior } from '@ckeditor/ckeditor5-indent';
-import { isListItemBlock, isFirstListItemInList } from '../list/utils/model.js';
+import { isFirstListItemInList, isListItemBlock } from '../list/utils/model.js';
 
 /**
  * The indent list block command.
@@ -51,8 +51,7 @@ export class IndentListBlockCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const listItem = this._getListItemForCollapsedSelectionAtListStart() ||
-			this._getListItemForSelectionTouchingListStart();
+		const listItem = this._getFirstListItemIfSelectionIsAtListStart( this.editor.model.document.selection );
 
 		if ( !listItem ) {
 			this.isEnabled = false;
@@ -88,8 +87,7 @@ export class IndentListBlockCommand extends Command {
 			// 	}
 			// }
 
-			const listItem = this._getListItemForCollapsedSelectionAtListStart() ||
-				this._getListItemForSelectionTouchingListStart();
+			const listItem = this._getFirstListItemIfSelectionIsAtListStart( model.document.selection );
 
 			if ( !listItem ) {
 				return;
@@ -104,6 +102,31 @@ export class IndentListBlockCommand extends Command {
 				writer.removeAttribute( 'listBlockIndent', listItem );
 			}
 		} );
+	}
+
+	/**
+	 * Returns the list item at the beginning of the current selection if it is the first top–level list item in the list.
+	 * Otherwise, returns `null`.
+	 */
+	private _getFirstListItemIfSelectionIsAtListStart( selection: ModelDocumentSelection ): ModelElement | null {
+		const pos = selection.getFirstPosition();
+
+		if ( !pos ) {
+			return null;
+		}
+
+		const parent = pos.parent;
+
+		if (
+			!pos.isAtStart ||
+			!isListItemBlock( parent ) ||
+			!isFirstListItemInList( parent ) ||
+			parent.getAttribute( 'listIndent' ) !== 0
+		) {
+			return null;
+		}
+
+		return parent;
 	}
 
 	/**
@@ -145,53 +168,53 @@ export class IndentListBlockCommand extends Command {
 	 * For a collapsed selection, returns the list item if the caret is at the beginning of the first top–level list item.
 	 * Otherwise, returns `null`.
 	 */
-	private _getListItemForCollapsedSelectionAtListStart(): ModelElement | null {
-		const selection = this.editor.model.document.selection;
+	// private _getListItemForCollapsedSelectionAtListStart(): ModelElement | null {
+	// 	const selection = this.editor.model.document.selection;
 
-		if ( !selection.isCollapsed ) {
-			return null;
-		}
+	// 	if ( !selection.isCollapsed ) {
+	// 		return null;
+	// 	}
 
-		return this._getListItemAtSelectionStart();
-	}
+	// 	return this._getListItemAtSelectionStart();
+	// }
 
 	/**
 	 * For a non–collapsed selection, returns the list item if the selection starts at the beginning of the first top–level list item.
 	 * Otherwise, returns `null`.
 	 */
-	private _getListItemForSelectionTouchingListStart(): ModelElement | null {
-		const selection = this.editor.model.document.selection;
+	// private _getListItemForSelectionTouchingListStart(): ModelElement | null {
+	// 	const selection = this.editor.model.document.selection;
 
-		if ( selection.isCollapsed ) {
-			return null;
-		}
+	// 	if ( selection.isCollapsed ) {
+	// 		return null;
+	// 	}
 
-		return this._getListItemAtSelectionStart();
-	}
+	// 	return this._getListItemAtSelectionStart();
+	// }
 
 	/**
 	 * Returns the list item at the beginning of the current selection if it is the first top–level list item in the list.
 	 * Otherwise, returns `null`.
 	 */
-	private _getListItemAtSelectionStart(): ModelElement | null {
-		const selection = this.editor.model.document.selection;
-		const pos = selection.getFirstPosition();
+	// private _getListItemAtSelectionStart(): ModelElement | null {
+	// 	const selection = this.editor.model.document.selection;
+	// 	const pos = selection.getFirstPosition();
 
-		if ( !pos ) {
-			return null;
-		}
+	// 	if ( !pos ) {
+	// 		return null;
+	// 	}
 
-		const parent = pos.parent;
+	// 	const parent = pos.parent;
 
-		if (
-			!pos.isAtStart ||
-			!isListItemBlock( parent ) ||
-			!isFirstListItemInList( parent ) ||
-			parent.getAttribute( 'listIndent' ) !== 0
-		) {
-			return null;
-		}
+	// 	if (
+	// 		!pos.isAtStart ||
+	// 		!isListItemBlock( parent ) ||
+	// 		!isFirstListItemInList( parent ) ||
+	// 		parent.getAttribute( 'listIndent' ) !== 0
+	// 	) {
+	// 		return null;
+	// 	}
 
-		return parent;
-	}
+	// 	return parent;
+	// }
 }
