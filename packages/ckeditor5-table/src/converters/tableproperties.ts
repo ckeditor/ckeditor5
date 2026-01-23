@@ -112,8 +112,8 @@ export function upcastStyleToAttribute(
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let value = viewElement.getAttribute( attributeName );
 
-					if ( value && attributeType == 'length' && !value.endsWith( 'px' ) ) {
-						value += 'px';
+					if ( value && attributeType == 'length' ) {
+						value = parseFloat( value ) + ( value.endsWith( '%' ) ? '%' : 'px' );
 					}
 
 					if ( localDefaultValue !== value ) {
