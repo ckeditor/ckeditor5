@@ -31,7 +31,7 @@ cd my-app
 npm start
 ```
 
-## Integrating CKEditor&nbsp;5 with Electron using the ZIP archive
+## Integrating CKEditor&nbsp;5 with Electron using CDN
 
 ### Project structure
 
