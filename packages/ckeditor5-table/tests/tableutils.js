@@ -2425,7 +2425,7 @@ describe( 'TableUtils', () => {
 			], { headingRows: 1, footerRows: 1 } ) );
 		} );
 
-		it( 'should reduce amount of heading rows when footer rows overlap', () => {
+		it( 'should reduce amount of footer rows when heading rows overlap', () => {
 			_setModelData( model, '[]' );
 
 			model.change( writer => {
@@ -2438,7 +2438,7 @@ describe( 'TableUtils', () => {
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
-			], { headingRows: 1, footerRows: 2 } ) );
+			], { headingRows: 2, footerRows: 1 } ) );
 		} );
 	} );
 } );
