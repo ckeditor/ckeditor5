@@ -14,7 +14,10 @@ describe( 'Table structure post-fixer', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ TableEditing, Paragraph ]
+			plugins: [ TableEditing, Paragraph ],
+			table: {
+				enableFooters: true
+			}
 		} );
 
 		model = editor.model;

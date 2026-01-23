@@ -256,7 +256,10 @@ export class TableEditing extends Plugin {
 
 		injectTableLayoutPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
-		injectTableStructurePostFixer( editor );
+
+		if ( useFooterElement ) {
+			injectTableStructurePostFixer( editor );
+		}
 
 		this.listenTo( model.document, 'change:data', () => {
 			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
