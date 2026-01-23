@@ -66,7 +66,7 @@ export function tableStructureRefreshHandler( model: Model, editing: EditingCont
 			change.name == 'tableRow' &&
 			editing.mapper.toViewElement( change.position.nodeAfter as ModelElement )
 		) {
-			rowsToReconvert.add( change.position.parent as ModelElement );
+			rowsToReconvert.add( change.position.nodeAfter as ModelElement );
 		}
 
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
