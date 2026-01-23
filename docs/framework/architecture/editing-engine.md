@@ -216,10 +216,10 @@ The view, on the other hand, is an abstract representation of the DOM structure 
 
 This means:
 
-* The view is another custom structure
-* It resembles the DOM. While the model's tree structure only slightly resembled the DOM (for example, by introducing text attributes), the view is much closer. In other words, it is a **virtual DOM**
-* There are two "pipelines": the [**editing pipeline**](#editing-pipeline) (also called the "editing view") and the [**data pipeline**](#data-pipeline) (the "data view"). Think of them as two separate views of one model. The editing pipeline renders and handles the DOM that users see and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()`, or paste content into the editor
-* The views are rendered to the DOM by the {@link module:engine/view/renderer~ViewRenderer}, which handles all the quirks required to tame `contentEditable` used in the editing pipeline
+* The view is another custom structure.
+* It resembles the DOM. While the model's tree structure only slightly resembled the DOM (for example, by introducing text attributes), the view is much closer. In other words, it is a **virtual DOM.**
+* There are two "pipelines": the [**editing pipeline**](#editing-pipeline) (also called the "editing view") and the [**data pipeline**](#data-pipeline) (the "data view"). Think of them as two separate views of one model. The editing pipeline renders and handles the DOM that users see and can edit. The data pipeline is used when you call the `editor.getData()`, `editor.setData()`, or paste content into the editor.
+* The views are rendered to the DOM by the {@link module:engine/view/renderer~ViewRenderer}, which handles all the quirks required to tame `contentEditable` used in the editing pipeline.
 
 The two views are visible in the API:
 
@@ -231,7 +231,7 @@ editor.data;                    // The data pipeline (DataController)
 ```
 
 <info-box important>
-	The data pipeline does not have a document and a view controller. It operates on detached view structures created for processing data.
+	The data pipeline does not have a document or a view controller. It operates on detached view structures created for processing data.
 
 	The data pipeline is much simpler than the editing pipeline. In the following sections, we'll discuss the editing view.
 
@@ -240,22 +240,22 @@ editor.data;                    // The data pipeline (DataController)
 
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free," so to provide additional information and to better express the semantics of the content, the view structure implements six element types ({@link module:engine/view/containerelement~ViewContainerElement}, {@link module:engine/view/attributeelement~ViewAttributeElement}, {@link module:engine/view/emptyelement~ViewEmptyElement}, {@link module:engine/view/rawelement~ViewRawElement}, {@link module:engine/view/uielement~ViewUIElement}, and {@link module:engine/view/editableelement~ViewEditableElement}) and so-called {@link module:engine/view/element~ViewElement#getCustomProperty "custom properties"} (that is custom element properties which are not rendered). This additional information provided by the editor features is then used by the {@link module:engine/view/renderer~ViewRenderer} and [converters](#conversion).
+The structure of the view closely resembles that of the DOM. While the semantics of HTML are defined by its specification, the view structure is "DTD-free." To provide additional context and better express content semantics, the view defines six element types ({@link module:engine/view/containerelement~ViewContainerElement}, {@link module:engine/view/attributeelement~ViewAttributeElement}, {@link module:engine/view/emptyelement~ViewEmptyElement}, {@link module:engine/view/rawelement~ViewRawElement}, {@link module:engine/view/uielement~ViewUIElement}, and {@link module:engine/view/editableelement~ViewEditableElement}) as well as {@link module:engine/view/element~ViewElement#getCustomProperty "custom properties"} (custom, non-rendered properties on elements). Editor features provide this additional information, and the {@link module:engine/view/renderer~ViewRenderer} and [converters](#conversion) then use it.
 
 The element types are:
 
 * **Container element** &ndash; Elements that build the content structure. Used for block elements like `<p>`, `<h1>`, `<blockQuote>`, `<li>`, etc.
 * **Attribute element** &ndash; Elements that cannot hold container elements inside them. Most model text attributes convert to view attribute elements. Used mostly for inline styling elements like `<strong>`, `<i>`, `<a>`, `<code>`. The view writer flattens similar attribute elements. For example, `<a href="..."><a class="bar">x</a></a>` automatically optimizes to `<a href="..." class="bar">x</a>`.
 * **Empty element** &ndash; Elements that must not have child nodes, like `<img>`.
-* **UI element** &ndash; Elements that are not part of the "data" but need to be "inlined" in the content. The selection ignores them (jumps over them) as does the view writer in general. The contents and events from these elements are also filtered out.
-* **Raw element** &ndash; Elements that work as data containers ("wrappers," "sandboxes") but their children are transparent to the editor. Useful when non-standard data must be rendered but the editor should not be concerned with what it is or how it works. Users cannot put the selection inside a raw element, split it into smaller chunks, or directly modify its content.
+* **UI element** &ndash; Elements that are not part of the "data" but need to be "inlined" in the content. The selection ignores them (jumps over them), as does the view writer in general. The contents and events from these elements are also filtered out.
+* **Raw element** &ndash; Elements that work as data containers ("wrappers," "sandboxes"), but their children are transparent to the editor. Useful to render non-standard data, but the editor should not be concerned with what it is or how it works. Users cannot place the selection inside a raw element, split it into smaller chunks, or modify its content directly.
 * **Editable element** &ndash; Elements used as "nested editable elements" of non-editable content fragments. For example, a caption in an image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
 Additionally, you can define {@link module:engine/view/element~ViewElement#getCustomProperty custom properties} to store information like:
 
-* Whether an element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`})
-* How an element should be marked when a [marker](#markers) highlights it
-* Whether an element belongs to a certain feature &ndash; if it is a link, progress bar, caption, etc.
+* Whether an element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`}).
+* How an element should be marked when a [marker](#markers) highlights it.
+* Whether an element belongs to a particular feature &ndash; if it is a link, progress bar, caption, etc.
 
 #### Non-semantic views
 
@@ -267,9 +267,9 @@ We'll explain [conversion](#conversion) later in this guide. For now, just know 
 
 ### Changing the view
 
-Do not change the view manually unless you really know what you are doing. If the view needs to change, in most cases the model should change first. Then, the changes you apply to the model are converted to the view by specific converters ([conversion](#conversion) is covered below).
+Do not change the view manually unless you know exactly what you are doing. If the view needs to change, in most cases the model should change first. Then, the changes you apply to the model are converted to the view by specific converters (see [conversion](#conversion) for more details).
 
-You may need to change the view manually if the cause of the change is not represented in the model. For example, the model does not store information about focus, which is a {@link module:engine/view/document~ViewDocument#isFocused property of the view}. When focus changes, and you want to represent that in an element is a class, you need to change that class manually.
+Sometimes you have to change the view manually if the model does not reflect the cause of the change. For example, the model does not store information about focus, which is a {@link module:engine/view/document~ViewDocument#isFocused property of the view}. When the focus changes, and you want to represent that in an element's class, you need to change that class manually.
 
 For that, like in the model, use the `change()` block (of the view) where you will have access to the view downcast writer.
 
@@ -282,18 +282,18 @@ editor.editing.view.change(writer => {
 <info-box important>
 	There are two view writers:
 
-	* {@link module:engine/view/downcastwriter~ViewDowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
-	* {@link module:engine/view/upcastwriter~ViewUpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (for example, pasted content) which usually happens before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
+	* {@link module:engine/view/downcastwriter~ViewDowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view," so a view structure that differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
+	* {@link module:engine/view/upcastwriter~ViewUpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (for example, pasted content), which usually happens before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
 </info-box>
 
 ### Positions
 
-Like [in the model](#positions-ranges-and-selections), there are 3 levels of classes in the view that describe points in the view structure: **positions**, **ranges**, and **selections**. A position is a single point in the document. A range consists of two positions (start and end). A selection consists of one or more ranges and has a direction (left to right or right to left).
+Like [in the model](#positions-ranges-and-selections), there are 3 levels of classes in the view that describe points in the view structure: **positions**, **ranges**, and **selections**. A position is a single point in the document. A range consists of two positions (start and end). A selection consists of one or more ranges and has a direction (left-to-right or right-to-left).
 
 A view range is similar to its [DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html). View positions are represented by a parent and an offset in that parent. This means, unlike model offsets, view offsets describe:
 
-* Points between child nodes of the position's parent if it is an element
-* Or points between characters of a text node if the position's parent is a text node
+* Points between child nodes of the position's parent if it is an element.
+* Or points between characters of a text node if the position's parent is a text node.
 
 Therefore, view offsets work more like model indexes than model offsets.
 
@@ -314,7 +314,7 @@ As you can see, two of these positions represent what you might consider the sam
 Some browsers (Safari, Chrome, and Opera) consider them identical when used in a selection and often normalize the first position (anchored in an element) to a position anchored in a text node (the second position). Do not be surprised if the view selection is not directly where you expect it to be. The good news is that the CKEditor&nbsp;5 renderer can tell that two positions are identical and avoids unnecessarily re-rendering the DOM selection.
 
 <info-box>
-	Sometimes in the documentation you will find positions marked in HTML with `{}` and `[]` characters. The difference is that `{}` indicates positions anchored in text nodes and `[]` indicates positions in elements. For instance:
+	Sometimes in the documentation, you will find positions marked in HTML with `{}` and `[]` characters. The difference is that `{}` indicates positions anchored in text nodes and `[]` indicates positions in elements. For instance:
 
 	```html
 	<p>{Foo]<b>Bar</b></p>
@@ -327,9 +327,9 @@ The inconvenient representation of DOM positions is yet another reason to think 
 
 ### Observers
 
-To create a safer and more useful abstraction over native DOM events, the view implements the concept of {@link module:engine/view/observer/observer~Observer observers}. This improves the editor's testability and simplifies listeners added by editor features by transforming native events into a more useful form.
+To create a safer and more useful abstraction over native DOM events, the view implements the concept of {@link module:engine/view/observer/observer~Observer observers}. It improves the editor's testability and simplifies listeners added by editor features by transforming native events into a more useful form.
 
-An observer listens to one or more DOM events, does preliminary processing, and then fires a custom event on the {@link module:engine/view/document~ViewDocument view document}. An observer creates an abstraction not only on the event itself, but also on its data. Ideally, an event is consumer should not have any access to the native DOM.
+An observer listens to one or more DOM events, does preliminary processing, and then fires a custom event on the {@link module:engine/view/document~ViewDocument view document}. An observer creates an abstraction not only of the event itself, but also of its data. Ideally, an event's consumer should not have any access to the native DOM.
 
 By default, the view adds these observers:
 
@@ -347,7 +347,7 @@ Additionally, some features add their own observers. For instance, the {@link mo
 	For a complete list of events fired by observers, check the {@link module:engine/view/document~ViewDocument}'s list of events.
 </info-box>
 
-You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~EditingView#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: [https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer](https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer).
+You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~EditingView#addObserver `view.addObserver()`} method. Check the [code of existing observers](https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer) to learn how to write them.
 
 <info-box important>
 	Since all events are by default fired on {@link module:engine/view/document~ViewDocument}, we recommend that third-party packages prefix their events with a project identifier to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
