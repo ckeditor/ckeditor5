@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-link",
-  "version": "47.3.0",
+  "version": "47.4.0",
   "description": "Link feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-enter": "workspace:*",

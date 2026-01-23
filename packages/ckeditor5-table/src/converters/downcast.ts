@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -20,11 +20,11 @@ import type {
 	DowncastConversionApi
 } from 'ckeditor5/src/engine.js';
 
-import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
+import { TableWalker } from '../tablewalker.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -107,10 +107,24 @@ export function downcastRow(): DowncastElementCreatorFunction {
  *
  * @internal
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @param options.cellTypeEnabled If returns `true`, the downcast conversion will use the `tableCellType` attribute to determine cell type.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
+export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled: () => boolean } ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
+		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
+		if ( options.cellTypeEnabled?.() ) {
+			const cellElementName: 'td' | 'th' = (
+				tableCell.getAttribute( 'tableCellType' ) === 'header' ?
+					'th' :
+					'td'
+			);
+
+			return createCellElement( writer, cellElementName );
+		}
+
+		// If the table cell type feature is not enabled, we should iterate through the table structure
+		// to determine whether the cell is in the heading section.
 		const tableRow = tableCell.parent as ModelElement;
 		const table = tableRow.parent as ModelElement;
 		const rowIndex = table.getChildIndex( tableRow )!;
@@ -125,17 +139,22 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastEl
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
 				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
-				const cellElementName = isHeading ? 'th' : 'td';
 
-				result = options.asWidget ?
-					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :
-					writer.createContainerElement( cellElementName );
+				result = createCellElement( writer, isHeading ? 'th' : 'td' );
 				break;
 			}
 		}
 
 		return result;
 	};
+
+	function createCellElement( writer: ViewDowncastWriter, name: string ) {
+		return (
+			options.asWidget ?
+				toWidgetEditable( writer.createEditableElement( name ), writer, { withAriaRole: false } ) :
+				writer.createContainerElement( name )
+		);
+	}
 }
 
 /**
@@ -266,7 +285,7 @@ export function convertPlainTableCaption( editor: Editor ): DowncastElementCreat
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.
- * @param defaultTableProperties Normalized default table properties.
+ * @param editor The editor instance.
  * @returns Created element.
  */
 export function downcastPlainTable(
@@ -309,7 +328,7 @@ export function downcastPlainTable(
 
 	const tableAttributes: ViewElementAttributes = { class: 'table' };
 
-	if ( editor.plugins.has( 'TableProperties' ) && conversionApi.options.isClipboardPipeline ) {
+	if ( editor.plugins.has( 'TablePropertiesEditing' ) && conversionApi.options.isClipboardPipeline ) {
 		const defaultTableProperties = getNormalizedDefaultTableProperties(
 			editor.config.get( 'table.tableProperties.defaultProperties' )!,
 			{
