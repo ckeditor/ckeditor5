@@ -30,11 +30,11 @@ Let's explore each layer separately.
 
 ## Model
 
-The model uses a DOM-like tree structure made of {@link module:engine/model/element~ModelElement elements} and {@link module:engine/model/text~ModelText text nodes}. Unlike the actual DOM, both elements and text nodes in the model can have attributes.
+The model is a DOM-like tree structure consisting of {@link module:engine/model/element~ModelElement elements} and {@link module:engine/model/text~ModelText text nodes}. Unlike the actual DOM, both elements and text nodes in the model can have attributes.
 
 Like the DOM, the model structure lives inside a {@link module:engine/model/document~ModelDocument document} that contains {@link module:engine/model/document~ModelDocument#roots root elements}. The model and view can both have multiple roots. The document also holds the {@link module:engine/model/documentselection~ModelDocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}.
 
-The document, its {@link module:engine/model/schema~ModelSchema schema} and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model} class. You can access an instance of the `Model` class through {@link module:core/editor/editor~Editor#model `editor.model`}. Besides holding these properties, the model provides the API for changing the document and its markers.
+The document, its {@link module:engine/model/schema~ModelSchema schema}, and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model} class. You can access an instance of the `Model` class through {@link module:core/editor/editor~Editor#model `editor.model`}. Besides holding these properties, the model provides the API for changing the document and its markers.
 
 ```js
 editor.model;                       // -> The data model
@@ -46,7 +46,7 @@ editor.model.schema;                // -> The model's schema
 
 ### Changing the model
 
-You can only change the document structure, selection, and create elements using the {@link module:engine/model/writer~ModelWriter model writer} Access the writer instance in the {@link module:engine/model/writer~ModelWriter model writer} blocks.
+You can only change the document structure, selection, and create elements using the {@link module:engine/model/writer~ModelWriter model writer}. Access the writer instance in the {@link module:engine/model/writer~ModelWriter model writer} blocks.
 
 ```js
 // Inserts text "foo" at the selection position
@@ -79,7 +79,7 @@ editor.model.change(writer => {
 <info-box important>
 	All document structure changes happen through {@link module:engine/model/operation/operation~Operation operations}. This concept comes from Operational Transformation (OT), a technology that enables collaboration. This approach requires the system to transform every operation by every other operation to determine the result of concurrently applied operations.
 	
-	However, OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model and not the flat, array-like models typical in OT. Due to this, the set of potential semantic changes is more complex. Operations are hence grouped in {@link module:engine/model/batch~Batch batches}, which you can think of as single undo steps.
+	However, OT requires a small set of operations and CKEditor&nbsp;5 uses a non-linear tree model—rather than the flat, array-like models typical in OT. As a result, the set of potential semantic changes is more complex. In CKEditor&nbsp;5, you organize operations into {@link module:engine/model/batch~Batch batches}, which act as single undo steps.
 </info-box>
 
 ### Text attributes
@@ -115,11 +115,11 @@ This representation of inline text styling significantly reduces the complexity 
 </p>
 ```
 
-if you have a selection before the letter "b" (`"Foo ^bar"`), is this position inside or outside `<strong>`? With [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you could get both positions &ndash; one anchored in `<p>` and another in `<strong>`. In CKEditor&nbsp;5, this position translates exactly to `"Foo ^bar"`.
+If you have a selection before the letter "b" (`"Foo ^bar"`), is this position inside or outside `<strong>`? With [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you could get both positions &ndash; one anchored in `<p>` and another in `<strong>`. In CKEditor&nbsp;5, this position translates exactly to `"Foo ^bar"`.
 
 ### Selection attributes
 
-How does CKEditor&nbsp;5 know that the selection should "be bold" in the case described above? This matters because it determines whether typed text will be bold.
+How does CKEditor&nbsp;5 know that the selection should "be bold" in the case described above? It matters because it determines whether typed text will be bold.
 
 The selection also {@link module:engine/model/selection~ModelSelection#setAttribute has attributes}. If the selection is at `"Foo ^bar"` with the attribute `bold=true`, you know the user will type bold text.
 
@@ -127,7 +127,7 @@ The selection also {@link module:engine/model/selection~ModelSelection#setAttrib
 
 In the previous example, inside `<paragraph>` there are two text nodes: `"Foo "` and `"bar"`. If you know how [native DOM Ranges](https://developer.mozilla.org/en-US/docs/Web/API/Range) work, you might ask: "If the selection is at the boundary of two text nodes, is it anchored in the left one, the right one, or in the containing element?"
 
-This is another problem with DOM APIs. Positions outside and inside some element can be visually identical, and they can be anchored inside or outside a text node (if the position is at a text node boundary). This creates complications when implementing editing algorithms.
+It is another problem with DOM APIs. Positions outside and inside some element can be visually identical, and they can be anchored inside or outside a text node (if the position is at a text node boundary). It creates complications when implementing editing algorithms.
 
 To avoid these problems and enable real collaborative editing, CKEditor&nbsp;5 uses **indexes** and **offsets**. Indexes relate to nodes (elements and text nodes) while offsets relate to positions. For example, in this structure:
 
@@ -157,20 +157,20 @@ Meanwhile, offset `x` in `<paragraph>` translates to:
 The engine defines three levels of classes that work with offsets:
 
 * A {@link module:engine/model/position~ModelPosition} instance contains an {@link module:engine/model/position~ModelPosition#path array of offsets} (which is called a "path"). See the {@link module:engine/model/position~ModelPosition#path `Position#path` API documentation} for examples of how paths work.
-* A {@link module:engine/model/range~ModelRange} contains two positions: {@link module:engine/model/range~ModelRange#start start} and {@link module:engine/model/range~ModelRange#end end} ones.
-* Finally, there is a {@link module:engine/model/selection~ModelSelection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you need and you can freely modify it whenever you want. Additionally, there is a single {@link module:engine/model/documentselection~ModelDocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~ModelWriter model writer}. It is automatically updated when the document structure changes.
+* A {@link module:engine/model/range~ModelRange} contains two positions: {@link module:engine/model/range~ModelRange#start start} and {@link module:engine/model/range~ModelRange#end end}.
+* Finally, there is the {@link module:engine/model/selection~ModelSelection} class, which represents a selection in the model. A `ModelSelection` can contain one or more ranges, selection attributes, and information about its direction (whether it was made from left to right or right to left). You can create and modify as many `ModelSelection` instances as you need. In addition, a single {@link module:engine/model/documentselection~ModelDocumentSelection} instance always represents the user's actual selection in the document. This `ModelDocumentSelection` can only be changed using the {@link module:engine/model/writer~ModelWriter model writer} and is automatically kept in sync when the document structure changes.
 
 ### Markers
 
 Markers are a special type of range with these characteristics:
 
-* Managed by {@link module:engine/model/markercollection~MarkerCollection}
-* Can only be created and changed through the {@link module:engine/model/writer~ModelWriter model writer}
-* Can be synchronized over the network with collaborating clients
-* Automatically update when the document structure changes
-* Can be converted to the editing view to display in the editor (as {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight highlights} or {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement elements})
-* Can be converted {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view} to store with the document data
-* Can be {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker loaded with the document data}
+* Managed by {@link module:engine/model/markercollection~MarkerCollection}.
+* Can only be created and changed through the {@link module:engine/model/writer~ModelWriter model writer}.
+* Can be synchronized over the network with collaborating clients.
+* Automatically update when the document structure changes.
+* Can be converted to the editing view to display in the editor (as {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight highlights} or {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement elements}).
+* Can be converted {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view} to store with the document data.
+* Can be {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker loaded with the document data}.
 
 Markers are perfect for storing and maintaining additional data related to document portions, such as comments or other users' selections.
 
@@ -178,29 +178,31 @@ Markers are perfect for storing and maintaining additional data related to docum
 
 The {@link module:engine/model/schema~ModelSchema model's schema} defines several aspects of the model structure:
 
-* **Where nodes are allowed or disallowed.** For example, `paragraph` is allowed in `$root`, but not in `heading1`.
-* **What attributes are allowed for a node.** For example, `image` can have `src` and `alt` attributes.
-* **Additional semantics of model nodes.** For example, `image` is of the "object" type and `paragraph` is of the "block" type.
+* **Where nodes are allowed or disallowed,** for example, a `paragraph` is allowed in `$root`, but not in `heading1`.
+* **What attributes are allowed for a node,** for example, an `image` can have `src` and `alt` attributes.
+* **Additional semantics of model nodes,** for example, an `image` is of the "object" type and a `paragraph` is of the "block" type.
 
-The schema can also define specifically disallowed children and attributes. This is useful when nodes inherit properties from other nodes but need to exclude certain things:
+The schema can also define specifically disallowed children and attributes. It is useful when nodes inherit properties from other nodes but need to exclude certain things:
 
-* **Disallowed nodes in certain places.** For example, a custom `specialParagraph` element inherits all properties from `paragraph` but disallows `imageInline`.
-* **Disallowed attributes on a node.** For example, a custom `specialPurposeHeading` element inherits attributes from `heading2` but does not allow the `alignment` attribute.
+* **Disallowed nodes in certain places,** for example, a custom `specialParagraph` element inherits all properties from `paragraph` but disallows `imageInline`.
+* **Disallowed attributes on a node,** for example, a custom `specialPurposeHeading` element inherits attributes from `heading2` but does not allow the `alignment` attribute.
 
 Features and the engine use this information to make processing decisions. The schema affects:
 
-* What happens with pasted content and what gets filtered out (note: for pasting, conversion is also important. HTML elements and attributes not converted by registered converters are filtered out before becoming model nodes, so the schema does not apply to them)
-* Which elements the heading feature can be applied to (which blocks can become headings and which elements are blocks)
-* Which elements can be wrapped with a block quote
-* Whether the bold button is enabled when the selection is in a heading (and whether text in the heading can be made bold)
-* Where the selection can be placed (only in text nodes and on object elements)
-* And more
+* What happens with pasted content and what gets filtered out (note: for pasting, conversion is also important. HTML elements and attributes not converted by registered converters are filtered out before becoming model nodes, so the schema does not apply to them).
+* Which elements the heading feature can be applied to (which blocks can become headings and which elements are blocks).
+* Which elements can be wrapped with a block quote.
+* Whether the bold button is enabled when the selection is in a heading (and whether text in the heading can be made bold).
+* Where the selection can be placed (only in text nodes and on object elements).
+* And more.
 
-By default, editor plugins configure the schema. We recommend that every editor feature comes with rules that enable and pre-configure it. This ensures plugin users can enable features without worrying about reconfiguring their schema.
+By default, editor plugins configure the schema. We recommend that every editor feature come with rules that enable and pre-configure it. It ensures plugin users can enable features without worrying about reconfiguring their schema.
 
-**Current limitation:** There is no straightforward way to override the schema pre-configured by features. If you want to override default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance. However, this requires rebuilding the editor.
+<info-box important>
+	There is no straightforward way to override the schema pre-configured by features. If you want to override default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance. However, this requires rebuilding the editor.
+</info-box>
 
-Access the schema instance at {@link module:engine/model/model~Model#schema `editor.model.schema`} For an extensive guide on using the schema API, see the Schema deep dive guide.
+Access the schema instance at {@link module:engine/model/model~Model#schema `editor.model.schema`}. For an in-depth guide on using the schema API, see the {@link framework/deep-dive/schema Schema Deep Dive guide}.
 
 ## View
 
