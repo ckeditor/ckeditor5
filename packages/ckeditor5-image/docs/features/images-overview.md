@@ -58,7 +58,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the `#image-toolbar` section of the `Update to 29.x` guide in the {@link updating/guides/updating-from-older-versions updating from older versions guide}, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.
+Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the `#image-toolbar` section of the `Update to 29.x` guide in the {@link updating/updating-from-older-versions updating from older versions guide}, as important changes were introduced in that version. You can also check the {@link getting-started/setup/toolbar editor toolbar} guide.
 
 See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
 

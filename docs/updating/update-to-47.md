@@ -377,7 +377,7 @@ If you need long-term stability, [contact sales](https://ckeditor.com/contact-sa
 
 ### Updated content navigation with <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
 
-Starting with version **v41.3.0**, we have disabled the default browser <kbd>tab</kbd> behavior for cycling nested editable elements inside the editor. Read more about it in the `#updated-keyboard-navigation` section of `Update to 41.x` in {@link updating/guides/updating-from-older-versions updating from older versions guide}. We decided back then that the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) keystroke should navigate to the next focusable field or element outside the editor so the users can quickly navigate fields or links on the page.
+Starting with version **v41.3.0**, we have disabled the default browser <kbd>tab</kbd> behavior for cycling nested editable elements inside the editor. Read more about it in the `#updated-keyboard-navigation` section of `Update to 41.x` in {@link updating/updating-from-older-versions updating from older versions guide}. We decided back then that the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) keystroke should navigate to the next focusable field or element outside the editor so the users can quickly navigate fields or links on the page.
 
 There was one exception to this <kbd>Tab</kbd> behavior, however. When a user selected a widget, the <kbd>Tab</kbd> key would move the selection to the first nested editable, such as the caption of an image. Pressing the <kbd>Esc</kbd> key while inside a nested editable will move the selection to the closest ancestor widget, for example, moving from an image caption to selecting the whole image widget.
 
