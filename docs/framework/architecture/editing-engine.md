@@ -50,30 +50,30 @@ You can only change the document structure, selection, and create elements using
 
 ```js
 // Inserts text "foo" at the selection position
-editor.model.change(writer => {
-	writer.insertText('foo', editor.model.document.selection.getFirstPosition());
-});
+editor.model.change( writer => {
+	writer.insertText( 'foo', editor.model.document.selection.getFirstPosition() );
+} );
 
 // Apply bold to the entire selection
-editor.model.change(writer => {
-	for (const range of editor.model.document.selection.getRanges()) {
-		writer.setAttribute('bold', true, range);
+editor.model.change( writer => {
+	for ( const range of editor.model.document.selection.getRanges() ) {
+		writer.setAttribute( 'bold', true, range );
 	}
-});
+} );
 ```
 
 All changes within a single `change()` block combine into one undo step (added to a single {@link module:engine/model/batch~Batch batch}). When you nest `change()` blocks, all changes go to the outermost block's batch. For example, this code creates a single undo step:
 
 ```js
-editor.model.change(writer => {
-	writer.insertText('foo', paragraph, 'end'); // foo
+editor.model.change( writer => {
+	writer.insertText( 'foo', paragraph, 'end' ); // foo
 
-	editor.model.change(writer => {
-		writer.insertText('bar', paragraph, 'end'); // foobar
-	});
+	editor.model.change( writer => {
+		writer.insertText( 'bar', paragraph, 'end' ); // foobar
+	} );
 
-	writer.insertText('bom', paragraph, 'end'); // foobarbom
-});
+	writer.insertText( 'bom', paragraph, 'end' ); // foobarbom
+} );
 ```
 
 <info-box important>
