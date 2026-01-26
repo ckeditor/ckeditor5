@@ -27,6 +27,7 @@ import { TableWalker } from '../tablewalker.js';
  */
 export function tableStructureRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
+	const movedRows = new Set<ModelElement>();
 	const rowsToReconvert = new Set<ModelElement>();
 	const cellsToReconvert = new Set<ModelElement>();
 
@@ -59,14 +60,13 @@ export function tableStructureRefreshHandler( model: Model, editing: EditingCont
 		}
 
 		// Mark row to be reconverted when it was moved around so that `<th>` and `<td>` elements can be updated.
-		// TODO This should be handled in the engine. A moved row was reused in the view
-		//  and differ does not allow refresh of cells in inserted row.
+		// See https://github.com/ckeditor/ckeditor5/issues/19671.
 		if (
 			change.type == 'insert' &&
 			change.name == 'tableRow' &&
 			editing.mapper.toViewElement( change.position.nodeAfter as ModelElement )
 		) {
-			rowsToReconvert.add( change.position.nodeAfter as ModelElement );
+			movedRows.add( change.position.nodeAfter as ModelElement );
 		}
 
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
@@ -86,6 +86,12 @@ export function tableStructureRefreshHandler( model: Model, editing: EditingCont
 
 			if ( viewElement.name != expectedElementName ) {
 				cellsToReconvert.add( tableSlot.cell );
+
+				// Reconvert rows that were just inserted (moved) as marking cells inside for reconversion does not work.
+				// See https://github.com/ckeditor/ckeditor5/issues/19671.
+				if ( movedRows.has( tableSlot.cell.parent as ModelElement ) ) {
+					rowsToReconvert.add( tableSlot.cell.parent as ModelElement );
+				}
 			}
 		}
 	}
