@@ -11,7 +11,7 @@ order: 10
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 
 <info-box warning>
-	Since version 41.0.0, the list support plugin has changed for CKEditor&nbsp;5. You can read more about this change in the [Update to CKEditor 41.0.0](https://ckeditor.com/docs/ckeditor5/42.0.0/updating/guides/update-to-41.html#breaking-changes-to-the-list-plugin) guide.
+	Since version 41.0.0, the list support plugin has changed for CKEditor&nbsp;5. You can read more about this change in the `#breaking-changes-to-the-list-plugin` section of `Update to 41.x` in {@link updating/guides/updating-from-older-versions.html updating from older versions guide}.
 </info-box>
 
 ## Demo
