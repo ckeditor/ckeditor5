@@ -361,7 +361,7 @@ export class PluginCollection<TContext extends object>
 				 *
 				 * Soft requirements were introduced in version 26.0.0. If you happen to stumble upon this error
 				 * when upgrading to version 26.0.0, read also the `Update to v26.x` guide in the
-				 * {@link updating/guides/updating-from-older-versions updating from older versions guide}.
+				 * {@link updating/updating-from-older-versions updating from older versions guide}.
 				 *
 				 * @error plugincollection-soft-required
 				 * @param {string} missingPlugin The name of the required plugin.
