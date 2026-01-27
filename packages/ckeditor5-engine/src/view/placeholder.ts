@@ -344,8 +344,8 @@ function showViewPlaceholderTextDeprecationWarning() {
 		 * The "text" option in the {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`}
 		 * function is deprecated and will be removed soon.
 		 *
-		 * See the `#view-element-placeholder` section in the `Update to v39.x` guide in the
-		 * {@link updating/updating-from-older-versions updating from older versions}  guide
+		 * See the `#view-element-placeholder` section in the `Update to v39.x` section in the
+		 * {@glink updating/guides/updating-from-older-versions updating from older versions} guide
 		 * for more information on how to apply this change.
 		 *
 		 * @error enableViewPlaceholder-deprecated-text-option
