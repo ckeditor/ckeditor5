@@ -32,7 +32,7 @@ export { TableClipboard } from './tableclipboard.js';
 export { TableMouse } from './tablemouse.js';
 export { TableKeyboard } from './tablekeyboard.js';
 export { TableSelection } from './tableselection.js';
-export { TableUtils, type TableIndexesObject } from './tableutils.js';
+export { TableUtils, type TableIndexesObject, type UpdateTableHeadingsOptions } from './tableutils.js';
 export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
@@ -50,6 +50,7 @@ export { SelectColumnCommand } from './commands/selectcolumncommand.js';
 export { SelectRowCommand } from './commands/selectrowcommand.js';
 export { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
 export { SetHeaderRowCommand } from './commands/setheaderrowcommand.js';
+export { SetFooterRowCommand } from './commands/setfooterrowcommand.js';
 export { SplitCellCommand } from './commands/splitcellcommand.js';
 export { ToggleTableCaptionCommand } from './tablecaption/toggletablecaptioncommand.js';
 export { TableCellBackgroundColorCommand } from './tablecellproperties/commands/tablecellbackgroundcolorcommand.js';
@@ -104,7 +105,7 @@ export type { DowncastTableOptions as _DowncastTableOptions } from './converters
 export { injectTableCaptionPostFixer as _injectTableCaptionPostFixer } from './converters/table-caption-post-fixer.js';
 export { injectTableCellParagraphPostFixer as _injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
 export { tableCellRefreshHandler as _tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
-export { tableHeadingsRefreshHandler as _tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
+export { tableStructureRefreshHandler as _tableStructureRefreshHandler } from './converters/table-structure-refresh-handler.js';
 export { injectTableLayoutPostFixer as _injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
 export {
 	upcastStyleToAttribute as _upcastNormalizedTableStyleToAttribute,

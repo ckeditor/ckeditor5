@@ -360,8 +360,8 @@ export class PluginCollection<TContext extends object>
 				 * current list of plugins (`Editor.builtinPlugins` or `config.plugins`/`config.extraPlugins`).
 				 *
 				 * Soft requirements were introduced in version 26.0.0. If you happen to stumble upon this error
-				 * when upgrading to version 26.0.0, read also the
-				 * {@glink updating/guides/update-to-26 Migration to 26.0.0} guide.
+				 * when upgrading to version 26.0.0, read also the `Update to v26.x` section in the
+				 * {@glink updating/guides/updating-from-older-versions updating from older versions} guide.
 				 *
 				 * @error plugincollection-soft-required
 				 * @param {string} missingPlugin The name of the required plugin.

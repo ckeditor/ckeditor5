@@ -933,9 +933,16 @@ export class TableColumnResizeEditing extends Plugin {
 		const leftColumnIndex = getColumnEdgesIndexes( modelLeftCell, this._tableUtilsPlugin ).rightEdge;
 		const lastColumnIndex = this._tableUtilsPlugin.getColumns( modelTable ) - 1;
 
+		let tableAlignment = modelTable.getAttribute( 'tableAlignment' ) as string | undefined;
+
+		if ( modelTable.getAttribute( 'tableType' ) !== 'layout' ) {
+			tableAlignment ||= editor.config.get( 'table.tableProperties.defaultProperties.alignment' );
+			tableAlignment ||= 'center';
+		}
+
 		const isRightEdge = leftColumnIndex === lastColumnIndex;
-		const isTableCentered = !modelTable.hasAttribute( 'tableAlignment' );
 		const isLtrContent = editor.locale.contentLanguageDirection !== 'rtl';
+		const isTableCentered = tableAlignment === 'center';
 
 		const viewTable = viewLeftCell.findAncestor( 'table' )!;
 		const viewFigure = viewTable.findAncestor( 'figure' ) as ViewElement;

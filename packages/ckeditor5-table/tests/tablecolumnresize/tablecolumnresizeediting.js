@@ -1577,6 +1577,37 @@ describe( 'TableColumnResizeEditing', () => {
 				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
 			} );
 
+			it( 'correctly resizes a table with only footer rows', () => {
+				// Test-specific.
+				const columnToResizeIndex = 0;
+				const mouseMovementVector = { x: 10, y: 0 };
+
+				_setModelData( model, modelTable( [ [ '0', '1' ] ], { footerRows: '1', columnWidths: '50%,50%' } ) );
+
+				// Test-agnostic.
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector );
+
+				const finalModelColumnWidthsPc = getModelColumnWidthsPc( getModelTable( model ) );
+
+				assertModelWidthsSum( finalModelColumnWidthsPc );
+
+				const finalViewColumnWidthsPc = getViewColumnWidthsPc( getViewTable( view ) );
+
+				assertModelViewSync( finalModelColumnWidthsPc, finalViewColumnWidthsPc );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+				const expectedViewColumnWidthsPx = calculateExpectedWidthPixels(
+					initialViewColumnWidthsPx,
+					mouseMovementVector,
+					contentDirection,
+					columnToResizeIndex
+				);
+
+				assertViewPixelWidths( finalViewColumnWidthsPx, expectedViewColumnWidthsPx );
+			} );
+
 			it( 'does not remove column when it was shrinked to negative width', () => {
 				// Test-specific.
 				_setModelData( model, modelTable( [
@@ -1796,6 +1827,160 @@ describe( 'TableColumnResizeEditing', () => {
 
 					expect( Math.abs( widthDifference - mouseMovementVector.x ) < PIXEL_PRECISION ).to.be.true;
 				} );
+			} );
+
+			it( 'should not treat layout table as centered table (if not centered)', () => {
+				const columnToResizeIndex = 1;
+
+				// 10px mouse movement.
+				const mouseMovementVector = { x: 10, y: 0 };
+
+				_setModelData( model,
+					'<table tableWidth="500px" tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>'
+				);
+
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				const widthChange = finalViewColumnWidthsPx[ 1 ] - initialViewColumnWidthsPx[ 1 ];
+
+				expect( Math.abs( widthChange - mouseMovementVector.x ) ).to.approximately( 0, 1 );
+			} );
+
+			it( 'should treat layout table as centered table (if centered)', () => {
+				const columnToResizeIndex = 1;
+
+				// 10px mouse movement.
+				const mouseMovementVector = { x: 10, y: 0 };
+
+				_setModelData( model,
+					'<table tableWidth="500px" tableType="layout" tableAlignment="center">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>'
+				);
+
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				// In centered layout table, the change is doubled.
+				const widthChange = finalViewColumnWidthsPx[ 1 ] - initialViewColumnWidthsPx[ 1 ];
+
+				expect( Math.ceil( widthChange - mouseMovementVector.x * 2 ) ).to.approximately( 0, 1 );
+			} );
+
+			it( 'should not treat table with `align=right` default as centered', async () => {
+				await editor.destroy();
+				editor = await createEditor( {
+					table: {
+						tableProperties: {
+							defaultProperties: {
+								alignment: 'right'
+							}
+						}
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
+				contentDirection = editor.locale.contentLanguageDirection;
+				resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				const columnToResizeIndex = 1;
+
+				// 10px mouse movement.
+				const mouseMovementVector = { x: 10, y: 0 };
+
+				_setModelData( model,
+					'<table tableWidth="500px">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>'
+				);
+
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				const widthChange = finalViewColumnWidthsPx[ 1 ] - initialViewColumnWidthsPx[ 1 ];
+
+				expect( Math.abs( widthChange - mouseMovementVector.x ) ).to.approximately( 0, 1 );
+			} );
+
+			it( 'should treat table with default `align=center` as centered', async () => {
+				await editor.destroy();
+				editor = await createEditor( {
+					table: {
+						tableProperties: {
+							defaultProperties: {
+								alignment: 'center'
+							}
+						}
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
+				contentDirection = editor.locale.contentLanguageDirection;
+				resizePlugin = editor.plugins.get( 'TableColumnResizeEditing' );
+
+				const columnToResizeIndex = 1;
+
+				// 10px mouse movement.
+				const mouseMovementVector = { x: 10, y: 0 };
+
+				_setModelData( model,
+					'<table tableWidth="500px">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>'
+				);
+
+				const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				tableColumnResizeMouseSimulator.resize( editor, getDomTable( view ), columnToResizeIndex, mouseMovementVector, 0 );
+
+				const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+				// In centered table, the change is doubled.
+				const widthChange = finalViewColumnWidthsPx[ 1 ] - initialViewColumnWidthsPx[ 1 ];
+
+				expect( Math.ceil( widthChange - mouseMovementVector.x * 2 ) ).to.approximately( 0, 1 );
 			} );
 
 			describe( 'nested table ', () => {

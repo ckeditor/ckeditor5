@@ -26,7 +26,12 @@ describe( 'downcast converters', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing, UndoEditing ] } );
+		editor = await VirtualTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, UndoEditing ],
+			table: {
+				enableFooters: true
+			}
+		} );
 
 		model = editor.model;
 		root = model.document.getRoot( 'main' );
@@ -132,8 +137,168 @@ describe( 'downcast converters', () => {
 
 				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
 				expect( viewTableAfter ).to.not.equal( viewTableBefore );
-				expect( viewTableRow0After ).to.not.equal( viewTableRow0Before );
+				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
 				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
+				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
+			} );
+
+			it( 'should reconvert if `footerRows` attribute changes', () => {
+				_setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				] ) );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureBefore = viewRoot.getChild( 0 );
+				const viewTableBefore = viewFigureBefore.getChild( 1 );
+				const viewTableRow0Before = viewTableBefore.getChild( 0 ).getChild( 0 );
+				const viewTableRow1Before = viewTableBefore.getChild( 0 ).getChild( 1 );
+				const viewTableCell0Before = viewTableRow0Before.getChild( 0 );
+				const viewTableCell1Before = viewTableRow1Before.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'footerRows', 1, root.getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureAfter = viewRoot.getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+				const viewTableRow0After = viewTableAfter.getChild( 0 ).getChild( 0 );
+				const viewTableRow1After = viewTableAfter.getChild( 1 ).getChild( 0 );
+				const viewTableCell0After = viewTableRow0After.getChild( 0 );
+				const viewTableCell1After = viewTableRow1After.getChild( 0 );
+
+				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
+				expect( viewTableAfter ).to.not.equal( viewTableBefore );
+				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
+				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
+
+				// Only last row is updated but elements are reused.
+				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
+			} );
+
+			it( 'should reconvert if remove `footerRows` attribute', () => {
+				_setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { footerRows: 1 } ) );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+							'<tfoot>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tfoot>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureBefore = viewRoot.getChild( 0 );
+				const viewTableBefore = viewFigureBefore.getChild( 1 );
+				const viewTableRow0Before = viewTableBefore.getChild( 0 ).getChild( 0 );
+				const viewTableRow1Before = viewTableBefore.getChild( 1 ).getChild( 0 );
+				const viewTableCell0Before = viewTableRow0Before.getChild( 0 );
+				const viewTableCell1Before = viewTableRow1Before.getChild( 0 );
+
+				model.change( writer => {
+					writer.removeAttribute( 'footerRows', root.getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+									'tabindex="-1">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureAfter = viewRoot.getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+				const viewTableRow0After = viewTableAfter.getChild( 0 ).getChild( 0 );
+				const viewTableRow1After = viewTableAfter.getChild( 0 ).getChild( 1 );
+				const viewTableCell0After = viewTableRow0After.getChild( 0 );
+				const viewTableCell1After = viewTableRow1After.getChild( 0 );
+
+				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
+				expect( viewTableAfter ).to.not.equal( viewTableBefore );
+				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
+				expect( viewTableCell0After ).to.equal( viewTableCell0Before );
+
+				// Only last row is updated but elements are reused.
 				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
 				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
 			} );
@@ -615,6 +780,60 @@ describe( 'downcast converters', () => {
 						'</table>' +
 					'</figure>'
 				);
+			} );
+
+			describe( 'footerRows attribute', () => {
+				it( 'should properly downcast table with `footerRows=1`', () => {
+					_setModelData( model, modelTable( [ [ '00', '01' ] ], { footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [ [ '00', '01' ] ], { footerRows: 1 } )
+					);
+				} );
+
+				it( 'should properly downcast table with `footerRows=1` where the first `tr` is normal row', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10', '11' ]
+					], { footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						], { footerRows: 1 } )
+					);
+				} );
+
+				it( 'should properly downcast table with `headingRows` and `footerRows`', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01' ],
+						[ '10', '11' ],
+						[ '20', '21' ]
+					], { headingRows: 1, footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ],
+							[ '20', '21' ]
+						], { headingRows: 1, footerRows: 1 } )
+					);
+				} );
+
+				it( 'should properly downcast table with `headingColumns` and `footerRows`', () => {
+					_setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ]
+					], { headingColumns: 1, footerRows: 1 } ) );
+
+					expect( editor.getData() ).to.equalMarkup(
+						viewTable( [
+							[ { isHeading: true, contents: '00' }, '01', '02' ],
+							[ { isHeading: true, contents: '10' }, '11', '12' ]
+						], { footerRows: 1 } )
+					);
+				} );
 			} );
 		} );
 	} );

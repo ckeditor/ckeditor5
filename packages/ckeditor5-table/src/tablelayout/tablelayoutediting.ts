@@ -98,6 +98,9 @@ export class TableLayoutEditing extends Plugin {
 
 		// Disallow adding `headingColumns` attribute to layout table.
 		schema.addAttributeCheck( layoutTableCheck, 'headingColumns' );
+
+		// Disallow adding `footerRows` attribute to layout table.
+		schema.addAttributeCheck( layoutTableCheck, 'footerRows' );
 	}
 
 	/**
@@ -249,10 +252,7 @@ function upcastLayoutTable( editor: Editor, preferredExternalTableType: TableTyp
 			conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
 
 			// Layout tables have no border, so it's equitable to consume the border="0" attribute.
-			if (
-				editor.config.get( 'experimentalFlags.upcastTableBorderZeroAttributes' ) &&
-				viewTable.getAttribute( 'border' ) === '0'
-			) {
+			if ( viewTable.getAttribute( 'border' ) === '0' ) {
 				conversionApi.consumable.consume( viewTable, { attributes: [ 'border' ] } );
 			}
 
