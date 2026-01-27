@@ -359,10 +359,7 @@ describe( 'TableTypeCommand', () => {
 					TableLayoutEditing,
 					TableCellPropertiesEditing,
 					TableCellWidthEditing
-				],
-				experimentalFlags: {
-					tableCellTypeSupport: true
-				}
+				]
 			} );
 
 			model = editor.model;

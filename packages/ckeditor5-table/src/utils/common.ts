@@ -179,7 +179,5 @@ export function isEntireCellsLineHeader(
  * @internal
  */
 export function isTableCellTypeEnabled( editor: Editor ): boolean {
-	const { model } = editor;
-
-	return model.schema.checkAttribute( 'tableCell', 'tableCellType' );
+	return editor.model.schema.checkAttribute( 'tableCell', 'tableCellType' );
 }
