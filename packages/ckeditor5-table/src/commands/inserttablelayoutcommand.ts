@@ -17,7 +17,7 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 
 import { type TableUtils } from '../tableutils.js';
-import { type TableWidthsCommand } from '../../src/tablecolumnresize/tablewidthscommand.js';
+import { type TableWidthsCommand } from '../tablecolumnresize/tablewidthscommand.js';
 
 /**
  * The insert table layout command.

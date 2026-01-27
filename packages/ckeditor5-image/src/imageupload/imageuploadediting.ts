@@ -28,8 +28,7 @@ import { env } from '@ckeditor/ckeditor5-utils';
 
 import { ImageUtils } from '../imageutils.js';
 import { UploadImageCommand } from './uploadimagecommand.js';
-import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils.js';
-import { createImageTypeRegExp } from './utils.js';
+import { createImageTypeRegExp, fetchLocalImage, isLocalImage } from './utils.js';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
