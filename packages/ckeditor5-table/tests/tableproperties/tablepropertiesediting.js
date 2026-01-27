@@ -1278,10 +1278,32 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast width attribute from <table>', () => {
-					editor.setData( '<table width="1337"><tr><td>foo</td></tr></table>' );
+					editor.setData( '<table width="1337.3"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast width (px) attribute from <table>', () => {
+					editor.setData( '<table width="1337.3px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast width (%) attribute from <table>', () => {
+					editor.setData( '<table width="37.3%"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '37.3%' );
+				} );
+
+				it( 'should upcast width (em) attribute from <table>', () => {
+					editor.setData( '<table width="1337.3em"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					// Normalize to px as other units are not supported by browsers.
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
 				} );
 
 				it( 'should upcast width from style not <table> attribute', () => {
@@ -1477,10 +1499,32 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast height attribute from <table>', () => {
-					editor.setData( '<table height="1337"><tr><td>foo</td></tr></table>' );
+					editor.setData( '<table height="1337.3"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast height (px) attribute from <table>', () => {
+					editor.setData( '<table height="1337.3px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast height (%) attribute from <table>', () => {
+					editor.setData( '<table height="1337.3%"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3%' );
+				} );
+
+				it( 'should upcast height (em) attribute from <table>', () => {
+					editor.setData( '<table height="1337.3em"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					// Normalize to px as other units are not supported by browsers.
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
 				} );
 
 				it( 'should upcast height from style not <table> attribute', () => {

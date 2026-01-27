@@ -10,7 +10,6 @@ overrides:
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
   qs@^6.0.0: ^6.14.1
   diff@<8: ^8.0.3
-  tar: ^7.5.3
 
 importers:
 
@@ -20,38 +19,38 @@ importers:
         specifier: ^7.23.3
         version: 7.28.5
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(tslib@2.8.1)(typescript@5.5.4)
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(tslib@2.8.1)(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-ci':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2
       '@ckeditor/ckeditor5-dev-dependency-checker':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(typescript@5.5.4)
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-stale-bot':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(@swc/core@1.13.5)(esbuild@0.25.10)
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(@swc/core@1.13.5)(esbuild@0.25.10)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^55.0.0-alpha.0
-        version: 55.0.0-alpha.0(typescript@5.5.4)
+        specifier: ^55.0.0-alpha.2
+        version: 55.0.0-alpha.2(typescript@5.5.4)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.0
         version: 5.0.0
@@ -4265,62 +4264,62 @@ packages:
   '@chevrotain/utils@11.0.3':
     resolution: {integrity: sha512-YslZMgtJUyuMbZ+aKvfF3x1f5liK4mWNxghFRv7jqRR9C3R3fAOGTTKvxXDa2Y1s9zSbcpuO0cAxDYsc9SrXoQ==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@55.0.0-alpha.0':
-    resolution: {integrity: sha512-764T6v0qWsve9zygxGAdywiGTH2zqWZfKVM6ZrdjBUx7NVhePIqaK9SNVukQvAqEUKUkLdiJWYi96z9glYtUvg==}
+  '@ckeditor/ckeditor5-dev-build-tools@55.0.0-alpha.2':
+    resolution: {integrity: sha512-cbXLHHCfVREWJqlKyAiNeJSmoYRzBDsaueGf0moPBH5iqYNZvm08AfMzsBvIo3Xo/6gXy9rzvwmb4UiN8gwH0w==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@55.0.0-alpha.0':
-    resolution: {integrity: sha512-55L00ES6oxI3mHSgqnKSr2V531bEtv2IJBBacioZzi1Fu0MvPaQ9Obp62t2AvINGoxHiI9CbvxiPL99rD2essQ==}
+  '@ckeditor/ckeditor5-dev-bump-year@55.0.0-alpha.2':
+    resolution: {integrity: sha512-2wmPajs78gzQ136d4XlacMNC1/2oSfDNtg003kX5xwWQ/o3/VOUuC4Dv6Uwk2GglQ3qT6+sBpdIJ0tZ5Yeuv8w==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@55.0.0-alpha.0':
-    resolution: {integrity: sha512-lTdoCXc6EKsjllPHKdUmvtTnyNRTjy6O+Dx3C2g+HJGSKXaDn4V6XN0g9D4Zmbg4ADyBQeGA3XrCojMHET6VuQ==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-    hasBin: true
-
-  '@ckeditor/ckeditor5-dev-ci@55.0.0-alpha.0':
-    resolution: {integrity: sha512-UQdZMvizMjsKFiY3gcrp55+d4f7vOM1ygURLkjAZ/33ZA+8pe0rVUdEeXm5C9Msu+lcrv6Cp8pR14A5Zkk7/5A==}
+  '@ckeditor/ckeditor5-dev-changelog@55.0.0-alpha.2':
+    resolution: {integrity: sha512-T9SyFnFgySiEgw1sph1OYEcMzX+AhQKDK1btKbLGZHQpGvzXSj/U+Pg/bbcaUInGjiow2pVQOztwOQOGSt+8FQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@55.0.0-alpha.0':
-    resolution: {integrity: sha512-d2HCvgajmDqtFexhQxYnP2C2EMspLWlpNAKa21JNHGI9Ni01/GqqvJBnbfn1oN+q/64BBe3RZh7jUKwZenhacQ==}
+  '@ckeditor/ckeditor5-dev-ci@55.0.0-alpha.2':
+    resolution: {integrity: sha512-zIEF2gJi9josOfmIf7e4FXV6/Ex4prBrWYqRrZdJEN/zwnejwj3OYrBpkGpLuYhv7jQxMNagU0gUH5PuBPiXmQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@55.0.0-alpha.0':
-    resolution: {integrity: sha512-8kNn8TlqLI+aMu3XeDF5yH0SRQi5oyyBI8zTw7TFGNUbBw7lq2zKrVcF+kRqptSHa4FS+cyALylDPHHCz7pbVg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-license-checker@55.0.0-alpha.0':
-    resolution: {integrity: sha512-vy2sxuUwPjPzxBmx7D1RGSgwDbnLWJE+3vk9LBWAE9KZJxpN6rpO4qkJQrfQSAz8S+81KqjYDbujhLlBKsiAyA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-release-tools@55.0.0-alpha.0':
-    resolution: {integrity: sha512-jkZrpkhw/TEWjCTxpHGeG4s0M37zEr89AlYGCAXiCwqw4YLC2ixd8urTlOE2Y4dnWvw2jZkvY67WRg5sIEfsjw==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-stale-bot@55.0.0-alpha.0':
-    resolution: {integrity: sha512-SHun24VSpE8CRssyr6CYYNZlUy0d5yDKMO6U03ULXTCViEDLWfa11qluVxjLRxJh5KCQM0f+dRAm2NG8mSv38w==}
+  '@ckeditor/ckeditor5-dev-dependency-checker@55.0.0-alpha.2':
+    resolution: {integrity: sha512-OpiPsKsJv0LD0q0Ay362V7J8HhEz4LunVZMFUvgRQgtFmWbUgGGZHLY6wNdW28dUIppOhUd8E1EBnI0EsXF6Ag==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@55.0.0-alpha.0':
-    resolution: {integrity: sha512-OZZqwghSudjU/Q/Tv2ahS1uZt4PROGVDVY0nOOatORqBJRv0iQ68iQFIcIw9KRvmzbXUP+mKNfcbgK8zbMdGGQ==}
+  '@ckeditor/ckeditor5-dev-docs@55.0.0-alpha.2':
+    resolution: {integrity: sha512-ocWnzFdZgJKG6rhqOmCfr5B28AYMJ1uclQbVxig/S+6ORZjsFH1/CjeMUDZCzze7TFYnwQ7VVBtAWpYDMls3Rw==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-license-checker@55.0.0-alpha.2':
+    resolution: {integrity: sha512-63PbrJfyOC72YR0d2znApPerCfWIQnWPhbZJyxxzEjCCWMdKuxLAS0W6GmxdRM6Hb2VBhTw+cUI08TRRz0ufcw==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-release-tools@55.0.0-alpha.2':
+    resolution: {integrity: sha512-OTtNmyu0NEr2JwHa2kH94miu5L+UEew098g0wb854HM2ooXmcBubixKNLT2yLdM90Vdn/pcUW6jdb4EUjfUkLA==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-stale-bot@55.0.0-alpha.2':
+    resolution: {integrity: sha512-IanRWd8R61pez/UOkP4aiMPN5ugSjd0xWRV9K4n8cp+1QpKrSVivDOTNJOKHYLZqrZxdlgmyTSZWcyhIgII3JA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-translations@55.0.0-alpha.0':
-    resolution: {integrity: sha512-AHPv78OmMhDQlPUcX+6pNeC0Nn2EiqfHnGIK61VlMUMjWxcwDC+pdId1ZwQhNbTeHFWSalSs1e9/r9fUgcPQbg==}
+  '@ckeditor/ckeditor5-dev-tests@55.0.0-alpha.2':
+    resolution: {integrity: sha512-W+etHLYHssk30r4YpcA2P/FVyxy9HcLabnEyhW8CjJzOgw1zH1ora8nmTnvYBNt4XVRcL25iWBLk6Qdl1Niz3A==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+    hasBin: true
+
+  '@ckeditor/ckeditor5-dev-translations@55.0.0-alpha.2':
+    resolution: {integrity: sha512-Zy/dcPDBS5LQWcNu6f1fLUdzu7DR1VmTpHsIPpQSkiH2Noy5iG9wSEBv6hQUHyqpeCA26fIzR6qvTQ7nWFKjjQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@55.0.0-alpha.0':
-    resolution: {integrity: sha512-RKvqmLjIbKAVOac9JaijjakOnLFbZx+gf7VWtSOCo8pM9mJyrOSiEfwLGmow+2CHSrSEAl2bJtHZN4wyWGfT+A==}
+  '@ckeditor/ckeditor5-dev-utils@55.0.0-alpha.2':
+    resolution: {integrity: sha512-kZ+virvndNTZJCVNTUFu8+S+6+0GsBrFSeFkgiD/hCIn3MBRIVPzTm7NetuaRscYHlK8iQDPAthozAXW7By6+A==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@55.0.0-alpha.0':
-    resolution: {integrity: sha512-4orPZ/FTIsOko5RGMETzz47B06YgaapdnyAfw7YGXAWd+z/rOZAanss+TWWug4CdNe0IRcI7vlDpIIcBrwKONQ==}
+  '@ckeditor/ckeditor5-dev-web-crawler@55.0.0-alpha.2':
+    resolution: {integrity: sha512-EAswAouootLlnUC2Ffg4CV2r/C1daWzepJk7kKf0avA7GerM/bZIHy3R1q79cab9xltPcgvx2DyWY79YNkhCMQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.0':
@@ -4350,8 +4349,8 @@ packages:
     resolution: {integrity: sha512-GVSvNBDpXWJtP19T7u0jPRAY1YkdreT4ydn+1pdkXvBepWuVQc5uJh5gVzNaTYS1fXyzDxIC49RiC9cI37RwSA==}
     engines: {node: '>=18.0.0', npm: '>=5.7.1'}
 
-  '@ckeditor/typedoc-plugins@55.0.0-alpha.0':
-    resolution: {integrity: sha512-XznVplYH9JznlGFzxZF0gb4uj7aQKOysEGmAISGf+n3QPsHgsMocuVyawinEyOEqDQ4DJKQQKSwQFtSxlYYnVg==}
+  '@ckeditor/typedoc-plugins@55.0.0-alpha.2':
+    resolution: {integrity: sha512-baEW6T9WFaqLluwBplAUrWWPSOKPRLkF7hsznKlF+pVVN/V3pNL8dYtwJw2dMvZxRZ54MfWPeFPla7ZQVbuypw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.14
@@ -6383,8 +6382,8 @@ packages:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
     engines: {node: ^4.5.0 || >= 5.9}
 
-  baseline-browser-mapping@2.8.10:
-    resolution: {integrity: sha512-uLfgBi+7IBNay8ECBO2mVMGZAc1VgZWEChxm4lv+TobGdG82LnXMjuNGo/BSSZZL4UmkWhxEHP2f5ziLNwGWMA==}
+  baseline-browser-mapping@2.9.15:
+    resolution: {integrity: sha512-kX8h7K2srmDyYnXRIppo4AH/wYgzWVCs+eKr3RusRSQ5PvRYoEFmR/I0PbdTjKFAoKqp5+kbxnNTFO9jOfSVJg==}
     hasBin: true
 
   basic-auth@2.0.1:
@@ -12364,7 +12363,7 @@ snapshots:
 
   '@chevrotain/utils@11.0.3': {}
 
-  '@ckeditor/ckeditor5-dev-build-tools@55.0.0-alpha.0(tslib@2.8.1)(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-build-tools@55.0.0-alpha.2(tslib@2.8.1)(typescript@5.5.4)':
     dependencies:
       '@rollup/plugin-commonjs': 28.0.6(rollup@4.52.3)
       '@rollup/plugin-json': 6.1.0(rollup@4.52.3)
@@ -12395,13 +12394,13 @@ snapshots:
       - tslib
       - typescript
 
-  '@ckeditor/ckeditor5-dev-bump-year@55.0.0-alpha.0':
+  '@ckeditor/ckeditor5-dev-bump-year@55.0.0-alpha.2':
     dependencies:
       glob: 13.0.0
 
-  '@ckeditor/ckeditor5-dev-changelog@55.0.0-alpha.0(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-changelog@55.0.0-alpha.2(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       date-fns: 4.1.0
       glob: 13.0.0
       gray-matter: 4.0.3
@@ -12416,14 +12415,14 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-ci@55.0.0-alpha.0':
+  '@ckeditor/ckeditor5-dev-ci@55.0.0-alpha.2':
     dependencies:
       '@octokit/rest': 22.0.0
       slack-notify: 2.0.7
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-dependency-checker@55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       depcheck: 1.4.7
       glob: 13.0.0
       minimist: 1.2.8
@@ -12437,9 +12436,9 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-docs@55.0.0-alpha.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-docs@55.0.0-alpha.2(typescript@5.5.4)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 55.0.0-alpha.0(typedoc@0.28.14(typescript@5.5.4))
+      '@ckeditor/typedoc-plugins': 55.0.0-alpha.2(typedoc@0.28.14(typescript@5.5.4))
       glob: 13.0.0
       typedoc: 0.28.14(typescript@5.5.4)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.14(typescript@5.5.4))
@@ -12447,14 +12446,14 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@55.0.0-alpha.0':
+  '@ckeditor/ckeditor5-dev-license-checker@55.0.0-alpha.2':
     dependencies:
       diff: 8.0.3
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-release-tools@55.0.0-alpha.0(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-release-tools@55.0.0-alpha.2(@babel/core@7.28.4)(@types/node@24.6.2)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       '@octokit/rest': 22.0.0
       cli-columns: 4.0.0
       glob: 13.0.0
@@ -12471,9 +12470,9 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-stale-bot@55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-stale-bot@55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       date-fns: 4.1.0
       graphql: 16.11.0
       graphql-request: 7.2.0(graphql@16.11.0)
@@ -12487,11 +12486,11 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@55.0.0-alpha.0(@swc/core@1.13.5)(esbuild@0.25.10)':
+  '@ckeditor/ckeditor5-dev-tests@55.0.0-alpha.2(@swc/core@1.13.5)(esbuild@0.25.10)':
     dependencies:
       '@babel/core': 7.28.4
-      '@ckeditor/ckeditor5-dev-translations': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-translations': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-inspector': 5.0.0
       '@types/chai': 4.3.20
       '@types/karma-sinon-chai': 2.0.6
@@ -12543,11 +12542,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-translations@55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))
       glob: 13.0.0
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -12561,7 +12560,7 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@55.0.0-alpha.0(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-utils@55.0.0-alpha.2(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
       '@types/postcss-import': 14.0.3
       '@types/through2': 2.0.41
@@ -12594,7 +12593,7 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-web-crawler@55.0.0-alpha.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-web-crawler@55.0.0-alpha.2(typescript@5.5.4)':
     dependencies:
       puppeteer: 24.23.0(typescript@5.5.4)
       puppeteer-cluster: 0.24.0(puppeteer@24.23.0(typescript@5.5.4))
@@ -12631,7 +12630,7 @@ snapshots:
       fs-extra: 11.3.2
       lodash: 4.17.21
 
-  '@ckeditor/typedoc-plugins@55.0.0-alpha.0(typedoc@0.28.14(typescript@5.5.4))':
+  '@ckeditor/typedoc-plugins@55.0.0-alpha.2(typedoc@0.28.14(typescript@5.5.4))':
     dependencies:
       typedoc: 0.28.14(typescript@5.5.4)
       upath: 2.0.1
@@ -14576,7 +14575,7 @@ snapshots:
 
   base64id@2.0.0: {}
 
-  baseline-browser-mapping@2.8.10: {}
+  baseline-browser-mapping@2.9.15: {}
 
   basic-auth@2.0.1:
     dependencies:
@@ -14632,7 +14631,7 @@ snapshots:
 
   browserslist@4.26.3:
     dependencies:
-      baseline-browser-mapping: 2.8.10
+      baseline-browser-mapping: 2.9.15
       caniuse-lite: 1.0.30001746
       electron-to-chromium: 1.5.228
       node-releases: 2.0.21

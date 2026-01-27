@@ -97,5 +97,19 @@ async function startEditors() {
 		formatting: window.editorFormatting,
 		withDropdown: window.editorWithDropdown
 	} );
+
+	bindPreview( window.editorSemantic, 'preview-semantic' );
+	bindPreview( window.editorFormatting, 'preview-formatting' );
+	bindPreview( window.editorWithDropdown, 'preview-with-dropdown' );
+}
+
+function bindPreview( editor, previewId ) {
+	const preview = document.querySelector( '#' + previewId );
+
+	editor.model.document.on( 'change:data', () => {
+		preview.innerHTML = editor.getData();
+	} );
+
+	preview.innerHTML = editor.getData();
 }
 

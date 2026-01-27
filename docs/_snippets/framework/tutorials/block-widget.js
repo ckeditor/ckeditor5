@@ -80,8 +80,9 @@ class SimpleBoxUI extends Plugin {
 			switchButton.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute the command when the switch is toggled.
+			// The command will automatically toggle based on its current state.
 			this.listenTo( switchButton, 'execute', () => {
-				editor.execute( 'toggleSimpleBoxSecret', { value: !command.value } );
+				editor.execute( 'toggleSimpleBoxSecret' );
 			} );
 
 			return switchButton;
@@ -279,14 +280,17 @@ class ToggleSimpleBoxSecretCommand extends Command {
 		this.value = !!( element && element.getAttribute( 'secret' ) );
 	}
 
-	execute( { value } ) {
+	execute( options = {} ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const simpleBox = getClosestSelectedSimpleBoxElement( model.document.selection );
 
+		// Toggle the current state if no value is provided.
+		const newValue = options.value === undefined ? !this.value : options.value;
+
 		if ( simpleBox ) {
 			model.change( writer => {
-				if ( value ) {
+				if ( newValue ) {
 					writer.setAttribute( 'secret', true, simpleBox );
 				} else {
 					writer.removeAttribute( 'secret', simpleBox );

@@ -884,14 +884,17 @@ export default class ToggleSimpleBoxSecretCommand extends Command {
 		this.value = !!( element && element.getAttribute( 'secret' ) );
 	}
 
-	execute( { value } ) {
+	execute( options = {} ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const simpleBox = getClosestSelectedSimpleBoxElement( model.document.selection );
 
+		// Toggle the current state if no value is provided.
+		const newValue = options.value === undefined ? !this.value : options.value;
+
 		if ( simpleBox ) {
 			model.change( writer => {
-				if ( value ) {
+				if ( newValue ) {
 					// Set the 'secret' attribute to true when enabling.
 					writer.setAttribute( 'secret', true, simpleBox );
 				} else {
@@ -916,7 +919,9 @@ function getClosestSelectedSimpleBoxElement( selection ) {
 }
 ```
 
-The command checks if the selection is inside a simple box and enables itself accordingly. The `value` property reflects the current state of the `secret` attribute (either `true` or `undefined`). The `execute()` method sets the attribute to `true` when enabling, or removes it entirely when disabling.
+The command checks if the selection is inside a simple box and enables itself accordingly. The `value` property reflects the current state of the `secret` attribute (either `true` or `undefined`). 
+
+The `execute()` method accepts an optional `options` parameter with a `value` property. If no value is provided, the command automatically toggles the current state (hence its name, a "toggle" command). You can also explicitly pass a value if needed, but for most use cases, calling `editor.execute( 'toggleSimpleBoxSecret' )` without parameters is sufficient.
 
 <info-box>
 	This follows the common CKEditor&nbsp;5 pattern for boolean attributes: use `true` for enabled or remove the attribute entirely (resulting in `undefined`), rather than setting it to `false`. This is the same approach used by features like links and their decorators.
@@ -1078,10 +1083,11 @@ export default class SimpleBoxUI extends Plugin {
 			// Bind the switch's state to the command's value and enabled state.
 			switchButton.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
-			// Execute the command when the switch is toggled.
-			this.listenTo( switchButton, 'execute', () => {
-				editor.execute( 'toggleSimpleBoxSecret', { value: !command.value } );
-			} );
+		// Execute the command when the switch is toggled.
+		// The command will automatically toggle based on its current state.
+		this.listenTo( switchButton, 'execute', () => {
+			editor.execute( 'toggleSimpleBoxSecret' );
+		} );
 
 			return switchButton;
 		} );
@@ -1089,7 +1095,7 @@ export default class SimpleBoxUI extends Plugin {
 }
 ```
 
-The switch button is bound to the `toggleSimpleBoxSecret` command. When clicked, it toggles the command's value.
+The switch button is bound to the `toggleSimpleBoxSecret` command. When clicked, it executes the command without any parameters, and the command automatically toggles its state based on its current `value`.
 
 ### Registering the widget toolbar
 
