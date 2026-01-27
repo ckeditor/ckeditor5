@@ -3,7 +3,7 @@ category: features
 menu-title: Feature digest
 meta-title: Feature digest | CKEditor 5 Documentation
 meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page lists them all.
-modified_at: 2024-11-20
+modified_at: 2026-01-27
 order: -998
 ---
 
@@ -1168,17 +1168,71 @@ The Table of Contents feature is a dynamic tool for organizing documents. It all
 
 ## Productivity
 
-Speed up the content creation process with dedicated productivity utilities. The CKEditor AI feature brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities right into the editor.
+Speed up the content creation process with dedicated productivity utilities. The CKEditor AI feature brings generation, summarization, correction, translation, contextual chat help, reviews, and many other capabilities right into the editor.
 
-<ck:heading-badge heading-id='ai-assistant' badge='premium'>CKEditor AI</ck:heading-badge>
+<ck:heading-badge heading-id='ckeditor-ai' badge='premium'>CKEditor AI</ck:heading-badge>
 
 By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-overview}'>
-	Feature page
-</ck:button-link>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-chat'>
+			AI Chat <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			A conversational AI assistant that aids content creation and editing through a dynamic chat interface. It enables multi-turn interactions, context setting, model selection, and maintains chat history for quick reference.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-chat}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 
-<ck:heading-badge heading-id='ai-assistant' badge='premium'>AI Assistant (older version)</ck:heading-badge>
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-quick-actions'>
+			AI Quick Actions <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Streamline routine content transformations with one-click AI-powered suggestions directly within the editor. Choose from predefined commands or ask questions about selected text for instant AI insights.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-actions}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-review'>
+			AI Review <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			AI-powered quality assurance for content by running checks for grammar, style, tone, and more. Review and manage AI-suggested edits directly within the document to ensure content meets professional standards.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-review}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-translate'>
+			AI Translate <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			AI-powered translations with an intuitive interface for reviewing and managing translation suggestions directly within the document. Supports multiple languages with production-ready quality for common language pairs.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-translate}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
+
+<ck:heading-badge heading-id='ai-assistant' badge='premium'>AI Assistant (legacy)</ck:heading-badge>
 
 The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.
 
