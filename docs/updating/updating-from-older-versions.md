@@ -7,7 +7,7 @@ order: 83
 modified_at: 2026-01-23
 ---
 
-# Updating from older CKEditor 5 versions
+# Updating from older CKEditor 5&nbsp;versions
 
 If you are upgrading a project from an older version of CKEditor&nbsp;5, it is best to update one version at a time to avoid unexpected issues.
 
