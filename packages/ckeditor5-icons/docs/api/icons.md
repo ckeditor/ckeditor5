@@ -4,7 +4,7 @@ category: api-reference
 
 # CKEditor&nbsp;5 icons
 
-This package contains icons &ndash; for CKEditor&nbsp;5.
+This package contains icons for CKEditor&nbsp;5.
 
 ## Documentation
 
