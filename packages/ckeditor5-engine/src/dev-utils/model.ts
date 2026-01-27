@@ -23,7 +23,7 @@ import { EditingView } from '../view/view.js';
 import { ViewContainerElement } from '../view/containerelement.js';
 import { ViewRootEditableElement } from '../view/rooteditableelement.js';
 
-import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from './view.js';
 
 import { Mapper } from '../conversion/mapper.js';
 import {

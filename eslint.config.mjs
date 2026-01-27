@@ -22,8 +22,11 @@ const allowedPackageNames = [
 		.filter( Boolean )
 ];
 
-const disallowedImportsPattern = `@ckeditor/ckeditor5-(?!${ allowedPackageNames.join( '|' ) })`;
-const disallowedImportsMessage = 'External `@ckeditor/ckeditor5-*` imports are forbidden.';
+const disallowedPackageImportsPattern = `@ckeditor/ckeditor5-(?!${ allowedPackageNames.join( '|' ) })`;
+const disallowedPackageImportsMessage = 'External `@ckeditor/ckeditor5-*` imports are forbidden.';
+
+const disallowedRelativePathImportsPattern = [ './**/src/**', '../**/src/**' ];
+const disallowedRelativePathImportsMessage = 'Imports to the `src` directory from within the `src` directory are forbidden.';
 
 export default defineConfig( [
 	{
@@ -93,14 +96,22 @@ export default defineConfig( [
 					name: 'isOfficialPlugin',
 					returnValue: true
 				} ]
+			} ],
+			'@typescript-eslint/no-restricted-imports': [ 'error', {
+				patterns: [ {
+					group: disallowedRelativePathImportsPattern,
+					message: disallowedRelativePathImportsMessage
+				}, {
+					regex: disallowedPackageImportsPattern,
+					message: disallowedPackageImportsMessage
+				} ]
 			} ]
 		}
 	},
 	{
 		files: [
 			'packages/*/@(src|tests)/**/*.js',
-			'**/docs/**/_snippets/**/*.js',
-			'src/**/*.js'
+			'**/docs/**/_snippets/**/*.js'
 		],
 
 		plugins: {
@@ -110,16 +121,15 @@ export default defineConfig( [
 		rules: {
 			'no-restricted-imports': [ 'error', {
 				patterns: [ {
-					regex: disallowedImportsPattern,
-					message: disallowedImportsMessage
+					regex: disallowedPackageImportsPattern,
+					message: disallowedPackageImportsMessage
 				} ]
 			} ]
 		}
 	},
 	{
 		files: [
-			'packages/*/@(src|tests)/**/*.ts',
-			'src/**/*.ts'
+			'packages/*/tests/**/*.ts'
 		],
 
 		plugins: {
@@ -129,8 +139,8 @@ export default defineConfig( [
 		rules: {
 			'@typescript-eslint/no-restricted-imports': [ 'error', {
 				patterns: [ {
-					regex: disallowedImportsPattern,
-					message: disallowedImportsMessage
+					regex: disallowedPackageImportsPattern,
+					message: disallowedPackageImportsMessage
 				} ]
 			} ]
 		}

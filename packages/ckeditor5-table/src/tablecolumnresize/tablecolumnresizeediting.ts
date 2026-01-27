@@ -31,7 +31,7 @@ import type {
 	ViewNode
 } from '@ckeditor/ckeditor5-engine';
 
-import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
+import { MouseEventsObserver } from '../tablemouse/mouseeventsobserver.js';
 import { TableEditing } from '../tableediting.js';
 import { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
