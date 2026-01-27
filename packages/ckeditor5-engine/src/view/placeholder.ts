@@ -345,7 +345,7 @@ function showViewPlaceholderTextDeprecationWarning() {
 		 * function is deprecated and will be removed soon.
 		 *
 		 * See the `#view-element-placeholder` section in the `Update to v39.x` guide in the
-		 * {@link updating/updating-from-older-versions updating from older versions guide}
+		 * {@link updating/updating-from-older-versions updating from older versions}  guide
 		 * for more information on how to apply this change.
 		 *
 		 * @error enableViewPlaceholder-deprecated-text-option
