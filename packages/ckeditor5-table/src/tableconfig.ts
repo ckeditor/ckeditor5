@@ -48,6 +48,33 @@ export interface TableConfig {
 	};
 
 	/**
+	 * Number of footer rows to render by default when inserting new tables.
+	 *
+	 * You can configure it like this:
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	defaultFooters: 1
+	 * };
+	 * ```
+	 *
+	 * The rows property is optional, defaulting to 0 (no footer).
+	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
+	 */
+	defaultFooters?: number;
+
+	/**
+	 * Enables support for table footers (`<tfoot>`).
+	 *
+	 * When set to `true`, the editor will upcast and downcast `<tfoot>` elements, and the footer toggle will be visible
+	 * in the table row dropdown.
+	 * When set to `false` (default), footer rows are ignored and the footer toggle is hidden in the table row dropdown.
+	 *
+	 * @default false
+	 */
+	enableFooters?: boolean;
+
+	/**
 	 * Items to be placed in the table content toolbar.
 	 * The {@link module:table/tabletoolbar~TableToolbar} plugin is required to make this toolbar work.
 	 *

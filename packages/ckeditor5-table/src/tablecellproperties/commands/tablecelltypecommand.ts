@@ -91,6 +91,9 @@ export function updateTablesHeadingAttributes(
 		let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
+		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+		const footerIndex = tableUtils.getRows( table ) - footerRows;
+
 		// Prioritize the dimension that is already larger to prevent the other dimension from
 		// aggressively consuming "orphaned" header cells. In other words, if table has three
 		// heading columns (which fills entire table), we should not count all rows as heading rows.
@@ -108,16 +111,27 @@ export function updateTablesHeadingAttributes(
 			const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
 			if ( newHeadingColumns !== headingColumns ) {
-				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, {
+					updateCellType: false
+				} );
+
 				headingColumns = newHeadingColumns;
 				changed = true;
 			}
 		}
 
-		const newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
+		let newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
+
+		// Ensure that heading rows do not overlap with footer rows.
+		if ( footerRows > 0 ) {
+			newHeadingRows = Math.min( newHeadingRows, footerIndex );
+		}
 
 		if ( newHeadingRows !== headingRows ) {
-			tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+			tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, {
+				updateCellType: false
+			} );
+
 			headingRows = newHeadingRows;
 			changed = true;
 		}
@@ -126,7 +140,10 @@ export function updateTablesHeadingAttributes(
 			const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
 			if ( newHeadingColumns !== headingColumns ) {
-				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, {
+					updateCellType: false
+				} );
+
 				changed = true;
 			}
 		}

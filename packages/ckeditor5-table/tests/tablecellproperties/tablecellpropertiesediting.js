@@ -286,10 +286,7 @@ describe( 'table cell properties', () => {
 				describe( 'border="0" attribute handling', () => {
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
-							experimentalFlags: {
-								upcastTableBorderZeroAttributes: true
-							}
+							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
 						} );
 
 						model = editor.model;

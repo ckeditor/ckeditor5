@@ -29,6 +29,7 @@ import { MergeCellCommand } from './commands/mergecellcommand.js';
 import { RemoveRowCommand } from './commands/removerowcommand.js';
 import { RemoveColumnCommand } from './commands/removecolumncommand.js';
 import { SetHeaderRowCommand } from './commands/setheaderrowcommand.js';
+import { SetFooterRowCommand } from './commands/setfooterrowcommand.js';
 import { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
 import { MergeCellsCommand } from './commands/mergecellscommand.js';
 import { SelectRowCommand } from './commands/selectrowcommand.js';
@@ -37,8 +38,9 @@ import { TableUtils } from './tableutils.js';
 
 import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
 import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
+import { injectTableStructurePostFixer } from './converters/table-structure-post-fixer.js';
 
-import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
+import { tableStructureRefreshHandler } from './converters/table-structure-refresh-handler.js';
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 import { isTableCellTypeEnabled } from './utils/common.js';
 
@@ -93,9 +95,17 @@ export class TableEditing extends Plugin {
 		const conversion = editor.conversion;
 		const tableUtils = editor.plugins.get( TableUtils );
 
+		editor.config.define( 'table.enableFooters', false );
+
+		const useFooterElement = !!editor.config.get( 'table.enableFooters' );
+
 		schema.register( 'table', {
 			inheritAllFrom: '$blockObject',
-			allowAttributes: [ 'headingRows', 'headingColumns' ]
+			allowAttributes: [
+				'headingRows',
+				'headingColumns',
+				...useFooterElement ? [ 'footerRows' ] : []
+			]
 		} );
 
 		schema.register( 'tableRow', {
@@ -115,12 +125,15 @@ export class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( upcastTableFigure() );
 
 		// Table conversion.
-		conversion.for( 'upcast' ).add( upcastTable() );
+		conversion.for( 'upcast' ).add( upcastTable( { enableFooters: useFooterElement } ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: [ 'headingRows' ]
+				attributes: [
+					'headingRows',
+					...useFooterElement ? [ 'footerRows' ] : []
+				]
 			},
 			view: downcastTable( tableUtils, {
 				asWidget: true,
@@ -130,7 +143,10 @@ export class TableEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: [ 'headingRows' ]
+				attributes: [
+					'headingRows',
+					...useFooterElement ? [ 'footerRows' ] : []
+				]
 			},
 			view: downcastTable( tableUtils, {
 				additionalSlots: this._additionalSlots
@@ -197,6 +213,7 @@ export class TableEditing extends Plugin {
 		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
 		editor.config.define( 'table.defaultHeadings.columns', 0 );
+		editor.config.define( 'table.defaultFooters', 0 );
 		editor.config.define( 'table.showHiddenBorders', true );
 
 		if ( editor.config.get( 'table.showHiddenBorders' ) ) {
@@ -230,17 +247,25 @@ export class TableEditing extends Plugin {
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
+		if ( useFooterElement ) {
+			editor.commands.add( 'setTableFooterRow', new SetFooterRowCommand( editor ) );
+		}
+
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
 		injectTableLayoutPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
 
+		if ( useFooterElement ) {
+			injectTableStructurePostFixer( editor );
+		}
+
 		this.listenTo( model.document, 'change:data', () => {
 			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
 			// It's because headings rows / columns are updated based on cell types which triggers their own refresh handler.
 			if ( !isTableCellTypeEnabled( editor ) ) {
-				tableHeadingsRefreshHandler( model, editor.editing );
+				tableStructureRefreshHandler( model, editor.editing );
 			}
 
 			tableCellRefreshHandler( model, editor.editing );
