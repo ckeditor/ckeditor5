@@ -1627,6 +1627,32 @@ describe( 'Schema', () => {
 				'<p>[foo]<img>xxx</img>bar</p>'
 			);
 		} );
+
+		it( 'should not include empty elements when includeEmptyElements is not set', () => {
+			schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			_setModelData( model, '[<p>foo</p><p></p><p>bar</p>]' );
+
+			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo' ) );
+
+			// Two text ranges only: "foo" and "bar"; empty paragraph yields nothing.
+			expect( validRanges.length ).to.equal( 2 );
+		} );
+
+		it( 'should include empty elements when includeEmptyElements is true', () => {
+			schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			_setModelData( model, '[<p>foo</p><p></p><p>bar</p>]' );
+
+			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo', {
+				includeEmptyElements: true
+			} ) );
+
+			// Three ranges: text "foo", empty paragraph (for stored selection attribute), text "bar".
+			expect( validRanges.length ).to.equal( 3 );
+			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 2 ] );
+		} );
 	} );
 
 	describe( 'getNearestSelectionRange()', () => {
