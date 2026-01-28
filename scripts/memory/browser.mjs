@@ -45,10 +45,10 @@ export async function runTestInPage( browser, url, editorName, timeout ) {
 	} );
 
 	await page.goto( url, { waitUntil: 'networkidle0' } );
-	await page.waitForFunction( () => globalThis.__memoryTestReady === true );
+	await page.waitForFunction( () => globalThis.memoryTestReady === true );
 
 	const result = await page.evaluate( async ( name, timeoutMs ) => {
-		const { createEditorFactory, runMemoryTestWithTimeout } = globalThis.__memoryTest;
+		const { createEditorFactory, runMemoryTestWithTimeout } = globalThis;
 		return runMemoryTestWithTimeout( createEditorFactory( name ), timeoutMs, name );
 	}, editorName, timeout );
 

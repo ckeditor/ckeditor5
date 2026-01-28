@@ -18,8 +18,6 @@
  *   more accurate and reliable than `performance.memory` for detecting leaks.
  */
 
-import * as CKEDITOR from 'ckeditor5';
-
 const CYCLE_COUNT = 10;
 const CYCLE_PAUSE = 100;
 const MEMORY_SAMPLES = 3;
@@ -27,45 +25,8 @@ const WARMUP_CYCLE_COUNT = 5;
 const PLATEAU_SAMPLE_COUNT = 3;
 const GARBAGE_COLLECTOR_TIMEOUT = 100;
 
-const EDITOR_CONFIG = {
-	licenseKey: 'GPL',
-	plugins: [
-		CKEDITOR.Essentials,
-		CKEDITOR.Autoformat,
-		CKEDITOR.BlockQuote,
-		CKEDITOR.Bold,
-		CKEDITOR.Heading,
-		CKEDITOR.Image,
-		CKEDITOR.ImageCaption,
-		CKEDITOR.ImageStyle,
-		CKEDITOR.ImageToolbar,
-		CKEDITOR.Indent,
-		CKEDITOR.Italic,
-		CKEDITOR.Link,
-		CKEDITOR.List,
-		CKEDITOR.MediaEmbed,
-		CKEDITOR.Paragraph,
-		CKEDITOR.Table,
-		CKEDITOR.TableToolbar
-	],
-	toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
-	image: {
-		toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
-	}
-};
-
 function timeout( ms ) {
 	return new Promise( resolve => setTimeout( resolve, ms ) );
-}
-
-function createEditorFactory( editorName ) {
-	const EditorClass = CKEDITOR[ editorName ];
-
-	if ( editorName === 'MultiRootEditor' ) {
-		return host => EditorClass.create( { foo: host }, EDITOR_CONFIG );
-	}
-
-	return host => EditorClass.create( host, EDITOR_CONFIG );
 }
 
 async function runMemoryTest( createEditor, label = 'editor' ) {
@@ -182,10 +143,6 @@ async function createAndDestroyWithTimeout( createEditor, label, phase ) {
 	);
 }
 
-globalThis.__memoryTest = {
-	createEditorFactory,
-	runMemoryTest,
-	runMemoryTestWithTimeout
-};
-
-globalThis.__memoryTestReady = true;
+globalThis.runMemoryTest = runMemoryTest;
+globalThis.runMemoryTestWithTimeout = runMemoryTestWithTimeout;
+globalThis.memoryTestReady = true;

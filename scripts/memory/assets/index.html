@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="/ckeditor5.css" />
 	</head>
 	<body>
+		<!-- Register the CKEditor 5 import map -->
 		<script type="importmap">
 		{
 			"imports": {
@@ -15,6 +16,51 @@
 		}
 		</script>
 
+		<!-- Define the editor creation factory -->
+		<script type="module">
+			import * as CKEDITOR from 'ckeditor5';
+
+			function createEditorFactory( editorName ) {
+				const EDITOR_CONFIG = {
+					licenseKey: 'GPL',
+					plugins: [
+						CKEDITOR.Essentials,
+						CKEDITOR.Autoformat,
+						CKEDITOR.BlockQuote,
+						CKEDITOR.Bold,
+						CKEDITOR.Heading,
+						CKEDITOR.Image,
+						CKEDITOR.ImageCaption,
+						CKEDITOR.ImageStyle,
+						CKEDITOR.ImageToolbar,
+						CKEDITOR.Indent,
+						CKEDITOR.Italic,
+						CKEDITOR.Link,
+						CKEDITOR.List,
+						CKEDITOR.MediaEmbed,
+						CKEDITOR.Paragraph,
+						CKEDITOR.Table,
+						CKEDITOR.TableToolbar
+					],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+					}
+				};
+
+				const EditorClass = CKEDITOR[ editorName ];
+
+				if ( editorName === 'MultiRootEditor' ) {
+					return host => EditorClass.create( { foo: host }, EDITOR_CONFIG );
+				}
+
+				return host => EditorClass.create( host, EDITOR_CONFIG );
+			}
+
+			globalThis.createEditorFactory = createEditorFactory;
+		</script>
+
+		<!-- Load the memory test script -->
 		<script type="module" src="/page-test.js"></script>
 	</body>
 </html>

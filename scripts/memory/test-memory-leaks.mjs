@@ -26,8 +26,8 @@ const EDITOR_NAMES = [
 	'MultiRootEditor'
 ];
 
-const TEST_TIMEOUT = 300_000;
-const MEMORY_THRESHOLD = 2 * 1024 * 1024; // 2 MB
+const TEST_TIMEOUT = 20_000; // 20 seconds per editor
+const MEMORY_THRESHOLD = 1.5 * 1024 * 1024; // 1.5 MB
 
 const bytesToMiB = bytes => Math.round( ( bytes / 1024 / 1024 ) * 100 ) / 100;
 
