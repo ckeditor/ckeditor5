@@ -39,6 +39,10 @@ import {
 import { TableBackgroundColorCommand } from './commands/tablebackgroundcolorcommand.js';
 import { TableBorderColorCommand } from './commands/tablebordercolorcommand.js';
 import { TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
+import { TableBorderTopStyleCommand } from './commands/tablebordertopstylecommand.js';
+import { TableBorderRightStyleCommand } from './commands/tableborderrightstylecommand.js';
+import { TableBorderBottomStyleCommand } from './commands/tableborderbottomstylecommand.js';
+import { TableBorderLeftStyleCommand } from './commands/tableborderleftstylecommand.js';
 import { TableBorderWidthCommand } from './commands/tableborderwidthcommand.js';
 import { TableWidthCommand } from './commands/tablewidthcommand.js';
 import { TableHeightCommand } from './commands/tableheightcommand.js';
@@ -129,6 +133,10 @@ export class TablePropertiesEditing extends Plugin {
 
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor, defaultTableProperties.borderColor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, defaultTableProperties.borderStyle ) );
+		editor.commands.add( 'tableBorderTopStyle', new TableBorderTopStyleCommand( editor, defaultTableProperties.borderStyle ) );
+		editor.commands.add( 'tableBorderRightStyle', new TableBorderRightStyleCommand( editor, defaultTableProperties.borderStyle ) );
+		editor.commands.add( 'tableBorderBottomStyle', new TableBorderBottomStyleCommand( editor, defaultTableProperties.borderStyle ) );
+		editor.commands.add( 'tableBorderLeftStyle', new TableBorderLeftStyleCommand( editor, defaultTableProperties.borderStyle ) );
 		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, defaultTableProperties.borderWidth ) );
 
 		if ( editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) ) {
@@ -243,7 +251,11 @@ function enableBorderProperties(
 	const modelAttributes = {
 		width: 'tableBorderWidth',
 		color: 'tableBorderColor',
-		style: 'tableBorderStyle'
+		style: 'tableBorderStyle',
+		topStyle: 'borderTopStyle',
+		rightStyle: 'borderRightStyle',
+		bottomStyle: 'borderBottomStyle',
+		leftStyle: 'borderLeftStyle'
 	};
 
 	schema.extend( 'table', {
@@ -258,6 +270,10 @@ function enableBorderProperties(
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.topStyle, styleName: 'border-top-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.rightStyle, styleName: 'border-right-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.bottomStyle, styleName: 'border-bottom-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.leftStyle, styleName: 'border-left-style' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.width, styleName: 'border-width' } );
 }
 
