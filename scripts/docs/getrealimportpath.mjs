@@ -4,5 +4,7 @@
  */
 
 export default function getRealImportPath( modulePath ) {
-	return '@ckeditor/ckeditor5-' + modulePath.split( '/' )[ 0 ];
+	const moduleName = modulePath.split( '/' )[ 0 ];
+
+	return moduleName ? `@ckeditor/ckeditor5-${ moduleName }` : modulePath;
 }
