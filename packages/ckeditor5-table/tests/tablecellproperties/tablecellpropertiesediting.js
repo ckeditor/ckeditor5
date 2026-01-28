@@ -1437,6 +1437,35 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '20px' );
 				} );
 
+				it( 'should upcast height attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="100.5">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '100.5px' );
+				} );
+
+				it( 'should upcast height (px) attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="100.5px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '100.5px' );
+				} );
+
+				it( 'should upcast height (%) attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="100.5%">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should upcast height (em) attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="100.5em">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					// Normalize to px as other units are not supported by browsers.
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '100.5px' );
+				} );
+
 				it( 'should consume height style even if it is default', async () => {
 					const editor = await VirtualTestEditor.create( {
 						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
