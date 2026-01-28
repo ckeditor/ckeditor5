@@ -194,7 +194,7 @@ You should now be able to use the rich-text editor with SharePoint:
 </Dialog>
 ```
 
-* SharePoint overrides the table border styles. The problem is due to the fact, that SharePoint uses the following style:
+* SharePoint overrides the table border styles. The problem is due to the fact that SharePoint uses the following style:
 
 ```css
 .ck-content .table > table {
@@ -303,7 +303,7 @@ const ForceTableBorderImportant = ( editor: Editor ) => {
 <info-box important>
 	The internal `StylesMap` utility used by the editor's conversion system does not natively support the `!important` flag during style normalization.
 	
-	The provided workaround therefore performs low-level DOM manipulation during the render cycle instead of relying solely on `StylesMap`. By applying these styles directly to the DOM elements after they are mapped, we ensure the priority flag remains intact and is correctly interpreted by the browser.
+	The provided workaround, therefore, performs low-level DOM manipulation during the render cycle instead of relying solely on `StylesMap`. By applying these styles directly to the DOM elements after they are mapped, we ensure the priority flag remains intact and is correctly interpreted by the browser.
 </info-box>
 
 ## Additional resources
