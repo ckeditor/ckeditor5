@@ -4,5 +4,5 @@
  */
 
 export default function getRealImportPath( modulePath ) {
-	return modulePath.replace( /^([^/]+)\//, '@ckeditor/ckeditor5-$1/src/' );
+	return '@ckeditor/ckeditor5-' + modulePath.split( '/' )[ 0 ];
 }
