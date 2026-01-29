@@ -1654,6 +1654,26 @@ describe( 'Schema', () => {
 			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 1, 0 ] );
 			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 1, 0 ] );
 		} );
+
+		it( 'should not include empty inline elements when includeEmptyRanges is true', () => {
+			schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			// Paragraph with text, empty img, text. img is inline object (not block).
+			_setModelData( model, '[<p>foo<img></img>bar</p>]' );
+
+			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo', {
+				includeEmptyRanges: true
+			} ) );
+
+			// Only two text ranges; empty img must not get a range (would wrongly get selection:foo in commands).
+			expect( validRanges.length ).to.equal( 2 );
+			// First range: text "bar" in paragraph.
+			expect( validRanges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
+			expect( validRanges[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+			// Second range: text "foo" in paragraph.
+			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 0, 4 ] );
+			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 0, 7 ] );
+		} );
 	} );
 
 	describe( 'getNearestSelectionRange()', () => {
