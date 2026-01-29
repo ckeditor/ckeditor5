@@ -1166,7 +1166,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	private* _getValidRangesForRange(
 		range: ModelRange,
 		attribute: string,
-		options: { includeEmptyElements?: boolean } = {}
+		options: { includeEmptyElements?: boolean }
 	): Iterable<ModelRange> {
 		let start = range.start;
 		let end = range.start;
