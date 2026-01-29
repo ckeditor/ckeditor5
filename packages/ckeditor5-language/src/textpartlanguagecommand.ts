@@ -9,7 +9,7 @@
 
 import type { LanguageDirection } from 'ckeditor5/src/utils.js';
 import { Command } from 'ckeditor5/src/core.js';
-import type { ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
+import { ModelDocumentSelection, type ModelRange, type ModelElement } from 'ckeditor5/src/engine.js';
 import { stringifyLanguageAttribute } from './utils.js';
 
 /**
@@ -96,7 +96,7 @@ export class TextPartLanguageCommand extends Command {
 
 					if ( range.isCollapsed ) {
 						itemOrRange = range.start.parent as ModelElement;
-						attributeKey = 'selection:language';
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( 'language' );
 					}
 
 					if ( value ) {

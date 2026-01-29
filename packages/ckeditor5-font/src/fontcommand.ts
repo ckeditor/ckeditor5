@@ -8,7 +8,13 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Batch, ModelWriter, ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
+import {
+	ModelDocumentSelection,
+	type Batch,
+	type ModelWriter,
+	type ModelRange,
+	type ModelElement
+} from 'ckeditor5/src/engine.js';
 
 /**
  * The base font command.
@@ -84,7 +90,7 @@ export abstract class FontCommand extends Command {
 
 					if ( range.isCollapsed ) {
 						itemOrRange = range.start.parent as ModelElement;
-						attributeKey = `selection:${ this.attributeKey }`;
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( this.attributeKey );
 					}
 
 					if ( value ) {

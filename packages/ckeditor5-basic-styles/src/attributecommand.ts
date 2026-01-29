@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
+import { ModelDocumentSelection, type ModelRange, type ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command
@@ -103,7 +103,7 @@ export class AttributeCommand extends Command {
 
 					if ( range.isCollapsed ) {
 						itemOrRange = range.start.parent as ModelElement;
-						attributeKey = `selection:${ this.attributeKey }`;
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( this.attributeKey );
 					}
 
 					if ( value ) {

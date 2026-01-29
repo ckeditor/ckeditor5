@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { ModelTreeWalkerValue, ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
+import { ModelDocumentSelection, type ModelTreeWalkerValue, type ModelRange, type ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
@@ -108,7 +108,7 @@ export class HighlightCommand extends Command {
 
 					if ( range.isCollapsed ) {
 						itemOrRange = range.start.parent as ModelElement;
-						attributeKey = 'selection:highlight';
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( 'highlight' );
 					}
 
 					if ( highlighter ) {
