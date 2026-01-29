@@ -15,6 +15,8 @@
  * - Disables background throttling and networking to minimize noise during memory sampling.
  */
 
+import { join } from 'node:path';
+import { readFile } from 'node:fs/promises';
 import puppeteer from 'puppeteer';
 
 export async function startBrowser() {
@@ -33,24 +35,34 @@ export async function startBrowser() {
 	} );
 }
 
-export async function runTestInPage( browser, url, editorName, timeout ) {
+export async function runTestInPage( {
+	browser,
+	url,
+	editorName,
+	editorData,
+	timeout
+} ) {
 	const context = await browser.createBrowserContext();
 	const page = await context.newPage();
 
 	page.setDefaultTimeout( timeout );
+	page.on( 'pageerror', error => console.error( `Browser error: ${ error }` ) );
+	// Uncomment to see browser console logs.
+	// page.on( 'console', msg => console.log( `Browser log: ${ msg.text() }` ) );
 
-	// Suppress verbose logs, only show errors or critical info if needed
-	page.on( 'pageerror', error => {
-		console.error( `[${ editorName }] Browser error: ${ error }` );
-	} );
+	const memoryTestSource = await readFile( join( import.meta.dirname, 'page-test.js' ), 'utf8' );
 
 	await page.goto( url, { waitUntil: 'networkidle0' } );
+	await page.addScriptTag( { content: memoryTestSource, type: 'module' } );
 	await page.waitForFunction( () => globalThis.memoryTestReady === true );
 
-	const result = await page.evaluate( async ( name, timeoutMs ) => {
-		const { createEditorFactory, runMemoryTestWithTimeout } = globalThis;
-		return runMemoryTestWithTimeout( createEditorFactory( name ), timeoutMs, name );
-	}, editorName, timeout );
+	const result = await page.evaluate( async ( editorName, editorData, timeoutMs ) => {
+		return globalThis.runMemoryTestWithTimeout( {
+			editorName,
+			editorData,
+			timeoutMs
+		} );
+	}, editorName, editorData, timeout );
 
 	await context.close();
 

@@ -29,9 +29,9 @@ function timeout( ms ) {
 	return new Promise( resolve => setTimeout( resolve, ms ) );
 }
 
-async function runMemoryTest( createEditor, label = 'editor' ) {
+async function runMemoryTest( { editorName, editorData } ) {
 	for ( let index = 0; index < WARMUP_CYCLE_COUNT; index++ ) {
-		await createAndDestroyWithTimeout( createEditor, label, 'warmup' );
+		await createAndDestroy( editorName, editorData );
 		await timeout( CYCLE_PAUSE );
 	}
 
@@ -39,7 +39,7 @@ async function runMemoryTest( createEditor, label = 'editor' ) {
 	const points = [];
 
 	for ( let index = 0; index < CYCLE_COUNT; index++ ) {
-		await createAndDestroyWithTimeout( createEditor, label, `cycle-${ index + 1 }` );
+		await createAndDestroy( editorName, editorData );
 		await timeout( CYCLE_PAUSE );
 		points.push( await collectMemoryStatsStable() );
 	}
@@ -58,23 +58,18 @@ async function runMemoryTest( createEditor, label = 'editor' ) {
 	};
 }
 
-async function runMemoryTestWithTimeout( createEditor, timeoutMs = 120000, label = 'editor' ) {
-	return withTimeout( runMemoryTest( createEditor, label ), timeoutMs, `Memory test timed out (${ label }).` );
+async function runMemoryTestWithTimeout( { editorName, editorData, timeoutMs } ) {
+	return Promise.race( [
+		runMemoryTest( { editorName, editorData } ),
+
+		new Promise( ( _, reject ) => setTimeout( () => reject( new Error( `Memory test timed out (${ editorName }).` ) ), timeoutMs ) )
+	] );
 }
 
 function nextFrame() {
 	return new Promise( resolve => {
 		requestAnimationFrame( () => requestAnimationFrame( resolve ) );
 	} );
-}
-
-function withTimeout( promise, timeoutMs, message ) {
-	return Promise.race( [
-		promise,
-		new Promise( ( _resolve, reject ) => {
-			setTimeout( () => reject( new Error( message ) ), timeoutMs );
-		} )
-	] );
 }
 
 async function collectMemoryStatsStable( samples = MEMORY_SAMPLES ) {
@@ -106,14 +101,37 @@ async function readUsedMemory() {
 	return performance.memory.usedJSHeapSize;
 }
 
-async function createAndDestroy( createEditor ) {
-	const element = document.createElement( 'div' );
-	element.id = 'mem-editor';
-	element.innerHTML = '<h2>Editor 1</h2>\n<p>This is an editor instance.</p>';
-	document.body.appendChild( element );
+async function createAndDestroy( editorName, editorData ) {
+	// Clone the editor fixture template.
+	const host = document
+		.getElementById( 'memory-test-fixture' )
+		.content
+		.children[ 0 ]
+		.cloneNode( true );
 
-	const editor = await createEditor( element );
+	// Assign a unique ID to avoid collisions.
+	host.id = 'test-instance-' + self.crypto.randomUUID();
+
+	// Append the host to the document.
+	document.body.appendChild( host );
+
+	// Create the editor instance.
+	const editor = await globalThis.createEditor( host.id, editorName, editorData );
+
+	/*
+	 * TODO: We should avoid using timeout here, but without it, we get the following errors:
+	 *
+	 * ```
+	 * CKEditorCloudServicesError: CKEditorError: cloud-services-internal-error: Not connected.
+	 * ```
+	 */
+	await timeout( 250 );
+
+	// Destroy the editor.
 	await editor.destroy();
+
+	// Remove the host element.
+	host.remove();
 
 	// Flush the microtask queue (Promise callbacks) scheduled during destroy().
 	// This helps run any "cleanup in then()" logic before we continue.
@@ -131,18 +149,7 @@ async function createAndDestroy( createEditor ) {
 	// Yield once more to catch cleanup that was scheduled by the previous macrotask/frame
 	// (e.g. destroy() -> timer -> timer, or work queued from rAF).
 	await timeout( 0 );
-
-	element.remove();
 }
 
-async function createAndDestroyWithTimeout( createEditor, label, phase ) {
-	return withTimeout(
-		createAndDestroy( createEditor ),
-		60000,
-		`Editor lifecycle timed out (${ label }, ${ phase }).`
-	);
-}
-
-globalThis.runMemoryTest = runMemoryTest;
 globalThis.runMemoryTestWithTimeout = runMemoryTestWithTimeout;
 globalThis.memoryTestReady = true;

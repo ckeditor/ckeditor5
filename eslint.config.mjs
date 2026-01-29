@@ -48,7 +48,7 @@ export default defineConfig( [
 			// This file includes JSX which eslint can't parse without additional configuration.
 			'docs/_snippets/framework/tutorials/using-react-in-widget.js',
 
-			// Memory leak detection server files.
+			// Editor builds in memory leak detection test.
 			'scripts/memory/assets/'
 		]
 	},
@@ -198,7 +198,7 @@ export default defineConfig( [
 		}
 	},
 	{
-		files: [ 'scripts/memory/assets/*.js' ],
+		files: [ 'scripts/memory/page-test.js' ],
 
 		plugins: {
 			'ckeditor5-rules': ckeditor5Rules

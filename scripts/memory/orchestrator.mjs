@@ -26,13 +26,17 @@ const EDITOR_NAMES = [
 	'MultiRootEditor'
 ];
 
-const TEST_TIMEOUT = 20_000; // 20 seconds per editor
-const MEMORY_THRESHOLD = 1.5 * 1024 * 1024; // 1.5 MB
-
 const bytesToMiB = bytes => Math.round( ( bytes / 1024 / 1024 ) * 100 ) / 100;
 
-async function main() {
-	const server = await startServer();
+export async function startMemoryTest( {
+	assetsDir,
+	timeout,
+	memoryThreshold,
+	editorNames,
+	editorData
+} ) {
+	const targetEditors = editorNames?.length ? editorNames : EDITOR_NAMES;
+	const server = await startServer( assetsDir );
 	const port = server.address().port;
 	const baseUrl = `http://127.0.0.1:${ port }`;
 
@@ -43,12 +47,19 @@ async function main() {
 	try {
 		browser = await startBrowser();
 
-		for ( const editorName of EDITOR_NAMES ) {
+		for ( const editorName of targetEditors ) {
 			console.log( `Testing ${ editorName }... ` );
 
 			try {
-				const result = await runTestInPage( browser, `${ baseUrl }/index.html`, editorName, TEST_TIMEOUT );
-				const exceedsThreshold = result.memoryDifference > MEMORY_THRESHOLD || result.tailGrowth > MEMORY_THRESHOLD;
+				const result = await runTestInPage( {
+					browser,
+					url: `${ baseUrl }/index.html`,
+					editorName,
+					editorData,
+					timeout
+				} );
+
+				const exceedsThreshold = result.memoryDifference > memoryThreshold || result.tailGrowth > memoryThreshold;
 
 				if ( exceedsThreshold ) {
 					hasFailure = true;
@@ -87,15 +98,10 @@ async function main() {
 	console.log( styleText( 'bold', '* Baseline: ' ) + 'Initial memory after warmup.' );
 	console.log( styleText( 'bold', '* Growth: ' ) + 'Total growth from baseline to end.' );
 	console.log( styleText( 'bold', '* Tail Growth: ' ) + 'Difference in the last few samples (indicates if memory has stabilized).' );
-	console.log( styleText( 'dim', `Threshold: ${ bytesToMiB( MEMORY_THRESHOLD ) } MB` ) );
+	console.log( styleText( 'dim', `Threshold: ${ bytesToMiB( memoryThreshold ) } MB` ) );
 	console.table( results );
 
 	if ( hasFailure ) {
 		process.exit( 1 );
 	}
 }
-
-main().catch( error => {
-	console.error( error );
-	process.exit( 1 );
-} );

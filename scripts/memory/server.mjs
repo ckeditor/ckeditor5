@@ -27,9 +27,7 @@
 
 import { createServer } from 'node:http';
 import { readFile, realpath } from 'node:fs/promises';
-import { join, resolve, sep, extname } from 'node:path';
-
-const ASSETS_DIR = join( import.meta.dirname, 'assets' );
+import { resolve, sep, extname } from 'node:path';
 
 const CONTENT_TYPES = new Map( [
 	[ '.html', 'text/html; charset=utf-8' ],
@@ -37,12 +35,12 @@ const CONTENT_TYPES = new Map( [
 	[ '.css', 'text/css; charset=utf-8' ]
 ] );
 
-export async function startServer() {
+export async function startServer( assetsDir ) {
 	const server = createServer( ( req, res ) => {
-		handleRequest( req, res ).catch( () => badRequest( res ) );
+		handleRequest( req, res, assetsDir ).catch( () => badRequest( res ) );
 	} );
 
-	await new Promise( resolve => server.listen( 0, '127.0.0.1', resolve ) );
+	await new Promise( resolve => server.listen( 8080, '127.0.0.1', resolve ) );
 
 	return server;
 }
@@ -52,7 +50,7 @@ function badRequest( res ) {
 	res.end( 'Bad Request' );
 }
 
-async function handleRequest( req, res ) {
+async function handleRequest( req, res, assetsDir ) {
 	if ( req.method !== 'GET' && req.method !== 'HEAD' ) {
 		return badRequest( res );
 	}
@@ -71,11 +69,11 @@ async function handleRequest( req, res ) {
 		return badRequest( res );
 	}
 
-	const absoluteFilePath = resolve( ASSETS_DIR, pathname );
+	const absoluteFilePath = resolve( assetsDir, pathname );
 
 	try {
 		const [ realBase, realTarget ] = await Promise.all( [
-			realpath( ASSETS_DIR ),
+			realpath( assetsDir ),
 			realpath( absoluteFilePath )
 		] );
 

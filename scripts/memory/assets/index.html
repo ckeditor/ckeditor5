@@ -7,6 +7,14 @@
 		<link rel="stylesheet" href="/ckeditor5.css" />
 	</head>
 	<body>
+		<!-- Define the editor fixture template -->
+		<template id="memory-test-fixture">
+			<div>
+				<h2>Editor</h2>
+				<p>This is an editor instance.</p>
+			</div>
+		</template>
+
 		<!-- Register the CKEditor 5 import map -->
 		<script type="importmap">
 		{
@@ -20,9 +28,9 @@
 		<script type="module">
 			import * as CKEDITOR from 'ckeditor5';
 
-			function createEditorFactory( editorName ) {
+			function createEditor( hostId, editorName, { LICENSE_KEY } ) {
 				const EDITOR_CONFIG = {
-					licenseKey: 'GPL',
+					licenseKey: LICENSE_KEY,
 					plugins: [
 						CKEDITOR.Essentials,
 						CKEDITOR.Autoformat,
@@ -48,19 +56,15 @@
 					}
 				};
 
-				const EditorClass = CKEDITOR[ editorName ];
+				const host = document.querySelector( '#' + hostId );
+				const Editor = CKEDITOR[ editorName ];
+				const target = editorName === 'MultiRootEditor' ? { foo: host } : host;
 
-				if ( editorName === 'MultiRootEditor' ) {
-					return host => EditorClass.create( { foo: host }, EDITOR_CONFIG );
-				}
-
-				return host => EditorClass.create( host, EDITOR_CONFIG );
+				return Editor.create( target, EDITOR_CONFIG );
 			}
 
-			globalThis.createEditorFactory = createEditorFactory;
+			globalThis.createEditor = createEditor;
 		</script>
 
-		<!-- Load the memory test script -->
-		<script type="module" src="/page-test.js"></script>
 	</body>
 </html>
