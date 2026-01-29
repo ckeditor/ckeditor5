@@ -34,6 +34,7 @@ async function main() {
 	const library = new Library().loadModules( filePaths );
 
 	publicTree( library );
+	isUsedAcrossPackages( library );
 	isCommandClass( library );
 	isPluginClass( library );
 	isEvent( library );
@@ -88,8 +89,8 @@ function printErrorsToTheConsole( data, library ) {
 function getExportsToFix( library ) {
 	return library.packages.values()
 		.flatMap( getModules )
-		.filter( ( { module } ) => module.isPublicApi )
 		.flatMap( getExports )
+		.filter( ( { module, exportItem } ) => module.isPublicApi || exportItem.isUsedAcrossPackages )
 		.map( ( { pkg, module, exportItem } ) => (
 			{
 				pkg,
@@ -110,6 +111,7 @@ function getDeclarationsWithMissingExports( library ) {
 		.flatMap( getModules )
 		.flatMap( getDeclarations )
 		.filter( ( { declaration } ) => declaration.isPublicTree )
+		.filter( ( { declaration } ) => declaration.isUsedAcrossPackages )
 		.filter( ( { declaration } ) => !declaration.isAugmentation )
 		.filter( ( { declaration } ) => !declaration.referenceGlobalThisProperty )
 		.filter( ( { declaration } ) =>
@@ -121,10 +123,54 @@ function getDeclarationsWithMissingExports( library ) {
 		} ) );
 }
 
+function isUsedAcrossPackages( library ) {
+	const visited = new Set();
+
+	const markUsedAcrossPackages = ( item, originFileName ) => {
+		if ( visited.has( item ) ) {
+			return;
+		}
+
+		// Limit cross‑package propagation from spreading beyond the original source file. It prevents the validator from
+		// walking into other declarations after it has followed a cross‑package import. In effect, it only marks items
+		// that originate from the same file as the initial cross‑package reference. That keeps the validator from dragging
+		// in unrelated internal types.
+		if ( item.fileName !== originFileName ) {
+			return;
+		}
+
+		visited.add( item );
+		item.isUsedAcrossPackages = true;
+
+		if ( item.references ) {
+			// If the current item is an export from another module, update the `originFileName` to that source file.
+			if ( item instanceof Export && item.importFrom?.fileName ) {
+				originFileName = item.importFrom.fileName;
+			}
+
+			for ( const reference of item.references ) {
+				markUsedAcrossPackages( reference, originFileName );
+			}
+		}
+	};
+
+	for ( const module of library.modules ) {
+		for ( const importItem of module.imports ) {
+			if ( importItem.importFrom.packageName === module.packageName ) {
+				continue;
+			}
+
+			for ( const reference of importItem.references ) {
+				markUsedAcrossPackages( reference, reference.fileName );
+			}
+		}
+	}
+}
+
 function getFixingAction( pkg, module, exportItem ) {
 	const isReExported = exportItem.reExported.length > 0;
 	const isRenamed = isReExported && exportItem.reExported.some( re => re.name !== exportItem.localName );
-	const isMissingReExport = !isReExported && exportItem.isPublicTree;
+	const isMissingReExport = !isReExported && ( exportItem.isPublicTree || exportItem.isUsedAcrossPackages );
 	const isInternal = exportItem.internal;
 	const reExportStartsWithUnderscore = exportItem.reExported.every( re => re.name.startsWith( '_' ) );
 
