@@ -10,7 +10,7 @@
  * required for high-resolution memory measurement in Chromium.
  *
  * Security / hardening notes:
- * - Binds to `127.0.0.1` and an ephemeral port (local-only server).
+ * - Binds to `127.0.0.1` and port 8080 (local-only server).
  * - Rejects malformed URLs and disallows backslashes / NUL bytes in the path to avoid
  *   platform-specific path parsing quirks.
  * - Prevents directory traversal and symlink escapes:
