@@ -1493,10 +1493,10 @@ describe( 'Schema', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 		} );
 
-		function testValidRangesForAttribute( input, attribute, output ) {
+		function testValidRangesForAttribute( input, attribute, output, options ) {
 			_setModelData( model, input );
 
-			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
+			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute, options );
 			const sel = model.createSelection( validRanges );
 
 			expect( _stringifyModel( root, sel ) ).to.equal( output );
@@ -1631,48 +1631,34 @@ describe( 'Schema', () => {
 		it( 'should not include empty elements when includeEmptyRanges is not set', () => {
 			schema.extend( '$text', { allowAttributes: 'foo' } );
 
-			_setModelData( model, '[<p>foo</p><p></p><p>bar</p>]' );
-
-			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo' ) );
-
-			// Two text ranges only: "foo" and "bar"; empty paragraph yields nothing.
-			expect( validRanges.length ).to.equal( 2 );
+			testValidRangesForAttribute(
+				'[<p>foo</p><p></p><p>bar</p>]',
+				'foo',
+				'<p>[foo]</p><p></p><p>[bar]</p>'
+			);
 		} );
 
 		it( 'should include empty elements when includeEmptyRanges is true', () => {
 			schema.extend( '$text', { allowAttributes: 'foo' } );
 
-			_setModelData( model, '[<p>foo</p><p></p><p>bar</p>]' );
-
-			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo', {
-				includeEmptyRanges: true
-			} ) );
-
-			// Three ranges: text "foo", empty paragraph (collapsed range inside it), text "bar".
-			expect( validRanges.length ).to.equal( 3 );
-			expect( validRanges[ 1 ].isCollapsed ).to.be.true;
-			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 1, 0 ] );
-			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 1, 0 ] );
+			testValidRangesForAttribute(
+				'[<p>foo</p><p></p><p>bar</p>]',
+				'foo',
+				'<p>[foo]</p><p>[]</p><p>[bar]</p>',
+				{ includeEmptyRanges: true }
+			);
 		} );
 
 		it( 'should not include empty inline elements when includeEmptyRanges is true', () => {
 			schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			// Paragraph with text, empty img, text. img is inline object (not block).
-			_setModelData( model, '[<p>foo<img></img>bar</p>]' );
-
-			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo', {
-				includeEmptyRanges: true
-			} ) );
-
-			// Only two text ranges; empty img must not get a range (would wrongly get selection:foo in commands).
-			expect( validRanges.length ).to.equal( 2 );
-			// First range: text "bar" in paragraph.
-			expect( validRanges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
-			expect( validRanges[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
-			// Second range: text "foo" in paragraph.
-			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 0, 4 ] );
-			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 0, 7 ] );
+			testValidRangesForAttribute(
+				'[<p>foo<img></img>bar</p>]',
+				'foo',
+				'<p>[foo]<img></img>[bar]</p>',
+				{ includeEmptyRanges: true }
+			);
 		} );
 	} );
 
