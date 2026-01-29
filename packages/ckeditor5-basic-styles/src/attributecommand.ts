@@ -94,16 +94,15 @@ export class AttributeCommand extends Command {
 				}
 			} else {
 				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey, {
-					includeEmptyElements: true
+					includeEmptyRanges: true
 				} );
 
 				for ( const range of ranges ) {
 					let itemOrRange: ModelRange | ModelElement = range;
 					let attributeKey = this.attributeKey;
-					const containedElement = range.getContainedElement();
 
-					if ( containedElement ) {
-						itemOrRange = containedElement;
+					if ( range.isCollapsed ) {
+						itemOrRange = range.start.parent as ModelElement;
 						attributeKey = `selection:${ this.attributeKey }`;
 					}
 

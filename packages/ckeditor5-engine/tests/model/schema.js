@@ -1628,7 +1628,7 @@ describe( 'Schema', () => {
 			);
 		} );
 
-		it( 'should not include empty elements when includeEmptyElements is not set', () => {
+		it( 'should not include empty elements when includeEmptyRanges is not set', () => {
 			schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			_setModelData( model, '[<p>foo</p><p></p><p>bar</p>]' );
@@ -1639,19 +1639,20 @@ describe( 'Schema', () => {
 			expect( validRanges.length ).to.equal( 2 );
 		} );
 
-		it( 'should include empty elements when includeEmptyElements is true', () => {
+		it( 'should include empty elements when includeEmptyRanges is true', () => {
 			schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			_setModelData( model, '[<p>foo</p><p></p><p>bar</p>]' );
 
 			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo', {
-				includeEmptyElements: true
+				includeEmptyRanges: true
 			} ) );
 
-			// Three ranges: text "foo", empty paragraph (for stored selection attribute), text "bar".
+			// Three ranges: text "foo", empty paragraph (collapsed range inside it), text "bar".
 			expect( validRanges.length ).to.equal( 3 );
-			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 1 ] );
-			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 2 ] );
+			expect( validRanges[ 1 ].isCollapsed ).to.be.true;
+			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 1, 0 ] );
+			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 1, 0 ] );
 		} );
 	} );
 

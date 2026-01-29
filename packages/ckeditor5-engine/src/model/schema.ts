@@ -817,14 +817,14 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param ranges Ranges to be validated.
 	 * @param attribute The name of the attribute to check.
 	 * @param options Optional configuration.
-	 * @param options.includeEmptyElements When `true`, empty elements that allow the attribute are also included
+	 * @param options.includeEmptyRanges When `true`, empty ranges that allow the attribute are also included
 	 * in the returned ranges.
 	 * @returns Ranges in which the attribute is allowed.
 	 */
 	public* getValidRanges(
 		ranges: Iterable<ModelRange>,
 		attribute: string,
-		options: { includeEmptyElements?: boolean } = {}
+		options: { includeEmptyRanges?: boolean } = {}
 	): IterableIterator<ModelRange> {
 		ranges = convertToMinimalFlatRanges( ranges );
 
@@ -1166,18 +1166,19 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	private* _getValidRangesForRange(
 		range: ModelRange,
 		attribute: string,
-		options: { includeEmptyElements?: boolean }
+		options: { includeEmptyRanges?: boolean }
 	): Iterable<ModelRange> {
 		let start = range.start;
 		let end = range.start;
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				if ( options.includeEmptyElements && item.isEmpty ) {
-					const context = [ ...item.getAncestors( { includeSelf: true } ) as any, new ModelText() ];
+				if ( options.includeEmptyRanges && item.isEmpty ) {
+					// In empty element check if it accepts text with the given attribute.
+					const context = this.createContext( item ).push( '$text' );
 
 					if ( this.checkAttribute( context, attribute ) ) {
-						yield ModelRange._createOn( item );
+						yield ModelRange._createIn( item );
 					}
 				} else {
 					yield* this._getValidRangesForRange( ModelRange._createIn( item ), attribute, options );
