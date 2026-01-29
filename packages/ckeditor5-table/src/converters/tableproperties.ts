@@ -14,7 +14,8 @@ import type {
 	UpcastConversionData,
 	ViewElement,
 	UpcastElementEvent,
-	Consumables
+	Consumables,
+	StyleValue
 } from '@ckeditor/ckeditor5-engine';
 import { first } from '@ckeditor/ckeditor5-utils';
 
@@ -157,86 +158,121 @@ export function upcastBorderStyles(
 ): void {
 	const { conversion } = editor;
 
-	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
-		// If the element was not converted by element-to-element converter,
-		// we should not try to convert the style. See #8393.
-		if ( !data.modelRange ) {
-			return;
-		}
+	conversion.for( 'upcast' ).add( dispatcher =>
+		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
+			const { modelRange, viewItem } = data;
+			// If the element was not converted by element-to-element converter,
+			// we should not try to convert the style. See #8393.
+			if ( !modelRange ) {
+				return;
+			}
 
-		// Check the most detailed properties. These will be always set directly or
-		// when using the "group" properties like: `border-(top|right|bottom|left)` or `border`.
-		const stylesToConsume = [
-			'border-top-width',
-			'border-top-color',
-			'border-top-style',
-			'border-bottom-width',
-			'border-bottom-color',
-			'border-bottom-style',
-			'border-right-width',
-			'border-right-color',
-			'border-right-style',
-			'border-left-width',
-			'border-left-color',
-			'border-left-style'
-		].filter( styleName => data.viewItem.hasStyle( styleName ) );
+			// Check the most detailed properties. These will be always set directly or
+			// when using the "group" properties like: `border-(top|right|bottom|left)` or `border`.
+			const stylesToConsume = [
+				'border-top-width',
+				'border-top-color',
+				'border-top-style',
+				'border-bottom-width',
+				'border-bottom-color',
+				'border-bottom-style',
+				'border-right-width',
+				'border-right-color',
+				'border-right-style',
+				'border-left-width',
+				'border-left-color',
+				'border-left-style'
+			].filter( styleName => viewItem.hasStyle( styleName ) );
 
-		if ( !stylesToConsume.length ) {
-			return;
-		}
+			if ( !stylesToConsume.length && !viewItem.hasAttribute( 'border' ) ) {
+				return;
+			}
 
-		const matcherPattern = {
-			styles: stylesToConsume
-		};
-
-		// Try to consume appropriate values from consumable values list.
-		if ( !conversionApi.consumable.test( data.viewItem, matcherPattern ) ) {
-			return;
-		}
-
-		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
-		const tableElement = modelElement.findAncestor( 'table', { includeSelf: true } );
-
-		let localDefaultBorder = defaultBorder;
-
-		if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
-			localDefaultBorder = {
-				style: 'none',
-				color: '',
-				width: ''
+			const matcherPattern = {
+				styles: stylesToConsume
 			};
-		}
 
-		conversionApi.consumable.consume( data.viewItem, matcherPattern );
+			// Try to consume appropriate values from consumable values list.
+			if ( !conversionApi.consumable.test( viewItem, matcherPattern ) ) {
+				return;
+			}
 
-		const normalizedBorder = {
-			style: data.viewItem.getNormalizedStyle( 'border-style' ),
-			color: data.viewItem.getNormalizedStyle( 'border-color' ),
-			width: data.viewItem.getNormalizedStyle( 'border-width' )
-		};
+			const modelElement = [ ...modelRange.getItems( { shallow: true } ) ].pop();
 
-		const reducedBorder = {
-			style: reduceBoxSidesValue( normalizedBorder.style ),
-			color: reduceBoxSidesValue( normalizedBorder.color ),
-			width: reduceBoxSidesValue( normalizedBorder.width )
-		};
+			if ( !modelElement ) {
+				return;
+			}
 
-		if ( reducedBorder.style !== localDefaultBorder.style ) {
-			conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
-		}
+			const tableElement = (
+				viewItem.is( 'element', 'table' ) ?
+					viewItem :
+					viewItem.findAncestor( 'table' )
+			)!;
 
-		if ( reducedBorder.color !== localDefaultBorder.color ) {
-			conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement );
-		}
+			let localDefaultBorder = defaultBorder;
 
-		if ( reducedBorder.width !== localDefaultBorder.width ) {
-			conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
-		}
-	} ) );
+			if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
+				localDefaultBorder = {
+					style: 'none',
+					color: '',
+					width: ''
+				};
+			}
+
+			conversionApi.consumable.consume( viewItem, matcherPattern );
+
+			const normalizedBorder = {
+				style: viewItem.getNormalizedStyle( 'border-style' ),
+				color: viewItem.getNormalizedStyle( 'border-color' ),
+				width: viewItem.getNormalizedStyle( 'border-width' )
+			};
+
+			// If table has "border" attribute and something didn't already consumed the border attribute on the nearest table element.
+			if ( viewItem.hasAttribute( 'border' ) && conversionApi.consumable.test( tableElement, { attributes: 'border' } ) ) {
+				const borderValue = viewItem.getAttribute( 'border' );
+
+				const borderAttributeNormalizedWidth = {
+					width: {
+						left: borderValue + 'px' as StyleValue,
+						right: borderValue + 'px' as StyleValue,
+						top: borderValue + 'px' as StyleValue,
+						bottom: borderValue + 'px' as StyleValue
+					}
+				};
+
+				normalizedBorder.width = {
+					...borderAttributeNormalizedWidth.width,
+					...( typeof normalizedBorder.width === 'object' && normalizedBorder.width !== null ? normalizedBorder.width : {} )
+				};
+
+				if ( borderValue !== '0' ) {
+					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
+				}
+			}
+
+			const reducedBorder = {
+				style: reduceBoxSidesValue( normalizedBorder.style as Style ),
+				color: reduceBoxSidesValue( normalizedBorder.color as Style ),
+				width: reduceBoxSidesValue( normalizedBorder.width as Style )
+			};
+
+			if ( reducedBorder.style !== localDefaultBorder.style ) {
+				conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
+			}
+
+			if ( reducedBorder.color !== localDefaultBorder.color ) {
+				conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement );
+			}
+
+			if ( reducedBorder.width !== localDefaultBorder.width ) {
+				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
+			}
+		} )
+	);
 
 	// If parent table has `border="0"` attribute then set border style to `none`
 	// all table cells of that table and table itself.
-	conversion.for( 'upcast' ).add( dispatcher => {
+	conversion.for( 'upcast' ).add( dispatcher =>
 		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
 			const { modelRange, viewItem } = data;
 
@@ -268,8 +304,8 @@ export function upcastBorderStyles(
 			if ( viewItem.is( 'element', 'table' ) ) {
 				conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
 			}
-		} );
-	} );
+		} )
+	);
 }
 
 /**
