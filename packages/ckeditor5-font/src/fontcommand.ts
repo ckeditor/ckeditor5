@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { type Batch, type ModelWriter } from 'ckeditor5/src/engine.js';
+import type { Batch, ModelWriter, ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * The base font command.
@@ -74,13 +74,23 @@ export abstract class FontCommand extends Command {
 					writer.removeSelectionAttribute( this.attributeKey );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey, {
+					includeEmptyRanges: true
+				} );
 
 				for ( const range of ranges ) {
+					let itemOrRange: ModelRange | ModelElement = range;
+					let attributeKey = this.attributeKey;
+
+					if ( range.isCollapsed ) {
+						itemOrRange = range.start.parent as ModelElement;
+						attributeKey = `selection:${ this.attributeKey }`;
+					}
+
 					if ( value ) {
-						writer.setAttribute( this.attributeKey, value, range );
+						writer.setAttribute( attributeKey, value, itemOrRange );
 					} else {
-						writer.removeAttribute( this.attributeKey, range );
+						writer.removeAttribute( attributeKey, itemOrRange );
 					}
 				}
 			}
