@@ -576,6 +576,145 @@ describe( 'table properties', () => {
 					} );
 				} );
 
+				describe( 'border attribute with value greater than 0 handling', () => {
+					beforeEach( async () => {
+						await editor.destroy();
+
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ]
+						} );
+
+						model = editor.model;
+					} );
+
+					it( 'should convert border="10" to tableBorderWidth="10px"', () => {
+						editor.setData(
+							'<table border="10">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '10px' );
+					} );
+
+					it( 'should not convert border="1" to tableBorderWidth="1px" (default width)', () => {
+						editor.setData(
+							'<table border="1">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).is.undefined;
+					} );
+
+					it( 'should not convert border="10" to tableBorderWidth="10px" when inline border width (5px) style is present', () => {
+						editor.setData(
+							'<table border="10" style="border-width: 5px;">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '5px' );
+					} );
+
+					it( 'should not convert border="10" to tableBorderWidth="10px" when inline border width (0px) style is present', () => {
+						editor.setData(
+							'<table border="10" style="border-width: 0px;">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+					} );
+
+					it( 'should respect inline border overrides (left) when converting border attribute', () => {
+						editor.setData(
+							'<table border="10" style="border-left-width: 5px;">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.deep.equal( {
+							top: '10px',
+							right: '10px',
+							bottom: '10px',
+							left: '5px'
+						} );
+					} );
+
+					it( 'should respect inline border overrides (top and bottom) when converting border attribute', () => {
+						editor.setData(
+							'<table border="10" style="border-top-width: 5px; border-bottom-width: 5px;">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.deep.equal( {
+							top: '5px',
+							right: '10px',
+							bottom: '5px',
+							left: '10px'
+						} );
+					} );
+
+					describe( 'with TableLayoutEditing', () => {
+						let editor, model;
+
+						beforeEach( async () => {
+							editor = await VirtualTestEditor.create( {
+								plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+								table: {
+									tableProperties: {
+										alignment: {
+											useInlineStyles: true
+										}
+									}
+								}
+							} );
+
+							model = editor.model;
+						} );
+
+						afterEach( async () => {
+							await editor.destroy();
+						} );
+
+						it( 'should not upcast the default `border` values', () => {
+							editor.setData(
+								'<table class="layout-table" border="10">' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+							expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
+							expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+							expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.equal( '10px' );
+						} );
+					} );
+				} );
+
 				describe( 'border="0" attribute handling', () => {
 					beforeEach( async () => {
 						await editor.destroy();
