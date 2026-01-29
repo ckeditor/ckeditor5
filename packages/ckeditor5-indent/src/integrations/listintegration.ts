@@ -18,7 +18,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 /**
- * TODO
+ * This integration enables using block indentation feature with lists.
  */
 export class ListIntegration extends Plugin {
 	/**
