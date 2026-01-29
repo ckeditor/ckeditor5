@@ -198,11 +198,6 @@ export function upcastBorderStyles(
 			}
 
 			const modelElement = [ ...modelRange.getItems( { shallow: true } ) ].pop();
-
-			if ( !modelElement ) {
-				return;
-			}
-
 			const tableElement = (
 				viewItem.is( 'element', 'table' ) ?
 					viewItem :
@@ -211,7 +206,7 @@ export function upcastBorderStyles(
 
 			let localDefaultBorder = defaultBorder;
 
-			if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
+			if ( modelElement && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
 				localDefaultBorder = {
 					style: 'none',
 					color: '',
@@ -257,15 +252,15 @@ export function upcastBorderStyles(
 			};
 
 			if ( reducedBorder.style !== localDefaultBorder.style ) {
-				conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
+				conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement! );
 			}
 
 			if ( reducedBorder.color !== localDefaultBorder.color ) {
-				conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement );
+				conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement! );
 			}
 
 			if ( reducedBorder.width !== localDefaultBorder.width ) {
-				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
+				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement! );
 			}
 		} )
 	);
@@ -287,22 +282,18 @@ export function upcastBorderStyles(
 				return;
 			}
 
-			// Ignore tables with border different than "0".
-			if ( viewTable.getAttribute( 'border' ) !== '0' ) {
-				return;
-			}
+			if ( viewTable.getAttribute( 'border' ) === '0' ) {
+				const modelElement = modelRange?.start?.nodeAfter;
 
-			const modelElement = modelRange?.start?.nodeAfter;
+				if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+					return;
+				}
 
-			// If model element has already border style attribute, skip the conversion.
-			if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
-				return;
-			}
+				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
 
-			conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
-
-			if ( viewItem.is( 'element', 'table' ) ) {
-				conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
+				if ( viewItem.is( 'element', 'table' ) ) {
+					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
+				}
 			}
 		} )
 	);
