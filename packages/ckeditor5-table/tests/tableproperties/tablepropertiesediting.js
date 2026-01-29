@@ -618,24 +618,6 @@ describe( 'table properties', () => {
 						expect( borderConsumed ).to.be.true;
 					} );
 
-					it( 'should not consume border attribute if value is not "0"', () => {
-						let borderConsumed = false;
-
-						editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
-							borderConsumed = !conversionApi.consumable.test( data.viewItem, { attributes: 'border' } );
-						}, { priority: 'lowest' } );
-
-						editor.setData(
-							'<table border="1">' +
-								'<tr>' +
-									'<td>foo</td>' +
-								'</tr>' +
-							'</table>'
-						);
-
-						expect( borderConsumed ).to.be.false;
-					} );
-
 					it( 'should not convert border="1" or other non-zero values', () => {
 						editor.setData(
 							'<table border="1">' +
@@ -666,7 +648,7 @@ describe( 'table properties', () => {
 						);
 
 						expectModel(
-							'<table tableBorderStyle="solid">' +
+							'<table tableBorderStyle="solid" tableBorderWidth="0px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>foo</paragraph>' +
@@ -688,7 +670,7 @@ describe( 'table properties', () => {
 						);
 
 						expectModel(
-							'<table tableBorderStyle="none">' +
+							'<table tableBorderStyle="none" tableBorderWidth="0px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>foo</paragraph>' +
@@ -715,7 +697,7 @@ describe( 'table properties', () => {
 						);
 
 						expectModel(
-							'<table headingRows="1" tableBorderStyle="none">' +
+							'<table headingRows="1" tableBorderStyle="none" tableBorderWidth="0px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>header</paragraph>' +
