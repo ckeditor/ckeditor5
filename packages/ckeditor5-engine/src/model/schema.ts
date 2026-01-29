@@ -1173,11 +1173,14 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				if ( options.includeEmptyRanges && item.isEmpty && this.isBlock( item ) ) {
+				if ( options.includeEmptyRanges && item.isEmpty ) {
 					// In empty block check if it accepts text with the given attribute.
-					const context = this.createContext( item ).push( '$text' );
+					const context = this.createContext( item );
 
-					if ( this.checkAttribute( context, attribute ) ) {
+					if (
+						this.checkChild( context, '$text' ) &&
+						this.checkAttribute( context.push( '$text' ), attribute )
+					) {
 						yield ModelRange._createIn( item );
 					}
 				} else {
