@@ -889,6 +889,258 @@ describe( 'Rect', () => {
 				height: 50
 			} );
 		} );
+
+		it( 'should only ignore a clipping static parent when the last positioned element in the parents stack had position: absolute ' +
+			'(last positioned element has position relative)', () => {
+			const ancestorC = document.createElement( 'div' );
+
+			ancestorA.appendChild( element );
+			ancestorB.appendChild( ancestorA );
+			ancestorC.appendChild( ancestorB );
+			document.body.appendChild( ancestorC );
+
+			element.style.position = 'static';
+			ancestorA.style.position = 'absolute';
+			ancestorB.style.position = 'relative';
+			ancestorC.style.position = 'static';
+			ancestorC.style.overflow = 'hidden';
+
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 30,
+				right: 130,
+				bottom: 130,
+				left: 30,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 20,
+				right: 120,
+				bottom: 120,
+				left: 20,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 10,
+				right: 110,
+				bottom: 110,
+				left: 10,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 30,
+				right: 100,
+				bottom: 100,
+				left: 30,
+				width: 70,
+				height: 70
+			} );
+
+			document.body.removeChild( ancestorC );
+		} );
+
+		it( 'should only ignore a clipping static parent when the last positioned element in the parents stack had position: absolute ' +
+			'(last positioned element has position absolute)', () => {
+			const ancestorC = document.createElement( 'div' );
+
+			ancestorA.appendChild( element );
+			ancestorB.appendChild( ancestorA );
+			ancestorC.appendChild( ancestorB );
+			document.body.appendChild( ancestorC );
+
+			element.style.position = 'static';
+			ancestorA.style.position = 'relative';
+			ancestorB.style.position = 'absolute';
+			ancestorC.style.position = 'static';
+			ancestorC.style.overflow = 'hidden';
+
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 30,
+				right: 130,
+				bottom: 130,
+				left: 30,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 20,
+				right: 120,
+				bottom: 120,
+				left: 20,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 10,
+				right: 110,
+				bottom: 110,
+				left: 10,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 30,
+				right: 130,
+				bottom: 130,
+				left: 30,
+				width: 100,
+				height: 100
+			} );
+
+			document.body.removeChild( ancestorC );
+		} );
+
+		it( 'should not ignore a clipping non-static parent when the last positioned element in the parents stack had position: absolute ' +
+			'(last positioned element has position absolute)', () => {
+			const ancestorC = document.createElement( 'div' );
+
+			ancestorA.appendChild( element );
+			ancestorB.appendChild( ancestorA );
+			ancestorC.appendChild( ancestorB );
+			document.body.appendChild( ancestorC );
+
+			element.style.position = 'static';
+			ancestorA.style.position = 'relative';
+			ancestorB.style.position = 'absolute';
+			ancestorC.style.position = 'fixed';
+			ancestorC.style.overflow = 'hidden';
+
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 30,
+				right: 130,
+				bottom: 130,
+				left: 30,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 20,
+				right: 120,
+				bottom: 120,
+				left: 20,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 10,
+				right: 110,
+				bottom: 110,
+				left: 10,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 30,
+				right: 100,
+				bottom: 100,
+				left: 30,
+				width: 70,
+				height: 70
+			} );
+
+			document.body.removeChild( ancestorC );
+		} );
+
+		it( 'should not ignore a clipping non-static parent when the last positioned element in the parents stack had position: absolute ' +
+			'(last positioned element has position relative)', () => {
+			const ancestorC = document.createElement( 'div' );
+
+			ancestorA.appendChild( element );
+			ancestorB.appendChild( ancestorA );
+			ancestorC.appendChild( ancestorB );
+			document.body.appendChild( ancestorC );
+
+			element.style.position = 'static';
+			ancestorA.style.position = 'absolute';
+			ancestorB.style.position = 'relative';
+			ancestorC.style.position = 'fixed';
+			ancestorC.style.overflow = 'hidden';
+
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 30,
+				right: 130,
+				bottom: 130,
+				left: 30,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 20,
+				right: 120,
+				bottom: 120,
+				left: 20,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 10,
+				right: 110,
+				bottom: 110,
+				left: 10,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 30,
+				right: 100,
+				bottom: 100,
+				left: 30,
+				width: 70,
+				height: 70
+			} );
+
+			document.body.removeChild( ancestorC );
+		} );
 	} );
 
 	describe( 'isEqual()', () => {
