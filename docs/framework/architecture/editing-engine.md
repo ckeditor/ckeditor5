@@ -46,7 +46,7 @@ editor.model.schema;                // -> The model's schema
 
 ### Changing the model
 
-You can only change the document structure, selection, and create elements using the {@link module:engine/model/writer~ModelWriter model writer}. Access the writer instance in the {@link module:engine/model/writer~ModelWriter model writer} blocks.
+You can only change the document structure, selection, and create elements using the {@link module:engine/model/writer~ModelWriter model writer}. Access the writer instance in the {@link module:engine/model/model~Model#change `change()`} and the {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`} blocks.
 
 ```js
 // Inserts text "foo" at the selection position
