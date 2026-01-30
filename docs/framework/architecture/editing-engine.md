@@ -274,9 +274,9 @@ Sometimes you have to change the view manually if the model does not reflect the
 For that, like in the model, use the `change()` block (of the view) where you will have access to the view downcast writer.
 
 ```js
-editor.editing.view.change(writer => {
-	writer.insert(position, writer.createText('foo'));
-});
+editor.editing.view.change( writer => {
+	writer.insert( position, writer.createText( 'foo' ) );
+} );
 ```
 
 <info-box important>
