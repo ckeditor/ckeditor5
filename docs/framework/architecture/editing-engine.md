@@ -288,7 +288,13 @@ editor.editing.view.change( writer => {
 
 ### Positions
 
-Like [in the model](#positions-ranges-and-selections), there are 3 levels of classes in the view that describe points in the view structure: **positions**, **ranges**, and **selections**. A position is a single point in the document. A range consists of two positions (start and end). A selection consists of one or more ranges and has a direction (left-to-right or right-to-left).
+Like [in the model](https://github.com/ckeditor/ckeditor5/pull/19651#positions-ranges-and-selections), there are 3 levels of classes in the view that describe points in the view structure: **positions**, **ranges**, and **selections**.
+
+* A **position** is a single point in the document.
+* A **range** consists of two positions (start and end).
+* A **selection** consists of one or more ranges with a direction.
+ 
+When a user makes a selection, it has two ends: the anchor (where the selection starts) and the focus (where it ends). The focus moves (left to right or right to left) while the anchor stays fixed.
 
 A view range is similar to its [DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html). View positions are represented by a parent and an offset in that parent. This means, unlike model offsets, view offsets describe:
 
