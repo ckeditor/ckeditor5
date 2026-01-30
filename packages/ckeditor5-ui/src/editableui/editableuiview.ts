@@ -60,12 +60,12 @@ export class EditableUIView extends View {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement
+		editableElement?: HTMLElement | string // TODO string => create DOM element name
 	) {
 		super( locale );
 
 		this.setTemplate( {
-			tag: 'div',
+			tag: typeof editableElement == 'string' ? editableElement : 'div',
 			attributes: {
 				class: [
 					'ck',
@@ -80,7 +80,7 @@ export class EditableUIView extends View {
 
 		this.set( 'isFocused', false );
 
-		this._editableElement = editableElement;
+		this._editableElement = typeof editableElement == 'string' ? undefined : editableElement;
 		this._hasExternalElement = !!this._editableElement;
 		this._editingView = editingView;
 	}
