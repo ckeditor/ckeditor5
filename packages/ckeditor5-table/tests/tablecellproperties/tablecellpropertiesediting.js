@@ -330,7 +330,24 @@ describe( 'table cell properties', () => {
 						);
 
 						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
 						expect( cell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'dashed' );
+					} );
+
+					it( 'should not override table cell custom border color and width', () => {
+						editor.setData(
+							'<table border="0">' +
+								'<tr>' +
+									'<td style="border: 2px solid #f00;">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
+						expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '2px' );
+						expect( cell.hasAttribute( 'tableCellBorderStyle' ) ).to.be.false;
 					} );
 				} );
 			} );
