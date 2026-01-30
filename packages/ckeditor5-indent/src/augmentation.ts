@@ -8,7 +8,8 @@ import type {
 	Indent,
 	IndentBlock,
 	IndentUI,
-	IndentBlockCommand
+	IndentBlockCommand,
+	ListIntegration
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -26,6 +27,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ Indent.pluginName ]: Indent;
 		[ IndentBlock.pluginName ]: IndentBlock;
 		[ IndentUI.pluginName ]: IndentUI;
+		[ ListIntegration.pluginName ]: ListIntegration;
 	}
 
 	interface CommandsMap {
