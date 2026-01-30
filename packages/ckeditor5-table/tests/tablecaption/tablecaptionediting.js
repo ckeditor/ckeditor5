@@ -303,7 +303,7 @@ describe( 'TableCaptionEditing', () => {
 				);
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<figure aria-label="Foo caption" class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -321,6 +321,153 @@ describe( 'TableCaptionEditing', () => {
 						'</figcaption>' +
 					'</figure>'
 				);
+			} );
+		} );
+
+		describe( 'aria-label handling', () => {
+			it( 'should add aria-label attribute when caption is added to table', () => {
+				_setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>xyz</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				const figureMatch = viewData.match( /<figure[^>]*>/ );
+
+				expect( figureMatch[ 0 ] ).to.not.include( 'aria-label' );
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+					const caption = writer.createElement( 'caption' );
+					writer.insertText( 'Test caption', caption );
+					writer.append( caption, table );
+				} );
+
+				const viewDataAfter = _getViewData( view, { withoutSelection: true } );
+				const figureMatchAfter = viewDataAfter.match( /<figure[^>]*>/ );
+
+				expect( figureMatchAfter[ 0 ] ).to.include( 'aria-label="Test caption"' );
+			} );
+
+			it( 'should remove aria-label attribute when caption is removed from table', () => {
+				_setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>xyz</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>Test caption</caption>' +
+					'</table>'
+				);
+
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				const figureMatch = viewData.match( /<figure[^>]*>/ );
+
+				expect( figureMatch[ 0 ] ).to.include( 'aria-label="Test caption"' );
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+					const caption = table.getChild( table.childCount - 1 );
+					writer.remove( caption );
+				} );
+
+				const viewDataAfter = _getViewData( view, { withoutSelection: true } );
+				const figureMatchAfter = viewDataAfter.match( /<figure[^>]*>/ );
+
+				expect( figureMatchAfter[ 0 ] ).to.not.include( 'aria-label' );
+			} );
+
+			it( 'should update aria-label attribute when caption text changes', () => {
+				_setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>xyz</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>Initial caption</caption>' +
+					'</table>'
+				);
+
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				const figureMatch = viewData.match( /<figure[^>]*>/ );
+
+				expect( figureMatch[ 0 ] ).to.include( 'aria-label="Initial caption"' );
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+					const caption = table.getChild( table.childCount - 1 );
+					writer.remove( writer.createRangeIn( caption ) );
+					writer.insertText( 'Updated caption', caption );
+				} );
+
+				const viewDataAfter = _getViewData( view, { withoutSelection: true } );
+				const figureMatchAfter = viewDataAfter.match( /<figure[^>]*>/ );
+
+				expect( figureMatchAfter[ 0 ] ).to.include( 'aria-label="Updated caption"' );
+			} );
+
+			it( 'should remove aria-label when caption becomes empty', () => {
+				_setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>xyz</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>Test caption</caption>' +
+					'</table>'
+				);
+
+				const viewData = _getViewData( view, { withoutSelection: true } );
+				const figureMatch = viewData.match( /<figure[^>]*>/ );
+
+				expect( figureMatch[ 0 ] ).to.include( 'aria-label="Test caption"' );
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+					const caption = table.getChild( table.childCount - 1 );
+					writer.remove( writer.createRangeIn( caption ) );
+				} );
+
+				const viewDataAfter = _getViewData( view, { withoutSelection: true } );
+				const figureMatchAfter = viewDataAfter.match( /<figure[^>]*>/ );
+
+				expect( figureMatchAfter[ 0 ] ).to.not.include( 'aria-label' );
+			} );
+
+			it( 'should set aria-label when table with caption is inserted', () => {
+				_setModelData( model, '<paragraph>foo</paragraph>' );
+
+				const viewDataBefore = _getViewData( view, { withoutSelection: true } );
+				expect( viewDataBefore ).to.not.include( 'aria-label' );
+
+				model.change( writer => {
+					const table = writer.createElement( 'table' );
+					const tableRow = writer.createElement( 'tableRow' );
+					const tableCell = writer.createElement( 'tableCell' );
+					const paragraph = writer.createElement( 'paragraph' );
+					const caption = writer.createElement( 'caption' );
+
+					writer.insertText( 'cell', paragraph );
+					writer.append( paragraph, tableCell );
+					writer.append( tableCell, tableRow );
+					writer.append( tableRow, table );
+					writer.insertText( 'New table caption', caption );
+					writer.append( caption, table );
+					writer.insert( table, model.document.getRoot(), 0 );
+				} );
+
+				const viewDataAfter = _getViewData( view, { withoutSelection: true } );
+				const figureMatch = viewDataAfter.match( /<figure[^>]*>/ );
+
+				expect( figureMatch[ 0 ] ).to.include( 'aria-label="New table caption"' );
 			} );
 		} );
 	} );
@@ -388,7 +535,7 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 				);
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<figure aria-label="Foo caption" class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
