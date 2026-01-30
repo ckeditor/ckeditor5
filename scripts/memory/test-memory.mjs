@@ -32,7 +32,7 @@ const ALLOWED_EDITOR_NAMES = [
 const { values } = parseArgs( {
 	options: {
 		html: { type: 'string', default: 'index.html' },
-		editors: { type: 'string', multiple: true, default: ALLOWED_EDITOR_NAMES },
+		editor: { type: 'string', multiple: true, default: ALLOWED_EDITOR_NAMES },
 		build: { type: 'boolean', default: true }
 	},
 	strict: true,
@@ -62,7 +62,7 @@ await startMemoryTest( {
 	html: values.html,
 	timeout: TIMEOUT,
 	memoryThreshold: MEMORY_THRESHOLD,
-	editorNames: values.editors,
+	editorNames: values.editor,
 	editorData: {
 		LICENSE_KEY: 'GPL'
 	}
