@@ -7,10 +7,10 @@
  * @module style/integrations/list
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { ModelElement } from 'ckeditor5/src/engine.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
-import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
+import type { TemplateDefinition } from '@ckeditor/ckeditor5-ui';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 

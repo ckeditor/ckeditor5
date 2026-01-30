@@ -7,10 +7,10 @@
  * @module list/list/listutils
  */
 
-import type { ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
-import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type { ModelElement, ModelNode } from '@ckeditor/ckeditor5-engine';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	type ListElement,
 	expandListBlocksToCompleteItems,

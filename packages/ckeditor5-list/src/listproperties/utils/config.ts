@@ -7,7 +7,7 @@
  * @module list/listproperties/utils/config
  */
 
-import { toArray } from 'ckeditor5/src/utils.js';
+import { toArray } from '@ckeditor/ckeditor5-utils';
 import type { ListPropertiesConfig, ListPropertiesStyleListType } from '../../listconfig.js';
 
 /**
