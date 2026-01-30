@@ -44,7 +44,7 @@ const { values } = parseArgs( {
  */
 if ( values.build ) {
 	// Remove old assets.
-	for await ( const asset of glob( '*.js', { cwd: ASSETS_DIR } ) ) {
+	for await ( const asset of glob( '*.@(js|css)', { cwd: ASSETS_DIR } ) ) {
 		await rm( resolve( ASSETS_DIR, asset ) );
 	}
 
