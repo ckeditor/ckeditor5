@@ -34,5 +34,9 @@ packages/*/src/**/*.d.ts
 packages/*/src/**/*.js
 packages/*/src/**/*.js.map
 
+# Memory leak test assets.
+scripts/memory/assets/*.js
+scripts/memory/assets/*.css
+
 # Ignore local environment variables.
 .env

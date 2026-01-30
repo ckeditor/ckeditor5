@@ -24,7 +24,7 @@ Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engin
 
 To run the automated tests, use the `pnpm run test [<args>...]` command.
 
-It accepts the following arguments that must be passed after the `--` option:
+It accepts the following arguments:
 
 * `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
@@ -204,6 +204,53 @@ pnpm run manual:verify
 ```
 
 Read more about the crawler in the {@link framework/contributing/development-environment#verifying-documentation Verifying documentation} guide.
+
+## Running memory leak tests
+
+To run the memory leak tests, use the `pnpm run test:memory` command. It builds a browser bundle, starts a local server, and runs the tests in headless Chromium.
+
+The command accepts the following arguments:
+
+* `--editor` &ndash; A list of editor names to test. You can pass the option multiple times. Defaults to `BalloonEditor`, `ClassicEditor`, `DecoupledEditor`, `InlineEditor`, and `MultiRootEditor`.
+* `--html` &ndash; The HTML file to load from `scripts/memory/assets`. Defaults to `index.html`.
+* `--no-build` &ndash; Skips generating the browser build and reuses the existing editor assets.
+
+### Examples
+
+Run all memory leak tests:
+
+```
+pnpm run test:memory
+```
+
+Test only the classic and inline editors:
+
+```
+pnpm run test:memory --editor ClassicEditor --editor InlineEditor
+```
+
+Use a custom HTML file from `scripts/memory/assets`:
+
+```
+pnpm run test:memory --html my-test.html
+```
+
+Reuse existing assets:
+
+```
+pnpm run test:memory --no-build
+```
+
+### Interpreting the results
+
+Each editor run consists of multiple create/destroy cycles. The warmup phase creates and destroys the editor a few times to populate caches and JIT state. The actual test then repeats the same create/destroy cycle more times while sampling memory between cycles. This makes the results less sensitive to first‑run effects and helps highlight steady growth trends.
+
+After the run completes, the summary table reports:
+
+* **Baseline** &ndash; The memory level after warmup. It is the reference point for the rest of the run and should already include initial cache effects.
+* **Growth** &ndash; The difference between the final measurement and the baseline across repeated cycles. Use this to spot steady memory increases over time rather than one‑off spikes.
+* **Tail Growth** &ndash; The spread within the last few measurements. It helps verify that memory stabilized near the end; large values suggest a still-growing footprint or high noise even after multiple cycles.
+* **Status** &ndash; `OK` when both Growth and Tail Growth stay below the threshold. `Exceeds threshold` or `Error` means the run should be treated as a failure.
 
 ## Rules for using the `--files` option
 

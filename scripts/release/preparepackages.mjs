@@ -367,8 +367,6 @@ const tasks = new Listr( [
 	}
 ], getListrOptions( cliArguments ) );
 
-console.log( 'Version', latestVersion );
-
 tasks.run()
 	.catch( err => {
 		process.exitCode = 1;

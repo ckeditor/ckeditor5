@@ -25,7 +25,7 @@ describe( 'scripts/release/preparepackages', () => {
 		listrTasks = vi.mocked( Listr ).mock.calls[ 0 ][ 0 ];
 	} );
 
-	describe( 'Verify release directory.', async () => {
+	describe( 'Verify release directory.', () => {
 		let task;
 
 		beforeEach( () => {

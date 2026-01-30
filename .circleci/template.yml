@@ -108,7 +108,23 @@ jobs:
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
             bash scripts/check-manual-tests.sh -r ckeditor5-root
-
+  
+  cke5_memory_leak_test:
+    docker:
+      - image: cimg/node:24.11.0-browsers
+    resource_class: medium
+    steps:
+      - checkout_command
+      - halt_if_short_flow
+      - browser-tools/install_chrome
+      - bootstrap_repository_command
+      - install_newest_emoji
+      - run:
+          name: Test for memory leaks
+          command: |
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
+            pnpm run test:memory
+  
   cke5_validators:
     docker:
       - image: cimg/node:24.11.0
@@ -298,6 +314,11 @@ workflows:
             branches:
               ignore:
                 - stable
+      - cke5_memory_leak_test:
+          filters:
+            branches:
+              ignore:
+                - stable
       - release_prepare:
           filters:
             branches:
@@ -310,6 +331,7 @@ workflows:
             - cke5_coverage
             - cke5_validators
             - cke5_manual
+            - cke5_memory_leak_test
             - release_prepare
           filters:
             branches:
@@ -321,6 +343,7 @@ workflows:
             - cke5_tests_features_batch_n
             - cke5_validators
             - cke5_manual
+            - cke5_memory_leak_test
             - release_prepare
           filters:
             branches:
@@ -343,6 +366,7 @@ workflows:
       - cke5_tests_features_batch_n
       - cke5_validators
       - cke5_manual
+      - cke5_memory_leak_test
       - release_prepare
       - notify_ci_failure:
           hideAuthor: "true"

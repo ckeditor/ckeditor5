@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>CKEditor 5 memory tests</title>
+		<link rel="icon" href="data:," />
+		<link rel="stylesheet" href="/ckeditor5.css" />
+	</head>
+	<body>
+		<!-- Define the editor fixture template -->
+		<template id="memory-test-fixture">
+			<div>
+				<h2>Editor</h2>
+				<p>This is an editor instance.</p>
+			</div>
+		</template>
+
+		<!-- Register the CKEditor 5 import map -->
+		<script type="importmap">
+		{
+			"imports": {
+				"ckeditor5": "/ckeditor5.js"
+			}
+		}
+		</script>
+
+		<!-- Define the editor creation factory -->
+		<script type="module">
+			import * as CKEDITOR from 'ckeditor5';
+
+			function createEditor( hostId, editorName, { LICENSE_KEY } ) {
+				const EDITOR_CONFIG = {
+					licenseKey: LICENSE_KEY,
+					plugins: [
+						CKEDITOR.Essentials,
+						CKEDITOR.Autoformat,
+						CKEDITOR.BlockQuote,
+						CKEDITOR.Bold,
+						CKEDITOR.Heading,
+						CKEDITOR.Image,
+						CKEDITOR.ImageCaption,
+						CKEDITOR.ImageStyle,
+						CKEDITOR.ImageToolbar,
+						CKEDITOR.Indent,
+						CKEDITOR.Italic,
+						CKEDITOR.Link,
+						CKEDITOR.List,
+						CKEDITOR.MediaEmbed,
+						CKEDITOR.Paragraph,
+						CKEDITOR.Table,
+						CKEDITOR.TableToolbar
+					],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
+					}
+				};
+
+				const host = document.querySelector( '#' + hostId );
+				const Editor = CKEDITOR[ editorName ];
+				const target = editorName === 'MultiRootEditor' ? { foo: host } : host;
+
+				return Editor.create( target, EDITOR_CONFIG );
+			}
+
+			globalThis.createEditor = createEditor;
+		</script>
+
+	</body>
+</html>
