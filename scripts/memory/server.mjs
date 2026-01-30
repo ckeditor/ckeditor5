@@ -6,7 +6,7 @@
 /**
  * A lightweight HTTP server tailored for memory testing.
  *
- * It serves assets from the `scripts/memory/assets` directory and injects security headers
+ * It serves assets from the provided assets directory and injects security headers
  * required for high-resolution memory measurement in Chromium.
  *
  * Security / hardening notes:
@@ -14,9 +14,9 @@
  * - Rejects malformed URLs and disallows backslashes / NUL bytes in the path to avoid
  *   platform-specific path parsing quirks.
  * - Prevents directory traversal and symlink escapes:
- *   - The requested path is resolved against `ASSETS_DIR`.
+ *   - The requested path is resolved against the provided assets directory.
  *   - Both the base directory and the target path are dereferenced via `realpath()`,
- *     and the request is allowed only if the resulting target stays within `ASSETS_DIR`.
+ *     and the request is allowed only if the resulting target stays within the provided assets directory.
  * - Restricts served files to an allowlist of extensions (`.html`, `.js`, `.css`).
  *
  * Cross-Origin Isolation:

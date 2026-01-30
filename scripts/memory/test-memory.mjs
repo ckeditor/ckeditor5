@@ -5,11 +5,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { copyFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
+import { copyFile, rm, glob } from 'node:fs/promises';
 import { dist, generateCKEditor5BrowserBuild } from '../nim/utils.mjs';
 import { startMemoryTest } from './orchestrator.mjs';
+
+/**
+ * Constants
+ */
+const TIMEOUT = 20_000; // 20 seconds per editor type.
+const MEMORY_THRESHOLD = 1.5 * 1024 * 1024; // 1.5 MB.
+const ASSETS_DIR = resolve( import.meta.dirname, 'assets' );
 
 const ALLOWED_EDITOR_NAMES = [
 	'BalloonEditor',
@@ -19,32 +26,42 @@ const ALLOWED_EDITOR_NAMES = [
 	'MultiRootEditor'
 ];
 
+/**
+ * CLI arguments
+ */
 const { values } = parseArgs( {
 	options: {
-		assets: { type: 'string', default: 'scripts/memory/assets' },
+		html: { type: 'string', default: 'index.html' },
 		editors: { type: 'string', multiple: true, default: ALLOWED_EDITOR_NAMES },
-		build: { type: 'boolean', default: true },
-		timeout: { type: 'string', default: String( 20_000 ) }, // 20 seconds per editor
-		threshold: { type: 'string', default: String( 1.5 * 1024 * 1024 ) } // 1.5 MB
+		build: { type: 'boolean', default: true }
 	},
 	strict: true,
 	allowNegative: true
 } );
 
-const resolvedAssetsDir = resolve( process.cwd(), values.assets );
-
-await mkdir( resolvedAssetsDir, { recursive: true } );
-
+/**
+ * Build
+ */
 if ( values.build ) {
+	// Remove old assets.
+	for await ( const asset of glob( '*.js', { cwd: ASSETS_DIR } ) ) {
+		await rm( resolve( ASSETS_DIR, asset ) );
+	}
+
+	// Generate core build.
 	await generateCKEditor5BrowserBuild();
-	await copyFile( dist( 'browser/ckeditor5.js' ), resolve( resolvedAssetsDir, 'ckeditor5.js' ) );
-	await copyFile( dist( 'browser/ckeditor5.css' ), resolve( resolvedAssetsDir, 'ckeditor5.css' ) );
+	await copyFile( dist( 'browser/ckeditor5.js' ), resolve( ASSETS_DIR, 'ckeditor5.js' ) );
+	await copyFile( dist( 'browser/ckeditor5.css' ), resolve( ASSETS_DIR, 'ckeditor5.css' ) );
 }
 
+/**
+ * Run the memory test.
+ */
 await startMemoryTest( {
-	assetsDir: resolvedAssetsDir,
-	timeout: Number( values.timeout ),
-	memoryThreshold: Number( values.threshold ),
+	assetsDir: ASSETS_DIR,
+	html: values.html,
+	timeout: TIMEOUT,
+	memoryThreshold: MEMORY_THRESHOLD,
 	editorNames: values.editors,
 	editorData: {
 		LICENSE_KEY: 'GPL'

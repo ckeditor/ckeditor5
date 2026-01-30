@@ -18,27 +18,18 @@ import { styleText } from 'node:util';
 import { startServer } from './server.mjs';
 import { startBrowser, runTestInPage } from './browser.mjs';
 
-const EDITOR_NAMES = [
-	'BalloonEditor',
-	'ClassicEditor',
-	'DecoupledEditor',
-	'InlineEditor',
-	'MultiRootEditor'
-];
-
 const bytesToMiB = bytes => Math.round( ( bytes / 1024 / 1024 ) * 100 ) / 100;
 
 export async function startMemoryTest( {
 	assetsDir,
+	html,
 	timeout,
 	memoryThreshold,
 	editorNames,
 	editorData
 } ) {
-	const targetEditors = editorNames?.length ? editorNames : EDITOR_NAMES;
 	const server = await startServer( assetsDir );
 	const port = server.address().port;
-	const baseUrl = `http://127.0.0.1:${ port }`;
 
 	let browser;
 	const results = [];
@@ -47,13 +38,13 @@ export async function startMemoryTest( {
 	try {
 		browser = await startBrowser();
 
-		for ( const editorName of targetEditors ) {
+		for ( const editorName of editorNames ) {
 			console.log( `Testing ${ editorName }... ` );
 
 			try {
 				const result = await runTestInPage( {
 					browser,
-					url: `${ baseUrl }/index.html`,
+					url: `http://127.0.0.1:${ port }/${ html }`,
 					editorName,
 					editorData,
 					timeout
