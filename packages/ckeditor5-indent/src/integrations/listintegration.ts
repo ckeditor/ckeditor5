@@ -40,25 +40,12 @@ export class ListIntegration extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const model = editor.model;
-		const schema = model.schema;
 
 		if ( !this.editor.plugins.has( 'ListEditing' ) ) {
 			return;
 		}
 
 		const listEditing = editor.plugins.get( 'ListEditing' );
-
-		schema.extend( '$listItem', { allowAttributes: [ 'blockIndentList' ] } );
-		schema.setAttributeProperties( 'blockIndentList', { isFormatting: true } );
-
-		model.schema.addAttributeCheck( context => {
-			const item = context.last;
-
-			if ( !item.getAttribute( 'listItemId' ) ) {
-				return false;
-			}
-		}, 'blockIndentList' );
 
 		editor.data.addStyleProcessorRules( addMarginStylesRules );
 
@@ -89,6 +76,30 @@ export class ListIntegration extends Plugin {
 				}
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
+
+		if ( !editor.plugins.has( 'ListEditing' ) ) {
+			return;
+		}
+
+		schema.extend( '$listItem', { allowAttributes: [ 'blockIndentList' ] } );
+		schema.setAttributeProperties( 'blockIndentList', { isFormatting: true } );
+
+		model.schema.addAttributeCheck( context => {
+			const item = context.last;
+
+			if ( !item.getAttribute( 'listItemId' ) ) {
+				return false;
+			}
+		}, 'blockIndentList' );
 	}
 
 	/**
