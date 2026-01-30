@@ -816,13 +816,20 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param ranges Ranges to be validated.
 	 * @param attribute The name of the attribute to check.
+	 * @param options Optional configuration.
+	 * @param options.includeEmptyRanges When `true`, empty ranges that allow the attribute are also included
+	 * in the returned ranges.
 	 * @returns Ranges in which the attribute is allowed.
 	 */
-	public* getValidRanges( ranges: Iterable<ModelRange>, attribute: string ): IterableIterator<ModelRange> {
+	public* getValidRanges(
+		ranges: Iterable<ModelRange>,
+		attribute: string,
+		options: { includeEmptyRanges?: boolean } = {}
+	): IterableIterator<ModelRange> {
 		ranges = convertToMinimalFlatRanges( ranges );
 
 		for ( const range of ranges ) {
-			yield* this._getValidRangesForRange( range, attribute );
+			yield* this._getValidRangesForRange( range, attribute, options );
 		}
 	}
 
@@ -1156,13 +1163,29 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param attribute The name of the attribute to check.
 	 * @returns Ranges in which the attribute is allowed.
 	 */
-	private* _getValidRangesForRange( range: ModelRange, attribute: string ): Iterable<ModelRange> {
+	private* _getValidRangesForRange(
+		range: ModelRange,
+		attribute: string,
+		options: { includeEmptyRanges?: boolean }
+	): Iterable<ModelRange> {
 		let start = range.start;
 		let end = range.start;
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( ModelRange._createIn( item ), attribute );
+				if ( options.includeEmptyRanges && item.isEmpty ) {
+					// In empty block check if it accepts text with the given attribute.
+					const context = this.createContext( item );
+
+					if (
+						this.checkChild( context, '$text' ) &&
+						this.checkAttribute( context.push( '$text' ), attribute )
+					) {
+						yield ModelRange._createIn( item );
+					}
+				} else {
+					yield* this._getValidRangesForRange( ModelRange._createIn( item ), attribute, options );
+				}
 			}
 
 			if ( !this.checkAttribute( item, attribute ) ) {
