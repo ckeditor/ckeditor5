@@ -293,7 +293,7 @@ Like [in the model](https://github.com/ckeditor/ckeditor5/pull/19651#positions-r
 
 * A **position** is a single point in the document.
 * A **range** consists of two positions (start and end).
-* A **selection** consists of one or more ranges with a direction.
+* A **selection** consists of one or more ranges with a direction (whether it was made from left to right or right to left).
  
 When a user makes a selection, it has two ends: the anchor (where the selection starts) and the focus (where it ends). The focus moves (left to right or right to left) while the anchor stays fixed.
 
