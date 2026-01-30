@@ -258,8 +258,11 @@ export function upcastBorderStyles(
 
 			const modelElement = modelRange?.start?.nodeAfter;
 
-			// If model element has already border style attribute, skip the conversion.
-			if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+			// If model element has any non-default border attribute, skip the conversion.
+			if (
+				!modelElement ||
+				Object.values( modelAttributes ).some( attributeName => modelElement.hasAttribute( attributeName ) )
+			) {
 				return;
 			}
 
