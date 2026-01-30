@@ -245,7 +245,7 @@ The structure of the view closely resembles that of the DOM. While the semantics
 The element types are:
 
 * **Container element** &ndash; Elements that build the content structure. Used for block elements like `<p>`, `<h1>`, `<blockQuote>`, `<li>`, etc.
-* **Attribute element** &ndash; Elements that cannot hold container elements inside them. Most model text attributes convert to view attribute elements. Used mostly for inline styling elements like `<strong>`, `<i>`, `<a>`, `<code>`. The view writer flattens similar attribute elements. For example, `<a href="..."><a class="bar">x</a></a>` automatically optimizes to `<a href="..." class="bar">x</a>`.
+* **Attribute element** &ndash; Most model text attributes convert to view attribute elements. Used mostly for inline styling elements like `<strong>`, `<i>`, `<a>`, `<code>`. The view writer flattens similar attribute elements. For example, `<a href="..."><a class="bar">x</a></a>` automatically optimizes to `<a href="..." class="bar">x</a>`.
 * **Empty element** &ndash; Elements that must not have child nodes, like `<img>`.
 * **UI element** &ndash; Elements that are not part of the "data" but need to be "inlined" in the content. The selection ignores them (jumps over them), as does the view writer in general. The contents and events from these elements are also filtered out.
 * **Raw element** &ndash; Elements that work as data containers ("wrappers," "sandboxes"), but their children are transparent to the editor. Useful to render non-standard data, but the editor should not be concerned with what it is or how it works. Users cannot place the selection inside a raw element, split it into smaller chunks, or modify its content directly.
