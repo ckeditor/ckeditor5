@@ -125,7 +125,7 @@ async function createAndDestroy( editorName, editorData ) {
 	 * CKEditorCloudServicesError: CKEditorError: cloud-services-internal-error: Not connected.
 	 * ```
 	 */
-	await timeout( 250 );
+	await timeout( 500 );
 
 	// Destroy the editor.
 	await editor.destroy();
