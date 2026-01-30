@@ -239,6 +239,12 @@ const tableConfig = {
 
 When disabled, tables and cells with `border: none` will remain completely borderless in the editing view, matching their rendered output.
 
+## Legacy attributes
+
+### Legacy border support
+
+When loading HTML content that uses the deprecated `border` attribute on tables, the editor keeps the original border width instead of ignoring it.
+
 ## Common API
 
 ### UI components
