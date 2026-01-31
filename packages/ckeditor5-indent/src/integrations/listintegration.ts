@@ -50,6 +50,7 @@ export class ListIntegration extends Plugin {
 		editor.data.addStyleProcessorRules( addMarginStylesRules );
 
 		this._setupConversionUsingOffsetForListBlock();
+		this._setupConversionUsingOffsetForListItemBlock();
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same blockIndentList attribute value.
 		listEditing.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
@@ -63,17 +64,13 @@ export class ListIntegration extends Plugin {
 					continue;
 				}
 
-				const prevNodeValue = previousNodeInList.getAttribute( 'blockIndentList' );
+				evt.return ||= ensureIndentValuesConsistency( 'blockIndentList', node, previousNodeInList, writer );
 
-				if ( node.getAttribute( 'blockIndentList' ) !== prevNodeValue ) {
-					if ( prevNodeValue ) {
-						writer.setAttribute( 'blockIndentList', prevNodeValue, node );
-					} else {
-						writer.removeAttribute( 'blockIndentList', node );
-					}
-
-					evt.return = true;
+				if ( previousNodeInList.getAttribute( 'listItemId' ) != node.getAttribute( 'listItemId' ) ) {
+					continue;
 				}
+
+				evt.return ||= ensureIndentValuesConsistency( 'blockIndentListItem', node, previousNodeInList, writer );
 			}
 		} );
 	}
@@ -90,8 +87,9 @@ export class ListIntegration extends Plugin {
 			return;
 		}
 
-		schema.extend( '$listItem', { allowAttributes: [ 'blockIndentList' ] } );
+		schema.extend( '$listItem', { allowAttributes: [ 'blockIndentList', 'blockIndentListItem' ] } );
 		schema.setAttributeProperties( 'blockIndentList', { isFormatting: true } );
+		schema.setAttributeProperties( 'blockIndentListItem', { isFormatting: true } );
 
 		model.schema.addAttributeCheck( context => {
 			const item = context.last;
@@ -100,10 +98,18 @@ export class ListIntegration extends Plugin {
 				return false;
 			}
 		}, 'blockIndentList' );
+
+		model.schema.addAttributeCheck( context => {
+			const item = context.last;
+
+			if ( !item.getAttribute( 'listItemId' ) ) {
+				return false;
+			}
+		}, 'blockIndentListItem' );
 	}
 
 	/**
-	 * Setups conversion for using offset indents.
+	 * Setups conversion for list block indent using offset indents.
 	 */
 	private _setupConversionUsingOffsetForListBlock(): void {
 		const editor = this.editor;
@@ -113,8 +119,8 @@ export class ListIntegration extends Plugin {
 		const listEditing = editor.plugins.get( 'ListEditing' );
 
 		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on<UpcastElementEvent>( 'element:ol', listBlockIndentUpcastConverter( marginProperty ) );
-			dispatcher.on<UpcastElementEvent>( 'element:ul', listBlockIndentUpcastConverter( marginProperty ) );
+			dispatcher.on<UpcastElementEvent>( 'element:ol', listBlockIndentUpcastConverter( 'blockIndentList', marginProperty ) );
+			dispatcher.on<UpcastElementEvent>( 'element:ul', listBlockIndentUpcastConverter( 'blockIndentList', marginProperty ) );
 		} );
 
 		listEditing.registerDowncastStrategy( {
@@ -128,9 +134,39 @@ export class ListIntegration extends Plugin {
 			}
 		} );
 	}
+
+	/**
+	 * Setups conversion for list item block indent using offset indents.
+	 */
+	private _setupConversionUsingOffsetForListItemBlock(): void {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const conversion = editor.conversion;
+		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
+		const listEditing = editor.plugins.get( 'ListEditing' );
+
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on<UpcastElementEvent>(
+				'element:li',
+				listBlockIndentUpcastConverter( 'blockIndentListItem', marginProperty ),
+				{ priority: 'low' }
+			);
+		} );
+
+		listEditing.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'blockIndentListItem',
+
+			setAttributeOnDowncast( writer, value, element ) {
+				if ( value ) {
+					writer.setStyle( marginProperty, value as string, element );
+				}
+			}
+		} );
+	}
 }
 
-function listBlockIndentUpcastConverter( marginProperty: string ): GetCallback<UpcastElementEvent> {
+function listBlockIndentUpcastConverter( attributeName: string, marginProperty: string ): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, consumable } = conversionApi;
 
@@ -147,7 +183,7 @@ function listBlockIndentUpcastConverter( marginProperty: string ): GetCallback<U
 				indentLevel = item.getAttribute( 'listIndent' );
 			}
 
-			if ( item.hasAttribute( 'blockIndentList' ) ) {
+			if ( item.hasAttribute( attributeName ) ) {
 				continue;
 			}
 
@@ -155,7 +191,7 @@ function listBlockIndentUpcastConverter( marginProperty: string ): GetCallback<U
 				continue;
 			}
 
-			writer.setAttribute( 'blockIndentList', marginValue, item );
+			writer.setAttribute( attributeName, marginValue, item );
 			applied = true;
 		}
 
@@ -164,3 +200,20 @@ function listBlockIndentUpcastConverter( marginProperty: string ): GetCallback<U
 		}
 	};
 }
+
+function ensureIndentValuesConsistency( attributeName: string, node: any, previousNodeInList: any, writer: any ): boolean {
+	const prevNodeIndentListValue = previousNodeInList.getAttribute( attributeName );
+
+	if ( node.getAttribute( attributeName ) !== prevNodeIndentListValue ) {
+		if ( prevNodeIndentListValue ) {
+			writer.setAttribute( attributeName, prevNodeIndentListValue, node );
+		} else {
+			writer.removeAttribute( attributeName, node );
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
