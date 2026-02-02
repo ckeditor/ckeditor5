@@ -17,12 +17,7 @@
 		"../../",
 		"../../packages/*"
 	],
-	"sitemap": {
-		"hostname": "https://ckeditor5.github.io/docs/nightly/",
-		"excluded":  [
-			"snippets/examples/bootstrap-ui.html"
-		]
-	},
+	"shouldInjectNoIndexMeta": true,
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
 	"redirects": {
