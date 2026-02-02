@@ -119,11 +119,13 @@ async function createAndDestroy( editorName, editorData ) {
 	const editor = await globalThis.createEditor( host.id, editorName, editorData );
 
 	/*
-	 * TODO: We should avoid using timeout here, but without it, we get the following errors:
+	 * We use timeout here to avoid the following error:
 	 *
 	 * ```
 	 * CKEditorCloudServicesError: CKEditorError: cloud-services-internal-error: Not connected.
 	 * ```
+	 *
+	 * See https://github.com/cksource/cs/issues/27229 for more details.
 	 */
 	await timeout( 500 );
 
