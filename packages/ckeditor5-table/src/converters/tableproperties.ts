@@ -285,7 +285,17 @@ export function upcastBorderStyles(
 			if ( viewTable.getAttribute( 'border' ) === '0' ) {
 				const modelElement = modelRange?.start?.nodeAfter;
 
-				if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+				// If model element has any non-default border attribute,
+				// except when 'tableBorderWidth' is equal `0px`, skip the conversion.
+				if (
+					!modelElement ||
+					Object.values( modelAttributes ).some(
+						attributeName =>
+							modelElement.hasAttribute( attributeName ) &&
+							attributeName !== 'tableBorderWidth' &&
+							modelElement.getAttribute( attributeName ) !== '0px'
+					)
+				) {
 					return;
 				}
 

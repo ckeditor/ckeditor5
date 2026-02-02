@@ -797,6 +797,31 @@ describe( 'table properties', () => {
 						);
 					} );
 
+					it( 'should not override existing tableBorderStyle if there is also ' +
+							'border-color and border-width defined on the table', () => {
+						editor.setData(
+							'<table border="0" style="border-style: solid; border-color: #f00; border-width: 2px;">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+						);
+
+						expectModel(
+							'<table ' +
+								'tableBorderColor="#f00" ' +
+								'tableBorderStyle="solid" ' +
+								'tableBorderWidth="2px"' +
+							'>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>foo</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						);
+					} );
+
 					it( 'should work with tables in figures', () => {
 						editor.setData(
 							'<figure class="table">' +
