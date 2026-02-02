@@ -600,6 +600,19 @@ describe( 'table properties', () => {
 						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '10px' );
 					} );
 
+					it( 'should not convert border="abc"', () => {
+						editor.setData(
+							'<table border="abc">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					} );
+
 					it( 'should not convert border="1" to tableBorderWidth="1px" (default width)', () => {
 						editor.setData(
 							'<table border="1">' +

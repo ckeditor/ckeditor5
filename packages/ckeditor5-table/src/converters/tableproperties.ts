@@ -223,7 +223,11 @@ export function upcastBorderStyles(
 			};
 
 			// If table has "border" attribute and something didn't already consumed the border attribute on the nearest table element.
-			if ( viewItem.hasAttribute( 'border' ) && conversionApi.consumable.test( tableElement, { attributes: 'border' } ) ) {
+			if (
+				viewItem.hasAttribute( 'border' ) &&
+				Number.isFinite( Number( viewItem.getAttribute( 'border' ) ) ) &&
+				conversionApi.consumable.test( tableElement, { attributes: 'border' } )
+			) {
 				const borderValue = viewItem.getAttribute( 'border' );
 
 				const borderAttributeNormalizedWidth = {
