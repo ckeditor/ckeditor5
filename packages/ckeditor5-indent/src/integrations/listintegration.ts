@@ -7,10 +7,8 @@
  * @module indent/integrations/listintegration
  */
 
-import {
-	type ListEditingPostFixerEvent,
-	type GetCallback
-} from 'ckeditor5';
+import { type ListEditingPostFixerEvent } from '@ckeditor/ckeditor5-list';
+import { type GetCallback } from 'ckeditor5/src/utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	addMarginStylesRules,
