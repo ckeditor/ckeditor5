@@ -22,7 +22,7 @@ An overview of the project's directory structure:
 │  ├─ index.html                   # The HTML file for the development sample.
 │  └─ index.ts                     # Editor setup used when running the `start` command.
 ├─ scripts
-│  ├─ synchronize-translations.js  # Validates and synchronizes translation files.
+│  └─ synchronize-translations.js  # Validates and synchronizes translation files.
 ├─ src
 │  ├─ pluginname.ts                # The plugin with example functionality.
 │  ├─ augmentation.ts              # Type augmentations for the `@ckeditor/ckeditor5-core` package.

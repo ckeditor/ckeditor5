@@ -22,7 +22,7 @@ An overview of the project's directory structure:
 │  ├─ index.html                   # The HTML file for the development sample.
 │  └─ index.js                     # Editor setup used when running the `start` command.
 ├─ scripts
-│  ├─ synchronize-translations.js  # Validates and synchronizes translation files.
+│  └─ synchronize-translations.js  # Validates and synchronizes translation files.
 ├─ src
 │  ├─ pluginname.js                # The plugin with example functionality.
 │  ├─ index.js                     # The modules exported by the package.
