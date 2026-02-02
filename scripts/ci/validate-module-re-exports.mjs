@@ -161,6 +161,10 @@ function isUsedAcrossPackages( library ) {
 			}
 
 			for ( const reference of importItem.references ) {
+				if ( !reference ) {
+					continue;
+				}
+
 				markUsedAcrossPackages( reference, reference.fileName );
 			}
 		}
