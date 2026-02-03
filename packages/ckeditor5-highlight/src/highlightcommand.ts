@@ -8,7 +8,7 @@
  */
 
 import { Command } from '@ckeditor/ckeditor5-core';
-import type { ModelTreeWalkerValue } from '@ckeditor/ckeditor5-engine';
+import { ModelDocumentSelection, type ModelTreeWalkerValue, type ModelRange, type ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
@@ -98,13 +98,23 @@ export class HighlightCommand extends Command {
 					writer.setSelectionAttribute( 'highlight', highlighter );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight', {
+					includeEmptyRanges: true
+				} );
 
 				for ( const range of ranges ) {
+					let itemOrRange: ModelRange | ModelElement = range;
+					let attributeKey = 'highlight';
+
+					if ( range.isCollapsed ) {
+						itemOrRange = range.start.parent as ModelElement;
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( 'highlight' );
+					}
+
 					if ( highlighter ) {
-						writer.setAttribute( 'highlight', highlighter, range );
+						writer.setAttribute( attributeKey, highlighter, itemOrRange );
 					} else {
-						writer.removeAttribute( 'highlight', range );
+						writer.removeAttribute( attributeKey, itemOrRange );
 					}
 				}
 			}
