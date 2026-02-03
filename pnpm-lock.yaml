@@ -143,7 +143,7 @@ importers:
         version: 0.3.13
       puppeteer:
         specifier: ^24.1.0
-        version: 24.23.0(typescript@5.3.3)
+        version: 24.23.0(typescript@5.5.4)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -539,6 +539,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-engine':
+        specifier: workspace:*
+        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
@@ -555,9 +558,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-engine':
-        specifier: workspace:*
-        version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-essentials':
         specifier: workspace:*
         version: link:../ckeditor5-essentials

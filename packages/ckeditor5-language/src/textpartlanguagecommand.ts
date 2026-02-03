@@ -9,6 +9,7 @@
 
 import type { LanguageDirection } from '@ckeditor/ckeditor5-utils';
 import { Command } from '@ckeditor/ckeditor5-core';
+import { ModelDocumentSelection, type ModelRange, type ModelElement } from '@ckeditor/ckeditor5-engine';
 import { stringifyLanguageAttribute } from './utils.js';
 
 /**
@@ -85,13 +86,23 @@ export class TextPartLanguageCommand extends Command {
 					writer.removeSelectionAttribute( 'language' );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'language' );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'language', {
+					includeEmptyRanges: true
+				} );
 
 				for ( const range of ranges ) {
+					let itemOrRange: ModelRange | ModelElement = range;
+					let attributeKey = 'language';
+
+					if ( range.isCollapsed ) {
+						itemOrRange = range.start.parent as ModelElement;
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( 'language' );
+					}
+
 					if ( value ) {
-						writer.setAttribute( 'language', value, range );
+						writer.setAttribute( attributeKey, value, itemOrRange );
 					} else {
-						writer.removeAttribute( 'language', range );
+						writer.removeAttribute( attributeKey, itemOrRange );
 					}
 				}
 			}
