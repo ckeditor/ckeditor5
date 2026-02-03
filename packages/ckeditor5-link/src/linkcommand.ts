@@ -163,15 +163,22 @@ export class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		// Stores information about manual decorators to turn them on/off when command is applied.
-		const truthyManualDecorators: Array<string> = [];
-		const falsyManualDecorators: Array<string> = [];
+		// Resolve conflicting decorators and get the final decorator states.
+		const resolvedDecoratorsIds = resolveConflictingDecorators( {
+			decoratorStates: manualDecoratorIds,
+			allDecorators: this.manualDecorators,
+			isDecoratorEnabled: this._getDecoratorStateFromModel.bind( this )
+		} );
 
-		for ( const name in manualDecoratorIds ) {
-			if ( manualDecoratorIds[ name ] ) {
-				truthyManualDecorators.push( name );
+		// Stores information about manual decorators to turn them on/off when command is applied.
+		const truthyManualDecorators = new Set<string>();
+		const falsyManualDecorators = new Set<string>();
+
+		for ( const name in resolvedDecoratorsIds ) {
+			if ( resolvedDecoratorsIds[ name ] ) {
+				truthyManualDecorators.add( name );
 			} else {
-				falsyManualDecorators.push( name );
+				falsyManualDecorators.add( name );
 			}
 		}
 
@@ -476,6 +483,103 @@ function findChanges( oldText: string, newText: string ): Array<{ offset: number
 	}
 
 	return result;
+}
+
+/**
+ * Resolves conflicting manual decorators by automatically disabling decorators that share
+ * the same HTML attributes with newly enabled decorators.
+ *
+ * @param options Configuration object.
+ * @param options.decoratorStates Initial decorator states.
+ * @param options.allDecorators Collection of all manual decorators.
+ * @param options.isDecoratorEnabled Function to check if decorator is currently enabled in model.
+ * @returns Resolved decorator states with conflicts handled.
+ */
+function resolveConflictingDecorators(
+	{
+		decoratorStates,
+		allDecorators,
+		isDecoratorEnabled
+	}: {
+		decoratorStates: Record<string, boolean>;
+		allDecorators: Collection<LinkManualDecorator>;
+		isDecoratorEnabled: ( name: string ) => boolean | undefined;
+	}
+): Record<string, boolean> {
+	const resolved: Record<string, boolean> = { ...decoratorStates };
+
+	for ( const name in decoratorStates ) {
+		if ( decoratorStates[ name ] && !isDecoratorEnabled( name ) ) {
+			const conflicts = getConflictingManualDecorators( name, allDecorators );
+
+			for ( const conflict of conflicts ) {
+				resolved[ conflict ] = false;
+			}
+		}
+	}
+
+	return resolved;
+}
+
+/**
+ * Returns array of decorator names that conflict with the given decorator.
+ * Decorators conflict when they share the same HTML attribute names or style properties.
+ *
+ * @param decoratorName The name of the manual decorator to check for conflicts.
+ * @param manualDecorators Collection of all manual decorators.
+ * @returns Array of conflicting decorator names.
+ */
+function getConflictingManualDecorators(
+	decoratorName: string,
+	manualDecorators: Collection<LinkManualDecorator>
+): Array<string> {
+	const decorator = manualDecorators.find( item => item.id === decoratorName );
+
+	if ( !decorator || ( !decorator.attributes && !decorator.styles ) ) {
+		return [];
+	}
+
+	const conflictingDecorators: Array<string> = [];
+	const decoratorAttributeKeys = Object.keys( decorator.attributes || {} );
+	const decoratorStyleKeys = Object.keys( decorator.styles || {} );
+
+	for ( const otherDecorator of manualDecorators ) {
+		if ( otherDecorator.id === decoratorName ) {
+			continue;
+		}
+
+		let hasConflict = false;
+
+		// If at least one shared attribute name is found, mark as conflict.
+		if ( decorator.attributes && otherDecorator.attributes ) {
+			const hasSharedAttributes = decoratorAttributeKeys.some(
+				key => !isMergeableAttribute( key ) && key in otherDecorator.attributes!
+			);
+
+			if ( hasSharedAttributes ) {
+				hasConflict = true;
+			}
+		}
+
+		// If at least one shared style property is found, mark as conflict.
+		if ( !hasConflict && decorator.styles && otherDecorator.styles ) {
+			const hasSharedStyles = decoratorStyleKeys.some( key => key in otherDecorator.styles! );
+
+			if ( hasSharedStyles ) {
+				hasConflict = true;
+			}
+		}
+
+		if ( hasConflict ) {
+			conflictingDecorators.push( otherDecorator.id );
+		}
+	}
+
+	return conflictingDecorators;
+
+	function isMergeableAttribute( key: string ): boolean {
+		return key === 'class' || key === 'style' || key === 'rel';
+	}
 }
 
 /**
