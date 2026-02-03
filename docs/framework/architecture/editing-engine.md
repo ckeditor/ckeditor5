@@ -375,9 +375,9 @@ Let's look at the diagram of the engine's MVC architecture and see where each co
 
 ### Data pipeline
 
-{@link framework/deep-dive/conversion/upcast **Data upcasting**} is a process that starts in the bottom-right corner of the diagram (in the view layer), passes from the data view through a converter (green box) in the controller layer to the model document in the top-right corner. As you can see, it goes from bottom to top, hence "upcasting." Also, it is handled by the data pipeline (the right branch of the diagram), hence "data upcasting." Note that data upcasting is also used to process pasted content (which is similar to loading data).
+{@link framework/deep-dive/conversion/upcast **Data upcasting**} is a process that starts in the bottom-left corner of the diagram (in the view layer), passes from the data view through a converter in the controller layer to the model document in the top. As you can see, it goes from bottom to top, hence "upcasting." Furthermore, it is handled by the data pipeline, hence "data upcasting." Note that data upcasting is also used to process pasted content (which is similar to loading data).
 
-{@link framework/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to data upcasting. It starts in the top-right corner and goes down to the bottom-right corner. Again, the conversion process name matches the direction and the pipeline.
+{@link framework/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to data upcasting. It starts at the top and goes down to the bottom-left corner. Again, the conversion process name matches the direction and the pipeline.
 
 ### Editing pipeline
 
