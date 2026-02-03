@@ -39,7 +39,7 @@ export { default as IconBookmarkMedium } from '../theme/icons/bookmark-medium.sv
 export { default as IconBookmarkSmall } from '../theme/icons/bookmark-small.svg';
 export { default as IconBoxWithCheck } from '../theme/icons/box-with-check.svg';
 export { default as IconBoxWithCross } from '../theme/icons/box-with-cross.svg';
-export { default as IconBoxWithPin } from '../theme/icons/box-with-pin.svg';
+export { default as IconBoxWithMarker } from '../theme/icons/box-with-marker.svg';
 export { default as IconBrowseFiles } from '../theme/icons/browse-files.svg';
 export { default as IconBulb } from '../theme/icons/bulb.svg';
 export { default as IconBulletedList } from '../theme/icons/bulleted-list.svg';
