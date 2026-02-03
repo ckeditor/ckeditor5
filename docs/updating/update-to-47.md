@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-01-12
+modified_at: 2026-02-11
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -16,11 +16,11 @@ modified_at: 2026-01-12
 
 ## Update to CKEditor&nbsp;5 v47.5.0
 
-Released on TODO. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
+Released on 18 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
 
 ### Changes to the visual appearance of the AI Chat feed structure
 
-The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestions in conversation has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestions in conversation has changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
 
 Please make sure to update your integrations to use the new DOM structure.
 
@@ -82,7 +82,7 @@ div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 
 ### Changes to the visual appearance of the AI Chat suggestion preview dialog window
 
-The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestion {@link features/ckeditor-ai-chat#previewing-changes preview dialog window} has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestion {@link features/ckeditor-ai-chat#previewing-changes preview dialog window} has changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
 
 Please make sure to update your integrations to use the new DOM structure.
 
