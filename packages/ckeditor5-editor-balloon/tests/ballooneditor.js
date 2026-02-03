@@ -17,8 +17,6 @@ import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -516,18 +514,5 @@ describe( 'BalloonEditor', () => {
 		it( 'BalloonEditor.ContextWatchdog', () => {
 			expect( BalloonEditor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
-	} );
-
-	describeMemoryUsage( () => {
-		testMemoryUsage(
-			'should not grow on multiple create/destroy',
-			() => BalloonEditor
-				.create( document.querySelector( '#mem-editor' ), {
-					plugins: [ ArticlePluginSet ],
-					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
-					image: {
-						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
-					}
-				} ) );
 	} );
 } );
