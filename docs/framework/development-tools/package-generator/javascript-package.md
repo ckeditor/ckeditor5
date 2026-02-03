@@ -17,34 +17,36 @@ An overview of the project's directory structure:
 
 ```plain
 ├─ lang
-│  └─ contexts.json        # Entries used for creating translations.
+│  └─ contexts.json                # Entries used for creating translations.
 ├─ sample
-│  ├─ index.html           # The HTML file for the development sample.
-│  └─ index.js             # Editor setup used when running the `start` command.
+│  ├─ index.html                   # The HTML file for the development sample.
+│  └─ index.js                     # Editor setup used when running the `start` command.
+├─ scripts
+│  └─ synchronize-translations.js  # Validates and synchronizes translation files.
 ├─ src
-│  ├─ pluginname.js        # The plugin with example functionality.
-│  ├─ index.js             # The modules exported by the package.
-│  └─ **/*.js              # All JavaScript source files should be saved here.
+│  ├─ pluginname.js                # The plugin with example functionality.
+│  ├─ index.js                     # The modules exported by the package.
+│  └─ **/*.js                      # All JavaScript source files should be saved here.
 ├─ tests
 │  ├─ pluginname.js
-│  └─ **/*.js              # All tests should be saved here.
+│  └─ **/*.js                      # All tests should be saved here.
 ├─ theme
 │  ├─ icons
-│  │  ├─ ckeditor.svg      # The CKEditor 5 icon displayed in the toolbar.
-│  │  └─ **/*.svg          # All icon files should be saved here.
+│  │  ├─ ckeditor.svg              # The CKEditor 5 icon displayed in the toolbar.
+│  │  └─ **/*.svg                  # All icon files should be saved here.
 │  ├─ styles
-│  │  └─ **/*.css          # All stylesheet files should be saved here.
-│  └─ **/*.css             # All CSS files should be saved here.
-├─ .editorconfig           # See link below for details.
-├─ .gitattributes          # See link below for details.
-├─ .gitignore              # See link below for details.
-├─ .stylelintrc            # Stylelint configuration file.
-├─ ckeditor5-metadata.json # See link below for details.
-├─ eslint.config.js        # ESLint configuration file.
-├─ LICENSE.md              # All created packages fall under the MIT license.
-├─ package.json            # See link below for details.
-├─ README.md               # Description of your project and usage instructions.
-└─ vite.config.js          # Vite configuration file.
+│  │  └─ **/*.css                  # All stylesheet files should be saved here.
+│  └─ **/*.css                     # All CSS files should be saved here.
+├─ .editorconfig                   # See link below for details.
+├─ .gitattributes                  # See link below for details.
+├─ .gitignore                      # See link below for details.
+├─ .stylelintrc                    # Stylelint configuration file.
+├─ ckeditor5-metadata.json         # See link below for details.
+├─ eslint.config.js                # ESLint configuration file.
+├─ LICENSE.md                      # All created packages fall under the MIT license.
+├─ package.json                    # See link below for details.
+├─ README.md                       # Description of your project and usage instructions.
+└─ vite.config.js                  # Vite configuration file.
 ```
 
 Guides for developing some of the files:

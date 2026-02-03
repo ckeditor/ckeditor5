@@ -17,39 +17,41 @@ An overview of the project's directory structure:
 
 ```plain
 ├─ lang
-│  └─ contexts.json        # Entries used for creating translations.
+│  └─ contexts.json                # Entries used for creating translations.
 ├─ sample
-│  ├─ index.html           # The HTML file for the development sample.
-│  └─ index.ts             # Editor setup used when running the `start` command.
+│  ├─ index.html                   # The HTML file for the development sample.
+│  └─ index.ts                     # Editor setup used when running the `start` command.
+├─ scripts
+│  └─ synchronize-translations.js  # Validates and synchronizes translation files.
 ├─ src
-│  ├─ pluginname.ts        # The plugin with example functionality.
-│  ├─ augmentation.ts      # Type augmentations for the `@ckeditor/ckeditor5-core` package.
-│  ├─ index.ts             # The package entry point exporting public modules.
-│  └─ **/*.ts              # All TypeScript source files should be saved here.
+│  ├─ pluginname.ts                # The plugin with example functionality.
+│  ├─ augmentation.ts              # Type augmentations for the `@ckeditor/ckeditor5-core` package.
+│  ├─ index.ts                     # The package entry point exporting public modules.
+│  └─ **/*.ts                      # All TypeScript source files should be saved here.
 ├─ tests
 │  ├─ pluginname.ts
-│  └─ **/*.ts              # All tests should be saved here.
+│  └─ **/*.ts                      # All tests should be saved here.
 ├─ theme
 │  ├─ icons
-│  │  ├─ ckeditor.svg      # The CKEditor&nbsp;5 icon displayed in the toolbar.
-│  │  └─ **/*.svg          # All icon files should be saved here.
+│  │  ├─ ckeditor.svg              # The CKEditor&nbsp;5 icon displayed in the toolbar.
+│  │  └─ **/*.svg                  # All icon files should be saved here.
 │  ├─ styles
-│  │  └─ **/*/css          # All stylesheet files should be saved here.
-│  └─ **/*.css             # All CSS files should be saved here.
+│  │  └─ **/*.css                  # All stylesheet files should be saved here.
+│  └─ **/*.css                     # All CSS files should be saved here.
 ├─ typings
-│  └─ **/*.d.ts            # Files containing type definitions.
-├─ .editorconfig           # See link below for details.
-├─ .gitattributes          # See link below for details.
-├─ .gitignore              # See link below for details.
-├─ .stylelintrc            # Stylelint configuration file.
-├─ ckeditor5-metadata.json # See link below for details.
-├─ eslint.config.js        # ESLint configuration file.
-├─ LICENSE.md              # All created packages fall under the MIT license.
-├─ package.json            # See link below for details.
-├─ README.md               # Description of your project and usage instructions.
-├─ tsconfig.json           # General TypeScript configuration.
-├─ tsconfig.build.json     # Override for options from `tsconfig.json` file during `npm` and browser builds.
-└─ vite.config.ts          # Vite configuration file.
+│  └─ **/*.d.ts                    # Files containing type definitions.
+├─ .editorconfig                   # See link below for details.
+├─ .gitattributes                  # See link below for details.
+├─ .gitignore                      # See link below for details.
+├─ .stylelintrc                    # Stylelint configuration file.
+├─ ckeditor5-metadata.json         # See link below for details.
+├─ eslint.config.js                # ESLint configuration file.
+├─ LICENSE.md                      # All created packages fall under the MIT license.
+├─ package.json                    # See link below for details.
+├─ README.md                       # Description of your project and usage instructions.
+├─ tsconfig.json                   # General TypeScript configuration.
+├─ tsconfig.build.json             # Override for options from `tsconfig.json` file during `npm` and browser builds.
+└─ vite.config.ts                  # Vite configuration file.
 ```
 
 Guides for developing some of the files:
