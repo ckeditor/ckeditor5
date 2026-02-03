@@ -43,7 +43,7 @@ describe( 'CharacterGridView', () => {
 		} );
 
 		describe( 'Focus management across the grid items using arrow keys', () => {
-			let view;
+			let view, parentContainer;
 
 			beforeEach( () => {
 				view = new CharacterGridView();
@@ -51,11 +51,17 @@ describe( 'CharacterGridView', () => {
 				createTilesForGrid( view );
 
 				view.render();
-				document.body.appendChild( view.element );
+
+				parentContainer = document.createElement( 'div' );
+				parentContainer.style.width = '800px';
+
+				parentContainer.appendChild( view.element );
+				document.body.appendChild( parentContainer );
 			} );
 
 			afterEach( () => {
 				view.element.remove();
+				parentContainer.remove();
 				view.destroy();
 			} );
 
