@@ -550,22 +550,14 @@ function getConflictingManualDecorators(
 
 		// If at least one shared attribute name is found, mark as conflict.
 		if ( decorator.attributes && otherDecorator.attributes ) {
-			const hasSharedAttributes = Object.keys( decorator.attributes ).some(
+			hasConflict ||= Object.keys( decorator.attributes ).some(
 				key => !isMergeableAttribute( key ) && key in otherDecorator.attributes!
 			);
-
-			if ( hasSharedAttributes ) {
-				hasConflict = true;
-			}
 		}
 
 		// If at least one shared style property is found, mark as conflict.
 		if ( !hasConflict && decorator.styles && otherDecorator.styles ) {
-			const hasSharedStyles = Object.keys( decorator.styles ).some( key => key in otherDecorator.styles! );
-
-			if ( hasSharedStyles ) {
-				hasConflict = true;
-			}
+			hasConflict ||= Object.keys( decorator.styles ).some( key => key in otherDecorator.styles! );
 		}
 
 		if ( hasConflict ) {
