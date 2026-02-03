@@ -383,9 +383,9 @@ Let's look at the diagram of the engine's MVC architecture and see where each co
 
 {@link framework/deep-dive/conversion/downcast#downcast-pipelines **Editing downcasting**} is a bit different from the other two processes:
 
-* It takes place in the "editing pipeline" (the left branch of the diagram).
+* It takes place in the "editing pipeline" (the right branch of the diagram).
 * It does not have a counterpart. Editing upcasting does not exist because editor features listen to [view events](#observers), analyze what has happened, and apply necessary changes to the model whenever users perform actions. Therefore, this process does not involve conversion.
-* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~ViewDocument} for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
+* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~ViewDocument} for its entire life. Every change in the model is converted to changes in that view, so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
 
 ### More information
 
