@@ -2695,6 +2695,9 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5
     devDependencies:
+      '@ckeditor/ckeditor5-block-quote':
+        specifier: workspace:*
+        version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^54.3.2
         version: 54.3.2(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
@@ -2704,6 +2707,9 @@ importers:
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
+      '@ckeditor/ckeditor5-table':
+        specifier: workspace:*
+        version: link:../ckeditor5-table
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark

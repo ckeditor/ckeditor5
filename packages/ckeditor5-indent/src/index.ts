@@ -12,6 +12,7 @@ export { IndentEditing } from './indentediting.js';
 export { IndentUI } from './indentui.js';
 export { IndentBlock } from './indentblock.js';
 export { IndentBlockCommand } from './indentblockcommand.js';
+export { ListIntegration } from './integrations/listintegration.js';
 
 export type { IndentBlockConfig } from './indentconfig.js';
 
