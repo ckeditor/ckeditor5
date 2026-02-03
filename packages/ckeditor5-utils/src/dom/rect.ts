@@ -449,7 +449,7 @@ export class Rect {
 				const r = new Rect( rect );
 
 				// Point the rect source to the DOM range instead of of the DOM client rect to allow proper clipping,
-				// in Rect#getVisible() method.
+				// in `Rect#getVisible()` method.
 				r._source = range;
 				rects.push( r );
 			}
