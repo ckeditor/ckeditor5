@@ -1548,6 +1548,19 @@ describe( 'Rect', () => {
 			expect( rects ).to.have.length( 1 );
 			assertRect( rects[ 0 ], expectedGeometry );
 		} );
+
+		it( 'should point the rect sources to the DOM range instead of of client rects to allow proper clipping calculations', () => {
+			const range = document.createRange();
+
+			range.selectNode( document.body );
+			sinon.stub( range, 'getClientRects' ).returns( [ geometry, geometry ] );
+
+			const rects = Rect.getDomRangeRects( range );
+
+			rects.forEach( rect => {
+				expect( rect._source ).to.equal( range );
+			} );
+		} );
 	} );
 
 	describe( 'getBoundingRect()', () => {
