@@ -540,8 +540,6 @@ function getConflictingManualDecorators(
 	}
 
 	const conflictingDecorators: Array<string> = [];
-	const decoratorAttributeKeys = Object.keys( decorator.attributes || {} );
-	const decoratorStyleKeys = Object.keys( decorator.styles || {} );
 
 	for ( const otherDecorator of manualDecorators ) {
 		if ( otherDecorator.id === decoratorName ) {
@@ -552,7 +550,7 @@ function getConflictingManualDecorators(
 
 		// If at least one shared attribute name is found, mark as conflict.
 		if ( decorator.attributes && otherDecorator.attributes ) {
-			const hasSharedAttributes = decoratorAttributeKeys.some(
+			const hasSharedAttributes = Object.keys( decorator.attributes ).some(
 				key => !isMergeableAttribute( key ) && key in otherDecorator.attributes!
 			);
 
@@ -563,7 +561,7 @@ function getConflictingManualDecorators(
 
 		// If at least one shared style property is found, mark as conflict.
 		if ( !hasConflict && decorator.styles && otherDecorator.styles ) {
-			const hasSharedStyles = decoratorStyleKeys.some( key => key in otherDecorator.styles! );
+			const hasSharedStyles = Object.keys( decorator.styles ).some( key => key in otherDecorator.styles! );
 
 			if ( hasSharedStyles ) {
 				hasConflict = true;
