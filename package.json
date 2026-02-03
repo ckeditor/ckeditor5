@@ -61,6 +61,7 @@
     "minimist": "^1.2.8",
     "mkdirp": "^3.0.0",
     "nyc": "^17.1.0",
+    "puppeteer": "^24.1.0",
     "postcss-loader": "^8.0.0",
     "publint": "^0.3.4",
     "react": "^18.2.0",
@@ -130,13 +131,17 @@
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",
     "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
+    "test:memory": "node ./scripts/memory/test-memory.mjs",
     "validate-license-files": "node ./scripts/ci/validate-license-files.mjs"
   },
   "lint-staged": {
     "**/*": [
       "eslint --quiet"
     ],
-    "**/*.css": [
+    "packages/**/*.css": [
+      "stylelint --quiet --allow-empty-input"
+    ],
+    "docs/**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
   },

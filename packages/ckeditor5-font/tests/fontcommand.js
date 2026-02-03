@@ -245,6 +245,20 @@ describe( 'FontCommand', () => {
 			sinon.assert.calledWith( spy, batch );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/18430
+		it( 'when applying font to range that includes empty paragraph, empty paragraph should get selection:font', () => {
+			_setModelData( model, '[<paragraph>foo</paragraph><paragraph></paragraph><paragraph>foo</paragraph>]' );
+
+			command.execute( { value: 'foo' } );
+
+			model.change( writer => {
+				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
+			} );
+
+			expect( _getModelData( model ) ).to.include( 'selection:font="foo"' );
+			expect( command.value ).to.equal( 'foo' );
+		} );
+
 		describe( 'should cause firing model change event', () => {
 			let spy;
 
