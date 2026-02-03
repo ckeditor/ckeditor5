@@ -230,12 +230,13 @@ export function upcastBorderStyles(
 			) {
 				const borderValue = viewItem.getAttribute( 'border' );
 
+				const borderPxValue = `${ borderValue }px` as StyleValue;
 				const borderAttributeNormalizedWidth = {
 					width: {
-						left: borderValue + 'px' as StyleValue,
-						right: borderValue + 'px' as StyleValue,
-						top: borderValue + 'px' as StyleValue,
-						bottom: borderValue + 'px' as StyleValue
+						left: borderPxValue,
+						right: borderPxValue,
+						top: borderPxValue,
+						bottom: borderPxValue
 					}
 				};
 
