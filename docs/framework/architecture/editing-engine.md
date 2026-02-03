@@ -20,12 +20,13 @@ The editing engine uses a Model-View-Controller (MVC) architecture. While the en
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
 The architecture has three layers: **model**, **controller**, and **view**. There is one **model document** that gets **converted** into two separate views: the **editing view** and the **data view**. These views represent different things:
-* The editing view shows the content users see in the browser and interact with
-* The data view handles the editor's input and output data in a format the data processor understands
+
+* The editing view shows the content users see in the browser and interact with.
+* The data view handles the editor's input and output data in a format the data processor understands.
 
 Both views use virtual DOM structures (custom, DOM-like structures) that converters and features work with. These structures are then **rendered** to the actual DOM.
 
-The green blocks in the diagram represent code from editor features (plugins). Features control what changes happen to the model, how those changes convert to the view, and how the model updates based on events.
+The yellow blocks in the diagram represent code from editor features (plugins). Features control what changes happen to the model, how those changes convert to the view, and how the model updates based on events.
 
 Let's explore each layer separately.
 
