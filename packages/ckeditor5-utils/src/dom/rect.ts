@@ -415,7 +415,12 @@ export class Rect {
 
 		if ( clientRects.length ) {
 			for ( const rect of clientRects ) {
-				rects.push( new Rect( rect ) );
+				const r = new Rect( rect );
+
+				// Point the rect source to the DOM range instead of of the DOM client rect to allow proper clipping,
+				// in `Rect#getVisible()` method.
+				r._source = range;
+				rects.push( r );
 			}
 		}
 		// If there's no client rects for the Range, use parent container's bounding rect
