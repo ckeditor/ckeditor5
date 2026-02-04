@@ -172,14 +172,14 @@ export class LinkCommand extends Command {
 		} );
 
 		// Stores information about manual decorators to turn them on/off when command is applied.
-		const truthyManualDecorators = new Set<string>();
-		const falsyManualDecorators = new Set<string>();
+		const truthyManualDecorators: Array<string> = [];
+		const falsyManualDecorators: Array<string> = [];
 
 		for ( const name in resolvedDecoratorsIds ) {
-			if ( resolvedDecoratorsIds[ name ] ) {
-				truthyManualDecorators.add( name );
+			if ( manualDecoratorIds[ name ] ) {
+				truthyManualDecorators.push( name );
 			} else {
-				falsyManualDecorators.add( name );
+				falsyManualDecorators.push( name );
 			}
 		}
 
