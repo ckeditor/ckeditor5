@@ -112,8 +112,8 @@ export function upcastStyleToAttribute(
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let value = viewElement.getAttribute( attributeName );
 
-					if ( value && attributeType == 'length' && !value.endsWith( 'px' ) ) {
-						value += 'px';
+					if ( value && attributeType == 'length' ) {
+						value = parseFloat( value ) + ( value.endsWith( '%' ) ? '%' : 'px' );
 					}
 
 					if ( localDefaultValue !== value ) {
@@ -259,8 +259,11 @@ export function upcastBorderStyles(
 
 				const modelElement = modelRange?.start?.nodeAfter;
 
-				// If model element has already border style attribute, skip the conversion.
-				if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+				// If model element has any non-default border attribute, skip the conversion.
+				if (
+					!modelElement ||
+					Object.values( modelAttributes ).some( attributeName => modelElement.hasAttribute( attributeName ) )
+				) {
 					return;
 				}
 

@@ -22,23 +22,23 @@
   ],
   "devDependencies": {
     "@babel/parser": "^7.23.3",
-    "@ckeditor/ckeditor5-dev-build-tools": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-bump-year": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-changelog": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-ci": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-dependency-checker": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-docs": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-license-checker": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-release-tools": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-stale-bot": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-tests": "^54.2.1",
-    "@ckeditor/ckeditor5-dev-web-crawler": "^54.2.1",
+    "@ckeditor/ckeditor5-dev-build-tools": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-bump-year": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-changelog": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-ci": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-dependency-checker": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-docs": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-license-checker": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-release-tools": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-stale-bot": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-tests": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-web-crawler": "^54.3.3",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.6",
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.0.18",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
@@ -61,6 +61,7 @@
     "minimist": "^1.2.8",
     "mkdirp": "^3.0.0",
     "nyc": "^17.1.0",
+    "puppeteer": "^24.1.0",
     "postcss-loader": "^8.0.0",
     "publint": "^0.3.4",
     "react": "^18.2.0",
@@ -75,14 +76,14 @@
     "typescript": "5.3.3",
     "umberto": "^9.2.0",
     "upath": "^2.0.0",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.18",
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
   "engines": {
     "node": ">=24.11.0",
-    "pnpm": ">=10.17.0",
+    "pnpm": ">=10.28.0",
     "yarn": "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"
   },
   "author": "CKSource (http://cksource.com/)",
@@ -130,13 +131,17 @@
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",
     "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
+    "test:memory": "node ./scripts/memory/test-memory.mjs",
     "validate-license-files": "node ./scripts/ci/validate-license-files.mjs"
   },
   "lint-staged": {
     "**/*": [
       "eslint --quiet"
     ],
-    "**/*.css": [
+    "packages/**/*.css": [
+      "stylelint --quiet --allow-empty-input"
+    ],
+    "docs/**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
   },

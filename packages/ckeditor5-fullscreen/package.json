@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-bookmark": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
+    "@ckeditor/ckeditor5-dev-utils": "^54.3.3",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-editor-inline": "workspace:*",
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",

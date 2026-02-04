@@ -1269,3 +1269,19 @@ export type EditorDestroyEvent = {
  *
  * @error editor-wrong-element
  */
+
+/**
+ * You are running [CKEditor 5 Long Term Support Edition (LTS)](https://ckeditor.com/ckeditor-5-lts/),
+ * but the provided license key does not include access to the LTS version, or the key is invalid.
+ *
+ * Please ensure that it is copied correctly from the [Customer Portal](http://portal.ckeditor.com/),
+ * and if the issue persists, please [contact our customer support](https://ckeditor.com/contact/).
+ *
+ * In case you intended to use the [LTS Edition](https://ckeditor.com/ckeditor-5-lts/),
+ * but have not yet made a purchase, please [contact our sales team](https://ckeditor.com/contact-sales/)
+ *
+ * If you did not intend to use LTS, please switch to non-lts edition, for example,
+ * the [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html) build.
+ *
+ * @error license-key-lts-not-allowed
+ */
