@@ -176,7 +176,7 @@ export class LinkCommand extends Command {
 		const falsyManualDecorators: Array<string> = [];
 
 		for ( const name in resolvedDecoratorsIds ) {
-			if ( manualDecoratorIds[ name ] ) {
+			if ( resolvedDecoratorsIds[ name ] ) {
 				truthyManualDecorators.push( name );
 			} else {
 				falsyManualDecorators.push( name );
