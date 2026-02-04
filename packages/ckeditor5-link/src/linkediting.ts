@@ -32,6 +32,7 @@ import { keyCodes, env } from 'ckeditor5/src/utils.js';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';
+import { areDecoratorsConflicting } from './utils/conflictingdecorators.js';
 import { LinkManualDecorator } from './utils/manualdecorator.js';
 import {
 	createLinkElement,
@@ -198,6 +199,20 @@ export class LinkEditing extends Plugin {
 		}
 
 		automaticDecorators.add( automaticDecoratorDefinitions );
+		automaticDecorators.setConflictChecker( ( automaticDecorator, modelItem ) => {
+			for ( const manualDecorator of command.manualDecorators ) {
+				// If manual decorator is not applied, skip it.
+				if ( !modelItem.hasAttribute( manualDecorator.id ) ) {
+					continue;
+				}
+
+				// If it conflicts with manual decorator that is being applied, return true
+				// to prevent the automatic decorator from being applied.
+				if ( areDecoratorsConflicting( automaticDecorator, manualDecorator ) ) {
+					return true;
+				}
+			}
+		} );
 
 		if ( automaticDecorators.length ) {
 			editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );

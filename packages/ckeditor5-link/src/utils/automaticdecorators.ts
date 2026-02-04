@@ -8,7 +8,15 @@
  */
 
 import { toMap, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { DowncastAttributeEvent, DowncastDispatcher, ModelElement, ViewElement } from 'ckeditor5/src/engine.js';
+import type {
+	DowncastAttributeEvent,
+	DowncastDispatcher,
+	ModelElement,
+	ModelSelection,
+	ModelItem,
+	ModelDocumentSelection,
+	ViewElement
+} from 'ckeditor5/src/engine.js';
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
 
 /**
@@ -23,11 +31,26 @@ export class AutomaticLinkDecorators {
 	private _definitions = new Set<NormalizedLinkDecoratorAutomaticDefinition>();
 
 	/**
+	 * A callback that checks if a decorator can be applied to a given element.
+	 * Returns `false` if there is a conflict preventing the decorator from being applied.
+	 */
+	private _conflictChecker?: DecoratorConflictChecker;
+
+	/**
 	 * Gives information about the number of decorators stored in the {@link module:link/utils/automaticdecorators~AutomaticLinkDecorators}
 	 * instance.
 	 */
 	public get length(): number {
 		return this._definitions.size;
+	}
+
+	/**
+	 * Sets a callback that checks if a decorator can be applied to a given element.
+	 *
+	 * @param checker A function that returns `false` if there is a conflict preventing the decorator from being applied.
+	 */
+	public setConflictChecker( checker: DecoratorConflictChecker ): void {
+		this._conflictChecker = checker;
 	}
 
 	/**
@@ -82,7 +105,11 @@ export class AutomaticLinkDecorators {
 
 					viewWriter.setCustomProperty( 'link', true, viewElement );
 
-					if ( item.callback( data.attributeNewValue as string | null ) ) {
+					// Check if automatic decorator is matched.
+					if (
+						item.callback( data.attributeNewValue as string | null ) &&
+						!this._conflictChecker?.( item, data.item )
+					) {
 						if ( data.item.is( 'selection' ) ) {
 							viewWriter.wrap( viewSelection.getFirstRange()!, viewElement );
 						} else {
@@ -119,7 +146,10 @@ export class AutomaticLinkDecorators {
 				for ( const item of this._definitions ) {
 					const attributes = toMap( item.attributes );
 
-					if ( item.callback( data.attributeNewValue as string | null ) ) {
+					if (
+						item.callback( data.attributeNewValue as string | null ) &&
+						!this._conflictChecker?.( item, data.item )
+					) {
 						for ( const [ key, val ] of attributes ) {
 							// Left for backward compatibility. Since v30 decorator should
 							// accept `classes` and `styles` separately from `attributes`.
@@ -159,3 +189,12 @@ export class AutomaticLinkDecorators {
 		};
 	}
 }
+
+/**
+ * A callback that checks if a decorator can be applied to a given element.
+ * Returns `true` if there is a conflict preventing the decorator from being applied.
+ */
+export type DecoratorConflictChecker = (
+	decorator: NormalizedLinkDecoratorAutomaticDefinition,
+	modelItem: ModelElement | ModelSelection | ModelItem | ModelDocumentSelection
+) => boolean | undefined;
