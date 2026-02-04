@@ -246,6 +246,10 @@ export type LinkDecoratorDefinition = LinkDecoratorAutomaticDefinition | LinkDec
  * }
  * ```
  *
+ * **Note**: If there is conflict between manual and automatic decorators (e.g. both try to manage the same attribute),
+ * the manual decorator takes precedence and the automatic one is ignored. It's also highly discouraged to have multiple
+ * automatic decorators managing the same attribute.
+ *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
  * dedicated for that purpose that can be enabled by turning a single option on. Check out the
  * {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}
