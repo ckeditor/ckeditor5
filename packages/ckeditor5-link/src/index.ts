@@ -48,13 +48,18 @@ export {
 	extractTextFromLinkRange as _extractTextFromLinkRange
 } from './utils.js';
 
+export {
+	areDecoratorsConflicting as _areLinkDecoratorsConflicting,
+	resolveConflictingDecorators as _resolveConflictingLinkDecorators
+} from './utils/conflictingdecorators.js';
+
 export type {
 	NormalizedLinkDecoratorAutomaticDefinition,
 	NormalizedLinkDecoratorManualDefinition,
 	NormalizedLinkDecoratorDefinition
 } from './utils.js';
 
-export { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
+export { AutomaticLinkDecorators, type DecoratorConflictChecker } from './utils/automaticdecorators.js';
 export { LinkManualDecorator } from './utils/manualdecorator.js';
 
 export type {
