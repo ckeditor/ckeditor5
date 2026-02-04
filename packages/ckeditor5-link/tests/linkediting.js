@@ -2888,6 +2888,87 @@ describe( 'LinkEditing', () => {
 		} );
 	} );
 
+	describe( 'conflicting decorator attributes postfixer', () => {
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing, Enter ],
+				link: {
+					decorators: {
+						decorator1: {
+							mode: 'manual',
+							label: 'Decorator 3',
+							attributes: {
+								target: 'blank'
+							}
+						},
+						decorator2: {
+							mode: 'manual',
+							label: 'Decorator 4',
+							attributes: {
+								target: 'self'
+							}
+						},
+						decorator3: {
+							mode: 'manual',
+							label: 'Decorator 5',
+							attributes: {
+								rel: 'nofollow'
+							}
+						},
+						decorator4: {
+							mode: 'manual',
+							label: 'Decorator 6',
+							attributes: {
+								rel: 'noopener'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should drop conflicting decorator when setting new one', () => {
+			_setModelData( model,
+				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
+			);
+
+			model.change( writer => {
+				const text = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				writer.setAttribute( 'linkDecorator2', true, text );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text linkDecorator2="true" linkHref="http://example.com">link</$text></paragraph>'
+			);
+		} );
+
+		it( 'should not drop conflicting decorator when setting non-conflicting one', () => {
+			_setModelData( model,
+				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
+			);
+
+			model.change( writer => {
+				const text = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				writer.setAttribute( 'linkDecorator3', true, text );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text linkDecorator1="true" linkDecorator3="true" linkHref="http://example.com">link</$text></paragraph>'
+			);
+		} );
+	} );
+
 	function createDataTransfer( data ) {
 		return {
 			getData( type ) {
