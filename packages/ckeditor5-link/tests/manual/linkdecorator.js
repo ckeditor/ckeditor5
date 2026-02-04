@@ -5,6 +5,7 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { LinkImage } from '../../src/linkimage.js';
 
 // Just to have nicely styles switchbutton;
@@ -101,3 +102,104 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor3' ), {
+		plugins: [ ArticlePluginSet, LinkImage, Bold, Italic, Underline ],
+		toolbar: [
+			'link',
+			'|',
+			'bold', 'italic', 'underline',
+			'|',
+			'fontColor', 'fontBackgroundColor',
+			'|',
+			'undo', 'redo'
+		],
+		link: {
+			decorators: {
+				isNofollow: {
+					mode: 'manual',
+					label: 'No Follow',
+					attributes: {
+						rel: 'nofollow'
+					}
+				},
+				isUGC: {
+					mode: 'manual',
+					label: 'User Generated Content',
+					attributes: {
+						rel: 'ugc'
+					}
+				},
+				isSponsored: {
+					mode: 'manual',
+					label: 'Sponsored',
+					attributes: {
+						rel: 'sponsored'
+					}
+				},
+				openInSameTab: {
+					mode: 'manual',
+					label: 'Open in same tab',
+					attributes: {
+						target: '_self'
+					}
+				},
+				openInNewTab: {
+					mode: 'manual',
+					label: 'Open in new tab',
+					attributes: {
+						target: '_blank'
+					}
+				},
+				isImportant: {
+					mode: 'manual',
+					label: 'Important link',
+					classes: 'important'
+				},
+				isHighlighted: {
+					mode: 'manual',
+					label: 'Highlighted',
+					classes: 'highlighted'
+				},
+				isPrimary: {
+					mode: 'manual',
+					label: 'Primary link',
+					classes: 'primary'
+				},
+				redColor: {
+					mode: 'manual',
+					label: 'Red color',
+					styles: {
+						color: 'red'
+					}
+				},
+				blueColor: {
+					mode: 'manual',
+					label: 'Blue color',
+					styles: {
+						color: 'blue'
+					}
+				},
+				italicText: {
+					mode: 'manual',
+					label: 'Italic text',
+					styles: {
+						'font-style': 'italic'
+					}
+				}
+			},
+			addTargetToExternalLinks: true
+		},
+		image: {
+			toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative', '|', 'linkImage' ]
+		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { conflicting: editor } );
+		window.editors.conflictingDecorators = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
