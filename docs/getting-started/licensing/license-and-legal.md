@@ -72,6 +72,13 @@ Cloud-hosting is available in self-service and custom plans. The packages are ma
 
 Self-hosted distribution is available with custom plans, allowing you to host CKEditor&nbsp;5 on your own infrastructure. This option provides greater flexibility and complete control over your deployment environment.
 
+## CKEditor 5 LTS Edition
+
+[CKEditor 5 LTS Edition](https://ckeditor.com/ckeditor-5-lts/) provides an extended support cycle of up to three years with security updates and critical compatibility fixes, without introducing breaking changes. It is available entirely under commercial terms and follows the same licensing model as our commercial licensed functionalities. It applies even for features available under an open-source license in the latest CKEditor 5 version. 
+
+While the source code will continue to be published in our public repositories, the LTS Edition cannot be used under the GPL or any other open source license. 
+To learn more about using the LTS Edition, please visit the [dedicated guide](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html) in our documentation or [contact our sales team](https://ckeditor.com/contact-sales/) for details.
+
 ## Sources of intellectual property included in CKEditor
 
 Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
