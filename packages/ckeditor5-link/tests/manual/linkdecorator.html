@@ -7,6 +7,21 @@
 	<p>This is some <a href="mailto:random@user.org">mail</a>.</p>
 	<p>This is some <a href="tel:123456789">phone number</a> with gallery decorator</p>
 	<p>This is a link with multiple decorators <a href="http://cksource.com" target="_blank" rel="noopener noreferrer nofollow">using rel</a> attribute</p>
+
+	<p>Test linked images:</p>
+	<figure class="image">
+		<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">
+			<img src="../manual/sample.jpg" alt="Linked block image with decorators">
+		</a>
+		<figcaption>Linked block image with manual decorators</figcaption>
+	</figure>
+
+	<p>
+		Inline linked image with decorators:
+		<a href="http://ckeditor.com" class="gallery" download="download">
+			<img src="../manual/sample50.png" alt="Linked inline image">
+		</a>
+	</p>
 </div>
 
 <h2>Automatic decorators</h2>
@@ -17,6 +32,25 @@
 	<p>This is some random <a href="ftp://127.0.0.1">ftp address</a>.</p>
 	<p>This is some <a href="mailto:random@user.org">mail</a>.</p>
 	<p>This is some <a href="tel:123456789">phone number</a>.</p>
+
+	<p>Test linked images with automatic decorators:</p>
+	<figure class="image">
+		<a href="http://ckeditor.com">
+			<img src="../manual/sample.jpg" alt="External link image">
+		</a>
+		<figcaption>Block image with automatic external link decorator</figcaption>
+	</figure>
+
+	<p>
+		Inline images:
+		<a href="tel:123456789">
+			<img src="../manual/sample50.png" alt="Telephone link image">
+		</a>
+		and
+		<a href="#internal-section">
+			<img src="../manual/sample50.png" alt="Internal link image">
+		</a>
+	</p>
 </div>
 
 <h2>Conflicting decorators (automatic vs manual)</h2>
@@ -49,4 +83,19 @@
 	<ul>
 		<li><a href="/red-page" style="color: red; font-style: italic;">Red link</a></li>
 	</ul>
+
+	<p>Test linked images with conflicting decorators:</p>
+	<figure class="image">
+		<a href="http://external.com" target="_blank" rel="nofollow sponsored" class="important highlighted" style="color: blue;">
+			<img src="../manual/sample.jpg" alt="Image with multiple decorators">
+		</a>
+		<figcaption>Block image with conflicting manual decorators (rel, target, classes, styles)</figcaption>
+	</figure>
+
+	<p>
+		Inline image with decorators:
+		<a href="/local-page" target="_self" class="primary" style="color: red; font-style: italic;">
+			<img src="../manual/sample50.png" alt="Inline image with styles">
+		</a>
+	</p>
 </div>

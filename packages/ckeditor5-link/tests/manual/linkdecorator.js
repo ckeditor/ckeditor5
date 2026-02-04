@@ -111,8 +111,6 @@ ClassicEditor
 			'|',
 			'bold', 'italic', 'underline',
 			'|',
-			'fontColor', 'fontBackgroundColor',
-			'|',
 			'undo', 'redo'
 		],
 		link: {
