@@ -34,7 +34,7 @@ export class AutomaticLinkDecorators {
 	 * A callback that checks if a decorator can be applied to a given element.
 	 * Returns `false` if there is a conflict preventing the decorator from being applied.
 	 */
-	private _conflictChecker?: DecoratorConflictChecker;
+	private _conflictChecker?: LinkDecoratorConflictChecker;
 
 	/**
 	 * Gives information about the number of decorators stored in the {@link module:link/utils/automaticdecorators~AutomaticLinkDecorators}
@@ -49,7 +49,7 @@ export class AutomaticLinkDecorators {
 	 *
 	 * @param checker A function that returns `false` if there is a conflict preventing the decorator from being applied.
 	 */
-	public setConflictChecker( checker: DecoratorConflictChecker ): void {
+	public setConflictChecker( checker: LinkDecoratorConflictChecker ): void {
 		this._conflictChecker = checker;
 	}
 
@@ -194,7 +194,7 @@ export class AutomaticLinkDecorators {
  * A callback that checks if a decorator can be applied to a given element.
  * Returns `true` if there is a conflict preventing the decorator from being applied.
  */
-export type DecoratorConflictChecker = (
+export type LinkDecoratorConflictChecker = (
 	decorator: NormalizedLinkDecoratorAutomaticDefinition,
 	modelItem: ModelElement | ModelSelection | ModelItem | ModelDocumentSelection
 ) => boolean | undefined;
