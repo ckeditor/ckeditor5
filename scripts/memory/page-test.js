@@ -127,7 +127,7 @@ async function createAndDestroy( editorName, editorData ) {
 	 *
 	 * See https://github.com/cksource/cs/issues/27229 for more details.
 	 */
-	await timeout( 500 );
+	await timeout( 1000 );
 
 	// Destroy the editor.
 	await editor.destroy();
