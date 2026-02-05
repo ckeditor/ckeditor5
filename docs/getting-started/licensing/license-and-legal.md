@@ -74,7 +74,7 @@ Self-hosted distribution is available with custom plans, allowing you to host CK
 
 ## CKEditor 5 LTS Edition
 
-[CKEditor 5 LTS Edition](https://ckeditor.com/ckeditor-5-lts/) provides an extended support cycle of up to three years with security updates and critical compatibility fixes, without introducing breaking changes. It is available entirely under commercial terms and follows the same licensing model as our commercial licensed functionalities. It applies even for features available under an open-source license in the latest CKEditor 5 version. 
+[CKEditor 5 LTS Edition](https://ckeditor.com/ckeditor-5-lts/) provides an extended support cycle of up to three years with security updates and critical compatibility fixes, without introducing breaking changes. It is available entirely under commercial terms and follows the same licensing model as our commercial licensed functionalities.
 
 While the source code of the LTS-only distribution (i.e., versions available only to LTS Edition customers) will continue to be published in our public repositories, the LTS-only distribution cannot be used under the GPL license.
 To learn more about using the LTS Edition, please visit the [dedicated guide](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html) in our documentation or [contact our sales team](https://ckeditor.com/contact-sales/) for details.
