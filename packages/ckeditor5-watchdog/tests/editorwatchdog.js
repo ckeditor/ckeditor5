@@ -898,6 +898,113 @@ describe( 'EditorWatchdog', () => {
 			} );
 		} );
 
+		it( 'Watchdog should restart only the relevant editor when the error context contains both shared and editor-specific objects',
+			async () => {
+				const watchdog1 = new EditorWatchdog( ClassicTestEditor );
+				const watchdog2 = new EditorWatchdog( ClassicTestEditor );
+				const element2 = document.createElement( 'div' );
+				document.body.appendChild( element2 );
+
+				// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+				const originalErrorHandler = window.onerror;
+				window.onerror = undefined;
+
+				const sharedObject = { foo: 'bar' };
+
+				await Promise.all( [
+					watchdog1.create( element ),
+					watchdog2.create( element2 )
+				] );
+
+				// Attach shared object to both editors so areConnectedThroughProperties returns true for both.
+				watchdog1.editor.shared = sharedObject;
+				watchdog2.editor.shared = sharedObject;
+
+				const context = {
+					shared: sharedObject,
+					// This makes it specific to watchdog1's editor
+					specific: watchdog1.editor.model.document
+				};
+
+				const watchdog1RestartSpy = sinon.spy();
+				const watchdog2RestartSpy = sinon.spy();
+
+				watchdog1.on( 'restart', watchdog1RestartSpy );
+				watchdog2.on( 'restart', watchdog2RestartSpy );
+
+				setTimeout( () => throwCKEditorError( 'foo', context ) );
+
+				await new Promise( res => {
+					watchdog1.on( 'restart', () => {
+						// Wait a bit to ensure watchdog2 does not restart
+						setTimeout( () => {
+							window.onerror = originalErrorHandler;
+
+							sinon.assert.calledOnce( watchdog1RestartSpy );
+							sinon.assert.notCalled( watchdog2RestartSpy );
+
+							Promise.all( [ watchdog1.destroy(), watchdog2.destroy() ] ).then( () => {
+								element2.remove();
+								res();
+							} );
+						}, 60 );
+					} );
+				} );
+			}
+		);
+
+		it( 'Watchdog should restart all editors connected to the error context if no editor-specific object is found', async () => {
+			const watchdog1 = new EditorWatchdog( ClassicTestEditor );
+			const watchdog2 = new EditorWatchdog( ClassicTestEditor );
+			const element2 = document.createElement( 'div' );
+			document.body.appendChild( element2 );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			const sharedObject = { foo: 'bar' };
+
+			await Promise.all( [
+				watchdog1.create( element ),
+				watchdog2.create( element2 )
+			] );
+
+			watchdog1.editor.shared = sharedObject;
+			watchdog2.editor.shared = sharedObject;
+
+			const context = {
+				shared: sharedObject
+			};
+
+			const watchdog1RestartSpy = sinon.spy();
+			const watchdog2RestartSpy = sinon.spy();
+
+			watchdog1.on( 'restart', watchdog1RestartSpy );
+			watchdog2.on( 'restart', watchdog2RestartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', context ) );
+
+			await new Promise( res => {
+				let restarts = 0;
+				const check = () => {
+					restarts++;
+					if ( restarts === 2 ) {
+						window.onerror = originalErrorHandler;
+						sinon.assert.calledOnce( watchdog1RestartSpy );
+						sinon.assert.calledOnce( watchdog2RestartSpy );
+						Promise.all( [ watchdog1.destroy(), watchdog2.destroy() ] ).then( () => {
+							element2.remove();
+							res();
+						} );
+					}
+				};
+
+				watchdog1.on( 'restart', check );
+				watchdog2.on( 'restart', check );
+			} );
+		} );
+
 		it( 'Watchdog should crash permanently if the `crashNumberLimit` is reached' +
 			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
