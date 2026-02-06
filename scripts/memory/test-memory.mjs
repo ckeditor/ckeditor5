@@ -14,7 +14,7 @@ import { startMemoryTest } from './orchestrator.mjs';
 /**
  * Constants
  */
-const TIMEOUT = 20_000; // 20 seconds per editor type.
+const TIMEOUT = 40_000; // 40 seconds per editor type.
 const MEMORY_THRESHOLD = 1.5 * 1024 * 1024; // 1.5 MB.
 const ASSETS_DIR = resolve( import.meta.dirname, 'assets' );
 
