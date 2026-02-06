@@ -7,7 +7,7 @@
  * @module fullscreen/fullscreen
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { FullscreenEditing } from './fullscreenediting.js';
 import { FullscreenUI } from './fullscreenui.js';

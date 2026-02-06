@@ -22,7 +22,7 @@ export interface GlobalType {
  * testing, i.e. stubbing native properties:
  *
  * ```ts
- * import { global } from 'ckeditor5/utils';
+ * import { global } from 'ckeditor5';
  *
  * // This stub will work for any code using global module.
  * testUtils.sinon.stub( global, 'window', {

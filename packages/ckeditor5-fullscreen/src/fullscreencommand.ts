@@ -7,7 +7,7 @@
  * @module fullscreen/fullscreencommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 

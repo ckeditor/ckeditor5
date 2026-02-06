@@ -147,6 +147,7 @@ export function validateNaming( { pkg, module, item } ) {
 			const specificPackages = {
 				'ckbox': [ 'CKBox' ],
 				'ckfinder': [ 'CKFinder' ],
+				'export-inline-styles': [ 'ExportInlineStyles', 'Style' ],
 				'find-and-replace': [ 'Find', 'Replace' ],
 				'comments': [ 'Comment', 'Annotation' ],
 				'revision-history': [ 'Revision' ],

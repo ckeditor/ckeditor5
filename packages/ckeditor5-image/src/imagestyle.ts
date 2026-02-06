@@ -7,7 +7,7 @@
  * @module image/imagestyle
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ImageStyleEditing } from './imagestyle/imagestyleediting.js';
 import { ImageStyleUI } from './imagestyle/imagestyleui.js';
 

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model } from 'ckeditor5/src/engine.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model } from '@ckeditor/ckeditor5-engine';
 
 /**
  * @module restricted-editing/restrictededitingmode/utils

@@ -17,7 +17,7 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
+import { IconImageAssetManager, IconBrowseFiles } from '@ckeditor/ckeditor5-icons';
 
 import { CKBoxUI } from '../src/ckboxui.js';
 import { CKBoxEditing } from '../src/ckboxediting.js';

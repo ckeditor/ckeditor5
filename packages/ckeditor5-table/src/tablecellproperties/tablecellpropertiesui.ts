@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { IconTableCellProperties } from 'ckeditor5/src/icons.js';
+import { Plugin, type Editor, type Command } from '@ckeditor/ckeditor5-core';
+import { IconTableCellProperties } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -16,8 +16,8 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type View
-} from 'ckeditor5/src/ui.js';
-import type { Batch } from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-ui';
+import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 import { TableCellPropertiesView } from './ui/tablecellpropertiesview.js';
 import {
@@ -36,7 +36,7 @@ import {
 	getNormalizedDefaultProperties,
 	type NormalizedDefaultProperties
 } from '../utils/table-properties.js';
-import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import type { GetCallback, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import { type TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 
@@ -52,7 +52,8 @@ const propertyToCommandMap = {
 	padding: 'tableCellPadding',
 	backgroundColor: 'tableCellBackgroundColor',
 	horizontalAlignment: 'tableCellHorizontalAlignment',
-	verticalAlignment: 'tableCellVerticalAlignment'
+	verticalAlignment: 'tableCellVerticalAlignment',
+	cellType: 'tableCellType'
 } as const;
 
 /**
@@ -174,8 +175,12 @@ export class TableCellPropertiesUI extends Plugin {
 
 			this.listenTo( view, 'execute', () => this._showView() );
 
-			const commands = Object.values( propertyToCommandMap )
-				.map( commandName => editor.commands.get( commandName )! );
+			const commands = (
+				Object
+					.values( propertyToCommandMap )
+					.map( commandName => editor.commands.get( commandName ) )
+					.filter( val => !!val )
+			) as Array<Command>;
 
 			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
 				areEnabled.some( isCommandEnabled => isCommandEnabled )
@@ -206,6 +211,7 @@ export class TableCellPropertiesUI extends Plugin {
 	private _createPropertiesView( defaultTableCellProperties: NormalizedDefaultProperties ) {
 		const editor = this.editor;
 		const config = editor.config.get( 'table.tableCellProperties' )!;
+		const scopedHeaders = !!editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 		const borderColorsConfig = normalizeColorOptions( config.borderColors! );
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
@@ -216,8 +222,10 @@ export class TableCellPropertiesUI extends Plugin {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableCellProperties,
-			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false,
+			showScopedHeaderOptions: scopedHeaders
 		} );
+
 		const t = editor.t;
 
 		// Render the view so its #element is available for the clickOutsideHandler.
@@ -314,6 +322,13 @@ export class TableCellPropertiesUI extends Plugin {
 			this._getPropertyChangeCallback( 'tableCellVerticalAlignment' )
 		);
 
+		const cellTypeCommand = editor.commands.get( 'tableCellType' );
+
+		if ( cellTypeCommand ) {
+			view.cellTypeDropdown.bind( 'isEnabled' ).to( cellTypeCommand, 'isEnabled' );
+			view.on<ObservableChangeEvent<string>>( 'change:cellType', this._getPropertyChangeCallback( 'tableCellType' ) );
+		}
+
 		return view;
 	}
 
@@ -329,17 +344,32 @@ export class TableCellPropertiesUI extends Plugin {
 		const commands = this.editor.commands;
 		const borderStyleCommand: TableCellBorderStyleCommand = commands.get( 'tableCellBorderStyle' )!;
 
-		Object.entries( propertyToCommandMap )
-			.map( ( [ property, commandName ] ) => {
-				const propertyKey = property as keyof typeof propertyToCommandMap;
-				const defaultValue = this.view === this._viewWithContentTableDefaults ?
-					this._defaultContentTableCellProperties[ propertyKey ] || '' :
-					this._defaultLayoutTableCellProperties[ propertyKey ] || '';
+		Object
+			.entries( propertyToCommandMap )
+			.flatMap( ( [ property, commandName ] ) => {
+				const command = commands.get( commandName );
 
-				return [
+				if ( !command ) {
+					return [];
+				}
+
+				const propertyKey = property as keyof typeof propertyToCommandMap;
+				let defaultValue: string;
+
+				if ( propertyKey === 'cellType' ) {
+					defaultValue = '';
+				} else {
+					defaultValue = this.view === this._viewWithContentTableDefaults ?
+						this._defaultContentTableCellProperties[ propertyKey ] || '' :
+						this._defaultLayoutTableCellProperties[ propertyKey ] || '';
+				}
+
+				const entry = [
 					property as keyof typeof propertyToCommandMap,
-					commands.get( commandName )!.value as string || defaultValue
+					( command.value as string ) || defaultValue
 				] as const;
+
+				return [ entry ];
 			} )
 			.forEach( ( [ property, value ] ) => {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
@@ -450,7 +480,7 @@ export class TableCellPropertiesUI extends Plugin {
 	 * @param commandName The default value of the command.
 	 */
 	private _getPropertyChangeCallback(
-		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment'
+		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment' | 'tableCellType'
 	): GetCallback<ObservableChangeEvent<string>> {
 		return ( evt, propertyName, newValue ) => {
 			if ( !this._isReady ) {

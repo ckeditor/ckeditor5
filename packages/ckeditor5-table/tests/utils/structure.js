@@ -7,9 +7,9 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { TableEditing } from '../../src/tableediting.js';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine';
 import { modelTable } from '../_utils/utils.js';
-import { getHorizontallyOverlappingCells, getVerticallyOverlappingCells } from '../../src/utils/structure.js';
+import { cropTableToDimensions, getHorizontallyOverlappingCells, getVerticallyOverlappingCells } from '../../src/utils/structure.js';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot;
@@ -113,6 +113,47 @@ describe( 'table utils', () => {
 				expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
 				expect( cellsInfo[ 1 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 10
 				expect( cellsInfo[ 2 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) ); // Cell 21
+			} );
+		} );
+
+		describe( 'cropTableToDimensions()', () => {
+			it( 'coverage for addFootersToCroppedTable()', () => {
+				editor.model.schema.register( 'foo', { allowIn: 'table' } );
+				editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+				_setModelData( model,
+					'<table footerRows="1">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>10</paragraph></tableCell>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo></foo>' +
+					'</table>'
+				);
+
+				const table = modelRoot.getChild( 0 );
+				let result;
+
+				model.change( writer => {
+					result = cropTableToDimensions( table, {
+						startRow: 1,
+						startColumn: 1,
+						endRow: 1,
+						endColumn: 1
+					}, writer );
+				} );
+
+				expect( _stringifyModel( result ) ).to.equal(
+					'<table footerRows="1">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
 			} );
 		} );
 	} );

@@ -7,9 +7,9 @@
  * @module language/textpartlanguagecommand
  */
 
-import type { LanguageDirection } from 'ckeditor5/src/utils.js';
-import { Command } from 'ckeditor5/src/core.js';
-import { ModelDocumentSelection, type ModelRange, type ModelElement } from 'ckeditor5/src/engine.js';
+import type { LanguageDirection } from '@ckeditor/ckeditor5-utils';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { ModelDocumentSelection, type ModelRange, type ModelElement } from '@ckeditor/ckeditor5-engine';
 import { stringifyLanguageAttribute } from './utils.js';
 
 /**
