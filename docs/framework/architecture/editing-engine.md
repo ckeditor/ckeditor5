@@ -2,7 +2,7 @@
 category: framework-architecture
 meta-title: Editing engine | CKEditor 5 Framework Documentation
 order: 30
-modified_at: 2026-01-30
+modified_at: 2026-01-31
 ---
 
 # Editing engine
@@ -20,12 +20,13 @@ The editing engine uses a Model-View-Controller (MVC) architecture. While the en
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
 The architecture has three layers: **model**, **controller**, and **view**. There is one **model document** that gets **converted** into two separate views: the **editing view** and the **data view**. These views represent different things:
-* The editing view shows the content users see in the browser and interact with
-* The data view handles the editor's input and output data in a format the data processor understands
+
+* The editing view shows the content users see in the browser and interact with.
+* The data view handles the editor's input and output data in a format the data processor understands.
 
 Both views use virtual DOM structures (custom, DOM-like structures) that converters and features work with. These structures are then **rendered** to the actual DOM.
 
-The green blocks in the diagram represent code from editor features (plugins). Features control what changes happen to the model, how those changes convert to the view, and how the model updates based on events.
+The yellow blocks in the diagram represent code from editor features (plugins). Features control what changes happen to the model, how those changes convert to the view, and how the model updates based on events.
 
 Let's explore each layer separately.
 
@@ -374,17 +375,17 @@ Let's look at the diagram of the engine's MVC architecture and see where each co
 
 ### Data pipeline
 
-{@link framework/deep-dive/conversion/upcast **Data upcasting**} is a process that starts in the bottom-right corner of the diagram (in the view layer), passes from the data view through a converter (green box) in the controller layer to the model document in the top-right corner. As you can see, it goes from bottom to top, hence "upcasting." Also, it is handled by the data pipeline (the right branch of the diagram), hence "data upcasting." Note that data upcasting is also used to process pasted content (which is similar to loading data).
+{@link framework/deep-dive/conversion/upcast **Data upcasting**} is a process that starts in the bottom-left corner of the diagram (in the view layer), passes from the data view through a converter in the controller layer to the model document in the top. As you can see, it goes from bottom to top, hence "upcasting." Furthermore, it is handled by the data pipeline, hence "data upcasting." Note that data upcasting is also used to process pasted content (which is similar to loading data).
 
-{@link framework/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to data upcasting. It starts in the top-right corner and goes down to the bottom-right corner. Again, the conversion process name matches the direction and the pipeline.
+{@link framework/deep-dive/conversion/downcast#downcast-pipelines **Data downcasting**} is the opposite process to data upcasting. It starts at the top and goes down to the bottom-left corner. Again, the conversion process name matches the direction and the pipeline.
 
 ### Editing pipeline
 
 {@link framework/deep-dive/conversion/downcast#downcast-pipelines **Editing downcasting**} is a bit different from the other two processes:
 
-* It takes place in the "editing pipeline" (the left branch of the diagram).
+* It takes place in the "editing pipeline" (the right branch of the diagram).
 * It does not have a counterpart. Editing upcasting does not exist because editor features listen to [view events](#observers), analyze what has happened, and apply necessary changes to the model whenever users perform actions. Therefore, this process does not involve conversion.
-* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~ViewDocument} for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
+* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~ViewDocument} for its entire life. Every change in the model is converted to changes in that view, so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
 
 ### More information
 
