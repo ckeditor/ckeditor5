@@ -3,6 +3,41 @@ Changelog
 
 ## [47.5.0](https://github.com/ckeditor/ckeditor5/compare/v47.4.0...v47.5.0) (February 11, 2026)
 
+We are happy to announce the release of CKEditor 5 v47.5.0.
+
+### Release highlights
+
+CKEditor 5 v47.5.0 is a minor update that improves AI-assisted editing workflows and provides access to the new version of Export to PDF v2.
+
+#### AI Translate
+
+The AI Translate feature in CKEditor AI allows users to translate entire documents from one language to another. It provides a user interface similar to AI Review, but with translation-specific actions to streamline the process. The translation view displays the final translated document, with original snippets shown on the side for review and comparison.
+
+#### AI Multiple Changes revamp and other improvements
+
+We improved how multiple changes proposed by the AI Chat feature are presented. Suggested changes now appear as cards that can be previewed in the content and applied consistently in both single-change and multi-change scenarios. This release also includes several under-the-hood improvements; check the changelog for details.
+
+#### Export to PDF v2
+
+The export to PDF feature now supports version 2 of the HTML to PDF converter API, bringing several powerful enhancements to document generation.
+
+Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
+
+Security capabilities have been expanded with owner password protection for controlling permissions and digital signature support using PKCS#12 certificates for authenticity verification. Additional improvements include compression control for specific use cases, more precise rendering options, and experimental automatic outline generation for creating a table of contents.
+
+#### Incoming old installation methods sunset reminder
+
+Please note that the old installation methods will only remain available up to CKEditor 5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+
+In CKEditor 5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor 5.
+
+If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
+
+1. [Migrate to the new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html), which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor 5 releases.
+2. Consider [CKEditor 5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+
+Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html) to learn more about these changes.
+
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `ai.reviewMode.translations` configuration option has been moved to `ai.translate.languages`. The `ai.reviewMode` configuration namespace has been removed.
