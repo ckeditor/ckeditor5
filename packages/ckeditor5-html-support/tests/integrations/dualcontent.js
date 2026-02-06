@@ -8,6 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -220,7 +221,7 @@ describe( 'DualContentModelElementSupport', () => {
 			document.body.appendChild( allowAllEditorElement );
 			return ClassicTestEditor
 				.create( allowAllEditorElement, {
-					plugins: [ Paragraph, Bold, Italic, ShiftEnter, LinkEditing, GeneralHtmlSupport ],
+					plugins: [ Paragraph, Bold, Italic, ShiftEnter, LinkEditing, ImageInlineEditing, GeneralHtmlSupport ],
 					htmlSupport: {
 						allow: [
 							{
@@ -280,14 +281,14 @@ describe( 'DualContentModelElementSupport', () => {
 
 			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlDl>' +
-					'<htmlDivDl>' +
+					'<htmlDiv>' +
 						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
 						'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
-					'</htmlDivDl>' +
-					'<htmlDivDl>' +
+					'</htmlDiv>' +
+					'<htmlDiv>' +
 						'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
 						'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
-					'</htmlDivDl>' +
+					'</htmlDiv>' +
 				'</htmlDl>'
 			);
 		} );
@@ -310,14 +311,43 @@ describe( 'DualContentModelElementSupport', () => {
 			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>' +
 				'<htmlDl>' +
-					'<htmlDivDl>' +
+					'<htmlDiv>' +
 						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
 						'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
-					'</htmlDivDl>' +
-					'<htmlDivDl>' +
+					'</htmlDiv>' +
+					'<htmlDiv>' +
 						'<htmlDt><paragraph>Born</paragraph></htmlDt>' +
 						'<htmlDd><paragraph>1952</paragraph></htmlDd>' +
-					'</htmlDivDl>' +
+					'</htmlDiv>' +
+				'</htmlDl>'
+			);
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/19709.
+		it( 'should upcast description list div elements as well as inline content in div in dd', () => {
+			allowAllEditor.setData(
+				'<dl>' +
+					'<dd>' +
+						'<h3>Heading 1</h3>' +
+						'<div><img src="/assets/sample.png"></div>' +
+					'</dd>' +
+					'<div>' +
+						'<dt>Title</dt>' +
+						'<dd>Description</dd>' +
+					'</div>' +
+				'</dl>'
+			);
+
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+				'<htmlDl>' +
+					'<htmlDd>' +
+						'<htmlH3>Heading 1</htmlH3>' +
+						'<htmlDivParagraph><imageInline src="/assets/sample.png"></imageInline></htmlDivParagraph>' +
+					'</htmlDd>' +
+					'<htmlDiv>' +
+						'<htmlDt><paragraph>Title</paragraph></htmlDt>' +
+						'<htmlDd><paragraph>Description</paragraph></htmlDd>' +
+					'</htmlDiv>' +
 				'</htmlDl>'
 			);
 		} );

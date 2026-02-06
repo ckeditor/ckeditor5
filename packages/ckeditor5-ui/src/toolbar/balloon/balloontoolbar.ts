@@ -152,9 +152,7 @@ export class BalloonToolbar extends Plugin {
 
 		// Show/hide the toolbar on editable focus/blur.
 		this.listenTo<ObservableChangeEvent<boolean>>( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
-			const isToolbarVisible = this._balloon.visibleView === this.toolbarView;
-
-			if ( !isFocused && isToolbarVisible ) {
+			if ( !isFocused && this._isToolbarVisible ) {
 				this.hide();
 			} else if ( isFocused ) {
 				this.show();
@@ -207,6 +205,13 @@ export class BalloonToolbar extends Plugin {
 		editor.ui.once<EditorUIReadyEvent>( 'ready', () => {
 			this.toolbarView.fillFromConfig( this._balloonConfig, this.editor.ui.componentFactory );
 		} );
+	}
+
+	/**
+	 * Returns whether the toolbar is visible in the ContextualBalloon.
+	 */
+	private get _isToolbarVisible(): boolean {
+		return this._balloon.visibleView === this.toolbarView;
 	}
 
 	/**
@@ -356,7 +361,9 @@ export class BalloonToolbar extends Plugin {
 	 * * or the geometry of the balloon toolbar itself (e.g. the toolbar has grouped or ungrouped some items and it is shorter or longer).
 	 */
 	private _updatePosition() {
-		this._balloon.updatePosition( this._getBalloonPositionData() );
+		if ( this._isToolbarVisible ) {
+			this._balloon.updatePosition( this._getBalloonPositionData() );
+		}
 	}
 
 	/**

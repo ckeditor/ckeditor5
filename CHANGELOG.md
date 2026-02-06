@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [47.4.0](https://github.com/ckeditor/ckeditor5/compare/v47.3.0...v47.4.0) (January 14, 2025)
+## [47.4.0](https://github.com/ckeditor/ckeditor5/compare/v47.3.0...v47.4.0) (January 14, 2026)
 
 We are happy to announce the release of CKEditor 5 v47.4.0.
 
