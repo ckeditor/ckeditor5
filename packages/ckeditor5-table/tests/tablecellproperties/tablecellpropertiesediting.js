@@ -1485,6 +1485,22 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.be.undefined;
 				} );
 
+				it( 'should upcast only the digits before the unknown unit in height attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="100.5abc11">foo</td></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '100.5px' );
+				} );
+
+				it( 'should upcast only the digits before the percentage unit in height attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="  100.5%11  ">foo</td></tr></table>' );
+
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '100.5%' );
+				} );
+
 				it( 'should upcast height (px) attribute on table cell', () => {
 					editor.setData( '<table><tr><td height="100.5px">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
