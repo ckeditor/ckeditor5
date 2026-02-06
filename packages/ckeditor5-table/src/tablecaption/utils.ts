@@ -11,6 +11,7 @@ import type {
 	ModelDocumentFragment,
 	ModelDocumentSelection,
 	ModelElement,
+	ModelNode,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -80,4 +81,43 @@ export function matchTableCaptionViewElement( element: ViewElement ): { name: tr
 	}
 
 	return null;
+}
+
+/**
+ * Returns the text content of the caption element from a given table model element.
+ *
+ * @param table The table model element.
+ * @returns The text content of the caption or empty string if no caption exists.
+ * @internal
+ */
+export function getCaptionText( table: ModelElement ): string {
+	for ( const node of table.getChildren() ) {
+		if ( node.is( 'element', 'caption' ) ) {
+			return getModelElementText( node );
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Returns the text content of a given model node.
+ *
+ * @param node The model node.
+ * @returns The text content.
+ */
+function getModelElementText( node: ModelNode ): string {
+	if ( node.is( '$text' ) ) {
+		return node.data;
+	}
+
+	let text = '';
+
+	if ( node.is( 'element' ) ) {
+		for ( const child of node.getChildren() ) {
+			text += getModelElementText( child );
+		}
+	}
+
+	return text;
 }

@@ -25,6 +25,7 @@ import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 import { TableWalker } from '../tablewalker.js';
+import { getCaptionText } from '../tablecaption/utils.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -35,7 +36,18 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
-		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
+
+		const attributes: ViewElementAttributes = { class: 'table' };
+
+		if ( options.asWidget ) {
+			const captionText = getCaptionText( table );
+
+			if ( captionText ) {
+				attributes[ 'aria-label' ] = captionText;
+			}
+		}
+
+		const figureElement = writer.createContainerElement( 'figure', attributes, tableElement );
 
 		// Table head slot.
 		if ( headingRows > 0 ) {
