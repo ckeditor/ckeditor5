@@ -113,7 +113,14 @@ export function upcastStyleToAttribute(
 					let value = viewElement.getAttribute( attributeName );
 
 					if ( value && attributeType == 'length' ) {
-						value = parseFloat( value ) + ( value.endsWith( '%' ) ? '%' : 'px' );
+						const trimmedValue = String( value ).trim();
+						const parsedValue = parseFloat( trimmedValue );
+
+						if ( isNaN( parsedValue ) ) {
+							value = localDefaultValue;
+						} else {
+							value = parsedValue + ( trimmedValue.includes( '%' ) ? '%' : 'px' );
+						}
 					}
 
 					if ( localDefaultValue !== value ) {
