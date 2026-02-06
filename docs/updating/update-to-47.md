@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-02-11
+modified_at: 2026-02-06
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -16,13 +16,11 @@ modified_at: 2026-02-11
 
 ## Update to CKEditor&nbsp;5 v47.5.0
 
-Released on 18 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
+Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
 
 ### AI Translate
 
-The [AI Translate feature](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-translate.html) of CKEditor AI allows users to translate entire documents on the go. It provides a user interface similar to AI Review, but with translation-specific actions to streamline the process. The translation view displays the final translated document, with original snippets shown on the side for review and comparison.
-
-
+The {@link features/ckeditor-ai-translate AI Translate feature} of CKEditor AI allows users to translate entire documents on the go. It provides a user interface similar to AI Review, but with translation-specific actions to streamline the process. The translation view displays the final translated document, with original snippets shown on the side for review and comparison.
 
 ### Changes to the visual appearance of the AI Chat feed structure
 
@@ -148,11 +146,11 @@ div.ck-dialog.ck-ai-balloon.ck-ai-chat-balloon
 
 ### Multiple Changes revamp and other AI improvements
 
-We improved how multiple changes proposed by the [AI Chat](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-chat.html) feature are presented. Suggested changes now appear as cards that can be previewed in the content and applied consistently in both single-change and multi-change scenarios. This release also includes several under-the-hood improvements.
+We improved how multiple changes proposed by the {@link features/ckeditor-ai-chat AI Chat} feature are presented. Suggested changes now appear as cards that can be previewed in the content and applied consistently in both single-change and multi-change scenarios. This release also includes several under-the-hood improvements.
 
 ### Export to PDF v2
 
-The [export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html) feature now supports version 2 of the HTML to PDF converter API, bringing several [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#new-features-in-v2) to document generation.
+The {@link features/export-pdf export to PDF} feature now supports version 2 of the HTML to PDF converter API, bringing several {@link features/export-pdf#new-features-in-v2 powerful enhancements} to document generation.
 
 Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
 
@@ -160,16 +158,16 @@ Security capabilities have been expanded with owner password protection for cont
 
 ### Incoming old installation methods sunset reminder
 
-Please note that the old installation methods will no longer be available with CKEditor 5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+Please note that the old installation methods will no longer be available with CKEditor&nbsp;5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
 
-In CKEditor 5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor 5.
+In CKEditor&nbsp;5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor&nbsp;5.
 
 If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
 
-1. [Migrate to the new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html), which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor 5 releases.
-2. Consider [CKEditor 5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+1. {@link updating/nim-migration/migration-to-new-installation-methods Migrate to the new installation methods}, which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor&nbsp;5 releases.
+2. Consider [CKEditor&nbsp;5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
 
-Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-42.html) to learn more about these changes.
+Please refer to the {@link updating/update-to-42 update guide} to learn more about these changes.
 
 ## Update to CKEditor&nbsp;5 v47.4.0
 
