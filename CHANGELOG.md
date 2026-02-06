@@ -42,10 +42,10 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `ai.reviewMode.translations` configuration option has been moved to `ai.translate.languages`. The `ai.reviewMode` configuration namespace has been removed.
 
-  Together with the introduction of AI Translate feature and a separate translation tab, the configuration option to define custom languages list
+  Together with the introduction of AI Translate feature and a separate translation tab, the configuration option to define a custom language list
   has been moved to a related `ai.translate` namespace.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `AIEditorIntegration` plugin is now required to preview the changes suggested by the AI Chat feature in a dialog window. Previously, this functionality was enabled by just loading the main `AIChat` plugin. Please make sure your integration loads the `AIEditorIntegration` plugin in order to use this functionality.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestions in conversation has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestions in conversation has been changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
 
   Please make sure to update your integrations to use the new DOM structure. Learn more about the changes in the migration guide provided in the project documentation.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestion preview dialog window has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
@@ -54,22 +54,22 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#sendMessage()` takes `attributes: Record<string, unknown>` as one of its parameters now, in place of former `quickActionData`. This affects you only if you provided some customizations for the CKEditor AI chat feature.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Already existing chat conversations, which were created through AI Quick Action (e.g. "Explain" or "Summarize"), when loaded from chat history, will now display a full prompt instead of the short version. This affects only already created conversations.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Replaced `ai.chat.models.modelSelectorAlwaysVisible` configuration option with `ai.chat.models.showModelSelector`. The behavior has also been slightly updated. When set to `true` (default), the model selector dropdown is shown (when multiple models are available), or the model name is displayed (when only one model is available). When set to `false`, the selector is hidden, regardless of the number of available models.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The models configuration options have been moved from `config.ai.chat.models` to `config.ai.models` to ensure consistent model configuration across all AI features. The model configuration is now applied uniformly in both AI Chat and AI Review Mode.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The model's configuration options have been moved from `config.ai.chat.models` to `config.ai.models` to ensure consistent model configuration across all AI features. The model configuration is now applied uniformly in both AI Chat and AI Review Mode.
 
 ### Features
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced AI Translation tab.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced the AI Translation tab.
 
   A new tab dedicated to translating content has been introduced to CKEditor 5 AI. It focuses on working with translated content, streamlining
   the process of applying translation and making the whole process easier and faster for end users.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced a new look and improved operation of the AI Chat sidebar.
 
-  * The list of changes suggested by the AI now features a sleeker design and includes a button to apply individual changes.
+  * The list of changes proposed by the AI now features a sleeker design and includes a button to apply individual changes.
   * You can now preview suggested changes in a dialog window by clicking on a change in the sidebar.
   * The AI suggestion preview dialog window has been made more compact for enhanced usability.
   * Various bug fixes and other improvements.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced `AIChat#registerToolDataCallback()`. It allows for handling custom data generated by your AI tools connected to CKEditor AI backend.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced an API to allow inserting arbitrary HTML into AI Chat feed, during AI response streaming.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced an API to allow inserting arbitrary HTML into the AI Chat feed, during AI response streaming.
 
   The API is passed as one of the parameters to the callback registered using `AIChat#registerToolDataCallback()`.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced configuration option `ai.chat.initialConversation` that manages whether a new, or an existing past conversation is initially loaded in the AI Chat.
