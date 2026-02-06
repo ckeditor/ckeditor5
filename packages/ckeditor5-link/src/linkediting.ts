@@ -17,7 +17,8 @@ import type {
 	ViewElement,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
-	ModelDocumentSelectionChangeAttributeEvent
+	ModelDocumentSelectionChangeAttributeEvent,
+	ModelNode
 } from 'ckeditor5/src/engine.js';
 import {
 	Input,
@@ -32,6 +33,7 @@ import { keyCodes, env } from 'ckeditor5/src/utils.js';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';
+import { areDecoratorsConflicting } from './utils/conflictingdecorators.js';
 import { LinkManualDecorator } from './utils/manualdecorator.js';
 import {
 	createLinkElement,
@@ -156,6 +158,9 @@ export class LinkEditing extends Plugin {
 
 		// Handle adding default protocol to pasted links.
 		this._enableClipboardIntegration();
+
+		// Register postfixer that resolves conflicting decorator attributes.
+		this._enableDecoratorConflictPostfixer();
 	}
 
 	/**
@@ -198,6 +203,20 @@ export class LinkEditing extends Plugin {
 		}
 
 		automaticDecorators.add( automaticDecoratorDefinitions );
+		automaticDecorators.setConflictChecker( ( automaticDecorator, modelItem ) => {
+			for ( const manualDecorator of command.manualDecorators ) {
+				// If manual decorator is not applied, skip it.
+				if ( !modelItem.hasAttribute( manualDecorator.id ) ) {
+					continue;
+				}
+
+				// If it conflicts with manual decorator that is being applied, return true
+				// to prevent the automatic decorator from being applied.
+				if ( areDecoratorsConflicting( automaticDecorator, manualDecorator ) ) {
+					return true;
+				}
+			}
+		} );
 
 		if ( automaticDecorators.length ) {
 			editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
@@ -373,6 +392,62 @@ export class LinkEditing extends Plugin {
 					}
 				}
 			} );
+		} );
+	}
+
+	/**
+	 * Registers a postfixer that resolves conflicting decorator attributes on elements.
+	 */
+	private _enableDecoratorConflictPostfixer(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+
+		model.document.registerPostFixer( writer => {
+			let hasChanged = false;
+
+			const changes = model.document.differ.getChanges();
+			const elementsToCheck = new Set<ModelNode>();
+
+			for ( const change of changes ) {
+				if ( change.type !== 'attribute' ) {
+					continue;
+				}
+
+				const item = change.range.start.nodeAfter;
+
+				if ( item?.hasAttribute( 'linkHref' ) ) {
+					elementsToCheck.add( item );
+				}
+			}
+
+			// Check each element for conflicting decorators.
+			for ( const item of elementsToCheck ) {
+				const appliedDecorators: Array<LinkManualDecorator> = [];
+
+				// Collect all applied manual decorators.
+				for ( const manualDecorator of linkCommand.manualDecorators ) {
+					if ( item.hasAttribute( manualDecorator.id ) ) {
+						appliedDecorators.push( manualDecorator );
+					}
+				}
+
+				// Check for conflicts between applied decorators.
+				for ( let i = 0; i < appliedDecorators.length; i++ ) {
+					for ( let j = i + 1; j < appliedDecorators.length; j++ ) {
+						const decoratorA = appliedDecorators[ i ];
+						const decoratorB = appliedDecorators[ j ];
+
+						if ( areDecoratorsConflicting( decoratorA, decoratorB ) ) {
+							writer.removeAttribute( decoratorA.id, item );
+							hasChanged = true;
+							break;
+						}
+					}
+				}
+			}
+
+			return hasChanged;
 		} );
 	}
 }

@@ -1276,6 +1276,268 @@ describe( 'LinkCommand', () => {
 			expect( command.automaticDecorators ).to.be.an.instanceOf( AutomaticLinkDecorators );
 		} );
 	} );
+
+	describe( 'conflicting manual decorators', () => {
+		beforeEach( async () => {
+			await editor.destroy();
+
+			return ModelTestEditor.create( { plugins: [ LinkEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					command = new LinkCommand( editor );
+
+					model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: [ 'linkHref' ]
+					} );
+
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+					// Decorators with conflicting `rel` attribute.
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsRelA',
+						label: 'Rel A',
+						attributes: { rel: 'rel-a' }
+					} ) );
+
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsRelB',
+						label: 'Rel B',
+						attributes: { rel: 'rel-b' }
+					} ) );
+
+					// Decorators with conflicting `class` attribute.
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsClassA',
+						label: 'Class A',
+						attributes: { class: 'class-a' }
+					} ) );
+
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsClassB',
+						label: 'Class B',
+						attributes: { class: 'class-b' }
+					} ) );
+
+					// Decorators with conflicting `color` style.
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsStyleA',
+						label: 'Style A',
+						styles: { color: 'red', 'text-decoration': 'underline' }
+					} ) );
+
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsStyleC',
+						label: 'Style C',
+						styles: { color: 'purple' }
+					} ) );
+
+					// Non-conflicting decorator with different style property.
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsStyleB',
+						label: 'Style B',
+						styles: { fontWeight: 'bold' }
+					} ) );
+
+					// Decorator with non-mergeable attribute (target).
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsExternal',
+						label: 'External',
+						attributes: { target: '_blank' }
+					} ) );
+
+					command.manualDecorators.add( new LinkManualDecorator( {
+						id: 'linkIsExternalSelf',
+						label: 'External Self',
+						attributes: { target: '_self' }
+					} ) );
+
+					model.schema.extend( '$text', {
+						allowAttributes: [
+							'linkIsRelA',
+							'linkIsRelB',
+							'linkIsClassA',
+							'linkIsClassB',
+							'linkIsStyleA',
+							'linkIsStyleB',
+							'linkIsStyleC',
+							'linkIsExternal',
+							'linkIsExternalSelf'
+						]
+					} );
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		describe( 'conflicting rel attribute', () => {
+			it( 'should not disable linkIsRelA when enabling linkIsRelB (mergeable)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsRelA="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsRelB: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsRelA="true" linkIsRelB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not disable linkIsRelB when enabling linkIsRelA (mergeable)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsRelB="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsRelA: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsRelA="true" linkIsRelB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should handle multiple conflicting decorators being enabled at once', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsRelA="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsRelB: true, linkIsClassA: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsClassA="true" linkIsRelA="true" linkIsRelB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting class attribute', () => {
+			it( 'should not disable linkIsClassA when enabling linkIsClassB (mergeable)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsClassA="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsClassB: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsClassA="true" linkIsClassB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not disable linkIsClassB when enabling linkIsClassA (mergeable)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsClassB="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsClassA: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsClassA="true" linkIsClassB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting style properties', () => {
+			it( 'should disable linkIsStyleA when enabling linkIsStyleC (conflicting color)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsStyleA="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsStyleC: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsStyleC="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should disable linkIsStyleC when enabling linkIsStyleA (conflicting color)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsStyleC="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsStyleA: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsStyleA="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should allow non-conflicting style decorators to coexist', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsStyleA="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsStyleB: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsStyleA="true" linkIsStyleB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting non-mergeable attributes', () => {
+			it( 'should disable linkIsExternal when enabling linkIsExternalSelf (conflicting target)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsExternal="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsExternalSelf: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsExternalSelf="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should disable linkIsExternalSelf when enabling linkIsExternal (conflicting target)', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsExternalSelf="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsExternal: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsExternal="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'complex conflict scenarios', () => {
+			it( 'should handle enabling multiple decorators with different conflicts', () => {
+				_setModelData( model,
+					'<paragraph>' +
+						'<$text linkHref="url" linkIsRelA="true" linkIsClassA="true" linkIsStyleA="true">foo[]bar</$text>' +
+					'</paragraph>'
+				);
+
+				command.execute( 'url', {
+					linkIsRelB: true,
+					linkIsClassB: true,
+					linkIsStyleC: true
+				} );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsClassA="true" linkIsClassB="true" ' +
+					'linkIsRelA="true" linkIsRelB="true" linkIsStyleC="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not disable decorators when enabling a non-conflicting one', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="url" linkIsRelA="true" linkIsClassA="true">foo[]bar</$text></paragraph>'
+				);
+
+				command.execute( 'url', { linkIsStyleB: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph>' +
+						'<$text linkHref="url" linkIsClassA="true" linkIsRelA="true" linkIsStyleB="true">foo[]bar</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should handle disabling a decorator explicitly while enabling a conflicting one', () => {
+				_setModelData( model, '<paragraph><$text linkHref="url" linkIsRelA="true">foo[]bar</$text></paragraph>' );
+
+				command.execute( 'url', { linkIsRelA: false, linkIsRelB: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph><$text linkHref="url" linkIsRelB="true">foo[]bar</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'range selection', () => {
+			it( 'should resolve conflicts when modifying an existing link in range selection', () => {
+				_setModelData( model, '<paragraph>f[<$text linkHref="url" linkIsStyleA="true">ooba</$text>]r</paragraph>' );
+
+				command.execute( 'url', { linkIsStyleC: true } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph>f[<$text linkHref="url" linkIsStyleC="true">ooba</$text>]r</paragraph>'
+				);
+			} );
+		} );
+	} );
 } );
 
 function decoratorStates( manualDecorators ) {
