@@ -584,6 +584,21 @@ export function isNumberedListType( listType: ListType ): boolean {
 }
 
 /**
+ * Checks if the given list item is the first item in the list.
+ *
+ * This function checks if there's any other list item before the given list item
+ * at the same indent level with the same list type.
+ */
+export function isFirstListItemInList( listItem: ModelElement ): boolean {
+	const previousItem = ListWalker.first( listItem, {
+		sameIndent: true,
+		sameAttributes: 'listType'
+	} );
+
+	return !previousItem;
+}
+
+/**
  * Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
  */
 function mergeListItemIfNotLast(
