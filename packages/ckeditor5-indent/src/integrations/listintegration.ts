@@ -18,6 +18,7 @@ import {
 	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 import { IndentBlockListCommand } from './indentblocklistcommand.js';
+import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';
 import { type IndentBlockConfig } from '../indentconfig.js';
 import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
 
@@ -92,11 +93,26 @@ export class ListIntegration extends Plugin {
 			unit: config.unit!
 		} ) ) );
 
+		editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+			direction: 'forward',
+			offset: config.offset!,
+			unit: config.unit!
+		} ) ) );
+
+		editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+			direction: 'backward',
+			offset: config.offset!,
+			unit: config.unit!
+		} ) ) );
+
 		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
 		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
 
 		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )! );
 		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockList' )! );
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockListItem' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockListItem' )! );
 
 		editor.keystrokes.set( 'tab', ( data, cancel ) => {
 			const command = editor.commands.get( 'indentBlockList' )!;

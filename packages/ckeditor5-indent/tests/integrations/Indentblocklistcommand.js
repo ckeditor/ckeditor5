@@ -100,7 +100,7 @@ describe( 'IndentBlockListCommand', () => {
 					it( 'should be false when non-collapsed selection is at start of the nested list', () => {
 						_setModelData( model, modelList( [
 							'* foo',
-							'   * []bar'
+							'  * []bar'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
@@ -109,7 +109,7 @@ describe( 'IndentBlockListCommand', () => {
 					it( 'should be false when non-collapsed selection starts at the start of the nested list', () => {
 						_setModelData( model, modelList( [
 							'* foo',
-							'   * [bar]'
+							'  * [bar]'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
@@ -487,7 +487,7 @@ describe( 'IndentBlockListCommand', () => {
 					it( 'should be false when non-collapsed selection is at start of the nested list', () => {
 						_setModelData( model, modelList( [
 							'* foo',
-							'   * []bar'
+							'* []bar'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
@@ -496,7 +496,7 @@ describe( 'IndentBlockListCommand', () => {
 					it( 'should be false when non-collapsed selection starts at the start of the nested list', () => {
 						_setModelData( model, modelList( [
 							'* foo',
-							'   * [bar]'
+							'  * [bar]'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
