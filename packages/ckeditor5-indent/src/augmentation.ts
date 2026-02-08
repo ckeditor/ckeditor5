@@ -9,7 +9,9 @@ import type {
 	IndentBlock,
 	IndentUI,
 	IndentBlockCommand,
-	ListIntegration
+	ListIntegration,
+	IndentBlockListCommand,
+	IndentBlockListItemCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -33,5 +35,9 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface CommandsMap {
 		indentBlock: IndentBlockCommand;
 		outdentBlock: IndentBlockCommand;
+		indentBlockList: IndentBlockListCommand;
+		outdentBlockList: IndentBlockListCommand;
+		indentBlockListItem: IndentBlockListItemCommand;
+		outdentBlockListItem: IndentBlockListItemCommand;
 	}
 }
