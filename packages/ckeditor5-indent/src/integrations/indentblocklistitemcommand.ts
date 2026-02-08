@@ -82,7 +82,7 @@ export class IndentBlockListItemCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns an array of list items which block indentation should be changed.
 	 */
 	private _getAffectedListItems(): Array<ModelElement> {
 		const model = this.editor.model;
@@ -93,7 +93,7 @@ export class IndentBlockListItemCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if the block indentation change is allowed for the given list item.
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
