@@ -18,6 +18,7 @@ import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 import { IndentEditing } from '../../src/indentediting.js';
 import { IndentBlock } from '../../src/indentblock.js';
 import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
+import { IndentBlockListItemCommand } from '../../src/integrations/indentblocklistitemcommand.js';
 import { ListIntegration } from '../../src/integrations/listintegration.js';
 
 describe( 'ListIntegration', () => {
@@ -66,9 +67,11 @@ describe( 'ListIntegration', () => {
 		expect( ListIntegration.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should register indentBlockList and outdentBlockList commands', () => {
+	it( 'should register commands', () => {
 		expect( editor.commands.get( 'indentBlockList' ) ).to.be.instanceOf( IndentBlockListCommand );
 		expect( editor.commands.get( 'outdentBlockList' ) ).to.be.instanceOf( IndentBlockListCommand );
+		expect( editor.commands.get( 'indentBlockListItem' ) ).to.be.instanceOf( IndentBlockListItemCommand );
+		expect( editor.commands.get( 'outdentBlockListItem' ) ).to.be.instanceOf( IndentBlockListItemCommand );
 	} );
 
 	describe( 'schema', () => {
