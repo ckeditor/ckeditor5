@@ -22,9 +22,9 @@ Released on 11 February, 2026. ([See full release notes](https://github.com/cked
 
 The {@link features/ckeditor-ai-translate AI Translate feature} of CKEditor AI allows users to translate entire documents on the go. It provides a user interface similar to AI Review, but with translation-specific actions to streamline the process. The translation view displays the final translated document, with original snippets shown on the side for review and comparison.
 
-### Changes to the visual appearance of the AI Chat feed structure
+### Visual changes to the AI Chat feed
 
-The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestions in conversation has changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestions in conversation has changed, which may affect integrations that customized the UI and rely on specific CSS selectors.
 
 Please make sure to update your integrations to use the new DOM structure.
 
@@ -84,7 +84,7 @@ div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
             └── button.ck-button.ck-ai-button-secondary
 ```
 
-### Changes to the visual appearance of the AI Chat suggestion preview dialog window
+### Visual changes to the AI Chat suggestion preview dialog window
 
 The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestion {@link features/ckeditor-ai-chat#previewing-changes preview dialog window} has changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
 
@@ -154,7 +154,7 @@ The {@link features/export-pdf export to PDF} feature now supports version 2 of 
 
 Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
 
-Security capabilities have been expanded with owner password protection for controlling permissions and digital signature support using PKCS#12 certificates for authenticity verification. Additional improvements include compression control for specific use cases, more precise rendering options, and experimental automatic outline generation for creating a table of contents.
+Security capabilities have been expanded with owner password protection for controlling permissions and digital signature support using PKCS#12 certificates for authenticity verification. Additional improvements include compression control for specific use cases and more precise rendering options.
 
 ### Incoming old installation methods sunset reminder
 
@@ -165,7 +165,7 @@ In CKEditor&nbsp;5 v42.0.0 in June 2024, we [introduced new installation methods
 If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
 
 1. {@link updating/nim-migration/migration-to-new-installation-methods Migrate to the new installation methods}, which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor&nbsp;5 releases.
-2. Consider [CKEditor&nbsp;5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+2. Consider [CKEditor&nbsp;5 Long-Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
 
 Please refer to the {@link updating/update-to-42 update guide} to learn more about these changes.
 
