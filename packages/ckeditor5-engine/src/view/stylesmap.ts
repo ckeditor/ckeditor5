@@ -1179,22 +1179,22 @@ export type BoxStyleSides = {
 	/**
 	 * Top side value.
 	 */
-	top: undefined | string;
+	top?: string;
 
 	/**
 	 * Left side value.
 	 */
-	left: undefined | string;
+	left?: string;
 
 	/**
 	 * Right side value.
 	 */
-	right: undefined | string;
+	right?: string;
 
 	/**
 	 * Bottom side value.
 	 */
-	bottom: undefined | string;
+	bottom?: string;
 };
 
 /**

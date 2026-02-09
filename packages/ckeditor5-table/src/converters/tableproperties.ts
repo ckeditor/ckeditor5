@@ -16,7 +16,9 @@ import type {
 	UpcastElementEvent,
 	Consumables,
 	StyleValue,
-	ModelElement
+	ModelElement,
+	BoxStyleSides,
+	DowncastAttributeEvent
 } from '@ckeditor/ckeditor5-engine';
 import { first } from '@ckeditor/ckeditor5-utils';
 
@@ -76,7 +78,7 @@ export function upcastStyleToAttribute(
 
 				const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 
-				const normalized = viewElement.getNormalizedStyle( styleName ) as Record<Side, string>;
+				const normalized = viewElement.getNormalizedStyle( styleName ) as BoxStyleSides;
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
 				if ( localDefaultValue !== value ) {
@@ -159,7 +161,7 @@ export function upcastBorderStyles(
 ): void {
 	const { conversion } = editor;
 
-	conversion.for( 'upcast' ).add( dispatcher =>
+	conversion.for( 'upcast' ).add( dispatcher => {
 		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
 			const { modelRange, viewItem } = data;
 			// If the element was not converted by element-to-element converter,
@@ -191,9 +193,9 @@ export function upcastBorderStyles(
 					viewItem.findAncestor( 'table' )
 			)!;
 
-			const hasTableWithBorderAttribute = viewTable.hasAttribute( 'border' );
+			const hasTableBorderAttribute = viewTable.hasAttribute( 'border' );
 
-			if ( !stylesToConsume.length && hasTableWithBorderAttribute === false ) {
+			if ( !stylesToConsume.length && !hasTableBorderAttribute ) {
 				return;
 			}
 
@@ -209,7 +211,7 @@ export function upcastBorderStyles(
 				return;
 			}
 
-			const modelElement = [ ...modelRange.getItems( { shallow: true } ) ].pop() as ModelElement;
+			const modelElement = first( modelRange.getItems( { shallow: true } ) ) as ModelElement;
 			const tableModelElement = modelElement.findAncestor( 'table', { includeSelf: true } );
 
 			let localDefaultBorder = defaultBorder;
@@ -225,36 +227,54 @@ export function upcastBorderStyles(
 			conversionApi.consumable.consume( viewItem, matcherPattern );
 
 			const normalizedBorder = {
-				style: viewItem.getNormalizedStyle( 'border-style' ),
-				color: viewItem.getNormalizedStyle( 'border-color' ),
-				width: viewItem.getNormalizedStyle( 'border-width' )
+				style: viewItem.getNormalizedStyle( 'border-style' ) as BoxStyleSides | undefined,
+				color: viewItem.getNormalizedStyle( 'border-color' ) as BoxStyleSides | undefined,
+				width: viewItem.getNormalizedStyle( 'border-width' ) as BoxStyleSides | undefined
 			};
 
 			// When `border` attribute is present on the table element, it should be converted to the border width,
 			// merged with current inline `border-width` styles and then consumed.
 			if (
-				viewItem.is( 'element', 'table' ) &&
-				hasTableWithBorderAttribute &&
+				hasTableBorderAttribute &&
 				conversionApi.consumable.test( viewTable, { attributes: 'border' } )
 			) {
-				const borderValue = parseFloat( viewItem.getAttribute( 'border' ) || '1' );
-				const borderPx = Number.isNaN( borderValue ) ? '1px' : `${ borderValue }px` as StyleValue;
-				const borderAttributeNormalizedWidth = { left: borderPx, right: borderPx, top: borderPx, bottom: borderPx };
+				// If the `border` attribute has no value or has invalid value, it should be treated as `border="1"`.
+				const borderValue = parseFloat( viewTable.getAttribute( 'border' ) || '1' );
+
+				// For table cells the `border` attribute should be clamped to 1px as higher values are not rendered in browsers.
+				const borderPx = Number.isNaN( borderValue ) || viewItem.name != 'table' && borderValue > 1 ?
+					'1px' :
+					`${ borderValue }px`;
 
 				normalizedBorder.width = {
-					...borderAttributeNormalizedWidth,
-					...( typeof normalizedBorder.width === 'object' ? normalizedBorder.width : {} )
+					left: borderPx,
+					right: borderPx,
+					top: borderPx,
+					bottom: borderPx,
+
+					...( normalizedBorder.width || {} )
 				};
 
-				// Border styles upcast conversion for table is executed after table cells,
-				// so the `border` attribute can be safely consumed.
-				conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
+				if ( viewItem.is( 'element', 'table' ) ) {
+					conversionApi.consumable.consume( viewTable, { attributes: 'border' } );
+				}
 			}
 
+			// TODO Consider normalization of border 0 to border none.
+			// for ( const side of [ 'top', 'right', 'bottom', 'left' ] as const ) {
+			// 	if ( normalizedBorder.width?.[ side ] == '0px' ) {
+			// 		if ( normalizedBorder.style ) {
+			// 			normalizedBorder.style[ side ] = 'none';
+			// 		} else {
+			// 			normalizedBorder.style = { [ side ]: 'none' };
+			// 		}
+			// 	}
+			// }
+
 			const reducedBorder = {
-				style: reduceBoxSidesValue( normalizedBorder.style as Style ),
-				color: reduceBoxSidesValue( normalizedBorder.color as Style ),
-				width: reduceBoxSidesValue( normalizedBorder.width as Style )
+				style: reduceBoxSidesValue( normalizedBorder.style ),
+				color: reduceBoxSidesValue( normalizedBorder.color ),
+				width: reduceBoxSidesValue( normalizedBorder.width )
 			};
 
 			if ( reducedBorder.style !== localDefaultBorder.style ) {
@@ -268,40 +288,8 @@ export function upcastBorderStyles(
 			if ( reducedBorder.width !== localDefaultBorder.width ) {
 				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement! );
 			}
-
-			// Set border style to `none` on the `table` when border width is equal to `0px`
-			// and border style is not set but default border style is not `none`.
-			if (
-				viewItem.is( 'element', 'table' ) &&
-				hasTableWithBorderAttribute &&
-				viewItem.getAttribute( 'border' ) === '0' &&
-				reducedBorder.width === '0px' &&
-				reducedBorder.style === undefined &&
-				localDefaultBorder.style !== 'none'
-			) {
-				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement! );
-			}
-
-			// When upcasted element is `td` or `th` and if the table has `border="0"` attribute
-			// then set border style to `none` for all table cells of that table and table itself.
-			if (
-				( viewItem.is( 'element', 'td' ) || viewItem.is( 'element', 'th' ) ) &&
-				hasTableWithBorderAttribute &&
-				viewTable.getAttribute( 'border' ) === '0' &&
-				conversionApi.consumable.test( viewTable, { attributes: 'border' } )
-			) {
-				// If model element has any non-default border attribute, skip the conversion.
-				if (
-					!modelElement ||
-					Object.values( modelAttributes ).some( attributeName => modelElement.hasAttribute( attributeName ) )
-				) {
-					return;
-				}
-
-				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
-			}
-		} )
-	);
+		} );
+	} );
 }
 
 /**
@@ -347,22 +335,25 @@ export function downcastTableAttribute(
 ): void {
 	const { modelAttribute, styleName } = options;
 
-	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
-		const { item, attributeNewValue } = data;
-		const { mapper, writer } = conversionApi;
+	conversion.for( 'downcast' ).add( dispatcher => {
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
+			const { item, attributeNewValue } = data;
+			const { mapper, writer } = conversionApi;
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				return;
+			}
 
-		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'element', 'table' ) );
+			const table = Array.from( mapper.toViewElement( item )!.getChildren() )
+				.find( ( child ): child is ViewElement => child.is( 'element', 'table' ) )!;
 
-		if ( attributeNewValue ) {
-			writer.setStyle( styleName, attributeNewValue, table );
-		} else {
-			writer.removeStyle( styleName, table );
-		}
-	} ) );
+			if ( attributeNewValue ) {
+				writer.setStyle( styleName, attributeNewValue as StyleValue, table );
+			} else {
+				writer.removeStyle( styleName, table );
+			}
+		} );
+	} );
 }
 
 /**
@@ -385,18 +376,16 @@ export function getDefaultValueAdjusted(
 	return defaultValue;
 }
 
-type Side = 'top' | 'right' | 'bottom' | 'left';
-type Style = Record<Side, string>;
-
 /**
  * Reduces the full top, right, bottom, left object to a single string if all sides are equal.
  * Returns original style otherwise.
  */
-function reduceBoxSidesValue( style?: Style ): undefined | string | Style {
+function reduceBoxSidesValue( style?: BoxStyleSides ): undefined | string | BoxStyleSides {
 	if ( !style ) {
 		return;
 	}
-	const sides: Array<Side> = [ 'top', 'right', 'bottom', 'left' ];
+
+	const sides = [ 'top', 'right', 'bottom', 'left' ] as const;
 	const allSidesDefined = sides.every( side => style[ side ] );
 
 	if ( !allSidesDefined ) {
