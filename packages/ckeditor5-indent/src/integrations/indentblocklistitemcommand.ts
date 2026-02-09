@@ -93,8 +93,14 @@ export class IndentBlockListItemCommand extends Command {
 	}
 
 	/**
-	 * Returns `true` if the block indentation change is allowed for the given list item.
+	 * Returns `true` if changing the block indentation is allowed for the given list item.
+	 *
+	 * Indentation of a list item is only allowed if it moves toward zero. This means that:
+	 * - when currentIndent = 0, the command should be disabled
+	 * - when currentIndent < 0, only forward indentation should be allowed
+	 * - when currentIndent > 0, only backward indentation should be allowed
 	 */
+
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
 
