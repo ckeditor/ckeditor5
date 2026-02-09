@@ -100,7 +100,6 @@ export class IndentBlockListItemCommand extends Command {
 	 * - when currentIndent < 0, only forward indentation should be allowed
 	 * - when currentIndent > 0, only backward indentation should be allowed
 	 */
-
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
 
