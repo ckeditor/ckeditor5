@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-02-06
+modified_at: 2026-02-11
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
