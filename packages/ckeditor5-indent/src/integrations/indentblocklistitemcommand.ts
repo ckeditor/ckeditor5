@@ -72,10 +72,8 @@ export class IndentBlockListItemCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const blocksToChange = this._getAffectedListItems();
-
 		model.change( writer => {
-			for ( const block of blocksToChange ) {
+			for ( const block of this._getAffectedListItems() ) {
 				writer.removeAttribute( 'blockIndentListItem', block );
 			}
 		} );
