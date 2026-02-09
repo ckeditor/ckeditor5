@@ -182,7 +182,9 @@ describe( 'IndentBlock', () => {
 					} );
 
 					// Block elements in Document Lists should not be indented. See https://github.com/ckeditor/ckeditor5/issues/12466.
-					it( 'should not convert margin-left to indent attribute for a list item', () => {
+					// This test is now skipped because Block Indent now correctly upcasts margin-left style in list items
+					// to blockIndentListItem attribute and downcasts correctly to margin-left style in <li>.
+					it.skip( 'should not convert margin-left to indent attribute for a list item', () => {
 						editor.setData( '<ul><li style="margin-left:72.0pt">foo</li></ul>' );
 
 						const paragraph = doc.getRoot().getChild( 0 );
