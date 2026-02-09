@@ -278,15 +278,15 @@ export function upcastBorderStyles(
 			};
 
 			if ( reducedBorder.style !== localDefaultBorder.style ) {
-				conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement! );
+				conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
 			}
 
 			if ( reducedBorder.color !== localDefaultBorder.color ) {
-				conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement! );
+				conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement );
 			}
 
 			if ( reducedBorder.width !== localDefaultBorder.width ) {
-				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement! );
+				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
 			}
 		} );
 	} );
