@@ -262,16 +262,15 @@ function listBlockIndentUpcastConverter( attributeName: string, marginProperty: 
 function ensureIndentValuesConsistency( attributeName: string, node: any, previousNodeInList: any, writer: any ): boolean {
 	const prevNodeIndentListValue = previousNodeInList.getAttribute( attributeName );
 
-	if ( node.getAttribute( attributeName ) !== prevNodeIndentListValue ) {
-		if ( prevNodeIndentListValue ) {
-			writer.setAttribute( attributeName, prevNodeIndentListValue, node );
-		} else {
-			writer.removeAttribute( attributeName, node );
-		}
-
-		return true;
+	if ( node.getAttribute( attributeName ) === prevNodeIndentListValue ) {
+		return false;
 	}
 
-	return false;
-}
+	if ( prevNodeIndentListValue ) {
+		writer.setAttribute( attributeName, prevNodeIndentListValue, node );
+	} else {
+		writer.removeAttribute( attributeName, node );
+	}
 
+	return true;
+}
