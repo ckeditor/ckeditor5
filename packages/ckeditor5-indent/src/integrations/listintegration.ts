@@ -102,7 +102,7 @@ export class ListIntegration extends Plugin {
 			const command = editor.commands.get( 'indentBlockList' )!;
 
 			if ( command.isEnabled ) {
-				command.execute( { source: 'keyboard' } );
+				command.execute( { firstListOnly: true } );
 				cancel();
 			}
 		} );
@@ -111,7 +111,7 @@ export class ListIntegration extends Plugin {
 			const command = editor.commands.get( 'outdentBlockList' )!;
 
 			if ( command.isEnabled ) {
-				command.execute( { source: 'keyboard' } );
+				command.execute( { firstListOnly: true } );
 				cancel();
 			}
 		} );

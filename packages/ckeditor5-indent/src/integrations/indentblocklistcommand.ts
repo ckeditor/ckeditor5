@@ -75,9 +75,14 @@ export class IndentBlockListCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * @fires execute
+	 * @param options Command options.
+	 * @param options.firstListOnly When `true`, indentation is applied only to the first list at the beginning of the selection.
+	 * When `false` or omitted, indentation is applied to all lists of the selection.
 	 */
-	public override execute( options: { source?: string } = {} ): void {
+	public override execute( options: { firstListOnly?: boolean } = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -87,8 +92,7 @@ export class IndentBlockListCommand extends Command {
 
 			const listItems = [];
 
-			// If the command was not triggered by keyboard (i.e. from the toolbar), include all list from the selection.
-			if ( options.source !== 'keyboard' ) {
+			if ( !options.firstListOnly ) {
 				const blocks = Array.from( selection.getSelectedBlocks() );
 
 				for ( const block of blocks ) {

@@ -425,7 +425,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* bar]'
 						] ) );
 
-						command.execute( { source: 'keyboard' } );
+						command.execute( { firstListOnly: true } );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* [foo {blockIndentList:40px}',
@@ -784,7 +784,7 @@ describe( 'IndentBlockListCommand', () => {
 							'* bar] {blockIndentList:50px}'
 						] ) );
 
-						command.execute( { source: 'keyboard' } );
+						command.execute( { firstListOnly: true } );
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* [foo {blockIndentList:10px}',
