@@ -276,7 +276,7 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 					listItemId: String( idx ).padStart( 3, '0' )
 				};
 
-				content = content.replace( /\s*{(?:(id|style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
+				content = content.replace( /\s*{(?:(id|style|start|reversed|blockIndentList):)([^}]+)}\s*/g, ( match, key, value ) => {
 					switch ( key ) {
 						case 'id':
 							props.listItemId = value;
@@ -289,6 +289,9 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 							break;
 						case 'reversed':
 							props.listReversed = value;
+							break;
+						case 'blockIndentList':
+							props.blockIndentList = value;
 							break;
 					}
 

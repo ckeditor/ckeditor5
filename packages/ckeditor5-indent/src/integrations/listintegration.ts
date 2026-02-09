@@ -9,11 +9,17 @@
 
 import { type ListEditingPostFixerEvent } from '@ckeditor/ckeditor5-list';
 import { type GetCallback } from 'ckeditor5/src/utils.js';
-import { Plugin } from 'ckeditor5/src/core.js';
+import {
+	type MultiCommand,
+	Plugin
+} from 'ckeditor5/src/core.js';
 import {
 	addMarginStylesRules,
 	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
+import { IndentBlockListCommand } from './indentblocklistcommand.js';
+import { type IndentBlockConfig } from '../indentconfig.js';
+import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
 
 /**
  * This integration enables using block indentation feature with lists.
@@ -69,6 +75,44 @@ export class ListIntegration extends Plugin {
 				}
 
 				evt.return ||= ensureIndentValuesConsistency( 'blockIndentListItem', node, previousNodeInList, writer );
+			}
+		} );
+
+		const config = editor.config.get( 'indentBlock' ) as IndentBlockConfig;
+
+		editor.commands.add( 'indentBlockList', new IndentBlockListCommand( editor, new IndentUsingOffset( {
+			direction: 'forward',
+			offset: config.offset!,
+			unit: config.unit!
+		} ) ) );
+
+		editor.commands.add( 'outdentBlockList', new IndentBlockListCommand( editor, new IndentUsingOffset( {
+			direction: 'backward',
+			offset: config.offset!,
+			unit: config.unit!
+		} ) ) );
+
+		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
+		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockList' )! );
+
+		editor.keystrokes.set( 'tab', ( data, cancel ) => {
+			const command = editor.commands.get( 'indentBlockList' )!;
+
+			if ( command.isEnabled ) {
+				command.execute( { firstListOnly: true } );
+				cancel();
+			}
+		} );
+
+		editor.keystrokes.set( 'shift+tab', ( data, cancel ) => {
+			const command = editor.commands.get( 'outdentBlockList' )!;
+
+			if ( command.isEnabled ) {
+				command.execute( { firstListOnly: true } );
+				cancel();
 			}
 		} );
 	}

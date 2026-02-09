@@ -11,13 +11,17 @@ import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { ModelElement, _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
+import { IndentEditing } from '../../src/indentediting.js';
+import { IndentBlock } from '../../src/indentblock.js';
+import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
 import { ListIntegration } from '../../src/integrations/listintegration.js';
 
 describe( 'ListIntegration', () => {
-	let editor, model, view;
+	let editor, model, view, viewDoc;
 
 	testUtils.createSinonSandbox();
 
@@ -28,6 +32,8 @@ describe( 'ListIntegration', () => {
 				BlockQuoteEditing,
 				HeadingEditing,
 				TableEditing,
+				IndentEditing,
+				IndentBlock,
 				ListEditing,
 				ListIntegration
 			]
@@ -35,6 +41,7 @@ describe( 'ListIntegration', () => {
 
 		model = editor.model;
 		view = editor.editing.view;
+		viewDoc = view.document;
 
 		stubUid();
 	} );
@@ -57,6 +64,11 @@ describe( 'ListIntegration', () => {
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
 		expect( ListIntegration.isPremiumPlugin ).to.be.false;
+	} );
+
+	it( 'should register indentBlockList and outdentBlockList commands', () => {
+		expect( editor.commands.get( 'indentBlockList' ) ).to.be.instanceOf( IndentBlockListCommand );
+		expect( editor.commands.get( 'outdentBlockList' ) ).to.be.instanceOf( IndentBlockListCommand );
 	} );
 
 	describe( 'schema', () => {
@@ -1179,6 +1191,75 @@ describe( 'ListIntegration', () => {
 		} );
 	} );
 
+	describe( 'Indent integration', () => {
+		it( 'should execute `indentBlockList` when `indent` command is executed in a list at first item', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]foo</paragraph>'
+			);
+
+			const indentBlockListCommand = editor.commands.get( 'indentBlockList' );
+			const spy = sinon.spy( indentBlockListCommand, 'execute' );
+
+			editor.execute( 'indent' );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph blockIndentList="40px" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
+			);
+		} );
+
+		it( 'should execute `outdentBlockList` when `outdent` command is executed in a list with blockIndentList', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" blockIndentList="40px" listType="bulleted">[]foo</paragraph>'
+			);
+
+			const outdentBlockListCommand = editor.commands.get( 'outdentBlockList' );
+			const spy = sinon.spy( outdentBlockListCommand, 'execute' );
+
+			editor.execute( 'outdent' );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'keyboard integration', () => {
+		it( 'should indent list with Tab key', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]foo</paragraph>'
+			);
+
+			viewDoc.fire( 'keydown', {
+				keyCode: keyCodes.tab,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph blockIndentList="40px" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
+			);
+		} );
+
+		it( 'should outdent list with Shift + Tab keys', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" blockIndentList="40px" listType="bulleted">[]foo</paragraph>'
+			);
+
+			viewDoc.fire( 'keydown', {
+				keyCode: keyCodes.tab,
+				shiftKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
+			);
+		} );
+	} );
+
 	describe( 'when ListEditing is not loaded', () => {
 		let editor, model;
 
@@ -1249,6 +1330,8 @@ describe( 'ListIntegration', () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
 					Paragraph,
+					IndentEditing,
+					IndentBlock,
 					ListEditing,
 					ListIntegration
 				],
