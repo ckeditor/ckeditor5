@@ -15,7 +15,8 @@ import type {
 	ViewElement,
 	UpcastElementEvent,
 	Consumables,
-	StyleValue
+	StyleValue,
+	ModelElement
 } from '@ckeditor/ckeditor5-engine';
 import { first } from '@ckeditor/ckeditor5-utils';
 
@@ -184,7 +185,15 @@ export function upcastBorderStyles(
 				'border-left-style'
 			].filter( styleName => viewItem.hasStyle( styleName ) );
 
-			if ( !stylesToConsume.length && !viewItem.hasAttribute( 'border' ) ) {
+			const viewTable = (
+				viewItem.is( 'element', 'table' ) ?
+					viewItem :
+					viewItem.findAncestor( 'table' )
+			)!;
+
+			const hasTableWithBorderAttribute = viewTable.hasAttribute( 'border' );
+
+			if ( !stylesToConsume.length && hasTableWithBorderAttribute === false ) {
 				return;
 			}
 
@@ -193,20 +202,19 @@ export function upcastBorderStyles(
 			};
 
 			// Try to consume appropriate values from consumable values list.
-			if ( !conversionApi.consumable.test( viewItem, matcherPattern ) ) {
+			if (
+				!conversionApi.consumable.test( viewItem, matcherPattern ) &&
+				!conversionApi.consumable.test( viewTable, { attributes: 'border' } )
+			) {
 				return;
 			}
 
-			const modelElement = [ ...modelRange.getItems( { shallow: true } ) ].pop();
-			const tableElement = (
-				viewItem.is( 'element', 'table' ) ?
-					viewItem :
-					viewItem.findAncestor( 'table' )
-			)!;
+			const modelElement = [ ...modelRange.getItems( { shallow: true } ) ].pop() as ModelElement;
+			const tableModelElement = modelElement.findAncestor( 'table', { includeSelf: true } );
 
 			let localDefaultBorder = defaultBorder;
 
-			if ( modelElement && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
+			if ( tableModelElement && tableModelElement.getAttribute( 'tableType' ) == 'layout' ) {
 				localDefaultBorder = {
 					style: 'none',
 					color: '',
@@ -222,32 +230,25 @@ export function upcastBorderStyles(
 				width: viewItem.getNormalizedStyle( 'border-width' )
 			};
 
-			// If table has "border" attribute and something didn't already consumed the border attribute on the nearest table element.
+			// When `border` attribute is present on the table element, it should be converted to the border width,
+			// merged with current inline `border-width` styles and then consumed.
 			if (
-				viewItem.hasAttribute( 'border' ) &&
-				Number.isFinite( Number( viewItem.getAttribute( 'border' ) ) ) &&
-				conversionApi.consumable.test( tableElement, { attributes: 'border' } )
+				viewItem.is( 'element', 'table' ) &&
+				hasTableWithBorderAttribute &&
+				conversionApi.consumable.test( viewTable, { attributes: 'border' } )
 			) {
-				const borderValue = viewItem.getAttribute( 'border' );
-
-				const borderPxValue = `${ borderValue }px` as StyleValue;
-				const borderAttributeNormalizedWidth = {
-					width: {
-						left: borderPxValue,
-						right: borderPxValue,
-						top: borderPxValue,
-						bottom: borderPxValue
-					}
-				};
+				const borderValue = parseFloat( viewItem.getAttribute( 'border' ) || '1' );
+				const borderPx = Number.isNaN( borderValue ) ? '1px' : `${ borderValue }px` as StyleValue;
+				const borderAttributeNormalizedWidth = { left: borderPx, right: borderPx, top: borderPx, bottom: borderPx };
 
 				normalizedBorder.width = {
-					...borderAttributeNormalizedWidth.width,
-					...( typeof normalizedBorder.width === 'object' && normalizedBorder.width !== null ? normalizedBorder.width : {} )
+					...borderAttributeNormalizedWidth,
+					...( typeof normalizedBorder.width === 'object' ? normalizedBorder.width : {} )
 				};
 
-				if ( borderValue !== '0' ) {
-					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
-				}
+				// Border styles upcast conversion for table is executed after table cells,
+				// so the `border` attribute can be safely consumed.
+				conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
 			}
 
 			const reducedBorder = {
@@ -267,48 +268,37 @@ export function upcastBorderStyles(
 			if ( reducedBorder.width !== localDefaultBorder.width ) {
 				conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement! );
 			}
-		} )
-	);
 
-	// If parent table has `border="0"` attribute then set border style to `none`
-	// all table cells of that table and table itself.
-	conversion.for( 'upcast' ).add( dispatcher =>
-		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
-			const { modelRange, viewItem } = data;
-
-			const viewTable = (
-				viewItem.is( 'element', 'table' ) ?
-					viewItem :
-					viewItem.findAncestor( 'table' )
-			)!;
-
-			// If something already consumed the border attribute on the nearest table element, skip the conversion.
-			if ( !conversionApi.consumable.test( viewTable, { attributes: 'border' } ) ) {
-				return;
+			// Set border style to `none` on the `table` when border width is equal to `0px`
+			// and border style is not set but default border style is not `none`.
+			if (
+				viewItem.is( 'element', 'table' ) &&
+				hasTableWithBorderAttribute &&
+				viewItem.getAttribute( 'border' ) === '0' &&
+				reducedBorder.width === '0px' &&
+				reducedBorder.style === undefined &&
+				localDefaultBorder.style !== 'none'
+			) {
+				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement! );
 			}
 
-			if ( viewTable.getAttribute( 'border' ) === '0' ) {
-				const modelElement = modelRange?.start?.nodeAfter;
-
-				// If model element has any non-default border attribute,
-				// except when 'tableBorderWidth' is equal `0px`, skip the conversion.
+			// When upcasted element is `td` or `th` and if the table has `border="0"` attribute
+			// then set border style to `none` for all table cells of that table and table itself.
+			if (
+				( viewItem.is( 'element', 'td' ) || viewItem.is( 'element', 'th' ) ) &&
+				hasTableWithBorderAttribute &&
+				viewTable.getAttribute( 'border' ) === '0' &&
+				conversionApi.consumable.test( viewTable, { attributes: 'border' } )
+			) {
+				// If model element has any non-default border attribute, skip the conversion.
 				if (
 					!modelElement ||
-					Object.values( modelAttributes ).some(
-						attributeName =>
-							modelElement.hasAttribute( attributeName ) &&
-							attributeName !== 'tableBorderWidth' &&
-							modelElement.getAttribute( attributeName ) !== '0px'
-					)
+					Object.values( modelAttributes ).some( attributeName => modelElement.hasAttribute( attributeName ) )
 				) {
 					return;
 				}
 
 				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
-
-				if ( viewItem.is( 'element', 'table' ) ) {
-					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
-				}
 			}
 		} )
 	);

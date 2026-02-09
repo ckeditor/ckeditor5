@@ -600,7 +600,7 @@ describe( 'table properties', () => {
 						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '10px' );
 					} );
 
-					it( 'should not convert border="abc"', () => {
+					it( 'should not convert border="abc" (default width is set to `1px`)', () => {
 						editor.setData(
 							'<table border="abc">' +
 								'<tr>' +
@@ -724,6 +724,63 @@ describe( 'table properties', () => {
 							expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
 							expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
 							expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.equal( '10px' );
+						} );
+					} );
+				} );
+
+				describe( 'border attribute exists', () => {
+					beforeEach( async () => {
+						await editor.destroy();
+
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ]
+						} );
+
+						model = editor.model;
+					} );
+
+					it( 'should not convert border="abc" (default width is set to `1px`)', () => {
+						editor.setData(
+							'<table border>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					} );
+
+					describe( 'when default table border width is set to `10px`', () => {
+						beforeEach( async () => {
+							await editor.destroy();
+
+							editor = await VirtualTestEditor.create( {
+								plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+								table: {
+									tableProperties: {
+										defaultProperties: {
+											borderWidth: '10px'
+										}
+									}
+								}
+							} );
+
+							model = editor.model;
+						} );
+
+						it( 'should convert border to `1px` width`', () => {
+							editor.setData(
+								'<table border>' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							const table = model.document.getRoot().getChild( 0 );
+							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
 						} );
 					} );
 				} );
@@ -887,6 +944,39 @@ describe( 'table properties', () => {
 								'</tableRow>' +
 							'</table>'
 						);
+					} );
+
+					describe( 'when default table border style is set to `none`', () => {
+						beforeEach( async () => {
+							await editor.destroy();
+
+							editor = await VirtualTestEditor.create( {
+								plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+								table: {
+									tableProperties: {
+										defaultProperties: {
+											borderStyle: 'none'
+										}
+									}
+								}
+							} );
+
+							model = editor.model;
+						} );
+
+						it( 'should not convert border="0" to tableBorderStyle="none"', () => {
+							editor.setData(
+								'<table border="0">' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							const table = model.document.getRoot().getChild( 0 );
+							expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+						} );
 					} );
 				} );
 			} );
