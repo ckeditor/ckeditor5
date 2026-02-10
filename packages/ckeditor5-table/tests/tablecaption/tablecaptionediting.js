@@ -332,7 +332,7 @@ describe( 'TableCaptionEditing', () => {
 				);
 			} );
 
-			it( 'should set id on caption and aria-labelledby on table figure', () => {
+			it( 'should set id on caption and aria-labelledby on table', () => {
 				_setModelData( model,
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
@@ -346,7 +346,7 @@ describe( 'TableCaptionEditing', () => {
 				expect( viewTable.getAttribute( 'aria-labelledby' ) ).to.equal( viewCaption.getAttribute( 'id' ) );
 			} );
 
-			it( 'should not set aria-labelledby on table figure when there is no caption', () => {
+			it( 'should not set aria-labelledby on table when there is no caption', () => {
 				_setModelData( model,
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow></table>'
 				);
