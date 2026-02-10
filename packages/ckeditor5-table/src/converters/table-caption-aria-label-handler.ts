@@ -52,7 +52,7 @@ export function injectTableCaptionAriaLabelHandler( editor: Editor ): void {
 			if ( viewCaption.hasAttribute( 'id' ) ) {
 				captionId = viewCaption.getAttribute( 'id' )!;
 			} else {
-				captionId = captionIdsMapping.get( modelCaption ) ?? uid();
+				captionId = captionIdsMapping.get( modelCaption ) ?? `cke_editor__caption_${ uid() }`;
 			}
 
 			captionIdsMapping.set( modelCaption, captionId );

@@ -542,7 +542,7 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 function maskUIDs( str ) {
 	const uidMap = new Map();
 
-	return str.replace( /e[0-9a-f]{32}/g, uid => {
+	return str.replace( /cke_editor__caption_e[0-9a-f]{32}/g, uid => {
 		if ( !uidMap.has( uid ) ) {
 			uidMap.set( uid, maskedUID( uidMap.size + 1 ) );
 		}
