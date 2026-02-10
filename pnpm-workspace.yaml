@@ -1,8 +1,21 @@
 packages:
   - packages/*
 
+ignoreWorkspaceCycles: true
+
+linkWorkspacePackages: true
+
+minimumReleaseAge: 4320
+
+minimumReleaseAgeExclude:
+  - '@ckeditor/*'
+  - '@cksource/*'
+  - '*ckeditor5*'
+  - umberto
+
 onlyBuiltDependencies:
   - '@ckeditor/ckeditor5-dev-tests'
+  - '@ckeditor/ckeditor5-dev-web-crawler'
   - '@ckeditor/ckeditor5-mermaid'
   - '@parcel/watcher'
   - '@swc/core'
@@ -12,23 +25,15 @@ onlyBuiltDependencies:
   - puppeteer
   - sharp
 
-# This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
-  markdown-it-toc: 'npm:@maboloshi/markdown-it-toc@1.1.1'
-  '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
-  'qs@^6.0.0': '^6.14.1'
-  'diff@<8': '^8.0.3'
+  '@iktakahiro/markdown-it-katex>katex': ^0.16.0
+  diff@<8: ^8.0.3
+  markdown-it-toc: npm:@maboloshi/markdown-it-toc@1.1.1
+  qs@^6.0.0: ^6.14.1
 
-minimumReleaseAge: 4320 # 3 days
-minimumReleaseAgeExclude:
-  - '@ckeditor/*'
-  - '@cksource/*'
-  - '*ckeditor5*'
-  - 'umberto'
+preferFrozenLockfile: true
+
+shamefullyHoist: true
 
 shellEmulator: true
-shamefullyHoist: true
-preferFrozenLockfile: true
-linkWorkspacePackages: true
-ignoreWorkspaceCycles: true

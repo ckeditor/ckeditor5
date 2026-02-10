@@ -49,8 +49,8 @@ importers:
         specifier: ^54.3.3
         version: 54.3.3(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(webpack-cli@6.0.1)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^54.3.3
-        version: 54.3.3(typescript@5.3.3)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4261-retry-page-crawling-on-error&path:packages/ckeditor5-dev-web-crawler
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/8810cd617e7b9de1c6ec08d13de7a79beb326b14#path:packages/ckeditor5-dev-web-crawler(typescript@5.3.3)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.0
         version: 5.0.0
@@ -5270,8 +5270,9 @@ packages:
     resolution: {integrity: sha512-O4AAh2tmm7ZBlNrR8i7Iw1c75q0GJp4zaQKjcA4sC7XBrur0Qpxxi/nksl54NVXotJvyN6WEM8iHCwTF0x5VQQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@54.3.3':
-    resolution: {integrity: sha512-+SmehJkDueyTbzaZOw84bCpz0cC/FNEp6YIeVDzZWlr74SgBxH7NljjbREV4KhWqWnGzcO/H4wSKgKzv8iy3sw==}
+  '@ckeditor/ckeditor5-dev-web-crawler@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/8810cd617e7b9de1c6ec08d13de7a79beb326b14#path:packages/ckeditor5-dev-web-crawler':
+    resolution: {path: packages/ckeditor5-dev-web-crawler, tarball: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/8810cd617e7b9de1c6ec08d13de7a79beb326b14}
+    version: 54.3.3
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.0':
@@ -13617,7 +13618,7 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-web-crawler@54.3.3(typescript@5.3.3)':
+  '@ckeditor/ckeditor5-dev-web-crawler@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/8810cd617e7b9de1c6ec08d13de7a79beb326b14#path:packages/ckeditor5-dev-web-crawler(typescript@5.3.3)':
     dependencies:
       puppeteer: 24.23.0(typescript@5.3.3)
       puppeteer-cluster: 0.24.0(puppeteer@24.23.0(typescript@5.3.3))
