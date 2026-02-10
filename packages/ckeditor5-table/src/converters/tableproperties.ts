@@ -260,17 +260,6 @@ export function upcastBorderStyles(
 				}
 			}
 
-			// TODO Consider normalization of border 0 to border none.
-			// for ( const side of [ 'top', 'right', 'bottom', 'left' ] as const ) {
-			// 	if ( normalizedBorder.width?.[ side ] == '0px' ) {
-			// 		if ( normalizedBorder.style ) {
-			// 			normalizedBorder.style[ side ] = 'none';
-			// 		} else {
-			// 			normalizedBorder.style = { [ side ]: 'none' };
-			// 		}
-			// 	}
-			// }
-
 			const reducedBorder = {
 				style: reduceBoxSidesValue( normalizedBorder.style ),
 				color: reduceBoxSidesValue( normalizedBorder.color ),

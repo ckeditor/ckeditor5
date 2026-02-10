@@ -739,7 +739,7 @@ describe( 'table properties', () => {
 						model = editor.model;
 					} );
 
-					it( 'should not convert border="abc" (default width is set to `1px`)', () => {
+					it( 'should not convert border attribute without value (default width is set to `1px`)', () => {
 						editor.setData(
 							'<table border>' +
 								'<tr>' +
@@ -796,7 +796,7 @@ describe( 'table properties', () => {
 						model = editor.model;
 					} );
 
-					it( 'should convert border="0" to tableBorderStyle="none"', () => {
+					it( 'should convert border="0" to tableBorderWidth="0px"', () => {
 						editor.setData(
 							'<table border="0">' +
 								'<tr>' +
@@ -806,7 +806,7 @@ describe( 'table properties', () => {
 						);
 
 						const table = model.document.getRoot().getChild( 0 );
-						expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'none' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
 					} );
 
 					it( 'should consume border attribute', () => {
@@ -825,26 +825,6 @@ describe( 'table properties', () => {
 						);
 
 						expect( borderConsumed ).to.be.true;
-					} );
-
-					it( 'should not convert border="1" or other non-zero values', () => {
-						editor.setData(
-							'<table border="1">' +
-								'<tr>' +
-									'<td>foo</td>' +
-								'</tr>' +
-							'</table>'
-						);
-
-						expectModel(
-							'<table>' +
-								'<tableRow>' +
-									'<tableCell>' +
-										'<paragraph>foo</paragraph>' +
-									'</tableCell>' +
-								'</tableRow>' +
-							'</table>'
-						);
 					} );
 
 					it( 'should not override existing tableBorderStyle attribute', () => {
@@ -904,7 +884,7 @@ describe( 'table properties', () => {
 						);
 
 						expectModel(
-							'<table tableBorderStyle="none" tableBorderWidth="0px">' +
+							'<table tableBorderWidth="0px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>foo</paragraph>' +
@@ -931,7 +911,7 @@ describe( 'table properties', () => {
 						);
 
 						expectModel(
-							'<table headingRows="1" tableBorderStyle="none" tableBorderWidth="0px">' +
+							'<table headingRows="1" tableBorderWidth="0px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>header</paragraph>' +
