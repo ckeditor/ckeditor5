@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { DowncastInsertEvent, ModelElement } from 'ckeditor5/src/engine.js';
+import type { DowncastInsertEvent, ModelElement, ViewElement } from 'ckeditor5/src/engine.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
 /**
@@ -29,13 +29,22 @@ export function injectTableCaptionAriaLabelHandler( editor: Editor ): void {
 				return;
 			}
 
+			const viewTable = Array
+				.from( viewFigure.getChildren() )
+				.find( child => child.is( 'element', 'table' ) ) as ViewElement | undefined;
+
+			/* istanbul ignore if -- @preserve */
+			if ( !viewTable ) {
+				return;
+			}
+
 			const modelCaption = Array
 				.from( modelTable.getChildren() )
 				.find( child => child.is( 'element', 'caption' ) ) as ModelElement | undefined;
 
 			// Remove `aria-labelledby` from the table if there is no caption.
 			if ( !modelCaption ) {
-				writer.removeAttribute( 'aria-labelledby', viewFigure );
+				writer.removeAttribute( 'aria-labelledby', viewTable );
 				return;
 			}
 
@@ -58,7 +67,7 @@ export function injectTableCaptionAriaLabelHandler( editor: Editor ): void {
 			captionIdsMapping.set( modelCaption, captionId );
 
 			writer.setAttribute( 'id', captionId, viewCaption );
-			writer.setAttribute( 'aria-labelledby', captionId, viewFigure );
+			writer.setAttribute( 'aria-labelledby', captionId, viewTable );
 		}, { priority: 'low' } );
 	} );
 }

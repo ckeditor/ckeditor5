@@ -304,12 +304,11 @@ describe( 'TableCaptionEditing', () => {
 
 				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).to.equal(
 					'<figure ' +
-						'aria-labelledby="masked-uid-1" ' +
 						'class="ck-widget ck-widget_with-selection-handle table" ' +
 						'contenteditable="false"' +
 					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
+						'<table aria-labelledby="masked-uid-1">' +
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"' +
@@ -339,11 +338,12 @@ describe( 'TableCaptionEditing', () => {
 				);
 
 				const viewFigure = view.document.getRoot().getChild( 0 );
+				const viewTable = viewFigure.getChild( 1 );
 				const viewCaption = viewFigure.getChild( 2 );
 
 				expect( viewCaption.hasAttribute( 'id' ) ).to.be.true;
-				expect( viewFigure.hasAttribute( 'aria-labelledby' ) ).to.be.true;
-				expect( viewFigure.getAttribute( 'aria-labelledby' ) ).to.equal( viewCaption.getAttribute( 'id' ) );
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.true;
+				expect( viewTable.getAttribute( 'aria-labelledby' ) ).to.equal( viewCaption.getAttribute( 'id' ) );
 			} );
 
 			it( 'should not set aria-labelledby on table figure when there is no caption', () => {
@@ -352,8 +352,9 @@ describe( 'TableCaptionEditing', () => {
 				);
 
 				const viewFigure = view.document.getRoot().getChild( 0 );
+				const viewTable = viewFigure.getChild( 1 );
 
-				expect( viewFigure.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.false;
 			} );
 
 			it( 'should remove aria-labelledby when caption is removed', () => {
@@ -361,15 +362,22 @@ describe( 'TableCaptionEditing', () => {
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
 
-				expect( view.document.getRoot().getChild( 0 ).hasAttribute( 'aria-labelledby' ) ).to.be.true;
+				const viewFigure = view.document.getRoot().getChild( 0 );
+				const viewTable = viewFigure.getChild( 1 );
+
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.true;
 
 				model.change( writer => {
 					const table = model.document.getRoot().getChild( 0 );
 					const caption = table.getChild( 1 );
+
 					writer.remove( caption );
 				} );
 
-				expect( view.document.getRoot().getChild( 0 ).hasAttribute( 'aria-labelledby' ) ).to.be.false;
+				const viewFigureAfter = view.document.getRoot().getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+
+				expect( viewTableAfter.hasAttribute( 'aria-labelledby' ) ).to.be.false;
 			} );
 
 			it( 'should reuse the same id for caption when table is re-rendered', () => {
@@ -413,8 +421,9 @@ describe( 'TableCaptionEditing', () => {
 				);
 
 				const viewFigure = editor.editing.view.document.getRoot().getChild( 0 );
+				const viewTable = viewFigure.getChild( 1 );
 
-				expect( viewFigure.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.false;
 			} );
 
 			it( 'should reuse id when caption already has id attribute in view', async () => {
@@ -435,10 +444,11 @@ describe( 'TableCaptionEditing', () => {
 				);
 
 				const viewFigure = editor.editing.view.document.getRoot().getChild( 0 );
+				const viewTable = viewFigure.getChild( 1 );
 				const viewCaption = viewFigure.getChild( 2 );
 
 				expect( viewCaption.getAttribute( 'id' ) ).to.equal( 'custom-id-123' );
-				expect( viewFigure.getAttribute( 'aria-labelledby' ) ).to.equal( 'custom-id-123' );
+				expect( viewTable.getAttribute( 'aria-labelledby' ) ).to.equal( 'custom-id-123' );
 			} );
 		} );
 	} );
@@ -507,12 +517,11 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 
 				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).to.equal(
 					'<figure ' +
-						'aria-labelledby="masked-uid-1" ' +
 						'class="ck-widget ck-widget_with-selection-handle table" ' +
 						'contenteditable="false"' +
 					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
+						'<table aria-labelledby="masked-uid-1">' +
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"' +
