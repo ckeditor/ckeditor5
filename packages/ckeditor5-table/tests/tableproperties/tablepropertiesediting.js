@@ -257,6 +257,46 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'tableBorderWidth', null, null, null, '1px' );
 				} );
 
+				it( 'should allow to be overridden (only border-top consumed)', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.viewItem, {
+							styles: [ 'border-top' ]
+						} );
+					}, { priority: 'high' } ) );
+
+					editor.setData( '<table style="border:3px solid red;"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should allow to be overridden (only border-top consumed) and not consume border attribute', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.viewItem, {
+							styles: [ 'border-top' ]
+						} );
+					}, { priority: 'high' } ) );
+
+					let borderConsumed = false;
+
+					editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						borderConsumed = !conversionApi.consumable.test( data.viewItem, { attributes: 'border' } );
+					}, { priority: 'lowest' } );
+
+					editor.setData( '<table border="4" style="border:3px solid red;"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+
+					expect( borderConsumed ).to.be.false;
+				} );
+
 				describe( 'nested tables', () => {
 					// https://github.com/ckeditor/ckeditor5/issues/6177.
 					it( 'should upcast tables with nested tables in their cells', () => {
@@ -807,6 +847,23 @@ describe( 'table properties', () => {
 
 						const table = model.document.getRoot().getChild( 0 );
 						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+					} );
+
+					it( 'should not convert consumed border', () => {
+						editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.viewItem, { attributes: 'border' } );
+						}, { priority: 'highest' } );
+
+						editor.setData(
+							'<table border="1">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
 					} );
 
 					it( 'should consume border attribute', () => {

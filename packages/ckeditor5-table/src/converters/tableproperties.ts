@@ -204,10 +204,8 @@ export function upcastBorderStyles(
 			};
 
 			// Try to consume appropriate values from consumable values list.
-			if (
-				!conversionApi.consumable.test( viewItem, matcherPattern ) &&
-				!conversionApi.consumable.test( viewTable, { attributes: 'border' } )
-			) {
+			// The border attribute should be ignored if the styles are already consumed, so it won't be converted to the border width.
+			if ( !conversionApi.consumable.test( viewItem, matcherPattern ) ) {
 				return;
 			}
 
