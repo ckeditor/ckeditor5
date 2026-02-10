@@ -302,8 +302,12 @@ describe( 'TableCaptionEditing', () => {
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).to.equal(
+					'<figure ' +
+						'aria-labelledby="masked-uid-1" ' +
+						'class="ck-widget ck-widget_with-selection-handle table" ' +
+						'contenteditable="false"' +
+					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -315,12 +319,126 @@ describe( 'TableCaptionEditing', () => {
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
-						'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
-								'contenteditable="true" data-placeholder="Enter table caption" role="textbox" tabindex="-1">' +
+						'<figcaption ' +
+							'class="ck-editor__editable ck-editor__nested-editable" ' +
+							'contenteditable="true" ' +
+							'data-placeholder="Enter table caption" ' +
+							'id="masked-uid-1" ' +
+							'role="textbox" ' +
+							'tabindex="-1"' +
+						'>' +
 							'Foo caption' +
 						'</figcaption>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'should set id on caption and aria-labelledby on table figure', () => {
+				_setModelData( model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				const viewFigure = view.document.getRoot().getChild( 0 );
+				const viewCaption = viewFigure.getChild( 2 );
+
+				expect( viewCaption.hasAttribute( 'id' ) ).to.be.true;
+				expect( viewFigure.hasAttribute( 'aria-labelledby' ) ).to.be.true;
+				expect( viewFigure.getAttribute( 'aria-labelledby' ) ).to.equal( viewCaption.getAttribute( 'id' ) );
+			} );
+
+			it( 'should not set aria-labelledby on table figure when there is no caption', () => {
+				_setModelData( model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow></table>'
+				);
+
+				const viewFigure = view.document.getRoot().getChild( 0 );
+
+				expect( viewFigure.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+			} );
+
+			it( 'should remove aria-labelledby when caption is removed', () => {
+				_setModelData( model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				expect( view.document.getRoot().getChild( 0 ).hasAttribute( 'aria-labelledby' ) ).to.be.true;
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+					const caption = table.getChild( 1 );
+					writer.remove( caption );
+				} );
+
+				expect( view.document.getRoot().getChild( 0 ).hasAttribute( 'aria-labelledby' ) ).to.be.false;
+			} );
+
+			it( 'should reuse the same id for caption when table is re-rendered', () => {
+				_setModelData( model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				const viewFigure = view.document.getRoot().getChild( 0 );
+				const viewCaption = viewFigure.getChild( 2 );
+				const firstCaptionId = viewCaption.getAttribute( 'id' );
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+
+					writer.remove( table );
+					writer.insert( table, model.document.getRoot(), 0 );
+				} );
+
+				const newViewFigure = view.document.getRoot().getChild( 0 );
+				const newViewCaption = newViewFigure.getChild( 2 );
+				const secondCaptionId = newViewCaption.getAttribute( 'id' );
+
+				expect( firstCaptionId ).to.equal( secondCaptionId );
+			} );
+
+			it( 'should not add aria-labelledby when caption is not bound to view', async () => {
+				editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+					dispatcher.on( 'insert:table', ( evt, data, { mapper } ) => {
+						const modelCaption = Array
+							.from( data.item.getChildren() )
+							.find( child => child.is( 'element', 'caption' ) );
+
+						const viewCaption = mapper.toViewElement( modelCaption );
+
+						mapper.unbindViewElement( viewCaption );
+					} );
+				} );
+
+				_setModelData( editor.model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				const viewFigure = editor.editing.view.document.getRoot().getChild( 0 );
+
+				expect( viewFigure.hasAttribute( 'aria-labelledby' ) ).to.be.false;
+			} );
+
+			it( 'should reuse id when caption already has id attribute in view', async () => {
+				editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+					dispatcher.on( 'insert:table', ( evt, data, { writer, mapper } ) => {
+						const modelCaption = Array
+							.from( data.item.getChildren() )
+							.find( child => child.is( 'element', 'caption' ) );
+
+						const viewCaption = mapper.toViewElement( modelCaption );
+
+						writer.setAttribute( 'id', 'custom-id-123', viewCaption );
+					} );
+				} );
+
+				_setModelData( editor.model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				const viewFigure = editor.editing.view.document.getRoot().getChild( 0 );
+				const viewCaption = viewFigure.getChild( 2 );
+
+				expect( viewCaption.getAttribute( 'id' ) ).to.equal( 'custom-id-123' );
+				expect( viewFigure.getAttribute( 'aria-labelledby' ) ).to.equal( 'custom-id-123' );
 			} );
 		} );
 	} );
@@ -387,8 +505,12 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+				expect( maskUIDs( _getViewData( view, { withoutSelection: true } ) ) ).to.equal(
+					'<figure ' +
+						'aria-labelledby="masked-uid-1" ' +
+						'class="ck-widget ck-widget_with-selection-handle table" ' +
+						'contenteditable="false"' +
+					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -399,8 +521,14 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
-							'<caption class="ck-editor__editable ck-editor__nested-editable" ' +
-								'contenteditable="true" data-placeholder="Enter table caption" role="textbox" tabindex="-1">' +
+							'<caption ' +
+								'class="ck-editor__editable ck-editor__nested-editable" ' +
+								'contenteditable="true" ' +
+								'data-placeholder="Enter table caption" ' +
+								'id="masked-uid-1" ' +
+								'role="textbox" ' +
+								'tabindex="-1"' +
+							'>' +
 								'Foo caption' +
 							'</caption>' +
 						'</table>' +
@@ -410,3 +538,19 @@ describe( 'TableCaptionEditing - useCaptionElement = true', () => {
 		} );
 	} );
 } );
+
+function maskUIDs( str ) {
+	const uidMap = new Map();
+
+	return str.replace( /e[0-9a-f]{32}/g, uid => {
+		if ( !uidMap.has( uid ) ) {
+			uidMap.set( uid, maskedUID( uidMap.size + 1 ) );
+		}
+
+		return uidMap.get( uid );
+	} );
+}
+
+function maskedUID( offset = 1 ) {
+	return `masked-uid-${ offset }`;
+}
