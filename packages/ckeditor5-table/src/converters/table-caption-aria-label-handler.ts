@@ -31,7 +31,7 @@ export function injectTableCaptionAriaLabelHandler( editor: Editor ): void {
 
 			const modelCaption = Array
 				.from( modelTable.getChildren() )
-				.find( child => child.is( 'element', 'caption' ) );
+				.find( child => child.is( 'element', 'caption' ) ) as ModelElement | undefined;
 
 			// Remove `aria-labelledby` from the table if there is no caption.
 			if ( !modelCaption ) {
@@ -47,7 +47,7 @@ export function injectTableCaptionAriaLabelHandler( editor: Editor ): void {
 
 			// Try reusing the same id for the caption if it was already created for the given model caption.
 			// If it was not created before, generate a new one and save it in the mapping to reuse it in the future if needed.
-			let captionId;
+			let captionId: string;
 
 			if ( viewCaption.hasAttribute( 'id' ) ) {
 				captionId = viewCaption.getAttribute( 'id' )!;
