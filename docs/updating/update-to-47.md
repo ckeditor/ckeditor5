@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-01-12
+modified_at: 2026-02-11
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -13,6 +13,179 @@ modified_at: 2026-01-12
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v47.5.0
+
+Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
+
+### AI Translate
+
+The {@link features/ckeditor-ai-translate AI Translate feature} of CKEditor AI allows users to translate entire documents on the go. It provides a user interface similar to AI Review, but with translation-specific actions to streamline the process. The translation view displays the final translated document, with original snippets shown on the side for review and comparison.
+
+### Visual changes to the AI Chat feed
+
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestions in conversation has changed, which may affect integrations that customized the UI and rely on specific CSS selectors.
+
+Please make sure to update your integrations to use the new DOM structure.
+
+Notable changes:
+* "Apply all" and "Suggest all" buttons are now separate buttons instead of a dropdown.
+* The toolbar with bulk "Apply" and "Suggest" ("Apply all" and "Suggest all") buttons belongs to the `.ck-ai-suggestion__body` element (previously in `.ck-ai-chat__feed__item`).
+* The `.ck-ai-suggestion__body__content-part__content` has been replaced by `.ck-content.ck-ai-suggestion-streamable-content`.
+
+**Old DOM structure**
+
+```
+div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
+├── div.ck-ai-suggestion__container.ck-rounded-corners
+│   ├── div.ck-ai-suggestion__header
+│   │   ├── span ("Change N" label)
+│   │   └── button.ck-button.ck-ai-suggestion__header__show-changes-toggle
+│   └── div.ck-ai-suggestion__body
+│       └── div.ck-ai-suggestion__body__content-parts
+│           ├── div.ck-ai-suggestion__body__content-part.ck-ai-suggestion__body__content-part_pending
+│           │   ├── div.ck-ai-suggestion__body__content-part__title
+│           │   │   ├── span.ck-ai-suggestion__body__content-part__title__label
+│           │   │   └── div.ck-toolbar
+│           │   │       └── div.ck-toolbar__items (Toolbar with "Preview", "Insert as suggestion", "Reject" buttons)
+│           │   │           ├── button.ck-button
+│           │   │           └── ...
+│           │   └── div.ck-content.ck-ai-suggestion__body__content-part__content
+│           │       └── (Content of the suggestion part)
+│           └── ... Other changes suggested by the AI ...
+└── div.ck-ai-chat__feed__ai-suggestion__actions
+    └── div.ck-splitbutton.ck-ai-chat__feed__ai-suggestion__actions (Dropdown with "Apply all", bulk "Suggest", and "Preview" buttons)
+        ├── button.ck-button.ck-splitbutton__action
+        └── button.ck-button.ck-splitbutton__arrow
+```
+
+**New DOM structure**
+
+```
+div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
+└── div.ck-ai-suggestion__container.ck-rounded-corners
+    ├── div.ck-ai-suggestion__header
+    │   ├── span ("Suggestion N" label)
+    │   └── button.ck-button.ck-ai-suggestion__header__show-changes-toggle
+    └── div.ck-ai-suggestion__body
+        ├── div.ck-ai-suggestion__body__content-parts
+        │   ├── div.ck-ai-suggestion__body__content-part.ck-ai-suggestion__body__content-part_pending
+        │   │   ├── div.ck-ai-suggestion__body__content-part__title
+        │   │   │   ├── span.ck-ai-suggestion__body__content-part__title__label
+        │   │   │   └── div.ck-toolbar.ck-ai-suggestion-content-part-toolbar
+        │   │   │       └── div.ck-toolbar__items (Toolbar with "Apply change", "Add as suggestion", and "Reject change" buttons)
+        │   │   │           ├── button.ck-button
+        │   │   │           └── ...
+        │   │   └── div.ck-content.ck-ai-suggestion-streamable-content
+        │   │       └── (Content of the suggestion part)
+        │   └── ... Other changes suggested by the AI ...
+        └── div.ck-ai-chat__feed__ai-suggestion__actions (Separate buttons for bulk "Apply" and "Suggest")
+            ├── button.ck-button.ck-ai-button-primary
+            └── button.ck-button.ck-ai-button-secondary
+```
+
+### Visual changes to the AI Chat suggestion preview dialog window
+
+The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat} suggestion {@link features/ckeditor-ai-chat#previewing-changes preview dialog window} has changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+Please make sure to update your integrations to use the new DOM structure.
+
+**Old DOM structure**
+
+```
+div.ck-dialog.ai-balloon.ai-balloon-rotator
+├── div.ck-form__header
+│   ├── button.ck-button.ck-off (Previous suggestion button)
+│   ├── h2.ck-form__header__label (Suggestion title)
+│   ├── button.ck-button.ck-off (Next suggestion button)
+│   └── button.ck-button.ck-off (Close button)
+└── div.ck-dialog__content
+    └── div.ai-balloon-content
+        ├── div.ck-ai-suggestion__container.ck-rounded-corners
+        │   └── div.ck-ai-suggestion__body
+        │       ├── div.ck-ai-suggestion__body__content-parts
+        │       │   └── div.ck-ai-suggestion__body__content-part.ck-ai-suggestion__body__content-part_pending.ck-ai-suggestion__body__content-part_active
+        │       │       └── div.ck-content.ck-ai-suggestion__body__content-part__content
+        │       │           └── (Content of the suggestion)
+        │       └── div.ck-toolbar.ck-ai-mini-toolbar
+        │           └── div.ck-toolbar__items
+        │               └── button.ck-button (Show changes button)
+        ├── div.ck-ai-balloon__disclaimer
+        │   └── p.ck-ai-balloon__disclaimer-content
+        └── div.ck-toolbar.ck-ai-balloon__toolbar
+            └── div.ck-toolbar__items
+                ├── button.ck-button.ck-ai-button-primary ("Apply" button)
+                └── button.ck-button.ck-ai-button-secondary ("Suggest" button)
+```
+
+**New DOM structure**
+
+```
+div.ck-dialog.ck-ai-balloon.ck-ai-chat-balloon
+├── div.ck-form__header
+│   ├── button.ck-button.ck-off (Previous suggestion button)
+│   ├── button.ck-button.ck-off (Next suggestion button)
+│   ├── h2.ck-form__header__label (Suggestion title)
+│   └── button.ck-button.ck-off (Close button)
+└── div.ck-dialog__content
+    └── div.ck-ai-chat-balloon-main.ck-ai-chat-balloon-main_state_pending
+        ├── div.ck-content.ck-ai-suggestion-streamable-content
+        │   └── (Content of the suggestion)
+        └── div.ck-ai-chat-balloon__toolbar-container
+            ├── div.ck-toolbar.ck-ai-suggestion-content-part-toolbar
+            │   └── div.ck-toolbar__items
+            │       ├── button.ck-button ("Apply change" button)
+            │       ├── button.ck-button ("Add as suggestion" button)
+            │       └── button.ck-button ("Reject change" button)
+            ├── div.ck-ai-suggestion__content-part-state.ck-ai-suggestion__content-part-state_pending.ck-hidden
+            │   └── span.ck-ai-suggestion__content-part-state__label
+            └── div.ck-toolbar.ck-ai-mini-toolbar
+                └── div.ck-toolbar__items
+                    └── button.ck-button ("Show changes" button)
+```
+
+### Multiple Changes revamp and other AI improvements
+
+We improved how multiple changes proposed by the {@link features/ckeditor-ai-chat AI Chat} feature are presented. Suggested changes now appear as cards that can be previewed in the content and applied consistently in both single-change and multi-change scenarios. This release also includes several under-the-hood improvements.
+
+### Export to PDF v2
+
+The {@link features/export-pdf export to PDF} feature now supports version 2 of the HTML to PDF converter API, bringing several {@link features/export-pdf#new-features-in-v2 powerful enhancements} to document generation.
+
+Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
+
+Security capabilities have been expanded with owner password protection for controlling permissions and digital signature support using PKCS#12 certificates for authenticity verification. Additional improvements include compression control for specific use cases and more precise rendering options.
+
+### Incoming old installation methods sunset reminder
+
+Please note that the old installation methods will no longer be available with CKEditor&nbsp;5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+
+In CKEditor&nbsp;5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor&nbsp;5.
+
+If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
+
+1. {@link updating/nim-migration/migration-to-new-installation-methods Migrate to the new installation methods}, which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor&nbsp;5 releases.
+2. Consider [CKEditor&nbsp;5 Long-Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+
+Please refer to the {@link updating/update-to-42 update guide} to learn more about these changes.
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `ai.reviewMode.translations` configuration option has been moved to `ai.translate.languages`. The `ai.reviewMode` configuration namespace has been removed.
+
+  Together with the introduction of AI Translate feature and a separate translation tab, the configuration option to define a custom language list
+  has been moved to a related `ai.translate` namespace.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `AIEditorIntegration` plugin is now required to preview the changes suggested by the AI Chat feature in a dialog window. Previously, this functionality was enabled by just loading the main `AIChat` plugin. Please make sure your integration loads the `AIEditorIntegration` plugin in order to use this functionality.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestions in conversation has been changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+  Please make sure to update your integrations to use the new DOM structure. Learn more about the changes in the migration guide provided in the project documentation.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestion preview dialog window has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+  Please make sure to update your integrations to use the new DOM structure. Learn more about the changes in the migration guide provided in the project documentation.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#sendMessage()` takes `attributes: Record<string, unknown>` as one of its parameters now, in place of former `quickActionData`. This affects you only if you provided some customizations for the CKEditor AI chat feature.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Already existing chat conversations, which were created through AI Quick Action (e.g. "Explain" or "Summarize"), when loaded from chat history, will now display a full prompt instead of the short version. This affects only already created conversations.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Replaced `ai.chat.models.modelSelectorAlwaysVisible` configuration option with `ai.chat.models.showModelSelector`. The behavior has also been slightly updated. When set to `true` (default), the model selector dropdown is shown (when multiple models are available), or the model name is displayed (when only one model is available). When set to `false`, the selector is hidden, regardless of the number of available models.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The model's configuration options have been moved from `config.ai.chat.models` to `config.ai.models` to ensure consistent model configuration across all AI features. The model configuration is now applied uniformly in both AI Chat and AI Review Mode.
 
 ## Update to CKEditor&nbsp;5 v47.4.0
 

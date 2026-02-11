@@ -37,6 +37,9 @@ export { default as IconBookmarkInline } from '../theme/icons/bookmark-inline.sv
 export { default as IconBookmark } from '../theme/icons/bookmark.svg';
 export { default as IconBookmarkMedium } from '../theme/icons/bookmark-medium.svg';
 export { default as IconBookmarkSmall } from '../theme/icons/bookmark-small.svg';
+export { default as IconBoxWithCheck } from '../theme/icons/box-with-check.svg';
+export { default as IconBoxWithCross } from '../theme/icons/box-with-cross.svg';
+export { default as IconBoxWithMarker } from '../theme/icons/box-with-marker.svg';
 export { default as IconBrowseFiles } from '../theme/icons/browse-files.svg';
 export { default as IconBulb } from '../theme/icons/bulb.svg';
 export { default as IconBulletedList } from '../theme/icons/bulleted-list.svg';

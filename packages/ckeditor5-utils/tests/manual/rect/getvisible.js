@@ -24,7 +24,7 @@ function drawVisibleRects() {
 		RectDrawer.draw( elementRect, {
 			outlineWidth: '1px',
 			outlineStyle: 'dashed',
-			outlineColor: 'rgba(0,0,0,.3)',
+			outlineColor: 'rgba(0,0,0,.2)',
 			opacity: 1
 		}, `ovf:${ overflow.slice( 0, 3 ) } pos:${ position.slice( 0, 4 ) }` );
 	}
@@ -35,7 +35,7 @@ function drawVisibleRects() {
 		if ( visibleRect ) {
 			RectDrawer.draw( visibleRect, Object.assign( {}, diagonalStylesBlack, {
 				opacity: '1',
-				outlineWidth: '2px',
+				outlineWidth: '3px',
 				outlineStyle: 'solid',
 				outlineColor: 'black'
 			} ) );

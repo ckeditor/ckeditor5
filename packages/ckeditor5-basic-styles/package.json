@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-basic-styles",
-  "version": "47.4.0",
+  "version": "47.5.0",
   "description": "Basic styles feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -14,6 +14,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
@@ -21,9 +22,8 @@
     "ckeditor5": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
+    "@ckeditor/ckeditor5-dev-utils": "^54.3.3",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
-    "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",

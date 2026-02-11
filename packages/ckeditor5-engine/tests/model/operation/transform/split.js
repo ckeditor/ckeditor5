@@ -61,29 +61,41 @@ describe( 'transform', () => {
 
 			it( 'element in same path, then undo', () => {
 				// This is pretty weird case. Right now it cannot be reproduced with the features that we have.
-				john.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
-				john.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+				john.editor.model.schema.register( 'containerBlock', { inheritAllFrom: '$block' } );
+				john.editor.model.schema.extend( 'paragraph', { allowIn: 'containerBlock' } );
+				john.editor.model.schema.extend( 'blockQuote', { allowIn: 'containerBlock' } );
 
-				kate.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
-				kate.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+				kate.editor.model.schema.register( 'containerBlock', { inheritAllFrom: '$block' } );
+				kate.editor.model.schema.extend( 'paragraph', { allowIn: 'containerBlock' } );
+				kate.editor.model.schema.extend( 'blockQuote', { allowIn: 'containerBlock' } );
 
-				john.setData( '<listItem><paragraph>A</paragraph>[]<paragraph>B</paragraph><paragraph>C</paragraph></listItem>' );
-				kate.setData( '<listItem><paragraph>A</paragraph><paragraph>B</paragraph>[<paragraph>C</paragraph>]</listItem>' );
+				john.setData(
+					'<containerBlock>' +
+						'<paragraph>A</paragraph>[]<paragraph>B</paragraph><paragraph>C</paragraph>' +
+					'</containerBlock>'
+				);
+				kate.setData(
+					'<containerBlock>' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+						'[<paragraph>C</paragraph>]' +
+					'</containerBlock>'
+				);
 
 				john.split();
 				kate.wrap( 'blockQuote' );
 
 				syncClients();
 				expectClients(
-					'<listItem>' +
+					'<containerBlock>' +
 						'<paragraph>A</paragraph>' +
-					'</listItem>' +
-					'<listItem>' +
+					'</containerBlock>' +
+					'<containerBlock>' +
 						'<paragraph>B</paragraph>' +
 						'<blockQuote>' +
 							'<paragraph>C</paragraph>' +
 						'</blockQuote>' +
-					'</listItem>'
+					'</containerBlock>'
 				);
 
 				john.undo();
@@ -92,11 +104,11 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients(
-					'<listItem>' +
+					'<containerBlock>' +
 						'<paragraph>A</paragraph>' +
 						'<paragraph>B</paragraph>' +
 						'<paragraph>C</paragraph>' +
-					'</listItem>'
+					'</containerBlock>'
 				);
 			} );
 
