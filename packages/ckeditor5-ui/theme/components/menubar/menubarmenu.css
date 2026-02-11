@@ -4,6 +4,13 @@
  */
 
 .ck.ck-menu-bar__menu {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
 	display: block;
 	position: relative;
+
+	&.ck-menu-bar__menu_top-level {
+		max-width: 100%;
+	}
 }

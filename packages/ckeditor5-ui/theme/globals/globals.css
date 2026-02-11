@@ -3,6 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+@import "./_colors.css";
+@import "./_disabled.css";
+@import "./_focus.css";
+@import "./_fonts.css";
+@import "./_reset.css";
+@import "./_rounded.css";
+@import "./_shadow.css";
+@import "./_spacing.css";
+
 @import "./_hidden.css";
 @import "./_zindex.css";
 @import "./_transition.css";

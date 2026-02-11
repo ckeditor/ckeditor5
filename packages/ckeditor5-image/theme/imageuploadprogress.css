@@ -7,13 +7,33 @@
 	& .image,
 	& .image-inline {
 		position: relative;
+
+		/* Showing animation. */
+		&.ck-appear {
+			animation: fadeIn 700ms;
+
+			@media (prefers-reduced-motion: reduce) {
+				opacity: 1;
+				animation: none;
+			}
+		}
 	}
 
 	/* Upload progress bar. */
 	& .image .ck-progress-bar,
 	& .image-inline .ck-progress-bar {
+		height: 2px;
+		width: 0;
+		background: var(--ck-color-upload-bar-background);
+		transition: width 100ms;
+
 		position: absolute;
 		top: 0;
 		left: 0;
 	}
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
 }

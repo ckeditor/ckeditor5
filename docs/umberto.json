@@ -19,7 +19,7 @@
 	],
 	"sitemap": {
 		"hostname": "https://ckeditor5.github.io/docs/nightly/",
-		"excluded":  [
+		"excluded": [
 			"snippets/examples/bootstrap-ui.html"
 		]
 	},
@@ -76,6 +76,7 @@
 		"api/module_table_table-TABLE.html": "api/table.html",
 		"api/module_ui_labeledview_labeledview-LabeledView.html": "api/module_ui_labeledfield_labeledfieldview-LabeledFieldView.html",
 		"api/plugins.html": "framework/tutorials/crash-course/plugins.html",
+		"api/theme-lark.html": "framework/deep-dive/ui/theme-customization.html",
 		"api/video.html": "api/media-embed.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/custom-builds.html": "getting-started/legacy/installation-methods/quick-start.html",
@@ -421,7 +422,7 @@
 		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"hooks": {
-		"beforeHexo":[
+		"beforeHexo": [
 			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
 		]
 	},
@@ -590,7 +591,7 @@
 					"badges": [
 						"premium"
 					],
-					"categories":[
+					"categories": [
 						{
 							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",

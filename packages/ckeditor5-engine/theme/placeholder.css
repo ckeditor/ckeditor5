@@ -3,12 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
+
 /* See ckeditor/ckeditor5#936. */
-.ck.ck-placeholder,
-.ck .ck-placeholder {
+.ck.ck-placeholder, .ck .ck-placeholder {
 	position: relative;
 
+	@mixin ck-media-forced-colors {
+		/*
+		 * This is needed for Edge on Windows to use the right color for the placeholder content (::before).
+		 * See https://github.com/ckeditor/ckeditor5/issues/14907.
+		 */
+		forced-color-adjust: preserve-parent-color;
+	}
+
 	&::before {
+		cursor: text;
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -16,6 +26,24 @@
 
 		/* See ckeditor/ckeditor5#469. */
 		pointer-events: none;
+
+		@mixin ck-media-default-colors {
+			color: var(--ck-color-engine-placeholder-text);
+		}
+
+		@mixin ck-media-forced-colors {
+			/*
+			 * In the high contrast mode there is no telling between regular and placeholder text. Using
+			 * italic text to address that issue. See https://github.com/ckeditor/ckeditor5/issues/14907.
+			 */
+			font-style: italic;
+
+			/*
+			 * Without this margin, the caret will not show up and blink when the user puts the selection
+			 * in the placeholder (Edge on Windows). See https://github.com/ckeditor/ckeditor5/issues/14907.
+			 */
+			margin-left: 1px;
+		}
 	}
 }
 

@@ -9,7 +9,7 @@ classes: main__content--no-toc
 
 # Theme customization
 
-The [default theme](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) of CKEditor&nbsp;5 can be customized to match most visual integration requirements.
+The default theme of CKEditor&nbsp;5 can be customized to match most visual integration requirements.
 
 Below, you can see an editor with the dark theme as a result of customizations described in a {@link framework/theme-customization dedicated guide}.
 
@@ -20,7 +20,7 @@ Below, you can see an editor with the dark theme as a result of customizations d
 	<ck:checkbox id="theme-mode-dark" type="radio" name="theme-mode" value="dark" label="Dark" checked />
 </div>
 
-{@snippet examples/theme-lark}
+{@snippet examples/default-theme}
 
 ## Detailed guide
 

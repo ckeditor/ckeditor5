@@ -3,7 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
+:root {
+	--ck-link-panel-width: 340px;
+	/* The height of the text inside the link providers list button. */
+	--ck-link-provider-list-item-text-height: calc(var(--ck-line-height-base) * var(--ck-font-size-base));
+	/* The height of the link providers list item contained paddings. */
+	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small) + var(--ck-spacing-small));
+}
+
+@mixin ck-media-phone {
+	:root {
+		--ck-link-panel-width: 300px;
+	}
+}
 
 /* Generic class that wraps each link balloon view. */
 .ck.ck-link-form {
@@ -20,5 +35,42 @@
 
 	& .ck-link__items:empty {
 		display: none;
+	}
+}
+
+/* Generic class that wraps each link balloon view. */
+.ck.ck-form.ck-link-form {
+	width: var(--ck-link-panel-width);
+	padding-bottom: 0;
+
+	&.ck-responsive-form {
+		& .ck-labeled-field-view {
+			@mixin ck-media-phone {
+				margin: 0;
+			}
+		}
+	}
+
+	& .ck-link-form__providers-list {
+		border-top: 1px solid var(--ck-color-base-border);
+
+		/* The list should be scrollable when there are more than 4 items. */
+		&:has(.ck-list__item:nth-child(n + 5)) {
+			overflow: auto;
+			/* Scroll should appear when there are more than 5 item on the list.
+			* var(--ck-spacing-large) - is a form padding.
+			* 1px - is a border width. */
+			max-height: calc(var(--ck-link-provider-list-item-height) * 4 + var(--ck-spacing-large) + 1px);
+		}
+
+		& .ck-link__button {
+			padding: var(--ck-spacing-small) var(--ck-spacing-large);
+			border-radius: 0;
+
+			& > .ck-button__label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
 	}
 }

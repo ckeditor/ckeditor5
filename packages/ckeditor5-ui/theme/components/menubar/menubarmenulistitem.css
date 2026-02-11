@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+:root {
+	--ck-menu-bar-menu-item-min-width: 18em;
+}
+
+.ck.ck-menu-bar__menu .ck.ck-menu-bar__menu__item {
+	min-width: var(--ck-menu-bar-menu-item-min-width);
+}

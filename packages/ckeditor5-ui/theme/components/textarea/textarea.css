@@ -4,7 +4,9 @@
  */
 
 /*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
+ * This fixes a problem in Firefox when the initial height of the complement does not match the number of rows.
+ * This bug is especially visible when rows=1.
  */
+.ck-textarea {
+	overflow-x: hidden
+}

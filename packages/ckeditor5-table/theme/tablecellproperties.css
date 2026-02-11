@@ -4,11 +4,24 @@
  */
 
 .ck.ck-table-cell-properties-form {
+	width: 320px;
+
 	& .ck-form__row {
+		&.ck-table-cell-properties-form__padding-row {
+			align-self: flex-end;
+			padding: 0;
+			width: 25%;
+		}
+
 		&.ck-table-cell-properties-form__alignment-row {
 			flex-wrap: wrap;
 
 			& .ck.ck-toolbar {
+				background: none;
+
+				/* Compensate for missing input label that would push the margin (toolbar has no inputs). */
+				margin-top: var(--ck-spacing-standard);
+
 				&:first-of-type {
 					/* 4 buttons out of 7 (h-alignment + v-alignment) = 0.57 */
 					flex-grow: 0.57;

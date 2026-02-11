@@ -3,6 +3,51 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
+
+.ck.ck-editor__top {
+	& .ck-sticky-panel {
+		& .ck-sticky-panel__content {
+			@mixin ck-rounded-corners {
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+
+			border: 1px solid var(--ck-color-base-border);
+			border-bottom-width: 0;
+
+			&.ck-sticky-panel__content_sticky {
+				border-bottom-width: 1px;
+			}
+
+			& .ck-menu-bar {
+				border: 0;
+				border-bottom: 1px solid var(--ck-color-base-border);
+			}
+
+			& .ck-toolbar {
+				border: 0;
+			}
+		}
+	}
+}
+
+/* Note: Use ck-editor__main to make sure these styles don't apply to other editor types */
+.ck.ck-editor__main > .ck-editor__editable {
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/113 */
+	background: var(--ck-color-base-background);
+
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	&:not(.ck-focused) {
+		border-color: var(--ck-color-base-border);
+	}
+}
+
+
 .ck.ck-editor {
 	/* All the elements within `.ck-editor` are positioned relatively to it.
 	 If any element needs to be positioned with respect to the <body>, etc.,

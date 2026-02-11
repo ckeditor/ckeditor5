@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+
+
 .ck.ck-heading_heading1 .ck-button__label {
 	font-size: 20px;
 }
@@ -17,4 +19,15 @@
 
 .ck[class*="ck-heading_heading"] {
 	font-weight: bold;
+}
+
+/* Resize dropdown's button label. */
+.ck.ck-dropdown.ck-heading-dropdown {
+	& .ck-dropdown__button .ck-button__label {
+		width: 8em;
+	}
+
+	& .ck-dropdown__panel .ck-list__item {
+		min-width: 18em;
+	}
 }
