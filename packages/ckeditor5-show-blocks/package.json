@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-show-blocks",
-  "version": "47.4.0",
+  "version": "47.5.0",
   "description": "Show blocks feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -20,7 +20,7 @@
     "ckeditor5": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^54.2.1",
+    "@ckeditor/ckeditor5-dev-utils": "^54.3.3",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",

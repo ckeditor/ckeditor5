@@ -150,11 +150,11 @@ describe( 'MentionUI', () => {
 		let pinSpy;
 
 		const caretRect = {
-			bottom: 118,
+			bottom: 28,
 			height: 18,
 			left: 500,
 			right: 501,
-			top: 100,
+			top: 10,
 			width: 1
 		};
 
@@ -221,7 +221,7 @@ describe( 'MentionUI', () => {
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_se',
-						top: 121,
+						top: 31,
 						config: {
 							withArrow: false
 						}
@@ -230,7 +230,7 @@ describe( 'MentionUI', () => {
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
-						top: 121,
+						top: 31,
 						config: {
 							withArrow: false
 						}
@@ -239,7 +239,7 @@ describe( 'MentionUI', () => {
 					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_ne',
-						top: -53,
+						top: -143,
 						config: {
 							withArrow: false
 						}
@@ -248,7 +248,7 @@ describe( 'MentionUI', () => {
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_nw',
-						top: -53,
+						top: -143,
 						config: {
 							withArrow: false
 						}

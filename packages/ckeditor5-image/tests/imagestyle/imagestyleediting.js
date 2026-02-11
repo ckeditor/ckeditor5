@@ -590,19 +590,19 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				describe( 'float style normalization', () => {
-					it( 'should convert float: left to alignBlockLeft for block image', () => {
+					it( 'should convert float: left to alignLeft for block image', () => {
 						editor.setData( '<figure class="image" style="float: left"><img src="/assets/sample.png" /></figure>' );
 
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-							'<imageBlock imageStyle="alignBlockLeft" src="/assets/sample.png"></imageBlock>'
+							'<imageBlock imageStyle="alignLeft" src="/assets/sample.png"></imageBlock>'
 						);
 					} );
 
-					it( 'should convert float: right to alignBlockRight for block image', () => {
+					it( 'should convert float: right to alignRight for block image', () => {
 						editor.setData( '<figure class="image" style="float: right"><img src="/assets/sample.png" /></figure>' );
 
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-							'<imageBlock imageStyle="alignBlockRight" src="/assets/sample.png"></imageBlock>'
+							'<imageBlock imageStyle="alignRight" src="/assets/sample.png"></imageBlock>'
 						);
 					} );
 
