@@ -1331,6 +1331,46 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
 				} );
 
+				it( 'should upcast width (float) with space between number and unit attribute from <table>', () => {
+					editor.setData( '<table width="100.5 %"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should upcast width (float) with spaces around attribute from <table>', () => {
+					editor.setData( '<table width="  100.5   %  "><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should upcast only the digits before the unknown unit in width attribute from <table>', () => {
+					editor.setData( '<table width="100.5abc11"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5px' );
+				} );
+
+				it( 'should upcast only the digits before the percentage unit in width attribute from <table>', () => {
+					editor.setData( '<table width="  100.5%11  "><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should not upcast NaN width attribute on table', () => {
+					editor.setData( '<table width="not-a-number"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
+				} );
+
 				it( 'should upcast width from style not <table> attribute', () => {
 					editor.setData( '<table width="1337" style="width: 654px;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
