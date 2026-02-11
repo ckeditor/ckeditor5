@@ -922,6 +922,6 @@
 		}
 	],
 	"variables": {
-		"CKBOX_VERSION": "2.10.0"
+		"CKBOX_VERSION": "2.9.2"
 	}
 }
