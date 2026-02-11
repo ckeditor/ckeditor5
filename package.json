@@ -1,7 +1,7 @@
 {
   "name": "ckeditor5-root",
   "private": true,
-  "version": "47.4.0",
+  "version": "47.5.0",
   "description": "The development environment of CKEditor 5 - the best browser-based rich text editor.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
