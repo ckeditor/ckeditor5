@@ -336,6 +336,16 @@ Your final page should look similar to the one below.
 </html>
 ```
 
+### Additional setup for Vite
+
+1. Mention Vite limitations:
+	* Vite does not fully support import maps
+	* Imports are resolved at the build time
+	* ESM import fails and Vite need to fallback to the UMD bundle
+2. We need to create a workaround
+3. A plugin that externalizes CKEditor imports
+4. Because of that we can use standard ESM imports regardless of the installation method
+
 ## Next steps
 
 * See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
