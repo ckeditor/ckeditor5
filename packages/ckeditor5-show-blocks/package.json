@@ -20,7 +20,7 @@
     "ckeditor5": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-utils": "^54.3.4",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
