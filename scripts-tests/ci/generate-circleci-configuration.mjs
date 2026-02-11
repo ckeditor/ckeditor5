@@ -27,59 +27,59 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 	} );
 
 	it( 'creates the `cke5_tests_framework` job', async () => {
-		const { generatedConfig } = await runScript();
+		const config = await generateCircleConfiguration();
 
-		expect( generatedConfig.jobs.cke5_tests_framework ).toBeDefined();
+		expect( config.jobs.cke5_tests_framework ).toBeDefined();
 	} );
 
 	it( 'injects `halt_if_short_flow` into generated test jobs', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			featurePackages: [ 'ckeditor5-feature-a', 'ckeditor5-feature-b' ]
 		} );
 
-		expect( generatedConfig.jobs.cke5_tests_framework.steps ).toContain( 'halt_if_short_flow' );
+		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'halt_if_short_flow' );
 
-		getFeatureBatchJobNames( generatedConfig ).forEach( jobName => {
-			expect( generatedConfig.jobs[ jobName ].steps ).toContain( 'halt_if_short_flow' );
+		getFeatureBatchJobNames( config ).forEach( jobName => {
+			expect( config.jobs[ jobName ].steps ).toContain( 'halt_if_short_flow' );
 		} );
 	} );
 
 	it( 'allows non-full coverage for the `ckeditor5-minimap` package', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			featurePackages: [ 'ckeditor5-minimap' ]
 		} );
 
-		const minimapTestCommand = getPackageTestCommand( generatedConfig.jobs.cke5_tests_features_batch_1, 'ckeditor5-minimap' );
+		const minimapTestCommand = getPackageTestCommand( config.jobs.cke5_tests_features_batch_1, 'ckeditor5-minimap' );
 
 		expect( minimapTestCommand ).toContain( '--allow-non-full-coverage' );
 	} );
 
 	it( 'replaces the feature batch placeholder with generated jobs', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			featurePackages: [ 'ckeditor5-feature-a' ]
 		} );
 
-		const workflowJobs = generatedConfig.workflows.tests.jobs;
+		const workflowJobs = config.workflows.tests.jobs;
 
-		expect( generatedConfig.jobs.cke5_tests_features_batch_n ).toBeUndefined();
-		expect( generatedConfig.jobs.cke5_tests_features_batch_1 ).toBeDefined();
+		expect( config.jobs.cke5_tests_features_batch_n ).toBeUndefined();
+		expect( config.jobs.cke5_tests_features_batch_1 ).toBeDefined();
 		expect( workflowJobs ).not.toContain( 'cke5_tests_features_batch_n' );
 		expect( workflowJobs.some( job => job.cke5_tests_features_batch_n ) ).toBe( false );
 	} );
 
 	it( 'calculates feature batches using configured sizes and overflow batch', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			featurePackages: createFeaturePackages( 38 )
 		} );
 
-		expect( getFeatureBatchJobNames( generatedConfig ) ).toEqual( [
+		expect( getFeatureBatchJobNames( config ) ).toEqual( [
 			'cke5_tests_features_batch_1',
 			'cke5_tests_features_batch_2',
 			'cke5_tests_features_batch_3'
 		] );
-		expect( getPackageTestStepCount( generatedConfig.jobs.cke5_tests_features_batch_1 ) ).toBe( 20 );
-		expect( getPackageTestStepCount( generatedConfig.jobs.cke5_tests_features_batch_2 ) ).toBe( 15 );
-		expect( getPackageTestStepCount( generatedConfig.jobs.cke5_tests_features_batch_3 ) ).toBe( 3 );
+		expect( getPackageTestStepCount( config.jobs.cke5_tests_features_batch_1 ) ).toBe( 20 );
+		expect( getPackageTestStepCount( config.jobs.cke5_tests_features_batch_2 ) ).toBe( 15 );
+		expect( getPackageTestStepCount( config.jobs.cke5_tests_features_batch_3 ) ).toBe( 3 );
 	} );
 
 	it( 'inherits parameters from the `config.yml` file', async () => {
@@ -100,24 +100,24 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 			}
 		};
 
-		const { generatedConfig } = await runScript( { rootConfig } );
+		const config = await generateCircleConfiguration( { rootConfig } );
 
-		expect( generatedConfig.parameters ).toEqual( rootConfig.parameters );
-		expect( generatedConfig.parameters.placeholder ).toBeUndefined();
+		expect( config.parameters ).toEqual( rootConfig.parameters );
+		expect( config.parameters.placeholder ).toBeUndefined();
 	} );
 
 	it( 'substitutes the provided chrome version in jobs and commands', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			cliArgs: [ '--chrome-version=123.0.0.0' ]
 		} );
 
-		expect( getChromeInstallStep( generatedConfig.jobs.cke5_manual.steps ) ).toEqual( {
+		expect( getChromeInstallStep( config.jobs.cke5_manual.steps ) ).toEqual( {
 			'browser-tools/install_chrome': {
 				chrome_version: '123.0.0.0',
 				timeout: '5m'
 			}
 		} );
-		expect( getChromeInstallStep( generatedConfig.commands.command_with_chrome.steps ) ).toEqual( {
+		expect( getChromeInstallStep( config.commands.command_with_chrome.steps ) ).toEqual( {
 			'browser-tools/install_chrome': {
 				chrome_version: '123.0.0.0',
 				timeout: '5m'
@@ -126,65 +126,65 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 	} );
 
 	it( 'uses the `GPL` license key in non-LTS pipelines', async () => {
-		const { generatedConfig } = await runScript();
+		const config = await generateCircleConfiguration();
 
-		expect( generatedConfig.jobs.cke5_manual.environment ).toEqual( {
+		expect( config.jobs.cke5_manual.environment ).toEqual( {
 			EXISTING_ENV: 'keep-me',
 			CKEDITOR_LICENSE_KEY: 'GPL'
 		} );
-		expect( generatedConfig.jobs.cke5_tests_framework.environment ).toEqual( {
+		expect( config.jobs.cke5_tests_framework.environment ).toEqual( {
 			CKEDITOR_LICENSE_KEY: 'GPL'
 		} );
-		expect( generatedConfig.jobs.cke5_tests_features_batch_1.environment ).toEqual( {
+		expect( config.jobs.cke5_tests_features_batch_1.environment ).toEqual( {
 			CKEDITOR_LICENSE_KEY: 'GPL'
 		} );
 	} );
 
 	it( 'does not use the GPL license key in LTS pipelines', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			cliArgs: [ '--is-lts-pipeline=true' ]
 		} );
 
-		expect( generatedConfig.jobs.cke5_manual.environment ).toEqual( {
+		expect( config.jobs.cke5_manual.environment ).toEqual( {
 			EXISTING_ENV: 'keep-me'
 		} );
-		expect( generatedConfig.jobs.cke5_tests_framework.environment ).toBeUndefined();
-		expect( generatedConfig.jobs.cke5_tests_features_batch_1.environment ).toBeUndefined();
+		expect( config.jobs.cke5_tests_framework.environment ).toBeUndefined();
+		expect( config.jobs.cke5_tests_features_batch_1.environment ).toBeUndefined();
 	} );
 
 	it( 'keeps `checkout_command` in non-community runs', async () => {
-		const { generatedConfig } = await runScript();
+		const config = await generateCircleConfiguration();
 
-		expect( generatedConfig.jobs.cke5_manual.steps ).toContain( 'checkout_command' );
-		expect( generatedConfig.jobs.cke5_tests_framework.steps ).toContain( 'checkout_command' );
-		expect( generatedConfig.jobs.cke5_manual.steps ).not.toContain( 'checkout' );
+		expect( config.jobs.cke5_manual.steps ).toContain( 'checkout_command' );
+		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'checkout_command' );
+		expect( config.jobs.cke5_manual.steps ).not.toContain( 'checkout' );
 	} );
 
 	it( 'replaces `checkout_command` with `checkout` for community pull requests', async () => {
-		const { generatedConfig } = await runScript( {
+		const config = await generateCircleConfiguration( {
 			isCommunityPr: true
 		} );
 
-		Object.values( generatedConfig.jobs ).forEach( job => {
+		Object.values( config.jobs ).forEach( job => {
 			const stringSteps = job.steps.filter( step => typeof step === 'string' );
 
 			expect( stringSteps ).not.toContain( 'checkout_command' );
 		} );
 
-		expect( generatedConfig.jobs.cke5_manual.steps ).toContain( 'checkout' );
-		expect( generatedConfig.jobs.cke5_tests_framework.steps ).toContain( 'checkout' );
+		expect( config.jobs.cke5_manual.steps ).toContain( 'checkout' );
+		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'checkout' );
 	} );
 
 	it( 'stores the generated configuration file as `config-tests.yml`', async () => {
-		const { generatedConfig } = await runScript();
+		const config = await generateCircleConfiguration();
 
 		expect( fs.writeFile ).toHaveBeenCalledTimes( 1 );
 		expect( fs.writeFile ).toHaveBeenCalledWith( CONFIG_TESTS_PATH, 'serialized-config' );
-		expect( yaml.dump ).toHaveBeenCalledWith( generatedConfig, { lineWidth: -1 } );
+		expect( yaml.dump ).toHaveBeenCalledWith( config, { lineWidth: -1 } );
 	} );
 
 	it( 'reads `template.yml` and `config.yml` configuration files', async () => {
-		await runScript();
+		await generateCircleConfiguration();
 
 		expect( fs.readFile ).toHaveBeenCalledTimes( 2 );
 		expect( fs.readFile ).toHaveBeenNthCalledWith( 1, `${ CIRCLECI_CONFIG_DIRECTORY_PATH }/template.yml` );
@@ -192,7 +192,7 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 	} );
 } );
 
-async function runScript( {
+async function generateCircleConfiguration( {
 	cliArgs = [],
 	isCommunityPr = false,
 	frameworkEntries = [ 'index.ts', 'foo.js', 'bar.ts' ],
@@ -246,7 +246,7 @@ async function runScript( {
 
 	await import( '../../scripts/ci/generate-circleci-configuration.mjs' );
 
-	return { generatedConfig };
+	return generatedConfig;
 }
 
 function getTemplateConfigFixture() {
