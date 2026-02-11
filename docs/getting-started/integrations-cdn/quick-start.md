@@ -74,42 +74,42 @@ A simple HTML page with the CKEditor may look like the one below.
 ```html
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CKEditor 5 - Quick start CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-    </head>
-    <body>
-        <div id="editor">
-            <p>Hello from CKEditor 5!</p>
-        </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
 
-        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 
-        <script>
-            const {
-                ClassicEditor,
-                Essentials,
-                Bold,
-                Italic,
-                Font,
-                Paragraph
-            } = CKEDITOR;
+		<script>
+			const {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} = CKEDITOR;
 
-            ClassicEditor
-                .create( document.querySelector( '#editor' ), {
-                    licenseKey: '<YOUR_LICENSE_KEY>',
-                    plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-                    toolbar: [
-                        'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-                    ]
-                } )
-                .then( /* ... */ )
-                .catch( /* ... */ );
-        </script>
-    </body>
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>',
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+					]
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
 </html>
 ```
 
@@ -181,46 +181,46 @@ A simple HTML page with the CKEditor may look like the one below.
 ```html
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CKEditor 5 - Quick start CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
-    </head>
-    <body>
-        <div id="editor">
-            <p>Hello from CKEditor 5!</p>
-        </div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
 
-        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
-        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 
-        <script>
-            const {
-                ClassicEditor,
-                Essentials,
-                Bold,
-                Italic,
-                Font,
-                Paragraph
-            } = CKEDITOR;
-            const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+		<script>
+			const {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} = CKEDITOR;
+			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
-            ClassicEditor
-                .create( document.querySelector( '#editor' ), {
-                    licenseKey: '<YOUR_LICENSE_KEY>',
-                    plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-                    toolbar: [
-                        'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-                        'formatPainter'
-                    ]
-                } )
-                .then( /* ... */ )
-                .catch( /* ... */ );
-        </script>
-    </body>
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>',
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+						'formatPainter'
+					]
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
 </html>
 ```
 
