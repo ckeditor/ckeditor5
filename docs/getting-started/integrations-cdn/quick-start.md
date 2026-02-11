@@ -338,13 +338,87 @@ Your final page should look similar to the one below.
 
 ### Additional setup for Vite
 
-1. Mention Vite limitations:
-	* Vite does not fully support import maps
-	* Imports are resolved at the build time
-	* ESM import fails and Vite need to fallback to the UMD bundle
-2. We need to create a workaround
-3. A plugin that externalizes CKEditor imports
-4. Because of that we can use standard ESM imports regardless of the installation method
+Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 requires additional configuration. Vite does not fully support native import maps and external ESM modules (see [Vite Issue #6582](https://github.com/vitejs/vite/issues/6582)). Vite resolves imports at build time. Importing CKEditor using standard ESM syntax like `import { ClassicEditor } from 'ckeditor5';` may force Vite to fall back to the UMD bundle, or it may cause errors. That's why we need a workaround.
+
+To solve this issue, we can add a custom Vite plugin that externalizes CKEditor imports. This way, they can be resolved at runtime by the browser's import map instead of being processed by Vite's bundler. Below is the code of this plugin.
+
+```js
+/** @typedef {import('vite').Plugin} Plugin */
+
+/**
+ * @returns {Plugin}
+ */
+export function viteCKEditorExternalize() {
+	return {
+		name: 'ckeditor5-externalize',
+		enforce: 'pre',
+		config: ( config ) => {
+			if ( config.optimizeDeps?.exclude && !Array.isArray( config.optimizeDeps.exclude ) ) {
+				throw new Error( 'ckeditor5-externalize: config.optimizeDeps.exclude is not an array' );
+			}
+
+			if ( config.build?.rollupOptions?.external && !Array.isArray( config.build.rollupOptions.external ) ) {
+				throw new Error( 'ckeditor5-externalize: config.build.rollupOptions.external is not an array' );
+			}
+
+			config.optimizeDeps ??= {};
+			config.optimizeDeps.exclude = [
+				...( ( config.optimizeDeps.exclude ?? [] ) ),
+				'ckeditor5',
+				'ckeditor5-premium-features'
+			];
+
+			config.build ??= {};
+			config.build.rollupOptions ??= {};
+			config.build.rollupOptions.external = [
+				...( ( config.build.rollupOptions.external ?? [] ) ),
+				'ckeditor5',
+				'ckeditor5-premium-features',
+				/^ckeditor5\/.*/,
+				/^ckeditor5-premium-features\/.*/
+			];
+		},
+		configResolved: ( resolvedConfig ) => {
+			( resolvedConfig.plugins ).push( {
+				name: 'remove-id-prefix',
+				transform: ( code ) => {
+					if ( typeof code === 'string' ) {
+						return code.replace( /\/@id\/ckeditor5/g, 'ckeditor5' );
+					}
+					return null;
+				}
+			} );
+		},
+		resolveId: ( id ) => {
+			if (
+				id === 'ckeditor5' ||
+				id === 'ckeditor5-premium-features' ||
+				id.startsWith( 'ckeditor5/' ) ||
+				id.startsWith( 'ckeditor5-premium-features/' )
+			) {
+				return {
+					id,
+					external: true
+				};
+			}
+			return null;
+		}
+	};
+}
+```
+
+You need to add the plugin to the `plugins` array in the Vite config to use it in your project.
+
+```js
+// vite.config.js
+import { viteCKEditorExternalize } from './plugins/vite-ckeditor-externalize.js';
+
+export default {
+	plugins: [ viteCKEditorExternalize() ]
+};
+```
+
+The workaround should solve the issue and ensure a unified ESM development experience. Using this plugin, you can write clean ESM integration code regardless of the distribution channel.
 
 ## Next steps
 
