@@ -245,10 +245,10 @@ export function upcastBorderStyles(
 					`${ borderValue }px`;
 
 				normalizedBorder.width = {
-					left: borderPx,
-					right: borderPx,
 					top: borderPx,
 					bottom: borderPx,
+					right: borderPx,
+					left: borderPx,
 
 					...( normalizedBorder.width || {} )
 				};
