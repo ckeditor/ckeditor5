@@ -70,8 +70,8 @@
 		<li><a href="/internal" target="_self">Local link opening in same tab</a></li>
 		<li><a href="/external-page" target="_blank">Local link opening in new tab</a></li>
 		<li><a href="http://example.com" target="_self">External link opening in same tab</a></li>
-		<li><a href="http://external.com" target="_blank">External link opening in new tab</a></li>
-		<li><a href="https://external.com">External link opening in new tab (automatic append external attribute)</a></li>
+		<li><a href="http://example.com" target="_blank">External link opening in new tab</a></li>
+		<li><a href="https://example.com">External link opening in new tab (automatic append external attribute)</a></li>
 	</ul>
 
 	<p>Test toggling classes (they should never conflict):</p>
@@ -86,7 +86,7 @@
 
 	<p>Test linked images with conflicting decorators:</p>
 	<figure class="image">
-		<a href="http://external.com" target="_blank" rel="nofollow sponsored" class="important highlighted" style="color: blue;">
+		<a href="http://example.com" target="_blank" rel="nofollow sponsored" class="important highlighted" style="color: blue;">
 			<img src="../manual/sample.jpg" alt="Image with multiple decorators">
 		</a>
 		<figcaption>Block image with conflicting manual decorators (rel, target, classes, styles)</figcaption>

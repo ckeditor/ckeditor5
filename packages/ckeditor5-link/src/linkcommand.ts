@@ -167,8 +167,7 @@ export class LinkCommand extends Command {
 		// Resolve conflicting decorators and get the final decorator states.
 		const resolvedDecoratorsIds = resolveConflictingDecorators( {
 			allDecorators: Array.from( this.manualDecorators ),
-			decoratorStates: manualDecoratorIds,
-			isNewlyAddedDecorator: name => !this._getDecoratorStateFromModel( name )
+			decoratorStates: manualDecoratorIds
 		} );
 
 		// Stores information about manual decorators to turn them on/off when command is applied.

@@ -53,19 +53,15 @@ export function areDecoratorsConflicting( a: DecoratorLike, b: DecoratorLike ): 
  * @param options Configuration object.
  * @param options.decoratorStates Initial decorator states.
  * @param options.allDecorators Collection of all manual decorators.
- * @param options.isNewlyAddedDecorator Function to check if a decorator was newly enabled. If so,
- * it may disable conflicting decorators which were enabled in previous `decoratorStates`.
- * @returns Resolved decorator states with conflicts handled.
+ * @returns Updated decorator states with conflicts resolved.
  */
 export function resolveConflictingDecorators(
 	{
 		decoratorStates,
-		allDecorators,
-		isNewlyAddedDecorator
+		allDecorators
 	}: {
 		decoratorStates: Record<string, boolean>;
-		allDecorators: Array<DecoratorLike>;
-		isNewlyAddedDecorator: ( name: string ) => boolean | undefined;
+		allDecorators: Array<DecoratorLike & { value?: boolean }>;
 	}
 ): Record<string, boolean> {
 	const resolved: Record<string, boolean> = { ...decoratorStates };
@@ -78,6 +74,10 @@ export function resolveConflictingDecorators(
 				resolved[ conflict ] = false;
 			}
 		}
+	}
+
+	function isNewlyAddedDecorator( name: string ): boolean {
+		return allDecorators.some( item => item.id === name && !item.value );
 	}
 
 	return resolved;

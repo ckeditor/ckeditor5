@@ -18,7 +18,7 @@ import type {
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
 	ModelDocumentSelectionChangeAttributeEvent,
-	ModelNode
+	ModelItem
 } from 'ckeditor5/src/engine.js';
 import {
 	Input,
@@ -210,7 +210,7 @@ export class LinkEditing extends Plugin {
 					continue;
 				}
 
-				// If it conflicts with manual decorator that is being applied, return true
+				// If it conflicts with manual decorator that was applied, return true
 				// to prevent the automatic decorator from being applied.
 				if ( areDecoratorsConflicting( automaticDecorator, manualDecorator ) ) {
 					return true;
@@ -407,17 +407,26 @@ export class LinkEditing extends Plugin {
 			let hasChanged = false;
 
 			const changes = model.document.differ.getChanges();
-			const elementsToCheck = new Set<ModelNode>();
+			const elementsToCheck = new Set<ModelItem>();
+			const manualDecoratorAttributeKeys = new Set<string>(
+				linkCommand.manualDecorators.map( decorator => decorator.id )
+			);
 
 			for ( const change of changes ) {
 				if ( change.type !== 'attribute' ) {
 					continue;
 				}
 
-				const item = change.range.start.nodeAfter;
+				// Only react to link-related attribute changes to reduce work.
+				if ( change.attributeKey !== 'linkHref' && !manualDecoratorAttributeKeys.has( change.attributeKey ) ) {
+					continue;
+				}
 
-				if ( item?.hasAttribute( 'linkHref' ) ) {
-					elementsToCheck.add( item );
+				// Use range items instead of nodeAfter to avoid issues with text node merging.
+				for ( const item of change.range.getItems() ) {
+					if ( item.hasAttribute( 'linkHref' ) ) {
+						elementsToCheck.add( item );
+					}
 				}
 			}
 
@@ -425,25 +434,23 @@ export class LinkEditing extends Plugin {
 			for ( const item of elementsToCheck ) {
 				const appliedDecorators: Array<LinkManualDecorator> = [];
 
-				// Collect all applied manual decorators.
 				for ( const manualDecorator of linkCommand.manualDecorators ) {
-					if ( item.hasAttribute( manualDecorator.id ) ) {
-						appliedDecorators.push( manualDecorator );
+					if ( !item.hasAttribute( manualDecorator.id ) ) {
+						continue;
 					}
-				}
 
-				// Check for conflicts between applied decorators.
-				for ( let i = 0; i < appliedDecorators.length; i++ ) {
-					for ( let j = i + 1; j < appliedDecorators.length; j++ ) {
-						const decoratorA = appliedDecorators[ i ];
-						const decoratorB = appliedDecorators[ j ];
+					// Resolve conflicts on the fly, remove the earlier decorator (later wins).
+					for ( let i = appliedDecorators.length - 1; i >= 0; i-- ) {
+						const appliedDecorator = appliedDecorators[ i ];
 
-						if ( areDecoratorsConflicting( decoratorA, decoratorB ) ) {
-							writer.removeAttribute( decoratorA.id, item );
+						if ( areDecoratorsConflicting( appliedDecorator, manualDecorator ) ) {
+							writer.removeAttribute( appliedDecorator.id, item );
+							appliedDecorators.splice( i, 1 );
 							hasChanged = true;
-							break;
 						}
 					}
+
+					appliedDecorators.push( manualDecorator );
 				}
 			}
 

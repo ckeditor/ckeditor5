@@ -48,11 +48,6 @@ export {
 	extractTextFromLinkRange as _extractTextFromLinkRange
 } from './utils.js';
 
-export {
-	areDecoratorsConflicting as _areLinkDecoratorsConflicting,
-	resolveConflictingDecorators as _resolveConflictingLinkDecorators
-} from './utils/conflictingdecorators.js';
-
 export type {
 	NormalizedLinkDecoratorAutomaticDefinition,
 	NormalizedLinkDecoratorManualDefinition,
