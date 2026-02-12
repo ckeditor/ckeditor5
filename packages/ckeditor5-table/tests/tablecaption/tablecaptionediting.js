@@ -10,6 +10,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
 import { TableEditing } from '../../src/tableediting.js';
+import { priorities } from '@ckeditor/ckeditor5-utils';
 
 describe( 'TableCaptionEditing', () => {
 	let editor, model, view;
@@ -344,6 +345,38 @@ describe( 'TableCaptionEditing', () => {
 				expect( viewCaption.hasAttribute( 'id' ) ).to.be.true;
 				expect( viewTable.hasAttribute( 'aria-labelledby' ) ).to.be.true;
 				expect( viewTable.getAttribute( 'aria-labelledby' ) ).to.equal( viewCaption.getAttribute( 'id' ) );
+			} );
+
+			it( 'should not crash when view does not contain a <table> element', () => {
+				editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+					dispatcher.on( 'insert:table', ( evt, data, { writer, mapper } ) => {
+						const viewFigure = mapper.toViewElement( data.item );
+
+						if ( !viewFigure ) {
+							return;
+						}
+
+						const viewTable = Array
+							.from( viewFigure.getChildren() )
+							.find( child => child.is( 'element', 'table' ) );
+
+						if ( viewTable ) {
+							writer.remove( viewTable );
+						}
+					}, { priority: priorities.low + 1 } );
+				} );
+
+				_setModelData( model,
+					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
+				);
+
+				const viewFigure = view.document.getRoot().getChild( 0 );
+				const viewCaption = Array
+					.from( viewFigure.getChildren() )
+					.find( child => child.is( 'element', 'figcaption' ) );
+
+				expect( viewCaption ).to.not.be.undefined;
+				expect( viewCaption.hasAttribute( 'id' ) ).to.be.false;
 			} );
 
 			it( 'should not set aria-labelledby on table when there is no caption', () => {
