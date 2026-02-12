@@ -22,7 +22,12 @@ import {
 	type ModelElement
 } from '@ckeditor/ckeditor5-engine';
 
-import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
+import {
+	downcastAttributeToStyle,
+	getDefaultValueAdjusted,
+	upcastBorderStyles,
+	upcastTableCellPaddingAttribute
+} from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';
 import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
 import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
@@ -145,6 +150,7 @@ export class TableCellPropertiesEditing extends Plugin {
 			reduceBoxSides: true,
 			defaultValue: defaultTableCellProperties.padding!
 		} );
+		enableTableCellPaddingAttribute( editor, defaultTableCellProperties.padding! );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding! ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
@@ -549,4 +555,15 @@ function enableCellTypeProperty( editor: Editor ) {
 			}
 		}
 	} );
+}
+
+/**
+ * Enables the upcasting of the `cellpadding` attribute from table to table cells padding.
+ *
+ * @param editor The editor instance.
+ * @param defaultPadding The default padding value.
+ */
+function enableTableCellPaddingAttribute( editor: Editor, defaultPadding: string ) {
+	upcastTableCellPaddingAttribute( editor, 'td', defaultPadding );
+	upcastTableCellPaddingAttribute( editor, 'th', defaultPadding );
 }

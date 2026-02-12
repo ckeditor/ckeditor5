@@ -33,6 +33,7 @@ import {
 	getDefaultValueAdjusted,
 	upcastBorderStyles,
 	upcastStyleToAttribute,
+	upcastTableCellPaddingAttribute,
 	upcastTableAlignmentConfig,
 	DEFAULT_TABLE_ALIGNMENT_OPTIONS
 } from '../converters/tableproperties.js';
@@ -249,6 +250,7 @@ function enableBorderProperties(
 	}
 
 	upcastBorderStyles( editor, 'table', modelAttributes, defaultBorder );
+	upcastTableCellPaddingAttribute( editor, 'table' );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );

@@ -13,6 +13,7 @@ import type {
 	UpcastConversionApi,
 	UpcastConversionData,
 	ViewElement,
+	ModelElement,
 	UpcastElementEvent,
 	Consumables
 } from '@ckeditor/ckeditor5-engine';
@@ -388,6 +389,80 @@ function reduceBoxSidesValue( style?: Style ): undefined | string | Style {
 	}
 
 	return topSideStyle;
+}
+
+/**
+ * Conversion helper for upcasting the `cellpadding` table attribute.
+ *
+ * @param editor The editor instance.
+ * @param viewElementName The view element name that should be converted.
+ * @param defaultPadding The default padding value.
+ * @internal
+ */
+export function upcastTableCellPaddingAttribute(
+	editor: Editor,
+	viewElementName: string,
+	defaultPadding?: string
+): void {
+	const { conversion } = editor;
+
+	conversion.for( 'upcast' ).add( dispatcher => {
+		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
+			const { modelRange, viewItem } = data;
+			// If the element was not converted by element-to-element converter,
+			// we should not try to convert the style. See #8393.
+			if ( !modelRange ) {
+				return;
+			}
+
+			if (
+				viewItem.is( 'element', 'table' ) &&
+				conversionApi.consumable.consume( viewItem, { attributes: 'cellpadding' } )
+			) {
+				return;
+			}
+
+			const viewTable = (
+				viewItem.is( 'element', 'table' ) ?
+					viewItem :
+					viewItem.findAncestor( 'table' )
+			)!;
+
+			const hasTableCellPaddingAttribute = viewTable.hasAttribute( 'cellpadding' );
+
+			if (
+				!hasTableCellPaddingAttribute ||
+				!conversionApi.consumable.test( viewTable, { attributes: 'cellpadding' } )
+			) {
+				return;
+			}
+
+			const modelElement = modelRange?.start?.nodeAfter as ModelElement;
+
+			// If the `cellpadding` attribute has no value or has invalid value, it should be treated as `cellpadding="1"`.
+			const cellpaddingValue = parseFloat( viewTable.getAttribute( 'cellpadding' ) || '1' );
+			const cellpaddingPx = Number.isNaN( cellpaddingValue ) ? '1px' : `${ cellpaddingValue }px`;
+
+			const tableCellPaddings = modelElement.getAttribute( 'tableCellPadding' );
+
+			if ( !tableCellPaddings ) {
+				if ( defaultPadding !== cellpaddingPx ) {
+					conversionApi.writer.setAttribute( 'tableCellPadding', cellpaddingPx, modelElement );
+				}
+			} else if ( typeof tableCellPaddings === 'object' ) {
+				const normalizedPaddings = {
+					...( defaultPadding !== cellpaddingPx && { top: cellpaddingPx } ),
+					...( defaultPadding !== cellpaddingPx && { bottom: cellpaddingPx } ),
+					...( defaultPadding !== cellpaddingPx && { right: cellpaddingPx } ),
+					...( defaultPadding !== cellpaddingPx && { left: cellpaddingPx } ),
+
+					...tableCellPaddings
+				};
+
+				conversionApi.writer.setAttribute( 'tableCellPadding', normalizedPaddings, modelElement );
+			}
+		}, { priority: 'low' } );
+	} );
 }
 
 /**
