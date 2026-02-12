@@ -6,6 +6,7 @@
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
+import { ListEditing } from '../../src/list/listediting.js';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -13,7 +14,7 @@ import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine'
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ListIndentCommand', () => {
-	let editor, model, doc, root;
+	let editor, model, doc, root, attributeNames;
 
 	testUtils.createSinonSandbox();
 
@@ -24,12 +25,17 @@ describe( 'ListIndentCommand', () => {
 		model = editor.model;
 		doc = model.document;
 		root = doc.createRoot();
+		attributeNames = [ 'listType', 'listIndent', 'listItemId' ];
 
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
-		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
-		model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
-		model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		model.schema.extend( '$container', { allowAttributes: attributeNames } );
+		model.schema.extend( '$block', { allowAttributes: attributeNames } );
+		model.schema.extend( '$blockObject', { allowAttributes: attributeNames } );
+
+		sinon.stub( editor.plugins, 'get' ).withArgs( ListEditing ).returns( {
+			getListAttributeNames: () => attributeNames
+		} );
 	} );
 
 	describe( 'forward (indent)', () => {

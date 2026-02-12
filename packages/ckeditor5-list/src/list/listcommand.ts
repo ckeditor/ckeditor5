@@ -22,7 +22,7 @@ import {
 	isListItemBlock,
 	canBecomeSimpleListItem
 } from './utils/model.js';
-import { type ListType } from './listediting.js';
+import { ListEditing, type ListType } from './listediting.js';
 import type { ListWalkerOptions } from './utils/listwalker.js';
 
 /**
@@ -101,6 +101,8 @@ export class ListCommand extends Command {
 		model.change( writer => {
 			if ( turnOff ) {
 				const lastBlock = blocks[ blocks.length - 1 ];
+				const listEditing = this.editor.plugins.get( ListEditing );
+				const attributeNames = listEditing.getListAttributeNames();
 
 				// Split the first block from the list item.
 				const itemBlocks = getListItemBlocks( lastBlock, { direction: 'forward' } );
@@ -111,7 +113,7 @@ export class ListCommand extends Command {
 				}
 
 				// Strip list attributes.
-				changedBlocks.push( ...removeListAttributes( blocks, writer ) );
+				changedBlocks.push( ...removeListAttributes( blocks, writer, attributeNames ) );
 
 				// Outdent items following the selected list item.
 				changedBlocks.push( ...outdentFollowingItems( lastBlock, writer ) );

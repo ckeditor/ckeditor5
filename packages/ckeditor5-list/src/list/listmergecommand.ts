@@ -22,6 +22,7 @@ import {
 	type ListElement
 } from './utils/model.js';
 import { ListWalker } from './utils/listwalker.js';
+import { ListEditing } from './listediting.js';
 
 /**
  * The document list merge command. It is used by the {@link module:list/list~List list feature}.
@@ -64,9 +65,12 @@ export class ListMergeCommand extends Command {
 	public override execute(
 		{ shouldMergeOnBlocksContentLevel = false }: { shouldMergeOnBlocksContentLevel?: boolean } = {}
 	): void {
-		const model = this.editor.model;
+		const editor = this.editor;
+		const model = editor.model;
 		const selection = model.document.selection;
 		const changedBlocks: Array<ModelElement> = [];
+		const listEditing = editor.plugins.get( ListEditing );
+		const attributeNames = listEditing.getListAttributeNames();
 
 		model.change( writer => {
 			const { firstElement, lastElement } = this._getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel );
@@ -82,7 +86,8 @@ export class ListMergeCommand extends Command {
 					indentBy: firstIndent - lastIndent,
 
 					// If outdenting, the entire sub-tree that follows must be included.
-					expand: firstIndent < lastIndent
+					expand: firstIndent < lastIndent,
+					attributeNames
 				} ) );
 			}
 
