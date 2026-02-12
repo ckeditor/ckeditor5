@@ -369,6 +369,8 @@ export class LinkCommand extends Command {
 				} ) );
 			}
 		} );
+
+		this.restoreManualDecoratorStates();
 	}
 
 	/**
