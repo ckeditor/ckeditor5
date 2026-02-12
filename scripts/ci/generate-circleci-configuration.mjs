@@ -61,9 +61,16 @@ const { values: options } = parseArgs( {
 		'chrome-version': {
 			type: 'string',
 			default: 'latest'
+		},
+		// A boolean flag does not accept positional arguments. Hence, `string`, and custom casting.
+		'is-lts-pipeline': {
+			type: 'string',
+			default: 'false'
 		}
 	}
 } );
+
+const isLtsPipeline = options[ 'is-lts-pipeline' ] === 'true';
 
 const bootstrapCommands = () => ( [
 	'checkout_command',
@@ -184,6 +191,31 @@ const persistToWorkspace = fileName => ( {
 			]
 		};
 	} );
+
+	// Force using the `GPL` license by default.
+	if ( !isLtsPipeline ) {
+		const environment = {
+			CKEDITOR_LICENSE_KEY: 'GPL'
+		};
+
+		for ( const jobName of [ 'cke5_manual', 'cke5_tests_framework' ] ) {
+			config.jobs[ jobName ].environment ??= {};
+
+			config.jobs[ jobName ].environment = {
+				...config.jobs[ jobName ].environment,
+				...environment
+			};
+		}
+
+		featureTestBatches.forEach( ( _, batchIndex ) => {
+			config.jobs[ featureTestBatchNames[ batchIndex ] ].environment ??= {};
+
+			config.jobs[ featureTestBatchNames[ batchIndex ] ].environment = {
+				...config.jobs[ featureTestBatchNames[ batchIndex ] ].environment,
+				...environment
+			};
+		} );
+	}
 
 	Object.values( config.workflows ).forEach( workflow => {
 		if ( !( workflow instanceof Object ) ) {
