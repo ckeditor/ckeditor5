@@ -24,8 +24,7 @@ First of all, you need to install the source packages that you will use in your 
 Copy these dependencies to your `package.json` and call `npm install` to install them. You can also install them individually. An example list of plugins may look like this:
 
 ```bash
-npm install --save @ckeditor/ckeditor5-theme-lark \
-  @ckeditor/ckeditor5-autoformat \
+npm install --save @ckeditor/ckeditor5-autoformat \
   @ckeditor/ckeditor5-basic-styles \
   @ckeditor/ckeditor5-block-quote \
   @ckeditor/ckeditor5-editor-classic \
@@ -113,9 +112,6 @@ module.exports = {
 						loader: 'postcss-loader',
 						options: {
 							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
 								minify: true
 							} )
 						}
@@ -192,9 +188,6 @@ module.exports = {
 						loader: 'postcss-loader',
 						options: {
 							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
 								minify: true
 							} )
 						}
@@ -240,9 +233,6 @@ Encore.
 		loader: 'postcss-loader',
 		options: {
 			postcssOptions: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
 				minify: true
 			} )
 		}
@@ -598,9 +588,6 @@ module.exports = {
 						loader: 'postcss-loader',
 						options: {
 							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
 								minify: true
 							} )
 						}

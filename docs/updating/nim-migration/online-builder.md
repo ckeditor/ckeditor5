@@ -49,7 +49,6 @@ npm run build
 npm uninstall \
 @ckeditor/ckeditor5-dev-translations \
 @ckeditor/ckeditor5-dev-utils \
-@ckeditor/ckeditor5-theme-lark\
 css-loader \
 postcss \
 postcss-loader \

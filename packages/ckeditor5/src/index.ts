@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import '@ckeditor/ckeditor5-theme-lark/theme/index.css';
-
 export * from '@ckeditor/ckeditor5-adapter-ckfinder';
 export * from '@ckeditor/ckeditor5-alignment';
 export * from '@ckeditor/ckeditor5-autoformat';

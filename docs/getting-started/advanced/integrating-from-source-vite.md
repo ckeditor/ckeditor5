@@ -39,18 +39,14 @@ npm create vite@latest ckeditor5-vite-example -- --template vanilla-ts
 
  ## Installing necessary dependencies
 
-After initializing the project, you can start installing packages. Fundamentally, you need a list of three things before you start bundling:
-* an editor base
-* editor plugins
-* editor theme
+After initializing the project, you can start installing packages. Fundamentally, you need an _editor base_ and _editor plugins_ before you start bundling.
 
-This example will use Classic Editor as an editor base and the default CKEditor&nbsp;5 theme, lark. In terms of plugins, you can use whatever you want. If you need inspiration, you can base your integration on one of the existing builds. There was a list of packages in the classic build's `package.json` file. All packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
+This example will use Classic Editor as an editor base. In terms of plugins, you can use whatever you want. If you need inspiration, you can base your integration on one of the existing builds. There was a list of packages in the classic build's `package.json` file. All packages (excluding `@ckeditor/ckeditor5-dev-*`) must have the same version as the base editor package.
 
 You can install packages individually like `npm install @ckeditor/ckeditor5-editor-classic`, or copy dependencies from the build repository and type `npm install`. An example list of plugins may look like this:
 
 ```bash
-npm install --save @ckeditor/ckeditor5-theme-lark \
-  @ckeditor/ckeditor5-autoformat \
+npm install --save @ckeditor/ckeditor5-autoformat \
   @ckeditor/ckeditor5-basic-styles \
   @ckeditor/ckeditor5-block-quote \
   @ckeditor/ckeditor5-editor-classic \
@@ -63,7 +59,7 @@ npm install --save @ckeditor/ckeditor5-theme-lark \
 
 ## Vite configuration
 
-When your editor has all the necessary plugins, you can move on to integration with Vite. There is also an official plugin for this purpose. It handles loading the SVG icons and styles from the packages and the theme package. You can install it via the below command.
+When your editor has all the necessary plugins, you can move on to integration with Vite. There is also an official plugin for this purpose. It handles loading the SVG icons and styles from the packages. You can install it via the below command.
 
 ```bash
 npm install --save @ckeditor/vite-plugin-ckeditor5
@@ -81,7 +77,7 @@ import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineConfig( {
 	plugins: [
-		ckeditor5( { theme: require.resolve( '@ckeditor/ckeditor5-theme-lark' ) } )
+		ckeditor5( {} )
 	]
 } );
 ```

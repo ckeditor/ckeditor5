@@ -29,7 +29,6 @@
     "@ckeditor/ckeditor5-media-embed": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "es-toolkit": "1.39.5",
     "sanitize-html": "^2.13.0",
     "typescript": "5.3.3",

@@ -31,7 +31,6 @@
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
     "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-upload": "workspace:*",

@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'node:url';
 import path from 'upath';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -116,7 +115,6 @@ const webpackConfig = {
 		rules: [
 			loaders.getIconsLoader( { matchExtensionOnly: true } ),
 			loaders.getStylesLoader( {
-				themePath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5-theme-lark' ) ),
 				minify: true
 			} )
 			// TypeScript is injected by the `addTypeScriptLoader()` function.

@@ -51,7 +51,6 @@
     "@ckeditor/ckeditor5-paste-from-office": "workspace:*",
     "@ckeditor/ckeditor5-remove-format": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-word-count": "workspace:*",
     "typescript": "5.3.3",
     "webpack": "^5.94.0",

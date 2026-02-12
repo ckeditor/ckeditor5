@@ -418,7 +418,6 @@ Before you start modifying the webpack configuration, first install some CKEdito
 yarn add \
 	raw-loader@4 \
 	@ckeditor/ckeditor5-dev-utils@54 \
-	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
@@ -560,7 +559,6 @@ Install necessary packages alongside the default theme using the following comma
 npm install --save \
 	@ckeditor/vite-plugin-ckeditor5 \
 	@ckeditor/ckeditor5-react \
-	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-paragraph \

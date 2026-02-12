@@ -25,7 +25,6 @@
     "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",

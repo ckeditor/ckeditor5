@@ -433,8 +433,7 @@ npm install --save \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-basic-styles \
 	@ckeditor/ckeditor5-link \
-	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-theme-lark
+	@ckeditor/ckeditor5-paragraph
 ```
 
 #### JavaScript

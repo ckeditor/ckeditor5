@@ -60,17 +60,6 @@ const tasks = new Listr( [
 						'theme',
 						// The CKEditor 5 framework does not define features.
 						'ckeditor5-metadata.json'
-					],
-
-					// Package-specific definition of optional files and directories.
-					'@ckeditor/ckeditor5-theme-lark': [
-						// Like in defaults, this package does not contain the UI layer. Hence, it is not required to publish the directory.
-						'lang',
-						// This package does not contain any source code, but only styles in the `theme` directory.
-						// Hence, `theme` is not optional.
-						'src',
-						// Like in defaults, this package does not define features.
-						'ckeditor5-metadata.json'
 					]
 				},
 				requireEntryPoint: true,

@@ -49,7 +49,6 @@
     "@ckeditor/ckeditor5-paste-from-office": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-watchdog": "workspace:*",
     "typescript": "5.3.3",
     "webpack": "^5.94.0",

@@ -749,7 +749,7 @@ follow the `block-or-element_key_value` naming pattern:
 In HTML:
 
 ```html
-<div class="ck-reset_all ck-dialog ck-dialog_theme_lark ck-dialog_visible">
+<div class="ck-reset_all ck-dialog ck-dialog_visible">
 	<div class="ck-dialog__top ck-dialog__top_small">
 		<h1 class="ck-dialog__top-title">Title of the dialog</h1>
 		...

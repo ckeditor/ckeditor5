@@ -28,7 +28,6 @@
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",

@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'node:url';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { mkdirp } from 'mkdirp';
@@ -159,9 +158,6 @@ export default function buildContentStyles() {
  */
 function getWebpackConfig() {
 	const postCssConfig = styles.getPostCssConfig( {
-		themeImporter: {
-			themePath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5-theme-lark' ) )
-		},
 		minify: false
 	} );
 
