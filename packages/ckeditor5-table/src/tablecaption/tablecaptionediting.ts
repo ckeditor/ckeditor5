@@ -149,6 +149,7 @@ export class TableCaptionEditing extends Plugin {
 				// Remove `aria-labelledby` from the table if there is no caption.
 				if ( !modelCaption ) {
 					writer.removeAttribute( 'aria-labelledby', viewTable );
+
 					return;
 				}
 
