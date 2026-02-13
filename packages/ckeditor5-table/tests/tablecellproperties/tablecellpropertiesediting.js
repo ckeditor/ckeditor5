@@ -347,6 +347,184 @@ describe( 'table cell properties', () => {
 						expect( cell.hasAttribute( 'tableCellBorderStyle' ) ).to.be.false;
 					} );
 				} );
+
+				describe( '`cellpadding` attribute handling', () => {
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
+						} );
+
+						model = editor.model;
+					} );
+
+					it( 'should convert table `cellpadding="10"` to `tableCellPadding="10px"` on single table cell', () => {
+						editor.setData(
+							'<table cellpadding="10">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '10px' );
+					} );
+
+					it( 'should convert table `cellpadding="10"` to `tableCellPadding="10px"` on all table cells', () => {
+						editor.setData(
+							'<table cellpadding="10">' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '10px' );
+						}
+					} );
+
+					it( 'should convert table `cellpadding="0"` to `tableCellPadding="0px"` on single table cell', () => {
+						editor.setData(
+							'<table cellpadding="0">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '0px' );
+					} );
+
+					it( 'should convert table `cellpadding` to `tableCellPadding="1px"` to match how browser works', () => {
+						editor.setData(
+							'<table cellpadding>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '1px' );
+					} );
+
+					it( 'should convert table `cellpadding="abc"` to `tableCellPadding="0px"` to match how browser works', () => {
+						editor.setData(
+							'<table cellpadding="abc">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '0px' );
+					} );
+
+					it( 'should not convert cellpadding="10" to tableCellPadding="10px" when inline padding (5px) style is present', () => {
+						editor.setData(
+							'<table cellpadding="10">' +
+								'<tr>' +
+									'<td style="padding: 5px;">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '5px' );
+					} );
+
+					it( 'should not convert cellpadding="10" on left cell side when inline padding-left (5px) style is present', () => {
+						editor.setData(
+							'<table cellpadding="10">' +
+								'<tr>' +
+									'<td style="padding-left: 5px;">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.deep.equal(
+							{
+								left: '5px',
+								bottom: '10px',
+								right: '10px',
+								top: '10px'
+							}
+						);
+					} );
+
+					describe( 'when default table cell padding is set to `10px`', () => {
+						beforeEach( async () => {
+							await editor.destroy();
+
+							editor = await VirtualTestEditor.create( {
+								plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+								table: {
+									tableCellProperties: {
+										defaultProperties: {
+											padding: '10px'
+										}
+									}
+								}
+							} );
+
+							model = editor.model;
+						} );
+
+						it( 'should not convert `cellpadding="10"` to `tableCellPadding="10px"`', () => {
+							editor.setData(
+								'<table cellpadding="10">' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( cell.getAttribute( 'tableCellPadding' ) ).to.be.undefined;
+						} );
+
+						it( 'should not convert `cellpadding="10"` on table cell sides that doesn\'t contain inline padding', () => {
+							editor.setData(
+								'<table cellpadding="10">' +
+									'<tr>' +
+										'<td style="padding-left: 5px; padding-right: 5px;">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( cell.getAttribute( 'tableCellPadding' ) ).to.deep.equal(
+								{
+									left: '5px',
+									right: '5px'
+								}
+							);
+						} );
+					} );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
