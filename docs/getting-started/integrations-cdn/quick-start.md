@@ -28,7 +28,7 @@ Start by attaching a link to style sheets. They contain all styles for the edito
 ```
 
 <info-box tip>
-	If you do not want to use the global variables presented below, you can continue from here and use an alternative, [more advanced setup with import maps](#advanced-setup-with-import-maps).
+	If you would not rather use the global variables presented below, you can continue from here and use an alternative, [more advanced setup with import maps](#advanced-setup-with-import-maps).
 </info-box>
 
 Then, you need to attach the script with the JavaScript code.
@@ -37,7 +37,7 @@ Then, you need to attach the script with the JavaScript code.
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 ```
 
-Import the selected {@link getting-started/setup/editor-types editor type} and plugins. The included script exposes the global variable named `CKEDITOR`. You can use object destructuring shown below to access the editor class and plugins.
+Import the selected {@link getting-started/setup/editor-types editor type} and plugins. The included script exposes the global variable named `CKEDITOR`. You can use object destructuring, shown below, to access the editor class and plugins.
 
 ```js
 const {
@@ -140,7 +140,7 @@ Then, you need to attach the script tags with the JavaScript code. Similar to st
 <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 ```
 
-Both included scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use object destructuring shown below to access the editor class and plugins. Open-source and premium features are in the respective global variables.
+Both included scripts expose global variables named `CKEDITOR` and `CKEDITOR_PREMIUM_FEATURES`. You can use object destructuring, shown below, to access the editor class and plugins. Open-source and premium features are in the respective global variables.
 
 ```html
 <script>
@@ -251,10 +251,10 @@ To simplify imports, you can use the feature available in browsers &ndash; the [
 Once you have added the import map, you can access the editor and its plugins using the defined specifiers. Now, you can use standard ESM imports from the `ckeditor5` and `ckeditor5-premium-features` packages, like `import { ClassicEditor } from 'ckeditor5';`. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [Obtaining a license key](#obtaining-a-premium-features-license-key) section.
 
 <info-box warning>
-	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
+	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, or `http-server`, to serve your files over HTTP or HTTPS.
 </info-box>
 
-In the following script tag, import the desired plugins and add them to the `plugins` array and add toolbar items where applicable. Note that both script tags (this and previous) have the appropriate `type` values.
+In the following script tag, import the desired plugins and add them to the `plugins` array, and add toolbar items where applicable. Note that both script tags (this and the previous) have the appropriate `type` values.
 
 ```html
 <script type="module">
@@ -357,7 +357,7 @@ If you use UMD imports, like in the snippet below, you do not need to use any bu
 </script>
 ```
 
-However, if your tooling enforces a Vite bundler or for some other reason you need one, you need to follow next steps. Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 and ESM imports requires additional configuration. Vite does not fully support native import maps and external ESM modules (see [Vite Issue #6582](https://github.com/vitejs/vite/issues/6582)). Vite resolves imports at build time. Importing CKEditor using standard ESM syntax like below may force Vite to fall back to the UMD bundle, or it may cause errors.
+However, if your tooling enforces a Vite bundler or for some other reason you need one, you need to follow the next steps. Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 and ESM imports requires additional configuration. Vite does not fully support native import maps and external ESM modules (see [Vite Issue #6582](https://github.com/vitejs/vite/issues/6582)). Vite resolves imports at build time. Importing CKEditor using standard ESM syntax like below may force Vite to fall back to the UMD bundle, or it may cause errors.
 
 ```js
 import {
