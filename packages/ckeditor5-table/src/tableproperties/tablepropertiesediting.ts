@@ -167,6 +167,8 @@ export class TablePropertiesEditing extends Plugin {
 			new TableBackgroundColorCommand( editor, defaultTableProperties.backgroundColor )
 		);
 
+		upcastTableCellPaddingAttribute( editor, 'table' );
+
 		const viewDoc = editor.editing.view.document;
 
 		// Adjust clipboard output to wrap tables in divs if needed (for alignment).
@@ -250,7 +252,6 @@ function enableBorderProperties(
 	}
 
 	upcastBorderStyles( editor, 'table', modelAttributes, defaultBorder );
-	upcastTableCellPaddingAttribute( editor, 'table' );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );
