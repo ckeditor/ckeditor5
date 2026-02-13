@@ -344,11 +344,6 @@ Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 requ
 To solve this issue, we can add a custom Vite plugin that externalizes CKEditor imports. This way, they can be resolved at runtime by the browser's import map instead of being processed by Vite's bundler. Below is the code of this plugin.
 
 ```js
-/** @typedef {import('vite').Plugin} Plugin */
-
-/**
- * @returns {Plugin}
- */
 export function viteCKEditorExternalize() {
 	return {
 		name: 'ckeditor5-externalize',
