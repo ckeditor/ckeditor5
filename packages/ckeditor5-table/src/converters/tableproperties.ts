@@ -415,19 +415,13 @@ export function upcastTableCellPaddingAttribute(
 				return;
 			}
 
-			if (
-				viewItem.is( 'element', 'table' ) &&
-				conversionApi.consumable.consume( viewItem, { attributes: 'cellpadding' } )
-			) {
+			if ( viewItem.is( 'element', 'table' ) ) {
+				conversionApi.consumable.consume( viewItem, { attributes: 'cellpadding' } );
+
 				return;
 			}
 
-			const viewTable = (
-				viewItem.is( 'element', 'table' ) ?
-					viewItem :
-					viewItem.findAncestor( 'table' )
-			)!;
-
+			const viewTable = viewItem.findAncestor( 'table' )!;
 			const hasTableCellPaddingAttribute = viewTable.hasAttribute( 'cellpadding' );
 
 			if (
@@ -441,7 +435,7 @@ export function upcastTableCellPaddingAttribute(
 
 			// If the `cellpadding` attribute has no value or has invalid value, it should be treated as `cellpadding="1"`.
 			const cellpaddingValue = parseFloat( viewTable.getAttribute( 'cellpadding' ) || '1' );
-			const cellpaddingPx = Number.isNaN( cellpaddingValue ) ? '1px' : `${ cellpaddingValue }px`;
+			const cellpaddingPx = Number.isNaN( cellpaddingValue ) ? '0px' : `${ cellpaddingValue }px`;
 
 			const tableCellPaddings = modelElement.getAttribute( 'tableCellPadding' );
 
