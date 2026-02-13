@@ -446,8 +446,8 @@ export function upcastTableCellPaddingAttribute(
 			} else if ( typeof tableCellPaddings === 'object' ) {
 				const normalizedPaddings = {
 					...( defaultPadding !== cellpaddingPx && { top: cellpaddingPx } ),
-					...( defaultPadding !== cellpaddingPx && { bottom: cellpaddingPx } ),
 					...( defaultPadding !== cellpaddingPx && { right: cellpaddingPx } ),
+					...( defaultPadding !== cellpaddingPx && { bottom: cellpaddingPx } ),
 					...( defaultPadding !== cellpaddingPx && { left: cellpaddingPx } ),
 
 					...tableCellPaddings
