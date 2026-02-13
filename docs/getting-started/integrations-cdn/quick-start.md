@@ -248,7 +248,7 @@ To simplify imports, you can use the feature available in browsers &ndash; the [
 </script>
 ```
 
-Once you have added the import map, you can access the editor and its plugins using the defined specifiers. Now, you can use standard imports from the `ckeditor5` and `ckeditor5-premium-features` packages. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [Obtaining a license key](#obtaining-a-premium-features-license-key) section.
+Once you have added the import map, you can access the editor and its plugins using the defined specifiers. Now, you can use standard ESM imports from the `ckeditor5` and `ckeditor5-premium-features` packages, like `import { ClassicEditor } from 'ckeditor5';`. Please note that to use premium features, you need to activate them with a proper license key, as mentioned in the [Obtaining a license key](#obtaining-a-premium-features-license-key) section.
 
 <info-box warning>
 	You must run your code on a local server to use import maps. Opening the HTML file directly in your browser will trigger security rules. These rules (CORS policy) ensure loading modules from the same source. Therefore, set up a local server, like `nginx`, `caddy`, `http-server`, to serve your files over HTTP or HTTPS.
@@ -339,7 +339,39 @@ Your final page should look similar to the one below.
 
 ### Additional setup for Vite
 
-Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 requires additional configuration. Vite does not fully support native import maps and external ESM modules (see [Vite Issue #6582](https://github.com/vitejs/vite/issues/6582)). Vite resolves imports at build time. Importing CKEditor using standard ESM syntax like `import { ClassicEditor } from 'ckeditor5';` may force Vite to fall back to the UMD bundle, or it may cause errors. That's why we need a workaround.
+If you use UMD imports, like in the snippet below, you do not need to use any bundler.
+
+```html
+<script>
+	const {
+		ClassicEditor,
+		Essentials,
+		Bold,
+		Italic,
+		Font,
+		Paragraph
+	} = CKEDITOR;
+	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+	// ...
+</script>
+```
+
+However, if your tooling enforces a Vite bundler or for some other reason you need one, you need to follow next steps. Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 and ESM imports requires additional configuration. Vite does not fully support native import maps and external ESM modules (see [Vite Issue #6582](https://github.com/vitejs/vite/issues/6582)). Vite resolves imports at build time. Importing CKEditor using standard ESM syntax like below may force Vite to fall back to the UMD bundle, or it may cause errors.
+
+```js
+import {
+	ClassicEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} from 'ckeditor5';
+import { FormatPainter } from 'ckeditor5-premium-features';
+
+// ...
+```
 
 To solve this issue, we can add a custom Vite plugin that externalizes CKEditor imports. This way, they can be resolved at runtime by the browser's import map instead of being processed by Vite's bundler. Below is the code of this plugin.
 
