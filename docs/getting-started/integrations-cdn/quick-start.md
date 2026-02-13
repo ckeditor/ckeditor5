@@ -342,35 +342,104 @@ Your final page should look similar to the one below.
 If you use UMD imports, like in the snippet below, you do not need to use any bundler.
 
 ```html
-<script>
-	const {
-		ClassicEditor,
-		Essentials,
-		Bold,
-		Italic,
-		Font,
-		Paragraph
-	} = CKEDITOR;
-	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/47.5.0/ckeditor5.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/47.5.0/ckeditor5-premium-features.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
 
-	// ...
-</script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/47.5.0/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/47.5.0/ckeditor5-premium-features.umd.js"></script>
+
+		<script>
+			const {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} = CKEDITOR;
+			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
+
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>',
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+						'formatPainter'
+					]
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
+</html>
 ```
 
 However, if your tooling enforces a Vite bundler or for some other reason you need one, you need to follow the next steps. Due to Vite limitations, using it with the cloud version of CKEditor&nbsp;5 and ESM imports requires additional configuration. Vite does not fully support native import maps and external ESM modules (see [Vite Issue #6582](https://github.com/vitejs/vite/issues/6582)). Vite resolves imports at build time. Importing CKEditor using standard ESM syntax like below may force Vite to fall back to the UMD bundle, or it may cause errors.
 
-```js
-import {
-	ClassicEditor,
-	Essentials,
-	Bold,
-	Italic,
-	Font,
-	Paragraph
-} from 'ckeditor5';
-import { FormatPainter } from 'ckeditor5-premium-features';
+```html
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 - Quick start CDN</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+	</head>
+	<body>
+		<div id="editor">
+			<p>Hello from CKEditor 5!</p>
+		</div>
 
-// ...
+		<script type="importmap">
+			{
+				"imports": {
+					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.js",
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/",
+					"ckeditor5-premium-features": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.js",
+					"ckeditor5-premium-features/": "https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/"
+				}
+			}
+		</script>
+
+		<script type="module">
+			import {
+				ClassicEditor,
+				Essentials,
+				Bold,
+				Italic,
+				Font,
+				Paragraph
+			} from 'ckeditor5';
+			import { FormatPainter } from 'ckeditor5-premium-features';
+
+			ClassicEditor
+				.create( document.querySelector( '#editor' ), {
+					licenseKey: '<YOUR_LICENSE_KEY>',
+					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+					toolbar: [
+						'undo', 'redo', '|', 'bold', 'italic', '|',
+						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|', 'formatPainter'
+					]
+				} )
+				.then( /* ... */ )
+				.catch( /* ... */ );
+		</script>
+	</body>
+</html>
 ```
 
 To solve this issue, we can add a custom Vite plugin that externalizes CKEditor imports. This way, they can be resolved at runtime by the browser's import map instead of being processed by Vite's bundler. Below is the code of this plugin.
