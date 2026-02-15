@@ -18,7 +18,6 @@ import {
 
 import {
 	convertCssLengthToPx,
-	isPx,
 	toPx
 } from './utils.js';
 
@@ -54,14 +53,15 @@ export function transformListItemLikeElementsIntoLists(
 
 	const encounteredLists: Record<string, number> = {};
 
-	const stack: Array<ListLikeElement & {
-		listElement: ViewElement;
-		listItemElements: Array<ViewElement>;
-	}> = [];
+	const stack: ListStack = [];
+
+	let topLevelListInfo: TopLevelListInfo = createTopLevelListInfo();
 
 	for ( const itemLikeElement of itemLikeElements ) {
 		if ( itemLikeElement.indent !== undefined ) {
 			if ( !isListContinuation( itemLikeElement ) ) {
+				applyIndentationToTopLevelList( writer, stack, topLevelListInfo );
+				topLevelListInfo = createTopLevelListInfo();
 				stack.length = 0;
 			}
 
@@ -97,21 +97,6 @@ export function transformListItemLikeElementsIntoLists(
 
 					const listElement = createNewEmptyList( listStyle, writer, hasMultiLevelListPlugin );
 
-					// Apply list padding only if we have margins for the item and the parent item.
-					if (
-						isPx( itemLikeElement.marginLeft ) &&
-						( indent == 0 || isPx( stack[ indent - 1 ].marginLeft ) )
-					) {
-						let marginLeft = itemLikeElement.marginLeft;
-
-						if ( indent > 0 ) {
-							// Convert the padding from absolute to relative.
-							marginLeft = toPx( parseFloat( marginLeft ) - parseFloat( stack[ indent - 1 ].marginLeft! ) );
-						}
-
-						writer.setStyle( 'padding-left', marginLeft, listElement );
-					}
-
 					// Insert the new OL/UL.
 					if ( stack.length == 0 ) {
 						const parent = itemLikeElement.element.parent!;
@@ -141,6 +126,8 @@ export function transformListItemLikeElementsIntoLists(
 			// Use LI if it is already it or create a new LI element.
 			// https://github.com/ckeditor/ckeditor5/issues/15964
 			const listItem = itemLikeElement.element.name == 'li' ? itemLikeElement.element : writer.createElement( 'li' );
+
+			applyListItemMarginLeftAndUpdateTopLevelInfo( writer, stack, topLevelListInfo, itemLikeElement, listItem, indent );
 
 			// Append the LI to OL/UL.
 			writer.appendChild( listItem, stack[ indent ].listElement );
@@ -175,6 +162,97 @@ export function transformListItemLikeElementsIntoLists(
 			} else {
 				stack.length = 0;
 			}
+		}
+	}
+
+	applyIndentationToTopLevelList( writer, stack, topLevelListInfo );
+}
+
+function applyListItemMarginLeftAndUpdateTopLevelInfo(
+	writer: ViewUpcastWriter,
+	stack: ListStack,
+	topLevelListInfo: TopLevelListInfo,
+	itemLikeElement: ListLikeElement,
+	listItem: ViewElement,
+	indent: number
+) {
+	if ( itemLikeElement.marginLeft === undefined ) {
+		// If at least one of the list items at indent = 0 does not have margin-left style, we cannot set margin-left on the list.
+		if ( indent == 0 ) {
+			topLevelListInfo.canApplyMarginOnList = false;
+		}
+
+		return;
+	}
+
+	const listItemBlockMarginLeft = parseFloat( itemLikeElement.marginLeft );
+
+	let currentListBlockIndent = 0;
+	let currentListLevelIndent;
+
+	if ( stack.length > 1 ) {
+		const prevStackLevelItems = stack[ stack.length - 2 ].listItemElements;
+
+		// The margin-left style of the previous indent level last item is already a relative value applied in the previous iteration.
+		currentListLevelIndent = prevStackLevelItems.length > 0 ?
+			prevStackLevelItems[ prevStackLevelItems.length - 1 ].getStyle( 'margin-left' ) :
+			undefined;
+	}
+
+	if ( currentListLevelIndent ) {
+		currentListBlockIndent += parseFloat( currentListLevelIndent );
+	}
+
+	// Add 40px for each indent level because by default HTML lists have 40px indentation (padding-inline-start: 40px).
+	// So every nested list is indented by another 40px.
+	// Additionally, the nested list itself may be placed in a list item with margin-left style.
+	currentListBlockIndent += stack.length * 40;
+
+	// Calculate relative list item indentation to the list it is in.
+	const adjustedListItemIndent = listItemBlockMarginLeft - currentListBlockIndent;
+	const listItemBlockMarginLeftPx = adjustedListItemIndent !== 0 ? toPx( adjustedListItemIndent ) : undefined;
+
+	if ( listItemBlockMarginLeftPx ) {
+		writer.setStyle( 'margin-left', listItemBlockMarginLeftPx, listItem );
+
+		if ( indent == 0 && topLevelListInfo.canApplyMarginOnList ) {
+			if ( topLevelListInfo.marginLeft === undefined ) {
+				topLevelListInfo.marginLeft = listItemBlockMarginLeftPx;
+			}
+
+			if ( listItemBlockMarginLeftPx !== topLevelListInfo.marginLeft ) {
+				topLevelListInfo.canApplyMarginOnList = false;
+			}
+
+			topLevelListInfo.topLevelListItemElements.push( listItem );
+		}
+	}
+}
+
+function createTopLevelListInfo(): TopLevelListInfo {
+	return {
+		marginLeft: undefined,
+		canApplyMarginOnList: true,
+		topLevelListItemElements: []
+	};
+}
+
+/**
+ * Sets margin-left style to the top-level list if all its items have the same margin-left.
+ * If margin-left is set on the list, it is removed from all its items to avoid doubling of margins.
+ */
+function applyIndentationToTopLevelList( writer: ViewUpcastWriter, stack: ListStack, topLevelListInfo: TopLevelListInfo ) {
+	if (
+		topLevelListInfo.canApplyMarginOnList &&
+		topLevelListInfo.marginLeft &&
+		topLevelListInfo.topLevelListItemElements.length > 0
+	) {
+		// Apply margin-left to the top-level list if all its items have the same margin-left.
+		writer.setStyle( 'margin-left', topLevelListInfo.marginLeft, stack[ 0 ].listElement );
+
+		// Remove margin-left from all top-level list items.
+		for ( const topLevelListItem of topLevelListInfo.topLevelListItemElements ) {
+			writer.removeStyle( 'margin-left', topLevelListItem );
 		}
 	}
 }
@@ -596,3 +674,14 @@ interface ListLikeElement extends ListItemData {
 	 */
 	marginLeft?: string;
 }
+
+type ListStack = Array<ListLikeElement & {
+	listElement: ViewElement;
+	listItemElements: Array<ViewElement>;
+}>;
+
+type TopLevelListInfo = {
+	marginLeft: string | undefined;
+	canApplyMarginOnList: boolean;
+	topLevelListItemElements: Array<ViewElement>;
+};
