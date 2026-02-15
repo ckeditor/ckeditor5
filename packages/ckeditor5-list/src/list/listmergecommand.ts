@@ -87,6 +87,7 @@ export class ListMergeCommand extends Command {
 
 					// If outdenting, the entire sub-tree that follows must be included.
 					expand: firstIndent < lastIndent,
+
 					attributeNames
 				} ) );
 			}
