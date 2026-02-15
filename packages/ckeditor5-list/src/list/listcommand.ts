@@ -22,7 +22,7 @@ import {
 	isListItemBlock,
 	canBecomeSimpleListItem
 } from './utils/model.js';
-import { ListEditing, type ListType } from './listediting.js';
+import type { ListEditing, ListType } from './listediting.js';
 import type { ListWalkerOptions } from './utils/listwalker.js';
 
 /**
