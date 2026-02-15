@@ -63,7 +63,7 @@ export class ListIndentCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const blocks = getSelectedListBlocks( model.document.selection );
-		const listEditing = editor.plugins.get( ListEditing );
+		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
 		const attributeNames = listEditing.getListAttributeNames();
 
 		model.change( writer => {
