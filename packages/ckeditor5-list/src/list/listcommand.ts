@@ -101,7 +101,7 @@ export class ListCommand extends Command {
 		model.change( writer => {
 			if ( turnOff ) {
 				const lastBlock = blocks[ blocks.length - 1 ];
-				const listEditing = this.editor.plugins.get( ListEditing );
+				const listEditing: ListEditing = this.editor.plugins.get( 'ListEditing' );
 				const attributeNames = listEditing.getListAttributeNames();
 
 				// Split the first block from the list item.
