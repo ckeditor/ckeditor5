@@ -6,7 +6,6 @@
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
-import { ListEditing } from '../../src/list/listediting.js';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
