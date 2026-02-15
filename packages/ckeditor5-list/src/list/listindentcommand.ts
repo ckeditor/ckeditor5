@@ -22,7 +22,7 @@ import {
 	type ListElement
 } from './utils/model.js';
 import { ListWalker } from './utils/listwalker.js';
-import { ListEditing } from './listediting.js';
+import type { ListEditing } from './listediting.js';
 
 /**
  * The document list indent command. It is used by the {@link module:list/list~List list feature}.
