@@ -304,12 +304,12 @@ export function indentBlocks(
 	blocks: ArrayOrItem<ListElement>,
 	writer: ModelWriter,
 	{
-		expand, 
-		indentBy = 1, 
+		expand,
+		indentBy = 1,
 		attributeNames
 	}: {
-		expand?: boolean; 
-		indentBy?: number; 
+		expand?: boolean;
+		indentBy?: number;
 		attributeNames: Array<string>;
 	}
 ): Array<ListElement> {
