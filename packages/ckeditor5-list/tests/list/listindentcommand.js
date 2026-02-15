@@ -32,7 +32,7 @@ describe( 'ListIndentCommand', () => {
 		model.schema.extend( '$block', { allowAttributes: attributeNames } );
 		model.schema.extend( '$blockObject', { allowAttributes: attributeNames } );
 
-		sinon.stub( editor.plugins, 'get' ).withArgs( ListEditing ).returns( {
+		sinon.stub( editor.plugins, 'get' ).withArgs( 'ListEditing' ).returns( {
 			getListAttributeNames: () => attributeNames
 		} );
 	} );
