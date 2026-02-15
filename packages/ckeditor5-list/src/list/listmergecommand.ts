@@ -69,7 +69,7 @@ export class ListMergeCommand extends Command {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const changedBlocks: Array<ModelElement> = [];
-		const listEditing = editor.plugins.get( ListEditing );
+		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
 		const attributeNames = listEditing.getListAttributeNames();
 
 		model.change( writer => {
