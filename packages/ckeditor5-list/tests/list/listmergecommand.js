@@ -46,7 +46,7 @@ describe( 'ListMergeCommand', () => {
 			allowAttributesOf: '$text'
 		} );
 
-		sinon.stub( editor.plugins, 'get' ).withArgs( ListEditing ).returns( {
+		sinon.stub( editor.plugins, 'get' ).withArgs( 'ListEditing' ).returns( {
 			getListAttributeNames: () => attributeNames
 		} );
 	} );
