@@ -346,9 +346,6 @@ importers:
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
-      '@ckeditor/ckeditor5-theme-lark':
-        specifier: workspace:*
-        version: link:../ckeditor5-theme-lark
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
@@ -1409,9 +1406,6 @@ importers:
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
-      '@ckeditor/ckeditor5-theme-lark':
-        specifier: workspace:*
-        version: link:../ckeditor5-theme-lark
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
@@ -2220,9 +2214,6 @@ importers:
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
-      '@ckeditor/ckeditor5-theme-lark':
-        specifier: workspace:*
-        version: link:../ckeditor5-theme-lark
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo
@@ -3024,9 +3015,6 @@ importers:
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
         version: link:../ckeditor5-icons
-      '@ckeditor/ckeditor5-theme-lark':
-        specifier: workspace:*
-        version: link:../ckeditor5-theme-lark
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
@@ -3292,34 +3280,6 @@ importers:
       json-diff:
         specifier: ^0.5.4
         version: 0.5.5
-
-  packages/ckeditor5-theme-lark:
-    dependencies:
-      '@ckeditor/ckeditor5-ui':
-        specifier: workspace:*
-        version: link:../ckeditor5-ui
-    devDependencies:
-      '@ckeditor/ckeditor5-basic-styles':
-        specifier: workspace:*
-        version: link:../ckeditor5-basic-styles
-      '@ckeditor/ckeditor5-core':
-        specifier: workspace:*
-        version: link:../ckeditor5-core
-      '@ckeditor/ckeditor5-editor-balloon':
-        specifier: workspace:*
-        version: link:../ckeditor5-editor-balloon
-      '@ckeditor/ckeditor5-editor-classic':
-        specifier: workspace:*
-        version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-highlight':
-        specifier: workspace:*
-        version: link:../ckeditor5-highlight
-      '@ckeditor/ckeditor5-icons':
-        specifier: workspace:*
-        version: link:../ckeditor5-icons
-      '@ckeditor/ckeditor5-utils':
-        specifier: workspace:*
-        version: link:../ckeditor5-utils
 
   packages/ckeditor5-typing:
     dependencies:
