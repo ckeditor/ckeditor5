@@ -4,7 +4,7 @@
  */
 
 /**
- * @module indent/integrations/blockindentlistitemcommand
+ * @module indent/integrations/indentblocklistitemcommand
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
