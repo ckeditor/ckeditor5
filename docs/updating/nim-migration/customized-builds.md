@@ -73,7 +73,6 @@ If you are using the customized build, follow the steps below:
 		@ckeditor/ckeditor5-special-characters \
 		@ckeditor/ckeditor5-style \
 		@ckeditor/ckeditor5-table \
-		@ckeditor/ckeditor5-theme-lark \
 		@ckeditor/ckeditor5-typing \
 		@ckeditor/ckeditor5-ui \
 		@ckeditor/ckeditor5-undo \
