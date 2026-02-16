@@ -173,7 +173,7 @@ If you support the new installation methods only:
 import { /* Plugin code */ } from '<PACKAGE_NAME>';
 
 // Optionally importing the styles.
-import '<PACKAGE_NAME/index.css';
+import '<PACKAGE_NAME/index.css>';
 
 // Optionally importing the translations.
 import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
