@@ -159,7 +159,7 @@ If you see imports in the second or third step that are not explicitly mentioned
 import { /* Plugin code */ } from '<PACKAGE_NAME>';
 
 // Optionally importing the styles.
-import '<PACKAGE_NAME/index.css';
+import '<PACKAGE_NAME>/index.css';
 
 // Optionally importing the translations.
 import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
