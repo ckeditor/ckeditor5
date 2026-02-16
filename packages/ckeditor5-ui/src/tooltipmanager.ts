@@ -309,6 +309,13 @@ export class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 
 		this._unpinTooltip();
 
+		// Don't show the tooltip at all if the focus was moved programmatically (as opposed to keyboard).
+		// For instance, this prevents from tooltips to show up when a focus is moved automatically
+		// to a modal window or a toolbar when it shows up.
+		if ( evt.name === 'focus' && !elementWithTooltipAttribute.matches( ':focus-visible' ) ) {
+			return;
+		}
+
 		// The tooltip should be pinned immediately when the element gets focused using keyboard.
 		// If it is focused using the mouse, the tooltip should be pinned after a delay to prevent flashing.
 		// See https://github.com/ckeditor/ckeditor5/issues/16383
