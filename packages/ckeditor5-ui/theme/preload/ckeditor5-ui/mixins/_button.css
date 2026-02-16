@@ -22,7 +22,7 @@
 		}
 	}
 
-	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */
+	/* https://github.com/ckeditor/ckeditor5/issues/3376 */
 	&.ck-disabled {
 		background: var($(prefix)-disabled-background);
 	}

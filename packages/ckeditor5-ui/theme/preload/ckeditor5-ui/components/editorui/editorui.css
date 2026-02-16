@@ -35,7 +35,7 @@
 		text-align: right;
 	}
 
-	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/116 */
+	/* https://github.com/ckeditor/ckeditor5/issues/3385 */
 	& > *:first-child {
 		margin-top: var(--ck-spacing-large);
 	}
@@ -55,7 +55,7 @@
 	}
 }
 
-/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
+/* https://github.com/ckeditor/ckeditor5/issues/3383 */
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
 		border-bottom-color: var(--ck-color-panel-background);

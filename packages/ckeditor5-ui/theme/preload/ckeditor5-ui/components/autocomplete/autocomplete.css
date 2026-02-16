@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/preload/mixins/_rounded.css";
+@import "@ckeditor/ckeditor5-ui/theme/preload/mixins/_shadow.css";
 
 .ck.ck-autocomplete {
 	& > .ck-search__results {

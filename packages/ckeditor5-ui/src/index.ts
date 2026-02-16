@@ -7,7 +7,10 @@
  * @module ui
  */
 
-// This import must be at the top to ensure that `globals.css` is imported first
+// This import must be at the top to ensure that priority styles are imported first.
+import '../theme/preload/index.css';
+
+// This import must be at the top to ensure that `globals.css` is imported first.
 export { View, type UIViewRenderEvent } from './view.js';
 
 export {

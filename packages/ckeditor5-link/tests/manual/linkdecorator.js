@@ -7,8 +7,8 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { LinkImage } from '../../src/linkimage.js';
 
-// Just to have nicely styles switchbutton;
-import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';
+// Just to have nicely styled switchbutton;
+import '@ckeditor/ckeditor5-ui/theme/preload/ckeditor5-ui/components/list/list.css';
 
 window.editors = {};
 

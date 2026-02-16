@@ -163,10 +163,6 @@ jobs:
           command: pnpm run stylelint
       - run:
           when: always
-          name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
-          command: pnpm run check-theme-lark-imports
-      - run:
-          when: always
           name: Check if all packages are exported in the "ckeditor5" package
           command: pnpm run check-exports
       - run:

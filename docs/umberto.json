@@ -19,7 +19,7 @@
 	],
 	"sitemap": {
 		"hostname": "https://ckeditor5.github.io/docs/nightly/",
-		"excluded":  [
+		"excluded": [
 			"snippets/examples/bootstrap-ui.html"
 		]
 	},
@@ -48,6 +48,7 @@
 		"api/module_list_checktodolistcommand-CheckTodoListCommand.html": "api/module_list_todolist_checktodolistcommand-CheckTodoListCommand.html",
 		"api/module_list_checktodolistcommand.html": "api/module_list_todolist_checktodolistcommand.html",
 		"api/module_list_converters.html": "api/module_list_list_converters.html",
+		"api/theme-lark.html": "framework/deep-dive/ui/theme-customization.html",
 		"api/module_list_indentcommand-IndentCommand.html": "api/module_list_list_indentcommand-IndentCommand.html",
 		"api/module_list_indentcommand.html": "api/module_list_list_indentcommand.html",
 		"api/module_list_listcommand-ListCommand.html": "api/module_list_list_listcommand-ListCommand.html",
@@ -456,7 +457,7 @@
 		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"hooks": {
-		"beforeHexo":[
+		"beforeHexo": [
 			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
 		]
 	},
@@ -590,7 +591,7 @@
 					"badges": [
 						"premium"
 					],
-					"categories":[
+					"categories": [
 						{
 							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",

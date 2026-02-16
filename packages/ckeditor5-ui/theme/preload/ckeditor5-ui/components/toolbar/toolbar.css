@@ -55,7 +55,7 @@
 		/* Items in a vertical toolbar span the entire width. */
 		padding: 0;
 
-		/* Specificity matters here. See https://github.com/ckeditor/ckeditor5-theme-lark/issues/168. */
+		/* Specificity matters here. See https://github.com/ckeditor/ckeditor5/issues/3408. */
 		& > .ck-toolbar__items > .ck {
 			/* Items in a vertical toolbar should span the horizontal space. */
 			width: 100%;

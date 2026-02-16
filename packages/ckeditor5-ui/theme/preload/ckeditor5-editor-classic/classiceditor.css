@@ -34,7 +34,7 @@
 
 /* Note: Use ck-editor__main to make sure these styles don't apply to other editor types */
 .ck.ck-editor__main > .ck-editor__editable {
-	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/113 */
+	/* https://github.com/ckeditor/ckeditor5/issues/3384 */
 	background: var(--ck-color-base-background);
 
 	@mixin ck-rounded-corners {

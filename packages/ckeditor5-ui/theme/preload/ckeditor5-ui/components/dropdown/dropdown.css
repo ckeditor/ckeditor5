@@ -64,7 +64,7 @@
 			text-overflow: ellipsis;
 		}
 
-		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
+		/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 		&.ck-disabled .ck-button__label {
 			@mixin ck-disabled;
 		}

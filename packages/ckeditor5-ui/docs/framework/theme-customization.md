@@ -16,7 +16,7 @@ Below you can see a demo of an editor with the dark theme as a result of customi
 	<ck:checkbox id="theme-mode-dark" type="radio" name="theme-mode" value="dark" label="Dark" checked />
 </div>
 
-{@snippet examples/theme-lark}
+{@snippet examples/default-theme}
 
 ## Customization with CSS variables
 

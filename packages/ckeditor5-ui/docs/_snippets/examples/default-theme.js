@@ -22,8 +22,8 @@ import DARK_MODE_STYLES from './custom.css?raw';
 
 // This code snippets is used in the following documentation files:
 //
-// - packages/ckeditor5-theme-lark/docs/examples/theme-customization.md
-// - packages/ckeditor5-theme-lark/docs/framework/theme-customization.md
+// - packages/ckeditor5-ui/docs/examples/theme-customization.md
+// - packages/ckeditor5-ui/docs/framework/theme-customization.md
 //
 // Ensure to update the HTML tree when modifying it in this snippet on both pages.
 

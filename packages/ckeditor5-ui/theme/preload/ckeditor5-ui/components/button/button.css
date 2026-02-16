@@ -38,7 +38,7 @@ a.ck.ck-button {
 	/* Apply some smooth transition to the box-shadow and border. */
 	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
 
-	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/189 */
+	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;
 
 	@media (prefers-reduced-motion: reduce) {
@@ -93,7 +93,7 @@ a.ck.ck-button {
 		opacity: .5;
 	}
 
-	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
+	/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 	&.ck-disabled {
 		&:active,
 		&:focus {
@@ -105,7 +105,7 @@ a.ck.ck-button {
 			@mixin ck-disabled;
 		}
 
-		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */
+		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
 		& .ck-button__label {
 			@mixin ck-disabled;
 		}
