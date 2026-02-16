@@ -1,7 +1,232 @@
 Changelog
 =========
 
-## [47.4.0](https://github.com/ckeditor/ckeditor5/compare/v47.3.0...v47.4.0) (January 14, 2025)
+## [47.5.0](https://github.com/ckeditor/ckeditor5/compare/v47.4.0...v47.5.0) (February 11, 2026)
+
+We are happy to announce the release of CKEditor 5 v47.5.0.
+
+### Release highlights
+
+CKEditor 5 v47.5.0 is a minor update that improves AI-assisted editing workflows and provides access to the new version of the Export to PDF feature.
+
+#### AI Translate
+
+The [AI Translate feature](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-translate.html) of CKEditor AI allows users to translate entire documents on the go. It provides a user interface similar to AI Review, but with translation-specific actions to streamline the process. The translation view displays the final translated document, with original snippets shown on the side for review and comparison.
+
+#### Multiple Changes revamp and other AI improvements
+
+We improved how multiple changes proposed by the [AI Chat](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-chat.html) feature are presented. Suggested changes now appear as cards that can be previewed in the content and applied consistently in both single-change and multi-change scenarios. This release also includes several under-the-hood improvements.
+
+#### Export to PDF v2
+
+The [export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html) feature now supports version 2 of the HTML to PDF converter API, bringing several [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#new-features-in-v2) to document generation.
+
+Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
+
+Security capabilities have been expanded with owner password protection for controlling permissions and digital signature support using PKCS#12 certificates for authenticity verification. Additional improvements include compression control for specific use cases, more precise rendering options, and experimental automatic outline generation for creating a table of contents.
+
+#### Incoming old installation methods sunset reminder
+
+Please note that the old installation methods will no longer be available with CKEditor 5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+
+In CKEditor 5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor 5.
+
+If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
+
+1. [Migrate to the new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html), which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor 5 releases.
+2. Consider [CKEditor 5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+
+Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-42.html) to learn more about these changes.
+
+### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `ai.reviewMode.translations` configuration option has been moved to `ai.translate.languages`. The `ai.reviewMode` configuration namespace has been removed.
+
+  Together with the introduction of AI Translate feature and a separate translation tab, the configuration option to define a custom language list
+  has been moved to a related `ai.translate` namespace.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `AIEditorIntegration` plugin is now required to preview the changes suggested by the AI Chat feature in a dialog window. Previously, this functionality was enabled by just loading the main `AIChat` plugin. Please make sure your integration loads the `AIEditorIntegration` plugin in order to use this functionality.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestions in conversation has been changed, which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+  Please make sure to update your integrations to use the new DOM structure. Learn more about the changes in the migration guide provided in the project documentation.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The DOM structure of the AI Chat suggestion preview dialog window has been changed which may affect integrations that customized the UI and/or rely on specific CSS selectors.
+
+  Please make sure to update your integrations to use the new DOM structure. Learn more about the changes in the migration guide provided in the project documentation.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#sendMessage()` takes `attributes: Record<string, unknown>` as one of its parameters now, in place of former `quickActionData`. This affects you only if you provided some customizations for the CKEditor AI chat feature.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Already existing chat conversations, which were created through AI Quick Action (e.g. "Explain" or "Summarize"), when loaded from chat history, will now display a full prompt instead of the short version. This affects only already created conversations.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Replaced `ai.chat.models.modelSelectorAlwaysVisible` configuration option with `ai.chat.models.showModelSelector`. The behavior has also been slightly updated. When set to `true` (default), the model selector dropdown is shown (when multiple models are available), or the model name is displayed (when only one model is available). When set to `false`, the selector is hidden, regardless of the number of available models.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The model's configuration options have been moved from `config.ai.chat.models` to `config.ai.models` to ensure consistent model configuration across all AI features. The model configuration is now applied uniformly in both AI Chat and AI Review Mode.
+
+### Features
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced the AI Translation tab.
+
+  A new tab dedicated to translating content has been introduced to CKEditor 5 AI. It focuses on working with translated content, streamlining
+  the process of applying translation and making the whole process easier and faster for end users.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced a new look and improved operation of the AI Chat sidebar.
+
+  * The list of changes proposed by the AI now features a sleeker design and includes a button to apply individual changes.
+  * You can now preview suggested changes in a dialog window by clicking on a change in the sidebar.
+  * The AI suggestion preview dialog window has been made more compact for enhanced usability.
+  * Various bug fixes and other improvements.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced `AIChat#registerToolDataCallback()`. It allows for handling custom data generated by your AI tools connected to CKEditor AI backend.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced an API to allow inserting arbitrary HTML into the AI Chat feed, during AI response streaming.
+
+  The API is passed as one of the parameters to the callback registered using `AIChat#registerToolDataCallback()`.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced configuration option `ai.chat.initialConversation` that manages whether a new, or an existing past conversation is initially loaded in the AI Chat.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added a new configuration option, `ai.chat.context.customItems`, that allows using external context providers and custom context items (for example, IDs instead of actual files).
+* **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: Add support for version 2 of the HTML to PDF converter API.
+
+### Bug fixes
+
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image), [paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Images aligned left or right with wrapped text around them should now be correctly pasted and imported from Word into the editor. Previously, such images were incorrectly aligned using block left or block right styles. Closes [#19636](https://github.com/ckeditor/ckeditor5/issues/19636).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Review active suggestion highlight in the editor content no longer disappears due to content changes made by other users in RTC.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Review suggestions content in the sidebar is styled the same way as the editor content, giving it a uniform look.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed an issue where web search sources were not displayed correctly when loading conversations from chat history.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The "Add context" button in AI chat will no longer be disabled if the only available context are external resources.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed an error when custom AI Quick Actions used a model that was not available in AI Chat.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Accepting suggestions from conversations loaded via chat history no longer throws errors in the console.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed an issue where messages loaded from chat history could be incorrectly duplicated in a conversation.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIQuickActionsUI` now requires `AIConnector` to prevent authentication bugs when run standalone.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed an issue where inline annotations were not displayed correctly when the editor was initialized in a hidden container.
+* **[email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)**: Table block alignment now behaves as expected in Microsoft Outlook, preventing text from wrapping around the table when it shouldn't.
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: An inline content (`<img>`) should not be stripped out of `<div>` inside of `<dd>` tag. Closes [#19709](https://github.com/ckeditor/ckeditor5/issues/19709).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Resizing the last column of a layout table no longer increases the column size more than expected. Closes [#19644](https://github.com/ckeditor/ckeditor5/issues/19644).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Fixed parsing units of deprecated table width attribute. Closes [#19665](https://github.com/ckeditor/ckeditor5/issues/19665).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: `BalloonToolbar` will no longer reposition itself when invisible in the `ContextualBalloon` stack. Closes [#19696](https://github.com/ckeditor/ckeditor5/issues/19696).
+
+  This prevents interfering with other features that might be using the `ContextualBalloon` stack.
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: `Rect#getDomRangeRects()` now sets the DOM Range as a source for each returned `Rect`, improving visibility and positioning of floating UIs that depend on `Rect#getVisible()`. Closes [#19705](https://github.com/ckeditor/ckeditor5/issues/19705).
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: `Rect#getVisible()` should better discover relationships between positioned and clipping parents. Closes [#19707](https://github.com/ckeditor/ckeditor5/issues/19707).
+
+  This avoids issues with floating UIs that depend on `Rect#isVisible()` and do not hide when they should.
+
+### Other changes
+
+* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles), [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine), [font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font), [highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight), [language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)**: Fixed a discrepancy where applying a text attribute (such as bold) to a selection that included empty paragraphs did not set stored selection attributes on those paragraphs. See [#19664](https://github.com/ckeditor/ckeditor5/issues/19664). Closes [#18430](https://github.com/ckeditor/ckeditor5/issues/18430).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Suggestions shown in AI Review sidebar now include all formatting (bold, italics, etc.) and non-plain text elements (for example, links).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#sendMessage()` now allows passing `attributes` (arbitrary custom metadata) together with the submitted user message. You can also pass `attributes.displayedPrompt` to display a different prompt instead of the one used to query the AI model (`userMessage`).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: If there is only one source of AI chat context available, it will be automatically selected when the "Add context" button is pressed instead of showing a dropdown with only one option.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: As more models are supported by the AI feature, only a set of recommended models will be displayed in the AI chat models dropdown. You can configure the list of displayed models via `ai.chat.models.displayedModels` in the config.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Conversations loaded from chat history are no longer blocked for models that are not recommended or not displayed, as long as the provider supports the model.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Replaced `ai.chat.models.modelSelectorAlwaysVisible` configuration option with `ai.chat.models.showModelSelector`. When set to `true` (default), the model selector dropdown is shown (when multiple models are available), or the model name is displayed (when only one model is available). When set to `false`, the selector is hidden, regardless of the number of available models.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added a clear explanation in AI Chat for conversations loaded from history, explaining why AI proposals (document modifications) for past conversations cannot be applied or added as suggestions.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The model's configuration options have been moved from `config.ai.chat.models` to `config.ai.models` to ensure consistent model configuration across all AI features. The model configuration is now applied uniformly in both AI Chat and AI Review Mode.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Upgrade `fast-xml-parser` to version `5.3.4` to address security advisories reported by automated scanners. CKEditor 5 does not rely on the affected code paths and is not impacted.
+* **[icons](https://www.npmjs.com/package/@ckeditor/ckeditor5-icons)**: Added new icons: `IconBoxWithCheck`, `IconBoxWithCross`, `IconBoxWithPin`.
+* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Added the `undoStepBatch` property to the `dataInsert` event. It allows including custom model changes (side effects) in the same undo step as the import operation.
+* Optimized compression and decompression mechanisms used in real-time collaboration to avoid delays when a user joins a document that was heavily edited.
+* Update [`diff`](https://www.npmjs.com/package/diff) dependency to address security advisories reported by automated scanners.
+
+  The affected functions (`parsePatch()`, `applyPatch()`) **are not used** in this project (we only rely on `diffArrays()`), so this change is released primarily to reduce false-positive security alerts.
+
+### Released packages
+
+Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html) guide for more information.
+
+<details>
+<summary>Released packages (summary)</summary>
+
+Minor releases (contain minor breaking changes):
+
+* [@ckeditor/ckeditor5-ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai/v/47.5.0): v47.4.0 => v47.5.0
+
+Releases containing new features:
+
+* [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf/v/47.5.0): v47.4.0 => v47.5.0
+
+Other releases:
+
+* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-case-change](https://www.npmjs.com/package/@ckeditor/ckeditor5-case-change/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-emoji](https://www.npmjs.com/package/@ckeditor/ckeditor5-emoji/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-export-inline-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-inline-styles/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-fullscreen](https://www.npmjs.com/package/@ckeditor/ckeditor5-fullscreen/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-icons](https://www.npmjs.com/package/@ckeditor/ckeditor5-icons/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-line-height](https://www.npmjs.com/package/@ckeditor/ckeditor5-line-height/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-list-multi-level](https://www.npmjs.com/package/@ckeditor/ckeditor5-list-multi-level/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-merge-fields](https://www.npmjs.com/package/@ckeditor/ckeditor5-merge-fields/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-paste-from-office-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office-enhanced/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-source-editing-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing-enhanced/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-uploadcare](https://www.npmjs.com/package/@ckeditor/ckeditor5-uploadcare/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget/v/47.5.0): v47.4.0 => v47.5.0
+* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count/v/47.5.0): v47.4.0 => v47.5.0
+* [ckeditor5](https://www.npmjs.com/package/ckeditor5/v/47.5.0): v47.4.0 => v47.5.0
+* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/47.5.0): v47.4.0 => v47.5.0
+* [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/47.5.0): v47.4.0 => v47.5.0
+</details>
+
+
+## [47.4.0](https://github.com/ckeditor/ckeditor5/compare/v47.3.0...v47.4.0) (January 14, 2026)
 
 We are happy to announce the release of CKEditor 5 v47.4.0.
 
@@ -763,192 +988,6 @@ Other releases:
 * [ckeditor5](https://www.npmjs.com/package/ckeditor5/v/47.1.0): v47.0.0 => v47.1.0
 * [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/47.1.0): v47.0.0 => v47.1.0
 * [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/47.1.0): v47.0.0 => v47.1.0
-</details>
-
-
-## [47.0.0](https://github.com/ckeditor/ckeditor5/compare/v46.1.1...v47.0.0) (October 1, 2025)
-
-We are happy to announce the release of CKEditor 5 v47.0.0.
-
-### Release highlights
-
-#### CKEditor AI (early access)
-
-We are introducing [**CKEditor AI**](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html), a set of versatile AI-powered features that integrate directly into CKEditor 5. It brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities, right into the editor. With **CKEditor AI**, users will no longer need to switch between the editor and AI tools.
-
-Three features are available in this early access phase:
-
-* **Chat:** a conversational AI for dynamic, multi-turn interactions that support various context sources, model selection, which can perform changes directly on the document.
-* **Quick actions:** one-click transformations and instant insights for selected text.
-* **Review:** automatic checks for grammar, tone, correctness, style, and more, with UX optimized for performing full-document review.
-
-Each feature is powered by our state-of-the-art AI service, available in the Cloud today and coming soon for on-premises deployments. This makes CKEditor AI a true plug-and-play solution that works out of the box, eliminating the need for months of custom development.
-
-CKEditor AI is available as part of our **free trial** in early access.
-
-#### Long-term Support (⭐)
-
-We are introducing the **CKEditor 5 LTS (Long-term Support) Edition**, giving teams up to 3 years of stability with guaranteed updates.
-
-The first LTS release is **v47.0.0** (October 2025). It will receive **6 months of active development** with new features and fixes, then **2.5 years of maintenance** with security and critical compatibility updates.
-
-For **v47.x**, the Maintenance phase starts in **April 2026**. From then, the next versions in the v47.x line will be available only under a **commercial LTS Edition license**. Therefore, starting in April, integrators without an LTS license should migrate to v48.x (the next regular release).
-
-If you need long-term stability, [contact sales](https://ckeditor.com/contact-sales/) or read more about [CKEditor 5 LTS Edition](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html).
-
-#### Other improvements and fixes
-
-This release also brings several smaller but important enhancements and fixes:
-
-* **Widgets:** the default `Tab`/`Shift+Tab` navigation now works better inside nested editables, improving usability. This change is also reflected in the editor’s current widgets (like tables), leading to more intuitive keyboard navigation.
-* **UI:** dialogs in custom features can now be positioned programmatically with more flexible options (`Dialog#show()`).
-* **Comments:** confirmation views for deleting comments and threads now use simplified CSS selectors (`.ck-confirm-view`). You may need to adjust custom styles accordingly.
-
-Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html) to learn more about these changes.
-
-### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
-
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Due to the release of the new AI feature, the `ai.*` configuration structure has changed. Until now, the configuration object was used for the former `AIAssistant` feature. Now, this configuration space is used for all AI related features. Configuration for the `AIAssistant` was moved. The changes are:
-  * `ai.aiAssistant` -> `ai.assistant`,
-  * `ai.useTheme` -> `ai.assistant.useTheme`,
-  * `ai.aws` -> `ai.assistant.adapter.aws`,
-  * `ai.openAI` -> `ai.assistant.adapter.openAI`.
-
-### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
-
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The Widget feature implements the default handling for `Tab`/`Shift+Tab` to navigate nested editable elements in the editor content. Closes [#19083](https://github.com/ckeditor/ckeditor5/issues/19083). The listeners are registered on the `low` priority bubbling event in the context of widgets and editable elements. Please verify if your custom `Tab`/`Shift+Tab` handling does not collide with the default one.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The internal structure of the package has changed. Importing `AIAssistant` from the source should be done via `@ckeditor/ckeditor5-ai/src/aiassistant/aiassistant.js` path instead of the previous `@ckeditor/ckeditor5-ai/src/aiassistant.js`.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Changed the CSS selectors used to style the confirmation view displayed when attempting to remove a comment or an entire comment thread. For now, CSS classes will be more generic, for example: `.ck-confirm-view` instead of `.ck-thread__remove-confirm`. If you override styles for these components, you will need to update the selectors.
-* **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: The `UndoCommandRevertEvent` type was renamed to `UndoRedoBaseCommandRevertEvent` and moved to the `basecommand.ts` file. Adjust your code if you have used this type in your custom integration. See [#19168](https://github.com/ckeditor/ckeditor5/issues/19168).
-* Updated to TypeScript 5.3.
-
-### Features
-
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced **CKEditor AI**, a brand-new set of versatile AI-powered features, including: chat, quick actions, and document review capabilities.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `position` parameter in [`Dialog#show()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_dialog_dialog-Dialog.html#function-show) now can be a function that takes `dialogRect` and `domRootRect` parameters and should return an object with `top` and `left` properties or `null`. It can be used to specify a custom positioning for the dialog. Closes [#19167](https://github.com/ckeditor/ckeditor5/issues/19167).
-
-### Bug fixes
-
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The [`markerToHighlight()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcasthelpers-DowncastHelpers.html#function-markerToHighlight) converter did not clone the `view` configuration if passed as plain object leading to incorrect behavior. This affects only custom plugins that used this converter in the described way. Closes [#19105](https://github.com/ckeditor/ckeditor5/issues/19105).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The [bubbling events](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/event-system.html#listening-to-bubbling-events) now trigger event callbacks according to the registered priorities even if multiple custom contexts are provided. See [#19083](https://github.com/ckeditor/ckeditor5/issues/19083).
-* **[export-inline-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-inline-styles)**: Fix specificity calculation to handle `:where()` selectors correctly.
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link manual decorators are no longer lost when caption is added to an image. Closes [#19024](https://github.com/ckeditor/ckeditor5/issues/19024).
-* **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Pagination lines should calculate properly for pages with larger horizontal margins.
-* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Fixed a crash which happened under specific circumstances when a revision was created when document was exported using the Cloud Services REST API (`GET /documents/` endpoint).
-
-  Although the fix was necessary in Revision History feature code, it was only reproducible in scenarios involving using the mentioned export endpoint.
-
-### Other changes
-
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Corrected types for the `resolvedBy` parameter in `CommentThread#resolve`. It was previously typed as `undefined | null`, and is now properly typed as `undefined | string`.
-* **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: `RedoCommand` will now fire `'revert'` event when executed, similarly to `UndoCommand`. Type `UndoCommandRevertEvent` was renamed to `UndoRedoBaseCommandRevertEvent` and moved to `basecommand.ts` file. Closes [#19168](https://github.com/ckeditor/ckeditor5/issues/19168).
-
-### Released packages
-
-Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html) guide for more information.
-
-<details>
-<summary>Released packages (summary)</summary>
-
-Major releases (contain major breaking changes):
-
-* [@ckeditor/ckeditor5-ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai/v/47.0.0): v46.1.1 => v47.0.0
-
-Minor releases (contain minor breaking changes):
-
-* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo/v/47.0.0): v46.1.1 => v47.0.0
-
-Releases containing new features:
-
-* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/47.0.0): v46.1.1 => v47.0.0
-
-Other releases:
-
-* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-case-change](https://www.npmjs.com/package/@ckeditor/ckeditor5-case-change/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-emoji](https://www.npmjs.com/package/@ckeditor/ckeditor5-emoji/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-export-inline-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-inline-styles/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-fullscreen](https://www.npmjs.com/package/@ckeditor/ckeditor5-fullscreen/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-icons](https://www.npmjs.com/package/@ckeditor/ckeditor5-icons/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-line-height](https://www.npmjs.com/package/@ckeditor/ckeditor5-line-height/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-list-multi-level](https://www.npmjs.com/package/@ckeditor/ckeditor5-list-multi-level/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-merge-fields](https://www.npmjs.com/package/@ckeditor/ckeditor5-merge-fields/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-paste-from-office-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office-enhanced/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-source-editing-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing-enhanced/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-uploadcare](https://www.npmjs.com/package/@ckeditor/ckeditor5-uploadcare/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog/v/47.0.0): v46.1.1 => v47.0.0
-* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count/v/47.0.0): v46.1.1 => v47.0.0
-* [ckeditor5](https://www.npmjs.com/package/ckeditor5/v/47.0.0): v46.1.1 => v47.0.0
-* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/47.0.0): v46.1.1 => v47.0.0
-* [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/47.0.0): v46.1.1 => v47.0.0
 </details>
 
 ---

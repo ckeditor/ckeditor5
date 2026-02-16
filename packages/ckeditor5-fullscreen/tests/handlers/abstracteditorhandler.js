@@ -656,10 +656,10 @@ describe( 'AbstractHandler', () => {
 			sinon.stub( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' ), 'getBoundingClientRect' )
 				.returns( {
 					top: 0,
-					right: 400,
+					right: 800,
 					bottom: 500,
 					left: 0,
-					width: 400,
+					width: 800,
 					height: 500
 				} );
 
@@ -709,14 +709,14 @@ describe( 'AbstractHandler', () => {
 			sinon.stub( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' ), 'getBoundingClientRect' )
 				.returns( {
 					top: 0,
-					right: 1500,
+					right: 1920,
 					bottom: 700,
 					left: 0,
-					width: 1500,
+					width: 1920,
 					height: 700
 				} );
 
-			sinon.stub( window, 'innerWidth' ).value( 1500 );
+			sinon.stub( window, 'innerWidth' ).value( 1920 );
 
 			abstractHandler.moveToFullscreen( abstractHandler._editor.ui.getEditableElement(), 'editable' );
 
