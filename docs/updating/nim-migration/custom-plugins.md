@@ -159,8 +159,23 @@ If you see imports in the second or third step that are not explicitly mentioned
 import { /* Plugin code */ } from '<PACKAGE_NAME>';
 
 // Optionally importing the styles.
-import '<PACKAGE_NAME/index.css';
+import '<PACKAGE_NAME>/index.css';
 
 // Optionally importing the translations.
 import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
 ```
+
+If you decided to provide backward compatibility with the old installation methods, the code can be imported using the package name followed by `/dist/index.js`. The styles and translations can be imported in the same way as above.
+
+```js
+// Importing the plugin code.
+import { /* Plugin code */ } from '<PACKAGE_NAME>/dist/index.js';
+
+// Optionally importing the styles.
+import '<PACKAGE_NAME>/index.css';
+
+// Optionally importing the translations.
+import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
+```
+
+The `/dist/index.js` part of the path will be removed in the future when support for the old installation methods is dropped.
