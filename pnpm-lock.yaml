@@ -3477,6 +3477,9 @@ importers:
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
+      '@ckeditor/ckeditor5-indent':
+        specifier: workspace:*
+        version: link:../ckeditor5-indent
       '@ckeditor/ckeditor5-link':
         specifier: workspace:*
         version: link:../ckeditor5-link
