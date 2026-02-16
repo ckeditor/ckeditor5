@@ -176,8 +176,8 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       umberto:
-        specifier: ^9.4.0
-        version: 9.4.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: ^10.0.0
+        version: 10.0.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -12178,8 +12178,8 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@9.4.0:
-    resolution: {integrity: sha512-APtcNAa/3kEk/T5x4KaBZ+gU5vm7CzWKu+XO/Aivwg50/WLCQzXRd5HHSuUM2rzqsXK5ZDNeGSbEa7SA66vQqg==}
+  umberto@10.0.0:
+    resolution: {integrity: sha512-9f/p0QYhMwMsXrvLkXbG8Rrn2Z2QxEFPvBlfaFaTrcF1sfzhp859EulZ8OV4SbJxI39/jYtJpNa3S5K3YzWbhw==}
     engines: {node: '>=24.11.0'}
 
   undici-types@7.13.0:
@@ -12385,10 +12385,6 @@ packages:
         optional: true
       jsdom:
         optional: true
-
-  vnu-jar@21.10.12:
-    resolution: {integrity: sha512-tC+BEIWbLW0duLlQl75j9jWcrkPH+hSNGOe5D/FhT21c+JBqVk7Zc7gkDswT6VRlt7skJe4e31wnoAFoLDSg0Q==}
-    engines: {node: '>=0.10'}
 
   void-elements@2.0.1:
     resolution: {integrity: sha512-qZKX4RnBzH2ugr8Lxa7x+0V6XD9Sb/ouARtiasEQCHB1EVU4NXtmHsDDrx1dO4ne5fc3J6EW05BP1Dl0z0iung==}
@@ -21373,7 +21369,7 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@9.4.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@10.0.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
@@ -21406,7 +21402,6 @@ snapshots:
       medium-zoom: 1.1.0
       minimatch: 10.1.1
       moment: 2.30.1
-      nyc: 17.1.0
       pug: 3.0.3
       sass: 1.93.2
       shiki: 3.13.0
@@ -21415,7 +21410,6 @@ snapshots:
       tippy.js: 6.3.7
       tree-model: 1.0.7
       upath: 2.0.1
-      vnu-jar: 21.10.12
       webpack: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - '@swc/core'
@@ -21608,8 +21602,6 @@ snapshots:
       - terser
       - tsx
       - yaml
-
-  vnu-jar@21.10.12: {}
 
   void-elements@2.0.1: {}
 
