@@ -186,7 +186,7 @@ If you decided to provide backward compatibility with the old installation metho
 import { /* Plugin code */ } from '<PACKAGE_NAME>/dist/index.js';
 
 // Optionally importing the styles.
-import '<PACKAGE_NAME/index.css';
+import '<PACKAGE_NAME>/index.css';
 
 // Optionally importing the translations.
 import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
