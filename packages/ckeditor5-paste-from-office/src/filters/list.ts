@@ -188,19 +188,18 @@ function applyListItemMarginLeftAndUpdateTopLevelInfo(
 	const listItemBlockMarginLeft = parseFloat( itemLikeElement.marginLeft );
 
 	let currentListBlockIndent = 0;
-	let currentListLevelIndent;
 
 	if ( stack.length > 1 ) {
 		const prevStackLevelItems = stack[ stack.length - 2 ].listItemElements;
 
-		// The margin-left style of the previous indent level last item is already a relative value applied in the previous iteration.
-		currentListLevelIndent = prevStackLevelItems.length > 0 ?
-			prevStackLevelItems[ prevStackLevelItems.length - 1 ].getStyle( 'margin-left' ) :
-			undefined;
-	}
+		if ( prevStackLevelItems.length > 0 ) {
+			// The margin-left style of the previous indent level last item is already a relative value applied in the previous iteration.
+			const lastItemMargin = prevStackLevelItems[ prevStackLevelItems.length - 1 ].getStyle( 'margin-left' );
 
-	if ( currentListLevelIndent ) {
-		currentListBlockIndent += parseFloat( currentListLevelIndent );
+			if ( lastItemMargin !== undefined ) {
+				currentListBlockIndent += parseFloat( lastItemMargin );
+			}
+		}
 	}
 
 	// Add 40px for each indent level because by default HTML lists have 40px indentation (padding-inline-start: 40px).
