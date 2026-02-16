@@ -26,7 +26,10 @@ parameters:
     default: false
   chromeVersion:
     type: string
-    default: "144.0.7559.59"
+    default: "145.0.7632.45"
+  isLtsPipeline:
+    type: boolean
+    default: false
 
 orbs:
   continuation: circleci/continuation@0.1.2
@@ -75,7 +78,7 @@ jobs:
           command: pnpm install --frozen-lockfile
       - run:
           name: Generate a new configuration to check all packages in the repository
-          command: node scripts/ci/generate-circleci-configuration.mjs --chrome-version="<< pipeline.parameters.chromeVersion >>"
+          command: node scripts/ci/generate-circleci-configuration.mjs --chrome-version="<< pipeline.parameters.chromeVersion >>" --is-lts-pipeline="<< pipeline.parameters.isLtsPipeline >>"
       - continuation/continue:
           configuration_path: .circleci/config-tests.yml
 

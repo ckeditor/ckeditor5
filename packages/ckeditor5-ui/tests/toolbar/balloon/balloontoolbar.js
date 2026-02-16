@@ -23,6 +23,7 @@ import { _setModelData, _stringifyView } from '@ckeditor/ckeditor5-engine';
 const toPx = toUnit( 'px' );
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { View } from '../../../src/view.js';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
@@ -404,6 +405,25 @@ describe( 'BalloonToolbar', () => {
 
 			editor.ui.fire( 'update' );
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not update balloon position on ui#update event when #toolbarView is not currently visible in the #_balloon', () => {
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
+
+			const spy = sinon.spy( balloon, 'updatePosition' );
+
+			editor.ui.fire( 'update' );
+
+			balloonToolbar.show();
+			sinon.assert.notCalled( spy );
+
+			// Simulate another feature taking over and using the ContextualBalloon stack in the meanwhile.
+			balloon.add( {
+				view: new View()
+			} );
+
+			editor.ui.fire( 'update' );
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should update the balloon position whenever #toolbarView fires the #groupedItemsUpdate (it changed its geometry)', () => {
