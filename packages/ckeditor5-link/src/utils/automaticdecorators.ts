@@ -7,7 +7,7 @@
  * @module link/utils/automaticdecorators
  */
 
-import { toMap, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import { toMap, priorities, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
@@ -15,7 +15,8 @@ import type {
 	ModelSelection,
 	ModelItem,
 	ModelDocumentSelection,
-	ViewElement
+	ViewElement,
+	ViewDowncastWriter
 } from 'ckeditor5/src/engine.js';
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
 
@@ -73,53 +74,97 @@ export class AutomaticLinkDecorators {
 	 */
 	public getDispatcher(): ( dispatcher: DowncastDispatcher ) => void {
 		return dispatcher => {
-			dispatcher.on<DowncastAttributeEvent>( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+			const elementCreator = (
+				item: NormalizedLinkDecoratorAutomaticDefinition,
+				viewWriter: ViewDowncastWriter
+			) => {
+				const viewElement = viewWriter.createAttributeElement( 'a', item.attributes, {
+					priority: 5
+				} );
+
+				if ( item.classes ) {
+					viewWriter.addClass( item.classes, viewElement );
+				}
+
+				for ( const key in item.styles ) {
+					viewWriter.setStyle( key, item.styles[ key ], viewElement );
+				}
+
+				viewWriter.setCustomProperty( 'link', true, viewElement );
+
+				return viewElement;
+			};
+
+			dispatcher.on<DowncastAttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
+				if ( !data.attributeKey.startsWith( 'link' ) ) {
+					return;
+				}
+
 				// There is only test as this behavior decorates links and
 				// it is run before dispatcher which actually consumes this node.
 				// This allows on writing own dispatcher with highest priority,
 				// which blocks both native converter and this additional decoration.
-				if ( !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
+				if ( data.attributeKey == 'linkHref' && !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
 					return;
 				}
 
 				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
-				if ( !( data.item.is( 'selection' ) || conversionApi.schema.isInline( data.item ) ) ) {
+				if ( !data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ) {
 					return;
 				}
 
-				const viewWriter = conversionApi.writer;
-				const viewSelection = viewWriter.document.selection;
-
 				for ( const item of this._definitions ) {
-					const viewElement = viewWriter.createAttributeElement( 'a', item.attributes, {
-						priority: 5
-					} );
-
-					if ( item.classes ) {
-						viewWriter.addClass( item.classes, viewElement );
-					}
-
-					for ( const key in item.styles ) {
-						viewWriter.setStyle( key, item.styles[ key ], viewElement );
-					}
-
-					viewWriter.setCustomProperty( 'link', true, viewElement );
-
-					// Check if automatic decorator is matched.
+					// Check if automatic decorator is not matched.
 					if (
-						item.callback( data.attributeNewValue as string | null ) &&
-						!this._conflictChecker?.( item, data.item )
+						!item.callback( data.item.getAttribute( 'linkHref' ) as string | null ) ||
+						this._conflictChecker?.( item, data.item )
 					) {
-						if ( data.item.is( 'selection' ) ) {
-							viewWriter.wrap( viewSelection.getFirstRange()!, viewElement );
-						} else {
-							viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
-						}
-					} else {
-						viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+						conversionApi.writer.unwrap(
+							conversionApi.mapper.toViewRange( data.range ),
+							elementCreator( item, conversionApi.writer )
+						);
 					}
 				}
 			}, { priority: 'high' } );
+
+			dispatcher.on<DowncastAttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
+				if ( !data.attributeKey.startsWith( 'link' ) ) {
+					return;
+				}
+
+				// There is only test as this behavior decorates links and
+				// it is run before dispatcher which actually consumes this node.
+				// This allows on writing own dispatcher with highest priority,
+				// which blocks both native converter and this additional decoration.
+				if ( data.attributeKey == 'linkHref' && !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
+					return;
+				}
+
+				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
+				if ( !data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ) {
+					return;
+				}
+
+				for ( const item of this._definitions ) {
+					// Check if automatic decorator is matched.
+					if (
+						item.callback( data.item.getAttribute( 'linkHref' ) as string | null ) &&
+						!this._conflictChecker?.( item, data.item )
+					) {
+						if ( data.item.is( 'selection' ) ) {
+							conversionApi.writer.wrap(
+								conversionApi.writer.document.selection.getFirstRange()!,
+								elementCreator( item, conversionApi.writer )
+							);
+						} else {
+							conversionApi.writer.wrap(
+								conversionApi.mapper.toViewRange( data.range ),
+								elementCreator( item, conversionApi.writer )
+							);
+						}
+					}
+				}
+			}, { priority: priorities.high - 2 } );
 		};
 	}
 
@@ -131,10 +176,11 @@ export class AutomaticLinkDecorators {
 	 */
 	public getDispatcherForLinkedImage(): ( dispatcher: DowncastDispatcher ) => void {
 		return dispatcher => {
+			// TODO handle wrap/unwrap on different priorities.
 			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
 				const viewFigure = mapper.toViewElement( data.item )!;
 				const linkInImage = Array.from( viewFigure.getChildren() )
-					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) )!;
+					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
 
 				// It's not guaranteed that the anchor is present in the image block during execution of this dispatcher.
 				// It might have been removed during the execution of unlink command that runs the image link downcast dispatcher

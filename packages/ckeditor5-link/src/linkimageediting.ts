@@ -224,6 +224,7 @@ function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher )
  */
 function downcastImageLinkManualDecorator( decorator: LinkManualDecorator ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
+		// TODO handle add/remove decorator on different priorities.
 		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
 			const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
 			const linkInImage = Array.from( viewFigure.getChildren() )

@@ -18,7 +18,9 @@ import type {
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
 	ModelDocumentSelectionChangeAttributeEvent,
-	ModelItem
+	ModelItem,
+	DowncastAttributeEvent,
+	ViewDowncastWriter
 } from 'ckeditor5/src/engine.js';
 import {
 	Input,
@@ -29,7 +31,7 @@ import {
 	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
 } from 'ckeditor5/src/clipboard.js';
-import { keyCodes, env } from 'ckeditor5/src/utils.js';
+import { keyCodes, env, priorities } from 'ckeditor5/src/utils.js';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';
@@ -203,6 +205,7 @@ export class LinkEditing extends Plugin {
 		}
 
 		automaticDecorators.add( automaticDecoratorDefinitions );
+
 		automaticDecorators.setConflictChecker( ( automaticDecorator, modelItem ) => {
 			for ( const manualDecorator of command.manualDecorators ) {
 				// If manual decorator is not applied, skip it.
@@ -249,30 +252,65 @@ export class LinkEditing extends Plugin {
 
 			manualDecorators.add( decorator );
 
-			editor.conversion.for( 'downcast' ).attributeToElement( {
-				model: decorator.id,
-				view: ( manualDecoratorValue, { writer, schema }, { item } ) => {
+			const elementCreator = ( writer: ViewDowncastWriter ) => {
+				const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
+
+				if ( decorator.classes ) {
+					writer.addClass( decorator.classes, element );
+				}
+
+				for ( const key in decorator.styles ) {
+					writer.setStyle( key, decorator.styles[ key ], element );
+				}
+
+				writer.setCustomProperty( 'link', true, element );
+
+				return element;
+			};
+
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				dispatcher.on<DowncastAttributeEvent>( `attribute:${ decorator.id }`, ( evt, data, conversionApi ) => {
 					// Manual decorators for block links are handled e.g. in LinkImageEditing.
-					if ( !( item.is( 'selection' ) || schema.isInline( item ) ) ) {
+					if (
+						!data.attributeOldValue ||
+						!data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ||
+						!conversionApi.consumable.consume( data.item, evt.name )
+					) {
 						return;
 					}
 
-					if ( manualDecoratorValue ) {
-						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
-
-						if ( decorator.classes ) {
-							writer.addClass( decorator.classes, element );
-						}
-
-						for ( const key in decorator.styles ) {
-							writer.setStyle( key, decorator.styles[ key ], element );
-						}
-
-						writer.setCustomProperty( 'link', true, element );
-
-						return element;
+					if ( data.item.is( 'selection' ) ) {
+						return;
 					}
-				}
+
+					conversionApi.writer.unwrap(
+						conversionApi.mapper.toViewRange( data.range ),
+						elementCreator( conversionApi.writer )
+					);
+				}, { priority: priorities.high - 1 } );
+
+				dispatcher.on<DowncastAttributeEvent>( `attribute:${ decorator.id }`, ( evt, data, conversionApi ) => {
+					// Manual decorators for block links are handled e.g. in LinkImageEditing.
+					if (
+						!data.attributeNewValue ||
+						!data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ||
+						!conversionApi.consumable.consume( data.item, evt.name )
+					) {
+						return;
+					}
+
+					if ( data.item.is( 'selection' ) ) {
+						conversionApi.writer.wrap(
+							conversionApi.writer.document.selection.getFirstRange()!,
+							elementCreator( conversionApi.writer )
+						);
+					} else {
+						conversionApi.writer.wrap(
+							conversionApi.mapper.toViewRange( data.range ),
+							elementCreator( conversionApi.writer )
+						);
+					}
+				}, { priority: priorities.high - 3 } );
 			} );
 
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
