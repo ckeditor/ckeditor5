@@ -64,7 +64,6 @@ First, import the core styles. They are all needed for the editor to work proper
 
 ```js
 // Import the core styles.
-import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
 import '@ckeditor/ckeditor5-clipboard/dist/index.css';
 import '@ckeditor/ckeditor5-core/dist/index.css';
 import '@ckeditor/ckeditor5-engine/dist/index.css';
@@ -314,7 +313,6 @@ import tableTranslations from '@ckeditor/ckeditor5-table/dist/translations/pl.js
 import caseChangeTranslations from '@ckeditor/ckeditor5-case-change/dist/translations/pl.js';
 import slashCommandTranslations from '@ckeditor/ckeditor5-slash-command/dist/translations/pl.js';
 
-import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
 import '@ckeditor/ckeditor5-clipboard/dist/index.css';
 import '@ckeditor/ckeditor5-core/dist/index.css';
 import '@ckeditor/ckeditor5-engine/dist/index.css';

@@ -54,6 +54,7 @@
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
+    "@ckeditor/ckeditor5-code-block": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
@@ -63,6 +64,7 @@
     "@ckeditor/ckeditor5-find-and-replace": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
+    "@ckeditor/ckeditor5-highlight": "workspace:*",
     "@ckeditor/ckeditor5-horizontal-line": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-indent": "workspace:*",
@@ -75,8 +77,7 @@
     "@ckeditor/ckeditor5-special-characters": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
-    "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-code-block": "workspace:*"
+    "@ckeditor/ckeditor5-undo": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

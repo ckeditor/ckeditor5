@@ -3,8 +3,72 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
+	--ck-table-content-default-border-color: hsl(0, 0%, 83%);
+	--ck-table-border-none-helper-line-color: hsl(0, 0%, 83%);
+	--ck-table-border-none-helper-line-style: dashed;
+	--ck-table-border-none-helper-line-width: 1px;
+}
+
+.ck-widget.table {
+	/* Dashed outline for table without any border. */
+	& table[style*="border:none"],
+	& table[style*="border-style:none"] {
+		outline: var(--ck-table-content-default-border-color) 1px dashed;
+	}
+
+	& td,
+	& th {
+		/**
+		 * While setting outline is fine, the border should not be modified here
+		 * because it overrides the default table cell border color which is not expected.
+		 * So do not use `@mixin ck-focus-ring;` here, or any other border styles.
+		 * See more: https://github.com/ckeditor/ckeditor5/issues/16979
+		 */
+		&.ck-editor__nested-editable {
+			outline: unset;
+
+			&:not(.ck-editor__editable_selected) {
+				&.ck-editor__nested-editable_focused,
+				&:focus {
+					/* A very slight background to highlight the focused cell */
+					background: var(--ck-color-table-focused-cell-background);
+					outline: 1px solid var(--ck-color-focus-border);
+					outline-offset: -1px; /* progressive enhancement - no IE support */
+				}
+			}
+		}
+	}
+}
+
 /*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+By using `:where` we set the specificity to 0, but we need to override the inline styles that's why we must use `!important`.
+This way it will be easier to override it in custom themes if needed.
+*/
+
+:where(.ck.ck-editor__editable.ck-table-show-hidden-borders .ck-widget.table) {
+	& :where( td[style*="border:none"], td[style*="border-style:none"], th[style*="border:none"], th[style*="border-style:none"] ) {
+		border: var(--ck-table-border-none-helper-line-style) var(--ck-table-border-none-helper-line-width) var(--ck-table-border-none-helper-line-color) !important;
+	}
+
+	& > :where( table[style*="border-top-style:none"] ),
+	& :where( td[style*="border-top-style:none"], th[style*="border-top-style:none"] ) {
+		border-top: var(--ck-table-border-none-helper-line-style) var(--ck-table-border-none-helper-line-width) var(--ck-table-border-none-helper-line-color) !important;
+	}
+
+	& > :where( table[style*="border-right-style:none"] ),
+	& :where( td[style*="border-right-style:none"], th[style*="border-right-style:none"] ) {
+		border-right: var(--ck-table-border-none-helper-line-style) var(--ck-table-border-none-helper-line-width) var(--ck-table-border-none-helper-line-color) !important;
+	}
+
+	& > :where( table[style*="border-bottom-style:none"] ),
+	& :where( td[style*="border-bottom-style:none"], th[style*="border-bottom-style:none"] ) {
+		border-bottom: var(--ck-table-border-none-helper-line-style) var(--ck-table-border-none-helper-line-width) var(--ck-table-border-none-helper-line-color) !important;
+	}
+
+	& > :where( table[style*="border-left-style:none"] ),
+	& :where( td[style*="border-left-style:none"], th[style*="border-left-style:none"] ) {
+		border-left: var(--ck-table-border-none-helper-line-style) var(--ck-table-border-none-helper-line-width) var(--ck-table-border-none-helper-line-color) !important;
+	}
+}

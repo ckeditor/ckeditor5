@@ -5,7 +5,12 @@
 
 .ck.ck-dialog {
 	& .ck.ck-dialog__actions {
+		padding: var(--ck-spacing-large);
 		display: flex;
-		justify-content: flex-end;
+
+		& > * + * {
+			margin-left: var(--ck-spacing-large);
+		}
+		justify-content: flex-end
 	}
 }

@@ -38,8 +38,7 @@
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*"
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-code-block": "workspace:*",
