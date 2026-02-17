@@ -285,6 +285,18 @@ export class LinkEditing extends Plugin {
 							return;
 						}
 
+						if ( !isApplyingConverter && data.attributeOldValue ) {
+							// Only test while removing the decorator as this is triggered before the applying converter.
+							if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+								return;
+							}
+
+							conversionApi.writer.unwrap(
+								conversionApi.mapper.toViewRange( data.range ),
+								elementCreator( conversionApi.writer )
+							);
+						}
+
 						if ( isApplyingConverter && data.attributeNewValue ) {
 							// Consume while applying the decorator.
 							if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
@@ -302,27 +314,17 @@ export class LinkEditing extends Plugin {
 									elementCreator( conversionApi.writer )
 								);
 							}
-						} else if ( !isApplyingConverter && data.attributeOldValue ) {
-							// Only test while removing the decorator as this is triggered before the applying converter.
-							if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
-								return;
-							}
-
-							conversionApi.writer.unwrap(
-								conversionApi.mapper.toViewRange( data.range ),
-								elementCreator( conversionApi.writer )
-							);
 						}
 					};
 				};
 
 				dispatcher.on<DowncastAttributeEvent>( `attribute:${ decorator.id }`, createConverter( false ), {
-					priority: 'high'
+					priority: priorities.high - 1
 				} );
 				// Apply decorators after all automatic and manual decorators are removed so removing one decorator
 				// won't strip part of the other decorator's attributes, classes or styles.
 				dispatcher.on<DowncastAttributeEvent>( `attribute:${ decorator.id }`, createConverter( true ), {
-					priority: priorities.high - 1
+					priority: priorities.high - 2
 				} );
 			} );
 

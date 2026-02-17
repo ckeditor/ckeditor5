@@ -149,10 +149,10 @@ export class AutomaticLinkDecorators {
 				};
 			};
 
-			dispatcher.on<DowncastAttributeEvent>( 'attribute', createConverter( false ), { priority: 'high' } );
+			dispatcher.on<DowncastAttributeEvent>( 'attribute', createConverter( false ), { priority: priorities.high - 1 } );
 			// Apply decorators after all automatic and manual decorators are removed so removing one decorator
 			// won't strip part of the other decorator's attributes, classes or styles.
-			dispatcher.on<DowncastAttributeEvent>( 'attribute', createConverter( true ), { priority: priorities.high - 1 } );
+			dispatcher.on<DowncastAttributeEvent>( 'attribute', createConverter( true ), { priority: priorities.high - 2 } );
 		};
 	}
 
@@ -164,62 +164,73 @@ export class AutomaticLinkDecorators {
 	 */
 	public getDispatcherForLinkedImage(): ( dispatcher: DowncastDispatcher ) => void {
 		return dispatcher => {
-			// TODO handle wrap/unwrap on different priorities.
-			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
-				const viewFigure = mapper.toViewElement( data.item )!;
-				const linkInImage = Array.from( viewFigure.getChildren() )
-					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
+			const createConverter = ( isApplyingConverter: boolean ): GetCallback<DowncastAttributeEvent<ModelElement>> => {
+				return ( evt, data, { writer, mapper } ) => {
+					if ( !data.item.is( 'element', 'imageBlock' ) || !data.attributeKey.startsWith( 'link' ) ) {
+						return;
+					}
 
-				// It's not guaranteed that the anchor is present in the image block during execution of this dispatcher.
-				// It might have been removed during the execution of unlink command that runs the image link downcast dispatcher
-				// that is executed before this one and removes the anchor from the image block.
-				if ( !linkInImage ) {
-					return;
-				}
+					const viewFigure = mapper.toViewElement( data.item )!;
+					const linkInImage = Array.from( viewFigure.getChildren() )
+						.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
 
-				for ( const item of this._definitions ) {
-					const attributes = toMap( item.attributes );
+					// It's not guaranteed that the anchor is present in the image block during execution of this dispatcher.
+					// It might have been removed during the execution of unlink command that runs the image link downcast dispatcher
+					// that is executed before this one and removes the anchor from the image block.
+					if ( !linkInImage ) {
+						return;
+					}
 
-					if (
-						item.callback( data.attributeNewValue as string | null ) &&
-						!this._conflictChecker?.( item, data.item )
-					) {
-						for ( const [ key, val ] of attributes ) {
-							// Left for backward compatibility. Since v30 decorator should
-							// accept `classes` and `styles` separately from `attributes`.
-							if ( key === 'class' ) {
-								writer.addClass( val, linkInImage );
-							} else {
-								writer.setAttribute( key, val, linkInImage );
+					for ( const decorator of this._definitions ) {
+						const attributes = toMap( decorator.attributes );
+
+						if (
+							decorator.callback( data.item.getAttribute( 'linkHref' ) as string | null ) &&
+							!this._conflictChecker?.( decorator, data.item ) &&
+							isApplyingConverter
+						) {
+							for ( const [ key, val ] of attributes ) {
+								// Left for backward compatibility. Since v30 decorator should
+								// accept `classes` and `styles` separately from `attributes`.
+								if ( key === 'class' ) {
+									writer.addClass( val, linkInImage );
+								} else {
+									writer.setAttribute( key, val, false, linkInImage );
+								}
 							}
-						}
 
-						if ( item.classes ) {
-							writer.addClass( item.classes, linkInImage );
-						}
-
-						for ( const key in item.styles ) {
-							writer.setStyle( key, item.styles[ key ], linkInImage );
-						}
-					} else {
-						for ( const [ key, val ] of attributes ) {
-							if ( key === 'class' ) {
-								writer.removeClass( val, linkInImage );
-							} else {
-								writer.removeAttribute( key, linkInImage );
+							if ( decorator.classes ) {
+								writer.addClass( decorator.classes, linkInImage );
 							}
-						}
 
-						if ( item.classes ) {
-							writer.removeClass( item.classes, linkInImage );
-						}
+							for ( const key in decorator.styles ) {
+								writer.setStyle( key, decorator.styles[ key ], linkInImage );
+							}
+						} else {
+							for ( const [ key, val ] of attributes ) {
+								if ( key === 'class' ) {
+									writer.removeClass( val, linkInImage );
+								} else {
+									writer.removeAttribute( key, val, linkInImage );
+								}
+							}
 
-						for ( const key in item.styles ) {
-							writer.removeStyle( key, linkInImage );
+							if ( decorator.classes ) {
+								writer.removeClass( decorator.classes, linkInImage );
+							}
+
+							for ( const key in decorator.styles ) {
+								writer.removeStyle( key, linkInImage );
+							}
 						}
 					}
-				}
-			} );
+				};
+			};
+
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute', createConverter( false ), { priority: priorities.high - 1 } );
+			// Apply decorators after all automatic and manual decorators are removed so removing one decorator
+			// won't strip part of the other decorator's attributes, classes or styles.
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute', createConverter( true ), { priority: priorities.high - 2 } );
 		};
 	}
 }
