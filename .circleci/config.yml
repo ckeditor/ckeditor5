@@ -69,6 +69,12 @@ jobs:
           command: |
             #!/bin/bash
 
+            IS_NIGHTLY=<< pipeline.parameters.isNightly >>
+
+            if [[ "$IS_NIGHTLY" == "true" ]]; then
+              exit 0
+            fi
+
             COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s ${CIRCLE_SHA1})
 
             if [[ "$COMMIT_MESSAGE" == *"[skip ci]" ]]; then
