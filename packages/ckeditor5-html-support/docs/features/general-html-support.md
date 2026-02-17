@@ -207,7 +207,7 @@ Scripts are blocked by default because allowing `<script>` tags in editor conten
 view renderer filler not found
 ```
 
-Blocking scripts by default keeps the editing surface and the published output safe unless you explicitly enable scripts for a controlled, legacy scenario. For example, if you have content from CKEditor 4 and script tags are necessary. For such a case you can explicitly allow `<script>` tags using the configuration:
+Blocking scripts by default keeps the editing surface and the published output safe unless you explicitly enable scripts for a controlled, legacy scenario. For example, if you have content from CKEditor&nbsp;4 and script tags are necessary. For such a case you can explicitly allow `<script>` tags using the configuration:
 
 ```js
 htmlSupport: {
