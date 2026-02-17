@@ -195,6 +195,35 @@ htmlSupport: {
 
 This configuration will work similarly to the [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 
+### Enabling script tags for legacy use cases
+
+<info-box warning>
+	Scripts are blocked by default for [security reasons](#security). For new implementations, we discourage embedding scripts in editor content.
+</info-box>
+
+Scripts are blocked by default because allowing `<script>` tags in editor content would let arbitrary JavaScript run whenever that content is rendered. It creates a serious cross-site scripting (XSS) risk—content from untrusted sources (e.g., copied from a malicious site or supplied by an attacker) could steal session data, modify the page, or perform actions on behalf of the user. If you attempt to place the `<script>` tag in the content, you may see an error like this:
+
+```plain
+view renderer filler not found
+```
+
+Blocking scripts by default keeps the editing surface and the published output safe unless you explicitly enable scripts for a controlled, legacy scenario. For example, if you have content from CKEditor 4 and script tags are necessary. For such a case you can explicitly allow `<script>` tags using the configuration:
+
+```js
+htmlSupport: {
+	allow: [
+		{
+			name: 'script',
+			attributes: true,
+			classes: true,
+			styles: true
+		}
+	]
+}
+```
+
+This configuration allows `<script>` elements along with their attributes, classes, and styles, preventing the editor from crashing when such content is loaded.
+
 ### Security
 
 When you set up the GHS to allow elements like `<script>` or attributes like `onclick`, you expose the users of your application to a possibly malicious markup. This can be code mistakenly copied from a risky website or purposely provided by a bad actor. An example of that could be: `<div onclick="leakUserData()">`.
