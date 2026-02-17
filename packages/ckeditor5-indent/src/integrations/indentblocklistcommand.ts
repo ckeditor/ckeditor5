@@ -86,10 +86,10 @@ export class IndentBlockListCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
+		const listIntegration = editor.plugins.get( 'ListIntegration' );
 
 		model.change( writer => {
 			const listItem = this._getFirstListItemIfSelectionIsAtListStart( selection )!;
-
 			const listItems = [];
 
 			if ( !options.firstListOnly ) {
@@ -107,7 +107,17 @@ export class IndentBlockListCommand extends Command {
 			for ( const item of listItems ) {
 				const currentIndent = item.getAttribute( 'blockIndentList' ) as string;
 				const indentValue = parseFloat( currentIndent );
-				const nextIndent = indentValue < 0 ? 0 : this._indentBehavior.getNextIndent( currentIndent );
+				let nextIndent;
+
+				if ( listIntegration.indentBlockUsingClasses ) {
+					nextIndent = this._indentBehavior.getNextIndent( currentIndent );
+
+					if ( nextIndent === undefined && this._indentBehavior.isForward ) {
+						nextIndent = currentIndent;
+					}
+				} else {
+					nextIndent = indentValue < 0 ? 0 : this._indentBehavior.getNextIndent( currentIndent );
+				}
 
 				if ( nextIndent ) {
 					writer.setAttribute( 'blockIndentList', nextIndent, item );

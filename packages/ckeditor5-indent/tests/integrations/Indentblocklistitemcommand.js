@@ -9,10 +9,11 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
 import { isListItemBlock } from '../../../ckeditor5-list/src/list/utils/model.js';
 import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
+import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
 import { IndentBlockListItemCommand } from '../../src/integrations/indentblocklistitemcommand.js';
 
 describe( 'IndentBlockListItemCommand', () => {
-	let editor, model, command;
+	let editor, model, command, indentBlockUsingClasses;
 
 	beforeEach( () => {
 		return ModelTestEditor
@@ -23,13 +24,22 @@ describe( 'IndentBlockListItemCommand', () => {
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-				sinon.stub( editor.plugins, 'get' ).withArgs( 'ListUtils' ).returns( {
-					isListItemBlock
+				indentBlockUsingClasses = false;
+
+				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
+					if ( name === 'ListUtils' ) {
+						return { isListItemBlock };
+					}
+
+					if ( name === 'ListIntegration' ) {
+						return { indentBlockUsingClasses };
+					}
 				} );
 			} );
 	} );
 
 	afterEach( () => {
+		sinon.restore();
 		command.destroy();
 
 		return editor.destroy();
@@ -43,6 +53,8 @@ describe( 'IndentBlockListItemCommand', () => {
 					unit: 'px',
 					direction: 'forward'
 				} ) );
+
+				indentBlockUsingClasses = false;
 			} );
 
 			describe( 'isEnabled', () => {
@@ -473,6 +485,128 @@ describe( 'IndentBlockListItemCommand', () => {
 				} );
 			} );
 		} );
+
+		describe( 'using classes', () => {
+			beforeEach( () => {
+				command = new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+					direction: 'forward',
+					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ]
+				} ) );
+
+				indentBlockUsingClasses = true;
+			} );
+
+			describe( 'isEnabled', () => {
+				describe( 'general cases', () => {
+					it( 'should be false when selection is outside of list', () => {
+						_setModelData( model, modelList( [
+							'[]foo',
+							'* bar',
+							'* baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false in empty editor', () => {
+						_setModelData( model, '' );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'when current indent is set', () => {
+					it( 'should be false when collapsed selection is at start of the list item', () => {
+						_setModelData( model, modelList( [
+							'* []foo {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when collapsed selection is in the middle of the list item', () => {
+						_setModelData( model, modelList( [
+							'* f[]oo {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when collapsed selection is at end of the list item', () => {
+						_setModelData( model, modelList( [
+							'* foo[] {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when non-collapsed selection starts at the start of the list item', () => {
+						_setModelData( model, modelList( [
+							'* [fo]o {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when non-collapsed selection starts in the middle of the list item', () => {
+						_setModelData( model, modelList( [
+							'* f[oo] {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when it is not the first list item', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'* []bar {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when selection is at start of the nested list item', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'  * []bar {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when selection spans across multiple items (all have the attribute set)', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-1}',
+							'* bar {blockIndentListItem:indent-1}',
+							'* ba]z {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when selection spans across multiple items (some do not have the attribute set)', () => {
+						_setModelData( model, modelList( [
+							'* [foo',
+							'* bar {blockIndentListItem:indent-1}',
+							'* ba]z'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when selection spans across multiple lists', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-1}',
+							'* bar {blockIndentListItem:indent-1}',
+							'',
+							'* baz] {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'outdent', () => {
@@ -483,6 +617,8 @@ describe( 'IndentBlockListItemCommand', () => {
 					unit: 'px',
 					direction: 'backward'
 				} ) );
+
+				indentBlockUsingClasses = false;
 			} );
 
 			describe( 'isEnabled', () => {
@@ -906,6 +1042,318 @@ describe( 'IndentBlockListItemCommand', () => {
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* f[oo {blockIndentListItem:-50px}',
+							'',
+							'* ba]r'
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'using classes', () => {
+			beforeEach( () => {
+				command = new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+					direction: 'backward',
+					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ]
+				} ) );
+
+				indentBlockUsingClasses = true;
+			} );
+
+			describe( 'isEnabled', () => {
+				describe( 'general cases', () => {
+					it( 'should be false when selection is outside of list', () => {
+						_setModelData( model, modelList( [
+							'[]foo',
+							'* bar',
+							'* baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false in empty editor', () => {
+						_setModelData( model, '' );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be true when selection starts in list with one class and finishes in list with ' +
+					'seconf class', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-1}',
+							'',
+							'* ba]r {blockIndentListItem:indent-2}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when selection starts in list with second class and finishes in list with ' +
+					'first class', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-2}',
+							'',
+							'* ba]r {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+				} );
+
+				describe( 'when current indent is set', () => {
+					it( 'should be true when collapsed selection is at start of the list item', () => {
+						_setModelData( model, modelList( [
+							'* []foo {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when collapsed selection is in the middle of the list item', () => {
+						_setModelData( model, modelList( [
+							'* f[]oo {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when collapsed selection is at end of the list item', () => {
+						_setModelData( model, modelList( [
+							'* foo[] {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when non-collapsed selection starts at the start of the list item', () => {
+						_setModelData( model, modelList( [
+							'* [fo]o {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when non-collapsed selection starts in the middle of the list item', () => {
+						_setModelData( model, modelList( [
+							'* f[oo] {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when it is not the first list item', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'* []bar {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when selection is at start of the nested list item', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'  * []bar {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when selection spans across multiple items (all have the attribute set)', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-1}',
+							'* bar {blockIndentListItem:indent-1}',
+							'* ba]z {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when selection spans across multiple items (some do not have the attribute set)', () => {
+						_setModelData( model, modelList( [
+							'* [foo',
+							'* bar {blockIndentListItem:indent-1}',
+							'* ba]z'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when selection spans across multiple lists', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-1}',
+							'* bar {blockIndentListItem:indent-1}',
+							'',
+							'* baz] {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when blockIndentListItem attribute is set using different unit', () => {
+						_setModelData( model, modelList( [
+							'* []foo {blockIndentListItem:indent-1}'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+				} );
+			} );
+
+			describe( 'execute', () => {
+				describe( 'when current indent is set', () => {
+					it( 'should reset to 0 when collapsed selection is at start of the list item', () => {
+						_setModelData( model, modelList( [
+							'* []foo {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* []foo'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when collapsed selection is in the middle of the list item', () => {
+						_setModelData( model, modelList( [
+							'* f[]oo {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* f[]oo'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when collapsed selection is at end of the list item', () => {
+						_setModelData( model, modelList( [
+							'* foo[] {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* foo[]'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when non-collapsed selection starts at the start of the list item', () => {
+						_setModelData( model, modelList( [
+							'* [fo]o {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [fo]o'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when non-collapsed selection starts in the middle of the list item', () => {
+						_setModelData( model, modelList( [
+							'* f[oo] {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* f[oo]'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when it is not the first list item', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'* []bar {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'* []bar'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when selection is in the nested list item', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'  * []bar {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'  * []bar'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when selection spans across multiple items (all have the attribute set)', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-1}',
+							'* bar {blockIndentListItem:indent-2}',
+							'* ba]z {blockIndentListItem:indent-3}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo',
+							'* bar',
+							'* ba]z'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when selection spans across multiple items (some do not have the attribute set)', () => {
+						_setModelData( model, modelList( [
+							'* [foo',
+							'* bar {blockIndentListItem:indent-2}',
+							'* ba]z'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo',
+							'* bar',
+							'* ba]z'
+						] ) );
+					} );
+
+					it( 'should reset to 0 when selection spans across multiple lists', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentListItem:indent-2}',
+							'* bar {blockIndentListItem:indent-2}',
+							'',
+							'* baz] {blockIndentListItem:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo',
+							'* bar',
+							'',
+							'* baz]'
+						] ) );
+					} );
+				} );
+
+				describe( 'when there are list items with different indent classes in selection', () => {
+					it( 'should reset to 0 all items with indent classes', () => {
+						_setModelData( model, modelList( [
+							'* f[oo {blockIndentListItem:indent-2}',
+							'',
+							'* ba]r {blockIndentListItem:indent-3}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* f[oo',
 							'',
 							'* ba]r'
 						] ) );
