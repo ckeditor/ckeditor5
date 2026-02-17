@@ -135,7 +135,9 @@ function trimBackgroundImageStyleValues( value: string ): { value: string; image
 	const images = [];
 
 	for ( const gradient of imageFunctions ) {
-		while ( value.includes( gradient + '(' ) ) {
+		// There might be multiple gradients or URLs in the value, so we need to loop until all of them are extracted.
+		// Limit iterations to prevent infinite loops in case of malformed input or issue in the extraction logic.
+		for ( let watchdog = 0; value.includes( gradient + '(' ) && watchdog < 10; watchdog++ ) {
 			const firstIndex = value.indexOf( gradient + '(' );
 
 			let acc = gradient;
