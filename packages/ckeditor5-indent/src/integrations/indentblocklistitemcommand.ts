@@ -108,11 +108,11 @@ export class IndentBlockListItemCommand extends Command {
 			return false;
 		}
 
-		const currentIndent = parseFloat( element.getAttribute( 'blockIndentListItem' ) as string );
-
 		if ( listIntegration.indentBlockUsingClasses ) {
 			return this._indentBehavior.isForward ? false : !!element.getAttribute( 'blockIndentListItem' );
 		}
+
+		const currentIndent = parseFloat( element.getAttribute( 'blockIndentListItem' ) as string );
 
 		return this._indentBehavior.isForward && currentIndent < 0 ||
 			!this._indentBehavior.isForward && currentIndent > 0;
