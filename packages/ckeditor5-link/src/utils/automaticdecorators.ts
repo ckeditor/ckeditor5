@@ -7,7 +7,13 @@
  * @module link/utils/automaticdecorators
  */
 
-import { toMap, priorities, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import {
+	toMap,
+	priorities,
+	type ArrayOrItem,
+	type GetCallback
+} from 'ckeditor5/src/utils.js';
+
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
@@ -18,6 +24,7 @@ import type {
 	ViewElement,
 	ViewDowncastWriter
 } from 'ckeditor5/src/engine.js';
+
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
 
 /**
@@ -95,76 +102,57 @@ export class AutomaticLinkDecorators {
 				return viewElement;
 			};
 
-			dispatcher.on<DowncastAttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
-				if ( !data.attributeKey.startsWith( 'link' ) ) {
-					return;
-				}
-
-				// There is only test as this behavior decorates links and
-				// it is run before dispatcher which actually consumes this node.
-				// This allows on writing own dispatcher with highest priority,
-				// which blocks both native converter and this additional decoration.
-				if ( data.attributeKey == 'linkHref' && !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
-					return;
-				}
-
-				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
-				if ( !data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ) {
-					return;
-				}
-
-				for ( const item of this._definitions ) {
-					// Check if automatic decorator is not matched.
-					if (
-						!item.callback( data.item.getAttribute( 'linkHref' ) as string | null ) ||
-						this._conflictChecker?.( item, data.item )
-					) {
-						conversionApi.writer.unwrap(
-							conversionApi.mapper.toViewRange( data.range ),
-							elementCreator( item, conversionApi.writer )
-						);
+			const createConverter = ( isApplyingConverter: boolean ): GetCallback<DowncastAttributeEvent> => {
+				return ( evt, data, conversionApi ) => {
+					if ( !data.attributeKey.startsWith( 'link' ) ) {
+						return;
 					}
-				}
-			}, { priority: 'high' } );
 
-			dispatcher.on<DowncastAttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
-				if ( !data.attributeKey.startsWith( 'link' ) ) {
-					return;
-				}
+					// There is only test as this behavior decorates links and
+					// it is run before dispatcher which actually consumes this node.
+					// This allows on writing own dispatcher with highest priority,
+					// which blocks both native converter and this additional decoration.
+					if ( data.attributeKey == 'linkHref' && !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
+						return;
+					}
 
-				// There is only test as this behavior decorates links and
-				// it is run before dispatcher which actually consumes this node.
-				// This allows on writing own dispatcher with highest priority,
-				// which blocks both native converter and this additional decoration.
-				if ( data.attributeKey == 'linkHref' && !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
-					return;
-				}
+					// Automatic decorators for block links are handled e.g. in LinkImageEditing.
+					if ( !data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ) {
+						return;
+					}
 
-				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
-				if ( !data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ) {
-					return;
-				}
-
-				for ( const item of this._definitions ) {
-					// Check if automatic decorator is matched.
-					if (
-						item.callback( data.item.getAttribute( 'linkHref' ) as string | null ) &&
-						!this._conflictChecker?.( item, data.item )
-					) {
-						if ( data.item.is( 'selection' ) ) {
-							conversionApi.writer.wrap(
-								conversionApi.writer.document.selection.getFirstRange()!,
-								elementCreator( item, conversionApi.writer )
-							);
+					for ( const decorator of this._definitions ) {
+						// Check if automatic decorator is matched and does not conflict with any other active manual decorator.
+						if (
+							decorator.callback( data.item.getAttribute( 'linkHref' ) as string | null ) &&
+							!this._conflictChecker?.( decorator, data.item ) &&
+							isApplyingConverter
+						) {
+							if ( data.item.is( 'selection' ) ) {
+								conversionApi.writer.wrap(
+									conversionApi.writer.document.selection.getFirstRange()!,
+									elementCreator( decorator, conversionApi.writer )
+								);
+							} else {
+								conversionApi.writer.wrap(
+									conversionApi.mapper.toViewRange( data.range ),
+									elementCreator( decorator, conversionApi.writer )
+								);
+							}
 						} else {
-							conversionApi.writer.wrap(
+							conversionApi.writer.unwrap(
 								conversionApi.mapper.toViewRange( data.range ),
-								elementCreator( item, conversionApi.writer )
+								elementCreator( decorator, conversionApi.writer )
 							);
 						}
 					}
-				}
-			}, { priority: priorities.high - 2 } );
+				};
+			};
+
+			dispatcher.on<DowncastAttributeEvent>( 'attribute', createConverter( false ), { priority: 'high' } );
+			// Apply decorators after all automatic and manual decorators are removed so removing one decorator
+			// won't strip part of the other decorator's attributes, classes or styles.
+			dispatcher.on<DowncastAttributeEvent>( 'attribute', createConverter( true ), { priority: priorities.high - 1 } );
 		};
 	}
 

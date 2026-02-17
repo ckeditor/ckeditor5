@@ -2770,7 +2770,7 @@ describe( 'LinkEditing', () => {
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p>' +
 						'<a class="auto-class manual-class" href="http://rel-test.com/class-test/style-test/target-test" ' +
-						'rel="auto-value manual-value" style="color:red" target="_self">' +
+						'rel="manual-value auto-value" style="color:red" target="_self">' +
 						'link' +
 						'</a>' +
 					'</p>'
