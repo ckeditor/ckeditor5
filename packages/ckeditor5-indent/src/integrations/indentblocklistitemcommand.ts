@@ -97,12 +97,19 @@ export class IndentBlockListItemCommand extends Command {
 	 * - when currentIndent = 0, the command should be disabled
 	 * - when currentIndent < 0, only forward indentation should be allowed
 	 * - when currentIndent > 0, only backward indentation should be allowed
+	 *
+	 * For classes-based indentation, the command should be enabled if there is a class to be removed.
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
+		const listIntegration = this.editor.plugins.get( 'ListIntegration' );
 
 		if ( !listUtils.isListItemBlock( element ) ) {
 			return false;
+		}
+
+		if ( listIntegration.indentBlockUsingClasses ) {
+			return this._indentBehavior.isForward ? false : !!element.getAttribute( 'blockIndentListItem' );
 		}
 
 		const currentIndent = parseFloat( element.getAttribute( 'blockIndentListItem' ) as string );
