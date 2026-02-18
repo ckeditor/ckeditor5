@@ -251,7 +251,7 @@ jobs:
   notify_ci_failure:
     docker:
       - image: cimg/node:24.11.0
-    resource_class: medium
+    resource_class: small
     parameters:
       hideAuthor:
         type: string
