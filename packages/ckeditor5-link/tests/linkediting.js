@@ -2653,6 +2653,52 @@ describe( 'LinkEditing', () => {
 			await editor.destroy();
 		} );
 
+		describe( 'consume', () => {
+			it( 'should not apply manual decorator if consumable was already consumed by another converter (when apply)', async () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'attribute:linkManualTarget', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+				} );
+
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://example.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://example.com">link</a></p>'
+				);
+			} );
+
+			it( 'should not remove manual decorator wrapping if consumable test fails (when remove)', async () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'attribute:linkManualTarget', ( evt, data, conversionApi ) => {
+						if ( data.attributeNewValue === null ) {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}
+					}, { priority: 'high' } );
+				} );
+
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://example.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://example.com" target="_self">link</a></p>'
+				);
+
+				expect( () => {
+					model.change( writer => {
+						writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+					} );
+				} ).to.not.throw();
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://example.com" target="_self">link</a></p>'
+				);
+			} );
+		} );
+
 		describe( 'toggling manual decorator that conflicts with automatic decorator', () => {
 			it( 'should block automatic decorator when manual decorator with conflicting target is activated', () => {
 				_setModelData( model,
