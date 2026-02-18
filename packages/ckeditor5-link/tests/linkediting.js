@@ -2653,6 +2653,44 @@ describe( 'LinkEditing', () => {
 			await editor.destroy();
 		} );
 
+		describe( 'toggling manual decorator that conflicts with automatic decorator', () => {
+			it( 'should block automatic decorator when manual decorator with conflicting target is activated', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://target-test.com">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkManualTarget', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_self">link</a></p>'
+				);
+			} );
+
+			it( 'should restore automatic decorator when manual decorator with conflicting target is deactivated', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://target-test.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_self">link</a></p>'
+				);
+
+				model.change( writer => {
+					writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
+				);
+			} );
+		} );
+
 		describe( 'conflicting rel attribute', () => {
 			it( 'should merge automatic decorator with manual decorator when they set conflicting rel', () => {
 				_setModelData( model,
