@@ -2,7 +2,7 @@
 category: framework-architecture
 meta-title: Editing engine | CKEditor 5 Framework Documentation
 order: 30
-modified_at: 2026-01-31
+modified_at: 2026-02-18
 ---
 
 # Editing engine
