@@ -17,7 +17,7 @@ The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckedi
 
 The editing engine uses a Model-View-Controller (MVC) architecture. While the engine does not enforce a specific structure, most implementations follow this pattern:
 
-[{@img assets/img/editing-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/editing-engine-diagram.png)
+{@img assets/img/editing-engine-diagram.png 1800 Diagram of the engine's MVC architecture.}
 
 The architecture has three layers: **model**, **controller**, and **view**. There is one **model document** that gets **converted** into two separate views: the **editing view** and the **data view**. These views represent different things:
 
@@ -210,7 +210,7 @@ Access the schema instance at {@link module:engine/model/model~Model#schema `edi
 
 Let's look at the editing engine's architecture again:
 
-[{@img assets/img/editing-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/editing-engine-diagram.png)
+{@img assets/img/editing-engine-diagram.png 1800 Diagram of the engine's MVC architecture.}
 
 We have discussed the topmost layer &ndash; the model. The model layer creates an abstraction over the data. Its format was designed to allow storing and modifying data conveniently while enabling complex features. Most features operate on the model (reading from it and changing it).
 
@@ -371,7 +371,7 @@ We have talked about the model and the view as two completely independent subsys
 
 Let's look at the diagram of the engine's MVC architecture and see where each conversion process happens:
 
-[{@img assets/img/editing-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/editing-engine-diagram.png)
+{@img assets/img/editing-engine-diagram.png 1800 Diagram of the engine's MVC architecture.}
 
 ### Data pipeline
 
