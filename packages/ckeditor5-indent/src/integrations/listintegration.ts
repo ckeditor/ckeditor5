@@ -60,28 +60,28 @@ export class ListIntegration extends Plugin {
 
 		this.indentBlockUsingClasses = !!( config.classes && config.classes.length );
 
-		if ( config.classes && config.classes.length ) {
-			this._setupConversionUsingClassesForListBlock( config.classes );
-			this._setupConversionUsingClassesForListItemBlock( config.classes );
+		if ( this.indentBlockUsingClasses ) {
+			this._setupConversionUsingClassesForListBlock( config.classes! );
+			this._setupConversionUsingClassesForListItemBlock( config.classes! );
 
 			editor.commands.add( 'indentBlockList', new IndentBlockListCommand( editor, new IndentUsingClasses( {
 				direction: 'forward',
-				classes: config.classes
+				classes: config.classes!
 			} ) ) );
 
 			editor.commands.add( 'outdentBlockList', new IndentBlockListCommand( editor, new IndentUsingClasses( {
 				direction: 'backward',
-				classes: config.classes
+				classes: config.classes!
 			} ) ) );
 
 			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
 				direction: 'forward',
-				classes: config.classes
+				classes: config.classes!
 			} ) ) );
 
 			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
 				direction: 'backward',
-				classes: config.classes
+				classes: config.classes!
 			} ) ) );
 		} else {
 			editor.data.addStyleProcessorRules( addMarginStylesRules );
