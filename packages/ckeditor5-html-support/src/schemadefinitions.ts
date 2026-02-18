@@ -493,19 +493,11 @@ export const defaultConfig = {
 			}
 		},
 		{
-			model: 'htmlDivDl',
-			view: 'div',
-			modelSchema: {
-				allowChildren: [ 'htmlDt', 'htmlDd' ],
-				allowIn: 'htmlDl'
-			}
-		},
-		{
 			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
 				allowWhere: '$container',
-				allowChildren: [ 'htmlDt', 'htmlDd', 'htmlDivDl' ],
+				allowChildren: [ 'htmlDt', 'htmlDd', 'htmlDiv' ],
 				isBlock: false
 			}
 		},
@@ -514,6 +506,7 @@ export const defaultConfig = {
 			view: 'dt',
 			modelSchema: {
 				allowChildren: '$block',
+				allowIn: 'htmlDiv',
 				isBlock: false
 			}
 		},
@@ -522,6 +515,7 @@ export const defaultConfig = {
 			view: 'dd',
 			modelSchema: {
 				allowChildren: '$block',
+				allowIn: 'htmlDiv',
 				isBlock: false
 			}
 		},

@@ -14,7 +14,8 @@ import { isText } from './istext.js';
 import { getPositionedAncestor } from './getpositionedancestor.js';
 import { global } from './global.js';
 
-const rectProperties: Array<keyof DomRectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+const RECT_PROPERTIES: ReadonlyArray<keyof DomRectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+const POSITIONING_VALUES: ReadonlySet<string> = new Set( [ 'relative', 'absolute', 'fixed', 'sticky' ] );
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -263,57 +264,25 @@ export class Rect {
 
 		let child: any = source;
 		let parent = source.parentNode || source.commonAncestorContainer;
-		let absolutelyPositionedChildElement;
+		let lastPositionedChildElement;
 
 		// Check the ancestors all the way up to the <body>.
 		while ( parent && !isBody( parent ) ) {
-			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
+			const isNonClippingParent = getElementOverflow( parent as HTMLElement ) === 'visible';
 
-			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
-				absolutelyPositionedChildElement = child;
+			if ( isPositioned( child ) ) {
+				lastPositionedChildElement = child;
 			}
 
-			const parentElementPosition = getElementPosition( parent );
-
-			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
-			// Otherwise there's no chance of visual clipping and the parent can be skipped
+			// 1. If a parent has overflow: visible, it can be safely skipped in consideration for any parent-child configuration.
+			// 2. If a parent has any other overflow (it clips), for the actual clipping to happen the following must be true:
+			// * the last positioned child must have `position: absolute`,
+			// * the parent must have a position other than `position: static`.
+			//
 			// https://github.com/ckeditor/ckeditor5/issues/14107.
-			//
-			// condition: isParentOverflowVisible
-			// 		+---------------------------+
-			//		| #parent					|
-			//		| (overflow: visible)		|
-			//		|				+-----------+---------------+
-			//		|				| child						|
-			//		|				+-----------+---------------+
-			//		+---------------------------+
-			//
-			// condition: absolutelyPositionedChildElement && parentElementPosition === 'relative' && isParentOverflowVisible
-			// 		+---------------------------+
-			//		| parent					|
-			//		| (position: relative;)		|
-			//		| (overflow: visible;)		|
-			//		|				+-----------+---------------+
-			//		|				| child  					|
-			//		|				| (position: absolute;)		|
-			//		|				+-----------+---------------+
-			//		+---------------------------+
-			//
-			// condition: absolutelyPositionedChildElement && parentElementPosition !== 'relative'
-			// 		+---------------------------+
-			//		| parent					|
-			//		| (position: static;)		|
-			//		|				+-----------+---------------+
-			//		|				| child  					|
-			//		|				| (position: absolute;)		|
-			//		|				+-----------+---------------+
-			//		+---------------------------+
 			if (
-				isParentOverflowVisible ||
-				absolutelyPositionedChildElement && (
-					( parentElementPosition === 'relative' && isParentOverflowVisible ) ||
-					parentElementPosition !== 'relative'
-				)
+				isNonClippingParent ||
+				( lastPositionedChildElement && getElementPosition( lastPositionedChildElement ) === 'absolute' && !isPositioned( parent ) )
 			) {
 				child = parent;
 				parent = parent.parentNode;
@@ -349,7 +318,7 @@ export class Rect {
 	 * @returns `true` when Rects are equal. `false` otherwise.
 	 */
 	public isEqual( anotherRect: Rect ): boolean {
-		for ( const prop of rectProperties ) {
+		for ( const prop of RECT_PROPERTIES ) {
 			if ( this[ prop ] !== anotherRect[ prop ] ) {
 				return false;
 			}
@@ -446,7 +415,12 @@ export class Rect {
 
 		if ( clientRects.length ) {
 			for ( const rect of clientRects ) {
-				rects.push( new Rect( rect ) );
+				const r = new Rect( rect );
+
+				// Point the rect source to the DOM range instead of of the DOM client rect to allow proper clipping,
+				// in `Rect#getVisible()` method.
+				r._source = range;
+				rects.push( r );
 			}
 		}
 		// If there's no client rects for the Range, use parent container's bounding rect
@@ -528,7 +502,7 @@ export interface DomRectLike {
  * Acquires all the rect properties from the passed source.
  */
 function copyRectProperties( rect: Rect, source: DomRectLike ): void {
-	for ( const p of rectProperties ) {
+	for ( const p of RECT_PROPERTIES ) {
 		rect[ p ] = source[ p ];
 	}
 }
@@ -556,8 +530,8 @@ function isDomElement( value: any ): value is Element {
 /**
  * Returns the value of the `position` style of an `HTMLElement`.
  */
-function getElementPosition( element: HTMLElement | Node ): string {
-	return element instanceof HTMLElement ? element.ownerDocument.defaultView!.getComputedStyle( element ).position : 'static';
+function getElementPosition( element: HTMLElement ): string {
+	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
 }
 
 /**
@@ -565,6 +539,13 @@ function getElementPosition( element: HTMLElement | Node ): string {
  */
 function getElementOverflow( element: HTMLElement | Range ): string {
 	return element instanceof HTMLElement ? element.ownerDocument.defaultView!.getComputedStyle( element ).overflow : 'visible';
+}
+
+/**
+ * Checks if the given node is positioned in any other way than `position: static`.
+ */
+function isPositioned( node: Node ): boolean {
+	return node instanceof HTMLElement && POSITIONING_VALUES.has( getElementPosition( node ) );
 }
 
 /**

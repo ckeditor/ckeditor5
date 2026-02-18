@@ -224,6 +224,23 @@ describe( 'HighlightCommand', () => {
 			} );
 
 			describe( 'on not collapsed range', () => {
+				// https://github.com/ckeditor/ckeditor5/issues/18430
+				it(
+					'when applying highlight to range that includes empty paragraph, empty paragraph should get selection:highlight',
+					() => {
+						_setModelData( model, '[<p>foo</p><p></p><p>foo</p>]' );
+
+						command.execute( { value: 'yellowMarker' } );
+
+						model.change( writer => {
+							writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
+						} );
+
+						expect( _getModelData( model ) ).to.include( 'selection:highlight="yellowMarker"' );
+						expect( command.value ).to.equal( 'yellowMarker' );
+					}
+				);
+
 				it( 'should set highlight attribute on selected node when passed as parameter', () => {
 					_setModelData( model, '<p>a[bc<$text highlight="yellowMarker">fo]obar</$text>xyz</p>' );
 
