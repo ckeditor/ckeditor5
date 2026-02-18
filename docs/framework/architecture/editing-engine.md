@@ -26,7 +26,7 @@ The architecture has three layers: **model**, **controller**, and **view**. Ther
 
 Both views use virtual DOM structures (custom, DOM-like structures) that converters and features work with. These structures are then **rendered** to the actual DOM.
 
-The yellow blocks in the diagram represent code from editor features (plugins). Features control what changes happen to the model, how those changes convert to the view, and how the model updates based on events.
+The deep blue blocks in the diagram represent code from editor features (plugins). Features control what changes happen to the model, how those changes convert to the view, and how the model updates based on events.
 
 Let's explore each layer separately.
 
