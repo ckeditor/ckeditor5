@@ -7,8 +7,7 @@
  * @module ui
  */
 
-import '../theme/index.css';
-
+// This import must be at the top to ensure that `index.css` is imported first
 export { View, type UIViewRenderEvent } from './view.js';
 
 export {

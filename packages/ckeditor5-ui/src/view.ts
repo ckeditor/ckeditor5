@@ -22,6 +22,8 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
+import '../theme/index.css';
+
 /**
  * The basic view class, which represents an HTML element created out of a
  * {@link module:ui/view~View#template}. Views are building blocks of the user interface and handle
