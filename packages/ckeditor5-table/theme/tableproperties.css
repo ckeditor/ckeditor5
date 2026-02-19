@@ -3,22 +3,36 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	--ck-content-table-style-spacing: 1.5em;
-}
-
 .ck.ck-table-properties-form {
+	width: 320px;
+
 	& .ck-form__row {
 		&.ck-table-properties-form__alignment-row {
+			align-self: flex-end;
 			flex-wrap: wrap;
 			flex-basis: 0;
 			align-content: baseline;
+
+			& .ck.ck-toolbar {
+				background: none;
+
+				/* Compensate for missing input label that would push the margin (toolbar has no inputs). */
+				margin-top: var(--ck-spacing-standard);
+
+				& .ck-toolbar__items > * {
+					flex: 1;
+				}
+			}
 
 			& .ck.ck-toolbar .ck-toolbar__items {
 				flex-wrap: nowrap;
 			}
 		}
 	}
+}
+
+:root {
+	--ck-content-table-style-spacing: 1.5em;
 }
 
 .ck-content {

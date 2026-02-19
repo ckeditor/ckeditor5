@@ -99,7 +99,6 @@
     "@ckeditor/ckeditor5-special-characters": "workspace:*",
     "@ckeditor/ckeditor5-style": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",

@@ -47,7 +47,6 @@ import {
 import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TablePropertiesOptions } from '../../tableconfig.js';
 
-import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 import '../../../theme/formrow.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
