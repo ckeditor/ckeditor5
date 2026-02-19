@@ -5,33 +5,6 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
 
-.ck.ck-editor__top {
-	& .ck-sticky-panel {
-		& .ck-sticky-panel__content {
-			@mixin ck-rounded-corners {
-				border-bottom-left-radius: 0;
-				border-bottom-right-radius: 0;
-			}
-
-			border: 1px solid var(--ck-color-base-border);
-			border-bottom-width: 0;
-
-			&.ck-sticky-panel__content_sticky {
-				border-bottom-width: 1px;
-			}
-
-			& .ck-menu-bar {
-				border: 0;
-				border-bottom: 1px solid var(--ck-color-base-border);
-			}
-
-			& .ck-toolbar {
-				border: 0;
-			}
-		}
-	}
-}
-
 /* Note: Use ck-editor__main to make sure these styles don't apply to other editor types */
 
 .ck.ck-editor__main > .ck-editor__editable {

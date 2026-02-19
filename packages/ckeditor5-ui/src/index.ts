@@ -7,7 +7,8 @@
  * @module ui
  */
 
-// This import must be at the top to ensure that `globals.css` is imported first
+import '../theme/index.css';
+
 export { View, type UIViewRenderEvent } from './view.js';
 
 export {
