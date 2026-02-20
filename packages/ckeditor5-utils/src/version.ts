@@ -126,7 +126,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <details>
 	 * <summary>(Legacy) Default imports and `src` imports</summary>
 	 *
-	 * If you use the {@glink getting-started/legacy/installation-methods/quick-start-other legacy customized installation}
+	 * If you use the legacy customized installation
 	 * method, you should only import { code from the `@ckeditor/ckeditor5-<NAME>` packages. While you can import code } from
 	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
 	 * methods more difficult.
@@ -148,7 +148,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <details>
 	 * <summary>(Legacy) DLL builds</summary>
 	 *
-	 * If you are using the {@glink getting-started/legacy/advanced/alternative-setups/dll-builds legacy DLL builds},
+	 * If you are using the {@glink updating/nim-migration/dll-builds legacy DLL builds},
 	 * you should not import any non-DLL modules.
 	 *
 	 * Examples of valid and invalid import paths:

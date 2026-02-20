@@ -6,7 +6,7 @@
 import { CodeBlockEditing } from '../src/codeblockediting.js';
 import { CodeBlockUI } from '../src/codeblockui.js';
 
-import { IconCodeBlock } from 'ckeditor5/src/icons.js';
+import { IconCodeBlock } from '@ckeditor/ckeditor5-icons';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';

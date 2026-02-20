@@ -19,17 +19,11 @@ import {
 	submitHandler,
 	type InputView,
 	type FocusableView
-} from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../../theme/textalternativeform.css';
-
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
 /**
  * The TextAlternativeFormView class.

@@ -3,7 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
 .ck.ck-character-info {
+	padding: var(--ck-spacing-small) var(--ck-spacing-large);
+	border-top: 1px solid var(--ck-color-base-border);
 	display: flex;
-	justify-content: space-between;
+
+	& > * {
+		text-transform: uppercase;
+		font-size: var(--ck-font-size-small);
+	}
+
+	& .ck-character-info__name {
+		max-width: 280px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	& .ck-character-info__code {
+		opacity: .6;
+	}
+	justify-content: space-between
 }

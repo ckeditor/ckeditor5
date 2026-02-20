@@ -92,7 +92,7 @@ ModelLiveRange.prototype.is = function( type: string ): boolean {
 	return type === 'liveRange' || type === 'model:liveRange' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type == 'range' || type === 'model:range';
-};
+} as any;
 
 /**
  * Fired when `ModelLiveRange` instance boundaries have changed due to changes in the

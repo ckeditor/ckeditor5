@@ -7,7 +7,7 @@
  * @module highlight/highlightediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import { HighlightCommand } from './highlightcommand.js';
 import type { HighlightOption } from './highlightconfig.js';

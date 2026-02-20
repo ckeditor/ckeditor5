@@ -3,12 +3,52 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-form-header-height: 3.384em;
+}
+
 .ck.ck-form__header {
+	padding: var(--ck-spacing-small) var(--ck-spacing-large);
+	height: var(--ck-form-header-height);
+	line-height: var(--ck-form-header-height);
+	border-bottom: 1px solid var(--ck-color-base-border);
+	/* To prevent shrinking when placed in flexbox. */
+	flex-shrink: 0;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
+
+	& > .ck-icon {
+		margin-inline-end: var(--ck-spacing-medium);
+		flex-shrink: 0;
+	}
+
+	& .ck-form__header__label {
+		/* Defaults to 15px. */
+		--ck-font-size-base: 1.153em;
+
+		font-weight: bold;
+	}
+
+	/* Padding when back button is hidden */
+	&:has(.ck-button-back.ck-hidden) {
+		padding-inline: var(--ck-spacing-large) var(--ck-spacing-large);
+	}
+
+	/* Padding when back button is visible */
+	&:has(.ck-button-back:not(.ck-hidden)) {
+		padding-inline: var(--ck-spacing-small) var(--ck-spacing-small);
+	}
+
+	& > .ck-button-back {
+		margin-inline-end: var(--ck-spacing-small);
+	}
+
+	& > .ck.ck-button {
+		flex-shrink: 0;
+	}
 
 	& h2.ck-form__header__label {
 		flex-grow: 1;

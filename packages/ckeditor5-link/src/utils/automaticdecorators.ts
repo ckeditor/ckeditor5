@@ -7,8 +7,8 @@
  * @module link/utils/automaticdecorators
  */
 
-import { toMap, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { DowncastAttributeEvent, DowncastDispatcher, ModelElement, ViewElement } from 'ckeditor5/src/engine.js';
+import { toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import type { DowncastAttributeEvent, DowncastDispatcher, ModelElement, ViewElement } from '@ckeditor/ckeditor5-engine';
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
 
 /**
