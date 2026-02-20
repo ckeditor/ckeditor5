@@ -1439,6 +1439,24 @@ describe( 'table properties', () => {
 
 					await editor.destroy();
 				} );
+
+				it( 'should consume `cellpadding` attribute', () => {
+					let cellpaddingConsumed = false;
+
+					editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						cellpaddingConsumed = !conversionApi.consumable.test( data.viewItem, { attributes: 'cellpadding' } );
+					}, { priority: 'lowest' } );
+
+					editor.setData(
+						'<table cellpadding="10">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+					);
+
+					expect( cellpaddingConsumed ).to.be.true;
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
