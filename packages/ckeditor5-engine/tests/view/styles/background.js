@@ -27,6 +27,55 @@ describe( 'Background styles normalization', () => {
 		} );
 	} );
 
+	it( 'should normalize background with gradient', () => {
+		styles.setTo(
+			'background: ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%) ' +
+				'center #f00 repeat-y fixed border-box;'
+		);
+
+		expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+			attachment: 'fixed',
+			image: 'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)',
+			position: [ 'center' ],
+			repeat: [ 'repeat-y' ],
+			color: '#f00'
+		} );
+	} );
+
+	it( 'should normalize multiple gradients', () => {
+		styles.setTo(
+			'background: ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%), ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%) ' +
+				'center #f00 repeat-y fixed border-box;'
+		);
+
+		expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+			attachment: 'fixed',
+			image:
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%), ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)',
+			position: [ 'center' ],
+			repeat: [ 'repeat-y' ],
+			color: '#f00'
+		} );
+	} );
+
+	it( 'should normalize background-image with gradient', () => {
+		styles.setTo(
+			'background-image: ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%), ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%);'
+		);
+
+		expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+			image:
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%), ' +
+				'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)'
+		} );
+	} );
+
 	it( 'should normalize background (color with spaces)', () => {
 		styles.setTo( 'background:url("example.jpg") center rgb(253, 253, 119) repeat-y fixed border-box;' );
 
@@ -71,5 +120,12 @@ describe( 'Background styles normalization', () => {
 
 		expect( styles.toString() ).to.equal( 'background-color:#f00;' );
 		expect( styles.getAsString( 'background-color' ) ).to.equal( '#f00' );
+	} );
+
+	it( 'should output inline background-image style', () => {
+		styles.setTo( 'background:url("example.jpg") center #f00 repeat-y fixed border-box;' );
+
+		expect( styles.toString() ).to.equal( 'background-color:#f00;background-image:url("example.jpg");' );
+		expect( styles.getAsString( 'background-image' ) ).to.equal( 'url("example.jpg")' );
 	} );
 } );
