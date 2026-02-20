@@ -17,7 +17,6 @@ import type {
 	UpcastElementEvent,
 	Consumables,
 	StyleValue,
-	ModelElement,
 	BoxStyleSides,
 	DowncastAttributeEvent
 } from '@ckeditor/ckeditor5-engine';
