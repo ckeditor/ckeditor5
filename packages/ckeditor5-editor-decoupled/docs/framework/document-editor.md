@@ -93,7 +93,7 @@ Then, make the toolbar look like it floats over the "page":
 
 ```css
 .document-editor__toolbar {
-	/* Make sure the toolbar container is always above the editable. */
+	/* Set the toolbar container above the editable. May need adjustment. */
 	z-index: 1;
 
 	/* Create the illusion of the toolbar floating over the editable. */
