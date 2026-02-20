@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-source-editing",
-  "version": "47.4.0",
+  "version": "47.5.0",
   "description": "Source editing feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -38,8 +38,7 @@
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-theme-lark": "workspace:*"
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-code-block": "workspace:*",

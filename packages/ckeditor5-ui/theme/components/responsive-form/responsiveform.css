@@ -4,25 +4,69 @@
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
-.ck-vertical-form .ck-button {
-	&::after {
-		content: "";
-		width: 0;
-		position: absolute;
-		right: -1px;
-		top: -1px;
-		bottom: -1px;
-		z-index: 1;
-	}
-
-	&:focus::after {
-		display: none;
-	}
-}
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-responsive-form {
+	padding: var(--ck-spacing-large);
+
+	&:focus {
+		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
+		outline: none;
+	}
+
+	@mixin ck-dir ltr {
+		& > :not(:first-child) {
+			margin-left: var(--ck-spacing-standard);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		& > :not(:last-child) {
+			margin-left: var(--ck-spacing-standard);
+		}
+	}
+
 	@mixin ck-media-phone {
+		padding: 0;
+		width: calc(.8 * var(--ck-input-width));
+
+		& .ck-labeled-field-view {
+			margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+
+			& .ck-input-text,
+			& .ck-input-number {
+				min-width: 0;
+				width: 100%;
+			}
+
+			/* Let the long error messages wrap in the narrow form. */
+			& .ck-labeled-field-view__error {
+				white-space: normal;
+			}
+		}
+
+		& > .ck-button:nth-last-child(1),
+		& > .ck-button:nth-last-child(2) {
+			padding: var(--ck-spacing-standard);
+			margin-top: var(--ck-spacing-large);
+			border-radius: 0;
+
+			&:not(:focus) {
+				border-top: 1px solid var(--ck-color-base-border);
+			}
+
+			@mixin ck-dir ltr {
+				margin-left: 0;
+			}
+
+			@mixin ck-dir rtl {
+				margin-left: 0;
+
+				&:last-of-type {
+					border-right: 1px solid var(--ck-color-base-border);
+				}
+			}
+		}
 		& .ck-button {
 			&::after {
 				content: "";
@@ -34,9 +78,33 @@
 				z-index: 1;
 			}
 
+			&:nth-last-child(2)::after {
+				border-right: 1px solid var(--ck-color-base-border);
+			}
+
 			&:focus::after {
 				display: none;
 			}
 		}
+	}
+}
+
+.ck-vertical-form > .ck-button:nth-last-child(2)::after {
+	border-right: 1px solid var(--ck-color-base-border);
+}
+
+.ck-vertical-form .ck-button {
+	&::after { /* stylelint-disable no-descending-specificity */
+		content: "";
+		width: 0;
+		position: absolute;
+		right: -1px;
+		top: -1px;
+		bottom: -1px;
+		z-index: 1;
+	}
+
+	&:focus::after {
+		display: none;
 	}
 }

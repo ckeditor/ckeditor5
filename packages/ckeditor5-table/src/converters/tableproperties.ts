@@ -117,7 +117,13 @@ export function upcastStyleToAttribute(
 					let value = viewElement.getAttribute( attributeName );
 
 					if ( value && attributeType == 'length' ) {
-						value = parseFloat( value ) + ( value.endsWith( '%' ) ? '%' : 'px' );
+						const parsedValue = parseFloat( value );
+
+						if ( isNaN( parsedValue ) ) {
+							value = localDefaultValue;
+						} else {
+							value = parsedValue + ( value.includes( '%' ) ? '%' : 'px' );
+						}
 					}
 
 					if ( localDefaultValue !== value ) {

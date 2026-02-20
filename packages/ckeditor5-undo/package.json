@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-undo",
-  "version": "47.4.0",
+  "version": "47.5.0",
   "description": "Undo feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -48,8 +48,8 @@
     "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*",
-    "@ckeditor/ckeditor5-table": "workspace:*"
+    "@ckeditor/ckeditor5-table": "workspace:*",
+    "@ckeditor/ckeditor5-typing": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"
