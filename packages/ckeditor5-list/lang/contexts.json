@@ -13,6 +13,7 @@
 	"Toggle the upper–roman list style": "The ARIA label of the button that toggles the \"upper–roman\" list style.",
 	"Toggle the lower–latin list style": "The ARIA label of the button that toggles the \"lower–latin\" list style.",
 	"Toggle the upper–latin list style": "The ARIA label of the button that toggles the \"upper–latin\" list style.",
+	"Toggle the arabic-indic list style": "The ARIA label of the button that toggles the \"arabic-indic\" list style.",
 	"Disc": "The tooltip text of the button that toggles the \"disc\" list style.",
 	"Circle": "The tooltip text of the button that toggles the \"circle\" list style.",
 	"Square": "The tooltip text of the button that toggles the \"square\" list style.",

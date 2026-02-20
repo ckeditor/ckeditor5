@@ -455,6 +455,7 @@ function mapListStyleDefinition( value: string ) {
 			return 'upper-roman';
 		case 'roman-lower':
 			return 'lower-roman';
+		case 'arabic-indic':
 		case 'circle':
 		case 'disc':
 		case 'square':
