@@ -22,7 +22,7 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
-import '../theme/globals/globals.css';
+import '../theme/index.css';
 
 /**
  * The basic view class, which represents an HTML element created out of a

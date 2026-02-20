@@ -439,6 +439,9 @@ ModelNode.prototype.is = function( type: string ): boolean {
 } as any;
 
 /**
- * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
+ * Represents a set of model node attributes, accepted as either a plain object
+ * with string keys or an iterable of `[ key, value ]` pairs (e.g., a `Map`).
+ *
+ * See {@link module:utils/tomap~toMap} for more details and examples.
  */
 export type ModelNodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;

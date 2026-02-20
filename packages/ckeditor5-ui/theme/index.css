@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "./globals/_colors.css";
+@import "./globals/_disabled.css";
+@import "./globals/_focus.css";
+@import "./globals/_fonts.css";
+@import "./globals/_reset.css";
+@import "./globals/_rounded.css";
+@import "./globals/_shadow.css";
+@import "./globals/_spacing.css";
+@import "./globals/_hidden.css";
+@import "./globals/_zindex.css";
+@import "./globals/_transition.css";
+@import "./globals/_poweredby.css";
+@import "./globals/_evaluationbadge.css";
+
+@import "./components/responsive-form/responsiveform.css";
+@import "./components/form/form.css";

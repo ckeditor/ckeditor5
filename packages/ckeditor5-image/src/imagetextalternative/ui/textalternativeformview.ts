@@ -25,9 +25,6 @@ import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../../theme/textalternativeform.css';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
-
 /**
  * The TextAlternativeFormView class.
  *

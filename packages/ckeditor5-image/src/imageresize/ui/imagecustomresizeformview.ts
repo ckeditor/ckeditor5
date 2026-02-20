@@ -26,9 +26,6 @@ import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../../theme/imagecustomresizeform.css';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
-
 /**
  * The ImageCustomResizeFormView class.
  *

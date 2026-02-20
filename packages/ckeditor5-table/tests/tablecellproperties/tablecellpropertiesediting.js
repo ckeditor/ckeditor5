@@ -283,16 +283,23 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
-				describe( 'border="0" attribute handling', () => {
+				describe( 'border attribute handling', () => {
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
+							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+							table: {
+								tableCellProperties: {
+									defaultProperties: {
+										borderWidth: '5px'
+									}
+								}
+							}
 						} );
 
 						model = editor.model;
 					} );
 
-					it( 'should convert border="0" to tableCellBorderStyle="none" on all table cells', () => {
+					it( 'should convert border="0" to tableCellBorderWidth="0px" on all table cells', () => {
 						editor.setData(
 							'<table border="0">' +
 								'<tr>' +
@@ -313,7 +320,82 @@ describe( 'table cell properties', () => {
 						expect( cells ).to.have.lengthOf( 4 );
 
 						for ( const cell of cells ) {
-							expect( cell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'none' );
+							expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '0px' );
+						}
+					} );
+
+					it( 'should convert border (without value) to tableCellBorderWidth="0px" on all table cells', () => {
+						editor.setData(
+							'<table border>' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+						}
+					} );
+
+					it( 'should convert border="abc" to tableCellBorderWidth="1px" on all table cells', () => {
+						editor.setData(
+							'<table border="abc">' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+						}
+					} );
+
+					it( 'should convert border="3" to tableCellBorderWidth="1px" on all table cells', () => {
+						editor.setData(
+							'<table border="3">' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 						}
 					} );
 

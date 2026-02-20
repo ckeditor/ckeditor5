@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+.ck.ck-toolbar-dropdown .ck-toolbar {
+	border: 0;
+}
+
 :root {
 	--ck-toolbar-dropdown-max-width: 60vw;
 }

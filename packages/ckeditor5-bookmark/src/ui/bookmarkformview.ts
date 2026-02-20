@@ -27,9 +27,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
-
 import '../../theme/bookmarkform.css';
 
 /**

@@ -18,3 +18,13 @@
 .ck[class*="ck-heading_heading"] {
 	font-weight: bold;
 }
+
+.ck.ck-dropdown.ck-heading-dropdown {
+	& .ck-dropdown__button .ck-button__label {
+		width: 8em;
+	}
+
+	& .ck-dropdown__panel .ck-list__item {
+		min-width: 18em;
+	}
+}

@@ -32,9 +32,9 @@ import {
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../../theme/findandreplaceform.css';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
+
+import '../../theme/findandreplaceform.css';
 
 /**
  * The find and replace form view class.

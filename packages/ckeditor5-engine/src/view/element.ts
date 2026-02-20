@@ -763,7 +763,7 @@ export class ViewElement extends ViewNode {
 	 * @param value Value to set.
 	 * @fires change
 	 */
-	public _setStyle( property: string, value: string ): void;
+	public _setStyle( property: string, value: StyleValue ): void;
 
 	/**
 	 * Adds style to the element.
@@ -785,9 +785,9 @@ export class ViewElement extends ViewNode {
 	 * @param properties Object with key - value pairs.
 	 * @fires change
 	 */
-	public _setStyle( properties: Record<string, string> ): void;
+	public _setStyle( properties: Record<string, StyleValue> ): void;
 
-	public _setStyle( property: string | Record<string, string>, value?: string ): void {
+	public _setStyle( property: string | Record<string, StyleValue>, value?: StyleValue ): void {
 		if ( typeof property != 'string' ) {
 			this._setAttribute( 'style', property, false );
 		} else {

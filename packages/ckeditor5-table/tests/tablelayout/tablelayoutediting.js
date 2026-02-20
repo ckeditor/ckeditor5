@@ -1009,7 +1009,7 @@ describe( 'TableLayoutEditing', () => {
 			} );
 		} );
 
-		describe( 'border="0" attribute handling', () => {
+		describe( 'border attribute handling', () => {
 			beforeEach( async () => {
 				// Remove previously created editor.
 				await editor.destroy();
@@ -1094,7 +1094,20 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				const table = model.document.getRoot().getChild( 0 );
-				expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'none' );
+				expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '0px' );
+			} );
+
+			it( 'should apply border="3" to content tables', () => {
+				editor.setData(
+					'<table border="3" class="content-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const table = model.document.getRoot().getChild( 0 );
+				expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '3px' );
 			} );
 
 			it( 'should apply border="0" to cells in content tables', () => {
@@ -1107,7 +1120,20 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
-				expect( cell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'none' );
+				expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '0px' );
+			} );
+
+			it( 'should not apply border="7" to cells in content tables (default 1px as this is how browsers handle it)', () => {
+				editor.setData(
+					'<table border="7" class="content-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 			} );
 		} );
 	} );
