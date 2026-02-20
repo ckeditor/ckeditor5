@@ -191,6 +191,25 @@ createEditor( 'style-attribute', {
 	reversed: false
 } );
 
+createEditor( 'style-ui-options', {
+	styles: {
+		listStyleTypes: {
+			numbered: [
+				'decimal',
+				'decimal-leading-zero',
+				'arabic-indic'
+			],
+			bulleted: [
+				'disc',
+				'circle',
+				'square'
+			]
+		}
+	},
+	startIndex: false,
+	reversed: false
+} );
+
 createEditor( 'none', {
 	styles: false,
 	startIndex: false,

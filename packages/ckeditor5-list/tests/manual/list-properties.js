@@ -232,7 +232,8 @@ ClassicEditor
 							'decimal',
 							'decimal-leading-zero',
 							'lower-roman',
-							'upper-roman'
+							'upper-roman',
+							'arabic-indic'
 						],
 						bulleted: [
 							'disc',
