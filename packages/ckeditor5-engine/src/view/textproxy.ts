@@ -169,7 +169,7 @@ export class ViewTextProxy extends ViewTypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewTextProxy.prototype.is = function( type: string ): boolean {
+( ViewTextProxy.prototype as any ).is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'view:$textProxy' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'view:textProxy';

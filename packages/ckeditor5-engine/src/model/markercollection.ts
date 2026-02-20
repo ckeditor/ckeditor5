@@ -522,7 +522,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Marker.prototype.is = function( type: string ): boolean {
+( Marker.prototype as any ).is = function( type: string ): boolean {
 	return type === 'marker' || type === 'model:marker';
 };
 

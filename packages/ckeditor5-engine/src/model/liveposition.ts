@@ -110,7 +110,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelLivePosition.prototype.is = function( type: string ): boolean {
+( ModelLivePosition.prototype as any ).is = function( type: string ): boolean {
 	return type === 'livePosition' || type === 'model:livePosition' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type == 'position' || type === 'model:position';

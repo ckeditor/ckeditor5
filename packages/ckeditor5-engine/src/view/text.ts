@@ -131,10 +131,10 @@ export class ViewText extends ViewNode {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewText.prototype.is = function( type: string ): boolean {
+( ViewText.prototype as any ).is = function( type: string ): boolean {
 	return type === '$text' || type === 'view:$text' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'text' || type === 'view:text' ||
-		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+		// From super.is(). This is highly utilized method and cannot call super. See ckeditor/ckeditor5#6529.
 		type === 'node' || type === 'view:node';
 };

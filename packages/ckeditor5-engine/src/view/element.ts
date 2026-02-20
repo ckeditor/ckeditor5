@@ -1214,7 +1214,7 @@ export class ViewElement extends ViewNode {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewElement.prototype.is = function( type: string, name?: string ): boolean {
+( ViewElement.prototype as any ).is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'element' || type === 'view:element' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.

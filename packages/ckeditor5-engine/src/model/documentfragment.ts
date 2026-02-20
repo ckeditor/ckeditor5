@@ -401,7 +401,7 @@ export class ModelDocumentFragment extends ModelTypeCheckable implements Iterabl
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelDocumentFragment.prototype.is = function( type: string ): boolean {
+( ModelDocumentFragment.prototype as any ).is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'model:documentFragment';
 };
 

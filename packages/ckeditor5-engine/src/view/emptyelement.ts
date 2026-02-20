@@ -84,10 +84,10 @@ export class ViewEmptyElement extends ViewElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewEmptyElement.prototype.is = function( type: string, name?: string ): boolean {
+( ViewEmptyElement.prototype as any ).is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'emptyElement' || type === 'view:emptyElement' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilized method and cannot call super. See ckeditor/ckeditor5#6529.
 			type === 'element' || type === 'view:element' ||
 			type === 'node' || type === 'view:node';
 	} else {

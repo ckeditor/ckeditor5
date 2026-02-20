@@ -1026,6 +1026,6 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelRange.prototype.is = function( type: string ): boolean {
+( ModelRange.prototype as any ).is = function( type: string ): boolean {
 	return type === 'range' || type === 'model:range';
 };

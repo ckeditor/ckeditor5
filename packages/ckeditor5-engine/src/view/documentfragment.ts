@@ -286,7 +286,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( ViewType
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewDocumentFragment.prototype.is = function( type: string ): boolean {
+( ViewDocumentFragment.prototype as any ).is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'view:documentFragment';
 };
 

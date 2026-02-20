@@ -244,7 +244,7 @@ export class ModelTextProxy extends ModelTypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelTextProxy.prototype.is = function( type: string ): boolean {
+( ModelTextProxy.prototype as any ).is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'model:$textProxy' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'model:textProxy';

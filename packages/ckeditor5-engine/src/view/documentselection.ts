@@ -395,7 +395,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewDocumentSelection.prototype.is = function( type: string ): boolean {
+( ViewDocumentSelection.prototype as any ).is = function( type: string ): boolean {
 	return type === 'selection' ||
 		type == 'documentSelection' ||
 		type == 'view:selection' ||

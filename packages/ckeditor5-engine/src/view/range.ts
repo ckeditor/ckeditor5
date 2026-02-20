@@ -510,7 +510,7 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewRange.prototype.is = function( type: string ): boolean {
+( ViewRange.prototype as any ).is = function( type: string ): boolean {
 	return type === 'range' || type === 'view:range';
 };
 

@@ -493,7 +493,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelDocumentSelection.prototype.is = function( type: string ): boolean {
+( ModelDocumentSelection.prototype as any ).is = function( type: string ): boolean {
 	return type === 'selection' ||
 		type == 'model:selection' ||
 		type == 'documentSelection' ||
