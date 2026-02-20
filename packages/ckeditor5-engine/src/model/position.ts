@@ -1033,7 +1033,7 @@ export class ModelPosition extends ModelTypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelPosition.prototype.is = function( type: string ): boolean {
+( ModelPosition.prototype as any ).is = function( type: string ): boolean {
 	return type === 'position' || type === 'model:position';
 };
 

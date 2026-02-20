@@ -88,7 +88,7 @@ export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( ModelRange ) {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelLiveRange.prototype.is = function( type: string ): boolean {
+( ModelLiveRange.prototype as any ).is = function( type: string ): boolean {
 	return type === 'liveRange' || type === 'model:liveRange' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type == 'range' || type === 'model:range';

@@ -302,7 +302,7 @@ export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeChe
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewNode.prototype.is = function( type: string ): boolean {
+( ViewNode.prototype as any ).is = function( type: string ): boolean {
 	return type === 'node' || type === 'view:node';
 };
 

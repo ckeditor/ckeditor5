@@ -390,7 +390,7 @@ export class ViewPosition extends ViewTypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewPosition.prototype.is = function( type: string ): boolean {
+( ViewPosition.prototype as any ).is = function( type: string ): boolean {
 	return type === 'position' || type === 'view:position';
 };
 

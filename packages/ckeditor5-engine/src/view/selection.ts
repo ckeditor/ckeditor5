@@ -693,7 +693,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewSelection.prototype.is = function( type: string ): boolean {
+( ViewSelection.prototype as any ).is = function( type: string ): boolean {
 	return type === 'selection' || type === 'view:selection';
 };
 

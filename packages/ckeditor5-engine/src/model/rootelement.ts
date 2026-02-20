@@ -91,7 +91,7 @@ export class ModelRootElement extends ModelElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelRootElement.prototype.is = function( type: string, name?: string ): boolean {
+( ModelRootElement.prototype as any ).is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'model:rootElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
