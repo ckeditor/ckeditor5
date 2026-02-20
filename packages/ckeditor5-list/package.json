@@ -22,7 +22,8 @@
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "ckeditor5": "workspace:*"
+    "ckeditor5": "workspace:*",
+    "es-toolkit": "1.39.5"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",
