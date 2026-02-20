@@ -63,11 +63,14 @@
 			/* To make the caret visible. */
 			text-indent: 1px;
 
+			/* The default table layout cell style in the editing view when the border is unset. */
+			border-color: var(--ck-table-layout-default-border-color);
+			border-style: dashed;
+
 			/* Resets the `min-width` style attribute that was added by the content table style. */
 			&[style^="width:"],
 			&[style*=" width:"],
-			&[style*=";width:"],
-			&[style*="'width:"] {
+			&[style*=";width:"] {
 				min-width: auto;
 			}
 
@@ -80,13 +83,7 @@
 			But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
 			&:not(
 			[style*="border:"],
-			[style*="border-top"],
-			[style*="border-bottom"],
-			[style*="border-left"],
-			[style*="border-right"],
-			[style*="border-width"],
-			[style*="border-style"],
-			[style*="border-color"]) {
+			[style|="border"])  {
 				border-color: transparent;
 				/* Resetting `border-width` property to the user agent styles. */
 				border-width: 0;

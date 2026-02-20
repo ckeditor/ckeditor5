@@ -32,6 +32,7 @@ import type { ViewElement, ViewElementAttributes } from './element.js';
 import { type ViewDomConverter } from './domconverter.js';
 import { type ViewItem } from './item.js';
 import type { DowncastSlotFilter } from '../conversion/downcasthelpers.js';
+import type { StyleValue } from './stylesmap.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -632,7 +633,7 @@ export class ViewDowncastWriter {
 	 * @param value Value to set.
 	 * @param element Element to set styles on.
 	 */
-	public setStyle( property: string, value: string, element: ViewElement ): void;
+	public setStyle( property: string, value: StyleValue, element: ViewElement ): void;
 
 	/**
 	 * Adds many styles to the element.
@@ -652,18 +653,18 @@ export class ViewDowncastWriter {
 	 * @param property Object with key - value pairs.
 	 * @param element Element to set styles on.
 	 */
-	public setStyle( property: Record<string, string>, element: ViewElement ): void;
+	public setStyle( property: Record<string, StyleValue>, element: ViewElement ): void;
 
 	public setStyle(
-		property: string | Record<string, string>,
-		value: string | ViewElement,
+		property: string | Record<string, StyleValue>,
+		value: StyleValue | ViewElement,
 		element?: ViewElement
 	): void
 	{
 		if ( isPlainObject( property ) && element === undefined ) {
-			( value as ViewElement )._setStyle( property as Record<string, string> );
+			( value as ViewElement )._setStyle( property as Record<string, StyleValue> );
 		} else {
-			element!._setStyle( property as string, value as string );
+			element!._setStyle( property as string, value as StyleValue );
 		}
 	}
 
