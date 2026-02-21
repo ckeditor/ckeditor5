@@ -1563,6 +1563,56 @@ describe( 'Rect', () => {
 		} );
 	} );
 
+	describe( 'getDomElementRects()', () => {
+		it( 'should return rects for an element with a single client rect', () => {
+			const element = document.createElement( 'div' );
+
+			sinon.stub( element, 'getClientRects' ).returns( [ geometry ] );
+
+			const rects = Rect.getDomElementRects( element );
+			expect( rects ).to.have.length( 1 );
+			assertRect( rects[ 0 ], geometry );
+		} );
+
+		it( 'should return multiple rects when element has multiple client rects', () => {
+			const element = document.createElement( 'span' );
+			const secondGeometry = Object.assign( {}, geometry, {
+				top: 30,
+				bottom: 50,
+				height: 20
+			} );
+
+			sinon.stub( element, 'getClientRects' ).returns( [ geometry, secondGeometry ] );
+
+			const rects = Rect.getDomElementRects( element );
+			expect( rects ).to.have.length( 2 );
+			assertRect( rects[ 0 ], geometry );
+			assertRect( rects[ 1 ], secondGeometry );
+		} );
+
+		it( 'should return empty array when element has no client rects', () => {
+			const element = document.createElement( 'div' );
+
+			sinon.stub( element, 'getClientRects' ).returns( [] );
+
+			const rects = Rect.getDomElementRects( element );
+			expect( rects ).to.have.length( 0 );
+			expect( rects ).to.be.an( 'array' );
+		} );
+
+		it( 'should point the rect sources to the DOM element instead of client rects to allow proper clipping in getVisible()', () => {
+			const element = document.createElement( 'div' );
+
+			sinon.stub( element, 'getClientRects' ).returns( [ geometry, geometry ] );
+
+			const rects = Rect.getDomElementRects( element );
+
+			rects.forEach( rect => {
+				expect( rect._source ).to.equal( element );
+			} );
+		} );
+	} );
+
 	describe( 'getBoundingRect()', () => {
 		it( 'should not return a rect instance when no rectangles were given', () => {
 			expect( Rect.getBoundingRect( [] ) ).to.be.null;
