@@ -15,6 +15,7 @@ import type {
 	ModelElement,
 	ModelItem,
 	ModelSelection,
+	ViewDowncastWriter,
 	ViewElement
 } from '@ckeditor/ckeditor5-engine';
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
