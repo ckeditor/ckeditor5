@@ -21,7 +21,7 @@ import {
 	type DowncastDispatcher,
 	type UpcastDispatcher
 } from '@ckeditor/ckeditor5-engine';
-import { toMap } from '@ckeditor/ckeditor5-utils';
+import { type GetCallback, priorities, toMap } from '@ckeditor/ckeditor5-utils';
 
 import { LinkEditing } from './linkediting.js';
 import { type LinkManualDecorator } from './utils/manualdecorator.js';
@@ -224,47 +224,58 @@ function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher )
  */
 function downcastImageLinkManualDecorator( decorator: LinkManualDecorator ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
-			const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
-			const linkInImage = Array.from( viewFigure.getChildren() )
-				.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
+		const createConverter = ( isApplyingConverter: boolean ): GetCallback<DowncastAttributeEvent<ModelElement>> => {
+			return ( evt, data, conversionApi ) => {
+				const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
+				const linkInImage = Array.from( viewFigure.getChildren() )
+					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
 
-			// The <a> element was removed by the time this converter is executed.
-			// It may happen when the base `linkHref` and decorator attributes are removed
-			// at the same time (see #8401).
-			if ( !linkInImage ) {
-				return;
-			}
-
-			// Handle deactivated manual decorator.
-			if ( data.attributeOldValue ) {
-				for ( const key in decorator.attributes ) {
-					conversionApi.writer.removeAttribute( key, linkInImage );
+				// The <a> element was removed by the time this converter is executed.
+				// It may happen when the base `linkHref` and decorator attributes are removed
+				// at the same time (see #8401).
+				if ( !linkInImage ) {
+					return;
 				}
 
-				if ( decorator.classes ) {
-					conversionApi.writer.removeClass( decorator.classes, linkInImage );
+				// Handle deactivated manual decorator.
+				if ( !isApplyingConverter && data.attributeOldValue ) {
+					for ( const [ key, val ] of toMap( decorator.attributes ) ) {
+						conversionApi.writer.removeAttribute( key, val, linkInImage );
+					}
+
+					if ( decorator.classes ) {
+						conversionApi.writer.removeClass( decorator.classes, linkInImage );
+					}
+
+					for ( const key in decorator.styles ) {
+						conversionApi.writer.removeStyle( key, linkInImage );
+					}
 				}
 
-				for ( const key in decorator.styles ) {
-					conversionApi.writer.removeStyle( key, linkInImage );
-				}
-			}
+				// Handle activated manual decorator.
+				if ( isApplyingConverter && data.attributeNewValue ) {
+					for ( const [ key, val ] of toMap( decorator.attributes ) ) {
+						conversionApi.writer.setAttribute( key, val, false, linkInImage );
+					}
 
-			// Handle activated manual decorator.
-			if ( data.attributeNewValue ) {
-				for ( const [ key, val ] of toMap( decorator.attributes ) ) {
-					conversionApi.writer.setAttribute( key, val, linkInImage );
-				}
+					if ( decorator.classes ) {
+						conversionApi.writer.addClass( decorator.classes, linkInImage );
+					}
 
-				if ( decorator.classes ) {
-					conversionApi.writer.addClass( decorator.classes, linkInImage );
+					for ( const key in decorator.styles ) {
+						conversionApi.writer.setStyle( key, decorator.styles[ key ], linkInImage );
+					}
 				}
+			};
+		};
 
-				for ( const key in decorator.styles ) {
-					conversionApi.writer.setStyle( key, decorator.styles[ key ], linkInImage );
-				}
-			}
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ decorator.id }:imageBlock`, createConverter( false ), {
+			priority: priorities.high - 1
+		} );
+		// Apply decorators after all automatic and manual decorators are removed so removing one decorator
+		// won't strip part of the other decorator's attributes, classes or styles.
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ decorator.id }:imageBlock`, createConverter( true ), {
+			priority: priorities.high - 2
 		} );
 	};
 }

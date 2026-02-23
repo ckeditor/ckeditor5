@@ -53,7 +53,7 @@ export type {
 	NormalizedLinkDecoratorDefinition
 } from './utils.js';
 
-export { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
+export { AutomaticLinkDecorators, type LinkDecoratorConflictChecker } from './utils/automaticdecorators.js';
 export { LinkManualDecorator } from './utils/manualdecorator.js';
 
 export type {
