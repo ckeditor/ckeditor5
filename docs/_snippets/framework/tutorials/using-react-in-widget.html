@@ -9,6 +9,13 @@
 	justify-content: center;
 }
 
+@media (max-width: 600px) {
+	.app {
+		flex-direction: column-reverse;
+		align-items: stretch;
+	}
+}
+
 .app textarea {
 	width: 100%;
 	height: 300px;
@@ -76,6 +83,14 @@
 	margin-left: var(--spacing-5);
 	padding: var(--spacing-0) var(--spacing-5);
 	border-left: 1px solid var(--color-gray-300);
+}
+
+@media (max-width: 600px) {
+	.app .app__product-list {
+		margin-left: var(--spacing-0);
+		padding: var(--spacing-0);
+		border-left: none;
+	}
 }
 
 .app .app__product-list ul {
