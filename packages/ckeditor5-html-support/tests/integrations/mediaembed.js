@@ -1036,8 +1036,7 @@ describe( 'MediaEmbedElementSupport', () => {
 							'data-figure': 'data-figure-value'
 						}
 					},
-					2: '',
-					3: {
+					2: {
 						attributes: {
 							'data-oembed': 'data-oembed-value'
 						}
@@ -1077,8 +1076,7 @@ describe( 'MediaEmbedElementSupport', () => {
 					1: {
 						classes: [ 'media', 'foobar' ]
 					},
-					2: '',
-					3: {
+					2: {
 						classes: [ 'foobar' ]
 					}
 				}
@@ -1113,8 +1111,7 @@ describe( 'MediaEmbedElementSupport', () => {
 					1: {
 						styles: { color: 'red' }
 					},
-					2: '',
-					3: {
+					2: {
 						styles: { color: 'red' }
 					}
 				}
@@ -1145,9 +1142,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
 				'<htmlFigure><paragraph><htmlOembed htmlContent=""></htmlOembed></paragraph></htmlFigure>',
-				attributes: {
-					1: ''
-				}
+				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
@@ -1175,9 +1170,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
 				'<htmlFigure><paragraph><htmlOembed htmlContent=""></htmlOembed></paragraph></htmlFigure>',
-				attributes: {
-					1: ''
-				}
+				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
@@ -1205,9 +1198,7 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
 				'<htmlFigure><paragraph><htmlOembed htmlContent=""></htmlOembed></paragraph></htmlFigure>',
-				attributes: {
-					1: ''
-				}
+				attributes: {}
 			} );
 
 			expect( editor.getData() ).to.equal(
@@ -1229,8 +1220,7 @@ describe( 'MediaEmbedElementSupport', () => {
 				data:
 				'<paragraph><htmlOembed htmlContent="" htmlOembedAttributes="(1)"></htmlOembed></paragraph>',
 				attributes: {
-					1: '',
-					2: {
+					1: {
 						attributes: {
 							'data-foo': 'foo',
 							'url': 'https://www.youtube.com/watch?v=ZVv7UMQPEWk'
@@ -1276,13 +1266,12 @@ describe( 'MediaEmbedElementSupport', () => {
 							'data-figure': 'oembed'
 						}
 					},
-					2: '',
-					3: {
+					2: {
 						attributes: {
 							'data-figure': 'standalone'
 						}
 					},
-					4: {
+					3: {
 						attributes: {
 							'data-figcaption': 'figcaption'
 						}
