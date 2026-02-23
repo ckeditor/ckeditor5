@@ -466,20 +466,24 @@ export class LinkEditing extends Plugin {
 			);
 
 			for ( const change of changes ) {
-				if ( change.type !== 'attribute' ) {
-					continue;
-				}
-
-				// Only react to link-related attribute changes to reduce work.
-				if ( change.attributeKey !== 'linkHref' && !manualDecoratorAttributeKeys.has( change.attributeKey ) ) {
-					continue;
-				}
-
-				// Use range items instead of nodeAfter to avoid issues with text node merging.
-				for ( const item of change.range.getItems() ) {
-					if ( item.hasAttribute( 'linkHref' ) ) {
-						elementsToCheck.add( item );
+				if ( change.type === 'attribute' ) {
+					// Only react to link-related attribute changes to reduce work.
+					if ( change.attributeKey !== 'linkHref' && !manualDecoratorAttributeKeys.has( change.attributeKey ) ) {
+						continue;
 					}
+
+					// Use range items instead of nodeAfter to avoid issues with text node merging.
+					for ( const item of change.range.getItems() ) {
+						if ( item.hasAttribute( 'linkHref' ) ) {
+							elementsToCheck.add( item );
+						}
+					}
+				}
+
+				// Check if newly inserted nodes have link attributes. This is to cover the case of pasting content
+				// with link attributes or typing over a link.
+				if ( change.type === 'insert' && change.attributes.has( 'linkHref' ) && change.position.nodeAfter ) {
+					elementsToCheck.add( change.position.nodeAfter );
 				}
 			}
 

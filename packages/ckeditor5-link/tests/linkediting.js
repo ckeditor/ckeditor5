@@ -3036,6 +3036,29 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
+		it( 'should resolve conflicting decorator when inserting text into an existing link', () => {
+			_setModelData( model,
+				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
+			);
+
+			model.change( writer => {
+				const position = model.document.selection.getFirstPosition();
+
+				writer.insertText( 'foo', {
+					linkHref: 'http://example.com',
+					linkDecorator1: true,
+					linkDecorator2: true
+				}, position );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkDecorator1="true" linkHref="http://example.com">link</$text>' +
+					'<$text linkDecorator2="true" linkHref="http://example.com">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
 		it( 'should not drop conflicting decorator when setting non-conflicting one', () => {
 			_setModelData( model,
 				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
