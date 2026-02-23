@@ -31,7 +31,7 @@ describe( 'IndentBlockListItemCommand', () => {
 						return { isListItemBlock };
 					}
 
-					if ( name === 'ListIntegration' ) {
+					if ( name === 'IndentBlockListIntegration' ) {
 						return { indentBlockUsingClasses };
 					}
 				} );

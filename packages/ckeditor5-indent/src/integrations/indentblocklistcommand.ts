@@ -16,7 +16,7 @@ import type { IndentBehavior } from '../indentcommandbehavior/indentbehavior.js'
 /**
  * The indent block list command.
  *
- * The command is registered by the {@link module:indent/integrations/listintegration~ListIntegration} as
+ * The command is registered by the {@link module:indent/integrations/indentblocklistintegration~IndentBlockListIntegration} as
  * `'indentBlockList'` for indenting lists and `'outdentBlockList'` for outdenting lists.
  *
  * To increase/decrease block indentation of the list the selection must be at the start of the first top–level list item
@@ -86,7 +86,7 @@ export class IndentBlockListCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const listIntegration = editor.plugins.get( 'ListIntegration' );
+		const listIntegration = editor.plugins.get( 'IndentBlockListIntegration' );
 
 		model.change( writer => {
 			const listItem = this._getFirstListItemIfSelectionIsAtListStart( selection )!;

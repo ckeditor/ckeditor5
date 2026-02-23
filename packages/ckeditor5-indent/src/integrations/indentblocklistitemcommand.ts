@@ -16,7 +16,7 @@ import type { IndentBehavior } from '../indentcommandbehavior/indentbehavior.js'
 /**
  * The indent block list item command.
  *
- * The command is registered by the {@link module:indent/integrations/listintegration~ListIntegration} as
+ * The command is registered by the {@link module:indent/integrations/indentblocklistintegration~IndentBlockListIntegration} as
  * `'indentBlockListItem'` for indenting list items and `'outdentBlockListItem'` for outdenting list items.
  *
  * It's only possible to reset the block indentation of a list item to `0`.
@@ -102,7 +102,7 @@ export class IndentBlockListItemCommand extends Command {
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
-		const listIntegration = this.editor.plugins.get( 'ListIntegration' );
+		const listIntegration = this.editor.plugins.get( 'IndentBlockListIntegration' );
 
 		if ( !listUtils.isListItemBlock( element ) ) {
 			return false;

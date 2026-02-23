@@ -14,7 +14,7 @@ import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 import { IndentBlockCommand } from './indentblockcommand.js';
 import { IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from './indentcommandbehavior/indentusingclasses.js';
-import { ListIntegration } from './integrations/listintegration.js';
+import { IndentBlockListIntegration } from './integrations/indentblocklistintegration.js';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 
@@ -57,7 +57,7 @@ export class IndentBlock extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ListIntegration ] as const;
+		return [ IndentBlockListIntegration ] as const;
 	}
 
 	/**

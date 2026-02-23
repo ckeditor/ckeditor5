@@ -4,7 +4,7 @@
  */
 
 /**
- * @module indent/integrations/listintegration
+ * @module indent/integrations/indentblocklistintegration
  */
 
 import {
@@ -29,12 +29,12 @@ import { IndentUsingClasses } from '../indentcommandbehavior/indentusingclasses.
 /**
  * This integration enables using block indentation feature with lists.
  */
-export class ListIntegration extends Plugin {
+export class IndentBlockListIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListIntegration' as const;
+		return 'IndentBlockListIntegration' as const;
 	}
 
 	/**
