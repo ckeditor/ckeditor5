@@ -112,6 +112,10 @@ export interface LinkConfig {
 	 * {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`} array. In such scenario,
 	 * the `config.link.addTargetToExternalLinks` option should remain `undefined` or `false` to not interfere with the manual decorator.
 	 *
+	 * **Note**: If a manual decorator that handles the `target` attribute is already defined in the
+	 * {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`} array, the automatic decorator
+	 * will be overridden by the manual decorator, but only when the manual decorator is activated for the given link.
+	 *
 	 * It is possible to add other {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic}
 	 * or {@link module:link/linkconfig~LinkDecoratorManualDefinition manual} link decorators when this option is active.
 	 *
@@ -241,6 +245,10 @@ export type LinkDecoratorDefinition = LinkDecoratorAutomaticDefinition | LinkDec
  * 	}
  * }
  * ```
+ *
+ * **Note**: If there is a conflict between the active manual decorator and automatic decorator
+ * (e.g. both try to manage the same attribute), the manual decorator takes precedence and the automatic
+ * one is ignored. It's also highly discouraged to have multiple automatic decorators managing the same attribute.
  *
  * **Note**: Since the `target` attribute management for external links is a common use case, there is a predefined automatic decorator
  * dedicated for that purpose that can be enabled by turning a single option on. Check out the

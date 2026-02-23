@@ -2569,6 +2569,513 @@ describe( 'LinkEditing', () => {
 		} );
 	} );
 
+	describe( 'conflicting automatic decorators with manual decorators', () => {
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing ],
+				link: {
+					decorators: {
+						// Manual decorator with rel attribute.
+						manualRel: {
+							mode: 'manual',
+							label: 'Manual Rel',
+							attributes: {
+								rel: 'manual-value'
+							}
+						},
+						// Manual decorator with class attribute.
+						manualClass: {
+							mode: 'manual',
+							label: 'Manual Class',
+							classes: 'manual-class'
+						},
+						// Manual decorator with style.
+						manualStyle: {
+							mode: 'manual',
+							label: 'Manual Style',
+							styles: {
+								color: 'red'
+							}
+						},
+						// Manual decorator with target attribute.
+						manualTarget: {
+							mode: 'manual',
+							label: 'Manual Target',
+							attributes: {
+								target: '_self'
+							}
+						},
+						// Automatic decorator with rel attribute - conflicts with manualRel.
+						// Only activates for URLs containing 'rel-test'.
+						autoRel: {
+							mode: 'automatic',
+							callback: url => url.includes( 'rel-test' ),
+							attributes: {
+								rel: 'auto-value'
+							}
+						},
+						// Automatic decorator with class - conflicts with manualClass.
+						// Only activates for URLs containing 'class-test'.
+						autoClass: {
+							mode: 'automatic',
+							callback: url => url.includes( 'class-test' ),
+							classes: 'auto-class'
+						},
+						// Automatic decorator with style - conflicts with manualStyle.
+						// Only activates for URLs containing 'style-test'.
+						autoStyle: {
+							mode: 'automatic',
+							callback: url => url.includes( 'style-test' ),
+							styles: {
+								color: 'blue'
+							}
+						},
+						// Automatic decorator with target - conflicts with manualTarget.
+						// Only activates for URLs containing 'target-test'.
+						autoTarget: {
+							mode: 'automatic',
+							callback: url => url.includes( 'target-test' ),
+							attributes: {
+								target: '_blank'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		describe( 'consume', () => {
+			it( 'should not apply manual decorator if consumable was already consumed by another converter (when apply)', async () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'attribute:linkManualTarget', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+				} );
+
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://example.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://example.com">link</a></p>'
+				);
+			} );
+
+			it( 'should not remove manual decorator wrapping if consumable test fails (when remove)', async () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'attribute:linkManualTarget', ( evt, data, conversionApi ) => {
+						if ( data.attributeNewValue === null ) {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}
+					}, { priority: 'high' } );
+				} );
+
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://example.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://example.com" target="_self">link</a></p>'
+				);
+
+				expect( () => {
+					model.change( writer => {
+						writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+					} );
+				} ).to.not.throw();
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://example.com" target="_self">link</a></p>'
+				);
+			} );
+		} );
+
+		describe( 'toggling manual decorator that conflicts with automatic decorator', () => {
+			it( 'should block automatic decorator when manual decorator with conflicting target is activated', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://target-test.com">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkManualTarget', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_self">link</a></p>'
+				);
+			} );
+
+			it( 'should restore automatic decorator when manual decorator with conflicting target is deactivated', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://target-test.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_self">link</a></p>'
+				);
+
+				model.change( writer => {
+					writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting rel attribute', () => {
+			it( 'should merge automatic decorator with manual decorator when they set conflicting rel', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://rel-test.com" linkManualRel="true">link</$text></paragraph>'
+				);
+
+				// Attributes should be merged.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://rel-test.com" rel="auto-value manual-value">link</a></p>'
+				);
+			} );
+
+			it( 'should apply automatic decorator when manual decorator is not set', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://rel-test.com">link</$text></paragraph>'
+				);
+
+				// Automatic decorator should be applied.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://rel-test.com" rel="auto-value">link</a></p>'
+				);
+			} );
+
+			it( 'should upcast both manual and automatic decorators correctly when they do not conflict', () => {
+				editor.setData( '<p><a href="ftp://example.com" rel="manual-value">link</a></p>' );
+
+				// FTP link doesn't trigger automatic decorator (starts with http).
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><$text linkHref="ftp://example.com" linkManualRel="true">link</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting class attribute', () => {
+			it( 'should apply automatic decorator when manual decorator sets non-conflicting class', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://class-test.com" linkManualClass="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a class="auto-class manual-class" href="http://class-test.com">link</a></p>'
+				);
+			} );
+
+			it( 'should apply automatic decorator when manual decorator is not set', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://class-test.com">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a class="auto-class" href="http://class-test.com">link</a></p>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting style properties', () => {
+			it( 'should not apply automatic decorator when manual decorator sets conflicting style', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://style-test.com" linkManualStyle="true">link</$text></paragraph>'
+				);
+
+				// Manual decorator should win, automatic decorator should be blocked.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://style-test.com" style="color:red">link</a></p>'
+				);
+			} );
+
+			it( 'should apply automatic decorator when manual decorator is not set', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://style-test.com">link</$text></paragraph>'
+				);
+
+				// Automatic decorator should be applied.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://style-test.com" style="color:blue">link</a></p>'
+				);
+			} );
+		} );
+
+		describe( 'conflicting non-mergeable attributes', () => {
+			it( 'should not apply automatic decorator when manual decorator sets conflicting target', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://target-test.com" linkManualTarget="true">link</$text></paragraph>'
+				);
+
+				// Manual decorator should win, automatic decorator should be blocked.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_self">link</a></p>'
+				);
+			} );
+
+			it( 'should apply automatic decorator when manual decorator is not set', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://target-test.com">link</$text></paragraph>'
+				);
+
+				// Automatic decorator should be applied.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
+				);
+			} );
+		} );
+
+		describe( 'multiple conflicting decorators', () => {
+			it( 'should merge compatible attributes and overwrite incompatible ones when multiple manual decorators are set', () => {
+				_setModelData( model,
+					'<paragraph>' +
+						'<$text linkHref="http://rel-test.com/class-test/style-test/target-test" ' +
+						'linkManualRel="true" linkManualClass="true" linkManualStyle="true" linkManualTarget="true">' +
+						'link' +
+						'</$text>' +
+					'</paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<a class="auto-class manual-class" href="http://rel-test.com/class-test/style-test/target-test" ' +
+						'rel="manual-value auto-value" style="color:red" target="_self">' +
+						'link' +
+						'</a>' +
+					'</p>'
+				);
+			} );
+
+			it( 'should apply non-conflicting automatic decorators', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://class-test.com" linkManualRel="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a class="auto-class" href="http://class-test.com" rel="manual-value">link</a></p>'
+				);
+			} );
+
+			it( 'should handle partial conflicts with manual decorators', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://rel-test.com/class-test/style-test" linkManualStyle="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p>' +
+						'<a ' +
+							'class="auto-class" ' +
+							'href="http://rel-test.com/class-test/style-test" ' +
+							'rel="auto-value" ' +
+							'style="color:red"' +
+						'>' +
+							'link' +
+						'</a>' +
+					'</p>'
+				);
+			} );
+		} );
+
+		describe( 'data upcasting with conflicts', () => {
+			it( 'should upcast manual decorator when both automatic and manual values are present', () => {
+				editor.setData( '<p><a href="http://rel-test.com" rel="manual-value auto-value">link</a></p>' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><$text linkHref="http://rel-test.com" linkManualRel="true">link</$text></paragraph>'
+				);
+			} );
+
+			it( 'should not upcast automatic decorator values', () => {
+				editor.setData( '<p><a href="http://rel-test.com" rel="auto-value">link</a></p>' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph><$text linkHref="http://rel-test.com">link</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'updating decorators', () => {
+			it( 'should apply automatic decorator when manual decorator is removed', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://rel-test.com" linkManualRel="true">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://rel-test.com" rel="auto-value manual-value">link</a></p>'
+				);
+
+				model.change( writer => {
+					writer.removeAttribute( 'linkManualRel', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://rel-test.com" rel="auto-value">link</a></p>'
+				);
+			} );
+
+			it( 'should not block automatic decorator when manual decorator is added', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://rel-test.com">link</$text></paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://rel-test.com" rel="auto-value">link</a></p>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkManualRel', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://rel-test.com" rel="auto-value manual-value">link</a></p>'
+				);
+			} );
+		} );
+
+		describe( 'edge cases', () => {
+			it( 'should handle URLs that do not match automatic decorator callback', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="http://no-match.com" linkManualRel="true">link</$text></paragraph>'
+				);
+
+				// URL doesn't match automatic decorator callback, only manual should be applied.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="http://no-match.com" rel="manual-value">link</a></p>'
+				);
+			} );
+
+			it( 'should handle FTP protocol links', () => {
+				_setModelData( model,
+					'<paragraph><$text linkHref="ftp://example.com" linkManualRel="true">link</$text></paragraph>'
+				);
+
+				// FTP link doesn't match any automatic decorator, only manual should be applied.
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<p><a href="ftp://example.com" rel="manual-value">link</a></p>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'conflicting decorator attributes postfixer', () => {
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing, Enter ],
+				link: {
+					decorators: {
+						decorator1: {
+							mode: 'manual',
+							label: 'Decorator 3',
+							attributes: {
+								target: 'blank'
+							}
+						},
+						decorator2: {
+							mode: 'manual',
+							label: 'Decorator 4',
+							attributes: {
+								target: 'self'
+							}
+						},
+						decorator3: {
+							mode: 'manual',
+							label: 'Decorator 5',
+							attributes: {
+								rel: 'nofollow'
+							}
+						},
+						decorator4: {
+							mode: 'manual',
+							label: 'Decorator 6',
+							attributes: {
+								rel: 'noopener'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should drop conflicting decorator when setting new one', () => {
+			_setModelData( model,
+				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
+			);
+
+			model.change( writer => {
+				const text = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				writer.setAttribute( 'linkDecorator2', true, text );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text linkDecorator2="true" linkHref="http://example.com">link</$text></paragraph>'
+			);
+		} );
+
+		it( 'should resolve conflicting decorator when inserting text into an existing link', () => {
+			_setModelData( model,
+				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
+			);
+
+			model.change( writer => {
+				const position = model.document.selection.getFirstPosition();
+
+				writer.insertText( 'foo', {
+					linkHref: 'http://example.com',
+					linkDecorator1: true,
+					linkDecorator2: true
+				}, position );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkDecorator1="true" linkHref="http://example.com">link</$text>' +
+					'<$text linkDecorator2="true" linkHref="http://example.com">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should not drop conflicting decorator when setting non-conflicting one', () => {
+			_setModelData( model,
+				'<paragraph><$text linkHref="http://example.com" linkDecorator1="true">link</$text>[]</paragraph>'
+			);
+
+			model.change( writer => {
+				const text = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				writer.setAttribute( 'linkDecorator3', true, text );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph><$text linkDecorator1="true" linkDecorator3="true" linkHref="http://example.com">link</$text></paragraph>'
+			);
+		} );
+	} );
+
 	function createDataTransfer( data ) {
 		return {
 			getData( type ) {
