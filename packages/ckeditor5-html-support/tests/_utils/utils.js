@@ -45,7 +45,7 @@ export function getModelDataWithAttributes( model, options = {} ) {
 	let attributes = [];
 	for ( const item of range.getItems() ) {
 		for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
-			if ( key.startsWith( 'html' ) && !excludeAttributes.includes( key ) && typeof value === 'object' ) {
+			if ( key.startsWith( 'html' ) && !excludeAttributes.includes( key ) && value !== null && typeof value === 'object' ) {
 				attributes.push( value );
 			}
 		}
