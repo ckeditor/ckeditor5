@@ -7,6 +7,7 @@
  * @module list/listproperties/utils/config
  */
 
+import { pick } from 'es-toolkit/compat';
 import { toArray } from '@ckeditor/ckeditor5-utils';
 import type { ListPropertiesConfig, ListPropertiesStyleListType } from '../../listconfig.js';
 
@@ -56,7 +57,11 @@ export function getNormalizedConfig( config: ListPropertiesConfig ): NormalizedL
 function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): NormalizedListPropertiesConfig[ 'styles' ] {
 	const normalizedConfig: NormalizedListPropertiesConfig[ 'styles' ] = {
 		listTypes: [ 'bulleted', 'numbered' ],
-		useAttribute: false
+		useAttribute: false,
+		listStyleTypes: {
+			numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+			bulleted: [ 'disc', 'circle', 'square' ]
+		}
 	};
 
 	if ( styles === true ) {
@@ -65,9 +70,11 @@ function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): 
 
 	if ( !styles ) {
 		normalizedConfig.listTypes = [];
+		normalizedConfig.listStyleTypes = {};
 	}
 	else if ( Array.isArray( styles ) || typeof styles == 'string' ) {
 		normalizedConfig.listTypes = toArray( styles );
+		normalizedConfig.listStyleTypes = pick( normalizedConfig.listStyleTypes, normalizedConfig.listTypes );
 	}
 	else {
 		normalizedConfig.listTypes = styles.listTypes ?
@@ -78,6 +85,8 @@ function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): 
 
 		if ( styles.listStyleTypes ) {
 			normalizedConfig.listStyleTypes = styles.listStyleTypes;
+		} else {
+			normalizedConfig.listStyleTypes = pick( normalizedConfig.listStyleTypes, normalizedConfig.listTypes );
 		}
 	}
 
