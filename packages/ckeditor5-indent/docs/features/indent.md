@@ -113,6 +113,8 @@ In the demo below the CSS classes are defined as follows:
 
 ## Indenting lists
 
+### Nesting list items
+
 Besides controlling text block indentation, the same set of buttons (`outdent`, `indent`) allows for indenting list items (nesting them).
 
 This mechanism is completely transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin, but neither these buttons nor the respective commands implement any functionality by default.
@@ -122,7 +124,53 @@ The target behavior comes from two other plugins:
 * {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
 * {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`).
+This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior &ndash; nesting list items, block indentation of paragraphs and headings, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
+
+### Block indentation of lists
+
+When both the {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List} plugins are loaded, the editor also supports applying visual block indentation to list elements (`<ol>`, `<ul>`) and list items (`<li>`). This works the same way as block indentation for paragraphs and headings &ndash; it adds a `margin-left` style (or a CSS class, depending on the [configuration](#configuring-the-block-indentation-feature)) to the list elements.
+
+The editor understands `margin-left` styles on all `<ol>`, `<ul>`, and `<li>` elements during data loading, across all list types (numbered, bulleted, to-do, multi-level) and at all nesting levels. Negative indentation values (for example, `-50px`) are also accepted during data loading.
+
+#### Indenting list containers (`<ol>` / `<ul>`)
+
+Only the topmost list in the content can be indented or outdented. The selection must be at the start of the list (collapsed or non-collapsed). Use one of the following methods:
+
+* Press <kbd>Tab</kbd> to indent or <kbd>Shift</kbd>+<kbd>Tab</kbd> to outdent the list. The indentation changes in steps (by default, `40px`).
+* Use the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} toolbar buttons. The indentation also changes in steps.
+
+<info-box>
+	When multiple lists are selected, the <kbd>Tab</kbd> key changes the indentation of the first list in the selection only, while the toolbar buttons change the indentation of all selected lists.
+</info-box>
+
+It is not possible to outdent a list below `0` (negative values cannot be set through the editor UI). If a list with a negative indentation value was loaded into the editor, indenting it resets the value to `0` in a single step.
+
+You can also remove the list indentation using the {@link features/remove-format remove format} feature, which removes the indentation attribute in one step.
+
+#### Indenting list items (`<li>`)
+
+List items cannot be indented through the editor UI. However, indentation values on `<li>` elements are recognized during data loading.
+
+A list item's indentation can only be reset in a single step by:
+
+* Using the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} button (if the value is negative) or the outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} button (if the value is positive).
+* Using the {@link features/remove-format remove format} feature.
+
+The selection must be somewhere inside the list item (or span multiple list items) for these actions to work.
+
+#### Configuration
+
+List block indentation uses the same configuration as block indentation for paragraphs and headings. The default indentation step is `40px`. You can change it through the `indentBlock` configuration option, including switching to CSS classes. See [Configuring the block indentation feature](#configuring-the-block-indentation-feature) for details.
+
+#### Compatibility
+
+List block indentation works with:
+
+* {@link features/paste-from-office Paste from Office}
+* {@link features/export-word Export to Word}
+* {@link features/export-pdf Export to PDF}
+* {@link features/track-changes Track changes}
+* <abbr title="right-to-left">RTL</abbr> content
 
 ## Related features
 
