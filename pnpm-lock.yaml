@@ -2875,6 +2875,9 @@ importers:
       ckeditor5:
         specifier: workspace:*
         version: link:../ckeditor5
+      es-toolkit:
+        specifier: 1.39.5
+        version: 1.39.5
     devDependencies:
       '@ckeditor/ckeditor5-alignment':
         specifier: workspace:*

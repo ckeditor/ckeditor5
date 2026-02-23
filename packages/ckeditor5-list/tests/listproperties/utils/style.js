@@ -23,7 +23,8 @@ describe( 'ListProperties - utils - style', () => {
 			[ 'circle', 'bulleted' ],
 			[ 'square', 'bulleted' ],
 			[ 'default', null ],
-			[ 'style-type-that-is-not-possibly-supported-by-css', null ]
+			[ 'style-type-that-is-not-possibly-supported-by-css', null ],
+			[ 'arabic-indic', 'numbered' ]
 		];
 
 		for ( const [ style, type ] of testData ) {
@@ -84,7 +85,8 @@ describe( 'ListProperties - utils - style', () => {
 			[ 'lower-roman', 'lower-roman' ],
 			[ 'upper-roman', 'upper-roman' ],
 			[ 'lower-latin', 'lower-latin' ],
-			[ 'upper-latin', 'upper-latin' ]
+			[ 'upper-latin', 'upper-latin' ],
+			[ 'arabic-indic', 'arabic-indic' ]
 		];
 
 		for ( const [ input, expected ] of testData ) {
