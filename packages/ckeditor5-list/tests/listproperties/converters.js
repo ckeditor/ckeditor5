@@ -101,6 +101,20 @@ describe( 'ListPropertiesEditing - converters', () => {
 				);
 			} );
 
+			it( 'should convert single list (type: numbered, style: arabic-indic)', () => {
+				test.data(
+					'<ol style="list-style-type:arabic-indic;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {style:arabic-indic}
+						# Bar
+					` )
+				);
+			} );
+
 			it( 'should convert mixed lists', () => {
 				test.data(
 					'<ol style="list-style-type:upper-latin;">' +
@@ -114,6 +128,26 @@ describe( 'ListPropertiesEditing - converters', () => {
 
 					modelList( `
 						# OL 1 {style:upper-latin}
+						# OL 2
+						* UL 1 {style:circle}
+						* UL 2
+					` )
+				);
+			} );
+
+			it( 'should convert mixed lists with arabic-indic', () => {
+				test.data(
+					'<ol style="list-style-type:arabic-indic;">' +
+						'<li>OL 1</li>' +
+						'<li>OL 2</li>' +
+					'</ol>' +
+					'<ul style="list-style-type:circle;">' +
+						'<li>UL 1</li>' +
+						'<li>UL 2</li>' +
+					'</ul>',
+
+					modelList( `
+						# OL 1 {style:arabic-indic}
 						# OL 2
 						* UL 1 {style:circle}
 						* UL 2
@@ -144,6 +178,29 @@ describe( 'ListPropertiesEditing - converters', () => {
 				);
 			} );
 
+			it( 'should convert nested and mixed lists with arabic-indic', () => {
+				test.data(
+					'<ol style="list-style-type:arabic-indic;">' +
+						'<li>OL 1</li>' +
+						'<li>OL 2' +
+							'<ul style="list-style-type:circle;">' +
+								'<li>UL 1</li>' +
+								'<li>UL 2</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>OL 3</li>' +
+					'</ol>',
+
+					modelList( `
+						# OL 1 {id:000} {style:arabic-indic}
+						# OL 2 {id:003}
+						  * UL 1 {id:001} {style:circle}
+						  * UL 2 {id:002}
+						# OL 3 {id:004}
+					` )
+				);
+			} );
+
 			it( 'should convert when the list is in the middle of the content', () => {
 				test.data(
 					'<p>Paragraph.</p>' +
@@ -156,6 +213,24 @@ describe( 'ListPropertiesEditing - converters', () => {
 					modelList( `
 						Paragraph.
 						# Foo {id:000} {style:upper-latin}
+						# Bar {id:001}
+						Paragraph.
+					` )
+				);
+			} );
+
+			it( 'should convert when the arabic-indic list is in the middle of the content', () => {
+				test.data(
+					'<p>Paragraph.</p>' +
+					'<ol style="list-style-type:arabic-indic;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
+					'<p>Paragraph.</p>',
+
+					modelList( `
+						Paragraph.
+						# Foo {id:000} {style:arabic-indic}
 						# Bar {id:001}
 						Paragraph.
 					` )
