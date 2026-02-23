@@ -27,7 +27,7 @@ import { LinkEditing } from './linkediting.js';
 import { type LinkManualDecorator } from './utils/manualdecorator.js';
 import { type LinkCommand } from './linkcommand.js';
 
-import type { ImageUtils } from '@ckeditor/ckeditor5-image';
+import { ImageEditing, ImageUtils } from '@ckeditor/ckeditor5-image';
 
 /**
  * The link image engine feature.
@@ -40,7 +40,7 @@ export class LinkImageEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'ImageEditing', 'ImageUtils', LinkEditing ] as const;
+		return [ ImageEditing, ImageUtils, LinkEditing ] as const;
 	}
 
 	/**

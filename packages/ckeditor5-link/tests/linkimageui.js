@@ -12,7 +12,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { LinkImage } from '../src/linkimage.js';
 import { LinkImageUI } from '../src/linkimageui.js';
-import { Image } from '@ckeditor/ckeditor5-image';
+import { Image, ImageBlockEditing } from '@ckeditor/ckeditor5-image';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
@@ -55,8 +55,8 @@ describe( 'LinkImageUI', () => {
 		expect( LinkImageUI.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should require ImageBlockEditing by name', () => {
-		expect( LinkImageUI.requires ).to.include( 'ImageBlockEditing' );
+	it( 'should require ImageBlockEditing', () => {
+		expect( LinkImageUI.requires ).to.include( ImageBlockEditing );
 	} );
 
 	describe( 'init()', () => {

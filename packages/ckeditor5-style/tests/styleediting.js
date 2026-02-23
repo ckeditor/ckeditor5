@@ -77,9 +77,9 @@ describe( 'StyleEditing', () => {
 		expect( StyleEditing.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should soft-require the GHS plugin, and require utils, and integrations', () => {
+	it( 'should require the GHS plugin, and require utils, and integrations', () => {
 		expect( StyleEditing.requires ).to.deep.equal( [
-			'GeneralHtmlSupport', StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport
+			GeneralHtmlSupport, StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport
 		] );
 	} );
 

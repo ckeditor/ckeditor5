@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { Notification } from '@ckeditor/ckeditor5-ui';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -35,7 +36,7 @@ export class CKFinderEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Notification, 'LinkEditing' ] as const;
+		return [ Notification, LinkEditing ] as const;
 	}
 
 	/**

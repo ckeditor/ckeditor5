@@ -8,6 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { Link } from '@ckeditor/ckeditor5-link';
 
 import { CKFinderUI } from './ckfinderui.js';
 import { CKFinderEditing } from './ckfinderediting.js';
@@ -47,6 +49,6 @@ export class CKFinder extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Link', 'CKFinderUploadAdapter', CKFinderEditing, CKFinderUI ] as const;
+		return [ Link, CKFinderUploadAdapter, CKFinderEditing, CKFinderUI ] as const;
 	}
 }

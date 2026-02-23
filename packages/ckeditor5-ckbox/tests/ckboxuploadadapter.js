@@ -93,7 +93,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 	it( 'should require its dependencies', () => {
 		expect( CKBoxUploadAdapter.requires ).to.deep.equal( [
-			'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing
+			ImageUploadEditing, ImageUploadProgress, FileRepository, CKBoxEditing
 		] );
 	} );
 
