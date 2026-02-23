@@ -2535,4 +2535,28 @@ describe( 'ListIntegration', () => {
 			);
 		} );
 	} );
+
+	describe( 'when indenting list items (changing list level)', () => {
+		it( 'should remove blockIndentList and blockIndentListItem attributes when indenting list item to the next level', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" blockIndentList="40px" blockIndentListItem="40px" listType="bulleted">' +
+					'foo' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" blockIndentList="40px" blockIndentListItem="40px" listType="bulleted">' +
+					'bar[]' +
+				'</paragraph>'
+			);
+
+			editor.execute( 'indentList' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph blockIndentList="40px" blockIndentListItem="40px" listIndent="0" listItemId="a" listType="bulleted">' +
+					'foo' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">' +
+					'bar' +
+				'</paragraph>'
+			);
+		} );
+	} );
 } );
