@@ -16,7 +16,7 @@ import type { IndentBehavior } from '../indentcommandbehavior/indentbehavior.js'
 /**
  * The indent block list item command.
  *
- * The command is registered by the {@link module:indent/integrations/listintegration~ListIntegration} as
+ * The command is registered by the {@link module:indent/integrations/indentblocklistintegration~IndentBlockListIntegration} as
  * `'indentBlockListItem'` for indenting list items and `'outdentBlockListItem'` for outdenting list items.
  *
  * It's only possible to reset the block indentation of a list item to `0`.
@@ -85,9 +85,11 @@ export class IndentBlockListItemCommand extends Command {
 	private _getAffectedListItems(): Array<ModelElement> {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
 		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
+		const expandedBlocks = listUtils.expandListBlocksToCompleteItems( blocksInSelection );
 
-		return blocksInSelection.filter( block => this._isIndentationChangeAllowed( block ) );
+		return expandedBlocks.filter( block => this._isIndentationChangeAllowed( block ) );
 	}
 
 	/**
@@ -101,12 +103,7 @@ export class IndentBlockListItemCommand extends Command {
 	 * For classes-based indentation, the command should be enabled if there is a class to be removed.
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
-		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
-		const listIntegration = this.editor.plugins.get( 'ListIntegration' );
-
-		if ( !listUtils.isListItemBlock( element ) ) {
-			return false;
-		}
+		const listIntegration = this.editor.plugins.get( 'IndentBlockListIntegration' );
 
 		if ( listIntegration.indentBlockUsingClasses ) {
 			return this._indentBehavior.isForward ? false : !!element.getAttribute( 'blockIndentListItem' );

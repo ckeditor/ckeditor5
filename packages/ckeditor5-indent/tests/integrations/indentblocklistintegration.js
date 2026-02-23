@@ -19,9 +19,9 @@ import { IndentEditing } from '../../src/indentediting.js';
 import { IndentBlock } from '../../src/indentblock.js';
 import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
 import { IndentBlockListItemCommand } from '../../src/integrations/indentblocklistitemcommand.js';
-import { ListIntegration } from '../../src/integrations/listintegration.js';
+import { IndentBlockListIntegration } from '../../src/integrations/indentblocklistintegration.js';
 
-describe( 'ListIntegration', () => {
+describe( 'IndentBlockListIntegration', () => {
 	let editor, model, view, viewDoc;
 
 	testUtils.createSinonSandbox();
@@ -36,7 +36,7 @@ describe( 'ListIntegration', () => {
 				IndentEditing,
 				IndentBlock,
 				ListEditing,
-				ListIntegration
+				IndentBlockListIntegration
 			]
 		} );
 
@@ -52,19 +52,19 @@ describe( 'ListIntegration', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListIntegration ) ).to.be.instanceOf( ListIntegration );
+		expect( editor.plugins.get( IndentBlockListIntegration ) ).to.be.instanceOf( IndentBlockListIntegration );
 	} );
 
 	it( 'should have proper name', () => {
-		expect( ListIntegration.pluginName ).to.equal( 'ListIntegration' );
+		expect( IndentBlockListIntegration.pluginName ).to.equal( 'IndentBlockListIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListIntegration.isOfficialPlugin ).to.be.true;
+		expect( IndentBlockListIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListIntegration.isPremiumPlugin ).to.be.false;
+		expect( IndentBlockListIntegration.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should register commands', () => {
@@ -1212,7 +1212,7 @@ describe( 'ListIntegration', () => {
 					IndentEditing,
 					IndentBlock,
 					ListEditing,
-					ListIntegration
+					IndentBlockListIntegration
 				],
 				indentBlock: {
 					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ]
@@ -2374,7 +2374,7 @@ describe( 'ListIntegration', () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
 					Paragraph,
-					ListIntegration
+					IndentBlockListIntegration
 				]
 			} );
 
@@ -2440,7 +2440,7 @@ describe( 'ListIntegration', () => {
 					IndentEditing,
 					IndentBlock,
 					ListEditing,
-					ListIntegration
+					IndentBlockListIntegration
 				],
 				language: {
 					content: 'ar'
@@ -2531,6 +2531,30 @@ describe( 'ListIntegration', () => {
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph blockIndentListItem="10px" listIndent="0" listItemId="a00" listType="bulleted">' +
 					'foo' +
+				'</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'when indenting list items (changing list level)', () => {
+		it( 'should remove blockIndentList and blockIndentListItem attributes when indenting list item to the next level', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" blockIndentList="40px" blockIndentListItem="40px" listType="bulleted">' +
+					'foo' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" blockIndentList="40px" blockIndentListItem="40px" listType="bulleted">' +
+					'bar[]' +
+				'</paragraph>'
+			);
+
+			editor.execute( 'indentList' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph blockIndentList="40px" blockIndentListItem="40px" listIndent="0" listItemId="a" listType="bulleted">' +
+					'foo' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">' +
+					'bar' +
 				'</paragraph>'
 			);
 		} );

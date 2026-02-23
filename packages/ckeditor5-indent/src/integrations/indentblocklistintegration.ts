@@ -4,10 +4,13 @@
  */
 
 /**
- * @module indent/integrations/listintegration
+ * @module indent/integrations/indentblocklistintegration
  */
 
-import { type ListEditingPostFixerEvent } from '@ckeditor/ckeditor5-list';
+import {
+	type ListEditingPostFixerEvent,
+	type _ListIndentCommandAfterExecuteEvent
+} from '@ckeditor/ckeditor5-list';
 import { type GetCallback } from 'ckeditor5/src/utils.js';
 import {
 	type MultiCommand,
@@ -15,6 +18,7 @@ import {
 } from 'ckeditor5/src/core.js';
 import {
 	addMarginStylesRules,
+	type ModelElement,
 	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 import { IndentBlockListCommand } from './indentblocklistcommand.js';
@@ -25,12 +29,12 @@ import { IndentUsingClasses } from '../indentcommandbehavior/indentusingclasses.
 /**
  * This integration enables using block indentation feature with lists.
  */
-export class ListIntegration extends Plugin {
+export class IndentBlockListIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListIntegration' as const;
+		return 'IndentBlockListIntegration' as const;
 	}
 
 	/**
@@ -197,6 +201,43 @@ export class ListIntegration extends Plugin {
 				return false;
 			}
 		}, 'blockIndentListItem' );
+
+		// Clear blockIndentList and blockIndentListItem when list indent changes.
+		const clearBlockIndentAttributesOnListIndentChange = (
+			_evt: unknown,
+			changedBlocks: Array<ModelElement>
+		) => {
+			editor.model.change( writer => {
+				for ( const node of changedBlocks ) {
+					if ( node.hasAttribute( 'listItemId' ) ) {
+						if ( node.hasAttribute( 'blockIndentList' ) ) {
+							writer.removeAttribute( 'blockIndentList', node );
+						}
+						if ( node.hasAttribute( 'blockIndentListItem' ) ) {
+							writer.removeAttribute( 'blockIndentListItem', node );
+						}
+					}
+				}
+			} );
+		};
+
+		const indentListCommand = editor.commands.get( 'indentList' );
+		const outdentListCommand = editor.commands.get( 'outdentList' );
+
+		if ( indentListCommand ) {
+			this.listenTo<_ListIndentCommandAfterExecuteEvent>(
+				indentListCommand,
+				'afterExecute',
+				clearBlockIndentAttributesOnListIndentChange
+			);
+		}
+		if ( outdentListCommand ) {
+			this.listenTo<_ListIndentCommandAfterExecuteEvent>(
+				outdentListCommand,
+				'afterExecute',
+				clearBlockIndentAttributesOnListIndentChange
+			);
+		}
 	}
 
 	/**
