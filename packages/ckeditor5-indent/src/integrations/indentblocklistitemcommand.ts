@@ -85,9 +85,11 @@ export class IndentBlockListItemCommand extends Command {
 	private _getAffectedListItems(): Array<ModelElement> {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
 		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
+		const expandedBlocks = listUtils.expandListBlocksToCompleteItems( blocksInSelection );
 
-		return blocksInSelection.filter( block => this._isIndentationChangeAllowed( block ) );
+		return expandedBlocks.filter( block => this._isIndentationChangeAllowed( block ) );
 	}
 
 	/**
@@ -101,12 +103,7 @@ export class IndentBlockListItemCommand extends Command {
 	 * For classes-based indentation, the command should be enabled if there is a class to be removed.
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
-		const listUtils: ListUtils = this.editor.plugins.get( 'ListUtils' );
 		const listIntegration = this.editor.plugins.get( 'IndentBlockListIntegration' );
-
-		if ( !listUtils.isListItemBlock( element ) ) {
-			return false;
-		}
 
 		if ( listIntegration.indentBlockUsingClasses ) {
 			return this._indentBehavior.isForward ? false : !!element.getAttribute( 'blockIndentListItem' );

@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
-import { isListItemBlock } from '../../../ckeditor5-list/src/list/utils/model.js';
+import { isListItemBlock, expandListBlocksToCompleteItems } from '../../../ckeditor5-list/src/list/utils/model.js';
 import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
 import { IndentBlockListItemCommand } from '../../src/integrations/indentblocklistitemcommand.js';
@@ -28,7 +28,7 @@ describe( 'IndentBlockListItemCommand', () => {
 
 				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
 					if ( name === 'ListUtils' ) {
-						return { isListItemBlock };
+						return { isListItemBlock, expandListBlocksToCompleteItems };
 					}
 
 					if ( name === 'IndentBlockListIntegration' ) {
@@ -294,6 +294,15 @@ describe( 'IndentBlockListItemCommand', () => {
 
 						expect( command.isEnabled ).to.be.true;
 					} );
+
+					it( 'should be true when collapsed selection is in a following block of the list item', () => {
+						_setModelData( model, modelList( [
+							'* foo {blockIndentListItem:-50px}',
+							'  bar[]'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
 				} );
 			} );
 
@@ -446,6 +455,20 @@ describe( 'IndentBlockListItemCommand', () => {
 
 						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* []foo'
+						] ) );
+					} );
+
+					it( 'should reset to 0 for all blocks of the list item when collapsed selection is in a following block', () => {
+						_setModelData( model, modelList( [
+							'* foo {blockIndentListItem:-50px}',
+							'  bar[]'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'  bar[]'
 						] ) );
 					} );
 				} );
@@ -759,6 +782,15 @@ describe( 'IndentBlockListItemCommand', () => {
 
 						expect( command.isEnabled ).to.be.true;
 					} );
+
+					it( 'should be true when collapsed selection is in a following block of the list item', () => {
+						_setModelData( model, modelList( [
+							'* foo {blockIndentListItem:50px}',
+							'  bar[]'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
 				} );
 
 				describe( 'when current indent is negative', () => {
@@ -1012,6 +1044,20 @@ describe( 'IndentBlockListItemCommand', () => {
 							'* []foo'
 						] ) );
 					} );
+
+					it( 'should reset to 0 for all blocks of the list item when collapsed selection is in a following block', () => {
+						_setModelData( model, modelList( [
+							'* foo {blockIndentListItem:50px}',
+							'  bar[]'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'  bar[]'
+						] ) );
+					} );
 				} );
 
 				describe( 'when there are list items with positive and negative indents in selection', () => {
@@ -1198,6 +1244,15 @@ describe( 'IndentBlockListItemCommand', () => {
 
 						expect( command.isEnabled ).to.be.true;
 					} );
+
+					it( 'should be true when collapsed selection is in a following block of the list item', () => {
+						_setModelData( model, modelList( [
+							'* foo {blockIndentListItem:indent-1}',
+							'  bar[]'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
 				} );
 			} );
 
@@ -1338,6 +1393,20 @@ describe( 'IndentBlockListItemCommand', () => {
 							'* bar',
 							'',
 							'* baz]'
+						] ) );
+					} );
+
+					it( 'should reset to 0 for all blocks of the list item when collapsed selection is in a following block', () => {
+						_setModelData( model, modelList( [
+							'* foo {blockIndentListItem:indent-2}',
+							'  bar[]'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'  bar[]'
 						] ) );
 					} );
 				} );
