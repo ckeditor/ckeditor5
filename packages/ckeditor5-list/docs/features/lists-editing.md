@@ -82,4 +82,8 @@ The target behavior comes from two other plugins:
 * {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
 * {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means that if you want to allow indenting lists only, you can do that by loading just the `Indent` and `List` plugins.<!-- If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`). -->
+This means that if you want to allow indenting lists only, you can do that by loading just the `Indent` and `List` plugins.
+
+When both the `IndentBlock` and `List` plugins are loaded, the editor also supports visual block indentation of list containers (`<ol>`, `<ul>`) and list items (`<li>`), applying a `margin-left` style or CSS class. Refer to the {@link features/indent#block-indentation-of-lists block indentation of lists} section in the block indentation guide for details on the behavior, UX, and configuration.
+
+If you want the full behavior &ndash; nesting list items, block indentation of paragraphs, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
