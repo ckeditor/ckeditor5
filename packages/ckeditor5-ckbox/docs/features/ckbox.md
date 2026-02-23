@@ -382,6 +382,16 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+<info-box important>
+	If you are using the EU cloud region, remember to adjust the endpoint:
+	
+	```js
+	ckbox: {
+		serviceOrigin: 'https://api-eu.ckbox.io'
+	}
+	```
+</info-box>
+
 ### Editing external images
 
 If you want to allow CKBox to edit external images, not hosted by the file manager (for example, pasted via URL) you need to whitelist the URLs of the images. You can do this using the {@link module:ckbox/ckboxconfig~CKBoxConfig#allowExternalImagesEditing `config.ckbox.allowExternalImagesEditing`} option:
