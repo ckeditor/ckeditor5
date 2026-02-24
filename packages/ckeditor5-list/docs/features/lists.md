@@ -89,7 +89,7 @@ ClassicEditor
 
 #### Enabling specific enumerators
 
-To enable only selected list item enumerators for the ordered list, you need to explicitly list them in the editor configuration. This can also be used to enable additional, `arabic-indic` numeral enumerators. To to this, repleace the `styles: true` configuration option with a `styles { }` listing, for example:
+To enable only selected list item enumerators for the ordered list, you need to explicitly list them in the editor configuration. This can also be used to enable additional, `arabic-indic` numeral enumerators. To achieve this, replace the `styles: true` configuration option with a `styles { }` listing, for example:
 
 ```js
 list: {
