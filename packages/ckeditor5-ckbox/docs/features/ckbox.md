@@ -368,7 +368,7 @@ ClassicEditor
 
 ### Configuring the API service
 
-Using the CKBox cloud service, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option. The default region is US-EAST-1.
+Using the CKBox cloud service, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option. The default region is United States (Northern Virginia).
 
 ```js
 ClassicEditor
