@@ -20,11 +20,13 @@ The list style feature introduces more styles for the list item markers. When {@
 ### Available list styles
 
 The following unordered list styles are available:
+
 * `disk` (•)
 * `circle` (◦)
 * `square` (▪)
 
 The following ordered list styles are available:
+
 * `decimal` (1.)
 * `decimal-leading-zero` (01.)
 * `lower-roman` (i.)
