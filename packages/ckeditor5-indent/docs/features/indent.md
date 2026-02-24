@@ -42,6 +42,8 @@ ClassicEditor
 
 This feature offers a few configuration options that can be used to adjust the text block indentation behavior. It is implemented by three plugins: {@link module:indent/indent~Indent}, {@link module:indent/indentblock~IndentBlock} and {@link module:list/list~List}.
 
+List block indentation uses the same configuration as block indentation for paragraphs and headings. The default indentation step is `40px`. You can change it through the `indentBlock` configuration option, including switching to CSS classes.
+
 ### Using offset and unit
 
 By default, the block indentation feature increases or decreases the current indentation by the given offset, using the given unit.
@@ -122,11 +124,40 @@ The target behavior comes from two other plugins:
 * {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
 * {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`).
+This means that if you want to allow indenting lists only, you can do that by loading the `Indent` and `List` plugins only. If you want the full behavior &ndash; nesting list items, block indentation of paragraphs and headings, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
+
+When all three plugins are loaded, the editor also supports applying visual block indentation to list containers (`<ol>`, `<ul>`) and list items (`<li>`). This works the same way as block indentation for paragraphs and headings &ndash; it adds a `margin-left` style (or a CSS class, depending on the [configuration](#configuring-the-block-indentation-feature)) to the list elements. The editor understands `margin-left` styles on all these elements during data loading, across all list types (numbered, bulleted, to-do, multi-level) and at all nesting levels. Negative indentation values (such as `-50px`) are also accepted during data loading.
+
+### Indenting list containers
+
+Only the topmost list in the content can be indented or outdented. The selection must be at the start of the list (collapsed or non-collapsed). Use one of the following methods:
+
+* Press <kbd>Tab</kbd> to indent or <kbd>Shift</kbd>+<kbd>Tab</kbd> to outdent the list. The indentation changes in steps (by default, `40px`).
+* Use the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} toolbar buttons. The indentation also changes in steps.
+
+<info-box>
+	When multiple lists are selected, the <kbd>Tab</kbd> key only changes the indentation of the first list in the selection. The toolbar buttons change the indentation of all selected lists.
+</info-box>
+
+It is not possible to outdent a list below `0` as negative values cannot be set through the editor UI. If a list with a negative indentation value was loaded into the editor, indenting it resets the value to `0` in a single step.
+
+You can also remove the list indentation using the {@link features/remove-format remove format} feature, which removes the indentation attribute in one step.
+
+### Indenting list items
+
+List items cannot be indented through the editor UI. However, indentation values on `<li>` elements are recognized during data loading.
+
+A list item's indentation can only be reset in a single step by:
+
+* Using the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} button (if the value is negative) or the outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} button (if the value is positive).
+* Using the {@link features/remove-format remove format} feature.
+
+The selection must be set inside a list item (or span multiple list items) for these actions to work.
 
 ## Related features
 
 Here are some CKEditor&nbsp;5 features that may help structure your content better:
+
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
