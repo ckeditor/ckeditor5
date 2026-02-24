@@ -20,19 +20,19 @@ The list style feature introduces more styles for the list item markers. When {@
 ### Available list styles
 
 The following unordered list styles are available:
-* disk (•)
-* circle (◦)
-* square (▪)
+* `disk` (•)
+* `circle` (◦)
+* `square` (▪)
 
 The following ordered list styles are available:
-* decimal numbers (1.)
-* decimal numbers with leading zero (01.)
-* lowercase roman numbers (i.)
-* uppercase roman numbers (I.)
-* lowercase latin letters (a.)
-* uppercase latin letters (A.)
+* `decimal` (1.)
+* `decimal-leading-zero` (01.)
+* `lower-roman` (i.)
+* `upper-roman` (I.)
+* `lower-latin` (a.)
+* `upper-latin` (A.)
 
-Additional numbering style that {@link features/lists#enabling-extra-enumerators needs configuration}:
+Additional numbering style that {@link features/lists#enabling-specific-enumerators needs configuration}:
 
 * arabic-indic numbers (١.)
 

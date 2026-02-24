@@ -87,25 +87,29 @@ ClassicEditor
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
-#### Enabling extra enumerators
+#### Enabling specific enumerators
 
-To enable additional, arabic-indic numeral enumerators for the ordered list, you need to explicitly list them in the editor configuration, for example:
+To enable only selected list item enumerators for the ordered list, you need to explicitly list them in the editor configuration. This can also be used to enable additional, `arabic-indic` numeral enumerators. To to this, repleace the `styles: true` configuration option with a `styles { }` listing, for example:
 
 ```js
-styles: {
-		listStyleTypes: {
-			numbered: [
-				'decimal',
-				'decimal-leading-zero',
-				'arabic-indic'
-			],
-			bulleted: [
-				'disc',
-				'circle',
-				'square'
-			]
+list: {
+	properties: {
+		styles: {
+			listStyleTypes: {
+				numbered: [
+					'decimal',
+					'decimal-leading-zero',
+					'arabic-indic'
+				],
+				bulleted: [
+					'disc',
+					'circle',
+					'square'
+				]
+			}
 		}
-},
+	}
+}
 ```
 
 ### Editor output configuration
