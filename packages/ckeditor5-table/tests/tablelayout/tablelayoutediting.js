@@ -26,7 +26,7 @@ describe( 'TableLayoutEditing', () => {
 		document.body.appendChild( editorElement );
 
 		const plugins = [
-			Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
+			Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote
 		];
 
 		editor = await createEditor( editorElement, plugins );
@@ -150,6 +150,161 @@ describe( 'TableLayoutEditing', () => {
 					'</tbody>' +
 				'</table>'
 			);
+		} );
+
+		describe( 'when `stripFigureFromContentTable` is set to `false`', () => {
+			let editor, model, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const plugins = [
+					Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote
+				];
+
+				const config = {
+					table: {
+						tableLayout: {
+							stripFigureFromContentTable: false
+						}
+					}
+				};
+
+				editor = await createEditor( editorElement, plugins, config );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor?.destroy();
+			} );
+
+			it( 'should not strip `<figure>` from content table', () => {
+				_setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table content-table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			describe( 'when `PlainTableOutput` is enabled', () => {
+				let editor, model, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					const plugins = [
+						Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote, PlainTableOutput
+					];
+
+					const config = {
+						table: {
+							tableLayout: {
+								stripFigureFromContentTable: false
+							}
+						}
+					};
+
+					editor = await createEditor( editorElement, plugins, config );
+
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					await editor?.destroy();
+				} );
+
+				it( 'should strip `<figure>` from content table', () => {
+					_setModelData(
+						model,
+						'<table tableType="content">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo[]</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<table class="table content-table">' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>'
+					);
+				} );
+			} );
+		} );
+
+		describe( 'when `stripFigureFromContentTable` is set to `true`', () => {
+			let editor, model, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const plugins = [
+					Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote
+				];
+
+				const config = {
+					table: {
+						tableLayout: {
+							stripFigureFromContentTable: true
+						}
+					}
+				};
+
+				editor = await createEditor( editorElement, plugins, config );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor?.destroy();
+			} );
+
+			it( 'should strip `<figure>` from content table', () => {
+				_setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table content-table">' +
+						'<tbody>' +
+							'<tr><td>foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 

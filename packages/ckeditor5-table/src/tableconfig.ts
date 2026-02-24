@@ -611,6 +611,26 @@ export interface TableLayoutConfig {
 	 * ```
 	 */
 	preferredExternalTableType: TableType;
+
+	/**
+	 * When set to `true`, the editor strips the `<figure>` tag from the table data with the "content" type.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		table: {
+	 * 			tableLayout: {
+	 * 				stripFigureFromContentTable: false // or true
+	 * 			}
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * @default true
+	 */
+	stripFigureFromContentTable?: boolean;
 }
 
 /**

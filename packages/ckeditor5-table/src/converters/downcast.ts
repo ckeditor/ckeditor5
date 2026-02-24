@@ -251,7 +251,13 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
 		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
 		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
-		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+		const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
+		const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? true;
+		const tableType = table.getAttribute( 'tableType' );
+
+		const stripFigureTagWithLayoutTable = hasTableLayout && ( stripFigureFromContentTable || tableType === 'layout' );
+
+		if ( !hasPlainTableOutput && !stripFigureTagWithLayoutTable && !( useExtendedAlignment && isClipboardPipeline ) ) {
 			return null;
 		}
 
@@ -388,10 +394,15 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 				const { mapper, writer } = conversionApi;
 
 				const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+				const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
 				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
 				const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
-				if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+				if (
+					!hasPlainTableOutput &&
+					!hasTableLayout &&
+					!( useExtendedAlignment && isClipboardPipeline )
+				) {
 					return;
 				}
 
