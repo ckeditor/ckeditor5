@@ -1,0 +1,55 @@
+diff --git a/lib/markdown-it-toc-and-anchor/index.js b/lib/markdown-it-toc-and-anchor/index.js
+index a06418615efa87b9947499bb3d98f88d498c5ebc..d061713fd776a5e272592c63f7b8df7e185338c1 100644
+--- a/lib/markdown-it-toc-and-anchor/index.js
++++ b/lib/markdown-it-toc-and-anchor/index.js
+@@ -197,9 +197,23 @@ var _uslug = require("uslug");
+ 
+ var _uslug2 = _interopRequireDefault(_uslug);
+ 
+-var _token = require("markdown-it/lib/token");
++var _token = function Token(type, tag, nesting) {
++  this.type = type;
++  this.tag = tag;
++  this.nesting = nesting;
++  this.attrs = null;
++  this.map = null;
++  this.level = 0;
++  this.children = null;
++  this.content = '';
++  this.markup = '';
++  this.info = '';
++  this.meta = null;
++  this.block = false;
++  this.hidden = false;
++};
+ 
+-var _token2 = _interopRequireDefault(_token);
++var _token2 = { default: _token };
+ 
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ 
+diff --git a/lib/renderer.js b/lib/renderer.js
+index 14a740ec41689d4123cde5066e9ea563dffc30a2..bd113ba387c16749a81b77c95afe17403632a70c 100644
+--- a/lib/renderer.js
++++ b/lib/renderer.js
+@@ -27,7 +27,19 @@ var def_pugs_lst = [
+     'markdown-it-toc-and-anchor'
+ ];
+ 
+-var utils = require('markdown-it/lib/common/utils');
++var utils = {
++    escapeHtml: function(str) {
++        return str.replace(/[&<>"']/g, function(match) {
++            return {
++                '&': '&amp;',
++                '<': '&lt;',
++                '>': '&gt;',
++                '"': '&quot;',
++                "'": '&#39;'
++            }[match];
++        });
++    }
++};
+ 
+ /**
+  * General Default markdown-it config.

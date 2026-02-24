@@ -104,7 +104,7 @@ try {
 			'this is expected and does not indicate a problem.\n\n' +
 			'The purpose of this task is to create the API reference and contributor-facing ' +
 			'guides for this repository independently.\n\n' +
-			'If you still want to run full documentation validation, use "--skip-validation=false".'
+			'If you still want to run full documentation validation, use "--skip-validation".'
 		);
 
 		console.log( warning );
