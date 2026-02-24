@@ -17,6 +17,27 @@ Besides the basic functionality of creating ordered and unordered lists, CKEdito
 
 The list style feature introduces more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds three styles for unordered lists and six styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.
 
+### Available list styles
+
+The following unordered list styles are available:
+
+* `disk` (•)
+* `circle` (◦)
+* `square` (▪)
+
+The following ordered list styles are available:
+
+* `decimal` (1.)
+* `decimal-leading-zero` (01.)
+* `lower-roman` (i.)
+* `upper-roman` (I.)
+* `lower-latin` (a.)
+* `upper-latin` (A.)
+
+Additional numbering style that {@link features/lists#enabling-specific-enumerators needs configuration}:
+
+* arabic-indic numbers (١.)
+
 ### Demo
 
 In the editor below, use the ordered {@icon @ckeditor/ckeditor5-icons/theme/icons/numbered-list.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/bulleted-list.svg Insert unordered list} to choose the desired marker type for each list.
