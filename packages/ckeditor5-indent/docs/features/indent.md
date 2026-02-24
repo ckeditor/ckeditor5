@@ -126,7 +126,7 @@ The target behavior comes from two other plugins:
 
 This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior &ndash; nesting list items, block indentation of paragraphs and headings, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
 
-When all three plugins are loaded, the editor also supports applying visual block indentation to list elements (`<ol>`, `<ul>`) and list items (`<li>`). This works the same way as block indentation for paragraphs and headings &ndash; it adds a `margin-left` style (or a CSS class, depending on the [configuration](#configuring-the-block-indentation-feature)) to the list elements. The editor understands `margin-left` styles on all these elements during data loading, across all list types (numbered, bulleted, to-do, multi-level) and at all nesting levels. Negative indentation values (for example, `-50px`) are also accepted during data loading.
+When all three plugins are loaded, the editor also supports applying visual block indentation to list containers (`<ol>`, `<ul>`) and list items (`<li>`). This works the same way as block indentation for paragraphs and headings &ndash; it adds a `margin-left` style (or a CSS class, depending on the [configuration](#configuring-the-block-indentation-feature)) to the list elements. The editor understands `margin-left` styles on all these elements during data loading, across all list types (numbered, bulleted, to-do, multi-level) and at all nesting levels. Negative indentation values (for example, `-50px`) are also accepted during data loading.
 
 ### Indenting list containers
 
@@ -139,7 +139,7 @@ Only the topmost list in the content can be indented or outdented. The selection
 	When multiple lists are selected, the <kbd>Tab</kbd> key changes the indentation of the first list in the selection only, while the toolbar buttons change the indentation of all selected lists.
 </info-box>
 
-It is not possible to outdent a list below `0` (negative values cannot be set through the editor UI). If a list with a negative indentation value was loaded into the editor, indenting it resets the value to `0` in a single step.
+It is not possible to outdent a list below `0`; negative values cannot be set through the editor UI. If a list with a negative indentation value was loaded into the editor, indenting it resets the value to `0` in a single step.
 
 You can also remove the list indentation using the {@link features/remove-format remove format} feature, which removes the indentation attribute in one step.
 
