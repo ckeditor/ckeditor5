@@ -157,6 +157,7 @@ The selection must be somewhere inside the list item (or span multiple list item
 ## Related features
 
 Here are some CKEditor&nbsp;5 features that may help structure your content better:
+
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
