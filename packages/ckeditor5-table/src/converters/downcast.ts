@@ -251,11 +251,7 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
 		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
 		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
-		const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
-		const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? true;
-		const tableType = table.getAttribute( 'tableType' );
-
-		const stripFigureTagWithLayoutTable = hasTableLayout && ( stripFigureFromContentTable || tableType === 'layout' );
+		const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, table );
 
 		if ( !hasPlainTableOutput && !stripFigureTagWithLayoutTable && !( useExtendedAlignment && isClipboardPipeline ) ) {
 			return null;
@@ -394,13 +390,14 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 				const { mapper, writer } = conversionApi;
 
 				const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
-				const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
 				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
 				const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
+				const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, item );
+
 				if (
 					!hasPlainTableOutput &&
-					!hasTableLayout &&
+					!stripFigureTagWithLayoutTable &&
 					!( useExtendedAlignment && isClipboardPipeline )
 				) {
 					return;
@@ -420,6 +417,21 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 			}, { priority: 'high' } );
 		} );
 	}
+}
+
+/**
+ * Returns `true` if the figure tag should be stripped when using layout tables and when `tableType` is `layout`
+ * or `stripFigureFromContentTable` option is set to `true`, `false` otherwise.
+ * @param editor The editor instance.
+ * @param table Table model element.
+ * @returns `true` if the figure tag should be stripped, `false` otherwise.
+ */
+function shouldStripFigureTagWithLayoutTable( editor: Editor, table: ModelElement ) {
+	const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
+	const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? true;
+	const tableType = table.getAttribute( 'tableType' );
+
+	return hasTableLayout && ( stripFigureFromContentTable || tableType === 'layout' );
 }
 
 /**
