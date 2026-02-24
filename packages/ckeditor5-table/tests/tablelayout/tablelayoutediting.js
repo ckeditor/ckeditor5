@@ -204,6 +204,61 @@ describe( 'TableLayoutEditing', () => {
 				);
 			} );
 
+			describe( 'when `TableProperties` is enabled', () => {
+				let editor, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					const plugins = [
+						Table, TableCaption, TableColumnResize, TablePropertiesEditing, TableCellPropertiesEditing,
+						TableLayoutEditing, Paragraph, BlockQuote
+					];
+
+					const config = {
+						table: {
+							tableLayout: {
+								stripFigureFromContentTable: false
+							}
+						}
+					};
+
+					editor = await createEditor( editorElement, plugins, config );
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					await editor?.destroy();
+				} );
+
+				it( 'should downcast content table', () => {
+					editor.setData(
+						'<figure class="table content-table">' +
+							'<table style="border:2px dashed hsl(120, 75%, 60%);">' +
+								'<tbody>' +
+									'<tr><td></td><td></td><td></td></tr>' +
+									'<tr><td></td><td style="border:2px dashed hsl(0, 75%, 60%);"></td><td></td></tr>' +
+									'<tr><td></td><td></td><td></td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+
+					expect( editor.getData() ).to.be.equal(
+						'<figure class="table content-table">' +
+							'<table style="border:2px dashed hsl(120, 75%, 60%);">' +
+								'<tbody>' +
+									'<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+									'<tr><td>&nbsp;</td><td style="border:2px dashed hsl(0, 75%, 60%);">&nbsp;</td><td>&nbsp;</td></tr>' +
+									'<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+			} );
+
 			describe( 'when `PlainTableOutput` is enabled', () => {
 				let editor, model, editorElement;
 
