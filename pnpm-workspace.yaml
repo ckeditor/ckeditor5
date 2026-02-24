@@ -22,6 +22,9 @@ overrides:
   'diff@<8': '^8.0.3'
   'lodash-es': '^4.17.23'
 
+patchedDependencies:
+  hexo-renderer-markdown-it-plus@1.0.6: .patches/hexo-renderer-markdown-it-plus@1.0.6.patch
+
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@ckeditor/*'
