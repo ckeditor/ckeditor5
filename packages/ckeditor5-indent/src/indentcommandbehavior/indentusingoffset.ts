@@ -60,12 +60,15 @@ export class IndentUsingOffset implements IndentBehavior {
 		const currentOffset = parseFloat( indentAttributeValue || '0' );
 		const isSameUnit = !indentAttributeValue || indentAttributeValue.endsWith( this.unit );
 
+		if ( currentOffset < 0 ) {
+			return;
+		}
+
 		if ( !isSameUnit ) {
 			return this.isForward ? this.offset + this.unit : undefined;
 		}
 
 		const nextOffset = this.isForward ? this.offset : -this.offset;
-
 		const offsetToSet = currentOffset + nextOffset;
 
 		return offsetToSet > 0 ? offsetToSet + this.unit : undefined;

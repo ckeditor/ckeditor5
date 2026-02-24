@@ -615,7 +615,7 @@ export class ListEditing extends Plugin {
 					const isSingleListItemSelected = isSingleListItem( allChildren );
 
 					if ( isSingleListItemSelected ) {
-						removeListAttributes( allChildren as Array<ModelElement>, writer );
+						removeListAttributes( allChildren as Array<ModelElement>, writer, this.getListAttributeNames() );
 					}
 				}
 			} );
