@@ -55,23 +55,7 @@ export class IndentBlockListCommand extends Command {
 	public override refresh(): void {
 		const listItem = this._getFirstListItemIfSelectionIsAtListStart( this.editor.model.document.selection );
 
-		if ( !listItem ) {
-			this.isEnabled = false;
-			return;
-		}
-
-		const currentIndent = listItem.getAttribute( 'blockIndentList' ) as string;
-		const indentValue = parseFloat( currentIndent );
-
-		// Special case: if the current indent is negative, only allow forward indentation to make it possible to reset indentation to 0.
-		if ( indentValue < 0 ) {
-			this.isEnabled = this._indentBehavior.isForward;
-			return;
-		}
-
-		this.isEnabled = this._indentBehavior.isForward ?
-			!!this._indentBehavior.getNextIndent( currentIndent ) :
-			!!currentIndent;
+		this.isEnabled = !!listItem && this._indentBehavior.checkEnabled( listItem.getAttribute( 'blockIndentList' ) as string );
 	}
 
 	/**
@@ -86,7 +70,6 @@ export class IndentBlockListCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const listIntegration = editor.plugins.get( 'IndentBlockListIntegration' );
 
 		model.change( writer => {
 			const listItem = this._getFirstListItemIfSelectionIsAtListStart( selection )!;
@@ -96,7 +79,11 @@ export class IndentBlockListCommand extends Command {
 				const blocks = Array.from( selection.getSelectedBlocks() );
 
 				for ( const block of blocks ) {
-					if ( _isListItemBlock( block ) && block.getAttribute( 'listIndent' ) === 0 ) {
+					if (
+						_isListItemBlock( block ) &&
+						block.getAttribute( 'listIndent' ) === 0 &&
+						model.schema.checkAttribute( block, 'blockIndentList' )
+					) {
 						listItems.push( block );
 					}
 				}
@@ -106,18 +93,7 @@ export class IndentBlockListCommand extends Command {
 
 			for ( const item of listItems ) {
 				const currentIndent = item.getAttribute( 'blockIndentList' ) as string;
-				const indentValue = parseFloat( currentIndent );
-				let nextIndent;
-
-				if ( listIntegration.indentBlockUsingClasses ) {
-					nextIndent = this._indentBehavior.getNextIndent( currentIndent );
-
-					if ( nextIndent === undefined && this._indentBehavior.isForward ) {
-						nextIndent = currentIndent;
-					}
-				} else {
-					nextIndent = indentValue < 0 ? 0 : this._indentBehavior.getNextIndent( currentIndent );
-				}
+				const nextIndent = this._indentBehavior.getNextIndent( currentIndent );
 
 				if ( nextIndent ) {
 					writer.setAttribute( 'blockIndentList', nextIndent, item );
@@ -133,19 +109,21 @@ export class IndentBlockListCommand extends Command {
 	 * Otherwise, returns `null`.
 	 */
 	private _getFirstListItemIfSelectionIsAtListStart( selection: ModelDocumentSelection ): ModelElement | null {
-		const pos = selection.getFirstPosition()!;
+		const position = selection.getFirstPosition()!;
 		const listUtils = this.editor.plugins.get( 'ListUtils' );
-		const parent = pos.parent as ModelElement;
+		const parent = position.parent as ModelElement;
+		const schema = this.editor.model.schema;
 
 		if (
-			!pos.isAtStart ||
-			!_isListItemBlock( parent ) ||
-			!listUtils.isFirstListItemInList( parent ) ||
-			parent.getAttribute( 'listIndent' ) !== 0
+			position.isAtStart &&
+			_isListItemBlock( parent ) &&
+			parent.getAttribute( 'listIndent' ) == 0 &&
+			schema.checkAttribute( parent, 'blockIndentList' ) &&
+			listUtils.isFirstListItemInList( parent )
 		) {
-			return null;
+			return parent;
 		}
 
-		return parent;
+		return null;
 	}
 }

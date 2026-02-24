@@ -416,10 +416,7 @@ export class ListEditing extends Plugin {
 			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
 			const command = this.editor.commands.get( commandName )!;
 
-			if (
-				command.isEnabled &&
-				!this.editor.commands.get( 'outdentBlockList' )?.isEnabled
-			) {
+			if ( command.isEnabled ) {
 				editor.execute( commandName );
 
 				data.stopPropagation();

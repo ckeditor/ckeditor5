@@ -11,16 +11,21 @@ import {
 	type ListEditingPostFixerEvent,
 	type _ListIndentCommandAfterExecuteEvent
 } from '@ckeditor/ckeditor5-list';
+
 import { type GetCallback } from 'ckeditor5/src/utils.js';
+
 import {
 	type MultiCommand,
 	Plugin
 } from 'ckeditor5/src/core.js';
+
 import {
 	addMarginStylesRules,
 	type ModelElement,
-	type UpcastElementEvent
+	type UpcastElementEvent,
+	type ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
+
 import { IndentBlockListCommand } from './indentblocklistcommand.js';
 import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';
 import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
@@ -45,12 +50,6 @@ export class IndentBlockListIntegration extends Plugin {
 	}
 
 	/**
-	 * Whether the Indent Block plugin uses classes to apply indentation
-	 * (and thus whether the `'indentBlockList'` and `'indentBlockListItem'` commands use classes to increase/decrease indentation).
-	 */
-	public indentBlockUsingClasses = false;
-
-	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
@@ -62,9 +61,7 @@ export class IndentBlockListIntegration extends Plugin {
 
 		const config = editor.config.get( 'indentBlock' )!;
 
-		this.indentBlockUsingClasses = !!( config.classes && config.classes.length );
-
-		if ( this.indentBlockUsingClasses ) {
+		if ( config.classes && config.classes.length ) {
 			this._setupConversionUsingClassesForListBlock( config.classes! );
 			this._setupConversionUsingClassesForListItemBlock( config.classes! );
 
@@ -132,42 +129,32 @@ export class IndentBlockListIntegration extends Plugin {
 					continue;
 				}
 
-				evt.return ||= ensureIndentValuesConsistency( 'blockIndentList', node, previousNodeInList, writer );
+				if ( ensureIndentValuesConsistency( 'blockIndentList', node, previousNodeInList, writer ) ) {
+					evt.return = true;
+				}
 
 				if ( previousNodeInList.getAttribute( 'listItemId' ) != node.getAttribute( 'listItemId' ) ) {
 					continue;
 				}
 
-				evt.return ||= ensureIndentValuesConsistency( 'blockIndentListItem', node, previousNodeInList, writer );
+				if ( ensureIndentValuesConsistency( 'blockIndentListItem', node, previousNodeInList, writer ) ) {
+					evt.return = true;
+				}
 			}
 		} );
 
-		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
-		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
-
-		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )! );
-		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockList' )! );
-
-		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockListItem' )! );
-		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockListItem' )! );
-
-		editor.keystrokes.set( 'tab', ( data, cancel ) => {
-			const command = editor.commands.get( 'indentBlockList' )!;
+		this.listenTo<ViewDocumentTabEvent>( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentBlockList' : 'indentBlockList';
+			const command = this.editor.commands.get( commandName )!;
 
 			if ( command.isEnabled ) {
-				command.execute( { firstListOnly: true } );
-				cancel();
-			}
-		} );
+				editor.execute( commandName, { firstListOnly: true } );
 
-		editor.keystrokes.set( 'shift+tab', ( data, cancel ) => {
-			const command = editor.commands.get( 'outdentBlockList' )!;
-
-			if ( command.isEnabled ) {
-				command.execute( { firstListOnly: true } );
-				cancel();
+				data.stopPropagation();
+				data.preventDefault();
+				evt.stop();
 			}
-		} );
+		}, { context: 'li', priority: 'high' } );
 	}
 
 	/**
@@ -182,6 +169,7 @@ export class IndentBlockListIntegration extends Plugin {
 			return;
 		}
 
+		// Schema registration.
 		schema.extend( '$listItem', { allowAttributes: [ 'blockIndentList', 'blockIndentListItem' ] } );
 		schema.setAttributeProperties( 'blockIndentList', { isFormatting: true } );
 		schema.setAttributeProperties( 'blockIndentListItem', { isFormatting: true } );
@@ -213,6 +201,7 @@ export class IndentBlockListIntegration extends Plugin {
 						if ( node.hasAttribute( 'blockIndentList' ) ) {
 							writer.removeAttribute( 'blockIndentList', node );
 						}
+
 						if ( node.hasAttribute( 'blockIndentListItem' ) ) {
 							writer.removeAttribute( 'blockIndentListItem', node );
 						}
@@ -231,6 +220,7 @@ export class IndentBlockListIntegration extends Plugin {
 				clearBlockIndentAttributesOnListIndentChange
 			);
 		}
+
 		if ( outdentListCommand ) {
 			this.listenTo<_ListIndentCommandAfterExecuteEvent>(
 				outdentListCommand,
@@ -238,6 +228,16 @@ export class IndentBlockListIntegration extends Plugin {
 				clearBlockIndentAttributesOnListIndentChange
 			);
 		}
+
+		// Register list block indent commands in multi command.
+		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
+		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockList' )! );
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockListItem' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockListItem' )! );
 	}
 
 	/**

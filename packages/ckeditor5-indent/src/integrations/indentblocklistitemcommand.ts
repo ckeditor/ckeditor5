@@ -55,14 +55,7 @@ export class IndentBlockListItemCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const listItems = this._getAffectedListItems();
-
-		if ( listItems.length === 0 ) {
-			this.isEnabled = false;
-			return;
-		}
-
-		this.isEnabled = true;
+		this.isEnabled = this._getAffectedListItems().length > 0;
 	}
 
 	/**
@@ -103,13 +96,17 @@ export class IndentBlockListItemCommand extends Command {
 	 * For classes-based indentation, the command should be enabled if there is a class to be removed.
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
-		const listIntegration = this.editor.plugins.get( 'IndentBlockListIntegration' );
-
-		if ( listIntegration.indentBlockUsingClasses ) {
-			return this._indentBehavior.isForward ? false : !!element.getAttribute( 'blockIndentListItem' );
+		if ( !element.hasAttribute( 'blockIndentListItem' ) ) {
+			return false;
 		}
 
 		const currentIndent = parseFloat( element.getAttribute( 'blockIndentListItem' ) as string );
+
+		// Class based indent, allow only outdent.
+		// TODO find a better way, probably use behavior to find out.
+		if ( isNaN( currentIndent ) ) {
+			return !this._indentBehavior.isForward;
+		}
 
 		return this._indentBehavior.isForward && currentIndent < 0 ||
 			!this._indentBehavior.isForward && currentIndent > 0;

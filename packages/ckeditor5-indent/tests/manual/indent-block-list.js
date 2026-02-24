@@ -117,12 +117,12 @@ function getEditorConfig() {
 		plugins.push( PasteFromOffice );
 	}
 
-	if ( controls.indent.checked ) {
-		plugins.push( Indent );
-	}
-
 	if ( controls.indentBlock.checked ) {
 		plugins.push( IndentBlock );
+	}
+
+	if ( controls.indent.checked ) {
+		plugins.push( Indent );
 	}
 
 	if ( controls.list.checked ) {

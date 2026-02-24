@@ -22,7 +22,10 @@ describe( 'IndentBlockListCommand', () => {
 				editor = newEditor;
 				model = editor.model;
 
-				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'blockIndentList' ]
+				} );
 
 				indentBlockUsingClasses = false;
 
