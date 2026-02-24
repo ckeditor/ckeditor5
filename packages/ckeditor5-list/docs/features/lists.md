@@ -3,6 +3,7 @@ menu-title: Ordered and unordered lists
 meta-title: Lists | CKEditor 5 Documentation
 meta-description: Create and manage ordered and unordered lists in CKEditor 5 to organize content clearly and improve readability.
 category: features-lists
+toc-limit: 2
 order: 10
 ---
 
@@ -86,6 +87,31 @@ ClassicEditor
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
+#### Enabling specific enumerators
+
+To enable only selected list item enumerators for the ordered list, you need to explicitly list them in the editor configuration. This can also be used to enable additional, `arabic-indic` numeral enumerators. To achieve this, replace the `styles: true` configuration option with a `styles { }` listing, for example:
+
+```js
+list: {
+	properties: {
+		styles: {
+			listStyleTypes: {
+				numbered: [
+					'decimal',
+					'decimal-leading-zero',
+					'arabic-indic'
+				],
+				bulleted: [
+					'disc',
+					'circle',
+					'square'
+				]
+			}
+		}
+	}
+}
+```
+
 ### Editor output configuration
 
 Starting with version 45.1.1, list items (`<li>` elements) in the editor data output contain an additional attribute `data-list-item-id`. The attribute is necessary to ensure that the lists feature work correctly with other editor features and mechanisms.
@@ -120,7 +146,7 @@ These CKEditor&nbsp;5 features provide similar functionality:
 
 * {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
 * {@link features/multi-level-lists Multi-level lists} &ndash; Multi-level lists allow the user to set different markers (symbols, text or numbers) to display at each level of the list.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings. Also supports {@link features/indent#indenting-lists visual block indentation of lists and list items}.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Common API
