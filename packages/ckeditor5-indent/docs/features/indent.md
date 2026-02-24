@@ -124,9 +124,9 @@ The target behavior comes from two other plugins:
 * {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
 * {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior &ndash; nesting list items, block indentation of paragraphs and headings, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
+This means that if you want to allow indenting lists only, you can do that by loading the `Indent` and `List` plugins only. If you want the full behavior &ndash; nesting list items, block indentation of paragraphs and headings, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
 
-When all three plugins are loaded, the editor also supports applying visual block indentation to list containers (`<ol>`, `<ul>`) and list items (`<li>`). This works the same way as block indentation for paragraphs and headings &ndash; it adds a `margin-left` style (or a CSS class, depending on the [configuration](#configuring-the-block-indentation-feature)) to the list elements. The editor understands `margin-left` styles on all these elements during data loading, across all list types (numbered, bulleted, to-do, multi-level) and at all nesting levels. Negative indentation values (for example, `-50px`) are also accepted during data loading.
+When all three plugins are loaded, the editor also supports applying visual block indentation to list containers (`<ol>`, `<ul>`) and list items (`<li>`). This works the same way as block indentation for paragraphs and headings &ndash; it adds a `margin-left` style (or a CSS class, depending on the [configuration](#configuring-the-block-indentation-feature)) to the list elements. The editor understands `margin-left` styles on all these elements during data loading, across all list types (numbered, bulleted, to-do, multi-level) and at all nesting levels. Negative indentation values (such as `-50px`) are also accepted during data loading.
 
 ### Indenting list containers
 
@@ -136,10 +136,10 @@ Only the topmost list in the content can be indented or outdented. The selection
 * Use the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} toolbar buttons. The indentation also changes in steps.
 
 <info-box>
-	When multiple lists are selected, the <kbd>Tab</kbd> key changes the indentation of the first list in the selection only, while the toolbar buttons change the indentation of all selected lists.
+	When multiple lists are selected, the <kbd>Tab</kbd> key only changes the indentation of the first list in the selection. The toolbar buttons change the indentation of all selected lists.
 </info-box>
 
-It is not possible to outdent a list below `0`; negative values cannot be set through the editor UI. If a list with a negative indentation value was loaded into the editor, indenting it resets the value to `0` in a single step.
+It is not possible to outdent a list below `0` as negative values cannot be set through the editor UI. If a list with a negative indentation value was loaded into the editor, indenting it resets the value to `0` in a single step.
 
 You can also remove the list indentation using the {@link features/remove-format remove format} feature, which removes the indentation attribute in one step.
 
@@ -152,7 +152,7 @@ A list item's indentation can only be reset in a single step by:
 * Using the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} button (if the value is negative) or the outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} button (if the value is positive).
 * Using the {@link features/remove-format remove format} feature.
 
-The selection must be somewhere inside the list item (or span multiple list items) for these actions to work.
+The selection must be set inside a list item (or span multiple list items) for these actions to work.
 
 ## Related features
 
