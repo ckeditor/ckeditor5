@@ -190,6 +190,7 @@ describe( 'TableLayoutEditing', () => {
 								'<paragraph>foo[]</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
+						'<caption>caption</caption>' +
 					'</table>'
 				);
 
@@ -200,6 +201,7 @@ describe( 'TableLayoutEditing', () => {
 								'<tr><td>foo</td></tr>' +
 							'</tbody>' +
 						'</table>' +
+						'<figcaption>caption</figcaption>' +
 					'</figure>'
 				);
 			} );
@@ -297,11 +299,13 @@ describe( 'TableLayoutEditing', () => {
 									'<paragraph>foo[]</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +
+							'<caption>caption</caption>' +
 						'</table>'
 					);
 
 					expect( editor.getData() ).to.equal(
 						'<table class="table content-table">' +
+							'<caption>caption</caption>' +
 							'<tbody>' +
 								'<tr><td>foo</td></tr>' +
 							'</tbody>' +
@@ -349,11 +353,13 @@ describe( 'TableLayoutEditing', () => {
 								'<paragraph>foo[]</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
+						'<caption>caption</caption>' +
 					'</table>'
 				);
 
 				expect( editor.getData() ).to.equal(
 					'<table class="table content-table">' +
+						'<caption>caption</caption>' +
 						'<tbody>' +
 							'<tr><td>foo</td></tr>' +
 						'</tbody>' +
