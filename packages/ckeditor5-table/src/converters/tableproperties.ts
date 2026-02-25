@@ -229,6 +229,27 @@ export function upcastBorderStyles(
 
 		if ( reducedBorder.style !== localDefaultBorder.style ) {
 			conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
+		} else {
+			const borderTopStyle = normalizedBorder.style.top;
+			const borderRightStyle = normalizedBorder.style.right;
+			const borderBottomStyle = normalizedBorder.style.bottom;
+			const borderLeftStyle = normalizedBorder.style.left;
+
+			if ( borderTopStyle && borderTopStyle !== localDefaultBorder.style ) {
+				conversionApi.writer.setAttribute( 'borderTopStyle', borderTopStyle, modelElement );
+			}
+
+			if ( borderRightStyle && borderRightStyle !== localDefaultBorder.style ) {
+				conversionApi.writer.setAttribute( 'borderRightStyle', borderRightStyle, modelElement );
+			}
+
+			if ( borderBottomStyle && borderBottomStyle !== localDefaultBorder.style ) {
+				conversionApi.writer.setAttribute( 'borderBottomStyle', borderBottomStyle, modelElement );
+			}
+
+			if ( borderLeftStyle && borderLeftStyle !== localDefaultBorder.style ) {
+				conversionApi.writer.setAttribute( 'borderLeftStyle', borderLeftStyle, modelElement );
+			}
 		}
 
 		if ( reducedBorder.color !== localDefaultBorder.color ) {
@@ -309,6 +330,38 @@ export function downcastAttributeToStyle(
 				[ styleName ]: modelAttributeValue
 			}
 		} )
+	} );
+}
+
+/**
+ * Conversion helper for downcasting an attribute to a style.
+ *
+ * @internal
+ */
+export function downcastAttributeToSpecificStyle(
+	conversion: Conversion,
+	options: {
+		modelElement: string;
+		modelAttribute: string;
+		styleName: string;
+	}
+): void {
+	const { modelElement, modelAttribute, styleName } = options;
+
+	conversion.for( 'downcast' ).attributeToAttribute( {
+		model: {
+			name: modelElement,
+			key: modelAttribute
+		},
+		view: ( modelAttributeValue, { writer } ) => {
+			if ( !modelAttributeValue ) {
+				return;
+			}
+
+			return writer.createAttributeElement( 'span', {
+				style: `${ styleName }:${ modelAttributeValue }`
+			} );
+		}
 	} );
 }
 
