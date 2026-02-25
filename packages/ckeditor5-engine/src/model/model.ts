@@ -832,7 +832,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Helper method for {@link #hasContent}.
 	 */
-	private _rangeHasContent( range: ModelRange, options: { ignoreWhitespaces?: boolean; ignoreMarkers?: boolean; } ): boolean {
+	private _rangeHasContent( range: ModelRange, options: { ignoreWhitespaces?: boolean; ignoreMarkers?: boolean } ): boolean {
 		if ( range.isCollapsed ) {
 			return false;
 		}
