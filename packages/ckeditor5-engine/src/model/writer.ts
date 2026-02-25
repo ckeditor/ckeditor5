@@ -1341,6 +1341,8 @@ export class ModelWriter {
 	 * @returns The added root element.
 	 */
 	public addRoot( rootName: string, elementName = '$root' ): ModelRootElement {
+		// TODO make sure correct elementName is passed in all calls.
+
 		this._assertWriterUsedCorrectly();
 
 		const root = this.model.document.getRoot( rootName );

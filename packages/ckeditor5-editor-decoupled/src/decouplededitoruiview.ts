@@ -55,7 +55,7 @@ export class DecoupledEditorUIView extends EditorUIView {
 		locale: Locale,
 		editingView: EditingView,
 		options: {
-			editableElement?: HTMLElement;
+			editableElement?: HTMLElement | string; // TODO string => create DOM element name
 			shouldToolbarGroupWhenFull?: boolean;
 			label?: string | Record<string, string>;
 		} = {}

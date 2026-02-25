@@ -148,13 +148,15 @@ export class MultiRootEditor extends Editor {
 		} );
 
 		for ( const rootName of rootNames ) {
+			const rootElementName = ( this.config.get( 'modelRootElementName' ) as Record<string, string> )?.[ rootName ] || '$root';
+
 			// Create root and `UIView` element for each editable container.
-			this.model.document.createRoot( '$root', rootName );
+			this.model.document.createRoot( rootElementName, rootName );
 		}
 
 		if ( this.config.get( 'lazyRoots' ) ) {
 			for ( const rootName of this.config.get( 'lazyRoots' )! ) {
-				const root = this.model.document.createRoot( '$root', rootName );
+				const root = this.model.document.createRoot( '$root', rootName ); // TODO $inlineRoot
 
 				root._isLoaded = false;
 			}
@@ -198,7 +200,9 @@ export class MultiRootEditor extends Editor {
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
-			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>,
+			editableElements: (
+				sourceIsData ? this.config.get( 'viewRootElementName' ) : sourceElementsOrData
+			) as Record<string, HTMLElement | string>,
 			label: this.config.get( 'label' )
 		};
 
@@ -503,6 +507,14 @@ export class MultiRootEditor extends Editor {
 		}
 	}
 
+	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement;
+
+	public createEditable( root: ModelRootElement, options: {
+		placeholder?: string;
+		label?: string;
+		editableElementName?: string;
+	} ): HTMLElement;
+
 	/**
 	 * Creates and returns a new DOM editable element for the given root element.
 	 *
@@ -514,8 +526,25 @@ export class MultiRootEditor extends Editor {
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement {
-		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
+	public createEditable(
+		root: ModelRootElement,
+		optionsOrPlaceholder?: string | {
+			placeholder?: string;
+			label?: string;
+			editableElementName?: string;
+		},
+		label?: string
+	): HTMLElement {
+		let placeholder: string | undefined;
+		let editableElementName: string | undefined;
+
+		if ( optionsOrPlaceholder && typeof optionsOrPlaceholder == 'object' ) {
+			placeholder = optionsOrPlaceholder.placeholder;
+			label = optionsOrPlaceholder.label;
+			editableElementName = optionsOrPlaceholder.editableElementName;
+		}
+
+		const editable = this.ui.view.createEditable( root.rootName, editableElementName, label );
 
 		this.ui.addEditable( editable, placeholder );
 
@@ -677,7 +706,7 @@ export class MultiRootEditor extends Editor {
 		}
 
 		this._registeredRootsAttributesKeys.add( key );
-		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
+		this.editing.model.schema.extend( '$root', { allowAttributes: key } ); // TODO $inlineRoot
 	}
 
 	/**

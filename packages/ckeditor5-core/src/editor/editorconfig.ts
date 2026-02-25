@@ -113,6 +113,16 @@ export interface EditorConfig extends EngineConfig {
 	initialData?: string | Record<string, string>;
 
 	/**
+	 * TODO
+	 */
+	modelRootElementName?: string | Record<string, string>;
+
+	/**
+	 * TODO
+	 */
+	viewRootElementName?: string | Record<string, string>;
+
+	/**
 	 * The language of the editor UI and its content.
 	 *
 	 * Simple usage (change the language of the UI and the content):

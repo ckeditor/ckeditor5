@@ -214,9 +214,17 @@ function getRangesOfBlockGroups( writer: ModelWriter, blocks: Array<ModelElement
  * Checks whether <bQ> can wrap the block.
  */
 function checkCanBeQuoted( schema: ModelSchema, block: ModelElement ): boolean {
-	// TMP will be replaced with schema.checkWrap().
-	const isBQAllowed = schema.checkChild( block.parent as ModelElement, 'blockQuote' );
-	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );
+	const parentContext = schema.createContext( block.parent as ModelElement );
 
-	return isBQAllowed && isBlockAllowedInBQ;
+	// Is block-quote allowed in parent of block.
+	if ( !schema.checkChild( parentContext, 'blockQuote' ) ) {
+		return false;
+	}
+
+	// Is block allowed inside block-quote.
+	if ( !schema.checkChild( parentContext.push( 'blockQuote' ), block ) ) {
+		return false;
+	}
+
+	return true;
 }

@@ -72,7 +72,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.model.document.createRoot();
+		this.model.document.createRoot( this.config.get( 'modelRootElementName' ) as string || '$root' );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
@@ -80,6 +80,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull,
+			editableElementName: this.config.get( 'viewRootElementName' ) as string | undefined,
 			useMenuBar: menuBarConfig.isVisible,
 			label: this.config.get( 'label' )
 		} );

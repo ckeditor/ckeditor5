@@ -169,6 +169,12 @@ export class Title extends Plugin {
 		const model = editor.model;
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const root = editor.model.document.getRoot( rootName )!;
+
+		// Ignore $inlineRoot.
+		if ( !model.schema.checkChild( root, 'title' ) ) {
+			return ''; // TODO what should be returned? Maybe an exception should be thrown?
+		}
+
 		const view = editor.editing.view;
 		const viewWriter = new ViewDowncastWriter( view.document );
 
@@ -205,7 +211,13 @@ export class Title extends Plugin {
 	 * Returns the `title` element when it is in the document. Returns `undefined` otherwise.
 	 */
 	private _getTitleElement( rootName?: string ): ModelElement | undefined {
-		const root = this.editor.model.document.getRoot( rootName )!;
+		const model = this.editor.model;
+		const root = model.document.getRoot( rootName )!;
+
+		// Ignore $inlineRoot.
+		if ( !model.schema.checkChild( root, 'title' ) ) {
+			return;
+		}
 
 		for ( const child of root.getChildren() as IterableIterator<ModelElement> ) {
 			if ( isTitle( child ) ) {
@@ -255,6 +267,11 @@ export class Title extends Plugin {
 		const model = this.editor.model;
 
 		for ( const modelRoot of this.editor.model.document.getRoots() ) {
+			// Ignore inline roots.
+			if ( !model.schema.checkChild( modelRoot, 'title' ) ) {
+				continue;
+			}
+
 			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<ModelElement> ).filter( isTitle );
 			const firstTitleElement = titleElements[ 0 ];
 			const firstRootChild = modelRoot.getChild( 0 ) as ModelElement;
@@ -304,12 +321,13 @@ export class Title extends Plugin {
 	 * when it is needed for the placeholder purposes.
 	 */
 	private _fixBodyElement( writer: ModelWriter ) {
+		const schema = writer.model.schema;
 		let changed = false;
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
 			const modelRoot = this.editor.model.document.getRoot( rootName )!;
 
-			if ( modelRoot.childCount < 2 ) {
+			if ( modelRoot.childCount < 2 && schema.checkChild( modelRoot, 'paragraph' ) ) {
 				const placeholder = writer.createElement( 'paragraph' );
 
 				writer.insert( placeholder, modelRoot, 1 );
@@ -385,6 +403,13 @@ export class Title extends Plugin {
 					continue;
 				}
 
+				// Ignore $inlineRoot roots.
+				const modelRoot = editor.editing.mapper.toModelElement( viewRoot )!;
+
+				if ( !editor.model.schema.checkChild( modelRoot, 'title' ) ) {
+					continue;
+				}
+
 				// If `viewRoot` is not empty, then we can expect at least two elements in it.
 				const body = viewRoot!.getChild( 1 ) as ViewElement;
 				const oldBody = bodyViewElements.get( viewRoot.rootName );
@@ -452,6 +477,11 @@ export class Title extends Plugin {
 				const selectedElement = first( selection.getSelectedBlocks() );
 				const selectionPosition = selection.getFirstPosition()!;
 				const root = editor.model.document.getRoot( selectionPosition.root.rootName! )!;
+
+				// Ignore $inlineRoot.
+				if ( !model.schema.checkChild( root, 'title' ) ) {
+					return;
+				}
 
 				const title = root.getChild( 0 ) as ModelElement;
 				const body = root.getChild( 1 );

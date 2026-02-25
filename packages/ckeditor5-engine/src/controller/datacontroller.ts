@@ -465,6 +465,8 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns Parsed data.
 	 */
 	public parse( data: string, context: ModelSchemaContextDefinition = '$root' ): ModelDocumentFragment {
+		// TODO make sure correct context is passed in all calls.
+
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
@@ -490,6 +492,8 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 		viewElementOrFragment: ViewElement | ViewDocumentFragment,
 		context: ModelSchemaContextDefinition = '$root'
 	): ModelDocumentFragment {
+		// TODO make sure correct context is passed in all calls.
+
 		return this.model.change( writer => {
 			return this.upcastDispatcher.convert( viewElementOrFragment, writer, context );
 		} );

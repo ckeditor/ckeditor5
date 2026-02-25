@@ -12,9 +12,10 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 const editorData = {
-	intro: '<p><strong>Exciting</strong> intro text to an article.</p>',
+	intro: '<strong>Exciting</strong> intro text to an article.',
 	content: '<h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p>',
-	outro: '<p>Closing text.</p>'
+	outro: '<p>Closing text.</p>',
+	signature: 'John Doe'
 };
 let editor;
 
@@ -22,7 +23,17 @@ function initEditor() {
 	MultiRootEditor
 		.create( editorData, {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
+			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
+			modelRootElementName: {
+				intro: '$inlineRoot',
+				outro: '$root',
+				signature: '$inlineRoot'
+			},
+			viewRootElementName: {
+				intro: 'h2',
+				outro: 'blockquote',
+				signature: 'em'
+			}
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
@@ -31,6 +42,7 @@ function initEditor() {
 			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'intro' ) );
 			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'content' ) );
 			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'outro' ) );
+			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'signature' ) );
 
 			window.editor = editor = newEditor;
 		} )
