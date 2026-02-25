@@ -408,7 +408,7 @@ Lists allow the creation and management of various list types, including to-do l
 			List indentation
 		</ck:card-title>
 		<ck:card-description>
-			Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
+			The indent and outdent buttons allow for nesting list items. When the IndentBlock plugin is loaded, the buttons apply visual block indentation to list containers and list items.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-editing#indenting-lists}'>

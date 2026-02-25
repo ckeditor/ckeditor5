@@ -68,8 +68,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE_CPP,
-				2: {
+				1: {
 					attributes: {
 						nonce: 'qwerty',
 						type: 'c++'
@@ -90,8 +89,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE_CPP,
-				2: {
+				1: {
 					attributes: {
 						type: 'c++'
 					}
@@ -171,8 +169,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE,
-				2: { attributes: { nonce: 'qwerty' } }
+				1: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
@@ -193,8 +190,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE_CPP,
-				2: { attributes: { type: 'c++' } }
+				1: { attributes: { type: 'c++' } }
 			}
 		} );
 	} );

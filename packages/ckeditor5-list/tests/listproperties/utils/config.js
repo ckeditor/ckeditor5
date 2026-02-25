@@ -18,6 +18,10 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'numbered', 'bulleted' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: true
 				},
 				startIndex: false,
@@ -36,6 +40,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ]
+					},
 					useAttribute: true
 				},
 				startIndex: false,
@@ -54,6 +61,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted' ],
+					listStyleTypes: {
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: true
 				},
 				startIndex: false,
@@ -72,6 +82,7 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [],
+					listStyleTypes: {},
 					useAttribute: true
 				},
 				startIndex: false,
@@ -89,6 +100,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -104,6 +118,10 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -119,6 +137,7 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [],
+					listStyleTypes: {},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -134,6 +153,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -149,6 +171,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted' ],
+					listStyleTypes: {
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -166,6 +191,10 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: true
 				},
 				startIndex: false,
@@ -181,6 +210,7 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [],
+					listStyleTypes: {},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -196,6 +226,10 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
+					listStyleTypes: {
+						bulleted: [ 'disc', 'circle', 'square' ],
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -211,6 +245,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted' ],
+					listStyleTypes: {
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -226,6 +263,9 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ]
+					},
 					useAttribute: false
 				},
 				startIndex: false,
@@ -243,6 +283,10 @@ describe( 'ListProperties - utils - config', () => {
 			expect( getNormalizedConfig( config ) ).to.deep.equal( {
 				styles: {
 					listTypes: [ 'bulleted', 'numbered' ],
+					listStyleTypes: {
+						numbered: [ 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-latin', 'upper-latin' ],
+						bulleted: [ 'disc', 'circle', 'square' ]
+					},
 					useAttribute: false
 				},
 				startIndex: true,

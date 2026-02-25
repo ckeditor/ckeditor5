@@ -18,7 +18,7 @@ import { _getModelData } from '@ckeditor/ckeditor5-engine';
  *		//			}
  *		//		}
  *
- * This function will index every attribute starting with `html*` keyword and return it's value in `result.attributes` property.
+ * This function will index every object attribute starting with `html*` keyword and return it's value in `result.attributes` property.
  *
  * @param {module:engine/model/model~Model} model
  * @param {Object} [options]
@@ -30,7 +30,7 @@ import { _getModelData } from '@ckeditor/ckeditor5-engine';
  * @param {Array} [options.excludeAttributes] Attributes to exclude from the result.
  * @returns {Object} result
  * @returns {String} result.data The stringified data.
- * @returns {Object} result.attributes Indexed data attributes.
+ * @returns {Object} result.attributes Indexed data object attributes.
  */
 export function getModelDataWithAttributes( model, options = {} ) {
 	// Simplify GHS attributes as they are not very readable at this point due to object structure.
@@ -45,7 +45,7 @@ export function getModelDataWithAttributes( model, options = {} ) {
 	let attributes = [];
 	for ( const item of range.getItems() ) {
 		for ( const [ key, value ] of sortAttributes( item.getAttributes() ) ) {
-			if ( key.startsWith( 'html' ) && !excludeAttributes.includes( key ) ) {
+			if ( key.startsWith( 'html' ) && !excludeAttributes.includes( key ) && value !== null && typeof value === 'object' ) {
 				attributes.push( value );
 			}
 		}

@@ -49,7 +49,24 @@ ListEditor
 		},
 		list: {
 			properties: {
-				styles: true,
+				styles: {
+					listStyleTypes: {
+						numbered: [
+							'decimal',
+							'decimal-leading-zero',
+							'lower-roman',
+							'upper-roman',
+							'lower-latin',
+							'upper-latin',
+							'arabic-indic'
+						],
+						bulleted: [
+							'disc',
+							'circle',
+							'square'
+						]
+					}
+				},
 				startIndex: true,
 				reversed: true
 			}
