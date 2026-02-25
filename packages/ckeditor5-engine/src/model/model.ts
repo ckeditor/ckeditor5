@@ -783,8 +783,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Checks whether the given {@link module:engine/model/range~ModelRange range} or
-	 * {@link module:engine/model/element~ModelElement element} has any meaningful content.
+	 * Checks whether given `subject` has any meaningful content.
 	 *
 	 * Meaningful content is:
 	 *
@@ -798,19 +797,42 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * However, a range containing an `<imageBlock></imageBlock>` (which would normally be marked in the schema as an object element)
 	 * is considered non-empty.
 	 *
-	 * @param rangeOrElement Range or element to check.
+	 * @param subject
 	 * @param options.ignoreWhitespaces Whether text node with whitespaces only should be considered empty.
 	 * @param options.ignoreMarkers Whether markers should be ignored.
 	 */
 	public hasContent(
-		rangeOrElement: ModelRange | ModelElement | ModelDocumentFragment,
+		subject: ModelRange | ModelElement | ModelDocumentFragment | ModelSelection | ModelDocumentSelection,
 		options: {
 			ignoreWhitespaces?: boolean;
 			ignoreMarkers?: boolean;
 		} = {}
 	): boolean {
-		const range = rangeOrElement instanceof ModelRange ? rangeOrElement : ModelRange._createIn( rangeOrElement );
+		let ranges: Array<ModelRange>;
 
+		if ( subject.is( 'selection' ) ) {
+			ranges = Array.from( subject.getRanges() );
+		} else if ( subject.is( 'range' ) ) {
+			ranges = [ subject ];
+		} else {
+			ranges = [ ModelRange._createIn( subject ) ];
+		}
+
+		for ( const range of ranges ) {
+			if ( this._rangeHasContent( range, options ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks whether given range has any meaningful content.
+	 *
+	 * Helper method for {@link #hasContent}.
+	 */
+	private _rangeHasContent( range: ModelRange, options: { ignoreWhitespaces?: boolean; ignoreMarkers?: boolean } ): boolean {
 		if ( range.isCollapsed ) {
 			return false;
 		}
