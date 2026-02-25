@@ -2642,13 +2642,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:auto;margin-right:auto;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="margin-left:auto;margin-right:auto;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2664,13 +2662,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>layout table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
+								'<tbody>' +
+									'<tr><td>layout table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2686,13 +2682,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:0;margin-right:auto;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="margin-left:0;margin-right:auto;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2708,13 +2702,30 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:auto;margin-right:0;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="margin-left:auto;margin-right:0;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
+						);
+					} );
+
+					it( 'should downcast border styles for layout table', () => {
+						editor.setData(
+							'<table class="table layout-table" style="border:2px solid #f00"></table>'
+						);
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<table tableBorderColor="#f00" tableBorderStyle="solid" tableBorderWidth="2px" tableType="layout">' +
+								'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+							'</table>'
+						);
+						expect( editor.getData() ).to.be.equal(
+							'<table class="table layout-table" style="border:2px solid #f00;" role="presentation">' +
+								'<tbody>' +
+									'<tr><td>&nbsp;</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2751,13 +2762,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>layout table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table layout-table table-style-block-align-left" role="presentation">' +
+									'<tbody>' +
+										'<tr><td>layout table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 
@@ -2772,13 +2781,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>layout table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table layout-table table-style-block-align-left" role="presentation">' +
+									'<tbody>' +
+										'<tr><td>layout table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 
@@ -2793,13 +2800,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table content-table table-style-align-center">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>content table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table content-table table-style-align-center">' +
+									'<tbody>' +
+										'<tr><td>content table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 
@@ -2814,13 +2819,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table layout-table table-style-align-center" role="presentation">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>layout table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table layout-table table-style-align-center" role="presentation">' +
+									'<tbody>' +
+										'<tr><td>layout table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 					} );

@@ -436,9 +436,9 @@ describe( 'Indent MultiCommand integrations', () => {
 							'  C]'
 						],
 						expected: [
-							'* <paragraph>[A</paragraph>',
-							'  <paragraph>B</paragraph>',
-							'  <paragraph>C]</paragraph>'
+							'* [A {blockIndentList:40px}', // Indent block list command adds indentation to list.
+							'  B',
+							'  C]'
 						],
 						commandName: 'indent',
 						executedCommands: {

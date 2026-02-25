@@ -22,6 +22,7 @@ import {
 	type ListElement
 } from './utils/model.js';
 import { ListWalker } from './utils/listwalker.js';
+import type { ListEditing } from './listediting.js';
 
 /**
  * The document list indent command. It is used by the {@link module:list/list~List list feature}.
@@ -59,8 +60,11 @@ export class ListIndentCommand extends Command {
 	 * @fires afterExecute
 	 */
 	public override execute(): void {
-		const model = this.editor.model;
+		const editor = this.editor;
+		const model = editor.model;
 		const blocks = getSelectedListBlocks( model.document.selection );
+		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
+		const attributeNames = listEditing.getListAttributeNames();
 
 		model.change( writer => {
 			const changedBlocks = [];
@@ -69,7 +73,7 @@ export class ListIndentCommand extends Command {
 			if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 				// Allow increasing indent of following list item blocks.
 				if ( this._direction == 'forward' ) {
-					changedBlocks.push( ...indentBlocks( blocks, writer ) );
+					changedBlocks.push( ...indentBlocks( blocks, writer, { attributeNames } ) );
 				}
 
 				// For indent make sure that indented blocks have a new ID.
@@ -80,9 +84,9 @@ export class ListIndentCommand extends Command {
 			else {
 				// Now just update the attributes of blocks.
 				if ( this._direction == 'forward' ) {
-					changedBlocks.push( ...indentBlocks( blocks, writer, { expand: true } ) );
+					changedBlocks.push( ...indentBlocks( blocks, writer, { expand: true, attributeNames } ) );
 				} else {
-					changedBlocks.push( ...outdentBlocksWithMerge( blocks, writer ) );
+					changedBlocks.push( ...outdentBlocksWithMerge( blocks, writer, { attributeNames } ) );
 				}
 			}
 

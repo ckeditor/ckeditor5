@@ -1,0 +1,3 @@
+- Use checkboxes above the editor to:
+    - Add or remove certain plugins.
+    - Change Indent Block config to use classes.

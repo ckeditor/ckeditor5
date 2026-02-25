@@ -298,11 +298,20 @@ export function mergeListItemBefore(
  * @param options Additional options.
  * @param options.expand Whether should expand the list of blocks to include complete list items.
  * @param options.indentBy The number of levels the indentation should change (could be negative).
+ * @param options.attributeNames List of attribute names to remove when a block leaves the list (when blockIndent < 0).
  */
 export function indentBlocks(
 	blocks: ArrayOrItem<ListElement>,
 	writer: ModelWriter,
-	{ expand, indentBy = 1 }: { expand?: boolean; indentBy?: number } = {}
+	{
+		expand,
+		indentBy = 1,
+		attributeNames
+	}: {
+		expand?: boolean;
+		indentBy?: number;
+		attributeNames: Array<string>;
+	}
 ): Array<ListElement> {
 	blocks = toArray( blocks );
 
@@ -313,7 +322,7 @@ export function indentBlocks(
 		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;
 
 		if ( blockIndent < 0 ) {
-			removeListAttributes( block, writer );
+			removeListAttributes( block, writer, attributeNames );
 		} else {
 			writer.setAttribute( 'listIndent', blockIndent, block );
 		}
@@ -329,10 +338,13 @@ export function indentBlocks(
  * @internal
  * @param blocks The block or iterable of blocks.
  * @param writer The model writer.
+ * @param options Additional options.
+ * @param options.attributeNames List of attribute names to remove when a block leaves the list (when blockIndent < 0).
  */
 export function outdentBlocksWithMerge(
 	blocks: ArrayOrItem<ListElement>,
-	writer: ModelWriter
+	writer: ModelWriter,
+	{ attributeNames }: { attributeNames: Array<string> }
 ): Array<ListElement> {
 	blocks = toArray( blocks );
 
@@ -358,7 +370,7 @@ export function outdentBlocksWithMerge(
 		const blockIndent = block.getAttribute( 'listIndent' ) - 1;
 
 		if ( blockIndent < 0 ) {
-			removeListAttributes( block, writer );
+			removeListAttributes( block, writer, attributeNames );
 
 			continue;
 		}
@@ -390,11 +402,13 @@ export function outdentBlocksWithMerge(
  * @internal
  * @param blocks The block or iterable of blocks.
  * @param writer The model writer.
+ * @param attributeNames List of attribute names to remove.
  * @returns Array of altered blocks.
  */
 export function removeListAttributes(
 	blocks: ArrayOrItem<ModelElement>,
-	writer: ModelWriter
+	writer: ModelWriter,
+	attributeNames: Array<string>
 ): Array<ModelElement> {
 	blocks = toArray( blocks );
 
@@ -408,7 +422,7 @@ export function removeListAttributes(
 	// Remove list attributes.
 	for ( const block of blocks ) {
 		for ( const attributeKey of block.getAttributeKeys() ) {
-			if ( attributeKey.startsWith( 'list' ) ) {
+			if ( attributeNames.includes( attributeKey ) ) {
 				writer.removeAttribute( attributeKey, block );
 			}
 		}
@@ -581,6 +595,21 @@ export function canBecomeSimpleListItem( block: ModelElement, schema: ModelSchem
  */
 export function isNumberedListType( listType: ListType ): boolean {
 	return listType == 'numbered' || listType == 'customNumbered';
+}
+
+/**
+ * Checks if the given list item is the first item in the list.
+ *
+ * This function checks if there's any other list item before the given list item
+ * at the same indent level with the same list type.
+ */
+export function isFirstListItemInList( listItem: ModelElement ): boolean {
+	const previousItem = ListWalker.first( listItem, {
+		sameIndent: true,
+		sameAttributes: 'listType'
+	} );
+
+	return !previousItem;
 }
 
 /**

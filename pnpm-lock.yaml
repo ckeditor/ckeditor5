@@ -2125,6 +2125,30 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
+      '@ckeditor/ckeditor5-essentials':
+        specifier: workspace:*
+        version: link:../ckeditor5-essentials
+      '@ckeditor/ckeditor5-horizontal-line':
+        specifier: workspace:*
+        version: link:../ckeditor5-horizontal-line
+      '@ckeditor/ckeditor5-html-embed':
+        specifier: workspace:*
+        version: link:../ckeditor5-html-embed
+      '@ckeditor/ckeditor5-html-support':
+        specifier: workspace:*
+        version: link:../ckeditor5-html-support
+      '@ckeditor/ckeditor5-image':
+        specifier: workspace:*
+        version: link:../ckeditor5-image
+      '@ckeditor/ckeditor5-link':
+        specifier: workspace:*
+        version: link:../ckeditor5-link
+      '@ckeditor/ckeditor5-media-embed':
+        specifier: workspace:*
+        version: link:../ckeditor5-media-embed
+      '@ckeditor/ckeditor5-page-break':
+        specifier: workspace:*
+        version: link:../ckeditor5-page-break
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
@@ -2726,6 +2750,9 @@ importers:
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
+      '@ckeditor/ckeditor5-indent':
+        specifier: workspace:*
+        version: link:../ckeditor5-indent
       '@ckeditor/ckeditor5-link':
         specifier: workspace:*
         version: link:../ckeditor5-link
