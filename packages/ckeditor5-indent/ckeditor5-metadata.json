@@ -50,7 +50,7 @@
 			"className": "IndentBlockListIntegration",
 			"description": "Provides block indentation integration for lists, enabling indent and outdent of lists and list items.",
 			"docs": "features/indent.html",
-			"path": "src/integrations/indentblocklistintegration.js",
+			"path": "src/integrations/indentblocklistintegration.ts",
 			"requires": [
 				"IndentBlock"
 			],
