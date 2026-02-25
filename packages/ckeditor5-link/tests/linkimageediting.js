@@ -7,7 +7,14 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { ImageCaptionEditing, ImageBlockEditing, ImageInlineEditing, PictureEditing } from '@ckeditor/ckeditor5-image';
+import {
+	ImageCaptionEditing,
+	ImageBlockEditing,
+	ImageInlineEditing,
+	ImageEditing,
+	ImageUtils,
+	PictureEditing
+} from '@ckeditor/ckeditor5-image';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { LinkImageEditing } from '../src/linkimageediting.js';
@@ -70,12 +77,12 @@ describe( 'LinkImageEditing', () => {
 		await newEditor.destroy();
 	} );
 
-	it( 'should require ImageEditing by name', () => {
-		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
+	it( 'should require ImageEditing', () => {
+		expect( LinkImageEditing.requires ).to.include( ImageEditing );
 	} );
 
-	it( 'should require ImageUtils by name', () => {
-		expect( LinkImageEditing.requires ).to.include( 'ImageUtils' );
+	it( 'should require ImageUtils', () => {
+		expect( LinkImageEditing.requires ).to.include( ImageUtils );
 	} );
 
 	it( 'should require LinkEditing', () => {

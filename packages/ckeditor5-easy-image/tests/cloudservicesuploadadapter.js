@@ -12,7 +12,7 @@ import { UploadGatewayMock } from './_utils/uploadgatewaymock.js';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
-// EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
+// EasyImage requires the `CloudServicesCore` plugin as a dependency.
 // In order to mock the `Token` and `UploadGateway` classes, we create a new class that extend the `CloudServicesCore` plugin
 // and override their factory methods.
 class CloudServicesCoreMock extends CloudServicesCore {

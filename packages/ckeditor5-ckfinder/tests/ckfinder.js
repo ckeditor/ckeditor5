@@ -47,8 +47,8 @@ describe( 'CKFinder', () => {
 		expect( editor.plugins.get( CKFinderEditing ) ).to.instanceOf( CKFinderEditing );
 	} );
 
-	it( 'should require CKFinderUploadAdapter by name', () => {
-		expect( CKFinder.requires ).to.contain( 'CKFinderUploadAdapter' );
+	it( 'should require CKFinderUploadAdapter', () => {
+		expect( CKFinder.requires ).to.contain( CKFinderUploadAdapter );
 	} );
 
 	it( 'has proper name', () => {

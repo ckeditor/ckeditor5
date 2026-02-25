@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 import { CloudServicesUploadAdapter } from './cloudservicesuploadadapter.js';
@@ -55,7 +56,7 @@ export class EasyImage extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ CloudServicesUploadAdapter, 'ImageUpload' ] as const;
+		return [ CloudServicesUploadAdapter, ImageUpload ] as const;
 	}
 
 	/**

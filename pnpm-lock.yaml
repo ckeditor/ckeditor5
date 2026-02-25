@@ -699,6 +699,9 @@ importers:
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
+      '@ckeditor/ckeditor5-link':
+        specifier: workspace:*
+        version: link:../ckeditor5-link
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
@@ -733,15 +736,15 @@ importers:
       '@ckeditor/ckeditor5-heading':
         specifier: workspace:*
         version: link:../ckeditor5-heading
-      '@ckeditor/ckeditor5-link':
-        specifier: workspace:*
-        version: link:../ckeditor5-link
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
 
   packages/ckeditor5-ckfinder:
     dependencies:
+      '@ckeditor/ckeditor5-adapter-ckfinder':
+        specifier: workspace:*
+        version: link:../ckeditor5-adapter-ckfinder
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
@@ -751,6 +754,9 @@ importers:
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
+      '@ckeditor/ckeditor5-link':
+        specifier: workspace:*
+        version: link:../ckeditor5-link
       '@ckeditor/ckeditor5-ui':
         specifier: workspace:*
         version: link:../ckeditor5-ui
@@ -758,9 +764,6 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-utils
     devDependencies:
-      '@ckeditor/ckeditor5-adapter-ckfinder':
-        specifier: workspace:*
-        version: link:../ckeditor5-adapter-ckfinder
       '@ckeditor/ckeditor5-clipboard':
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
@@ -770,9 +773,6 @@ importers:
       '@ckeditor/ckeditor5-engine':
         specifier: workspace:*
         version: link:../ckeditor5-engine
-      '@ckeditor/ckeditor5-link':
-        specifier: workspace:*
-        version: link:../ckeditor5-link
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
@@ -1044,6 +1044,9 @@ importers:
       '@ckeditor/ckeditor5-core':
         specifier: workspace:*
         version: link:../ckeditor5-core
+      '@ckeditor/ckeditor5-image':
+        specifier: workspace:*
+        version: link:../ckeditor5-image
       '@ckeditor/ckeditor5-upload':
         specifier: workspace:*
         version: link:../ckeditor5-upload
@@ -1057,9 +1060,6 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-image':
-        specifier: workspace:*
-        version: link:../ckeditor5-image
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph

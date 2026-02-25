@@ -37,7 +37,7 @@ describe( 'Title', () => {
 	} );
 
 	it( 'should requires Paragraph plugin', () => {
-		expect( Title.requires ).to.have.members( [ 'Paragraph' ] );
+		expect( Title.requires ).to.have.members( [ Paragraph ] );
 	} );
 
 	it( 'should have plugin name property', () => {

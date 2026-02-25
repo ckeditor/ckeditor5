@@ -16,7 +16,8 @@ import type { ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 import { TextWatcher, type TextWatcherMatchedDataEvent } from './textwatcher.js';
 import type { TextTransformationConfig, TextTypingTransformationDescription } from './typingconfig.js';
-import { type Delete } from './delete.js';
+import { Delete } from './delete.js';
+import { Input } from './input.js';
 
 import { escapeRegExp } from 'es-toolkit/compat';
 
@@ -85,7 +86,7 @@ export class TextTransformation extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Delete', 'Input' ] as const;
+		return [ Delete, Input ] as const;
 	}
 
 	/**

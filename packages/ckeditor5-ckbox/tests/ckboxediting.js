@@ -73,7 +73,7 @@ describe( 'CKBoxEditing', () => {
 	} );
 
 	it( 'should load link and picture features', () => {
-		expect( CKBoxEditing.requires ).to.deep.equal( [ 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter, CKBoxUtils ] );
+		expect( CKBoxEditing.requires ).to.deep.equal( [ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ] );
 	} );
 
 	it( 'should register the "ckbox" command if CKBox lib is loaded', () => {

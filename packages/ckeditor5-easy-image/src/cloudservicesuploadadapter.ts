@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { FileRepository, type FileLoader, type UploadAdapter } from '@ckeditor/ckeditor5-upload';
-import type { CloudServicesCore, CloudServices, UploadGateway, FileUploader } from '@ckeditor/ckeditor5-cloud-services';
+import { CloudServices, type CloudServicesCore, type UploadGateway, type FileUploader } from '@ckeditor/ckeditor5-cloud-services';
 
 /**
  * A plugin that enables upload to [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
@@ -40,7 +40,7 @@ export class CloudServicesUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'CloudServices', FileRepository ] as const;
+		return [ CloudServices, FileRepository ] as const;
 	}
 
 	/**
@@ -49,7 +49,7 @@ export class CloudServicesUploadAdapter extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		const cloudServices: CloudServices = editor.plugins.get( 'CloudServices' );
+		const cloudServices = editor.plugins.get( CloudServices );
 
 		const token = cloudServices.token;
 		const uploadUrl = cloudServices.uploadUrl;

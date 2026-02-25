@@ -89,7 +89,7 @@ describe( 'EmojiMention', () => {
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, Typing, 'Mention' ] );
+		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, Typing, Mention ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
