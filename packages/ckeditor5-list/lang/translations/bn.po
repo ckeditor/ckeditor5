@@ -142,3 +142,11 @@ msgstr "একটি টু-ডু তালিকা প্রবেশ কর�
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
 msgstr "একটি টু-ডু তালিকা ছেড়ে যাচ্ছে"
+
+msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
+msgid "Toggle the arabic-indic list style"
+msgstr ""
+
+msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
+msgid "Arabic-indic"
+msgstr ""
