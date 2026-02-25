@@ -22,7 +22,8 @@
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "ckeditor5": "workspace:*"
+    "ckeditor5": "workspace:*",
+    "es-toolkit": "1.39.5"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",
@@ -31,7 +32,7 @@
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.3.3",
+    "@ckeditor/ckeditor5-dev-utils": "^54.3.4",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",

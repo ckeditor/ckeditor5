@@ -11,7 +11,6 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { TableLayoutUI } from './tablelayout/tablelayoutui.js';
 
 import { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
-import { PlainTableOutput } from './plaintableoutput.js';
 import { TableColumnResize } from './tablecolumnresize.js';
 
 /**
@@ -38,6 +37,6 @@ export class TableLayout extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ PlainTableOutput, TableColumnResize, TableLayoutEditing, TableLayoutUI ] as const;
+		return [ TableColumnResize, TableLayoutEditing, TableLayoutUI ] as const;
 	}
 }

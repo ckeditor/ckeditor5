@@ -251,11 +251,17 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
 		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
 		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
-		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
-			return null;
+		const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, table );
+
+		if (
+			hasPlainTableOutput ||
+			stripFigureTagWithLayoutTable ||
+			( useExtendedAlignment && isClipboardPipeline )
+		) {
+			return downcastPlainTable( table, conversionApi, editor );
 		}
 
-		return downcastPlainTable( table, conversionApi, editor );
+		return null;
 	};
 }
 
@@ -268,7 +274,15 @@ export function convertPlainTableCaption( editor: Editor ): DowncastElementCreat
 		const isClipboardPipeline = options.isClipboardPipeline;
 		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
-		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+		const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, modelElement );
+
+		if (
+			!(
+				hasPlainTableOutput ||
+				stripFigureTagWithLayoutTable ||
+				( useExtendedAlignment && isClipboardPipeline )
+			)
+		) {
 			return null;
 		}
 
@@ -391,7 +405,15 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
 				const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
 
-				if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+				const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, item );
+
+				if (
+					!(
+						hasPlainTableOutput ||
+						stripFigureTagWithLayoutTable ||
+						( useExtendedAlignment && isClipboardPipeline )
+					)
+				) {
 					return;
 				}
 
@@ -409,6 +431,23 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 			}, { priority: 'high' } );
 		} );
 	}
+}
+
+/**
+ * Returns `true` if the figure tag should be stripped when using layout tables and when `tableType` is `layout`
+ * or `stripFigureFromContentTable` option is set to `true`, `false` otherwise.
+ *
+ * @param editor The editor instance.
+ * @param modelElement The model element to check.
+ * @returns `true` if the figure tag should be stripped, `false` otherwise.
+ */
+function shouldStripFigureTagWithLayoutTable( editor: Editor, modelElement: ModelElement ) {
+	const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
+	const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? true;
+	const tableModelElement = modelElement.findAncestor( 'table', { includeSelf: true } );
+	const tableType = tableModelElement?.getAttribute( 'tableType' );
+
+	return hasTableLayout && ( stripFigureFromContentTable || tableType === 'layout' );
 }
 
 /**
