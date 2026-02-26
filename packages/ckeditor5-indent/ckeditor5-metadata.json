@@ -58,16 +58,9 @@
 				{
 					"elements": [
 						"ol",
-						"ul"
+						"ul",
+						"li"
 					],
-					"styles": [
-						"margin-left",
-						"margin-right"
-					],
-					"_comment": "By default, the plugin uses inline styles for indentation."
-				},
-				{
-					"elements": "li",
 					"styles": [
 						"margin-left",
 						"margin-right"
@@ -77,14 +70,9 @@
 				{
 					"elements": [
 						"ol",
-						"ul"
+						"ul",
+						"li"
 					],
-					"classes": "*",
-					"isAlternative": true,
-					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles."
-				},
-				{
-					"elements": "li",
 					"classes": "*",
 					"isAlternative": true,
 					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles."

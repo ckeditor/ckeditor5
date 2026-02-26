@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
-import { isFirstListItemInList } from '../../../ckeditor5-list/src/list/utils/model.js';
+import { isFirstListItemInList, expandListBlocksToCompleteList } from '../../../ckeditor5-list/src/list/utils/model.js';
 import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
 import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
@@ -31,7 +31,7 @@ describe( 'IndentBlockListCommand', () => {
 
 				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
 					if ( name === 'ListUtils' ) {
-						return { isFirstListItemInList };
+						return { isFirstListItemInList, expandListBlocksToCompleteList };
 					}
 
 					if ( name === 'IndentBlockListIntegration' ) {
