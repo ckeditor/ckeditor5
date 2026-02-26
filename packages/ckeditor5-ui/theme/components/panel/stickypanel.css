@@ -3,11 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
 
 .ck.ck-sticky-panel {
 	& .ck-sticky-panel__content_sticky {
-		@mixin ck-drop-shadow;
+		box-shadow: var(--ck-drop-shadow), 0 0;
 
 		border-width: 0 1px 1px;
 		border-top-left-radius: 0;

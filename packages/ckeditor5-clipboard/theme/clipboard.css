@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-clipboard-drop-target-dot-width: 12px;
@@ -93,14 +92,14 @@
 		height: 0;
 		border-style: solid;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			left: -1px;
 
 			border-width: calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0 calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height);
 			border-color: transparent transparent transparent var(--ck-clipboard-drop-target-color);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			right: -1px;
 
 			border-width:calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height) calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0;

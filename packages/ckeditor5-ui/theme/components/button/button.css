@@ -3,19 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_focus.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_disabled.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_button.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "../../mixins/_unselectable.css";
-
 .ck.ck-button,
 a.ck.ck-button {
-	@mixin ck-button-colors --ck-color-button-default;
-	@mixin ck-rounded-corners;
+	background: var(--ck-color-button-default-background);
 
+	&:not(.ck-disabled) {
+		&:hover {
+			background: var(--ck-color-button-default-hover-background);
+		}
+
+		&:active {
+			background: var(--ck-color-button-default-active-background);
+		}
+	}
+
+	border-radius: var(--ck-rounded-corners-radius);
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
@@ -41,7 +43,8 @@ a.ck.ck-button {
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;
-	@mixin ck-unselectable;
+	-webkit-user-select: none;
+	user-select: none;
 
 	position: relative;
 	display: inline-flex;
@@ -51,10 +54,12 @@ a.ck.ck-button {
 		transition: none;
 	}
 
+	/* stylelint-disable no-descending-specificity */
 	&:active,
 	&:focus {
-		@mixin ck-focus-ring;
-		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+		outline: none;
+		border: var(--ck-focus-ring);
+		box-shadow: var(--ck-focus-outer-shadow), 0 0;
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -76,11 +81,11 @@ a.ck.ck-button {
 		without labels (but with icons) have different sizes in Chrome */
 		vertical-align: middle;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			text-align: left;
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			text-align: right;
 		}
 		display: none
@@ -91,30 +96,32 @@ a.ck.ck-button {
 
 		opacity: .5;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			margin-left: var(--ck-spacing-large);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			margin-right: var(--ck-spacing-large);
 		}
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 	&.ck-disabled {
+		background: var(--ck-color-button-default-disabled-background);
+
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);
+			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
 		}
 
 		& .ck-button__icon {
-			@mixin ck-disabled;
+			opacity: var(--ck-disabled-opacity);
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
 		& .ck-button__label {
-			@mixin ck-disabled;
+			opacity: var(--ck-disabled-opacity);
 		}
 
 		& .ck-button__keystroke {
@@ -125,13 +132,12 @@ a.ck.ck-button {
 	&.ck-button_with-text {
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
 
-		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button__icon {
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				margin-right: var(--ck-spacing-medium);
 			}
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				margin-left: var(--ck-spacing-medium);
 			}
 		}
@@ -141,15 +147,30 @@ a.ck.ck-button {
 	}
 
 	&.ck-button_with-keystroke {
-		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button__label {
 			flex-grow: 1;
 		}
 	}
+	/* stylelint-enable no-descending-specificity */
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
-		@mixin ck-button-colors --ck-color-button-on;
+		background: var(--ck-color-button-on-background);
+
+		&:not(.ck-disabled) {
+			&:hover {
+				background: var(--ck-color-button-on-hover-background);
+			}
+
+			&:active {
+				background: var(--ck-color-button-on-active-background);
+			}
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
+		&.ck-disabled {
+			background: var(--ck-color-button-on-disabled-background);
+		}
 
 		color: var(--ck-color-button-on-color);
 	}
@@ -162,25 +183,42 @@ a.ck.ck-button {
 		color: var(--ck-color-button-cancel);
 	}
 
-	@mixin ck-dir ltr {
+	/* stylelint-disable no-descending-specificity */
+	[dir="ltr"] & {
 		justify-content: left;
 	}
 
-	@mixin ck-dir rtl {
+	[dir="rtl"] & {
 		justify-content: right;
 	}
 
 	/* Center the icon horizontally in a button without text. */
-	&:not(.ck-button_with-text)  {
+	&:not(.ck-button_with-text) {
 		justify-content: center;
 	}
+	/* stylelint-enable no-descending-specificity */
 }
 
 /* A style of the button which handles the primary action. */
 
 .ck.ck-button-action,
 a.ck.ck-button-action {
-	@mixin ck-button-colors --ck-color-button-action;
+	background: var(--ck-color-button-action-background);
+
+	&:not(.ck-disabled) {
+		&:hover {
+			background: var(--ck-color-button-action-hover-background);
+		}
+
+		&:active {
+			background: var(--ck-color-button-action-active-background);
+		}
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/3376 */
+	&.ck-disabled {
+		background: var(--ck-color-button-action-disabled-background);
+	}
 
 	color: var(--ck-color-button-action-text);
 }

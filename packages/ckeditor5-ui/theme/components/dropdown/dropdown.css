@@ -3,11 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_disabled.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-
 :root {
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 	--ck-dropdown-max-width: 75vw;
@@ -25,7 +20,7 @@
 		z-index: var(--ck-z-default);
 	}
 
-	@mixin ck-dir ltr {
+	[dir="ltr"] & {
 		& .ck-dropdown__arrow {
 			right: var(--ck-spacing-standard);
 
@@ -34,7 +29,7 @@
 		}
 	}
 
-	@mixin ck-dir rtl {
+	[dir="rtl"] & {
 		& .ck-dropdown__arrow {
 			left: var(--ck-spacing-standard);
 
@@ -44,18 +39,18 @@
 	}
 
 	&.ck-disabled .ck-dropdown__arrow {
-		@mixin ck-disabled;
+		opacity: var(--ck-disabled-opacity);
 	}
 
 	& .ck-button.ck-dropdown__button {
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			&:not(.ck-button_with-text) {
 				/* Make sure dropdowns with just an icon have the right inner spacing */
 				padding-left: var(--ck-spacing-small);
 			}
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			&:not(.ck-button_with-text) {
 				/* Make sure dropdowns with just an icon have the right inner spacing */
 				padding-right: var(--ck-spacing-small);
@@ -71,7 +66,7 @@
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 		&.ck-disabled .ck-button__label {
-			@mixin ck-disabled;
+			opacity: var(--ck-disabled-opacity);
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/816 */
@@ -90,7 +85,7 @@
 			box-shadow: none;
 
 			&:focus {
-				@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+				box-shadow: var(--ck-focus-outer-shadow), 0 0;
 			}
 		}
 		width: 100%
@@ -164,8 +159,8 @@
 }
 
 .ck.ck-dropdown__panel {
-	@mixin ck-rounded-corners;
-	@mixin ck-drop-shadow;
+	border-radius: var(--ck-rounded-corners-radius);
+	box-shadow: var(--ck-drop-shadow), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);

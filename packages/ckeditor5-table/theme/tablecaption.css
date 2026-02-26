@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
 	--ck-content-color-table-caption-background: hsl(0, 0%, 97%);
@@ -26,7 +25,7 @@
 	outline-offset: -1px;
 
 	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
-	@mixin ck-media-forced-colors {
+	@media (forced-colors: active) {
 		background-color: unset;
 		color: unset;
 	}
@@ -35,7 +34,7 @@
 /* Editing styles */
 .ck.ck-editor__editable .table > figcaption,
 .ck.ck-editor__editable figure.table > table > caption {
-	@mixin ck-media-default-colors {
+	@media (forced-colors: none) {
 		&.table__caption_highlighted {
 			animation: ck-table-caption-highlight .6s ease-out;
 		}

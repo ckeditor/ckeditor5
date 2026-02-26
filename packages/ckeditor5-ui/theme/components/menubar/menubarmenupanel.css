@@ -3,18 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_focus.css";
-
 :root {
 	--ck-menu-bar-menu-max-width: 75vw;
 	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
-	@mixin ck-rounded-corners;
-	@mixin ck-drop-shadow;
+	border-radius: var(--ck-rounded-corners-radius);
+	box-shadow: var(--ck-drop-shadow), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);
@@ -114,8 +110,9 @@
 			position: relative;
 			z-index: 2;
 
-			@mixin ck-focus-ring;
-			@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+			outline: none;
+			border: var(--ck-focus-ring);
+			box-shadow: var(--ck-focus-outer-shadow), 0 0;
 		}
 	}
 }

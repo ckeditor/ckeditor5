@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
 	--ck-color-grid-tile-size: 24px;
@@ -24,7 +22,7 @@
 .ck.ck-color-grid__tile {
 	transition: .2s ease box-shadow;
 
-	@mixin ck-media-default-colors {
+	@media (forced-colors: none) {
 		width: var(--ck-color-grid-tile-size);
 		height: var(--ck-color-grid-tile-size);
 		min-width: var(--ck-color-grid-tile-size);
@@ -57,7 +55,7 @@
 	 * In high contrast mode, the colors are replaced with text labels.
 	 * See https://github.com/ckeditor/ckeditor5/issues/14907.
 	 */
-	@mixin ck-media-forced-colors {
+	@media (forced-colors: active) {
 		width: unset;
 		height: unset;
 		min-width: unset;

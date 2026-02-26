@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
@@ -33,7 +32,7 @@
 
 /* Editing styles */
 .ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
-	@mixin ck-media-default-colors {
+	@media (forced-colors: none) {
 		animation: ck-image-caption-highlight .6s ease-out;
 	}
 

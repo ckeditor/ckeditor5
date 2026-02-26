@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-button.ck-list-item-button {
 	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
@@ -15,11 +14,11 @@
 	}
 
 	&:has(.ck-list-item-button__check-holder) {
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			padding-left: var(--ck-spacing-small);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			padding-right: var(--ck-spacing-small);
 		}
 	}
@@ -46,20 +45,20 @@
 	width: 100%;
 	border-radius: 0;
 
-	@mixin ck-dir ltr {
+	[dir="ltr"] & {
 		text-align: left;
 	}
 
-	@mixin ck-dir rtl {
+	[dir="rtl"] & {
 		text-align: right;
 	}
 
 	&.ck-list-item-button_toggleable {
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			padding-left: var(--ck-spacing-small);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			padding-right: var(--ck-spacing-small);
 		}
 	}
@@ -69,11 +68,11 @@
 		width: .9em;
 		height: .9em;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			margin-right: var(--ck-spacing-small);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			margin-left: var(--ck-spacing-small);
 		}
 	}

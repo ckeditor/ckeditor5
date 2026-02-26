@@ -25,7 +25,7 @@
 		/**
 		 * While setting outline is fine, the border should not be modified here
 		 * because it overrides the default table cell border color which is not expected.
-		 * So do not use `@mixin ck-focus-ring;` here, or any other border styles.
+		 * So do not use focus-ring border styling here, or any other border styles.
 		 * See more: https://github.com/ckeditor/ckeditor5/issues/16979
 		 */
 		&.ck-editor__nested-editable {

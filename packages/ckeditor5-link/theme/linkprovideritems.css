@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
 	--ck-link-providers-width: 340px;
@@ -11,7 +10,7 @@
 	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
 }
 
-@mixin ck-media-phone {
+@media screen and (max-width: 600px) {
 	:root {
 		--ck-link-providers-width: 300px;
 	}

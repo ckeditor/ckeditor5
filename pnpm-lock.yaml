@@ -1354,9 +1354,6 @@ importers:
 
   packages/ckeditor5-engine:
     dependencies:
-      '@ckeditor/ckeditor5-ui':
-        specifier: workspace:*
-        version: link:../ckeditor5-ui
       '@ckeditor/ckeditor5-utils':
         specifier: workspace:*
         version: link:../ckeditor5-utils
@@ -1412,6 +1409,9 @@ importers:
       '@ckeditor/ckeditor5-typing':
         specifier: workspace:*
         version: link:../ckeditor5-typing
+      '@ckeditor/ckeditor5-ui':
+        specifier: workspace:*
+        version: link:../ckeditor5-ui
       '@ckeditor/ckeditor5-undo':
         specifier: workspace:*
         version: link:../ckeditor5-undo

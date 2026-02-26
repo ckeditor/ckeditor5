@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-
 :root {
 	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
 	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
@@ -15,7 +12,7 @@
 }
 
 .ck.ck-labeled-field-view {
-	@mixin ck-rounded-corners;
+	border-radius: var(--ck-rounded-corners-radius);
 
 	& .ck.ck-label {
 		display: block;
@@ -47,14 +44,14 @@
 				padding var(--ck-labeled-field-view-transition),
 				background var(--ck-labeled-field-view-transition);
 
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				left: 0px;
 				transform-origin: 0 0;
 				/* By default, display the label scaled down above the field. */
 				transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 			}
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				right: 0px;
 				transform-origin: 100% 0;
 				transform: translate(calc(-1 * var(--ck-spacing-medium)), -6px) scale(.75);
@@ -100,11 +97,12 @@
 	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-disabled.ck-labeled-field-view_empty:not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder):not(.ck-error) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			transform: translate(var(--ck-labeled-field-label-default-position-x), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}
 
-		@mixin ck-dir rtl {
+		/* stylelint-disable-next-line no-descending-specificity */
+		[dir="rtl"] & {
 			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x)), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}
 
