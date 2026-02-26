@@ -145,8 +145,8 @@ msgstr "Напускане на списъка със задачи"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Превключване на стил на списъка с арабски цифри"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Арабски цифри"

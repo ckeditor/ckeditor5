@@ -145,8 +145,8 @@ msgstr "meninggalkan daftar kerja"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Alihkan gaya daftar arab-india"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Arab-India"

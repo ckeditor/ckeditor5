@@ -145,8 +145,8 @@ msgstr "To-Doリストを残す"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "インド数字のリストに切り替え"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "インド数字"
