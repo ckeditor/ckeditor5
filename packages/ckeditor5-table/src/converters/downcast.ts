@@ -270,11 +270,19 @@ function hasAnyAttribute( element: ModelNode ): boolean {
  */
 export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunction {
 	return ( table, conversionApi ) => {
-		if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
-			return null;
+		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
+		const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, table );
+
+		if (
+			hasPlainTableOutput ||
+			stripFigureTagWithLayoutTable ||
+			isClipboardPipeline
+		) {
+			return downcastPlainTable( table, conversionApi, editor );
 		}
 
-		return downcastPlainTable( table, conversionApi, editor );
+		return null;
 	};
 }
 
@@ -283,7 +291,17 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
  */
 export function convertPlainTableCaption( editor: Editor ): DowncastElementCreatorFunction {
 	return ( modelElement, { writer, options } ) => {
-		if ( !options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+		const isClipboardPipeline = options.isClipboardPipeline;
+		const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, modelElement );
+
+		if (
+			!(
+				hasPlainTableOutput ||
+				stripFigureTagWithLayoutTable ||
+				isClipboardPipeline
+			)
+		) {
 			return null;
 		}
 
@@ -425,7 +443,17 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 				const { item, attributeNewValue } = data;
 				const { mapper, writer } = conversionApi;
 
-				if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+				const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
+				const stripFigureTagWithLayoutTable = shouldStripFigureTagWithLayoutTable( editor, item );
+
+				if (
+					!(
+						hasPlainTableOutput ||
+						stripFigureTagWithLayoutTable ||
+						isClipboardPipeline
+					)
+				) {
 					return;
 				}
 
@@ -443,6 +471,23 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 			}, { priority: 'high' } );
 		} );
 	}
+}
+
+/**
+ * Returns `true` if the figure tag should be stripped when using layout tables and when `tableType` is `layout`
+ * or `stripFigureFromContentTable` option is set to `true`, `false` otherwise.
+ *
+ * @param editor The editor instance.
+ * @param modelElement The model element to check.
+ * @returns `true` if the figure tag should be stripped, `false` otherwise.
+ */
+function shouldStripFigureTagWithLayoutTable( editor: Editor, modelElement: ModelElement ) {
+	const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
+	const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? true;
+	const tableModelElement = modelElement.findAncestor( 'table', { includeSelf: true } );
+	const tableType = tableModelElement?.getAttribute( 'tableType' );
+
+	return hasTableLayout && ( stripFigureFromContentTable || tableType === 'layout' );
 }
 
 /**

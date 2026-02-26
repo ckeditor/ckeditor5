@@ -26,7 +26,7 @@ describe( 'TableLayoutEditing', () => {
 		document.body.appendChild( editorElement );
 
 		const plugins = [
-			Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
+			Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote
 		];
 
 		editor = await createEditor( editorElement, plugins );
@@ -150,6 +150,222 @@ describe( 'TableLayoutEditing', () => {
 					'</tbody>' +
 				'</table>'
 			);
+		} );
+
+		describe( 'when `stripFigureFromContentTable` is set to `false`', () => {
+			let editor, model, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const plugins = [
+					Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote
+				];
+
+				const config = {
+					table: {
+						tableLayout: {
+							stripFigureFromContentTable: false
+						}
+					}
+				};
+
+				editor = await createEditor( editorElement, plugins, config );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor?.destroy();
+			} );
+
+			it( 'should not strip `<figure>` from content table', () => {
+				_setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>caption</caption>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="table content-table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+						'<figcaption>caption</figcaption>' +
+					'</figure>'
+				);
+			} );
+
+			describe( 'when `TableProperties` is enabled', () => {
+				let editor, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					const plugins = [
+						Table, TableCaption, TableColumnResize, TablePropertiesEditing, TableCellPropertiesEditing,
+						TableLayoutEditing, Paragraph, BlockQuote
+					];
+
+					const config = {
+						table: {
+							tableLayout: {
+								stripFigureFromContentTable: false
+							}
+						}
+					};
+
+					editor = await createEditor( editorElement, plugins, config );
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					await editor?.destroy();
+				} );
+
+				it( 'should downcast content table', () => {
+					editor.setData(
+						'<figure class="table content-table">' +
+							'<table style="border:2px dashed hsl(120, 75%, 60%);">' +
+								'<tbody>' +
+									'<tr><td></td><td></td><td></td></tr>' +
+									'<tr><td></td><td style="border:2px dashed hsl(0, 75%, 60%);"></td><td></td></tr>' +
+									'<tr><td></td><td></td><td></td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+
+					expect( editor.getData() ).to.be.equal(
+						'<figure class="table content-table">' +
+							'<table style="border:2px dashed hsl(120, 75%, 60%);">' +
+								'<tbody>' +
+									'<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+									'<tr><td>&nbsp;</td><td style="border:2px dashed hsl(0, 75%, 60%);">&nbsp;</td><td>&nbsp;</td></tr>' +
+									'<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+			} );
+
+			describe( 'when `PlainTableOutput` is enabled', () => {
+				let editor, model, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					const plugins = [
+						Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote, PlainTableOutput
+					];
+
+					const config = {
+						table: {
+							tableLayout: {
+								stripFigureFromContentTable: false
+							}
+						}
+					};
+
+					editor = await createEditor( editorElement, plugins, config );
+
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					await editor?.destroy();
+				} );
+
+				it( 'should strip `<figure>` from content table', () => {
+					_setModelData(
+						model,
+						'<table tableType="content">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo[]</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<caption>caption</caption>' +
+						'</table>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<table class="table content-table">' +
+							'<caption>caption</caption>' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>'
+					);
+				} );
+			} );
+		} );
+
+		describe( 'when `stripFigureFromContentTable` is set to `true`', () => {
+			let editor, model, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const plugins = [
+					Table, TableCaption, TableColumnResize, TableLayoutEditing, Paragraph, BlockQuote
+				];
+
+				const config = {
+					table: {
+						tableLayout: {
+							stripFigureFromContentTable: true
+						}
+					}
+				};
+
+				editor = await createEditor( editorElement, plugins, config );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor?.destroy();
+			} );
+
+			it( 'should strip `<figure>` from content table', () => {
+				_setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo[]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>caption</caption>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table content-table">' +
+						'<caption>caption</caption>' +
+						'<tbody>' +
+							'<tr><td>foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 
