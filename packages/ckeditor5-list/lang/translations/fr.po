@@ -145,8 +145,8 @@ msgstr "Laisser une liste de tâches"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Activer/désactiver le style de liste arabo-indien"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Arabo-indien"

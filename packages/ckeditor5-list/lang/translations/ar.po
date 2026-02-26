@@ -145,8 +145,8 @@ msgstr "ترك قائمة المهام"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "تبديل نمط القائمة بأرقام عربية مشرقية"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "أرقام عربية مشرقية"

@@ -145,8 +145,8 @@ msgstr "Een to-do-lijst achterlaten"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "De Arabisch-Indische lijstweergave in- of uitschakelen."
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Arabisch-Indisch"

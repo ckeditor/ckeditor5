@@ -145,8 +145,8 @@ msgstr "Legger igjen en huskeliste"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Slå av/på den indo-arabiske listestilen"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Indo-arabisk"

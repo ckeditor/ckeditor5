@@ -145,8 +145,8 @@ msgstr "একটি টু-ডু তালিকা ছেড়ে যাচ�
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "আরবি-ইন্ডিক তালিকা স্টাইল টগল করুন"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "আরবি-ইন্ডিক"

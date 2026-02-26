@@ -145,8 +145,8 @@ msgstr "Tulevaste tegevuste nimekirja sulgemine"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Araabia-india loendistiili sisse/välja lülitamine"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Araabia-india"

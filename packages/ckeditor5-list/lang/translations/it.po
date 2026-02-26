@@ -145,8 +145,8 @@ msgstr "Esci da elenco di cose da fare"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Attiva/disattiva lo stile di elenco arabo-indiano"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Arabo-indiano"

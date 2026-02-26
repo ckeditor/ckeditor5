@@ -145,8 +145,8 @@ msgstr "正在退出待办事项清单"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "切换阿拉伯-印度数字列表样式"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "阿拉伯-印度数字"

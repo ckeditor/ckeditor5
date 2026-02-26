@@ -145,8 +145,8 @@ msgstr "Abandonando lista de tareas pendientes"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Alternar el estilo de lista arábigo-índico"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Arábigo-índico"

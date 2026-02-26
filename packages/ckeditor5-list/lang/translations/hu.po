@@ -145,8 +145,8 @@ msgstr "Tennivalók listájának elhagyás"
 
 msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
 msgid "Toggle the arabic-indic list style"
-msgstr ""
+msgstr "Arab-indiai listastílus be-/kikapcsolása"
 
 msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
 msgid "Arabic-indic"
-msgstr ""
+msgstr "Arab-indiai"
