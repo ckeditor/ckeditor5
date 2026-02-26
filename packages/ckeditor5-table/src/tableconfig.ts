@@ -668,7 +668,7 @@ export interface TableLayoutConfig {
 	 * 	.create( {
 	 * 		table: {
 	 * 			tableLayout: {
-	 * 				stripFigureFromContentTable: false // or true
+	 * 				stripFigureFromContentTable: true // or false
 	 * 			}
 	 * 		}
 	 * 	} )
@@ -676,7 +676,7 @@ export interface TableLayoutConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * @default true
+	 * @default false
 	 */
 	stripFigureFromContentTable?: boolean;
 }
