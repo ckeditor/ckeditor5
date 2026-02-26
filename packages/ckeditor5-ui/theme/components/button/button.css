@@ -5,15 +5,20 @@
 
 .ck.ck-button,
 a.ck.ck-button {
-	background: var(--ck-color-button-default-background);
+	--ck-button-background: var(--ck-color-button-default-background);
+	--ck-button-hover-background: var(--ck-color-button-default-hover-background);
+	--ck-button-active-background: var(--ck-color-button-default-active-background);
+	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background);
+
+	background: var(--ck-button-background);
 
 	&:not(.ck-disabled) {
 		&:hover {
-			background: var(--ck-color-button-default-hover-background);
+			background: var(--ck-button-hover-background);
 		}
 
 		&:active {
-			background: var(--ck-color-button-default-active-background);
+			background: var(--ck-button-active-background);
 		}
 	}
 
@@ -107,7 +112,7 @@ a.ck.ck-button {
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 	&.ck-disabled {
-		background: var(--ck-color-button-default-disabled-background);
+		background: var(--ck-button-disabled-background);
 
 		&:active,
 		&:focus {
@@ -155,22 +160,10 @@ a.ck.ck-button {
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
-		background: var(--ck-color-button-on-background);
-
-		&:not(.ck-disabled) {
-			&:hover {
-				background: var(--ck-color-button-on-hover-background);
-			}
-
-			&:active {
-				background: var(--ck-color-button-on-active-background);
-			}
-		}
-
-		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
-		&.ck-disabled {
-			background: var(--ck-color-button-on-disabled-background);
-		}
+		--ck-button-background: var(--ck-color-button-on-background);
+		--ck-button-hover-background: var(--ck-color-button-on-hover-background);
+		--ck-button-active-background: var(--ck-color-button-on-active-background);
+		--ck-button-disabled-background: var(--ck-color-button-on-disabled-background);
 
 		color: var(--ck-color-button-on-color);
 	}
@@ -203,22 +196,10 @@ a.ck.ck-button {
 
 .ck.ck-button-action,
 a.ck.ck-button-action {
-	background: var(--ck-color-button-action-background);
-
-	&:not(.ck-disabled) {
-		&:hover {
-			background: var(--ck-color-button-action-hover-background);
-		}
-
-		&:active {
-			background: var(--ck-color-button-action-active-background);
-		}
-	}
-
-	/* https://github.com/ckeditor/ckeditor5/issues/3376 */
-	&.ck-disabled {
-		background: var(--ck-color-button-action-disabled-background);
-	}
+	--ck-button-background: var(--ck-color-button-action-background);
+	--ck-button-hover-background: var(--ck-color-button-action-hover-background);
+	--ck-button-active-background: var(--ck-color-button-action-active-background);
+	--ck-button-disabled-background: var(--ck-color-button-action-disabled-background);
 
 	color: var(--ck-color-button-action-text);
 }
