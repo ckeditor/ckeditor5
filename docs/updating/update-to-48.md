@@ -24,7 +24,7 @@ The `@ckeditor/ckeditor5-theme-lark` package has been deprecated. The styles fro
 
 If you import styles from the aggregate stylesheets, such as `ckeditor5/ckeditor5.css` and `ckeditor5-premium-features/ckeditor5-premium-features.css`, you don't need to change anything.
 
-However, if you followed the {@link getting-started/setup/optimizing-build-size Optimizing build size} guide and import styles from individual packages, you need to update your imports:
+However, if you followed the {@link getting-started/setup/optimizing-build-size Optimizing build size} guide and imported styles from individual packages, you need to update your imports:
 
 1. Remove the import from the `@ckeditor/ckeditor5-theme-lark` package:
 
@@ -33,7 +33,7 @@ However, if you followed the {@link getting-started/setup/optimizing-build-size 
 	 import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
 	 ```
 
-2. Move the import from the `@ckeditor/ckeditor5-ui` package to the top of your styles imports:
+2. Move the import from the `@ckeditor/ckeditor5-ui` package to the top of your style imports:
 
 	 ```js
 	 // Move this import to the top of your styles imports.
