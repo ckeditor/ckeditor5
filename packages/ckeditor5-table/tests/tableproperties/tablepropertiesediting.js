@@ -2642,11 +2642,13 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<table class="table content-table" style="margin-left:auto;margin-right:auto;">' +
-								'<tbody>' +
-									'<tr><td>content table</td></tr>' +
-								'</tbody>' +
-							'</table>'
+							'<figure class="table content-table" style="margin-left:auto;margin-right:auto;">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr><td>content table</td></tr>' +
+									'</tbody>' +
+								'</table>' +
+							'</figure>'
 						);
 					} );
 
@@ -2682,11 +2684,13 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<table class="table content-table" style="margin-left:0;margin-right:auto;">' +
-								'<tbody>' +
-									'<tr><td>content table</td></tr>' +
-								'</tbody>' +
-							'</table>'
+							'<figure class="table content-table" style="margin-left:0;margin-right:auto;">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr><td>content table</td></tr>' +
+									'</tbody>' +
+								'</table>' +
+							'</figure>'
 						);
 					} );
 
@@ -2702,11 +2706,13 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<table class="table content-table" style="margin-left:auto;margin-right:0;">' +
-								'<tbody>' +
-									'<tr><td>content table</td></tr>' +
-								'</tbody>' +
-							'</table>'
+							'<figure class="table content-table" style="margin-left:auto;margin-right:0;">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr><td>content table</td></tr>' +
+									'</tbody>' +
+								'</table>' +
+							'</figure>'
 						);
 					} );
 
@@ -2800,11 +2806,13 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<table class="table content-table table-style-align-center">' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>'
+								'<figure class="table content-table table-style-align-center">' +
+									'<table>' +
+										'<tbody>' +
+											'<tr><td>content table</td></tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</figure>'
 							);
 						} );
 

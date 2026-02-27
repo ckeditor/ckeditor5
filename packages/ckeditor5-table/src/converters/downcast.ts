@@ -483,7 +483,7 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
  */
 function shouldStripFigureTagWithLayoutTable( editor: Editor, modelElement: ModelElement ) {
 	const hasTableLayout = editor.plugins.has( 'TableLayoutEditing' );
-	const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? true;
+	const stripFigureFromContentTable = editor.config.get( 'table.tableLayout.stripFigureFromContentTable' ) ?? false;
 	const tableModelElement = modelElement.findAncestor( 'table', { includeSelf: true } );
 	const tableType = tableModelElement?.getAttribute( 'tableType' );
 

@@ -117,11 +117,13 @@ describe( 'TableLayoutEditing', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<table class="table content-table">' +
-					'<tbody>' +
-						'<tr><td>foo</td></tr>' +
-					'</tbody>' +
-				'</table>'
+				'<figure class="table content-table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td>foo</td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
 			);
 		} );
 
@@ -1451,11 +1453,13 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				expect( editor.getData() ).to.equal(
-					'<table class="table content-table">' +
-						'<tbody>' +
-							'<tr><td>Foo</td></tr>' +
-						'</tbody>' +
-					'</table>'
+					'<figure class="table content-table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>Foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
 				);
 			} );
 
@@ -1482,11 +1486,13 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				expect( editor.getData() ).to.equal(
-					'<table class="table content-table">' +
-						'<tbody>' +
-							'<tr><td>Foo</td></tr>' +
-						'</tbody>' +
-					'</table>'
+					'<figure class="table content-table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>Foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
 				);
 			} );
 
@@ -1575,11 +1581,13 @@ describe( 'TableLayoutEditing', () => {
 					} );
 
 					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-						'<table class="table content-table">' +
-							'<tbody>' +
-								'<tr><td>Bar</td></tr>' +
-							'</tbody>' +
-						'</table>'
+						'<figure class="table content-table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><td>Bar</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
 					);
 				} );
 			} );
