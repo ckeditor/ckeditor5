@@ -33,6 +33,8 @@ import { IndentBlockListCommand } from './indentblocklistcommand.js';
 import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';
 import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../indentcommandbehavior/indentusingclasses.js';
+import { IndentListItemUsingOffset } from '../indentcommandbehavior/indentlistitemusingoffset.js';
+import { IndentListItemUsingClasses } from '../indentcommandbehavior/indentlistitemusingclasses.js';
 
 /**
  * This integration enables using block indentation feature with lists.
@@ -79,12 +81,12 @@ export class IndentBlockListIntegration extends Plugin {
 				classes: config.classes!
 			} ) ) );
 
-			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
 				direction: 'forward',
 				classes: config.classes!
 			} ) ) );
 
-			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
 				direction: 'backward',
 				classes: config.classes!
 			} ) ) );
@@ -107,13 +109,13 @@ export class IndentBlockListIntegration extends Plugin {
 				unit: config.unit!
 			} ) ) );
 
-			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
 				direction: 'forward',
 				offset: config.offset!,
 				unit: config.unit!
 			} ) ) );
 
-			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
 				direction: 'backward',
 				offset: config.offset!,
 				unit: config.unit!
