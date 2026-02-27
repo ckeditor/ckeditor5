@@ -2955,7 +2955,7 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-core
       '@ckeditor/ckeditor5-engine':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ckeditor5-engine
       '@ckeditor/ckeditor5-icons':
         specifier: workspace:*
