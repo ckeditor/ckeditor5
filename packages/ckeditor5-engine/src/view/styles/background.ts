@@ -13,8 +13,7 @@ import {
 	isAttachmentStyleValue,
 	isColorStyleValue,
 	isPositionStyleValue,
-	isRepeatStyleValue,
-	isURLStyleValue
+	isRepeatStyleValue
 } from './utils.js';
 
 /**
@@ -38,15 +37,16 @@ import {
  * };
  * ````
  *
- * **Note**: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
- * `'background-color'` value.
+ * **Note**: Currently `'background-color'` and `'background-image'` longhand values are parsed besides `'background'` shorthand.
+ * The reducer supports `'background-color'` and `'background-image'` values.
  */
 export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'background', getBackgroundNormalizer() );
 	stylesProcessor.setNormalizer( 'background-color', getBackgroundColorNormalizer() );
+	stylesProcessor.setNormalizer( 'background-image', getBackgroundImageNormalizer() );
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );
 
-	stylesProcessor.setStyleRelation( 'background', [ 'background-color' ] );
+	stylesProcessor.setStyleRelation( 'background', [ 'background-color', 'background-image' ] );
 }
 
 function getBackgroundNormalizer(): StylesNormalizer {
@@ -59,7 +59,8 @@ function getBackgroundNormalizer(): StylesNormalizer {
 			image?: string;
 		} = {};
 
-		const parts = getShorthandStylesValues( value );
+		const { value: valueWithoutImages, images } = trimBackgroundImageStyleValues( value );
+		const parts = getShorthandStylesValues( valueWithoutImages );
 
 		for ( const part of parts ) {
 			if ( isRepeatStyleValue( part ) ) {
@@ -74,9 +75,11 @@ function getBackgroundNormalizer(): StylesNormalizer {
 				background.attachment = part;
 			} else if ( isColorStyleValue( part ) ) {
 				background.color = part;
-			} else if ( isURLStyleValue( part ) ) {
-				background.image = part;
 			}
+		}
+
+		if ( images.length ) {
+			background.image = images.join( ', ' );
 		}
 
 		return {
@@ -90,12 +93,78 @@ function getBackgroundColorNormalizer(): StylesNormalizer {
 	return value => ( { path: 'background.color', value } );
 }
 
+function getBackgroundImageNormalizer(): StylesNormalizer {
+	return value => ( { path: 'background.image', value } );
+}
+
 function getBackgroundReducer(): StylesReducer {
 	return value => {
 		const ret: Array<StylePropertyDescriptor> = [];
+		const styles = value as Styles;
 
-		ret.push( [ 'background-color', ( value as Styles ).color as string ] );
+		if ( styles.color ) {
+			ret.push( [ 'background-color', styles.color as string ] );
+		}
+
+		if ( styles.image ) {
+			ret.push( [ 'background-image', styles.image as string ] );
+		}
 
 		return ret;
+	};
+}
+
+const imageFunctions = [
+	'linear-gradient',
+	'repeating-linear-gradient',
+	'radial-gradient',
+	'repeating-radial-gradient',
+	'conic-gradient',
+	'repeating-conic-gradient',
+	'url'
+];
+
+/**
+ * Extracts specific CSS image definitions (gradients, URLs) from a raw style string
+ * and separates them from the remaining value.
+ *
+ * This function handles nested parentheses correctly (e.g., `rgba()` inside a gradient).
+ * It modifies the input string by removing the extracted image definitions.
+ */
+function trimBackgroundImageStyleValues( value: string ): { value: string; images: Array<string> } {
+	const images = [];
+
+	for ( const gradient of imageFunctions ) {
+		// There might be multiple gradients or URLs in the value, so we need to loop until all of them are extracted.
+		// Limit iterations to prevent infinite loops in case of malformed input or issue in the extraction logic.
+		for ( let watchdog = 0; value.includes( gradient + '(' ) && watchdog < 10; watchdog++ ) {
+			const firstIndex = value.indexOf( gradient + '(' );
+
+			let acc = gradient;
+			let nesting = 0;
+
+			for ( let i = firstIndex + gradient.length; i < value.length; i++ ) {
+				const char = value[ i ];
+
+				if ( char === '(' ) {
+					nesting++;
+				} else if ( char === ')' ) {
+					nesting--;
+				}
+
+				acc += char;
+
+				if ( nesting === 0 ) {
+					images.push( acc );
+					value = value.substring( 0, firstIndex ) + value.substring( i + 1 );
+					break;
+				}
+			}
+		}
+	}
+
+	return {
+		value,
+		images
 	};
 }
