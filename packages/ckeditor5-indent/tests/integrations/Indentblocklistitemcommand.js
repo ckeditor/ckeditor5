@@ -8,8 +8,8 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
 import { isListItemBlock, expandListBlocksToCompleteItems } from '../../../ckeditor5-list/src/list/utils/model.js';
-import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
-import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
+import { IndentListItemUsingOffset } from '../../src/indentcommandbehavior/indentlistitemusingoffset.js';
+import { IndentListItemUsingClasses } from '../../src/indentcommandbehavior/indentlistitemusingclasses.js';
 import { IndentBlockListItemCommand } from '../../src/integrations/indentblocklistitemcommand.js';
 
 describe( 'IndentBlockListItemCommand', () => {
@@ -48,10 +48,10 @@ describe( 'IndentBlockListItemCommand', () => {
 	describe( 'indent', () => {
 		describe( 'using offset', () => {
 			beforeEach( () => {
-				command = new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+				command = new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
+					direction: 'forward',
 					offset: 40,
-					unit: 'px',
-					direction: 'forward'
+					unit: 'px'
 				} ) );
 
 				indentBlockUsingClasses = false;
@@ -511,7 +511,7 @@ describe( 'IndentBlockListItemCommand', () => {
 
 		describe( 'using classes', () => {
 			beforeEach( () => {
-				command = new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+				command = new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
 					direction: 'forward',
 					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ]
 				} ) );
@@ -635,10 +635,10 @@ describe( 'IndentBlockListItemCommand', () => {
 	describe( 'outdent', () => {
 		describe( 'using offset', () => {
 			beforeEach( () => {
-				command = new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+				command = new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
+					direction: 'backward',
 					offset: 40,
-					unit: 'px',
-					direction: 'backward'
+					unit: 'px'
 				} ) );
 
 				indentBlockUsingClasses = false;
@@ -1098,7 +1098,7 @@ describe( 'IndentBlockListItemCommand', () => {
 
 		describe( 'using classes', () => {
 			beforeEach( () => {
-				command = new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+				command = new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
 					direction: 'backward',
 					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ]
 				} ) );

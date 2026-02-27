@@ -87,28 +87,12 @@ export class IndentBlockListItemCommand extends Command {
 
 	/**
 	 * Returns `true` if changing the block indentation is allowed for the given list item.
-	 *
-	 * Indentation of a list item is only allowed if it moves toward zero. This means that:
-	 * - when currentIndent = 0, the command should be disabled
-	 * - when currentIndent < 0, only forward indentation should be allowed
-	 * - when currentIndent > 0, only backward indentation should be allowed
-	 *
-	 * For classes-based indentation, the command should be enabled if there is a class to be removed.
 	 */
 	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		if ( !element.hasAttribute( 'blockIndentListItem' ) ) {
 			return false;
 		}
 
-		const currentIndent = parseFloat( element.getAttribute( 'blockIndentListItem' ) as string );
-
-		// Class based indent, allow only outdent.
-		// TODO find a better way, probably use behavior to find out.
-		if ( isNaN( currentIndent ) ) {
-			return !this._indentBehavior.isForward;
-		}
-
-		return this._indentBehavior.isForward && currentIndent < 0 ||
-			!this._indentBehavior.isForward && currentIndent > 0;
+		return this._indentBehavior.checkEnabled( element.getAttribute( 'blockIndentListItem' ) as string );
 	}
 }

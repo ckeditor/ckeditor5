@@ -21,5 +21,7 @@ export type { IndentBlockConfig } from './indentconfig.js';
 export type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
 export { IndentUsingClasses as _IndentUsingClasses } from './indentcommandbehavior/indentusingclasses.js';
 export { IndentUsingOffset as _IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
+export { IndentListItemUsingClasses as _IndentListItemUsingClasses } from './indentcommandbehavior/indentlistitemusingclasses.js';
+export { IndentListItemUsingOffset as _IndentListItemUsingOffset } from './indentcommandbehavior/indentlistitemusingoffset.js';
 
 import './augmentation.js';
