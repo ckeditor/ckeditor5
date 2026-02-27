@@ -12,10 +12,6 @@
 	--ck-table-column-resizer-position-offset: calc(var(--ck-table-column-resizer-width) * -0.5 - 0.5px);
 }
 
-.ck-content .table .ck-table-resized {
-	table-layout: fixed;
-}
-
 .ck-content .table td,
 .ck-content .table th {
 	/* To prevent text overflowing beyond its cell when columns are resized by resize handler

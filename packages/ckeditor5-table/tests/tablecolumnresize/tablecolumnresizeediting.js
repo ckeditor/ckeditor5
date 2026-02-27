@@ -56,7 +56,7 @@ import { Rect } from '@ckeditor/ckeditor5-utils';
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;
 	const PERCENTAGE_PRECISION = 0.001;
-	const PIXEL_PRECISION = 1;
+	const PIXEL_PRECISION = 6;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -1953,6 +1953,57 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 
 			describe( 'nested table ', () => {
+				it( 'should produce correct column widths that sum up to 100% when resizing nested table', () => {
+					// Test-specific.
+					const columnToResizeIndex = 2;
+					const mouseMovementVector = { x: 20, y: 0 };
+
+					_setModelData( editor.model,
+						'<table tableWidth="100%">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'[<table tableWidth="30%">' +
+										'<tableRow>' +
+											'<tableCell>' +
+												'<paragraph>foo</paragraph>' +
+											'</tableCell>' +
+											'<tableCell>' +
+												'<paragraph>bar</paragraph>' +
+											'</tableCell>' +
+											'<tableCell>' +
+												'<paragraph>baz</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+										'<tableColumnGroup>' +
+											'<tableColumn columnWidth="25%"></tableColumn>' +
+											'<tableColumn columnWidth="25%"></tableColumn>' +
+											'<tableColumn columnWidth="50%"></tableColumn>' +
+										'</tableColumnGroup>' +
+									'</table>]' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="100%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+
+					const domNestedTable = getDomTable( view ).querySelectorAll( 'table' )[ 1 ];
+					const viewNestedTable = view.document.selection.getSelectedElement().getChild( 1 );
+
+					setInitialWidthsInPx( editor, viewNestedTable, null, 800 );
+
+					const domResizer = getDomResizer( domNestedTable, columnToResizeIndex, 0 );
+
+					tableColumnResizeMouseSimulator.down( editor, domResizer, {} );
+					tableColumnResizeMouseSimulator.move( editor, domResizer, mouseMovementVector );
+
+					const finalViewColumnWidthsPc = getViewColumnWidthsPc( viewNestedTable );
+					const widthsSum = finalViewColumnWidthsPc.reduce( ( sum, width ) => sum + Number.parseInt( width, 10 ), 0 );
+
+					expect( widthsSum ).to.be.closeTo( 100, 1 );
+				} );
+
 				it( 'correctly shrinks when the last column is dragged to the left', () => {
 					// Test-specific.
 					const columnToResizeIndex = 1;
@@ -2117,8 +2168,8 @@ describe( 'TableColumnResizeEditing', () => {
 												'</tableCell>' +
 											'</tableRow>' +
 											'<tableColumnGroup>' +
-												'<tableColumn columnWidth="45\\.45%"></tableColumn>' +
-												'<tableColumn columnWidth="54\\.55%"></tableColumn>' +
+												'<tableColumn columnWidth="45\\.[\\d]+%"></tableColumn>' +
+												'<tableColumn columnWidth="54\\.[\\d]+%"></tableColumn>' +
 											'</tableColumnGroup>' +
 										'</table>' +
 									'</tableCell>' +
