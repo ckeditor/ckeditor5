@@ -27,12 +27,8 @@ const paths = {
 const exceptions = [
 	...Object.keys( paths ),
 
-	// Core packages.
-	'@ckeditor/ckeditor5-theme-lark',
-
 	// Commercial packages.
-	'@ckeditor/ckeditor5-operations-compressor',
-	'ckeditor5-collaboration'
+	'@ckeditor/ckeditor5-operations-compressor'
 ];
 
 /**

@@ -3,8 +3,75 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+:root {
+	--ck-input-width: 18em;
+
+	/* Backward compatibility. */
+	--ck-input-text-width: var(--ck-input-width);
+}
+
+.ck.ck-input {
+	border-radius: var(--ck-rounded-corners-radius);
+	background: var(--ck-color-input-background);
+	border: 1px solid var(--ck-color-input-border);
+	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	min-width: var(--ck-input-width);
+
+	/* This is important to stay of the same height as surrounding buttons */
+	min-height: var(--ck-ui-component-min-height);
+
+	/* Apply some smooth transition to the box-shadow and border. */
+	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
+	&:focus {
+		outline: none;
+		border: var(--ck-focus-ring);
+		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+	}
+
+	&[readonly] {
+		border: 1px solid var(--ck-color-input-disabled-border);
+		background: var(--ck-color-input-disabled-background);
+		color: var(--ck-color-input-disabled-text);
+
+		&:focus {
+			/* The read-only input should have a slightly less visible shadow when focused. */
+			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+		}
+	}
+
+	&.ck-error {
+		border-color: var(--ck-color-input-error-border);
+		animation: ck-input-shake .3s ease both;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+
+		&:focus {
+			box-shadow: var(--ck-focus-error-outer-shadow), 0 0;
+		}
+	}
+}
+
+@keyframes ck-input-shake {
+	20% {
+		transform: translateX(-2px);
+	}
+
+	40% {
+		transform: translateX(2px);
+	}
+
+	60% {
+		transform: translateX(-1px);
+	}
+
+	80% {
+		transform: translateX(1px);
+	}
+}

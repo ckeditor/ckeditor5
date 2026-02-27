@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import '@ckeditor/ckeditor5-theme-lark/theme/index.css';
+export * from '@ckeditor/ckeditor5-ui';
 
 export * from '@ckeditor/ckeditor5-adapter-ckfinder';
 export * from '@ckeditor/ckeditor5-alignment';
@@ -58,7 +58,6 @@ export * from '@ckeditor/ckeditor5-special-characters';
 export * from '@ckeditor/ckeditor5-style';
 export * from '@ckeditor/ckeditor5-table';
 export * from '@ckeditor/ckeditor5-typing';
-export * from '@ckeditor/ckeditor5-ui';
 export * from '@ckeditor/ckeditor5-undo';
 export * from '@ckeditor/ckeditor5-upload';
 export * from '@ckeditor/ckeditor5-utils';

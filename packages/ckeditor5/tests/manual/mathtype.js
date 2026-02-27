@@ -17,7 +17,7 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
-import MathType from '@wiris/mathtype-ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

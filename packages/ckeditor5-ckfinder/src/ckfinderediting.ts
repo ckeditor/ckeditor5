@@ -7,9 +7,10 @@
  * @module ckfinder/ckfinderediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { Notification } from 'ckeditor5/src/ui.js';
-import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { Notification } from '@ckeditor/ckeditor5-ui';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { CKFinderCommand } from './ckfindercommand.js';
 
@@ -35,7 +36,7 @@ export class CKFinderEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Notification, 'LinkEditing' ] as const;
+		return [ Notification, LinkEditing ] as const;
 	}
 
 	/**

@@ -2,20 +2,41 @@
   "name": "@ckeditor/ckeditor5-ui",
   "version": "47.5.0",
   "description": "The UI framework and standard UI library of CKEditor 5.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-ui"
+  },
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib",
-    "ckeditor5-dll"
-  ],
-  "sideEffects": [
-    "*.css",
-    "build/**/*.js",
-    "dist/translations/*.umd.js"
+    "ckeditor5-lib"
   ],
   "type": "module",
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dist/*": "./src/*",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": "./dist/index.js",
+      "./dist/*": "./dist/*",
+      "./package.json": "./package.json"
+    }
+  },
+  "sideEffects": [
+    "*.css",
+    "dist/translations/*.umd.js"
+  ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
@@ -33,6 +54,7 @@
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
+    "@ckeditor/ckeditor5-code-block": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
@@ -42,6 +64,7 @@
     "@ckeditor/ckeditor5-find-and-replace": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
+    "@ckeditor/ckeditor5-highlight": "workspace:*",
     "@ckeditor/ckeditor5-horizontal-line": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-indent": "workspace:*",
@@ -54,35 +77,17 @@
     "@ckeditor/ckeditor5-special-characters": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
-    "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@ckeditor/ckeditor5-code-block": "workspace:*",
-    "typescript": "5.3.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "@ckeditor/ckeditor5-undo": "workspace:*"
   },
-  "depcheckIgnore": [
-    "sinon"
-  ],
-  "author": "CKSource (http://cksource.com/)",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-ui"
+  "scripts": {
+    "build": "node ../../scripts/nim/build-package.mjs"
   },
   "files": [
     "dist",
-    "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
-    "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
-  "scripts": {
-    "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  "depcheckIgnore": [
+    "sinon"
+  ]
 }

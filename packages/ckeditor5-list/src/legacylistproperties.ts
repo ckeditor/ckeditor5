@@ -7,7 +7,7 @@
  * @module list/legacylistproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { LegacyListPropertiesEditing } from './legacylistproperties/legacylistpropertiesediting.js';
 import { ListPropertiesUI } from './listproperties/listpropertiesui.js';
 

@@ -7,8 +7,8 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { isObject, identity } from 'es-toolkit/compat';
 import { ImageStyleEditing } from './imagestyleediting.js';
 import { utils } from './utils.js';

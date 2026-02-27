@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconPageBreak } from 'ckeditor5/src/icons.js';
+import { IconPageBreak } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { PageBreakEditing } from '../src/pagebreakediting.js';
 import { PageBreakUI } from '../src/pagebreakui.js';

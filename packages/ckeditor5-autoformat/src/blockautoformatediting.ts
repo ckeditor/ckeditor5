@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { Command, Editor } from 'ckeditor5/src/core.js';
+import type { Command, Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	ModelLiveRange,
@@ -13,13 +13,13 @@ import {
 	type ModelText,
 	type ModelWriter,
 	type ModelDocumentSelection
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import { first } from 'ckeditor5/src/utils.js';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import { type Autoformat } from './autoformat.js';
 
-import type { Delete } from 'ckeditor5/src/typing.js';
+import type { Delete } from '@ckeditor/ckeditor5-typing';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,

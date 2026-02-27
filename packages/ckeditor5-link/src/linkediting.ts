@@ -10,8 +10,7 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core.js';
-
+} from '@ckeditor/ckeditor5-core';
 import type {
 	ModelSchema,
 	ModelWriter,
@@ -19,28 +18,20 @@ import type {
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
 	ModelDocumentSelectionChangeAttributeEvent,
-	ModelItem,
+	ViewDowncastWriter,
 	DowncastAttributeEvent,
-	ViewDowncastWriter
-} from 'ckeditor5/src/engine.js';
-
+	ModelItem
+} from '@ckeditor/ckeditor5-engine';
 import {
 	Input,
 	TwoStepCaretMovement,
 	inlineHighlight
-} from 'ckeditor5/src/typing.js';
-
+} from '@ckeditor/ckeditor5-typing';
 import {
 	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
-} from 'ckeditor5/src/clipboard.js';
-
-import {
-	keyCodes,
-	env,
-	priorities,
-	type GetCallback
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-clipboard';
+import { keyCodes, env, type GetCallback, priorities } from '@ckeditor/ckeditor5-utils';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';

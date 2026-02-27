@@ -288,7 +288,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( ViewType
 // Proper overload would interfere with that.
 ViewDocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'view:documentFragment';
-};
+} as any;
 
 /**
  * Converts strings to Text and non-iterables to arrays.

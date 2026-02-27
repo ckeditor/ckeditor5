@@ -15,9 +15,9 @@ import type {
 	ViewContainerElement,
 	ViewDowncastWriter,
 	ViewElement
-} from 'ckeditor5/src/engine.js';
-import type { Editor } from 'ckeditor5/src/core.js';
-import { first } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import { type ImageUtils } from '../imageutils.js';
 

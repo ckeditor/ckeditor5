@@ -11,13 +11,13 @@ import type {
 	ModelElement,
 	ModelNode,
 	ModelWriter
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { TableWalker } from '../tablewalker.js';
 import { isHeadingColumnCell } from '../utils/common.js';
 import { removeEmptyRowsColumns } from '../utils/structure.js';
-import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils.js';
+import type { ArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils';
 
 import { type TableUtils } from '../tableutils.js';
 
@@ -203,20 +203,31 @@ function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirect
 	const table = tableRow.parent as ModelElement;
 
 	const rowIndex = table.getChildIndex( tableRow )!;
+	const rows = tableUtils.getRows( table );
 
 	// Don't search for mergeable cell if direction points out of the table.
-	if ( ( direction == 'down' && rowIndex === tableUtils.getRows( table ) - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
+	if ( ( direction == 'down' && rowIndex === rows - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
 		return null;
 	}
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-	const isMergeWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
-	const isMergeWithHeadCell = direction == 'up' && rowIndex === headingRows;
+	const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+	const footerIndex = rows - footerRows;
+
+	const isMergeUpWithBodyCell = direction == 'up' && rowIndex === footerIndex;
+	const isMergeUpWithHeadCell = direction == 'up' && rowIndex === headingRows;
+
+	const isMergeDownWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
+	const isMergeDownWithFootCell = direction == 'down' && ( rowIndex + rowspan ) === footerIndex;
 
 	// Don't search for mergeable cell if direction points out of the current table section.
-	if ( headingRows && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+	if ( headingRows && ( isMergeDownWithBodyCell || isMergeUpWithHeadCell ) ) {
+		return null;
+	}
+
+	if ( footerRows && ( isMergeUpWithBodyCell || isMergeDownWithFootCell ) ) {
 		return null;
 	}
 

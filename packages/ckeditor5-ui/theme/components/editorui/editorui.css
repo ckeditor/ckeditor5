@@ -3,8 +3,89 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+:root {
+	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
+}
+
+.ck.ck-editor__top {
+	& .ck-sticky-panel {
+		& .ck-sticky-panel__content {
+			border-radius: var(--ck-rounded-corners-radius);
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+
+			border: 1px solid var(--ck-color-base-border);
+			border-bottom-width: 0;
+
+			&.ck-sticky-panel__content_sticky {
+				border-bottom-width: 1px;
+			}
+
+			& .ck-menu-bar {
+				border: 0;
+				border-bottom: 1px solid var(--ck-color-base-border);
+			}
+
+			& .ck-toolbar {
+				border: 0;
+			}
+		}
+	}
+}
+
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+	border-radius: var(--ck-rounded-corners-radius);
+
+	&.ck-focused {
+		outline: none;
+		border: var(--ck-focus-ring);
+		box-shadow: var(--ck-inner-shadow), 0 0;
+	}
+}
+
+.ck.ck-editor__editable_inline {
+	overflow: auto;
+	padding: 0 var(--ck-spacing-standard);
+	border: 1px solid transparent;
+
+	&[dir="ltr"] {
+		text-align: left;
+	}
+
+	&[dir="rtl"] {
+		text-align: right;
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/3385 */
+	& > *:first-child {
+		margin-top: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/847 */
+	& > *:last-child {
+		/*
+		 * This value should match with the default margins of the block elements (like .media or .image)
+		 * to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
+		 */
+		margin-bottom: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
+	&.ck-blurred ::selection {
+		background: var(--ck-color-editable-blur-selection);
+	}
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/3383 */
+
+.ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
+	&::after {
+		border-bottom-color: var(--ck-color-panel-background);
+	}
+}
+
+.ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
+	&::after {
+		border-top-color: var(--ck-color-panel-background);
+	}
+}

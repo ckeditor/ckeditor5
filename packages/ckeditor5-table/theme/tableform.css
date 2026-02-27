@@ -3,8 +3,59 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-table-properties-error-arrow-size: 6px;
+	--ck-table-properties-min-error-width: 150px;
+}
+
 .ck.ck-table-form {
+	--ck-table-form-default-input-width: 80px;
+
 	& .ck-form__row {
+		&.ck-table-form__border-row {
+			& .ck-labeled-field-view {
+				& > .ck-label {
+					font-size: var(--ck-font-size-tiny);
+					text-align: center;
+				}
+			}
+
+			& .ck-table-form__border-style,
+			& .ck-table-form__border-width {
+				width: var(--ck-table-form-default-input-width);
+				min-width: var(--ck-table-form-default-input-width);
+				max-width: var(--ck-table-form-default-input-width);
+			}
+		}
+
+		&.ck-table-form__dimensions-row {
+			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large));
+
+			width: var(--ck-table-form-dimensions-input-width);
+			max-width: var(--ck-table-form-dimensions-input-width);
+			min-width: var(--ck-table-form-dimensions-input-width);
+			padding: 0;
+
+			& .ck-table-form__dimensions-row__width,
+			& .ck-table-form__dimensions-row__height {
+				width: var(--ck-table-form-default-input-width);
+				min-width: var(--ck-table-form-default-input-width);
+				max-width: var(--ck-table-form-default-input-width);
+				margin: 0
+			}
+
+			& .ck-table-form__dimension-operator {
+				position: relative;
+				left: -0.5ch;
+				width: 0;
+				overflow: visible;
+				align-self: flex-end;
+				display: inline-block;
+				height: var(--ck-ui-component-min-height);
+				line-height: var(--ck-ui-component-min-height);
+				margin: 0 var(--ck-spacing-small);
+			}
+		}
 		&.ck-table-form__border-row,
 		&.ck-table-form__background-row,
 		&.ck-table-form__cell-type-row {
@@ -25,40 +76,69 @@
 					flex-grow: 0;
 				}
 			}
-
-			& .ck-table-form__dimension-operator {
-				flex-grow: 0;
-			}
 		}
 
 		/* Ignore labels that work as fieldset legends */
 		/* Fallback for table dimension operator */
-		& > *:not(.ck-label, .ck-table-form__dimension-operator) {
+		&:not(.ck-table-form__action-row) > *:not(.ck-label, .ck-table-form__dimension-operator) {
 			flex-grow: 1;
 		}
 	}
 
 	& .ck.ck-labeled-field-view {
-		/* Allow absolute positioning of the status (error) balloons. */
-		position: relative;
+		padding-top: var(--ck-spacing-standard);
 
 		& .ck.ck-labeled-field-view__status {
+			border-radius: var(--ck-rounded-corners-radius);
+			background: var(--ck-color-base-error);
+			color: var(--ck-color-base-background);
+			padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+			min-width: var(--ck-table-properties-min-error-width);
+			text-align: center;
+
+			animation: ck-table-form-labeled-view-status-appear .15s ease both;
 			position: absolute;
 			left: 50%;
 			bottom: calc( -1 * var(--ck-table-properties-error-arrow-size) );
 			transform: translate(-50%,100%);
 
-			/* Make sure the balloon status stays on top of other form elements. */
-			z-index: 1;
-
 			/* The arrow pointing towards the field. */
 			&::after {
+				border-color: transparent transparent var(--ck-color-base-error) transparent;
+				border-width: 0 var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size);
+				border-style: solid;
 				content: "";
 				position: absolute;
 				top: calc( -1 * var(--ck-table-properties-error-arrow-size) );
 				left: 50%;
 				transform: translateX( -50% );
 			}
+
+			@media (prefers-reduced-motion: reduce) {
+				animation: none;
+			}
+
+			/* Make sure the balloon status stays on top of other form elements. */
+			z-index: 1
+
+			/* The arrow pointing towards the field. */
 		}
+
+		/* Hide the error balloon when the field is blurred. Makes the experience much more clear. */
+		& .ck-input.ck-error:not(:focus) + .ck.ck-labeled-field-view__status {
+			display: none;
+		}
+		/* Allow absolute positioning of the status (error) balloons. */
+		position: relative
+	}
+}
+
+@keyframes ck-table-form-labeled-view-status-appear {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
 	}
 }

@@ -16,12 +16,9 @@ import { confirm } from '@inquirer/prompts';
 
 import updateVersionReferences from './utils/updateversionreferences.mjs';
 import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcallback.mjs';
-import buildTsAndDllForCKEditor5Root from './utils/buildtsanddllforckeditor5root.mjs';
+import buildCKEditor5Root from './utils/buildckeditor5root.mjs';
 import parseArguments from './utils/parsearguments.mjs';
 import isCKEditor5PackageFactory from './utils/isckeditor5packagefactory.mjs';
-import compileTypeScriptCallback from './utils/compiletypescriptcallback.mjs';
-import updatePackageEntryPoint from './utils/updatepackageentrypoint.mjs';
-import prepareDllBuildsCallback from './utils/preparedllbuildscallback.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
 import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
@@ -33,7 +30,7 @@ import {
 	RELEASE_ZIP_DIRECTORY,
 	RELEASE_NPM_DIRECTORY
 } from './utils/constants.mjs';
-import { CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_PACKAGES_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 const [ latestVersion, versionChangelog ] = await getReleaseDescription( cliArguments );
@@ -147,18 +144,7 @@ const tasks = new Listr( [
 				{
 					title: 'Preparing the "ckeditor5" package files.',
 					task: () => {
-						return buildTsAndDllForCKEditor5Root();
-					}
-				},
-				{
-					title: 'Compiling TypeScript in `ckeditor5-*` packages.',
-					task: ( ctx, task ) => {
-						return releaseTools.executeInParallel( {
-							packagesDirectory: PACKAGES_DIRECTORY,
-							listrTask: task,
-							taskToExecute: compileTypeScriptCallback,
-							concurrency: cliArguments.concurrency
-						} );
+						return buildCKEditor5Root();
 					}
 				},
 				{
@@ -168,18 +154,6 @@ const tasks = new Listr( [
 							packagesDirectory: PACKAGES_DIRECTORY,
 							listrTask: task,
 							taskToExecute: buildPackageUsingRollupCallback,
-							concurrency: cliArguments.concurrency
-						} );
-					}
-				},
-				{
-					title: 'Preparing DLL builds.',
-					task: ( ctx, task ) => {
-						return releaseTools.executeInParallel( {
-							packagesDirectory: PACKAGES_DIRECTORY,
-							packagesDirectoryFilter: directory => upath.basename( directory ).startsWith( 'ckeditor5' ),
-							listrTask: task,
-							taskToExecute: prepareDllBuildsCallback,
 							concurrency: cliArguments.concurrency
 						} );
 					}
@@ -224,17 +198,6 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Updating entries in `package.json`.',
-					task: ( ctx, task ) => {
-						return releaseTools.executeInParallel( {
-							packagesDirectory: RELEASE_DIRECTORY,
-							listrTask: task,
-							taskToExecute: updatePackageEntryPoint,
-							concurrency: cliArguments.concurrency
-						} );
-					}
-				},
-				{
 					title: 'Moving packages to npm release directory.',
 					task: async () => {
 						const movePromises = ( await fs.readdir( RELEASE_DIRECTORY ) )
@@ -254,32 +217,6 @@ const tasks = new Listr( [
 					task: async () => {
 						const browserPath = upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'dist', 'browser' );
 						const translationsPath = upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'dist', 'translations' );
-
-						// Copy all DLL builds to the CDN folder.
-						const data = fs
-							.globSync( '*/build', { cwd: CKEDITOR5_PACKAGES_PATH } )
-							.filter( buildPath => {
-								// Ignore `ckeditor5`. It has a dedicated handler.
-								if ( buildPath.split( '/' )[ 0 ] === 'ckeditor5' ) {
-									return false;
-								}
-
-								return true;
-							} )
-							.map( async buildPath => {
-								// `ckeditor5-word-count/build` => `word-count`
-								const dllName = buildPath.split( '/' )[ 0 ].replace( 'ckeditor5-', '' );
-
-								await fs.copy(
-									upath.join( CKEDITOR5_PACKAGES_PATH, buildPath ),
-									upath.join( RELEASE_CDN_DIRECTORY, 'dll', dllName )
-								);
-							} );
-
-						await Promise.all( data );
-
-						// Complete the DLL build by adding the main, `ckeditor5` package.
-						await fs.copy( `${ RELEASE_NPM_DIRECTORY }/ckeditor5/build`, `./${ RELEASE_CDN_DIRECTORY }/dll/ckeditor5-dll/` );
 
 						// CKEditor 5 CDN.
 						await fs.copy( browserPath, `./${ RELEASE_CDN_DIRECTORY }/` );

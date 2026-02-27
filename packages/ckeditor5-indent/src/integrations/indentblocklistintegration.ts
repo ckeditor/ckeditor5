@@ -12,19 +12,19 @@ import {
 	type _ListIndentCommandAfterExecuteEvent
 } from '@ckeditor/ckeditor5-list';
 
-import { type GetCallback } from 'ckeditor5/src/utils.js';
+import { type GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import {
 	type MultiCommand,
 	Plugin
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
 import {
 	addMarginStylesRules,
 	type ModelElement,
 	type UpcastElementEvent,
 	type ViewDocumentTabEvent
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { IndentBlockListCommand } from './indentblocklistcommand.js';
 import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';

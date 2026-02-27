@@ -7,9 +7,9 @@
  * @module code-block/codeblockcommand
  */
 
-import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { first } from 'ckeditor5/src/utils.js';
+import type { ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './utils.js';
 

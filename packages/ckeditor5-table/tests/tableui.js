@@ -24,6 +24,66 @@ describe( 'TableUI', () => {
 		addTranslations( 'pl', {} );
 	} );
 
+	describe( 'tableRow dropdown (footers enabled)', () => {
+		let dropdown, footerEditor, footerElement;
+
+		beforeEach( () => {
+			footerElement = document.createElement( 'div' );
+			document.body.appendChild( footerElement );
+
+			return ClassicTestEditor
+				.create( footerElement, {
+					plugins: [ TableEditing, TableUI, Paragraph ],
+					table: {
+						enableFooters: true
+					}
+				} )
+				.then( newEditor => {
+					footerEditor = newEditor;
+					dropdown = footerEditor.ui.componentFactory.create( 'tableRow' );
+
+					dropdown.render();
+					document.body.appendChild( dropdown.element );
+				} );
+		} );
+
+		afterEach( () => {
+			dropdown.element.remove();
+			footerElement.remove();
+
+			return footerEditor.destroy();
+		} );
+
+		it( 'should show footer row toggle', () => {
+			dropdown.isOpen = true;
+
+			const labels = dropdown.listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
+
+			expect( labels ).to.deep.equal( [
+				'Header row',
+				'Footer row',
+				'|',
+				'Insert row above',
+				'Insert row below',
+				'Delete row',
+				'Select row'
+			] );
+		} );
+
+		it( 'should bind footer toggle to footer command', () => {
+			dropdown.isOpen = true;
+
+			const items = dropdown.listView.items;
+			const footerCommand = footerEditor.commands.get( 'setTableFooterRow' );
+
+			footerCommand.isEnabled = true;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+
+			footerCommand.isEnabled = false;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+		} );
+	} );
+
 	after( () => {
 		_clearTranslations();
 	} );
@@ -250,9 +310,14 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal(
-				[ 'Header row', '|', 'Insert row above', 'Insert row below', 'Delete row', 'Select row' ]
-			);
+			expect( labels ).to.deep.equal( [
+				'Header row',
+				'|',
+				'Insert row above',
+				'Insert row below',
+				'Delete row',
+				'Select row'
+			] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
@@ -309,7 +374,7 @@ describe( 'TableUI', () => {
 
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.listView.items.get( 2 ).children.last.fire( 'execute' );
+			dropdown.listView.items.get( 3 ).children.last.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );

@@ -4,7 +4,6 @@
  */
 
 import { TablePropertiesView } from '../../../src/tableproperties/ui/tablepropertiesview.js';
-import { TablePropertiesViewExperimental } from '../../../src/tableproperties/ui/tablepropertiesviewexperimental.js';
 import { LabeledFieldView, FocusCycler, ViewCollection, ToolbarView, ButtonView, InputTextView } from '@ckeditor/ckeditor5-ui';
 import { keyCodes, KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -43,7 +42,7 @@ const VIEW_OPTIONS = {
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesView', () => {
-		let view, experimentalView, locale;
+		let view, locale;
 
 		testUtils.createSinonSandbox();
 
@@ -52,18 +51,11 @@ describe( 'table properties', () => {
 			view = new TablePropertiesView( locale, VIEW_OPTIONS );
 			view.render();
 			document.body.appendChild( view.element );
-			// [experimental] - to be deleted in v48
-			experimentalView = new TablePropertiesViewExperimental( locale, VIEW_OPTIONS );
-			experimentalView.render();
-			document.body.appendChild( experimentalView.element );
 		} );
 
 		afterEach( () => {
 			view.element.remove();
 			view.destroy();
-			// [experimental] - to be deleted in v48
-			experimentalView.element.remove();
-			experimentalView.destroy();
 		} );
 
 		describe( 'constructor()', () => {
@@ -110,32 +102,11 @@ describe( 'table properties', () => {
 
 				expect( view.saveButtonView ).to.be.instanceOf( ButtonView );
 				expect( view.cancelButtonView ).to.be.instanceOf( ButtonView );
-			} );
-
-			it( 'should create child views (and references) [experimental]', () => {
-				expect( experimentalView.borderStyleDropdown ).to.be.instanceOf( LabeledFieldView );
-				expect( experimentalView.borderWidthInput ).to.be.instanceOf( LabeledFieldView );
-				expect( experimentalView.borderColorInput ).to.be.instanceOf( LabeledFieldView );
-				expect( experimentalView.backgroundInput ).to.be.instanceOf( LabeledFieldView );
-				expect( experimentalView.widthInput ).to.be.instanceOf( LabeledFieldView );
-				expect( experimentalView.heightInput ).to.be.instanceOf( LabeledFieldView );
-				expect( experimentalView.alignmentToolbar ).to.be.instanceOf( ToolbarView );
-
-				expect( experimentalView.saveButtonView ).to.be.instanceOf( ButtonView );
-				expect( experimentalView.cancelButtonView ).to.be.instanceOf( ButtonView );
-				expect( experimentalView.backButtonView ).to.be.instanceOf( ButtonView );
+				expect( view.backButtonView ).to.be.instanceOf( ButtonView );
 			} );
 
 			it( 'should have a header', () => {
 				const header = view.element.firstChild;
-
-				expect( header.classList.contains( 'ck' ) ).to.be.true;
-				expect( header.classList.contains( 'ck-form__header' ) ).to.be.true;
-				expect( header.textContent ).to.equal( 'Table properties' );
-			} );
-
-			it( 'should have a header [experimental]', () => {
-				const header = experimentalView.element.firstChild;
 
 				expect( header.classList.contains( 'ck' ) ).to.be.true;
 				expect( header.classList.contains( 'ck-form__header' ) ).to.be.true;
@@ -151,19 +122,8 @@ describe( 'table properties', () => {
 						expect( row.classList.contains( 'ck-table-form__border-row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Border' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
-						expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
-						expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
-					} );
-
-					it( 'should be defined [experimental]', () => {
-						const row = experimentalView.element.childNodes[ 1 ];
-
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__border-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Border' );
-						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.borderStyleDropdown.element );
-						expect( row.childNodes[ 2 ] ).to.equal( experimentalView.borderWidthInput.element );
-						expect( row.childNodes[ 3 ] ).to.equal( experimentalView.borderColorInput.element );
+						expect( row.childNodes[ 2 ] ).to.equal( view.borderWidthInput.element );
+						expect( row.childNodes[ 3 ] ).to.equal( view.borderColorInput.element );
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -347,7 +307,7 @@ describe( 'table properties', () => {
 
 				describe( 'background row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 2 ];
+						const row = view.element.childNodes[ 2 ].childNodes[ 1 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
@@ -355,17 +315,6 @@ describe( 'table properties', () => {
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Background' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.backgroundInput.element );
-					} );
-
-					it( 'should be defined [experimental]', () => {
-						const row = experimentalView.element.childNodes[ 2 ].childNodes[ 1 ];
-
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
-
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Background' );
-						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.backgroundInput.element );
 					} );
 
 					describe( 'background color input', () => {
@@ -419,7 +368,7 @@ describe( 'table properties', () => {
 
 				describe( 'dimensions row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
+						const row = view.element.childNodes[ 2 ].childNodes[ 0 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
@@ -427,17 +376,6 @@ describe( 'table properties', () => {
 						expect( row.childNodes[ 1 ] ).to.equal( view.widthInput.element );
 						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
 						expect( row.childNodes[ 3 ] ).to.equal( view.heightInput.element );
-					} );
-
-					it( 'should be defined [experimental]', () => {
-						const row = experimentalView.element.childNodes[ 2 ].childNodes[ 0 ];
-
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Dimensions' );
-						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.widthInput.element );
-						expect( row.childNodes[ 2 ].textContent ).to.equal( '×' );
-						expect( row.childNodes[ 3 ] ).to.equal( experimentalView.heightInput.element );
 					} );
 
 					describe( 'width input', () => {
@@ -507,30 +445,19 @@ describe( 'table properties', () => {
 
 				describe( 'dimensions alignment row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
-
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-properties-form__alignment-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Alignment' );
-						expect( row.childNodes[ 1 ] ).to.equal( view.alignmentToolbar.element );
-					} );
-
-					it( 'should be defined [experimental]', () => {
-						const row = experimentalView.element.childNodes[ 3 ];
+						const row = view.element.childNodes[ 3 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-properties-form__alignment-row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Table Alignment' );
-						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.alignmentToolbar.element );
+						expect( row.childNodes[ 1 ] ).to.equal( view.alignmentToolbar.element );
 					} );
 
 					describe( 'alignment toolbar', () => {
 						let toolbar;
-						let experimentalToolbar; // [experimental] - to be deleted in v48
 
 						beforeEach( () => {
 							toolbar = view.alignmentToolbar;
-							experimentalToolbar = experimentalView.alignmentToolbar; // [experimental] - to be deleted in v48
 						} );
 
 						it( 'should be defined', () => {
@@ -543,18 +470,6 @@ describe( 'table properties', () => {
 
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align table to the left',
-								'Center table',
-								'Align table to the right'
-							] );
-
-							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
-								false, true, false
-							] );
-						} );
-
-						it( 'should bring alignment buttons in the right order (left-to-right UI) [experimental]', () => {
-							expect( experimentalToolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align table to the left with no text wrapping',
 								'Center table with no text wrapping',
 								'Align table to the right with no text wrapping',
@@ -562,7 +477,7 @@ describe( 'table properties', () => {
 								'Align table to the right with text wrapping'
 							] );
 
-							expect( experimentalToolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
+							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
 								false, true, false, false, false
 							] );
 						} );
@@ -575,29 +490,6 @@ describe( 'table properties', () => {
 								contentLanguageDirection: 'rtl'
 							};
 							const view = new TablePropertiesView( locale, VIEW_OPTIONS );
-							const toolbar = view.alignmentToolbar;
-
-							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align table to the right',
-								'Center table',
-								'Align table to the left'
-							] );
-
-							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
-								false, true, false
-							] );
-
-							view.destroy();
-						} );
-
-						it( 'should bring alignment buttons in the right order (right-to-left UI) [experimental]', () => {
-							// Creates its own local instances of locale, view and toolbar.
-							const locale = {
-								t: val => val,
-								uiLanguageDirection: 'rtl',
-								contentLanguageDirection: 'rtl'
-							};
-							const view = new TablePropertiesViewExperimental( locale, VIEW_OPTIONS );
 							const toolbar = view.alignmentToolbar;
 
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
@@ -616,17 +508,6 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should change the #horizontalAlignment value', () => {
-							toolbar.items.last.fire( 'execute' );
-							expect( view.alignment ).to.equal( 'right' );
-							expect( toolbar.items.last.isOn ).to.be.true;
-
-							toolbar.items.first.fire( 'execute' );
-							expect( view.alignment ).to.equal( 'left' );
-							expect( toolbar.items.last.isOn ).to.be.false;
-							expect( toolbar.items.first.isOn ).to.be.true;
-						} );
-
-						it( 'should change the #horizontalAlignment value [experimental]', () => {
 							const values = [
 								'blockLeft',
 								'center',
@@ -636,14 +517,14 @@ describe( 'table properties', () => {
 							];
 
 							for ( let i = 0; i < values.length; i++ ) {
-								experimentalToolbar.items.get( i ).fire( 'execute' );
-								expect( experimentalView.alignment ).to.equal( values[ i ] );
+								toolbar.items.get( i ).fire( 'execute' );
+								expect( view.alignment ).to.equal( values[ i ] );
 
 								for ( let j = 0; j < values.length; j++ ) {
 									if ( i === j ) {
-										expect( experimentalToolbar.items.get( j ).isOn ).to.be.true;
+										expect( toolbar.items.get( j ).isOn ).to.be.true;
 									} else {
-										expect( experimentalToolbar.items.get( j ).isOn ).to.be.false;
+										expect( toolbar.items.get( j ).isOn ).to.be.false;
 									}
 								}
 							}
@@ -656,36 +537,29 @@ describe( 'table properties', () => {
 
 						it( 'should have role=radio set on buttons', () => {
 							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).to.be.true;
-							expect( toolbar.items.length ).to.equal( 3 );
-						} );
-
-						it( 'should have role=radio set on buttons [experimental]', () => {
-							expect(
-								[ ...experimentalToolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable )
-							).to.be.true;
-							expect( experimentalToolbar.items.length ).to.equal( 5 );
+							expect( toolbar.items.length ).to.equal( 5 );
 						} );
 					} );
 				} );
 
-				describe( 'back button [experimental]', () => {
+				describe( 'back button', () => {
 					it( 'should be defined', () => {
-						const header = experimentalView.element.firstChild;
+						const header = view.element.firstChild;
 
-						expect( header.childNodes[ 0 ] ).to.equal( experimentalView.backButtonView.element );
+						expect( header.childNodes[ 0 ] ).to.equal( view.backButtonView.element );
 					} );
 
 					it( 'should have button with right properties', () => {
-						expect( experimentalView.backButtonView.label ).to.equal( 'Back' );
-						expect( experimentalView.backButtonView.type ).to.equal( 'button' );
-						expect( experimentalView.backButtonView.class ).to.equal( 'ck-button-back' );
+						expect( view.backButtonView.label ).to.equal( 'Back' );
+						expect( view.backButtonView.type ).to.equal( 'button' );
+						expect( view.backButtonView.class ).to.equal( 'ck-button-back' );
 					} );
 
 					it( 'should delegate execute to cancel event', () => {
 						const spy = sinon.spy();
 
-						experimentalView.on( 'cancel', spy );
-						experimentalView.backButtonView.fire( 'execute' );
+						view.on( 'cancel', spy );
+						view.backButtonView.fire( 'execute' );
 
 						expect( spy.calledOnce ).to.be.true;
 					} );
@@ -697,40 +571,19 @@ describe( 'table properties', () => {
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.saveButtonView.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.cancelButtonView.element );
-					} );
-
-					it( 'should be defined [experimental]', () => {
-						const row = experimentalView.element.childNodes[ 4 ];
-
-						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
-						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( experimentalView.cancelButtonView.element );
-						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.saveButtonView.element );
+						expect( row.childNodes[ 0 ] ).to.equal( view.cancelButtonView.element );
+						expect( row.childNodes[ 1 ] ).to.equal( view.saveButtonView.element );
 					} );
 
 					it( 'should have buttons with right properties', () => {
 						expect( view.saveButtonView.label ).to.equal( 'Save' );
 						expect( view.saveButtonView.type ).to.equal( 'submit' );
 						expect( view.saveButtonView.withText ).to.be.true;
-						expect( view.saveButtonView.class ).to.equal( 'ck-button-save' );
+						expect( view.saveButtonView.class ).to.equal( 'ck-button-action' );
 
 						expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
 						expect( view.cancelButtonView.withText ).to.be.true;
-						expect( view.cancelButtonView.class ).to.equal( 'ck-button-cancel' );
 						expect( view.cancelButtonView.type ).to.equal( 'button' );
-					} );
-
-					it( 'should have buttons with right properties [experimental]', () => {
-						expect( experimentalView.saveButtonView.label ).to.equal( 'Save' );
-						expect( experimentalView.saveButtonView.type ).to.equal( 'submit' );
-						expect( experimentalView.saveButtonView.withText ).to.be.true;
-						expect( experimentalView.saveButtonView.class ).to.equal( 'ck-button-action' );
-
-						expect( experimentalView.cancelButtonView.label ).to.equal( 'Cancel' );
-						expect( experimentalView.cancelButtonView.withText ).to.be.true;
-						expect( experimentalView.cancelButtonView.type ).to.equal( 'button' );
 					} );
 
 					it( 'should make the cancel button fire the #cancel event when executed', () => {
@@ -816,29 +669,15 @@ describe( 'table properties', () => {
 			it( 'should register child views in #_focusables', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
-					view.borderColorInput,
 					view.borderWidthInput,
-					view.backgroundInput,
+					view.borderColorInput,
 					view.widthInput,
 					view.heightInput,
+					view.backgroundInput,
 					view.alignmentToolbar,
+					view.cancelButtonView,
 					view.saveButtonView,
-					view.cancelButtonView
-				] );
-			} );
-
-			it( 'should register child views in #_focusables [experimental]', () => {
-				expect( experimentalView._focusables.map( f => f ) ).to.have.members( [
-					experimentalView.borderStyleDropdown,
-					experimentalView.borderWidthInput,
-					experimentalView.borderColorInput,
-					experimentalView.widthInput,
-					experimentalView.heightInput,
-					experimentalView.backgroundInput,
-					experimentalView.alignmentToolbar,
-					experimentalView.cancelButtonView,
-					experimentalView.saveButtonView,
-					experimentalView.backButtonView
+					view.backButtonView
 				] );
 			} );
 
@@ -881,28 +720,9 @@ describe( 'table properties', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.borderColorInput, 'focus' );
+					const spy = sinon.spy( view.borderWidthInput, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'so "tab" focuses the next focusable item [experimental]', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the border style dropdown button is focused.
-					experimentalView.focusTracker.isFocused = true;
-					experimentalView.focusTracker.focusedElement = experimentalView.borderStyleDropdown.element;
-
-					const spy = sinon.spy( experimentalView.borderWidthInput, 'focus' );
-
-					experimentalView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
@@ -920,29 +740,9 @@ describe( 'table properties', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.cancelButtonView, 'focus' );
+					const spy = sinon.spy( view.backButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'so "shift + tab" focuses the previous focusable item [experimental]', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.tab,
-						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the border style dropdown button is focused.
-					experimentalView.focusTracker.isFocused = true;
-					experimentalView.focusTracker.focusedElement = experimentalView.borderStyleDropdown.element;
-
-					const spy = sinon.spy( experimentalView.backButtonView, 'focus' );
-
-					experimentalView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
@@ -961,31 +761,9 @@ describe( 'table properties', () => {
 					view.borderColorInput.fieldView.focusTracker.focusedElement =
 						view.borderColorInput.fieldView.dropdownView.buttonView.element;
 
-					const spy = sinon.spy( view.borderWidthInput, 'focus' );
+					const spy = sinon.spy( view.widthInput, 'focus' );
 
 					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'providing seamless forward navigation over child views with their own focusable children and focus cyclers' +
-					' [experimental]', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the border color dropdown button button is focused.
-					experimentalView.focusTracker.isFocused = experimentalView.borderColorInput.fieldView.focusTracker.isFocused = true;
-					experimentalView.focusTracker.focusedElement = experimentalView.borderColorInput.element;
-					experimentalView.borderColorInput.fieldView.focusTracker.focusedElement =
-						experimentalView.borderColorInput.fieldView.dropdownView.buttonView.element;
-
-					const spy = sinon.spy( experimentalView.widthInput, 'focus' );
-
-					experimentalView.borderColorInput.fieldView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
@@ -1005,32 +783,9 @@ describe( 'table properties', () => {
 					view.borderColorInput.fieldView.focusTracker.focusedElement =
 						view.borderColorInput.fieldView.inputView.element;
 
-					const spy = sinon.spy( view.borderStyleDropdown, 'focus' );
+					const spy = sinon.spy( view.borderWidthInput, 'focus' );
 
 					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
-				} );
-
-				it( 'providing seamless backward navigation over child views with their own focusable children and focus cyclers ' +
-					'[experimental]', () => {
-					const keyEvtData = {
-						keyCode: keyCodes.tab,
-						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
-					};
-
-					// Mock the border color dropdown input is focused.
-					experimentalView.focusTracker.isFocused = experimentalView.borderColorInput.fieldView.focusTracker.isFocused = true;
-					experimentalView.focusTracker.focusedElement = experimentalView.borderColorInput.element;
-					experimentalView.borderColorInput.fieldView.focusTracker.focusedElement =
-						experimentalView.borderColorInput.fieldView.inputView.element;
-
-					const spy = sinon.spy( experimentalView.borderWidthInput, 'focus' );
-
-					experimentalView.borderColorInput.fieldView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );

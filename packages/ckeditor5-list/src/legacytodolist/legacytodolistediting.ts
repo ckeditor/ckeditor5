@@ -22,9 +22,9 @@ import type {
 	RenameOperation,
 	ModelSelectionChangeRangeEvent,
 	ModelDocumentFragment
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	getCode,
@@ -32,7 +32,7 @@ import {
 	getLocalizedArrowKeyCodeDirection,
 	type Locale,
 	type GetCallback
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
 import { LegacyListCommand } from '../legacylist/legacylistcommand.js';
 import { LegacyListEditing } from '../legacylist/legacylistediting.js';

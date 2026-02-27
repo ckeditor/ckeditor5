@@ -3,16 +3,51 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+
+:root {
+	--ck-link-providers-width: 340px;
+	--ck-link-list-view-max-height: 240px;
+	--ck-link-list-view-icon-size: calc( var(--ck-icon-size) * 0.8); /* 0.8 = 16/20 cause default the icon size is 20px */
+}
+
+@media screen and (max-width: 600px) {
+	:root {
+		--ck-link-providers-width: 300px;
+	}
+}
+
 .ck.ck-link-providers {
+	width: var(--ck-link-providers-width);
+
+	& .ck-form__header__label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	& > .ck-link-providers__list {
+		max-height: min( var(--ck-link-list-view-max-height), 40vh );
 		overflow-x: hidden;
 		overflow-y: auto;
-		overscroll-behavior: contain;
 
 		& .ck-button {
 			& > .ck-icon {
+				width: var(--ck-link-list-view-icon-size);
+				height: var(--ck-link-list-view-icon-size);
 				flex-shrink: 0;
 			}
+
+			& > .ck-button__label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		}
+		overscroll-behavior: contain
+	}
+
+	& .ck-link__empty-list-info {
+		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
+		text-align: center;
+		font-style: italic;
 	}
 }

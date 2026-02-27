@@ -3,8 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+.ck.ck-labeled-input .ck-labeled-input__status {
+	font-size: var(--ck-font-size-small);
+	margin-top: var(--ck-spacing-small);
+
+	/* Let the info wrap to the next line to avoid stretching the layout horizontally.
+	The status could be very long. */
+	white-space: normal;
+}
+
+.ck.ck-labeled-input .ck-labeled-input__status_error {
+	color: var(--ck-color-base-error);
+}

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconContentUnlock } from 'ckeditor5/src/icons.js';
+import { IconContentUnlock } from '@ckeditor/ckeditor5-icons';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ButtonView, DropdownView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';

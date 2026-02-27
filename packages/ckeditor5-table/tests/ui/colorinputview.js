@@ -5,8 +5,7 @@
 
 import { ColorInputView } from '../../src/ui/colorinputview.js';
 import { InputTextView, ColorGridView, DropdownView, ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { global } from 'ckeditor5/src/utils.js';
+import { FocusTracker, KeystrokeHandler, keyCodes, global } from '@ckeditor/ckeditor5-utils';
 
 const DEFAULT_COLORS = [
 	{

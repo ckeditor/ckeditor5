@@ -7,11 +7,11 @@
  * @module style/integrations/link
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { ModelSelectable, ModelDocumentSelection, ModelRange, ModelPosition, Model } from 'ckeditor5/src/engine.js';
-import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typing.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { ModelSelectable, ModelDocumentSelection, ModelRange, ModelPosition, Model } from '@ckeditor/ckeditor5-engine';
+import { findAttributeRange, findAttributeRangeBound } from '@ckeditor/ckeditor5-typing';
 
-import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import {
 	StyleUtils,
@@ -43,7 +43,7 @@ export class LinkStyleSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ StyleUtils, 'GeneralHtmlSupport' ] as const;
+		return [ StyleUtils, GeneralHtmlSupport ] as const;
 	}
 
 	/**
@@ -57,7 +57,7 @@ export class LinkStyleSupport extends Plugin {
 		}
 
 		this._styleUtils = editor.plugins.get( StyleUtils );
-		this._htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
+		this._htmlSupport = this.editor.plugins.get( GeneralHtmlSupport );
 
 		this.listenTo<StyleUtilsIsStyleEnabledForInlineSelectionEvent>(
 			this._styleUtils,

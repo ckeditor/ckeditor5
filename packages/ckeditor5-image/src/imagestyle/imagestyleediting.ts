@@ -7,8 +7,8 @@
  * @module image/imagestyle/imagestyleediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { ModelElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 
 import { ImageStyleCommand } from './imagestylecommand.js';
 import { ImageUtils } from '../imageutils.js';

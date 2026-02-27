@@ -7,8 +7,8 @@
  * @module special-characters/ui/characterinfoview
  */
 
-import type { Locale } from 'ckeditor5/src/utils.js';
-import { View } from 'ckeditor5/src/ui.js';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { View } from '@ckeditor/ckeditor5-ui';
 
 import '../../theme/characterinfo.css';
 

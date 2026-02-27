@@ -14,10 +14,10 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
-import { BalloonToolbar } from 'ckeditor5/src/ui.js';
-import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils.js';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
+import { CKEditorError, getDataFromElement } from '@ckeditor/ckeditor5-utils';
 
 import { BalloonEditorUI } from './ballooneditorui.js';
 import { BalloonEditorUIView } from './ballooneditoruiview.js';

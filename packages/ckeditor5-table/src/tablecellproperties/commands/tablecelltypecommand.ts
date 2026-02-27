@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecelltypecommand
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
 
 import { TableUtils } from '../../tableutils.js';
 import {
@@ -18,6 +18,7 @@ import {
 
 import { groupCellsByTable, getSelectionAffectedTable } from '../../utils/common.js';
 import { TableWalker } from '../../tablewalker.js';
+import { isTableHeaderCellType, type TableCellType } from '../tablecellpropertiesutils.js';
 
 /**
  * The table cell type command.
@@ -76,11 +77,6 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 }
 
 /**
- * Type of the table cell.
- */
-export type TableCellType = 'data' | 'header';
-
-/**
  * Updates the `headingRows` and `headingColumns` attributes of the given tables
  * based on the `tableCellType` of their cells.
  */
@@ -94,6 +90,9 @@ export function updateTablesHeadingAttributes(
 	for ( const table of tables ) {
 		let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+		const footerIndex = tableUtils.getRows( table ) - footerRows;
 
 		// Prioritize the dimension that is already larger to prevent the other dimension from
 		// aggressively consuming "orphaned" header cells. In other words, if table has three
@@ -112,16 +111,27 @@ export function updateTablesHeadingAttributes(
 			const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
 			if ( newHeadingColumns !== headingColumns ) {
-				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, {
+					updateCellType: false
+				} );
+
 				headingColumns = newHeadingColumns;
 				changed = true;
 			}
 		}
 
-		const newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
+		let newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
+
+		// Ensure that heading rows do not overlap with footer rows.
+		if ( footerRows > 0 ) {
+			newHeadingRows = Math.min( newHeadingRows, footerIndex );
+		}
 
 		if ( newHeadingRows !== headingRows ) {
-			tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+			tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, {
+				updateCellType: false
+			} );
+
 			headingRows = newHeadingRows;
 			changed = true;
 		}
@@ -130,7 +140,10 @@ export function updateTablesHeadingAttributes(
 			const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
 			if ( newHeadingColumns !== headingColumns ) {
-				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, {
+					updateCellType: false
+				} );
+
 				changed = true;
 			}
 		}
@@ -189,7 +202,7 @@ function getAdjustedHeadingSectionSize(
 		// Check each cell in the current row/column.
 		for ( const { cell, row, column } of walker ) {
 			// If we find a non-header cell, this row/column can't be part of the heading section.
-			if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
+			if ( !isTableHeaderCellType( cell.getAttribute( 'tableCellType' ) as TableCellType ) ) {
 				allCellsAreHeaders = false;
 				break;
 			}

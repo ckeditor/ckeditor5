@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
+import { IconSpecialCharacters } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import { Typing } from '@ckeditor/ckeditor5-typing';

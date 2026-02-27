@@ -4,19 +4,19 @@ meta-title: Using the package generator | CKEditor 5 Framework Documentation
 meta-description: Learn how to easily create a new CKEditor 5 package using the package generator, including setup, configuration, and customization steps.
 category: package-generator
 order: 41
-modified_at: 2024-06-27
+modified_at: 2026-01-21
 ---
 
 # Using the package generator
 
-The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers. It creates a working package with the development environment that allows writing new custom plugins for CKEditor&nbsp;5.
+The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers. It creates a working package with the development environment that allows writing new custom plugins for CKEditor&nbsp;5, aligned with the current installation methods and ESM-based builds.
 
 ## Quick start
 
 To create a new package without installing the tool, simply execute the following command:
 
 ```bash
-npx ckeditor5-package-generator <packageName> [--use-npm] [--use-pnpm] [--use-yarn] [--installation-methods <current|current-and-legacy>] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
+npx ckeditor5-package-generator <packageName> [--use-npm] [--use-pnpm] [--use-yarn] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
 ```
 
 The `<packageName>` argument is required and must obey these rules:
@@ -36,13 +36,6 @@ Available modifiers for the command are:
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
 * `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
 * `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
-* `--installation-methods` &ndash; (values: `current` | `current-and-legacy`) choose which installation methods of CKEditor 5 do you want to support? If omitted, the script will ask the user to choose manually.
-
-## Choosing the method
-
-Currently, a package can be generated in one of two modes of supported installation methods for CKEditor&nbsp;5 :
-* The package will only support the current installation methods if the value for the `--installation-methods` flag is set to `current`. This approach makes it easier to create CKEditor&nbsp;5 plugin at the cost of not supporting the old installation methods.
-* The package generator creates bundles for both the current installation methods and {@link getting-started/legacy-getting-started/quick-start legacy installation methods} if the value for the `--installation-methods` flag is set to `current-and-legacy`.
 
 ## Using the package
 
@@ -61,10 +54,24 @@ npm run start
 
 Now the plugin can be seen within the example editor.
 
+In source files, make sure to:
+
+* Always include file extensions in relative imports.
+* Prefer imports from `ckeditor5` (or package roots).
+
+Example:
+
+```js
+import { Plugin } from 'ckeditor5';
+import MyPlugin from './myplugin.js';
+```
+
+To integrate the generated build with your editor, follow the {@link getting-started/setup/configuration Configuring CKEditor&nbsp;5 features} guide.
+
 You can check out what is available inside your package depending on the language you used:
 * {@link framework/development-tools/package-generator/javascript-package JavaScript}
 * {@link framework/development-tools/package-generator/typescript-package TypeScript}
 
-## Migration
+## Upgrading older packages
 
-If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (version `1.1.0` or lower) to generate and develop your own plugins for CKEditor&nbsp;5 and now you want to migrate to the newest installations methods used by CKEditor&nbsp;5 please visit the {@link updating/nim-migration/migration-to-new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide. You will find an instruction there that will guide you step by step through all things that need to be changed.
+If you generated a package with an older version of the tool, follow the {@link updating/nim-migration/custom-plugins Migrating custom plugins} guide to align the build and import rules with the current package generator output.

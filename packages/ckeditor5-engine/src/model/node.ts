@@ -436,7 +436,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 // Proper overload would interfere with that.
 ModelNode.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'model:node';
-};
+} as any;
 
 /**
  * Represents a set of model node attributes, accepted as either a plain object

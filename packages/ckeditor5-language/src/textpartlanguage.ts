@@ -7,7 +7,7 @@
  * @module language/textpartlanguage
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { TextPartLanguageEditing } from './textpartlanguageediting.js';
 import { TextPartLanguageUI } from './textpartlanguageui.js';

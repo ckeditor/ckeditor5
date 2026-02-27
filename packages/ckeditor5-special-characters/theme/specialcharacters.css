@@ -3,11 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+
+.ck.ck-special-characters-navigation {
+
+	& > .ck-label {
+		max-width: 160px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	& > .ck-dropdown .ck-dropdown__panel {
+		/* There could be dozens of categories available. Use scroll to prevent a 10e6px dropdown. */
+		max-height: 250px;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	@media screen and (max-width: 600px) {
+		max-width: 190px;
+
+		& > .ck-form__header__label {
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+	}
+}
 
 .ck.ck-special-characters {
 	& > .ck-dialog__content > div {
@@ -36,14 +56,14 @@
 					min-width: var(--ck-table-properties-min-error-width);
 					text-align: center;
 
+					animation: ck-table-form-labeled-view-status-appear .15s ease both;
+
 					/* The arrow pointing towards the field. */
 					&::after {
 						border-color: transparent transparent var(--ck-color-base-error) transparent;
 						border-width: 0 var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size);
 						border-style: solid;
 					}
-
-					animation: ck-table-form-labeled-view-status-appear .15s ease both;
 
 					@media (prefers-reduced-motion: reduce) {
 						animation: none;

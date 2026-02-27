@@ -7,8 +7,8 @@
  * @module fullscreen/fullscreenediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { env } from 'ckeditor5/src/utils.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 import { FullscreenCommand } from './fullscreencommand.js';
 

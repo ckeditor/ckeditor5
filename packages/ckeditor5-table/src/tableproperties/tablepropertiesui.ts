@@ -7,8 +7,8 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { IconTableProperties } from 'ckeditor5/src/icons.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { IconTableProperties } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -16,7 +16,7 @@ import {
 	getLocalizedColorOptions,
 	normalizeColorOptions,
 	type LabeledFieldView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import { debounce } from 'es-toolkit/compat';
 
@@ -36,8 +36,8 @@ import {
 	getNormalizedDefaultTableProperties,
 	type NormalizedDefaultProperties
 } from '../utils/table-properties.js';
-import type { Batch } from 'ckeditor5/src/engine.js';
-import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import type { Batch } from '@ckeditor/ckeditor5-engine';
+import type { EventInfo, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import { type TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
 

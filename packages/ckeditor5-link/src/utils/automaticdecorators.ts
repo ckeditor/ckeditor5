@@ -7,24 +7,17 @@
  * @module link/utils/automaticdecorators
  */
 
-import {
-	toMap,
-	priorities,
-	type ArrayOrItem,
-	type GetCallback
-} from 'ckeditor5/src/utils.js';
-
+import { type GetCallback, priorities, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	ModelElement,
-	ModelSelection,
-	ModelItem,
 	ModelDocumentSelection,
-	ViewElement,
-	ViewDowncastWriter
-} from 'ckeditor5/src/engine.js';
-
+	ModelElement,
+	ModelItem,
+	ModelSelection,
+	ViewDowncastWriter,
+	ViewElement
+} from '@ckeditor/ckeditor5-engine';
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
 
 /**

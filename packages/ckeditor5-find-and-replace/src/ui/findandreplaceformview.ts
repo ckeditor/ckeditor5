@@ -22,7 +22,7 @@ import {
 	type FocusableView,
 	SwitchButtonView,
 	CollapsibleView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	FocusTracker,
@@ -30,13 +30,11 @@ import {
 	Rect,
 	isVisible,
 	type Locale
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
+
 import '../../theme/findandreplaceform.css';
-import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 /**
  * The find and replace form view class.

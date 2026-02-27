@@ -7,9 +7,9 @@
  * @module table/tablecolumnresize/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, Model, ViewElement, ViewNode, ModelWriter } from 'ckeditor5/src/engine.js';
-import { global } from 'ckeditor5/src/utils.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelElement, Model, ViewElement, ViewNode, ModelWriter } from '@ckeditor/ckeditor5-engine';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { type TableUtils } from '../tableutils.js';
 import {
 	COLUMN_WIDTH_PRECISION,
@@ -110,7 +110,11 @@ export function getColumnMinWidthAsPercentage( modelTable: ModelElement, editor:
  */
 export function getTableWidthInPixels( modelTable: ModelElement, editor: Editor ): number {
 	// It is possible for a table to not have a <tbody> element - see #11878.
-	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
+	const referenceElement =
+		getChildrenViewElement( modelTable, 'tbody', editor ) ||
+		getChildrenViewElement( modelTable, 'thead', editor ) ||
+		getChildrenViewElement( modelTable, 'tfoot', editor );
+
 	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! )!;
 
 	return getElementWidthInPixels( domReferenceElement );

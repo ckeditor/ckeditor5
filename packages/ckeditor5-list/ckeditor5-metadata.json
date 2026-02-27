@@ -5,7 +5,7 @@
 			"className": "LegacyList",
 			"description": "Implements bulleted and numbered list features. Add the to-do list plugin to bring support for inserting interactive checkboxes.",
 			"docs": "features/lists/lists.html",
-			"path": "src/legacylist.js",
+			"path": "src/legacylist.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
@@ -75,7 +75,7 @@
 			"className": "LegacyListProperties",
 			"description": "Enables styling the list item markers for both ordered and unordered lists. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
 			"docs": "features/lists/lists-properties.html#list-styles",
-			"path": "src/legacylistproperties.js",
+			"path": "src/legacylistproperties.ts",
 			"requires": [
 				"LegacyList"
 			],
@@ -98,7 +98,7 @@
 			"className": "List",
 			"description": "Implements bulleted and numbered list features. Supports block content inside list elements. Incompatible with the LegacyList plugin.",
 			"docs": "features/lists/lists.html",
-			"path": "src/list.js",
+			"path": "src/list.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
@@ -128,7 +128,7 @@
 			"className": "ListFormatting",
 			"description": "Enables integration with formatting plugins to style the list marker. Supports font color, font size, font family, bold, and italic formatting.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
-			"path": "src/listformatting.js",
+			"path": "src/listformatting.ts",
 			"requires": [
 				"ListItemBoldIntegration",
 				"ListItemItalicIntegration",
@@ -142,7 +142,7 @@
 			"className": "ListItemBoldIntegration",
 			"description": "Integrates bold formatting with list items to style list markers with bold formatting when the content is consistently bold.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
-			"path": "src/listformatting/listitemboldintegration.js",
+			"path": "src/listformatting/listitemboldintegration.ts",
 			"requires": [
 				"ListEditing"
 			],
@@ -158,7 +158,7 @@
 			"className": "ListItemItalicIntegration",
 			"description": "Integrates italic formatting with list items to style list markers with italic formatting when the content is consistently italic.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
-			"path": "src/listformatting/listitemitalicintegration.js",
+			"path": "src/listformatting/listitemitalicintegration.ts",
 			"requires": [
 				"ListEditing"
 			],
@@ -174,7 +174,7 @@
 			"className": "ListItemFontSizeIntegration",
 			"description": "Integrates font size formatting with list items to style list markers with specific font sizes when the content has consistent font sizing.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
-			"path": "src/listformatting/listitemfontsizeintegration.js",
+			"path": "src/listformatting/listitemfontsizeintegration.ts",
 			"requires": [
 				"ListEditing"
 			],
@@ -197,7 +197,7 @@
 			"className": "ListItemFontColorIntegration",
 			"description": "Integrates font color formatting with list items to style list markers with specific colors when the content has consistent font coloring.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
-			"path": "src/listformatting/listitemfontcolorintegration.js",
+			"path": "src/listformatting/listitemfontcolorintegration.ts",
 			"requires": [
 				"ListEditing"
 			],
@@ -214,7 +214,7 @@
 			"className": "ListItemFontFamilyIntegration",
 			"description": "Integrates font family formatting with list items to style list markers with specific font families when the content has consistent font family formatting.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
-			"path": "src/listformatting/listitemfontfamilyintegration.js",
+			"path": "src/listformatting/listitemfontfamilyintegration.ts",
 			"requires": [
 				"ListEditing"
 			],
@@ -231,7 +231,7 @@
 			"className": "TodoList",
 			"description": "Allows for creating a list of interactive checkboxes with labels. Supports all features of lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",
 			"docs": "features/lists/todo-lists.html",
-			"path": "src/todolist.js",
+			"path": "src/todolist.ts",
 			"requires": [
 				"List"
 			],
@@ -273,7 +273,7 @@
 			"className": "ListProperties",
 			"description": "Enables styling the list item markers for both ordered and unordered lists created by the list plugin. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
 			"docs": "features/lists/lists-properties.html",
-			"path": "src/listproperties.js",
+			"path": "src/listproperties.ts",
 			"requires": [
 				"List"
 			],

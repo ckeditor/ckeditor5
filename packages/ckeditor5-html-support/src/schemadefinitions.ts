@@ -203,7 +203,7 @@ export const defaultConfig = {
 			model: 'htmlTr',
 			view: 'tr',
 			modelSchema: {
-				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody' ],
+				allowIn: [ 'htmlTable', 'htmlThead', 'htmlTbody', 'htmlTfoot' ],
 				isLimit: true
 			}
 		},
@@ -565,6 +565,11 @@ export const defaultConfig = {
 		{
 			model: 'htmlTheadAttributes',
 			view: 'thead',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlTfootAttributes',
+			view: 'tfoot',
 			appliesToBlock: 'table'
 		},
 		{

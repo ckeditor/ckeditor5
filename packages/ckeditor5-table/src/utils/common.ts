@@ -7,7 +7,7 @@
  * @module table/utils/common
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import type {
 	Conversion,
 	ModelElement,
@@ -16,11 +16,12 @@ import type {
 	ModelSchema,
 	ModelWriter,
 	ModelDocumentSelection
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
 import { type TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';
+import { isTableHeaderCellType, type TableCellType } from '../tablecellproperties/tablecellpropertiesutils.js';
 
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
@@ -162,9 +163,9 @@ export function isEntireCellsLineHeader(
 	const tableWalker = new TableWalker( table, { row, column } );
 
 	for ( const { cell } of tableWalker ) {
-		const cellType = cell.getAttribute( 'tableCellType' );
+		const cellType = cell.getAttribute( 'tableCellType' ) as TableCellType;
 
-		if ( cellType !== 'header' ) {
+		if ( !isTableHeaderCellType( cellType ) ) {
 			return false;
 		}
 	}
@@ -178,10 +179,5 @@ export function isEntireCellsLineHeader(
  * @internal
  */
 export function isTableCellTypeEnabled( editor: Editor ): boolean {
-	const { model, config } = editor;
-
-	return (
-		model.schema.checkAttribute( 'tableCell', 'tableCellType' ) &&
-		config.get( 'experimentalFlags.tableCellTypeSupport' ) === true
-	);
+	return editor.model.schema.checkAttribute( 'tableCell', 'tableCellType' );
 }

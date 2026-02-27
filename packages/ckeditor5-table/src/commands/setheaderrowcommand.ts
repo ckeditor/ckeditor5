@@ -7,8 +7,8 @@
  * @module table/commands/setheaderrowcommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
-import type { ModelElement } from 'ckeditor5/src/engine.js';
+import { Command } from '@ckeditor/ckeditor5-core';
+import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../tableutils.js';
 
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure.js';

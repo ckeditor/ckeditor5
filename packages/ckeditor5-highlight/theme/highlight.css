@@ -12,25 +12,32 @@
 	--ck-content-highlight-pen-green: hsl(112, 100%, 27%);
 }
 
-@define-mixin highlight-marker-color $color {
-	.ck-content .marker-$color {
-		background-color: var(--ck-content-highlight-marker-$color);
-	}
+.ck-content .marker-yellow {
+	background-color: var(--ck-content-highlight-marker-yellow);
 }
 
-@define-mixin highlight-pen-color $color {
-	.ck-content .pen-$color {
-		color: var(--ck-content-highlight-pen-$color);
-
-		/* Override default yellow background of `<mark>` from user agent stylesheet */
-		background-color: transparent;
-	}
+.ck-content .marker-green {
+	background-color: var(--ck-content-highlight-marker-green);
 }
 
-@mixin highlight-marker-color yellow;
-@mixin highlight-marker-color green;
-@mixin highlight-marker-color pink;
-@mixin highlight-marker-color blue;
+.ck-content .marker-pink {
+	background-color: var(--ck-content-highlight-marker-pink);
+}
 
-@mixin highlight-pen-color red;
-@mixin highlight-pen-color green;
+.ck-content .marker-blue {
+	background-color: var(--ck-content-highlight-marker-blue);
+}
+
+.ck-content .pen-red {
+	color: var(--ck-content-highlight-pen-red);
+
+	/* Override default yellow background of `<mark>` from user agent stylesheet */
+	background-color: transparent;
+}
+
+.ck-content .pen-green {
+	color: var(--ck-content-highlight-pen-green);
+
+	/* Override default yellow background of `<mark>` from user agent stylesheet */
+	background-color: transparent;
+}

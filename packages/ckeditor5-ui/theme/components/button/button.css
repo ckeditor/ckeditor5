@@ -3,37 +3,208 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "../../mixins/_unselectable.css";
-@import "../../mixins/_dir.css";
-
 .ck.ck-button,
 a.ck.ck-button {
-	@mixin ck-unselectable;
+	--ck-button-background: var(--ck-color-button-default-background);
+	--ck-button-hover-background: var(--ck-color-button-default-hover-background);
+	--ck-button-active-background: var(--ck-color-button-default-active-background);
+	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background);
+
+	background: var(--ck-button-background);
+
+	&:not(.ck-disabled) {
+		&:hover {
+			background: var(--ck-button-hover-background);
+		}
+
+		&:active {
+			background: var(--ck-button-active-background);
+		}
+	}
+
+	border-radius: var(--ck-rounded-corners-radius);
+	white-space: nowrap;
+	cursor: default;
+	vertical-align: middle;
+	padding: var(--ck-spacing-tiny);
+	text-align: center;
+
+	/* A very important piece of styling. Go to variable declaration to learn more. */
+	min-width: var(--ck-ui-component-min-height);
+	min-height: var(--ck-ui-component-min-height);
+
+	/* Normalize the height of the line. Removing this will break consistent height
+	among text and text-less buttons (with icons). */
+	line-height: 1;
+
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
+	/* Avoid flickering when the foucs border shows up. */
+	border: 1px solid transparent;
+
+	/* Apply some smooth transition to the box-shadow and border. */
+	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
+
+	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
+	-webkit-appearance: none;
+	-webkit-user-select: none;
+	user-select: none;
 
 	position: relative;
 	display: inline-flex;
 	align-items: center;
 
-	@mixin ck-dir ltr {
-		justify-content: left;
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
 	}
 
-	@mixin ck-dir rtl {
-		justify-content: right;
+	/* stylelint-disable no-descending-specificity */
+	&:active,
+	&:focus {
+		outline: none;
+		border: var(--ck-focus-ring);
+		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+	}
+
+	/* Allow icon coloring using the text "color" property. */
+	& .ck-button__icon {
+		& use,
+		& use * {
+			color: inherit;
+		}
 	}
 
 	& .ck-button__label {
-		display: none;
+		/* Enable font size inheritance, which allows fluid UI scaling. */
+		font-size: inherit;
+		font-weight: inherit;
+		color: inherit;
+		cursor: inherit;
+
+		/* Must be consistent with .ck-icon's vertical align. Otherwise, buttons with and
+		without labels (but with icons) have different sizes in Chrome */
+		vertical-align: middle;
+
+		[dir="ltr"] & {
+			text-align: left;
+		}
+
+		[dir="rtl"] & {
+			text-align: right;
+		}
+		display: none
+	}
+
+	& .ck-button__keystroke {
+		color: inherit;
+
+		opacity: .5;
+
+		[dir="ltr"] & {
+			margin-left: var(--ck-spacing-large);
+		}
+
+		[dir="rtl"] & {
+			margin-right: var(--ck-spacing-large);
+		}
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/3362 */
+	&.ck-disabled {
+		background: var(--ck-button-disabled-background);
+
+		&:active,
+		&:focus {
+			/* The disabled button should have a slightly less visible shadow when focused. */
+			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+		}
+
+		& .ck-button__icon {
+			opacity: var(--ck-disabled-opacity);
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
+		& .ck-button__label {
+			opacity: var(--ck-disabled-opacity);
+		}
+
+		& .ck-button__keystroke {
+			opacity: .3;
+		}
 	}
 
 	&.ck-button_with-text {
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
+
+		& .ck-button__icon {
+			[dir="ltr"] & {
+				margin-right: var(--ck-spacing-medium);
+			}
+
+			[dir="rtl"] & {
+				margin-left: var(--ck-spacing-medium);
+			}
+		}
 		& .ck-button__label {
 			display: inline-block;
 		}
 	}
 
+	&.ck-button_with-keystroke {
+		& .ck-button__label {
+			flex-grow: 1;
+		}
+	}
+	/* stylelint-enable no-descending-specificity */
+
+	/* A style of the button which is currently on, e.g. its feature is active. */
+	&.ck-on {
+		--ck-button-background: var(--ck-color-button-on-background);
+		--ck-button-hover-background: var(--ck-color-button-on-hover-background);
+		--ck-button-active-background: var(--ck-color-button-on-active-background);
+		--ck-button-disabled-background: var(--ck-color-button-on-disabled-background);
+
+		color: var(--ck-color-button-on-color);
+	}
+
+	&.ck-button-save {
+		color: var(--ck-color-button-save);
+	}
+
+	&.ck-button-cancel {
+		color: var(--ck-color-button-cancel);
+	}
+
+	/* stylelint-disable no-descending-specificity */
+	[dir="ltr"] & {
+		justify-content: left;
+	}
+
+	[dir="rtl"] & {
+		justify-content: right;
+	}
+
 	/* Center the icon horizontally in a button without text. */
-	&:not(.ck-button_with-text)  {
+	&:not(.ck-button_with-text) {
 		justify-content: center;
 	}
+	/* stylelint-enable no-descending-specificity */
+}
+
+/* A style of the button which handles the primary action. */
+
+.ck.ck-button-action,
+a.ck.ck-button-action {
+	--ck-button-background: var(--ck-color-button-action-background);
+	--ck-button-hover-background: var(--ck-color-button-action-hover-background);
+	--ck-button-active-background: var(--ck-color-button-action-active-background);
+	--ck-button-disabled-background: var(--ck-color-button-action-disabled-background);
+
+	color: var(--ck-color-button-action-text);
+}
+
+.ck.ck-button-bold,
+a.ck.ck-button-bold {
+	font-weight: bold;
 }

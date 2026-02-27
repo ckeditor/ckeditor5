@@ -3,7 +3,107 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+
 .ck.ck-input-color {
+	& > .ck.ck-input-text {
+		[dir="ltr"] & {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		[dir="rtl"] & {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+
+		/* Make sure the focused input is always on top of the dropdown button so its
+		   outline and border are never cropped (also when the input is read-only). */
+		&:focus {
+			z-index: 0;
+		}
+	}
+
+	& > .ck.ck-dropdown {
+		& > .ck.ck-button.ck-input-color__button {
+			padding: 0;
+			/* Resolving issue with misaligned buttons on Safari (see #10589) */
+			display: flex;
+
+			[dir="ltr"] & {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+
+				&:not(:focus) {
+					border-left: 1px solid transparent;
+				}
+			}
+
+			/* stylelint-disable-next-line no-descending-specificity */
+			[dir="rtl"] & {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+
+				&:not(:focus) {
+					border-right: 1px solid transparent;
+				}
+			}
+
+			&.ck-disabled {
+				background: var(--ck-color-input-disabled-background);
+			}
+
+			& > .ck.ck-input-color__button__preview {
+				border-radius: var(--ck-rounded-corners-radius);
+				width: 20px;
+				height: 20px;
+				border: 1px solid var(--ck-color-input-border);
+				position: relative;
+				overflow: hidden;
+
+				& > .ck.ck-input-color__button__preview__no-color-indicator {
+					top: -30%;
+					left: 50%;
+					height: 150%;
+					width: 8%;
+					background: hsl(0, 100%, 50%);
+					border-radius: 2px;
+					transform: rotate(45deg);
+					transform-origin: 50%;
+					position: absolute;
+					display: block;
+				}
+			}
+		}
+	}
+
+	& .ck.ck-input-color__remove-color {
+		width: 100%;
+		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
+
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		&:not(:focus) {
+			border-bottom: 1px solid var(--ck-color-input-border);
+		}
+
+		[dir="ltr"] & {
+			border-top-right-radius: 0;
+		}
+
+		[dir="rtl"] & {
+			border-top-left-radius: 0;
+		}
+
+		& .ck.ck-icon {
+			margin-right: var(--ck-spacing-standard);
+
+			[dir="rtl"] & {
+				margin-right: 0;
+				margin-left: var(--ck-spacing-standard);
+			}
+		}
+	}
 	width: 100%;
 	display: flex;
 	flex-direction: row-reverse;
@@ -19,21 +119,6 @@
 		/* This dropdown has no arrow but a color preview instead. */
 		& > .ck-input-color__button .ck-dropdown__arrow {
 			display: none;
-		}
-	}
-
-	& .ck.ck-input-color__button {
-		/* Resolving issue with misaligned buttons on Safari (see #10589) */
-		display: flex;
-
-		& .ck.ck-input-color__button__preview {
-			position: relative;
-			overflow: hidden;
-
-			& > .ck.ck-input-color__button__preview__no-color-indicator {
-				position: absolute;
-				display: block;
-			}
 		}
 	}
 }

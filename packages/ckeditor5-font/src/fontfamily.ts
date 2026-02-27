@@ -7,7 +7,7 @@
  * @module font/fontfamily
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
 import { FontFamilyUI } from './fontfamily/fontfamilyui.js';
 

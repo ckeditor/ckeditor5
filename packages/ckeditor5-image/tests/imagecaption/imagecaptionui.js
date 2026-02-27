@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { IconCaption } from 'ckeditor5/src/icons.js';
+import { IconCaption } from '@ckeditor/ckeditor5-icons';
 
 import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';
 import { ImageCaptionUI } from '../../src/imagecaption/imagecaptionui.js';

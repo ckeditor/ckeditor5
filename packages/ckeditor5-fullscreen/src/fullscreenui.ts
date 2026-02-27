@@ -7,10 +7,10 @@
  * @module fullscreen/fullscreenui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import { IconFullscreenEnter, IconFullscreenLeave } from 'ckeditor5/src/icons.js';
-import { env } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { IconFullscreenEnter, IconFullscreenLeave } from '@ckeditor/ckeditor5-icons';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 import { FullscreenEditing } from './fullscreenediting.js';
 import '../theme/fullscreen.css';

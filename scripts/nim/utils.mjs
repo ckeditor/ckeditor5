@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_INDEX } from '../constants.mjs';
 
-const tsconfig = upath.resolve( CKEDITOR5_MAIN_PACKAGE_PATH, 'tsconfig.dist.json' );
+const tsconfig = upath.resolve( CKEDITOR5_MAIN_PACKAGE_PATH, 'tsconfig.build.json' );
 const banner = upath.resolve( CKEDITOR5_ROOT_PATH, 'scripts/nim/banner.mjs' );
 
 export function dist( path ) {
@@ -23,6 +23,7 @@ export function initializeCKEditor5NpmBuild( overrides = {} ) {
 		banner,
 		sourceMap: true,
 		external: [],
+		declarations: true,
 
 		/**
 		 * Because this build runs first, it cleans up the old output folder
@@ -70,7 +71,8 @@ export async function generateCKEditor5PackageBuild( packagePath, overrides = {}
 	return build( {
 		input: 'src/index.ts',
 		output: upath.resolve( packagePath, 'dist/index.js' ),
-		tsconfig: 'tsconfig.dist.json',
+		tsconfig: 'tsconfig.build.json',
+		declarations: true,
 		banner,
 		external: [
 			'ckeditor5',

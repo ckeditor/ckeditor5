@@ -16,9 +16,9 @@ import type {
 	ViewElement,
 	ModelPostFixer,
 	Model
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
@@ -86,9 +86,9 @@ export class TableElementSupport extends Plugin {
 			schema.extend( 'table', {
 				allowAttributes: [
 					'htmlTableAttributes',
-					// Figure, thead and tbody elements don't have model counterparts.
+					// Figure, thead, tfoot and tbody elements don't have model counterparts.
 					// We will be preserving attributes on table element using these attribute keys.
-					'htmlFigureAttributes', 'htmlTheadAttributes', 'htmlTbodyAttributes'
+					'htmlFigureAttributes', 'htmlTheadAttributes', 'htmlTbodyAttributes', 'htmlTfootAttributes'
 				]
 			} );
 
@@ -103,7 +103,7 @@ export class TableElementSupport extends Plugin {
 }
 
 /**
- * Creates a model post-fixer for thead and tbody GHS related attributes.
+ * Creates a model post-fixer for thead, tbody and tfoot GHS related attributes.
  */
 function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): ModelPostFixer {
 	return writer => {
@@ -111,21 +111,36 @@ function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): Mod
 		let wasFixed = false;
 
 		for ( const change of changes ) {
-			if ( change.type != 'attribute' || change.attributeKey != 'headingRows' ) {
+			if (
+				change.type != 'attribute' ||
+				( change.attributeKey != 'headingRows' && change.attributeKey != 'footerRows' )
+			) {
 				continue;
 			}
 
 			const table = change.range.start.nodeAfter as ModelElement;
 			const hasTHeadAttributes = table.getAttribute( 'htmlTheadAttributes' );
 			const hasTBodyAttributes = table.getAttribute( 'htmlTbodyAttributes' );
+			const hasTFootAttributes = table.getAttribute( 'htmlTfootAttributes' );
 
-			if ( hasTHeadAttributes && !change.attributeNewValue ) {
+			if ( hasTHeadAttributes && change.attributeKey === 'headingRows' && !change.attributeNewValue ) {
 				writer.removeAttribute( 'htmlTheadAttributes', table );
 				wasFixed = true;
 			}
-			else if ( hasTBodyAttributes && change.attributeNewValue == tableUtils.getRows( table ) ) {
-				writer.removeAttribute( 'htmlTbodyAttributes', table );
+
+			if ( hasTFootAttributes && change.attributeKey === 'footerRows' && !change.attributeNewValue ) {
+				writer.removeAttribute( 'htmlTfootAttributes', table );
 				wasFixed = true;
+			}
+
+			if ( hasTBodyAttributes ) {
+				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+				const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+
+				if ( headingRows + footerRows == tableUtils.getRows( table ) ) {
+					writer.removeAttribute( 'htmlTbodyAttributes', table );
+					wasFixed = true;
+				}
 			}
 		}
 
@@ -156,6 +171,10 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
 					preserveElementAttributes( childNode, 'htmlTheadAttributes' );
+				}
+
+				if ( childNode.is( 'element', 'tfoot' ) ) {
+					preserveElementAttributes( childNode, 'htmlTfootAttributes' );
 				}
 
 				if ( childNode.is( 'element', 'tbody' ) ) {
@@ -210,6 +229,7 @@ function modelToViewTableAttributeConverter() {
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 		addAttributeConversionDispatcherHandler( 'thead', 'htmlTheadAttributes' );
 		addAttributeConversionDispatcherHandler( 'tbody', 'htmlTbodyAttributes' );
+		addAttributeConversionDispatcherHandler( 'tfoot', 'htmlTfootAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {

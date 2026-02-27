@@ -7,7 +7,7 @@
  * @module style/style
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { StyleUI } from './styleui.js';
 import { StyleEditing } from './styleediting.js';

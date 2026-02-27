@@ -3,10 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* See ckeditor/ckeditor5#936. */
-.ck.ck-placeholder,
-.ck .ck-placeholder {
+
+.ck.ck-placeholder, .ck .ck-placeholder {
 	position: relative;
+
+	@media (forced-colors: active) {
+		/*
+		 * This is needed for Edge on Windows to use the right color for the placeholder content (::before).
+		 * See https://github.com/ckeditor/ckeditor5/issues/14907.
+		 */
+		forced-color-adjust: preserve-parent-color;
+	}
 
 	&::before {
 		position: absolute;
@@ -14,8 +21,28 @@
 		right: 0;
 		content: attr(data-placeholder);
 
+		cursor: text;
+
 		/* See ckeditor/ckeditor5#469. */
 		pointer-events: none;
+
+		@media (forced-colors: none) {
+			color: var(--ck-color-engine-placeholder-text);
+		}
+
+		@media (forced-colors: active) {
+			/*
+			 * In the high contrast mode there is no telling between regular and placeholder text. Using
+			 * italic text to address that issue. See https://github.com/ckeditor/ckeditor5/issues/14907.
+			 */
+			font-style: italic;
+
+			/*
+			 * Without this margin, the caret will not show up and blink when the user puts the selection
+			 * in the placeholder (Edge on Windows). See https://github.com/ckeditor/ckeditor5/issues/14907.
+			 */
+			margin-left: 1px;
+		}
 	}
 }
 
@@ -25,7 +52,6 @@
 		display: none;
 	}
 }
-
 /*
  * Rules for the `ck-placeholder` are loaded before the rules for `ck-reset_all` in the base CKEditor 5 DLL build.
  * This fix overwrites the incorrectly set `position: static` from `ck-reset_all`.

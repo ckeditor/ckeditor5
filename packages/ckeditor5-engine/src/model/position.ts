@@ -1035,7 +1035,7 @@ export class ModelPosition extends ModelTypeCheckable {
 // Proper overload would interfere with that.
 ModelPosition.prototype.is = function( type: string ): boolean {
 	return type === 'position' || type === 'model:position';
-};
+} as any;
 
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.

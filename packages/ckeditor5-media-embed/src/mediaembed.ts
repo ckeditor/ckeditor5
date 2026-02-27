@@ -7,8 +7,8 @@
  * @module media-embed/mediaembed
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { Widget } from 'ckeditor5/src/widget.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { MediaEmbedEditing } from './mediaembedediting.js';
 import { AutoMediaEmbed } from './automediaembed.js';

@@ -18,7 +18,6 @@ import { TableLayout } from '../../src/tablelayout.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
 import { TableCellPropertiesUI } from '../../src/tablecellproperties/tablecellpropertiesui.js';
-import { TableCellPropertiesUIExperimental } from '../../src/tablecellproperties/tablecellpropertiesuiexperimental.js';
 
 import { TableCellPropertiesView } from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
 import { defaultColors } from '../../src/utils/ui/table-properties.js';
@@ -47,28 +46,20 @@ describe( 'table cell properties', () => {
 			return editor.destroy();
 		} );
 
-		async function initEditor( { experimental } = {} ) {
+		async function initEditor() {
 			await editor?.destroy();
-
-			const PropertiesUIPlugin = experimental ? TableCellPropertiesUIExperimental : TableCellPropertiesUI;
 
 			editor = await ClassicTestEditor
 				.create( editorElement, {
 					plugins: [
 						Table, TableCellPropertiesEditing,
-						PropertiesUIPlugin, TableCellWidthEditing,
+						TableCellPropertiesUI, TableCellWidthEditing,
 						Paragraph, Undo, ClipboardPipeline
 					],
-					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
-					...experimental ? {
-						experimentalFlags: {
-							useExtendedTableBlockAlignment: true,
-							tableCellTypeSupport: true
-						}
-					} : {}
+					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
 				} );
 
-			tableCellPropertiesUI = editor.plugins.get( PropertiesUIPlugin );
+			tableCellPropertiesUI = editor.plugins.get( TableCellPropertiesUI );
 			tableCellPropertiesButton = editor.ui.componentFactory.create( 'tableCellProperties' );
 			contextualBalloon = editor.plugins.get( ContextualBalloon );
 			tableCellPropertiesView = tableCellPropertiesUI.view;
@@ -339,13 +330,7 @@ describe( 'table cell properties', () => {
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
-			it( 'should bind cellTypeDropdown enabled state to tableCellType command [experimental]', async () => {
-				await initEditor( { experimental: true } );
-
-				editor.model.change( writer => {
-					writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
-				} );
-
+			it( 'should bind cellTypeDropdown enabled state to tableCellType command', async () => {
 				const command = editor.commands.get( 'tableCellType' );
 
 				tableCellPropertiesButton.fire( 'execute' );
@@ -589,19 +574,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( '#cellType', () => {
-					it( 'should affect the editor state [experimental]', async () => {
-						await initEditor( { experimental: true } );
-
-						batch = editor.model.createBatch();
-
-						tableCellPropertiesUI._undoStepBatch = batch;
-						tableCellPropertiesUI._showView();
-						tableCellPropertiesView = tableCellPropertiesUI.view;
-
-						editor.model.change( writer => {
-							writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
-						} );
-
+					it( 'should affect the editor state', () => {
 						const spy = testUtils.sinon.stub( editor, 'execute' );
 
 						tableCellPropertiesView.cellType = 'header';
@@ -767,13 +740,7 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 
-			it( 'should handle missing commands gracefully [experimental]', async () => {
-				await initEditor( { experimental: true } );
-
-				editor.model.change( writer => {
-					writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
-				} );
-
+			it( 'should handle missing commands gracefully', () => {
 				const stub = testUtils.sinon.stub( editor.commands, 'get' );
 
 				stub.callThrough();

@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-media-form {
 	display: flex;
@@ -25,7 +24,7 @@
 		width: 100%;
 	}
 
-	@mixin ck-media-phone {
+	@media screen and (max-width: 600px) {
 		flex-wrap: wrap;
 
 		& .ck-labeled-field-view {

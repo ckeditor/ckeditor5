@@ -7,9 +7,9 @@
  * @module horizontal-line/horizontallineui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconHorizontalLine } from 'ckeditor5/src/icons.js';
-import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconHorizontalLine } from '@ckeditor/ckeditor5-icons';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { type HorizontalLineCommand } from './horizontallinecommand.js';
 

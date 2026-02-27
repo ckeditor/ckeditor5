@@ -8,7 +8,7 @@ import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HtmlEmbedUI } from '../src/htmlembedui.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { IconHtml } from 'ckeditor5/src/icons.js';
+import { IconHtml } from '@ckeditor/ckeditor5-icons';
 
 describe( 'HtmlEmbedUI', () => {
 	let element, editor, button;

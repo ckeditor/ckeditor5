@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconContentLock } from 'ckeditor5/src/icons.js';
+import { IconContentLock } from '@ckeditor/ckeditor5-icons';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';

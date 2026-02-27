@@ -3,8 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+
 .ck.ck-form__row {
+	/* Ignore labels that work as fieldset legends */
+	& > *:not(.ck-label) {
+		& + * {
+			margin-inline-start: var(--ck-spacing-large);
+		}
+	}
+
+	& > .ck-label {
+		width: 100%;
+		min-width: 100%;
+	}
+
 	&.ck-table-form__action-row {
+		margin-top: var(--ck-spacing-large);
+		justify-content: flex-end;
+
 		& .ck-button-save,
 		& .ck-button-cancel {
 			justify-content: center;

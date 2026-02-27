@@ -19,7 +19,7 @@
 	],
 	"sitemap": {
 		"hostname": "https://ckeditor5.github.io/docs/nightly/",
-		"excluded":  [
+		"excluded": [
 			"snippets/examples/bootstrap-ui.html"
 		]
 	},
@@ -76,6 +76,7 @@
 		"api/module_table_table-TABLE.html": "api/table.html",
 		"api/module_ui_labeledview_labeledview-LabeledView.html": "api/module_ui_labeledfield_labeledfieldview-LabeledFieldView.html",
 		"api/plugins.html": "framework/tutorials/crash-course/plugins.html",
+		"api/theme-lark.html": "framework/deep-dive/ui/theme-customization.html",
 		"api/video.html": "api/media-embed.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/custom-builds.html": "getting-started/legacy/installation-methods/quick-start.html",
@@ -287,6 +288,7 @@
 		"framework/plugins/package-generator/javascript-package.html": "framework/develpment-tools/package-generator/javascript-package.html",
 		"framework/plugins/package-generator/typescript-package.html": "framework/develpment-tools/package-generator/typescript-package.html",
 		"framework/quick-start.html": "framework/index.html",
+		"getting-started/index.html#legacy-installation-methods": "updating/nim-migration/migration-to-new-installation-methods.html",
 		"getting-started/advanced/dll-builds.html": "getting-started/legacy/installation-methods/quick-start.html",
 		"getting-started/advanced/integrating-from-source-vite.html": "getting-started/legacy/installation-methods/quick-start.html",
 		"getting-started/installation/angular.html": "getting-started/installation/cloud/angular.html",
@@ -300,12 +302,30 @@
 		"getting-started/installation/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
 		"getting-started/installation/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
 		"getting-started/legacy/advanced/advanced-setup.html": "getting-started/legacy/installation-methods/quick-start.html",
+		"getting-started/legacy/advanced/content-styles.html": "getting-started/setup/css.html",
+		"getting-started/legacy/advanced/using-two-editors.html": "updating/nim-migration/migration-to-new-installation-methods.html",
+		"getting-started/legacy/advanced/alternative-setups/dll-builds.html": "updating/nim-migration/dll-builds.html",
+		"getting-started/legacy/advanced/alternative-setups/dll-builds-collaboration-features.html": "updating/nim-migration/dll-builds.html",
+		"getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack.html": "updating/nim-migration/migration-to-new-installation-methods.html#deprecation-of-the-custom-builds",
+		"getting-started/legacy/advanced/alternative-setups/integrating-from-source-vite.html": "getting-started/installation/self-hosted/quick-start.html#installing-ckeditor-5-using-npm",
+		"getting-started/legacy/installation-methods/api-and-events.html": "framework/how-tos.html#editors-api",
+		"getting-started/legacy/installation-methods/extending-features.html": "getting-started/setup/configuration.html",
+		"getting-started/legacy/installation-methods/predefined-builds.html": "updating/nim-migration/migration-to-new-installation-methods.html#deprecation-of-the-predefined-builds",
+		"getting-started/legacy/installation-methods/quick-start-other.html": "updating/nim-migration/customized-builds.html",
+		"getting-started/legacy/installation-methods/quick-start.html": "updating/nim-migration/migration-to-new-installation-methods.html",
+		"getting-started/legacy/legacy-imports.html": "updating/nim-migration/migrating-imports.html",
+		"getting-started/legacy/legacy-integrations/angular.html": "getting-started/installation/cloud/angular.html",
+		"getting-started/legacy/legacy-integrations/overview.html": "updating/nim-migration/migration-to-new-installation-methods.html",
+		"getting-started/legacy/legacy-integrations/react.html": "getting-started/installation/cloud/react/react-default-cdn.html",
+		"getting-started/legacy/legacy-integrations/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
+		"getting-started/legacy/legacy-integrations/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
+		"getting-started/legacy/working-with-typescript.html": "getting-started/setup/typescript-support.html",
 		"getting-started/setup/license-key-and-activation.html": "getting-started/licensing/license-key-and-activation.html",
 		"getting-started/setup/managing-ckeditor-logo.html": "getting-started/licensing/managing-ckeditor-logo.html",
 		"installation/advanced/advanced-setup.html": "installation/legacy-getting-started/quick-start-other.html",
 		"installation/advanced/alternative-setups/custom-builds.html": "getting-started/legacy/installation-methods/quick-start.html",
-		"installation/advanced/alternative-setups/dll-builds-collaboration-features.html": "getting-started/legacy/advanced/alternative-setups/dll-builds-collaboration-features.html",
-		"installation/advanced/alternative-setups/dll-builds.html": "getting-started/legacy/advanced/alternative-setups/dll-builds.html",
+		"installation/advanced/alternative-setups/dll-builds-collaboration-features.html": "updating/nim-migration/dll-builds.html",
+		"installation/advanced/alternative-setups/dll-builds.html": "updating/nim-migration/dll-builds.html",
 		"installation/advanced/alternative-setups/integrating-from-source-vite.html": "getting-started/legacy/advanced/alternative-setups/integrating-from-source-vite.html",
 		"installation/advanced/alternative-setups/integrating-from-source-webpack.html": "getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"installation/advanced/alternative-setups/integrating-from-source.html": "getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack.html",
@@ -401,17 +421,33 @@
 		"updating/migration-from-ckeditor-4.html#configuration-options-compatibility-table": "updating/ckeditor4/ckeditor4-configuration-compatibility.html",
 		"updating/migration-from-ckeditor-4.html#migration-from-ckeditor-4-faq": "updating/ckeditor4/ckeditor4-troubleshooting.html",
 		"updating/migration-from-ckeditor-4.html#plugins-compatibility-table": "updating/ckeditor4/ckeditor4-plugin-compatibility.html",
-		"updating/migration-to-25.html": "updating/guides/update-to-25.html",
-		"updating/migration-to-26.html": "updating/guides/update-to-26.html",
-		"updating/migration-to-27.html": "updating/guides/update-to-27.html",
-		"updating/migration-to-28.html": "updating/guides/update-to-28.html",
-		"updating/migration-to-29.html": "updating/guides/update-to-29.html",
-		"updating/migration-to-30.html": "updating/guides/update-to-30.html",
-		"updating/migration-to-31.html": "updating/guides/update-to-31.html",
-		"updating/migration-to-32.html": "updating/guides/update-to-32.html",
-		"updating/migration-to-33.html": "updating/guides/update-to-33.html",
-		"updating/migration-to-34.html": "updating/guides/update-to-34.html",
-		"updating/migration-to-35.html": "updating/guides/update-to-35.html",
+		"updating/guides/update-to-25": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-26": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-27": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-28": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-29": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-30": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-31": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-32": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-33": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-34": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-35": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-36": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-37": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-38": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-39": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-40": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-25.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-26.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-27.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-28.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-29.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-30.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-31.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-32.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-33.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-34.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-35.html": "updating/guides/updating-from-older-versions.html",
 		"updating/migration-to-cdn/vanilla-js.html": "updating/migration/vanilla-js.html",
 		"updating/release-process.html": "updating/versioning-policy.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html"
@@ -421,7 +457,7 @@
 		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"hooks": {
-		"beforeHexo":[
+		"beforeHexo": [
 			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
 		]
 	},
@@ -539,41 +575,6 @@
 					"id": "licensing",
 					"slug": "licensing",
 					"order": 50
-				},
-				{
-					"name": "Legacy installation methods",
-					"id": "legacy",
-					"slug": "legacy",
-					"order": 60,
-					"folded": true,
-					"categories": [
-						{
-							"name": "Basics",
-							"id": "installation-methods",
-							"slug": "installation-methods",
-							"order": 70
-						},
-						{
-							"name": "Advanced concepts",
-							"id": "advanced",
-							"slug": "advanced",
-							"order": 80,
-							"categories": [
-								{
-									"name": "Alternative setups",
-									"id": "alternative-setups",
-									"slug": "alternative-setups",
-									"order": 90
-								}
-							]
-						},
-						{
-							"name": "Integrations",
-							"id": "legacy-integrations",
-							"slug": "legacy-integrations",
-							"order": 90
-						}
-					]
 				}
 			]
 		},
@@ -590,7 +591,7 @@
 					"badges": [
 						"premium"
 					],
-					"categories":[
+					"categories": [
 						{
 							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",

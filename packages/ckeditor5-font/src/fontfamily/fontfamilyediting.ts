@@ -7,8 +7,8 @@
  * @module font/fontfamily/fontfamilyediting
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import type { ViewElement } from 'ckeditor5/src/engine.js';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { FontFamilyCommand } from './fontfamilycommand.js';
 import { normalizeOptions } from './utils.js';

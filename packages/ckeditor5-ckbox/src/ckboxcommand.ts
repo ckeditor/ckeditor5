@@ -7,9 +7,9 @@
  * @module ckbox/ckboxcommand
  */
 
-import type { ModelWriter } from 'ckeditor5/src/engine.js';
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { createElement, toMap } from 'ckeditor5/src/utils.js';
+import type { ModelWriter } from '@ckeditor/ckeditor5-engine';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { createElement, toMap } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	CKBoxAssetDefinition,

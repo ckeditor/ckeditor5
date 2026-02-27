@@ -2,30 +2,8 @@
   "name": "@ckeditor/ckeditor5-utils",
   "version": "47.5.0",
   "description": "Miscellaneous utilities used by CKEditor 5.",
-  "keywords": [
-    "ckeditor",
-    "ckeditor5",
-    "ckeditor 5",
-    "ckeditor5-lib",
-    "ckeditor5-dll"
-  ],
-  "type": "module",
-  "main": "src/index.ts",
-  "dependencies": {
-    "@ckeditor/ckeditor5-ui": "workspace:*",
-    "es-toolkit": "1.39.5"
-  },
-  "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
-    "@ckeditor/ckeditor5-core": "workspace:*",
-    "@ckeditor/ckeditor5-engine": "workspace:*",
-    "typescript": "5.3.3"
-  },
-  "depcheckIgnore": [
-    "typescript"
-  ],
-  "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",
+  "author": "CKSource (http://cksource.com/)",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -33,16 +11,42 @@
     "url": "https://github.com/ckeditor/ckeditor5.git",
     "directory": "packages/ckeditor5-utils"
   },
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-lib"
+  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./dist/*": "./src/*",
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": "./dist/index.js",
+      "./dist/*": "./dist/*",
+      "./package.json": "./package.json"
+    }
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-ui": "workspace:*",
+    "es-toolkit": "1.39.5"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
+    "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*"
+  },
+  "scripts": {
+    "build": "node ../../scripts/nim/build-package.mjs"
+  },
   "files": [
     "dist",
-    "lang",
-    "src/**/*.js",
-    "src/**/*.d.ts",
-    "theme",
     "CHANGELOG.md"
-  ],
-  "scripts": {
-    "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  ]
 }

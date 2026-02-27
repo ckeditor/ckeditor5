@@ -7,7 +7,7 @@
  * @module table/utils/table-properties
  */
 
-import type { BoxStyleSides } from 'ckeditor5/src/engine.js';
+import type { BoxStyleSides } from '@ckeditor/ckeditor5-engine';
 import { isObject } from 'es-toolkit/compat';
 
 /**

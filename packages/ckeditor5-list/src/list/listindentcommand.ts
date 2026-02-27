@@ -7,8 +7,8 @@
  * @module list/list/listindentcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 import {
 	expandListBlocksToCompleteItems,

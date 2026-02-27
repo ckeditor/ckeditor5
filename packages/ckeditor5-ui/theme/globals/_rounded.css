@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+
+:root {
+	/**
+	* Default border-radius value.
+	*/
+	--ck-border-radius: 2px;
+
+	/**
+	* `.ck-rounded-corners` is an opt-in switch class used on the UI root.
+	* By default, `--ck-rounded-corners-radius` is `0` (square corners).
+	* When the switch class is present, it maps to `--ck-border-radius`.
+	*
+	* Component usage:
+	* - Use `border-radius: var(--ck-rounded-corners-radius);` on elements that
+	*   should respect the global rounded-corners setting.
+	* - If a component needs a custom radius, override `--ck-border-radius` locally
+	*   and keep using `--ck-rounded-corners-radius`.
+	* - For per-corner shapes, use the variable-based radius first and then override
+	*   specific corners with `0` (or another value).
+	*/
+	--ck-rounded-corners-radius: 0;
+}
+
+.ck-rounded-corners {
+	--ck-rounded-corners-radius: var(--ck-border-radius);
+}

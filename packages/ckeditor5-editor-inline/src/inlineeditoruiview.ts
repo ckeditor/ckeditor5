@@ -13,15 +13,15 @@ import {
 	InlineEditableUIView,
 	MenuBarView,
 	ToolbarView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	Rect,
 	ResizeObserver,
 	toUnit,
 	type PositioningFunction,
 	type Locale
-} from 'ckeditor5/src/utils.js';
-import type { EditingView } from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-utils';
+import type { EditingView } from '@ckeditor/ckeditor5-engine';
 
 import '../theme/inlineeditor.css';
 

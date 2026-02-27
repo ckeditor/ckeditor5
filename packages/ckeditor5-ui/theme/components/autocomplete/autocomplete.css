@@ -4,19 +4,35 @@
  */
 
 .ck.ck-autocomplete {
-	position: relative;
-
 	& > .ck-search__results {
+		border-radius: var(--ck-rounded-corners-radius);
+		box-shadow: var(--ck-drop-shadow), 0 0;
+		max-height: 200px;
+		overflow-y: auto;
+		background: var(--ck-color-base-background);
+		border: 1px solid var(--ck-color-dropdown-panel-border);
+		min-width: auto;
 		position: absolute;
-		z-index: var(--ck-z-panel);
 
 		&.ck-search__results_n {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+
+			/* Prevent duplicated borders between the input and the results pane. */
+			margin-bottom: -1px;
 			bottom: 100%;
 		}
 
 		&.ck-search__results_s {
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+
+			/* Prevent duplicated borders between the input and the results pane. */
+			margin-top: -1px;
 			top: 100%;
 			bottom: auto;
 		}
+		z-index: var(--ck-z-panel)
 	}
+	position: relative
 }

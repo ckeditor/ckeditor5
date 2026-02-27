@@ -5,7 +5,7 @@
 			"className": "SpecialCharacters",
 			"description": "Allows for inserting special characters via a dropdown. This is the core part of the feature. Add plugins like special characters essentials or special characters currency to fill it with some characters.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharacters.js",
+			"path": "src/specialcharacters.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
@@ -19,7 +19,7 @@
 			"className": "SpecialCharactersEssentials",
 			"description": "Adds a basic set with the most popular characters to the special characters feature.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharactersessentials.js",
+			"path": "src/specialcharactersessentials.ts",
 			"requires": [
 				"SpecialCharacters"
 			]
@@ -29,7 +29,7 @@
 			"className": "SpecialCharactersArrows",
 			"description": "Adds the arrows category and signs to the special characters feature.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharactersarrows.js",
+			"path": "src/specialcharactersarrows.ts",
 			"requires": [
 				"SpecialCharacters"
 			]
@@ -39,7 +39,7 @@
 			"className": "SpecialCharactersCurrency",
 			"description": "Adds the currency category and signs to the special characters feature.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharacterscurrency.js",
+			"path": "src/specialcharacterscurrency.ts",
 			"requires": [
 				"SpecialCharacters"
 			]
@@ -49,7 +49,7 @@
 			"className": "SpecialCharactersLatin",
 			"description": "Adds the Latin category and characters to the special characters feature.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharacterslatin.js",
+			"path": "src/specialcharacterslatin.ts",
 			"requires": [
 				"SpecialCharacters"
 			]
@@ -59,7 +59,7 @@
 			"className": "SpecialCharactersMathematical",
 			"description": "Adds the mathematical category and symbols to the special characters feature.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharactersmathematical.js",
+			"path": "src/specialcharactersmathematical.ts",
 			"requires": [
 				"SpecialCharacters"
 			]
@@ -69,7 +69,7 @@
 			"className": "SpecialCharactersText",
 			"description": "Adds the text category and characters to the special characters feature.",
 			"docs": "features/special-characters.html",
-			"path": "src/specialcharacterstext.js",
+			"path": "src/specialcharacterstext.ts",
 			"requires": [
 				"SpecialCharacters"
 			]

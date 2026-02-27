@@ -17,9 +17,9 @@ import {
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import type {
 	Differ,
@@ -29,9 +29,9 @@ import type {
 	ModelElement,
 	ViewElement,
 	ViewNode
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
+import { MouseEventsObserver } from '../tablemouse/mouseeventsobserver.js';
 import { TableEditing } from '../tableediting.js';
 import { TableUtils } from '../tableutils.js';
 import { TableWalker } from '../tablewalker.js';

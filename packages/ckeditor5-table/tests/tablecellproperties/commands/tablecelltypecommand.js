@@ -16,10 +16,7 @@ describe( 'TableCellTypeCommand', () => {
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableCellPropertiesEditing ],
-			experimentalFlags: {
-				tableCellTypeSupport: true
-			}
+			plugins: [ Paragraph, TableCellPropertiesEditing ]
 		} );
 
 		model = editor.model;
@@ -374,6 +371,215 @@ describe( 'TableCellTypeCommand', () => {
 					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, '11' ]
 				], { headingColumns: 1, headingRows: 1 } ) );
+			} );
+		} );
+
+		describe( 'integration with table footers', () => {
+			it( 'should increment headingRows up to the footer', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', isSelected: true } ],
+					[ { contents: '20' } ]
+				], { headingRows: 1, footerRows: 1 } ) );
+
+				command.execute( { value: 'header' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20' } ]
+				], { headingRows: 2, footerRows: 1 } ) );
+			} );
+
+			it( 'should not increment headingRows to overlap with footerRows', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ],
+					[ { contents: '30', isSelected: true } ]
+				], { headingRows: 3, footerRows: 1 } ) );
+
+				command.execute( { value: 'header' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ],
+					[ { contents: '30', tableCellType: 'header' } ]
+				], { headingRows: 3, headingColumns: 1, footerRows: 1 } ) );
+			} );
+		} );
+	} );
+} );
+
+describe( 'TableCellTypeCommand with scopedHeaders', () => {
+	let editor, model, command;
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableCellPropertiesEditing ],
+			table: {
+				tableCellProperties: {
+					scopedHeaders: true
+				}
+			}
+		} );
+
+		model = editor.model;
+		command = new TableCellTypeCommand( editor );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	describe( 'value', () => {
+		it( 'should be "header-row" if selected table cell has tableCellType="header-row"', () => {
+			_setModelData( model, modelTable( [ [ { tableCellType: 'header-row', contents: '[]foo' } ] ] ) );
+			expect( command.value ).to.equal( 'header-row' );
+		} );
+
+		it( 'should be "header-column" if selected table cell has tableCellType="header-column"', () => {
+			_setModelData( model, modelTable( [ [ { tableCellType: 'header-column', contents: '[]foo' } ] ] ) );
+			expect( command.value ).to.equal( 'header-column' );
+		} );
+	} );
+
+	describe( 'execute()', () => {
+		it( 'should change cell type to "header-row"', () => {
+			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
+
+			command.execute( { value: 'header-row' } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+				[ [ { tableCellType: 'header-row', contents: 'foo' } ] ],
+				{ headingRows: 1 }
+			) );
+		} );
+
+		it( 'should change cell type to "header-column"', () => {
+			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
+
+			command.execute( { value: 'header-column' } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+				[ [ { tableCellType: 'header-column', contents: 'foo' } ] ],
+				{ headingRows: 1 }
+			) );
+		} );
+
+		it( 'should change cell type to "header-column" in a multi-column table', () => {
+			_setModelData( model, modelTable( [ [ '[]foo', 'bar' ] ] ) );
+
+			command.execute( { value: 'header-column' } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+				[ [ { tableCellType: 'header-column', contents: 'foo' }, 'bar' ] ],
+				{ headingColumns: 1 }
+			) );
+		} );
+
+		it( 'should change cell type to "header-row" in a multi-row table', () => {
+			_setModelData( model, modelTable( [ [ '[]foo' ], [ 'bar' ] ] ) );
+
+			command.execute( { value: 'header-row' } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+				[ [ { tableCellType: 'header-row', contents: 'foo' } ], [ 'bar' ] ],
+				{ headingRows: 1 }
+			) );
+		} );
+
+		it( 'should change cell type from "header-row" to "data"', () => {
+			_setModelData( model, modelTable( [ [ { tableCellType: 'header-row', contents: '[]foo' } ] ] ) );
+
+			command.execute( { value: 'data' } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [ [ 'foo' ] ] ) );
+		} );
+
+		it( 'should change cell type from "header-column" to "data"', () => {
+			_setModelData( model, modelTable( [ [ { tableCellType: 'header-column', contents: '[]foo' } ] ] ) );
+
+			command.execute( { value: 'data' } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [ [ 'foo' ] ] ) );
+		} );
+
+		describe( 'intersection of heading rows and columns', () => {
+			it( 'should change intersection cell to "header-row"', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '[]00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				command.execute( { value: 'header-row' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header-row' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+			} );
+
+			it( 'should change intersection cell to "header-column"', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '[]00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				command.execute( { value: 'header-column' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+			} );
+
+			it( 'should change cell in heading row (not intersection) to "header-column"', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '[]01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				command.execute( { value: 'header-column' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header-column' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+			} );
+
+			it( 'should change cell in heading column (not intersection) to "header-row"', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '[]10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				command.execute( { value: 'header-row' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header-row' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+			} );
+
+			it( 'should reset both headingRows and headingColumns when intersection cell is changed to "data"', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '[]00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				command.execute( { value: 'data' } );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				] ) );
 			} );
 		} );
 	} );

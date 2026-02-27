@@ -14,13 +14,13 @@ import {
 	type FocusableView,
 	type ViewCollection,
 	type SearchTextViewSearchEvent
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Locale,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 import { EmojiGridView, type EmojiSearchQueryCallback } from './emojigridview.js';
 import { EmojiCategoriesView } from './emojicategoriesview.js';
 import { EmojiSearchView } from './emojisearchview.js';
