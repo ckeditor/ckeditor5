@@ -12,6 +12,7 @@ import {
 	Collection,
 	CKEditorError,
 	Locale,
+	global,
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
@@ -19,6 +20,8 @@ import { PluginCollection } from './plugincollection.js';
 import { type Editor } from './editor/editor.js';
 import type { LoadedPlugins, PluginConstructor } from './plugin.js';
 import type { EditorConfig } from './editor/editorconfig.js';
+
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -160,11 +163,43 @@ export class Context {
 
 		const languageConfig = this.config.get( 'language' ) || {};
 
-		this.locale = new Locale( {
-			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' ),
-			translations
-		} );
+		if ( !translations && global.window.CKEDITOR_TRANSLATIONS ) {
+			/**
+			 * When translations are not provided directly but available via global.window.CKEDITOR_TRANSLATIONS
+			 * (which can be set by CKEditorTranslationsPlugin during manual tests with --language flag,
+			 * or loaded from CDN translation files), we need to ensure the config.language.ui value is properly set.
+			 *
+			 * When translations are loaded via the global variable, the config.language.ui might be missing
+			 * or incorrect, which can cause issues with utilities that depend on the language configuration
+			 * (e.g., date formatting utilities). To fix this, we check if the configured language has matching
+			 * translations, and if not, fall back to the first available language from the global translations object.
+			 *
+			 * Note: The _translate function from translation-service.ts gets translations from
+			 * global.window.CKEDITOR_TRANSLATIONS when translations injected into Locale are empty.
+			 * Since _translate is called often and has no access to the editor config, this is the better place
+			 * to check if translations will be taken from the global variable and update config.language.ui accordingly.
+			 */
+			const globalTranslations = cloneDeep( global.window.CKEDITOR_TRANSLATIONS );
+			const uiLanguageFromConfig = typeof languageConfig === 'string' ? languageConfig : languageConfig.ui;
+			const hasMatchingTranslations = globalTranslations[ uiLanguageFromConfig! ];
+			const defaultGlobalTranslationsLanguage = Object.keys( globalTranslations )[ 0 ];
+
+			this.locale = new Locale( {
+				uiLanguage: hasMatchingTranslations ? uiLanguageFromConfig : defaultGlobalTranslationsLanguage,
+				contentLanguage: this.config.get( 'language.content' ),
+				translations: globalTranslations
+			} );
+
+			if ( !hasMatchingTranslations && this.config.get( 'language.ui' ) !== defaultGlobalTranslationsLanguage ) {
+				this.config.define( 'language.ui', defaultGlobalTranslationsLanguage );
+			}
+		} else {
+			this.locale = new Locale( {
+				uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
+				contentLanguage: this.config.get( 'language.content' ),
+				translations
+			} );
+		}
 
 		this.t = this.locale.t;
 

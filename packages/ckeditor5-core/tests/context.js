@@ -89,24 +89,44 @@ describe( 'Context', () => {
 		} );
 
 		it( 'is configured with the config.language (UI and the content)', () => {
-			const context = new Context( { language: 'pl' } );
+			const context = new Context( { language: 'pl', translations: { pl: {} } } );
 
 			expect( context.locale.uiLanguage ).to.equal( 'pl' );
 			expect( context.locale.contentLanguage ).to.equal( 'pl' );
 		} );
 
 		it( 'is configured with the config.language (different for UI and the content)', () => {
-			const context = new Context( { language: { ui: 'pl', content: 'ar' } } );
+			const context = new Context( { language: { ui: 'pl', content: 'ar' }, translations: { pl: {} } } );
 
 			expect( context.locale.uiLanguage ).to.equal( 'pl' );
 			expect( context.locale.contentLanguage ).to.equal( 'ar' );
 		} );
 
 		it( 'is configured with the config.language (just the content)', () => {
-			const context = new Context( { language: { content: 'ar' } } );
+			const context = new Context( { language: { content: 'ar' }, translations: { pl: {} } } );
 
 			expect( context.locale.uiLanguage ).to.equal( 'en' );
 			expect( context.locale.contentLanguage ).to.equal( 'ar' );
+		} );
+
+		it( 'is configured with the default config.language (when no translations provided)', () => {
+			const context = new Context( { language: 'pl' } );
+
+			expect( context.locale.uiLanguage ).to.equal( 'en' );
+			expect( context.locale.contentLanguage ).to.equal( 'en' );
+		} );
+
+		it( 'is configured with config.language (when no translations provided and dev-translations are matching)', () => {
+			window.CKEDITOR_TRANSLATIONS = {
+				en: { dictionary: {
+					key: ''
+				},
+				getPluralForm: () => '' }
+			};
+			const context = new Context( { language: { ui: 'en', content: 'en' } } );
+
+			expect( context.locale.uiLanguage ).to.equal( 'en' );
+			expect( context.locale.contentLanguage ).to.equal( 'en' );
 		} );
 
 		it( 'is configured with the config.translations', () => {
