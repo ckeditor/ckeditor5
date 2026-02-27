@@ -36,7 +36,7 @@ The following ordered list styles are available:
 
 Additional numbering style that {@link features/lists#enabling-specific-enumerators needs configuration}:
 
-* arabic-indic numbers (١.)
+* `arabic-indic` numbers (١.)
 
 ### Demo
 
