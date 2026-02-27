@@ -133,25 +133,72 @@
 	& ul,
 	& p,
 	& section,
-	& :where(figure.image, figure.table) figcaption
-	{
+	& :where(figure.image, figure.table) figcaption {
 		background-repeat: no-repeat;
 		padding-top: 15px;
 
-		/* Fix for Multi-root editor
-		https://github.com/ckeditor/ckeditor5/issues/15969 */
-		[dir="ltr"] & {
+		&:where(:not(.ck-widget_selected):not(.ck-widget:hover)) {
+			outline: 1px dashed var(--ck-show-blocks-border-color);
+		}
+	}
+
+	/*
+	 * Support editors where the `dir` attribute is either on the editable itself or on an ancestor wrapper.
+	 * See: https://github.com/ckeditor/ckeditor5/issues/15969.
+	 */
+	&[dir="ltr"],
+	[dir="ltr"] & {
+		& address,
+		& aside,
+		& blockquote,
+		& details,
+		& div:not(.ck-widget, .ck-widget *),
+		& footer,
+		& h1,
+		& h2,
+		& h3,
+		& h4,
+		& h5,
+		& h6,
+		& header,
+		& main,
+		& nav,
+		& pre,
+		& ol,
+		& ul,
+		& p,
+		& section,
+		& :where(figure.image, figure.table) figcaption {
 			background-image: var(--ck-show-blocks-label-ltr);
 			background-position: 1px 1px;
 		}
+	}
 
-		[dir="rtl"] & {
+	&[dir="rtl"],
+	[dir="rtl"] & {
+		& address,
+		& aside,
+		& blockquote,
+		& details,
+		& div:not(.ck-widget, .ck-widget *),
+		& footer,
+		& h1,
+		& h2,
+		& h3,
+		& h4,
+		& h5,
+		& h6,
+		& header,
+		& main,
+		& nav,
+		& pre,
+		& ol,
+		& ul,
+		& p,
+		& section,
+		& :where(figure.image, figure.table) figcaption {
 			background-image: var(--ck-show-blocks-label-rtl);
 			background-position: calc(100% - 1px) 1px;
-		}
-
-		&:not(.ck-widget_selected):not(.ck-widget:hover) {
-			outline: 1px dashed var(--ck-show-blocks-border-color);
 		}
 	}
 }
