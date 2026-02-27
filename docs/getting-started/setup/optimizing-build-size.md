@@ -60,10 +60,11 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 Such imports are neat because they are easily readable and easy to follow. However, these style sheets contain all the styles for all the plugins and features. If you want to reduce the build size, you can import only the core styles alongside the styles for used plugins.
 
-First, import the core styles. They are all needed for the editor to work properly:
+First, import the core styles. They are all needed for the editor to work properly and the order of the imports matters, so make sure to import them in the following order:
 
 ```js
 // Import the core styles.
+import '@ckeditor/ckeditor5-ui/dist/index.css';
 import '@ckeditor/ckeditor5-clipboard/dist/index.css';
 import '@ckeditor/ckeditor5-core/dist/index.css';
 import '@ckeditor/ckeditor5-engine/dist/index.css';
@@ -71,7 +72,6 @@ import '@ckeditor/ckeditor5-enter/dist/index.css';
 import '@ckeditor/ckeditor5-paragraph/dist/index.css';
 import '@ckeditor/ckeditor5-select-all/dist/index.css';
 import '@ckeditor/ckeditor5-typing/dist/index.css';
-import '@ckeditor/ckeditor5-ui/dist/index.css';
 import '@ckeditor/ckeditor5-undo/dist/index.css';
 import '@ckeditor/ckeditor5-upload/dist/index.css';
 import '@ckeditor/ckeditor5-utils/dist/index.css';
