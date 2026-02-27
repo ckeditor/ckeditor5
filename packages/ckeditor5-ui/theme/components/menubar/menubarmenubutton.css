@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_disabled.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_button.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-menu-bar__menu {
 	/*
@@ -21,16 +18,16 @@
 		}
 
 		&.ck-disabled > .ck-button__label {
-			@mixin ck-disabled;
+			opacity: var(--ck-disabled-opacity);
 		}
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			&:not(.ck-button_with-text) {
 				padding-left: var(--ck-spacing-small);
 			}
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			&:not(.ck-button_with-text) {
 				padding-right: var(--ck-spacing-small);
 			}
@@ -40,6 +37,7 @@
 	/*
 	 * Top-level menu buttons only.
 	 */
+	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
 		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
 		min-height: unset;
@@ -73,13 +71,14 @@
 	/*
 	 * Sub-menu buttons.
 	 */
+	/* stylelint-disable-next-line no-descending-specificity */
 	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
 		border-radius: 0;
 
 		& > .ck-menu-bar__menu__button__arrow {
 			width: var(--ck-dropdown-arrow-size);
 
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				transform: rotate(-90deg);
 
 				/* A space to accommodate the triangle. */
@@ -89,7 +88,7 @@
 				margin-right: calc(-1 * var(--ck-spacing-small));
 			}
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				transform: rotate(90deg);
 
 				left: var(--ck-spacing-standard);
@@ -103,7 +102,7 @@
 		}
 
 		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
-			@mixin ck-disabled;
+			opacity: var(--ck-disabled-opacity);
 		}
 	}
 }

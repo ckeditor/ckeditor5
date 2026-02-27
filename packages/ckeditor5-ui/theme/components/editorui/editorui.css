@@ -3,12 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_disabled.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_focus.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_button.css";
-
 :root {
 	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
 }
@@ -16,10 +10,9 @@
 .ck.ck-editor__top {
 	& .ck-sticky-panel {
 		& .ck-sticky-panel__content {
-			@mixin ck-rounded-corners {
-				border-bottom-left-radius: 0;
-				border-bottom-right-radius: 0;
-			}
+			border-radius: var(--ck-rounded-corners-radius);
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
 
 			border: 1px solid var(--ck-color-base-border);
 			border-bottom-width: 0;
@@ -41,11 +34,12 @@
 }
 
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
-	@mixin ck-rounded-corners;
+	border-radius: var(--ck-rounded-corners-radius);
 
 	&.ck-focused {
-		@mixin ck-focus-ring;
-		@mixin ck-box-shadow var(--ck-inner-shadow);
+		outline: none;
+		border: var(--ck-focus-ring);
+		box-shadow: var(--ck-inner-shadow), 0 0;
 	}
 }
 

@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-search-field-view-horizontal-spacing: calc(var(--ck-icon-size) + var(--ck-spacing-medium));
@@ -20,11 +19,11 @@
 			top: 50%;
 			transform: translateY(-50%);
 
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				left: var(--ck-spacing-medium);
 			}
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				right: var(--ck-spacing-medium);
 			}
 		}
@@ -46,11 +45,11 @@
 			& .ck-input {
 				width: 100%;
 
-				@mixin ck-dir ltr {
+				[dir="ltr"] & {
 					padding-left: var(--ck-search-field-view-horizontal-spacing);
 				}
 
-				@mixin ck-dir rtl {
+				[dir="rtl"] & {
 					&:not(.ck-input-text_empty) {
 						padding-left: var(--ck-search-field-view-horizontal-spacing);
 					}
@@ -73,11 +72,11 @@
 				opacity: .5;
 				padding: 0;
 
-				@mixin ck-dir ltr {
+				[dir="ltr"] & {
 					right: var(--ck-spacing-medium);
 				}
 
-				@mixin ck-dir rtl {
+				[dir="rtl"] & {
 					left: var(--ck-spacing-medium);
 				}
 
@@ -86,16 +85,18 @@
 				}
 			}
 
+			/* stylelint-disable-next-line no-descending-specificity */
 			& .ck-input {
 				width: 100%;
 
-				@mixin ck-dir ltr {
+				[dir="ltr"] & {
 					&:not(.ck-input-text_empty) {
 						padding-right: var(--ck-search-field-view-horizontal-spacing);
 					}
 				}
 
-				@mixin ck-dir rtl {
+				/* stylelint-disable-next-line no-descending-specificity */
+				[dir="rtl"] & {
 					padding-right: var(--ck-search-field-view-horizontal-spacing);
 				}
 			}

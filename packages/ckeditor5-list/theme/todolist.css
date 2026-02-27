@@ -7,7 +7,9 @@
 	--ck-content-todo-list-checkmark-size: 16px;
 }
 
-@define-mixin todo-list-checkbox {
+/* stylelint-disable no-descending-specificity */
+.ck-content .todo-list .todo-list__label > input,
+.ck-editor__editable.ck-content .todo-list .todo-list__label > span[contenteditable=false] > input {
 	-webkit-appearance: none;
 	display: inline-block;
 	position: relative;
@@ -94,10 +96,6 @@
 	}
 
 	& .todo-list__label {
-		& > input {
-			@mixin todo-list-checkbox;
-		}
-
 		& .todo-list__label__description {
 			vertical-align: middle;
 		}
@@ -128,13 +126,10 @@
 	/*
 	 * Document Lists - editing view has an additional span around checkbox.
 	 */
-	& > span[contenteditable=false] > input {
-		@mixin todo-list-checkbox;
-	}
-
 	&.todo-list__label_without-description {
 		& input[type=checkbox] {
 			position: absolute;
 		}
 	}
 }
+/* stylelint-enable no-descending-specificity */

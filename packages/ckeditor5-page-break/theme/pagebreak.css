@@ -35,8 +35,6 @@
 
 	/* Disable the possibility to select the label text by the user. */
 	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
 	user-select: none;
 }
 

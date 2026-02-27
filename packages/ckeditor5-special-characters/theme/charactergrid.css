@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
 
 :root {
 	--ck-character-grid-tile-size: 24px;

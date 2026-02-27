@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_focus.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
 	--ck-widget-outline-thickness: 3px;
@@ -55,8 +52,9 @@
 	These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
 	&.ck-editor__nested-editable_focused,
 	&:focus {
-		@mixin ck-box-shadow var(--ck-inner-shadow);
-		@mixin ck-media-default-colors {
+		box-shadow: var(--ck-inner-shadow), 0 0;
+
+		@media (forced-colors: none) {
 			background-color: var(--ck-color-widget-editable-focus-background);
 		}
 
@@ -66,7 +64,8 @@
 		 * because it should be the same as the table cell border color.
 		 */
 		&:not(td, th) {
-			@mixin ck-focus-ring;
+			outline: none;
+			border: var(--ck-focus-ring);
 		}
 	}
 }
