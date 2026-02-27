@@ -71,6 +71,18 @@ describe( 'ShowBlocksCommand', () => {
 			expect( headingLabelRtl ).to.contain( '>H2</text></svg>' );
 		} );
 
+		it( 'should not overwrite existing block label styles', () => {
+			const root = editor.editing.view.document.roots.get( 'main' );
+
+			editor.editing.view.change( writer => {
+				writer.setStyle( '--ck-show-blocks-label-address-ltr', 'preset-address-label', root );
+			} );
+
+			editor.execute( 'showBlocks' );
+
+			expect( root.getStyle( '--ck-show-blocks-label-address-ltr' ) ).to.equal( 'preset-address-label' );
+		} );
+
 		it( 'should remove "ck-show-blocks" class on the root when executed for the second time', () => {
 			editor.execute( 'showBlocks' );
 			editor.execute( 'showBlocks' );
