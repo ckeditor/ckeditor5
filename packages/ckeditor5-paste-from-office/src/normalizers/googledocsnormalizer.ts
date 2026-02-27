@@ -13,6 +13,7 @@ import { removeBoldWrapper } from '../filters/removeboldwrapper.js';
 import { transformBlockBrsToParagraphs } from '../filters/br.js';
 import { unwrapParagraphInListItem } from '../filters/list.js';
 import { replaceTabsWithinPreWithSpaces } from '../filters/replacetabswithinprewithspaces.js';
+import { insertGoogleDocsFootnotes, type GoogleDocsClipboardDocumentSliceData } from '../filters/insertgoogledocsfootnotes.js';
 import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
@@ -47,11 +48,26 @@ export class GoogleDocsNormalizer implements PasteFromOfficeNormalizer {
 	public execute( data: PasteFromOfficeNormalizerData ): void {
 		const writer = new ViewUpcastWriter( this.document );
 		const { body: documentFragment } = data._parsedData;
+		const documentSlice = data.dataTransfer.getData( 'application/x-vnd.google-docs-document-slice-clip+wrapped' );
 
 		removeBoldWrapper( documentFragment, writer );
 		unwrapParagraphInListItem( documentFragment, writer );
 		transformBlockBrsToParagraphs( documentFragment, writer );
 		replaceTabsWithinPreWithSpaces( documentFragment, writer, 8 );
+
+		// Since Google Docs slice data is not documented anywhere, we need to be defensive here.
+		// The format might change without any notice and break the paste feature.
+		// If we cannot parse the data, just skip footnotes insertion.
+		try {
+			if ( documentSlice ) {
+				const { data } = JSON.parse( documentSlice );
+				const parsedSliceData: GoogleDocsClipboardDocumentSliceData = JSON.parse( data ).resolved;
+
+				insertGoogleDocsFootnotes( documentFragment, writer, parsedSliceData );
+			}
+		} catch ( err ) {
+			console.warn( 'Could not parse Google Docs clipboard document slice.', err );
+		}
 
 		data.content = documentFragment;
 	}
