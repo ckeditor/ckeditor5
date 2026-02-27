@@ -133,12 +133,11 @@
 	& ul,
 	& p,
 	& section,
-	& :where(figure.image, figure.table) figcaption
-	{
+	& :where(figure.image, figure.table) figcaption {
 		background-repeat: no-repeat;
 		padding-top: 15px;
 
-		&:not(.ck-widget_selected):not(.ck-widget:hover) {
+		&:where(:not(.ck-widget_selected):not(.ck-widget:hover)) {
 			outline: 1px dashed var(--ck-show-blocks-border-color);
 		}
 	}
