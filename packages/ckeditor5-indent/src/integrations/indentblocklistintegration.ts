@@ -21,15 +21,20 @@ import {
 
 import {
 	addMarginStylesRules,
+	type ModelWriter,
 	type ModelElement,
 	type UpcastElementEvent,
-	type ViewDocumentTabEvent
+	type ViewConsumable,
+	type ViewDocumentTabEvent,
+	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
 import { IndentBlockListCommand } from './indentblocklistcommand.js';
 import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';
 import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../indentcommandbehavior/indentusingclasses.js';
+import { IndentListItemUsingOffset } from '../indentcommandbehavior/indentlistitemusingoffset.js';
+import { IndentListItemUsingClasses } from '../indentcommandbehavior/indentlistitemusingclasses.js';
 
 /**
  * This integration enables using block indentation feature with lists.
@@ -62,8 +67,9 @@ export class IndentBlockListIntegration extends Plugin {
 		const config = editor.config.get( 'indentBlock' )!;
 
 		if ( config.classes && config.classes.length ) {
-			this._setupConversionUsingClassesForListBlock( config.classes! );
-			this._setupConversionUsingClassesForListItemBlock( config.classes! );
+			this._setupConversionUsingClasses( config.classes, 'ol', 'blockIndentList', 'list' );
+			this._setupConversionUsingClasses( config.classes, 'ul', 'blockIndentList', 'list' );
+			this._setupConversionUsingClasses( config.classes!, 'li', 'blockIndentListItem', 'item' );
 
 			editor.commands.add( 'indentBlockList', new IndentBlockListCommand( editor, new IndentUsingClasses( {
 				direction: 'forward',
@@ -75,20 +81,21 @@ export class IndentBlockListIntegration extends Plugin {
 				classes: config.classes!
 			} ) ) );
 
-			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
 				direction: 'forward',
 				classes: config.classes!
 			} ) ) );
 
-			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingClasses( {
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
 				direction: 'backward',
 				classes: config.classes!
 			} ) ) );
 		} else {
 			editor.data.addStyleProcessorRules( addMarginStylesRules );
 
-			this._setupConversionUsingOffsetForListBlock();
-			this._setupConversionUsingOffsetForListItemBlock();
+			this._setupConversionUsingOffset( 'ol', 'blockIndentList', 'list' );
+			this._setupConversionUsingOffset( 'ul', 'blockIndentList', 'list' );
+			this._setupConversionUsingOffset( 'li', 'blockIndentListItem', 'item' );
 
 			editor.commands.add( 'indentBlockList', new IndentBlockListCommand( editor, new IndentUsingOffset( {
 				direction: 'forward',
@@ -102,13 +109,13 @@ export class IndentBlockListIntegration extends Plugin {
 				unit: config.unit!
 			} ) ) );
 
-			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
 				direction: 'forward',
 				offset: config.offset!,
 				unit: config.unit!
 			} ) ) );
 
-			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentUsingOffset( {
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
 				direction: 'backward',
 				offset: config.offset!,
 				unit: config.unit!
@@ -118,6 +125,8 @@ export class IndentBlockListIntegration extends Plugin {
 		const listEditing = editor.plugins.get( 'ListEditing' );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same blockIndentList attribute value.
+		// Also make sure that all block in a single list item (blocks with the same listItemId) have the same
+		// blockIndentListItem attribute value.
 		listEditing.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
 			for ( const { node, previousNodeInList } of listNodes ) {
 				// This is a first item of a nested list.
@@ -241,36 +250,9 @@ export class IndentBlockListIntegration extends Plugin {
 	}
 
 	/**
-	 * Setups conversion for list block indent using offset indents.
+	 * Setups conversion for list block indent using offset.
 	 */
-	private _setupConversionUsingOffsetForListBlock(): void {
-		const editor = this.editor;
-		const conversion = editor.conversion;
-		const locale = editor.locale;
-		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
-		const listEditing = editor.plugins.get( 'ListEditing' );
-
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on<UpcastElementEvent>( 'element:ol', listBlockIndentUpcastConverter( 'blockIndentList', marginProperty ) );
-			dispatcher.on<UpcastElementEvent>( 'element:ul', listBlockIndentUpcastConverter( 'blockIndentList', marginProperty ) );
-		} );
-
-		listEditing.registerDowncastStrategy( {
-			scope: 'list',
-			attributeName: 'blockIndentList',
-
-			setAttributeOnDowncast( writer, value, element ) {
-				if ( value ) {
-					writer.setStyle( marginProperty, value as string, element );
-				}
-			}
-		} );
-	}
-
-	/**
-	 * Setups conversion for list item block indent using offset indents.
-	 */
-	private _setupConversionUsingOffsetForListItemBlock(): void {
+	private _setupConversionUsingOffset( element: string, attributeName: string, scope: 'list' | 'item' ): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const conversion = editor.conversion;
@@ -279,15 +261,19 @@ export class IndentBlockListIntegration extends Plugin {
 
 		conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on<UpcastElementEvent>(
-				'element:li',
-				listBlockIndentUpcastConverter( 'blockIndentListItem', marginProperty ),
+				`element:${ element }`,
+				listBlockIndentUpcastConverter(
+					attributeName,
+					item => item.getStyle( marginProperty ),
+					( consumable, item ) => consumable.consume( item, { styles: marginProperty } )
+				),
 				{ priority: 'low' }
 			);
 		} );
 
 		listEditing.registerDowncastStrategy( {
-			scope: 'item',
-			attributeName: 'blockIndentListItem',
+			scope,
+			attributeName,
 
 			setAttributeOnDowncast( writer, value, element ) {
 				if ( value ) {
@@ -300,53 +286,26 @@ export class IndentBlockListIntegration extends Plugin {
 	/**
 	 * Setups conversion for list block indent using classes.
 	 */
-	private _setupConversionUsingClassesForListBlock( classes: Array<string> ): void {
+	private _setupConversionUsingClasses( classes: Array<string>, element: string, attributeName: string, scope: 'list' | 'item' ): void {
 		const editor = this.editor;
 		const conversion = editor.conversion;
 		const listEditing = editor.plugins.get( 'ListEditing' );
 
 		conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on<UpcastElementEvent>(
-				'element:ol',
-				listBlockIndentUpcastConverterUsingClasses( 'blockIndentList', classes )
-			);
-			dispatcher.on<UpcastElementEvent>(
-				'element:ul',
-				listBlockIndentUpcastConverterUsingClasses( 'blockIndentList', classes )
-			);
-		} );
-
-		listEditing.registerDowncastStrategy( {
-			scope: 'list',
-			attributeName: 'blockIndentList',
-
-			setAttributeOnDowncast( writer, value, element ) {
-				if ( value ) {
-					writer.addClass( value as string, element );
-				}
-			}
-		} );
-	}
-
-	/**
-	 * Setups conversion for list item block indent using classes.
-	 */
-	private _setupConversionUsingClassesForListItemBlock( classes: Array<string> ): void {
-		const editor = this.editor;
-		const conversion = editor.conversion;
-		const listEditing = editor.plugins.get( 'ListEditing' );
-
-		conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on<UpcastElementEvent>(
-				'element:li',
-				listBlockIndentUpcastConverterUsingClasses( 'blockIndentListItem', classes ),
+				`element:${ element }`,
+				listBlockIndentUpcastConverter(
+					attributeName,
+					item => classes.find( cls => item.hasClass( cls ) ),
+					( consumable, item, value ) => consumable.consume( item, { classes: value } )
+				),
 				{ priority: 'low' }
 			);
 		} );
 
 		listEditing.registerDowncastStrategy( {
-			scope: 'item',
-			attributeName: 'blockIndentListItem',
+			scope,
+			attributeName,
 
 			setAttributeOnDowncast( writer, value, element ) {
 				if ( value ) {
@@ -357,7 +316,11 @@ export class IndentBlockListIntegration extends Plugin {
 	}
 }
 
-function listBlockIndentUpcastConverterUsingClasses( attributeName: string, classes: Array<string> ): GetCallback<UpcastElementEvent> {
+function listBlockIndentUpcastConverter(
+	attributeName: string,
+	getValue: ( viewItem: ViewElement ) => string | undefined,
+	consume: ( consumable: ViewConsumable, viewItem: ViewElement, value: string ) => void
+): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, consumable } = conversionApi;
 
@@ -365,10 +328,9 @@ function listBlockIndentUpcastConverterUsingClasses( attributeName: string, clas
 			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
-		const viewClasses = Array.from( data.viewItem.getClassNames() );
-		const matchedClass = classes.find( cls => viewClasses.includes( cls ) );
+		const value = getValue( data.viewItem );
 
-		if ( matchedClass === undefined ) {
+		if ( value === undefined ) {
 			return;
 		}
 
@@ -388,52 +350,27 @@ function listBlockIndentUpcastConverterUsingClasses( attributeName: string, clas
 				continue;
 			}
 
-			writer.setAttribute( attributeName, matchedClass, item );
+			writer.setAttribute( attributeName, value, item );
 			applied = true;
 		}
 
 		if ( applied ) {
-			consumable.consume( data.viewItem, { classes: matchedClass } );
+			consume( consumable, data.viewItem, value );
 		}
 	};
 }
 
-function listBlockIndentUpcastConverter( attributeName: string, marginProperty: string ): GetCallback<UpcastElementEvent> {
-	return ( evt, data, conversionApi ) => {
-		const { writer, consumable } = conversionApi;
-
-		if ( !data.modelRange ) {
-			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-		}
-
-		const marginValue = data.viewItem.getStyle( marginProperty );
-		let applied = false;
-		let indentLevel;
-
-		for ( const item of data.modelRange!.getItems( { shallow: true } ) ) {
-			if ( indentLevel === undefined ) {
-				indentLevel = item.getAttribute( 'listIndent' );
-			}
-
-			if ( item.hasAttribute( attributeName ) ) {
-				continue;
-			}
-
-			if ( item.getAttribute( 'listIndent' ) !== indentLevel ) {
-				continue;
-			}
-
-			writer.setAttribute( attributeName, marginValue, item );
-			applied = true;
-		}
-
-		if ( applied ) {
-			consumable.consume( data.viewItem, { styles: marginProperty } );
-		}
-	};
-}
-
-function ensureIndentValuesConsistency( attributeName: string, node: any, previousNodeInList: any, writer: any ): boolean {
+/**
+ * Ensures that two nodes have the same value of the given attribute.
+ * If the values are different, the attribute value from the previous node is applied to the given node.
+ * Returns true if the attribute value was changed, false otherwise.
+ */
+function ensureIndentValuesConsistency(
+	attributeName: string,
+	node: ModelElement,
+	previousNodeInList: ModelElement,
+	writer: ModelWriter
+): boolean {
 	const prevNodeIndentListValue = previousNodeInList.getAttribute( attributeName );
 
 	if ( node.getAttribute( attributeName ) === prevNodeIndentListValue ) {
