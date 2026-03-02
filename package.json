@@ -90,7 +90,7 @@
     "umberto": "^10.0.0",
     "upath": "^2.0.0",
     "vitest": "^4.0.18",
-    "wait-on": "^8.0.3"
+    "wait-on": "^9.0.4"
   },
   "scripts": {
     "nice": "ckeditor5-dev-changelog-create-entry",
