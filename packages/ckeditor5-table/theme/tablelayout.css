@@ -80,10 +80,16 @@
 			}
 
 			/* The default table layout cell style in the editing view when the border is unset.
-			But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
+			But it need to be more strict cause of style attributes like `border-image`, `border-radius`, etc. */
 			&:not(
 			[style*="border:"],
-			[style|="border"])  {
+			[style*="border-top"],
+			[style*="border-bottom"],
+			[style*="border-left"],
+			[style*="border-right"],
+			[style*="border-width"],
+			[style*="border-style"],
+			[style*="border-color"]) {
 				border-color: transparent;
 				/* Resetting `border-width` property to the user agent styles. */
 				border-width: 0;
