@@ -4,7 +4,6 @@
 !.github/**
 !.husky/**
 !.circleci/**
-!.patches/**
 
 # Generated automatically via CircleCI.
 .circleci/config-tests.yml
