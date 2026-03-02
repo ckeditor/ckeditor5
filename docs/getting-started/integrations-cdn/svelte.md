@@ -52,6 +52,7 @@ When completed, the folder structure of your project should resemble this one:
 ```
 
 The integration requires:
+
 * Modifying `index.html` to include CKEditor&nbsp;5 scripts and style sheets
 * Creating the `src/lib/Editor.svelte` component
 * Updating the `src/App.svelte` main application component
