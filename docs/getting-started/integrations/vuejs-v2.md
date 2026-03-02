@@ -77,7 +77,7 @@ export default {
 			editor: ClassicEditor,
 			editorData: '<p>Hello from CKEditor 5 in Vue 2!</p>',
 			editorConfig: {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 			}
