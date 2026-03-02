@@ -94,6 +94,8 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 
 ```html
 <script>
+	import { onMount, onDestroy } from 'svelte';
+
 	let { value = $bindable('') } = $props();
 
 	let editorContainer;
