@@ -8,150 +8,197 @@
 }
 
 .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) {
-	& address {
+	address {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-address-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-address-rtl);
 	}
 
-	& aside {
+	aside {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-aside-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-aside-rtl);
 	}
 
-	& blockquote {
+	blockquote {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-blockquote-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-blockquote-rtl);
 	}
 
-	& details {
+	details {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-details-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-details-rtl);
 	}
 
-	& div:not(.ck-widget, .ck-widget *) {
+	div:not(.ck-widget, .ck-widget *) {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-div-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-div-rtl);
 	}
 
-	& footer {
+	footer {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-footer-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-footer-rtl);
 	}
 
-	& h1 {
+	h1 {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-h1-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-h1-rtl);
 	}
 
-	& h2 {
+	h2 {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-h2-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-h2-rtl);
 	}
 
-	& h3 {
+	h3 {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-h3-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-h3-rtl);
 	}
 
-	& h4 {
+	h4 {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-h4-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-h4-rtl);
 	}
 
-	& h5 {
+	h5 {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-h5-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-h5-rtl);
 	}
 
-	& h6 {
+	h6 {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-h6-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-h6-rtl);
 	}
 
-	& header {
+	header {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-header-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-header-rtl);
 	}
 
-	& main {
+	main {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-main-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-main-rtl);
 	}
 
-	& nav {
+	nav {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-nav-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-nav-rtl);
 	}
 
-	& pre {
+	pre {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-pre-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-pre-rtl);
 	}
 
-	& ol {
+	ol {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-ol-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-ol-rtl);
 	}
 
-	& ul {
+	ul {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-ul-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-ul-rtl);
 	}
 
-	& p {
+	p {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-p-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-p-rtl);
 	}
 
-	& section {
+	section {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-section-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-section-rtl);
 	}
 
-	& :where(figure.image, figure.table) figcaption {
+	:where(figure.image, figure.table) figcaption {
 		--ck-show-blocks-label-ltr: var(--ck-show-blocks-label-figcaption-ltr);
 		--ck-show-blocks-label-rtl: var(--ck-show-blocks-label-figcaption-rtl);
 	}
 
-	& address,
-	& aside,
-	& blockquote,
-	& details,
-	& div:not(.ck-widget, .ck-widget *),
-	& footer,
-	& h1,
-	& h2,
-	& h3,
-	& h4,
-	& h5,
-	& h6,
-	& header,
-	& main,
-	& nav,
-	& pre,
-	& ol,
-	& ul,
-	& p,
-	& section,
-	& :where(figure.image, figure.table) figcaption
-	{
+	address,
+	aside,
+	blockquote,
+	details,
+	div:not(.ck-widget, .ck-widget *),
+	footer,
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	header,
+	main,
+	nav,
+	pre,
+	ol,
+	ul,
+	p,
+	section,
+	:where(figure.image, figure.table) figcaption {
 		background-repeat: no-repeat;
 		padding-top: 15px;
 
-		/* Fix for Multi-root editor
-		https://github.com/ckeditor/ckeditor5/issues/15969 */
-		[dir="ltr"] & {
+		&:where(:not(.ck-widget_selected):not(.ck-widget:hover)) {
+			outline: 1px dashed var(--ck-show-blocks-border-color);
+		}
+	}
+
+	/*
+	 * Support editors where the `dir` attribute is either on the editable itself or on an ancestor wrapper.
+	 * See: https://github.com/ckeditor/ckeditor5/issues/15969.
+	 */
+	&[dir="ltr"],
+	[dir="ltr"] & {
+		address,
+		aside,
+		blockquote,
+		details,
+		div:not(.ck-widget, .ck-widget *),
+		footer,
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		header,
+		main,
+		nav,
+		pre,
+		ol,
+		ul,
+		p,
+		section,
+		:where(figure.image, figure.table) figcaption {
 			background-image: var(--ck-show-blocks-label-ltr);
 			background-position: 1px 1px;
 		}
+	}
 
-		[dir="rtl"] & {
+	&[dir="rtl"],
+	[dir="rtl"] & {
+		address,
+		aside,
+		blockquote,
+		details,
+		div:not(.ck-widget, .ck-widget *),
+		footer,
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		header,
+		main,
+		nav,
+		pre,
+		ol,
+		ul,
+		p,
+		section,
+		:where(figure.image, figure.table) figcaption {
 			background-image: var(--ck-show-blocks-label-rtl);
 			background-position: calc(100% - 1px) 1px;
-		}
-
-		&:not(.ck-widget_selected):not(.ck-widget:hover) {
-			outline: 1px dashed var(--ck-show-blocks-border-color);
 		}
 	}
 }
