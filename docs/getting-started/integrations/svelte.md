@@ -60,6 +60,7 @@ When completed, the folder structure of your project should resemble this one:
 ```
 
 The integration requires two key Svelte components:
+
 * `src/lib/Editor.svelte` &ndash; the component that wraps CKEditor functionality
 * `src/App.svelte` &ndash; the main application component that uses the Editor component
 
@@ -72,46 +73,67 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 ```html
 <script>
 	import { onMount, onDestroy } from 'svelte';
-	
+
 	import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckeditor5';
 	import { FormatPainter } from 'ckeditor5-premium-features';
-	
+
 	import 'ckeditor5/ckeditor5.css';
 	import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
-	let editorContainer;
-	let editorInstance = null;
+	let { value = $bindable('') } = $props();
 
-	onMount( () => {
-		ClassicEditor
-			.create( editorContainer, {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key or 'GPL'
-				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-				toolbar: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-					'formatPainter'
-				]
-			} )
-			.then( editor => {
-				editorInstance = editor;
-			} )
-			.catch( error => {
-				console.error( 'Error initializing CKEditor:', error );
-			} );
+	let editorContainer;
+	let editorInstance = $state(null);
+	let isDestroyed = false;
+
+	// Sync external value changes to the editor.
+	$effect(() => {
+		if (editorInstance && editorInstance.getData() !== value) {
+			editorInstance.setData(value);
+		}
+	});
+
+	onMount( async () => {
+		// Capture value before async initialization.
+		let initialData = value;
+
+		editorInstance = await ClassicEditor.create( editorContainer, {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			],
+			initialData
+		} );
+
+		// Prevent memory leaks if unmounted during creation.
+		if (isDestroyed) {
+			await editorInstance.destroy();
+			return;
+		}
+
+		// Update the bound value when editor content changes.
+		editorInstance.model.document.on( 'change:data', () => {
+			value = editorInstance.getData();
+		} );
 	} );
 
 	onDestroy( () => {
-		if ( editorInstance ) {
-			editorInstance.destroy().catch( err => console.error( err ) );
-		}
+		// Clean up editor instance on unmount.
+		editorInstance?.destroy().catch( err => console.error( err ) );
+		editorInstance = null;
+		isDestroyed = true;
 	} );
 </script>
 
-<div bind:this={editorContainer}>
-	<p>Hello from CKEditor 5!</p>
-</div>
+<div bind:this={editorContainer}></div>
 ```
+
+<info-box>
+	To listen for editor content changes, use the `change:data` event on `editor.model.document` as shown above. Do not use `editor.on( 'change:data', ... )` directly on the editor instance &ndash; that listens for observable property changes on the editor object, not for content edits made by the user.
+</info-box>
 
 ### Using the Editor component
 
@@ -119,14 +141,16 @@ Now, modify the main `App.svelte` file to use our editor component:
 
 ```html
 <script>
-	import Editor from './lib/Editor.svelte'
+	import Editor from './lib/Editor.svelte';
+
+	let content = $state('<p>Enter your content here...</p>');
 </script>
 
 <main>
 	<h1>CKEditor 5 + Svelte</h1>
 
 	<div class="editor-wrapper">
-		<Editor />
+		<Editor bind:value={content} />
 	</div>
 </main>
 
@@ -153,9 +177,10 @@ npm run dev
 
 The Svelte HTML editor integration follows these key steps:
 
-1. **Import dependencies**: The required CKEditor&nbsp;5 modules and styles are imported
-2. **Editor initialization**: The editor is created with the specified configuration when the component mounts
-3. **Cleanup**: Resources are properly released when the component is destroyed
+1. **Import dependencies**: The required CKEditor&nbsp;5 modules and styles are imported.
+2. **Editor initialization**: The editor is created with the specified configuration when the component mounts.
+3. **Two-way data binding**: The editor listens to `change:data` events on `editor.model.document` to update the bound value, while a Svelte `$effect` syncs external value changes back to the editor.
+4. **Cleanup**: Resources are properly released when the component is destroyed.
 
 ### Styling
 
