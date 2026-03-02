@@ -114,6 +114,10 @@ ClassicEditor
 
 By default, external tables are loaded using internal heuristics. This can be configured by setting the preferred table type for loading all external tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
 
+### Stripping the `<figure>` wrapper from content tables
+
+By default, the `<figure>` wrapper is removed from content tables. To preserve the `<figure>` element, set the {@link module:table/tableconfig~TableLayoutConfig#stripFigureFromContentTable `config.table.tableLayout.stripFigureFromContentTable`} option to `false`.
+
 <code-switcher>
 ```js
 import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
