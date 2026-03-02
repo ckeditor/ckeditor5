@@ -151,6 +151,10 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 <div bind:this={editorContainer}></div>
 ```
 
+<info-box>
+	To listen for editor content changes, use the `change:data` event on `editor.model.document` as shown above. Do not use `editor.on( 'change:data', ... )` directly on the editor instance &ndash; that listens for observable property changes on the editor object, not for content edits made by the user.
+</info-box>
+
 ### Using the Editor component
 
 Now, modify the main `App.svelte` file to use our editor component:
