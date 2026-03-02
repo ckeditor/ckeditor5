@@ -85,7 +85,7 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 	onMount( () => {
 		ClassicEditor
 			.create( editorContainer, {
-				licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key or 'GPL'
+				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 				toolbar: [
 					'undo', 'redo', '|', 'bold', 'italic', '|',
