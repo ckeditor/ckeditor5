@@ -72,45 +72,69 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 ```html
 <script>
 	import { onMount, onDestroy } from 'svelte';
-	
+
 	import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckeditor5';
 	import { FormatPainter } from 'ckeditor5-premium-features';
-	
+
 	import 'ckeditor5/ckeditor5.css';
 	import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
-	let editorContainer;
-	let editorInstance = null;
+	let { value = $bindable('') } = $props();
 
-	onMount( () => {
-		ClassicEditor
-			.create( editorContainer, {
-				licenseKey: '<YOUR_LICENSE_KEY>',
-				plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
-				toolbar: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-					'formatPainter'
-				]
-			} )
-			.then( editor => {
-				editorInstance = editor;
-			} )
-			.catch( error => {
-				console.error( 'Error initializing CKEditor:', error );
-			} );
+	let editorContainer;
+	let editorInstance = $state(null);
+	let isDestroyed = false;
+
+	// Sync external value changes to the editor.
+	$effect(() => {
+		if (editorInstance && editorInstance.getData() !== value) {
+			editorInstance.setData(value);
+		}
+	});
+
+	onMount( async () => {
+		// Capture value before async initialization.
+		let initialData = value;
+
+		let editor = await ClassicEditor.create( editorContainer, {
+			licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key
+			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
+			toolbar: [
+				'undo', 'redo', '|', 'bold', 'italic', '|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+				'formatPainter'
+			],
+			initialData
+		} );
+
+		// Prevent memory leaks if unmounted during creation.
+		if (isDestroyed) {
+			await editor.destroy();
+			return;
+		}
+
+		// Apply any value changes that occurred while editor was loading.
+		if (value !== initialData) {
+			editor.setData(value);
+		}
+
+		// Update the bound value when editor content changes.
+		editor.model.document.on( 'change:data', () => {
+			value = editor.getData();
+		} );
+
+		editorInstance = editor;
 	} );
 
 	onDestroy( () => {
-		if ( editorInstance ) {
-			editorInstance.destroy().catch( err => console.error( err ) );
-		}
+		// Clean up editor instance on unmount.
+		editorInstance?.destroy().catch( err => console.error( err ) );
+		editorInstance = null;
+		isDestroyed = true;
 	} );
 </script>
 
-<div bind:this={editorContainer}>
-	<p>Hello from CKEditor 5!</p>
-</div>
+<div bind:this={editorContainer}></div>
 ```
 
 ### Using the Editor component
@@ -119,14 +143,16 @@ Now, modify the main `App.svelte` file to use our editor component:
 
 ```html
 <script>
-	import Editor from './lib/Editor.svelte'
+	import Editor from './lib/Editor.svelte';
+
+	let content = $state('<p>Enter your content here...</p>');
 </script>
 
 <main>
 	<h1>CKEditor 5 + Svelte</h1>
 
 	<div class="editor-wrapper">
-		<Editor />
+		<Editor bind:value={content} />
 	</div>
 </main>
 
