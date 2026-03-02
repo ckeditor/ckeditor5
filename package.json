@@ -77,8 +77,8 @@
     "umberto": "^10.0.0",
     "upath": "^2.0.0",
     "vitest": "^4.0.18",
-    "wait-on": "^8.0.3",
-    "webpack": "^5.94.0",
+    "wait-on": "^9.0.4",
+    "webpack": "^5.105.2",
     "webpack-cli": "^6.0.1"
   },
   "engines": {
