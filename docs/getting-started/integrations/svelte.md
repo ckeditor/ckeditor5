@@ -172,9 +172,10 @@ npm run dev
 
 The Svelte HTML editor integration follows these key steps:
 
-1. **Import dependencies**: The required CKEditor&nbsp;5 modules and styles are imported
-2. **Editor initialization**: The editor is created with the specified configuration when the component mounts
-3. **Cleanup**: Resources are properly released when the component is destroyed
+1. **Import dependencies**: The required CKEditor&nbsp;5 modules and styles are imported.
+2. **Editor initialization**: The editor is created with the specified configuration when the component mounts.
+3. **Two-way data binding**: The editor listens to `change:data` events on `editor.model.document` to update the bound value, while a Svelte `$effect` syncs external value changes back to the editor.
+4. **Cleanup**: Resources are properly released when the component is destroyed.
 
 ### Styling
 

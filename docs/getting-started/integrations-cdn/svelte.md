@@ -165,7 +165,7 @@ Now, modify the main `App.svelte` file to use our editor component:
 	<h1>CKEditor 5 + Svelte</h1>
 
 	<div class="editor-wrapper">
-		<Editor bind:value={content}  />
+		<Editor bind:value={content} />
 	</div>
 </main>
 
@@ -192,9 +192,10 @@ npm run dev
 
 The Svelte HTML editor integration follows these key steps:
 
-1. **Static loading**: CKEditor 5 scripts and styles are loaded from CDN in the HTML file
-2. **Editor initialization**: The editor is created with the specified configuration when the component mounts
-3. **Cleanup**: Resources are properly released when the component is destroyed
+1. **Static loading**: CKEditor 5 scripts and styles are loaded from CDN in the HTML file.
+2. **Editor initialization**: The editor is created with the specified configuration when the component mounts.
+3. **Two-way data binding**: The editor listens to `change:data` events on `editor.model.document` to update the bound value, while a Svelte `$effect` syncs external value changes back to the editor.
+4. **Cleanup**: Resources are properly released when the component is destroyed.
 
 ### Styling
 
