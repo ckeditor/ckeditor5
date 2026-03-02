@@ -114,7 +114,7 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 		// Capture value before async initialization.
 		let initialData = value;
 
-		let editor = await ClassicEditor.create( editorContainer, {
+		editorInstance = await ClassicEditor.create( editorContainer, {
 			licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [
@@ -127,21 +127,14 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 
 		// Prevent memory leaks if unmounted during creation.
 		if (isDestroyed) {
-			await editor.destroy();
+			await editorInstance.destroy();
 			return;
 		}
 
-		// Apply any value changes that occurred while editor was loading.
-		if (value !== initialData) {
-			editor.setData(value);
-		}
-
 		// Update the bound value when editor content changes.
-		editor.model.document.on( 'change:data', () => {
-			value = editor.getData();
+		editorInstance.model.document.on( 'change:data', () => {
+			value = editorInstance.getData();
 		} );
-
-		editorInstance = editor;
 	} );
 
 	onDestroy( () => {
