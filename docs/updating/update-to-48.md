@@ -42,9 +42,9 @@ However, if you followed the {@link getting-started/setup/optimizing-build-size 
 
 ### Collaboration user colors now use CSS-variable-based styling
 
-The collaboration user coloring implementation has been refactored to use runtime CSS variables.
+The collaboration user coloring implementation has been refactored to use runtime CSS variables instead of using a mixin.
 
-If you use only the default 8 colors, no changes are required. However, if you added custom user colors before, migrate in three steps:
+If you use only the default users colors, no changes are required. However, if you specified custom users colors, you can migrate by following these three steps:
 
 1. Remove the `@ckeditor/ckeditor5-collaboration-core/theme/usercolormixin.css` import.
 2. Replace `@mixin userColor` definitions with `--ck-user-colors--*` and `--ck-user-colors--*-alpha` CSS variables.
@@ -70,7 +70,7 @@ The old and new approaches look like this:
 }
 ```
 
-Keep `config.users.colorsCount` aligned with the total number of defined colors. For the example above (`0-9`), set:
+The editor configuration `config.users.colorsCount` did not change, and should be kept aligned with the total number of defined colors. For the example above (`0-9`), set:
 
 ```js
 users: {
