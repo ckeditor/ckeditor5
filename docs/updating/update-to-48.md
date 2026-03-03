@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-02-27
+modified_at: 2026-03-03
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -39,3 +39,41 @@ However, if you followed the {@link getting-started/setup/optimizing-build-size 
 	 // Move this import to the top of your styles imports.
 	 import '@ckeditor/ckeditor5-ui/dist/index.css';
 	 ```
+
+### Collaboration user colors now use CSS-variable-based styling
+
+The collaboration user coloring implementation has been refactored to use runtime CSS variables.
+
+If you use only the default 8 colors, no changes are required. However, if you added custom user colors before, migrate in three steps:
+
+1. Remove the `@ckeditor/ckeditor5-collaboration-core/theme/usercolormixin.css` import.
+2. Replace `@mixin userColor` definitions with `--ck-user-colors--*` and `--ck-user-colors--*-alpha` CSS variables.
+
+The old and new approaches look like this:
+
+```css
+/* Before */
+@import "@ckeditor/ckeditor5-collaboration-core/theme/usercolormixin.css";
+
+@mixin userColor hsla(31, 90%, 43%, 1), hsla(31, 90%, 43%, 0.15), 8;
+@mixin userColor hsla(61, 90%, 43%, 1), hsla(61, 90%, 43%, 0.15), 9;
+```
+
+```css
+/* After */
+:root {
+	--ck-user-colors--8: hsla(31, 90%, 43%, 1);
+	--ck-user-colors--8-alpha: hsla(31, 90%, 43%, 0.15);
+
+	--ck-user-colors--9: hsla(61, 90%, 43%, 1);
+	--ck-user-colors--9-alpha: hsla(61, 90%, 43%, 0.15);
+}
+```
+
+Keep `config.users.colorsCount` aligned with the total number of defined colors. For the example above (`0-9`), set:
+
+```js
+users: {
+	colorsCount: 10
+}
+```
