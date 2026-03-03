@@ -4,7 +4,7 @@
  */
 
 /**
- * @module indent/indentcommandbehavior/indentlistitemusingclasses
+ * @module indent/indentcommandbehavior/resetindentusingclasses
  */
 
 import { IndentUsingClasses } from './indentusingclasses.js';
@@ -19,7 +19,7 @@ import { IndentUsingClasses } from './indentusingclasses.js';
  *
  * @internal
  */
-export class IndentListItemUsingClasses extends IndentUsingClasses {
+export class ResetIndentUsingClasses extends IndentUsingClasses {
 	/**
 	 * @inheritDoc
 	 */

@@ -33,8 +33,8 @@ import { IndentBlockListCommand } from './indentblocklistcommand.js';
 import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';
 import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../indentcommandbehavior/indentusingclasses.js';
-import { IndentListItemUsingOffset } from '../indentcommandbehavior/indentlistitemusingoffset.js';
-import { IndentListItemUsingClasses } from '../indentcommandbehavior/indentlistitemusingclasses.js';
+import { ResetIndentUsingOffset } from '../indentcommandbehavior/resetindentusingoffset.js';
+import { ResetIndentUsingClasses } from '../indentcommandbehavior/resetindentusingclasses.js';
 
 /**
  * This integration enables using block indentation feature with lists.
@@ -81,12 +81,12 @@ export class IndentBlockListIntegration extends Plugin {
 				classes: config.classes!
 			} ) ) );
 
-			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingClasses( {
 				direction: 'forward',
 				classes: config.classes!
 			} ) ) );
 
-			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingClasses( {
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingClasses( {
 				direction: 'backward',
 				classes: config.classes!
 			} ) ) );
@@ -109,13 +109,13 @@ export class IndentBlockListIntegration extends Plugin {
 				unit: config.unit!
 			} ) ) );
 
-			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingOffset( {
 				direction: 'forward',
 				offset: config.offset!,
 				unit: config.unit!
 			} ) ) );
 
-			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new IndentListItemUsingOffset( {
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingOffset( {
 				direction: 'backward',
 				offset: config.offset!,
 				unit: config.unit!
@@ -316,6 +316,14 @@ export class IndentBlockListIntegration extends Plugin {
 	}
 }
 
+/**
+ * Returns an upcast converter for block list indentation.
+ *
+ * @param attributeName The name of the model attribute.
+ * @param getValue A function to get the value from the view element.
+ * @param consume A function to consume the view element.
+ * @returns A callback for the upcast conversion.
+ */
 function listBlockIndentUpcastConverter(
 	attributeName: string,
 	getValue: ( viewItem: ViewElement ) => string | undefined,

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module indent/indentcommandbehavior/indentlistitemusingoffset
+ * @module indent/indentcommandbehavior/resetindentusingoffset
  */
 
 import { IndentUsingOffset } from './indentusingoffset.js';
@@ -19,7 +19,7 @@ import { IndentUsingOffset } from './indentusingoffset.js';
  *
  * @internal
  */
-export class IndentListItemUsingOffset extends IndentUsingOffset {
+export class ResetIndentUsingOffset extends IndentUsingOffset {
 	/**
 	 * @inheritDoc
 	 */
