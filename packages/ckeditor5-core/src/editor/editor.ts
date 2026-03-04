@@ -564,10 +564,9 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				}
 			}
 
-			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
+			if ( licensePayload.licenseType === 'evaluation' ) {
 				const timerId = setTimeout( () => {
-					blockEditor( `${ licenseType }Limit` );
+					blockEditor( 'evaluationLimit' );
 				}, 600000 );
 
 				editor.on( 'destroy', () => {
