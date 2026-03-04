@@ -3,6 +3,7 @@ menu-title: Ordered and unordered lists
 meta-title: Lists | CKEditor 5 Documentation
 meta-description: Create and manage ordered and unordered lists in CKEditor 5 to organize content clearly and improve readability.
 category: features-lists
+toc-limit: 2
 order: 10
 ---
 
@@ -85,6 +86,31 @@ ClassicEditor
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
+
+#### Enabling specific enumerators
+
+To enable only selected list item enumerators for the ordered list, you need to explicitly list them in the editor configuration. This can also be used to enable additional, `arabic-indic` numeral enumerators. To achieve this, replace the `styles: true` configuration option with a `styles { }` listing, for example:
+
+```js
+list: {
+	properties: {
+		styles: {
+			listStyleTypes: {
+				numbered: [
+					'decimal',
+					'decimal-leading-zero',
+					'arabic-indic'
+				],
+				bulleted: [
+					'disc',
+					'circle',
+					'square'
+				]
+			}
+		}
+	}
+}
+```
 
 ### Editor output configuration
 

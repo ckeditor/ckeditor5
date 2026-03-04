@@ -14,6 +14,32 @@ modified_at: 2026-02-11
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v47.6.0
+
+Released on 4 March, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.6.0))
+
+### New `htmlSupport.htmlIframeSandbox` configuration option in General HTML Support
+
+This release introduces a potential breaking change related to iframe handling in the editing view.
+
+By default, iframe sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
+
+Previously, iframes were not sandboxed by default and had full access to the surrounding page context. With this change, iframes are now restricted unless explicitly configured otherwise.
+
+If you want to preserve the previous behavior (unsandboxed iframes with full access), you must explicitly disable this feature by setting the configuration option to `false`.
+
+Besides `true` or `false`, the `htmlSupport.htmlIframeSandbox` configuration option accepts an array of strings. For example, if you want to allow only specific features, set it to `allow-scripts`. In this scenario, we will ensure that `allow-scripts` is the only value in the sandbox attribute. If the iframe already has other sandbox values, they will be removed; if it has no sandbox attribute, we will add `sandbox="allow-scripts"`.
+
+<info-box caution>
+	This change may affect iframe-based integrations that rely on script execution, navigation, or access to parent context.
+</info-box>
+
+### Changes to the `srcdoc` attribute in the editing view
+
+The `srcdoc` attribute is no longer rendered in the editing view.
+
+Unlike iframe sandboxing, this change is permanent and cannot be disabled via configuration. Any iframe content provided through `srcdoc` will be ignored in the editing view going forward.
+
 ## Update to CKEditor&nbsp;5 v47.5.0
 
 Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
@@ -29,13 +55,14 @@ The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat}
 Please make sure to update your integrations to use the new DOM structure.
 
 Notable changes:
+
 * "Apply all" and "Suggest all" buttons are now separate buttons instead of a dropdown.
 * The toolbar with bulk "Apply" and "Suggest" ("Apply all" and "Suggest all") buttons belongs to the `.ck-ai-suggestion__body` element (previously in `.ck-ai-chat__feed__item`).
 * The `.ck-ai-suggestion__body__content-part__content` has been replaced by `.ck-content.ck-ai-suggestion-streamable-content`.
 
 **Old DOM structure**
 
-```
+```plain
 div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 ├── div.ck-ai-suggestion__container.ck-rounded-corners
 │   ├── div.ck-ai-suggestion__header
@@ -61,7 +88,7 @@ div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 
 **New DOM structure**
 
-```
+```plain
 div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 └── div.ck-ai-suggestion__container.ck-rounded-corners
     ├── div.ck-ai-suggestion__header
@@ -92,7 +119,7 @@ Please make sure to update your integrations to use the new DOM structure.
 
 **Old DOM structure**
 
-```
+```plain
 div.ck-dialog.ai-balloon.ai-balloon-rotator
 ├── div.ck-form__header
 │   ├── button.ck-button.ck-off (Previous suggestion button)
@@ -120,7 +147,7 @@ div.ck-dialog.ai-balloon.ai-balloon-rotator
 
 **New DOM structure**
 
-```
+```plain
 div.ck-dialog.ck-ai-balloon.ck-ai-chat-balloon
 ├── div.ck-form__header
 │   ├── button.ck-button.ck-off (Previous suggestion button)

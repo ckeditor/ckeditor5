@@ -142,3 +142,11 @@ msgstr "Går inn i en huskeliste"
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
 msgstr "Legger igjen en huskeliste"
+
+msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
+msgid "Toggle the arabic-indic list style"
+msgstr "Slå av/på den indo-arabiske listestilen"
+
+msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
+msgid "Arabic-indic"
+msgstr "Indo-arabisk"
