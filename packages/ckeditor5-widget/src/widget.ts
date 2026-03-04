@@ -447,7 +447,7 @@ export class Widget extends Plugin {
 			schema.checkChild( probe.focus!.parent as ModelElement, '$text' ) &&
 			( isForward ? !probe.focus!.isAtEnd : !probe.focus!.isAtStart )
 		) {
-			model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+			// model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
 		}
 
 		const lastSelectedNode = isForward ? originalSelection.focus!.nodeBefore : originalSelection.focus!.nodeAfter;
