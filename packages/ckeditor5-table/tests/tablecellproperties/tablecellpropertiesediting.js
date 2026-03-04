@@ -520,6 +520,20 @@ describe( 'table cell properties', () => {
 						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '0px' );
 					} );
 
+					it( 'should convert negative `cellpadding` values to `tableCellPadding="0px"` to match how browser works', () => {
+						editor.setData(
+							'<table cellpadding="-10">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( cell.getAttribute( 'tableCellPadding' ) ).to.equal( '0px' );
+					} );
+
 					it( 'should not convert cellpadding="10" to tableCellPadding="10px" when inline padding (5px) style is present', () => {
 						editor.setData(
 							'<table cellpadding="10">' +

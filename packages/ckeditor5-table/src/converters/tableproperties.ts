@@ -439,7 +439,8 @@ export function upcastTableCellPaddingAttribute(
 
 			// If the `cellpadding` attribute has no value or has invalid value, it should be treated as `cellpadding="1"`.
 			const cellpaddingValue = parseFloat( viewTable.getAttribute( 'cellpadding' ) || '1' );
-			const cellpaddingPx = Number.isNaN( cellpaddingValue ) ? '0px' : `${ cellpaddingValue }px`;
+			// If the `cellpadding` value is invalid (e.g. negative or non-numeric), it should be treated as `0`.
+			const cellpaddingPx = Number.isNaN( cellpaddingValue ) || cellpaddingValue < 0 ? '0px' : `${ cellpaddingValue }px`;
 
 			const tableCellPaddings = modelElement.getAttribute( 'tableCellPadding' );
 
