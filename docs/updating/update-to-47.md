@@ -14,6 +14,14 @@ modified_at: 2026-02-11
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v47.6.0
+
+Released on 4 March, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.6.0))
+
+### New ordered list styles
+
+We have introduced a new ordered lists style: the `arabic-indic` numerals. To use them, you need to explicitly activate the style in the {@link features/lists#enabling-specific-enumerators feature configuration}.
+
 ## Update to CKEditor&nbsp;5 v47.5.0
 
 Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
