@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 .ck.ck-placeholder, .ck .ck-placeholder {
 	position: relative;
 
-	@mixin ck-media-forced-colors {
+	@media (forced-colors: active) {
 		/*
 		 * This is needed for Edge on Windows to use the right color for the placeholder content (::before).
 		 * See https://github.com/ckeditor/ckeditor5/issues/14907.
@@ -27,11 +26,11 @@
 		/* See ckeditor/ckeditor5#469. */
 		pointer-events: none;
 
-		@mixin ck-media-default-colors {
+		@media (forced-colors: none) {
 			color: var(--ck-color-engine-placeholder-text);
 		}
 
-		@mixin ck-media-forced-colors {
+		@media (forced-colors: active) {
 			/*
 			 * In the high contrast mode there is no telling between regular and placeholder text. Using
 			 * italic text to address that issue. See https://github.com/ckeditor/ckeditor5/issues/14907.

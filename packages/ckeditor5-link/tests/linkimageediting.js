@@ -7,7 +7,14 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { ImageCaptionEditing, ImageBlockEditing, ImageInlineEditing, PictureEditing } from '@ckeditor/ckeditor5-image';
+import {
+	ImageCaptionEditing,
+	ImageBlockEditing,
+	ImageInlineEditing,
+	ImageEditing,
+	ImageUtils,
+	PictureEditing
+} from '@ckeditor/ckeditor5-image';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { LinkImageEditing } from '../src/linkimageediting.js';
@@ -70,12 +77,12 @@ describe( 'LinkImageEditing', () => {
 		await newEditor.destroy();
 	} );
 
-	it( 'should require ImageEditing by name', () => {
-		expect( LinkImageEditing.requires ).to.include( 'ImageEditing' );
+	it( 'should require ImageEditing', () => {
+		expect( LinkImageEditing.requires ).to.include( ImageEditing );
 	} );
 
-	it( 'should require ImageUtils by name', () => {
-		expect( LinkImageEditing.requires ).to.include( 'ImageUtils' );
+	it( 'should require ImageUtils', () => {
+		expect( LinkImageEditing.requires ).to.include( ImageUtils );
 	} );
 
 	it( 'should require LinkEditing', () => {
@@ -1636,6 +1643,149 @@ describe( 'LinkImageEditing', () => {
 						'<imageBlock linkHref="url" linkIsDownloadable="true" src="https://cksource.com"></imageBlock>'
 					);
 				} );
+			} );
+		} );
+
+		describe( 'conflicting automatic decorators with manual decorators', () => {
+			let editor, model, view;
+
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+					link: {
+						decorators: {
+							manualTarget: {
+								mode: 'manual',
+								label: 'Manual Target',
+								attributes: {
+									target: '_self'
+								}
+							},
+							manualRel: {
+								mode: 'manual',
+								label: 'Manual Rel',
+								attributes: {
+									rel: 'manual-value'
+								}
+							},
+							autoTarget: {
+								mode: 'automatic',
+								callback: url => url.includes( 'target-test' ),
+								attributes: {
+									target: '_blank'
+								}
+							},
+							autoRel: {
+								mode: 'automatic',
+								callback: url => url.includes( 'rel-test' ),
+								attributes: {
+									rel: 'auto-value'
+								}
+							}
+						}
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should block automatic decorator on linked image when manual decorator with conflicting target is set', () => {
+				_setModelData( model,
+					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com" linkManualTarget="true"></imageBlock>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://target-test.com" target="_self">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should apply automatic decorator on linked image when manual decorator is not set', () => {
+				_setModelData( model,
+					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com"></imageBlock>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://target-test.com" target="_blank">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should restore automatic decorator on linked image when manual decorator with conflicting target is removed', () => {
+				_setModelData( model,
+					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com" linkManualTarget="true"></imageBlock>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://target-test.com" target="_self">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://target-test.com" target="_blank">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should block automatic decorator on linked image when manual decorator with conflicting target is activated', () => {
+				_setModelData( model,
+					'<imageBlock src="/assets/sample.png" linkHref="http://target-test.com"></imageBlock>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://target-test.com" target="_blank">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkManualTarget', true, model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://target-test.com" target="_self">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should merge automatic and manual rel decorators on linked image (rel is mergeable)', () => {
+				_setModelData( model,
+					'<imageBlock src="/assets/sample.png" linkHref="http://rel-test.com" linkManualRel="true"></imageBlock>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://rel-test.com" rel="auto-value manual-value">' +
+							'<img src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
 			} );
 		} );
 	} );

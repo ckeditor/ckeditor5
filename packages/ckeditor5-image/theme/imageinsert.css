@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-image-insert-insert-by-url-width: 250px;
@@ -37,11 +36,11 @@
 		display: block;
 		width: 100%;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			text-align: left;
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			text-align: right;
 		}
 	}

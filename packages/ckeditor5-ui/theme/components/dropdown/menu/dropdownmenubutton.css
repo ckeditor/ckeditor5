@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_disabled.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_button.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-button.ck-dropdown-menu-list__nested-menu__button {
 	width: 100%;
@@ -28,7 +25,7 @@
 	}
 
 	&.ck-disabled > .ck-button__label {
-		@mixin ck-disabled;
+		opacity: var(--ck-disabled-opacity);
 	}
 
 	/* Spacing in buttons that miss the icon. */
@@ -41,15 +38,23 @@
 		pointer-events: none;
 		z-index: var(--ck-z-default);
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			transform: rotate(-90deg);
+			right: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-left: var(--ck-spacing-standard);
 
 			/* Nudge the arrow gently to the right because its center of gravity is to the left */
 			margin-right: calc(-1 * var(--ck-spacing-small));
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			transform: rotate(90deg);
+			left: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-right: var(--ck-spacing-small);
 
 			/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
 			margin-left: calc(-1 * var(--ck-spacing-small));
@@ -57,32 +62,18 @@
 	}
 
 	&.ck-disabled > .ck-dropdown-menu-list__nested-menu__button__arrow {
-		@mixin ck-disabled;
+		opacity: var(--ck-disabled-opacity);
 	}
 
-	@mixin ck-dir ltr {
+	[dir="ltr"] & {
 		&:not(.ck-button_with-text) {
 			padding-left: var(--ck-spacing-small);
 		}
-
-		& > .ck-dropdown-menu-list__nested-menu__button__arrow {
-			right: var(--ck-spacing-standard);
-
-			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-spacing-standard);
-		}
 	}
 
-	@mixin ck-dir rtl {
+	[dir="rtl"] & {
 		&:not(.ck-button_with-text) {
 			padding-right: var(--ck-spacing-small);
-		}
-
-		& > .ck-dropdown-menu-list__nested-menu__button__arrow {
-			left: var(--ck-spacing-standard);
-
-			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-spacing-small);
 		}
 	}
 }

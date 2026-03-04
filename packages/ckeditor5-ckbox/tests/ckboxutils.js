@@ -144,12 +144,10 @@ describe( 'CKBoxUtils', () => {
 
 			await editor.destroy();
 
-			class SlowCloudServices extends CloudServices {
-				async registerTokenUrl() {
-					await defer.promise;
-					return slowToken;
-				}
-			}
+			sinon.stub( CloudServices.prototype, 'registerTokenUrl' ).callsFake( async () => {
+				await defer.promise;
+				return slowToken;
+			} );
 
 			editor = await VirtualTestEditor.create( {
 				plugins: [
@@ -161,7 +159,7 @@ describe( 'CKBoxUtils', () => {
 					PictureEditing,
 					ImageUploadEditing,
 					ImageUploadProgress,
-					SlowCloudServices,
+					CloudServices,
 					CKBoxUploadAdapter,
 					CKBoxEditing
 				],

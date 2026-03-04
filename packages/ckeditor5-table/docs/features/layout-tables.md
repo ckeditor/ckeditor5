@@ -133,6 +133,29 @@ ClassicEditor
 ```
 </code-switcher>
 
+### Stripping the `<figure>` wrapper from content tables
+
+By default, the `<figure>` wrapper is preserved on content tables. To strip the `<figure>` element, set the {@link module:table/tableconfig~TableLayoutConfig#stripFigureFromContentTable `config.table.tableLayout.stripFigureFromContentTable`} option to `true`.
+
+<code-switcher>
+```js
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Table, TableLayout /* ... */ ],
+		table: {
+			tableLayout :{
+				stripFigureFromContentTable: true // or false
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
 ### Configuring the table toggle feature
 
 To configure the table toggling feature, you have several options:

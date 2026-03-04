@@ -21,6 +21,7 @@ import {
 	type ModelWriter
 } from '@ckeditor/ckeditor5-engine';
 import { logError, type DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig.js';
 
@@ -28,7 +29,7 @@ import { CKBoxCommand } from './ckboxcommand.js';
 import { CKBoxUploadAdapter } from './ckboxuploadadapter.js';
 import { CKBoxUtils } from './ckboxutils.js';
 
-import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, type ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
 import { sendHttpRequest } from './utils.js';
 
 const COMMAND_FORCE_DISABLE_ID = 'NoPermission';
@@ -56,7 +57,7 @@ export class CKBoxEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'LinkEditing', 'PictureEditing', CKBoxUploadAdapter, CKBoxUtils ] as const;
+		return [ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ] as const;
 	}
 
 	/**

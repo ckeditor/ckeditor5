@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CloudServices, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageUpload } from 'ckeditor5';
+import { CloudServices, CKBox, CKBoxImageEdit, IndentBlock, PictureEditing, ImageInsert, ImageUpload } from 'ckeditor5';
 import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 import {
 	TOKEN_URL,
@@ -17,7 +17,17 @@ import {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-wproofreader' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, CloudServices, WProofreader ],
+		plugins: [
+			ArticlePluginSet,
+			IndentBlock,
+			PictureEditing,
+			CKBox,
+			CKBoxImageEdit,
+			ImageInsert,
+			ImageUpload,
+			CloudServices,
+			WProofreader
+		],
 		wproofreader: {
 			serviceId: '1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd',
 			lang: 'auto',

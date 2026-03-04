@@ -9,6 +9,7 @@
 
 import { PendingActions, Plugin } from '@ckeditor/ckeditor5-core';
 import { Notification } from '@ckeditor/ckeditor5-ui';
+import { ImageEditing, ImageUtils } from '@ckeditor/ckeditor5-image';
 import { CKBoxImageEditCommand } from './ckboximageeditcommand.js';
 import { CKBoxEditing } from '../ckboxediting.js';
 import { CKBoxUtils } from '../ckboxutils.js';
@@ -35,7 +36,7 @@ export class CKBoxImageEditEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ CKBoxEditing, CKBoxUtils, PendingActions, Notification, 'ImageUtils', 'ImageEditing' ] as const;
+		return [ CKBoxEditing, CKBoxUtils, PendingActions, Notification, ImageUtils, ImageEditing ] as const;
 	}
 
 	/**

@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
 
 .ck.ck-input-color {
 	& > .ck.ck-input-text {
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			border-top-left-radius: 0;
 			border-bottom-left-radius: 0;
 		}
@@ -31,7 +29,7 @@
 			/* Resolving issue with misaligned buttons on Safari (see #10589) */
 			display: flex;
 
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 
@@ -40,7 +38,8 @@
 				}
 			}
 
-			@mixin ck-dir rtl {
+			/* stylelint-disable-next-line no-descending-specificity */
+			[dir="rtl"] & {
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 
@@ -54,8 +53,7 @@
 			}
 
 			& > .ck.ck-input-color__button__preview {
-				@mixin ck-rounded-corners;
-
+				border-radius: var(--ck-rounded-corners-radius);
 				width: 20px;
 				height: 20px;
 				border: 1px solid var(--ck-color-input-border);
@@ -89,18 +87,18 @@
 			border-bottom: 1px solid var(--ck-color-input-border);
 		}
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			border-top-right-radius: 0;
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			border-top-left-radius: 0;
 		}
 
 		& .ck.ck-icon {
 			margin-right: var(--ck-spacing-standard);
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				margin-right: 0;
 				margin-left: var(--ck-spacing-standard);
 			}

@@ -110,6 +110,41 @@ export interface GeneralHtmlSupportConfig {
 	 * ```
 	 */
 	fullPage?: GHSFullPageConfig;
+
+	/**
+	 * Controls the `sandbox` attribute on iframe elements by specifying allowed sandbox flags.
+	 *
+	 * **Note:** This option only affects the editing view and does not modify the data output.
+	 *
+	 * When set to `false`:
+	 *
+	 * * The sandbox attribute will not be modified or added to iframe elements.
+	 *
+	 * When set to `true`:
+	 *
+	 * * All restrictions are enforced by adding an empty `sandbox` attribute to iframe elements.
+	 *
+	 * When set to an array of strings:
+	 *
+	 * * Only the specified sandbox flags will be preserved on iframe elements.
+	 * * Any sandbox flags not in the list will be automatically removed.
+	 * * If an empty array is provided, the `sandbox` attribute will be added with no flags (enforcing all restrictions).
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		htmlSupport: {
+	 * 			// All restrictions are enforced (empty sandbox attribute).
+	 * 			htmlIframeSandbox: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * @default true
+	 */
+	htmlIframeSandbox?: boolean | Array<string>;
 }
 
 /**

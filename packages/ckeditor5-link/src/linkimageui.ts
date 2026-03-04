@@ -16,7 +16,7 @@ import type {
 	ViewDocumentClickEvent
 } from '@ckeditor/ckeditor5-engine';
 
-import type { ImageUtils } from '@ckeditor/ckeditor5-image';
+import { ImageBlockEditing, type ImageUtils } from '@ckeditor/ckeditor5-image';
 
 import { LinkUI } from './linkui.js';
 import { LinkEditing } from './linkediting.js';
@@ -35,7 +35,7 @@ export class LinkImageUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ LinkEditing, LinkUI, 'ImageBlockEditing' ] as const;
+		return [ LinkEditing, LinkUI, ImageBlockEditing ] as const;
 	}
 
 	/**

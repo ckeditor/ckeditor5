@@ -55,7 +55,9 @@ export class IndentUsingClasses implements IndentBehavior {
 	public getNextIndent( indentAttributeValue: string ): string | undefined {
 		const currentIndex = this.classes.indexOf( indentAttributeValue );
 		const indexStep = this.isForward ? 1 : -1;
+		const nextIndex = currentIndex + indexStep;
+		const nextIndexClamped = Math.min( nextIndex, this.classes.length - 1 );
 
-		return this.classes[ currentIndex + indexStep ];
+		return this.classes[ nextIndexClamped ];
 	}
 }

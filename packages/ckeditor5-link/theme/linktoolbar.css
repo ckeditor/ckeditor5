@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-link-bookmark-icon-size: calc( var(--ck-icon-size) * 0.7); /* 0.7 = 14/20 cause default the icon size is 20px */
@@ -49,12 +48,12 @@ a.ck.ck-button.ck-link-toolbar__preview {
 		width: var(--ck-link-bookmark-icon-size);
 		height: var(--ck-link-bookmark-icon-size);
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			margin-right: var(--ck-spacing-tiny);
 			margin-left: var(--ck-spacing-small);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			margin-left: var(--ck-spacing-tiny);
 			margin-right: var(--ck-spacing-small);
 		}

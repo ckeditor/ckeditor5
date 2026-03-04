@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-
 :root {
 	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
 	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
@@ -65,14 +63,15 @@
 	/* Don't round the bottom left and right corners of the buttons when "open"
 	https://github.com/ckeditor/ckeditor5/issues/816 */
 	&.ck-splitbutton_open {
-		@mixin ck-rounded-corners {
-			& > .ck-splitbutton__action {
-				border-bottom-left-radius: 0;
-			}
+		border-radius: var(--ck-rounded-corners-radius);
 
-			& > .ck-splitbutton__arrow {
-				border-bottom-right-radius: 0;
-			}
+		/* stylelint-disable-next-line no-descending-specificity */
+		& > .ck-splitbutton__action {
+			border-bottom-left-radius: 0;
+		}
+
+		& > .ck-splitbutton__arrow {
+			border-bottom-right-radius: 0;
 		}
 	}
 

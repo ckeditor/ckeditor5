@@ -67,8 +67,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: {
+				1: {
 					attributes: {
 						nonce: 'qwerty',
 						type: 'c++'
@@ -89,8 +88,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: {
+				1: {
 					attributes: {
 						type: 'c++'
 					}
@@ -170,8 +168,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: { attributes: { nonce: 'qwerty' } }
+				1: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
@@ -192,8 +189,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: { attributes: { type: 'text/css' } }
+				1: { attributes: { type: 'text/css' } }
 			}
 		} );
 	} );

@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
 
 :root {
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
-	@mixin ck-drop-shadow;
+	box-shadow: var(--ck-drop-shadow), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);

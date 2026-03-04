@@ -22,6 +22,7 @@ import { TableElementSupport } from './integrations/table.js';
 import { StyleElementSupport } from './integrations/style.js';
 import { ListElementSupport } from './integrations/list.js';
 import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
+import { IframeElementSupport } from './integrations/iframe.js';
 import { CustomElementSupport } from './integrations/customelement.js';
 import type { HtmlSupportDataSchemaInlineElementDefinition } from './dataschema.js';
 import type { ModelDocumentSelection, ModelItem, Model, ModelRange, ModelSelectable } from '@ckeditor/ckeditor5-engine';
@@ -66,6 +67,7 @@ export class GeneralHtmlSupport extends Plugin {
 			StyleElementSupport,
 			ListElementSupport,
 			HorizontalLineElementSupport,
+			IframeElementSupport,
 			CustomElementSupport
 		] as const;
 	}

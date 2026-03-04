@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-
 :root {
 	--ck-balloon-border-width: 1px;
 	--ck-balloon-arrow-offset: 2px;
@@ -17,8 +14,8 @@
 }
 
 .ck.ck-balloon-panel {
-	@mixin ck-rounded-corners;
-	@mixin ck-drop-shadow;
+	border-radius: var(--ck-rounded-corners-radius);
+	box-shadow: var(--ck-drop-shadow), 0 0;
 
 	min-height: 15px;
 

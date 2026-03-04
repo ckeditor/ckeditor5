@@ -247,7 +247,8 @@ export type NumberedListStyleType =
 	| 'lower-roman'
 	| 'upper-roman'
 	| 'lower-latin'
-	| 'upper-latin';
+	| 'upper-latin'
+	| 'arabic-indic';
 
 export type BulletedListStyleType =
 	| 'disc'

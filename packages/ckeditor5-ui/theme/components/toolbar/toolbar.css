@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "../../mixins/_unselectable.css";
-
 .ck.ck-toolbar {
-	@mixin ck-rounded-corners;
-
+	border-radius: var(--ck-rounded-corners-radius);
 	background: var(--ck-color-toolbar-background);
 	padding: 0 var(--ck-spacing-small);
 	border: 1px solid var(--ck-color-toolbar-border);
-	@mixin ck-unselectable;
+	-webkit-user-select: none;
+	user-select: none;
 
 	display: flex;
 	flex-flow: row nowrap;

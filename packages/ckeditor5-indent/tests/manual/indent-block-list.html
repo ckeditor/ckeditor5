@@ -1,0 +1,44 @@
+<div id="controls">
+	<div class="col">
+		<label><input type="checkbox" id="ghs">GHS</label>
+		<label><input type="checkbox" id="pfo" checked>PFO</label>
+		<label><input type="checkbox" id="indent" checked>Indent</label>
+		<label><input type="checkbox" id="indentBlock" checked>IndentBlock</label>
+	</div>
+
+	<div class="col">
+		<label><input type="checkbox" id="list" checked>List</label>
+		<label><input type="checkbox" id="listProperties" checked>ListProperties</label>
+		<label><input type="checkbox" id="useClasses">Use Classes</label>
+	</div>
+</div>
+
+
+<div id="editor">
+</div>
+
+<style>
+	#controls {
+	display: flex;
+	gap: 24px;
+}
+
+.col {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.indent-1 {
+	margin-left: 40px;
+}
+.indent-2 {
+	margin-left: 80px;
+}
+.indent-3 {
+	margin-left: 120px;
+}
+.indent-4 {
+	margin-left: 160px;
+}
+</style>

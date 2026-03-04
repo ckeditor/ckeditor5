@@ -19,7 +19,8 @@ import {
 	IconListStyleLowerRoman,
 	IconListStyleSquare,
 	IconListStyleUpperLatin,
-	IconListStyleUpperRoman
+	IconListStyleUpperRoman,
+	IconListStyleArabicIndic
 } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
@@ -164,6 +165,12 @@ export class ListPropertiesUI extends Plugin {
 					tooltip: t( 'Upper-latin' ),
 					type: 'upper-latin',
 					icon: IconListStyleUpperLatin
+				},
+				{
+					label: t( 'Toggle the arabic-indic list style' ),
+					tooltip: t( 'Arabic-indic' ),
+					type: 'arabic-indic',
+					icon: IconListStyleArabicIndic
 				}
 			];
 			const buttonLabel = t( 'Numbered List' );

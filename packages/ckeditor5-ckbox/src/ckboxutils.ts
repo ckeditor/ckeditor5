@@ -7,7 +7,7 @@
  * @module ckbox/ckboxutils
  */
 
-import type { CloudServices, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+import { CloudServices, type InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import { CKEditorError, logError } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
@@ -47,7 +47,7 @@ export class CKBoxUtils extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'CloudServices' ] as const;
+		return [ CloudServices ] as const;
 	}
 
 	/**
@@ -73,7 +73,7 @@ export class CKBoxUtils extends Plugin {
 			tokenUrl: editor.config.get( 'cloudServices.tokenUrl' )
 		} );
 
-		const cloudServices: CloudServices = editor.plugins.get( 'CloudServices' );
+		const cloudServices = editor.plugins.get( CloudServices );
 		const cloudServicesTokenUrl = editor.config.get( 'cloudServices.tokenUrl' );
 		const ckboxTokenUrl = editor.config.get( 'ckbox.tokenUrl' );
 

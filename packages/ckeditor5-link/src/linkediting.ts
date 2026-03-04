@@ -17,7 +17,10 @@ import type {
 	ViewElement,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
-	ModelDocumentSelectionChangeAttributeEvent
+	ModelDocumentSelectionChangeAttributeEvent,
+	ViewDowncastWriter,
+	DowncastAttributeEvent,
+	ModelItem
 } from '@ckeditor/ckeditor5-engine';
 import {
 	Input,
@@ -28,10 +31,11 @@ import {
 	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
 } from '@ckeditor/ckeditor5-clipboard';
-import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
+import { keyCodes, env, type GetCallback, priorities } from '@ckeditor/ckeditor5-utils';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';
+import { areDecoratorsConflicting } from './utils/conflictingdecorators.js';
 import { LinkManualDecorator } from './utils/manualdecorator.js';
 import {
 	createLinkElement,
@@ -156,6 +160,9 @@ export class LinkEditing extends Plugin {
 
 		// Handle adding default protocol to pasted links.
 		this._enableClipboardIntegration();
+
+		// Register postfixer that resolves conflicting decorator attributes.
+		this._enableDecoratorConflictPostfixer();
 	}
 
 	/**
@@ -199,6 +206,21 @@ export class LinkEditing extends Plugin {
 
 		automaticDecorators.add( automaticDecoratorDefinitions );
 
+		automaticDecorators.setConflictChecker( ( automaticDecorator, modelItem ) => {
+			for ( const manualDecorator of command.manualDecorators ) {
+				// If manual decorator is not applied, skip it.
+				if ( !modelItem.hasAttribute( manualDecorator.id ) ) {
+					continue;
+				}
+
+				// If it conflicts with manual decorator that was applied, return true
+				// to prevent the automatic decorator from being applied.
+				if ( areDecoratorsConflicting( automaticDecorator, manualDecorator ) ) {
+					return true;
+				}
+			}
+		} );
+
 		if ( automaticDecorators.length ) {
 			editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
 		}
@@ -230,30 +252,71 @@ export class LinkEditing extends Plugin {
 
 			manualDecorators.add( decorator );
 
-			editor.conversion.for( 'downcast' ).attributeToElement( {
-				model: decorator.id,
-				view: ( manualDecoratorValue, { writer, schema }, { item } ) => {
-					// Manual decorators for block links are handled e.g. in LinkImageEditing.
-					if ( !( item.is( 'selection' ) || schema.isInline( item ) ) ) {
-						return;
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				const elementCreator = ( writer: ViewDowncastWriter ) => {
+					const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
+
+					if ( decorator.classes ) {
+						writer.addClass( decorator.classes, element );
 					}
 
-					if ( manualDecoratorValue ) {
-						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
-
-						if ( decorator.classes ) {
-							writer.addClass( decorator.classes, element );
-						}
-
-						for ( const key in decorator.styles ) {
-							writer.setStyle( key, decorator.styles[ key ], element );
-						}
-
-						writer.setCustomProperty( 'link', true, element );
-
-						return element;
+					for ( const key in decorator.styles ) {
+						writer.setStyle( key, decorator.styles[ key ], element );
 					}
-				}
+
+					writer.setCustomProperty( 'link', true, element );
+
+					return element;
+				};
+
+				const createConverter = ( isApplyingConverter: boolean ): GetCallback<DowncastAttributeEvent> => {
+					return ( evt, data, conversionApi ) => {
+						// Manual decorators for block links are handled e.g. in LinkImageEditing.
+						if ( !data.item.is( 'selection' ) && !conversionApi.schema.isInline( data.item ) ) {
+							return;
+						}
+
+						if ( !isApplyingConverter && data.attributeOldValue ) {
+							// Only test while removing the decorator as this is triggered before the applying converter.
+							if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+								return;
+							}
+
+							conversionApi.writer.unwrap(
+								conversionApi.mapper.toViewRange( data.range ),
+								elementCreator( conversionApi.writer )
+							);
+						}
+
+						if ( isApplyingConverter && data.attributeNewValue ) {
+							// Consume while applying the decorator.
+							if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+								return;
+							}
+
+							if ( data.item.is( 'selection' ) ) {
+								conversionApi.writer.wrap(
+									conversionApi.writer.document.selection.getFirstRange()!,
+									elementCreator( conversionApi.writer )
+								);
+							} else {
+								conversionApi.writer.wrap(
+									conversionApi.mapper.toViewRange( data.range ),
+									elementCreator( conversionApi.writer )
+								);
+							}
+						}
+					};
+				};
+
+				dispatcher.on<DowncastAttributeEvent>( `attribute:${ decorator.id }`, createConverter( false ), {
+					priority: priorities.high - 1
+				} );
+				// Apply decorators after all automatic and manual decorators are removed so removing one decorator
+				// won't strip part of the other decorator's attributes, classes or styles.
+				dispatcher.on<DowncastAttributeEvent>( `attribute:${ decorator.id }`, createConverter( true ), {
+					priority: priorities.high - 2
+				} );
 			} );
 
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
@@ -373,6 +436,73 @@ export class LinkEditing extends Plugin {
 					}
 				}
 			} );
+		} );
+	}
+
+	/**
+	 * Registers a postfixer that resolves conflicting decorator attributes on elements.
+	 */
+	private _enableDecoratorConflictPostfixer(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+
+		model.document.registerPostFixer( writer => {
+			let hasChanged = false;
+
+			const changes = model.document.differ.getChanges();
+			const elementsToCheck = new Set<ModelItem>();
+			const manualDecoratorAttributeKeys = new Set<string>(
+				linkCommand.manualDecorators.map( decorator => decorator.id )
+			);
+
+			for ( const change of changes ) {
+				if ( change.type === 'attribute' ) {
+					// Only react to link-related attribute changes to reduce work.
+					if ( change.attributeKey !== 'linkHref' && !manualDecoratorAttributeKeys.has( change.attributeKey ) ) {
+						continue;
+					}
+
+					// Use range items instead of nodeAfter to avoid issues with text node merging.
+					for ( const item of change.range.getItems() ) {
+						if ( item.hasAttribute( 'linkHref' ) ) {
+							elementsToCheck.add( item );
+						}
+					}
+				}
+
+				// Check if newly inserted nodes have link attributes. This is to cover the case of pasting content
+				// with link attributes or typing over a link.
+				if ( change.type === 'insert' && change.attributes.has( 'linkHref' ) && change.position.nodeAfter ) {
+					elementsToCheck.add( change.position.nodeAfter );
+				}
+			}
+
+			// Check each element for conflicting decorators.
+			for ( const item of elementsToCheck ) {
+				const appliedDecorators: Array<LinkManualDecorator> = [];
+
+				for ( const manualDecorator of linkCommand.manualDecorators ) {
+					if ( !item.hasAttribute( manualDecorator.id ) ) {
+						continue;
+					}
+
+					// Resolve conflicts on the fly, remove the earlier decorator (later wins).
+					for ( let i = appliedDecorators.length - 1; i >= 0; i-- ) {
+						const appliedDecorator = appliedDecorators[ i ];
+
+						if ( areDecoratorsConflicting( appliedDecorator, manualDecorator ) ) {
+							writer.removeAttribute( appliedDecorator.id, item );
+							appliedDecorators.splice( i, 1 );
+							hasChanged = true;
+						}
+					}
+
+					appliedDecorators.push( manualDecorator );
+				}
+			}
+
+			return hasChanged;
 		} );
 	}
 }

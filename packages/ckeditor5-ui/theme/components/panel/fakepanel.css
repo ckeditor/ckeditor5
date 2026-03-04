@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
 
 :root {
 	--ck-balloon-fake-panel-offset-horizontal: 6px;
@@ -13,7 +12,7 @@
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
 
 .ck .ck-fake-panel div {
-	@mixin ck-drop-shadow;
+	box-shadow: var(--ck-drop-shadow), 0 0;
 
 	min-height: 15px;
 

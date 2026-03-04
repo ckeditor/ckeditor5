@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
 	--ck-link-panel-width: 340px;
@@ -14,7 +12,7 @@
 	--ck-link-provider-list-item-height: calc(var(--ck-link-provider-list-item-text-height) + var(--ck-spacing-small) + var(--ck-spacing-small));
 }
 
-@mixin ck-media-phone {
+@media screen and (max-width: 600px) {
 	:root {
 		--ck-link-panel-width: 300px;
 	}
@@ -28,7 +26,7 @@
 
 	&.ck-responsive-form {
 		& .ck-labeled-field-view {
-			@mixin ck-media-phone {
+			@media screen and (max-width: 600px) {
 				margin: 0;
 			}
 		}

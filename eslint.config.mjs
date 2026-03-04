@@ -209,10 +209,6 @@ export default defineConfig( [
 			globals: {
 				...globals.browser
 			}
-		},
-
-		rules: {
-			'ckeditor5-rules/ckeditor-imports': 'off'
 		}
 	},
 	{

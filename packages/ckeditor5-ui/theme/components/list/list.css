@@ -3,21 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_disabled.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-@import "../../mixins/_unselectable.css";
-
 .ck.ck-list {
-	@mixin ck-rounded-corners;
-
+	border-radius: var(--ck-rounded-corners-radius);
 	list-style-type: none;
 	background: var(--ck-color-list-background);
 
 	/* A spacing at the beginning and end of the list */
 	padding: var(--ck-spacing-small) 0;
-	@mixin ck-unselectable;
+	-webkit-user-select: none;
+	user-select: none;
 
 	display: flex;
 	flex-direction: column;
@@ -48,11 +42,11 @@
 		width: 100%;
 		border-radius: 0;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			text-align: left;
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			text-align: right;
 		}
 

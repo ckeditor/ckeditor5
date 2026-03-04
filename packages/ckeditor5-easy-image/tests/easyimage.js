@@ -19,7 +19,7 @@ import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/token
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-// EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
+// EasyImage requires the `CloudServicesCore` plugin as a dependency.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
 // and override the `#createToken()` method which creates an instance of the `Token` class.
 class CloudServicesCoreMock extends CloudServicesCore {
@@ -39,8 +39,8 @@ describe( 'EasyImage', () => {
 		expect( EasyImage.requires ).to.include( CloudServicesUploadAdapter );
 	} );
 
-	it( 'should require ImageUpload by name', () => {
-		expect( EasyImage.requires ).to.include( 'ImageUpload' );
+	it( 'should require ImageUpload', () => {
+		expect( EasyImage.requires ).to.include( ImageUpload );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

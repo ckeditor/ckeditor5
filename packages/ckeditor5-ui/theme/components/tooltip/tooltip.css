@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rounded.css";
-@import "../../mixins/_unselectable.css";
 
 .ck.ck-balloon-panel.ck-tooltip {
 	--ck-balloon-border-width: 0px;
@@ -18,7 +16,8 @@
 
 	/* Reset balloon panel styles */
 	box-shadow: none;
-	@mixin ck-unselectable;
+	-webkit-user-select: none;
+	user-select: none;
 
 	& .ck-tooltip__text {
 		font-size: .9em;

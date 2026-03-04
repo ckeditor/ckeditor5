@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-find-and-replace-form {
 	width: 400px;
@@ -35,13 +33,13 @@
 			flex: 0 0 auto;
 		}
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			& > * + * {
 				margin-left: var(--ck-spacing-standard);
 			}
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			& > * + * {
 				margin-right: var(--ck-spacing-standard);
 			}
@@ -78,11 +76,11 @@
 
 			color: var(--ck-color-base-border);
 
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				right: var(--ck-spacing-standard);
 			}
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				left: var(--ck-spacing-standard);
 			}
 		}
@@ -91,11 +89,11 @@
 			flex: 0 0 100%;
 			padding-top: var(--ck-spacing-standard);
 
-			@mixin ck-dir ltr {
+			[dir="ltr"] & {
 				margin-left: 0;
 			}
 
-			@mixin ck-dir rtl {
+			[dir="rtl"] & {
 				margin-right: 0;
 			}
 		}
@@ -128,7 +126,7 @@
 	}
 }
 
-@mixin ck-media-phone {
+@media screen and (max-width: 600px) {
 	.ck.ck-find-and-replace-form {
 		width: 300px;
 
@@ -151,11 +149,11 @@
 				&:first-of-type {
 					flex: 1 1 auto;
 
-					@mixin ck-dir ltr {
+					[dir="ltr"] & {
 						margin-left: 0;
 					}
 
-					@mixin ck-dir rtl {
+					[dir="rtl"] & {
 						margin-right: 0;
 					}
 
@@ -172,17 +170,18 @@
 			flex-wrap: wrap;
 			flex: 1 1 auto;
 
+			/* stylelint-disable-next-line no-descending-specificity */
 			& > .ck-button {
 				text-align: center;
 
 				&:first-of-type {
 					flex: 1 1 auto;
 
-					@mixin ck-dir ltr {
+					[dir="ltr"] & {
 						margin-left: 0;
 					}
 
-					@mixin ck-dir rtl {
+					[dir="rtl"] & {
 						margin-right: 0;
 					}
 				}

@@ -16,7 +16,7 @@ import {
 } from '@ckeditor/ckeditor5-upload';
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
+import { ImageUploadEditing, ImageUploadProgress, type ImageUploadCompleteEvent } from '@ckeditor/ckeditor5-image';
 
 import { CKBoxEditing } from './ckboxediting.js';
 import {
@@ -39,7 +39,7 @@ export class CKBoxUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'ImageUploadEditing', 'ImageUploadProgress', FileRepository, CKBoxEditing ] as const;
+		return [ ImageUploadEditing, ImageUploadProgress, FileRepository, CKBoxEditing ] as const;
 	}
 
 	/**
@@ -78,7 +78,7 @@ export class CKBoxUploadAdapter extends Plugin {
 		fileRepository.createUploadAdapter = loader => new Adapter( loader, editor, ckboxUtils );
 
 		const shouldInsertDataId = !editor.config.get( 'ckbox.ignoreDataId' );
-		const imageUploadEditing: ImageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
 
 		// Mark uploaded assets with the `ckboxImageId` attribute. Its value represents an ID in CKBox.
 		if ( shouldInsertDataId ) {

@@ -16,6 +16,7 @@ import {
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
 	isFirstBlockOfListItem,
+	isFirstListItemInList,
 	isListItemBlock,
 	isNumberedListType
 } from './utils/model.js';
@@ -84,5 +85,12 @@ export class ListUtils extends Plugin {
 	 */
 	public isNumberedListType( listType: ListType ): boolean {
 		return isNumberedListType( listType );
+	}
+
+	/**
+	 * Returns true if the given list item is the first item in the list.
+	 */
+	public isFirstListItemInList( listItem: ModelElement ): boolean {
+		return isFirstListItemInList( listItem );
 	}
 }
