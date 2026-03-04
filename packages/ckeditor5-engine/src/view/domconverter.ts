@@ -276,10 +276,7 @@ export class ViewDomConverter {
 			return false;
 		}
 
-		if (
-			attributeKey === 'srcdoc' &&
-			attributeValue.match( /\bon\S+\s*=|javascript:|<\s*\/*script/i )
-		) {
+		if ( attributeKey === 'srcdoc' ) {
 			return false;
 		}
 
@@ -294,7 +291,7 @@ export class ViewDomConverter {
 			return true;
 		}
 
-		if ( attributeValue.match( /^\s*(javascript:|data:(image\/svg|text\/x?html))/i ) ) {
+		if ( attributeValue.replace( /\s+/g, '' ).match( /^(javascript:|data:(image\/svg|text\/x?html))/i ) ) {
 			return false;
 		}
 
