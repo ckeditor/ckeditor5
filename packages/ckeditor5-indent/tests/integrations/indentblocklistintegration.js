@@ -2330,6 +2330,53 @@ describe( 'IndentBlockListIntegration', () => {
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
 			);
 		} );
+
+		describe( 'when IndentBlock is loaded before Indent', () => {
+			let editor, model;
+
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [
+						Paragraph,
+						ListEditing,
+						IndentBlock,
+						IndentEditing
+					]
+				} );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should still register indentBlockList as child command of indent multi-command', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]foo</paragraph>'
+				);
+
+				const indentBlockListCommand = editor.commands.get( 'indentBlockList' );
+				const spy = sinon.spy( indentBlockListCommand, 'execute' );
+
+				editor.execute( 'indent' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should still register outdentBlockList as child command of outdent multi-command', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a" blockIndentList="40px" listType="bulleted">[]foo</paragraph>'
+				);
+
+				const outdentBlockListCommand = editor.commands.get( 'outdentBlockList' );
+				const spy = sinon.spy( outdentBlockListCommand, 'execute' );
+
+				editor.execute( 'outdent' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'keyboard integration', () => {
