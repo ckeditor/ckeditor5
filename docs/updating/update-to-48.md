@@ -49,31 +49,31 @@ If you use only the default user colors, no changes are required. However, if yo
 1. Remove the `@ckeditor/ckeditor5-collaboration-core/theme/usercolormixin.css` import.
 2. Replace `@mixin userColor` definitions with `--ck-user-colors--*` and `--ck-user-colors--*-alpha` CSS variables.
 
-The old and new approaches look like this:
+	The old and new approaches look like this:
 
-```css
-/* Before */
-@import "@ckeditor/ckeditor5-collaboration-core/theme/usercolormixin.css";
+	```css
+	/* Before */
+	@import "@ckeditor/ckeditor5-collaboration-core/theme/usercolormixin.css";
 
-@mixin userColor hsla(31, 90%, 43%, 1), hsla(31, 90%, 43%, 0.15), 8;
-@mixin userColor hsla(61, 90%, 43%, 1), hsla(61, 90%, 43%, 0.15), 9;
-```
+	@mixin userColor hsla(31, 90%, 43%, 1), hsla(31, 90%, 43%, 0.15), 8;
+	@mixin userColor hsla(61, 90%, 43%, 1), hsla(61, 90%, 43%, 0.15), 9;
+	```
 
-```css
-/* After */
-:root {
-	--ck-user-colors--8: hsla(31, 90%, 43%, 1);
-	--ck-user-colors--8-alpha: hsla(31, 90%, 43%, 0.15);
+	```css
+	/* After */
+	:root {
+		--ck-user-colors--8: hsla(31, 90%, 43%, 1);
+		--ck-user-colors--8-alpha: hsla(31, 90%, 43%, 0.15);
 
-	--ck-user-colors--9: hsla(61, 90%, 43%, 1);
-	--ck-user-colors--9-alpha: hsla(61, 90%, 43%, 0.15);
-}
-```
+		--ck-user-colors--9: hsla(61, 90%, 43%, 1);
+		--ck-user-colors--9-alpha: hsla(61, 90%, 43%, 0.15);
+	}
+	```
 
-The editor configuration `config.users.colorsCount` did not change and should be kept aligned with the total number of defined colors. For the example above (`0-9`), set:
+3. Keep the `config.users.colorsCount` option aligned with the total number of defined colors. For the example above (`0-9`), set:
 
-```js
-users: {
-	colorsCount: 10
-}
-```
+	```js
+	users: {
+		colorsCount: 10
+	}
+	```
