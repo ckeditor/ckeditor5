@@ -21,7 +21,11 @@ export { HtmlComment, type HtmlCommentData } from './htmlcomment.js';
 export { FullPage } from './fullpage.js';
 export { HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
 export { EmptyBlock } from './emptyblock.js';
-export type { GeneralHtmlSupportConfig, GHSFullPageConfig, GHSCssSanitizeOutput } from './generalhtmlsupportconfig.js';
+export type {
+	GeneralHtmlSupportConfig,
+	GHSFullPageConfig,
+	GHSCssSanitizeOutput
+} from './generalhtmlsupportconfig.js';
 export { CodeBlockElementSupport } from './integrations/codeblock.js';
 export { CustomElementSupport } from './integrations/customelement.js';
 export { ListElementSupport } from './integrations/list.js';
@@ -32,6 +36,7 @@ export { MediaEmbedElementSupport } from './integrations/mediaembed.js';
 export { ScriptElementSupport } from './integrations/script.js';
 export { StyleElementSupport } from './integrations/style.js';
 export { TableElementSupport } from './integrations/table.js';
+export { IframeElementSupport } from './integrations/iframe.js';
 export { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 
 export {
