@@ -7,6 +7,7 @@
  * @module engine/view/styles/background
  */
 
+import { isEmpty } from 'es-toolkit/compat';
 import type {
 	StylesProcessor,
 	StylesNormalizer,
@@ -102,6 +103,14 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 function getBackgroundNormalizer(): StylesNormalizer {
 	return value => {
 		const layers = splitBackgroundIntoLayers( value );
+
+		// If for some reason, it was impossible to extract any valid layers from the input,
+		// assume it's color value for a single layer background, as it's the most common use
+		// case and better than losing the value completely.
+		if ( !layers.length ) {
+			layers.push( { color: value } );
+		}
+
 		const background = mergeBackgroundLayers( layers );
 
 		return {
@@ -312,24 +321,10 @@ function mergeBackgroundLayers( layers: Array<BackgroundLayer> ): Background {
 		attachment: resetIfAllInitial( attachment, BACKGROUND_INITIAL_VALUES.attachment ),
 		color
 	};
-}
 
-/**
- * Returns an empty array if every element of `property` equals `initialValue`,
- * otherwise returns `property` unchanged.
- *
- * Used to avoid storing redundant all-initial longhand arrays after merging background layers.
- *
- * @param property The array of per-layer values to check.
- * @param initialValue The CSS initial value for the property.
- * @returns The original array, or `[]` if all elements equal the initial value.
- *
- * @example
- * resetIfAllInitial( [ 'scroll', 'scroll' ], 'scroll' ); // → []
- * resetIfAllInitial( [ 'scroll', 'fixed' ], 'scroll' );  // → [ 'scroll', 'fixed' ]
- */
-function resetIfAllInitial( property: Array<string>, initialValue: string ): Array<string> {
-	return property.every( value => value === initialValue ) ? [] : property;
+	function resetIfAllInitial( property: Array<string>, initialValue: string ): Array<string> {
+		return property.every( value => value === initialValue ) ? [] : property;
+	}
 }
 
 /**
@@ -350,7 +345,9 @@ function resetIfAllInitial( property: Array<string>, initialValue: string ): Arr
  * // → [ { image: 'url(a.png)', repeat: [ 'no-repeat' ] }, { color: 'red' } ]
  */
 function splitBackgroundIntoLayers( value: string ): Array<BackgroundLayer> {
-	return splitByTopLevelCommas( value ).map( parseBackgroundLayer );
+	return splitByTopLevelCommas( value )
+		.map( parseBackgroundLayer )
+		.filter( obj => !isEmpty( obj ) );
 }
 
 /**
