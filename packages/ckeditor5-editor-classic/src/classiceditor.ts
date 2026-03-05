@@ -14,10 +14,11 @@ import {
 	Editor,
 	ElementApiMixin,
 	attachToForm,
+	normalizeRootConfig,
+	type RootConfig,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
-import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 
@@ -53,20 +54,16 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 */
 	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
-		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
-
 		super( config );
 
-		this.config.define( 'menuBar.isVisible', false );
+		normalizeRootConfig( this.config, {
+			sourceElementOrData,
+			isSourceData: !isElement( sourceElementOrData ),
+			rootNames: [ 'main' ],
+			forceDefaultRoot: true
+		} );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
-		}
+		this.config.define( 'menuBar.isVisible', false );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
@@ -77,11 +74,12 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
 		const menuBarConfig = this.config.get( 'menuBar' )!;
+		const mainRootConfig = getMainRootConfig( this.config.get( 'roots' ) );
 
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
-			label: this.config.get( 'label' )
+			label: mainRootConfig.label
 		} );
 
 		this.ui = new ClassicEditorUI( this, view );
@@ -202,7 +200,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.data.init( getMainRootConfig( editor.config.get( 'roots' ) ).initialData || '' ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
@@ -210,8 +208,8 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	}
 }
 
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+function getMainRootConfig( rootsConfig: EditorConfig[ 'roots' ] ): RootConfig {
+	return rootsConfig?.main || {};
 }
 
 function isElement( value: any ): value is Element {

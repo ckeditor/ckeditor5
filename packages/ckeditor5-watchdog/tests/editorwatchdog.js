@@ -1602,15 +1602,12 @@ describe( 'EditorWatchdog', () => {
 					content: '<p>Bar</p>'
 				}, {
 					plugins: [ Paragraph ],
-					rootsAttributes: {
-						header: {
-							order: 1
-						},
-						content: {
-							order: 2
-						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					roots: {
+						header: { modelElement: { attributes: { order: 1 } } },
+						content: { modelElement: { attributes: { order: 2 } } },
+						lazyOne: { lazyLoad: true },
+						lazyTwo: { lazyLoad: true }
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1638,7 +1635,7 @@ describe( 'EditorWatchdog', () => {
 				clock = sinon.useFakeTimers();
 
 				watchdog.editor.detachRoot( 'content' );
-				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', modelElement: { attributes: { order: 3 } } } );
 
 				clock.tick( 6000 );
 				clock.restore();
@@ -1732,15 +1729,12 @@ describe( 'EditorWatchdog', () => {
 						content: '<p>Bar</p>'
 					},
 					plugins: [ Paragraph, MultiRootEditorIntegration ],
-					rootsAttributes: {
-						header: {
-							order: 1
-						},
-						content: {
-							order: 2
-						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					roots: {
+						header: { modelElement: { attributes: { order: 1 } } },
+						content: { modelElement: { attributes: { order: 2 } } },
+						lazyOne: { lazyLoad: true },
+						lazyTwo: { lazyLoad: true }
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1763,7 +1757,7 @@ describe( 'EditorWatchdog', () => {
 				clock = sinon.useFakeTimers();
 
 				watchdog.editor.detachRoot( 'content' );
-				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', modelElement: { attributes: { order: 3 } } } );
 
 				clock.tick( 6000 );
 				clock.restore();

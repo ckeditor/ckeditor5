@@ -203,11 +203,7 @@ export class MultiRootEditorUI extends EditorUI {
 	 */
 	private _initPlaceholder( editable: InlineEditableUIView, placeholder?: string ): void {
 		if ( !placeholder ) {
-			const configPlaceholder = this.editor.config.get( 'placeholder' );
-
-			if ( configPlaceholder ) {
-				placeholder = typeof configPlaceholder === 'string' ? configPlaceholder : configPlaceholder[ editable.name! ];
-			}
+			placeholder = ( this.editor.config.get( 'roots' ) || {} )[ editable.name! ]?.placeholder;
 		}
 
 		const editingView = this.editor.editing.view;

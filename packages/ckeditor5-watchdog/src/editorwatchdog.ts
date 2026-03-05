@@ -13,7 +13,6 @@ import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { ModelNode, ModelText, ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';
-import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -179,32 +178,33 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				// We are not interested in any data set in config or in `.create()` first parameter. It will be replaced anyway.
 				// But we need to set them correctly to make sure that proper roots are created.
 				//
-				// Since a different set of roots will be created, `lazyRoots` and `rootsAttributes` properties must be managed too.
+				// Since a different set of roots will be created, the per-root `roots` config must be managed too.
 
 				// Keys are root names, values are ''. Used when the editor was initialized by setting the first parameter to document data.
 				const existingRoots: Record<string, string> = {};
-				// Keeps lazy roots. They may be different when compared to initial config if some of the roots were loaded.
-				const lazyRoots: Array<string> = [];
-				// Roots attributes from the old config. Will be referred when setting new attributes.
-				const oldRootsAttributes: Record<string, RootAttributes> = this._config!.rootsAttributes || {};
-				// New attributes to be set. Is filled only for roots that still exist in the document.
-				const rootsAttributes: Record<string, RootAttributes> = {};
+				const oldRootsConfig = this._config!.roots || {};
+				const roots = { ...oldRootsConfig };
 
 				// Traverse through the roots saved when the editor crashed and set up the discussed values.
 				for ( const [ rootName, rootData ] of Object.entries( this._data!.roots ) ) {
+					roots[ rootName ] = {
+						...roots[ rootName ],
+						lazyLoad: !rootData.isLoaded,
+						modelElement: {
+							...roots[ rootName ]?.modelElement,
+							attributes: rootData.isLoaded ? roots[ rootName ]?.modelElement?.attributes : undefined
+						}
+					};
+
 					if ( rootData.isLoaded ) {
 						existingRoots[ rootName ] = '';
-						rootsAttributes[ rootName ] = oldRootsAttributes[ rootName ] || {};
-					} else {
-						lazyRoots.push( rootName );
 					}
 				}
 
 				const updatedConfig: EditorConfig = {
 					...this._config,
 					extraPlugins: this._config!.extraPlugins || [],
-					lazyRoots,
-					rootsAttributes,
+					roots,
 					_watchdogInitialData: this._data
 				};
 

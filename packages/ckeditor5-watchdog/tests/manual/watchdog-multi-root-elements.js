@@ -67,7 +67,7 @@ const editorConfig = {
 			'mergeTableCells'
 		]
 	},
-	lazyRoots
+	roots: Object.fromEntries( lazyRoots.map( rootName => [ rootName, { lazyLoad: true } ] ) )
 };
 
 const watchdog = createWatchdog( document.getElementById( 'editor-state' ) );

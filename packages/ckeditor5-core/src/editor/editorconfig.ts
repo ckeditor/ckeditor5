@@ -60,6 +60,31 @@ export interface EditorConfig extends EngineConfig {
 	extraPlugins?: Array<PluginConstructor<Editor>>;
 
 	/**
+	 * The root configuration options for the default `main` root.
+	 *
+	 * This option is an alias for `config.roots.main`.
+	 */
+	root?: RootConfig;
+
+	/**
+	 * The root configuration options grouped by the root name.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		roots: {
+	 * 			main: {
+	 * 				initialData: '<p>Hello world!</p>',
+	 * 				placeholder: 'Type some text...',
+	 * 				label: 'Main content'
+	 * 			}
+	 * 		}
+	 * 	} );
+	 * ```
+	 */
+	roots?: RootsConfig;
+
+	/**
 	 * The initial editor data to be used instead of the provided element's HTML content.
 	 *
 	 * ```ts
@@ -109,6 +134,9 @@ export interface EditorConfig extends EngineConfig {
 	 * If `config.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
 	 * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
 	 * plugins can read and/or modify it during initialization.
+	 *
+	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.initialData`} instead.**
 	 */
 	initialData?: string | Record<string, string>;
 
@@ -537,6 +565,9 @@ export interface EditorConfig extends EngineConfig {
 	 * element passed to the `create()` method.
 	 *
 	 * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
+	 *
+	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.placeholder`} instead.**
 	 */
 	placeholder?: string | Record<string, string>;
 
@@ -867,6 +898,55 @@ export interface EditorConfig extends EngineConfig {
 	 */
 	label?: string | Record<string, string>;
 }
+
+/**
+ * Root-related editor configuration options.
+ */
+export interface RootConfig {
+
+	/**
+	 * Initial data of the root.
+	 */
+	initialData?: string;
+
+	/**
+	 * Placeholder text of the root.
+	 */
+	placeholder?: string;
+
+	/**
+	 * Accessible label of the root.
+	 */
+	label?: string;
+
+	/**
+	 * Whether the root should be lazily loaded.
+	 *
+	 * **This property has been deprecated and may be removed in the future versions of CKEditor.**
+	 */
+	lazyLoad?: boolean;
+
+	/**
+	 * Configuration of the model root element.
+	 */
+	modelElement?: {
+
+		/**
+		 * The model root element name.
+		 */
+		name?: string;
+
+		/**
+		 * Initial attributes set on the model root element.
+		 */
+		attributes?: Record<string, unknown>;
+	};
+}
+
+/**
+ * Root-related editor configuration options grouped by root names.
+ */
+export type RootsConfig = Record<string, RootConfig>;
 
 /**
  * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of
