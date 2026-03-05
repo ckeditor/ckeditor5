@@ -1112,7 +1112,7 @@ function toPath( name: string ): string {
 function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObject: StyleValue ) {
 	let valueToSet = valueOrObject;
 
-	if ( isObject( valueOrObject ) ) {
+	if ( isObject( valueOrObject ) && !Array.isArray( valueOrObject ) ) {
 		valueToSet = merge( {}, get( stylesObject, nameOrPath ), valueOrObject );
 	}
 
