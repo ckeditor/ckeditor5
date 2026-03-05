@@ -97,8 +97,8 @@ export class MultiRootEditorUI extends EditorUI {
 	 * changing its content will be reflected in the editor model. Keystrokes, focus handling and placeholder are initialized.
 	 *
 	 * @param editable The editable instance to add.
-	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.placeholder`} will be used (if provided).
 	 */
 	public addEditable( editable: InlineEditableUIView, placeholder?: string ): void {
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
@@ -198,8 +198,8 @@ export class MultiRootEditorUI extends EditorUI {
 	 * Enables the placeholder text on a given editable.
 	 *
 	 * @param editable Editable on which the placeholder should be set.
-	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.placeholder`} will be used (if provided).
 	 */
 	private _initPlaceholder( editable: InlineEditableUIView, placeholder?: string ): void {
 		if ( !placeholder ) {

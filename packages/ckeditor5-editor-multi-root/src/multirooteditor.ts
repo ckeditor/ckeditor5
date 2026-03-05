@@ -375,7 +375,7 @@ export class MultiRootEditor extends Editor {
 	 * ```ts
 	 * // Add a collapsed root at fourth position from top.
 	 * // Keep in mind that these are just examples of attributes. You need to provide your own features that will handle the attributes.
-	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
+	 * editor.addRoot( 'myRoot', { modelElement: { attributes: { isCollapsed: true, index: 4 } } } );
 	 * ```
 	 *
 	 * Note that attributes added together with a root are automatically registered.
@@ -497,9 +497,10 @@ export class MultiRootEditor extends Editor {
 	 * The new DOM editable is attached to the model root and can be used to modify the root content.
 	 *
 	 * @param root Root for which the editable element should be created.
-	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
-	 * @param label The accessible label text describing the editable to the assistive technologies.
+	 * @param options Configuration for the editable element.
+	 * @param options.placeholder Placeholder for the editable element. If not set, placeholder value from
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.placeholder`} will be used (if provided).
+	 * @param options.label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
 	public createEditable( root: ModelRootElement, options?: CreateEditableOptions ): HTMLElement;

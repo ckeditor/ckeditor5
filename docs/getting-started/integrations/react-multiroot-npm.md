@@ -90,7 +90,7 @@ The `useMultiRootEditor` hook supports the following properties:
 
 * `editor: MultiRootEditor` (required) &ndash; The {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} constructor to use.
 * `data: Object` &ndash; The initial data for the created editor. See the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
-* `rootsAttributes: Object` &ndash; The initial roots attributes for the created editor.
+* `rootsAttributes: Object` (deprecated) &ndash; Legacy way of setting initial roots attributes. Use `config.roots.<rootName>.modelElement.attributes` instead.
 * `config: Object` &ndash; The editor configuration. See the {@link getting-started/setup/configuration Configuration} guide.
 * `disabled: Boolean` &ndash; The {@link module:editor-multi-root/multirooteditor~MultiRootEditor `MultiRootEditor`} is being switched to read-only mode if the property is set to `true`.
 * `disableWatchdog: Boolean` &ndash; If set to `true`, {@link features/watchdog the watchdog feature} will be disabled. It is set to `false` by default.
