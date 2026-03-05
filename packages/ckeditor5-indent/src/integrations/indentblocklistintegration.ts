@@ -1,0 +1,395 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/**
+ * @module indent/integrations/indentblocklistintegration
+ */
+
+import {
+	type ListEditingPostFixerEvent,
+	type _ListIndentCommandAfterExecuteEvent
+} from '@ckeditor/ckeditor5-list';
+
+import { type GetCallback } from 'ckeditor5/src/utils.js';
+
+import {
+	type MultiCommand,
+	Plugin
+} from 'ckeditor5/src/core.js';
+
+import {
+	addMarginStylesRules,
+	type ModelWriter,
+	type ModelElement,
+	type UpcastElementEvent,
+	type ViewConsumable,
+	type ViewDocumentTabEvent,
+	type ViewElement
+} from 'ckeditor5/src/engine.js';
+
+import { IndentBlockListCommand } from './indentblocklistcommand.js';
+import { IndentBlockListItemCommand } from './indentblocklistitemcommand.js';
+import { IndentUsingOffset } from '../indentcommandbehavior/indentusingoffset.js';
+import { IndentUsingClasses } from '../indentcommandbehavior/indentusingclasses.js';
+import { ResetIndentUsingOffset } from '../indentcommandbehavior/resetindentusingoffset.js';
+import { ResetIndentUsingClasses } from '../indentcommandbehavior/resetindentusingclasses.js';
+
+/**
+ * This integration enables using block indentation feature with lists.
+ */
+export class IndentBlockListIntegration extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get pluginName() {
+		return 'IndentBlockListIntegration' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+
+		if ( !this.editor.plugins.has( 'ListEditing' ) ) {
+			return;
+		}
+
+		const config = editor.config.get( 'indentBlock' )!;
+
+		if ( config.classes && config.classes.length ) {
+			this._setupConversionUsingClasses( config.classes, 'ol', 'blockIndentList', 'list' );
+			this._setupConversionUsingClasses( config.classes, 'ul', 'blockIndentList', 'list' );
+			this._setupConversionUsingClasses( config.classes!, 'li', 'blockIndentListItem', 'item' );
+
+			editor.commands.add( 'indentBlockList', new IndentBlockListCommand( editor, new IndentUsingClasses( {
+				direction: 'forward',
+				classes: config.classes!
+			} ) ) );
+
+			editor.commands.add( 'outdentBlockList', new IndentBlockListCommand( editor, new IndentUsingClasses( {
+				direction: 'backward',
+				classes: config.classes!
+			} ) ) );
+
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingClasses( {
+				direction: 'forward',
+				classes: config.classes!
+			} ) ) );
+
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingClasses( {
+				direction: 'backward',
+				classes: config.classes!
+			} ) ) );
+		} else {
+			editor.data.addStyleProcessorRules( addMarginStylesRules );
+
+			this._setupConversionUsingOffset( 'ol', 'blockIndentList', 'list' );
+			this._setupConversionUsingOffset( 'ul', 'blockIndentList', 'list' );
+			this._setupConversionUsingOffset( 'li', 'blockIndentListItem', 'item' );
+
+			editor.commands.add( 'indentBlockList', new IndentBlockListCommand( editor, new IndentUsingOffset( {
+				direction: 'forward',
+				offset: config.offset!,
+				unit: config.unit!
+			} ) ) );
+
+			editor.commands.add( 'outdentBlockList', new IndentBlockListCommand( editor, new IndentUsingOffset( {
+				direction: 'backward',
+				offset: config.offset!,
+				unit: config.unit!
+			} ) ) );
+
+			editor.commands.add( 'indentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingOffset( {
+				direction: 'forward',
+				offset: config.offset!,
+				unit: config.unit!
+			} ) ) );
+
+			editor.commands.add( 'outdentBlockListItem', new IndentBlockListItemCommand( editor, new ResetIndentUsingOffset( {
+				direction: 'backward',
+				offset: config.offset!,
+				unit: config.unit!
+			} ) ) );
+		}
+
+		const listEditing = editor.plugins.get( 'ListEditing' );
+
+		// Make sure that all items in a single list (items at the same level & listType) have the same blockIndentList attribute value.
+		// Also make sure that all block in a single list item (blocks with the same listItemId) have the same
+		// blockIndentListItem attribute value.
+		listEditing.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+			for ( const { node, previousNodeInList } of listNodes ) {
+				// This is a first item of a nested list.
+				if ( !previousNodeInList ) {
+					continue;
+				}
+
+				if ( previousNodeInList.getAttribute( 'listType' ) != node.getAttribute( 'listType' ) ) {
+					continue;
+				}
+
+				if ( ensureIndentValuesConsistency( 'blockIndentList', node, previousNodeInList, writer ) ) {
+					evt.return = true;
+				}
+
+				if ( previousNodeInList.getAttribute( 'listItemId' ) != node.getAttribute( 'listItemId' ) ) {
+					continue;
+				}
+
+				if ( ensureIndentValuesConsistency( 'blockIndentListItem', node, previousNodeInList, writer ) ) {
+					evt.return = true;
+				}
+			}
+		} );
+
+		this.listenTo<ViewDocumentTabEvent>( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentBlockList' : 'indentBlockList';
+			const command = this.editor.commands.get( commandName )!;
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName, { firstListOnly: true } );
+
+				data.stopPropagation();
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li', priority: 'high' } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
+
+		if ( !editor.plugins.has( 'ListEditing' ) ) {
+			return;
+		}
+
+		// Schema registration.
+		schema.extend( '$listItem', { allowAttributes: [ 'blockIndentList', 'blockIndentListItem' ] } );
+		schema.setAttributeProperties( 'blockIndentList', { isFormatting: true } );
+		schema.setAttributeProperties( 'blockIndentListItem', { isFormatting: true } );
+
+		model.schema.addAttributeCheck( context => {
+			const item = context.last;
+
+			if ( !item.getAttribute( 'listItemId' ) ) {
+				return false;
+			}
+		}, 'blockIndentList' );
+
+		model.schema.addAttributeCheck( context => {
+			const item = context.last;
+
+			if ( !item.getAttribute( 'listItemId' ) ) {
+				return false;
+			}
+		}, 'blockIndentListItem' );
+
+		// Clear blockIndentList and blockIndentListItem when list indent changes.
+		const clearBlockIndentAttributesOnListIndentChange = (
+			_evt: unknown,
+			changedBlocks: Array<ModelElement>
+		) => {
+			editor.model.change( writer => {
+				for ( const node of changedBlocks ) {
+					if ( node.hasAttribute( 'listItemId' ) ) {
+						if ( node.hasAttribute( 'blockIndentList' ) ) {
+							writer.removeAttribute( 'blockIndentList', node );
+						}
+
+						if ( node.hasAttribute( 'blockIndentListItem' ) ) {
+							writer.removeAttribute( 'blockIndentListItem', node );
+						}
+					}
+				}
+			} );
+		};
+
+		const indentListCommand = editor.commands.get( 'indentList' );
+		const outdentListCommand = editor.commands.get( 'outdentList' );
+
+		if ( indentListCommand ) {
+			this.listenTo<_ListIndentCommandAfterExecuteEvent>(
+				indentListCommand,
+				'afterExecute',
+				clearBlockIndentAttributesOnListIndentChange
+			);
+		}
+
+		if ( outdentListCommand ) {
+			this.listenTo<_ListIndentCommandAfterExecuteEvent>(
+				outdentListCommand,
+				'afterExecute',
+				clearBlockIndentAttributesOnListIndentChange
+			);
+		}
+
+		// Register list block indent commands in multi command.
+		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
+		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockList' )! );
+
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockListItem' )! );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockListItem' )! );
+	}
+
+	/**
+	 * Setups conversion for list block indent using offset.
+	 */
+	private _setupConversionUsingOffset( element: string, attributeName: string, scope: 'list' | 'item' ): void {
+		const editor = this.editor;
+		const locale = editor.locale;
+		const conversion = editor.conversion;
+		const marginProperty = locale.contentLanguageDirection === 'rtl' ? 'margin-right' : 'margin-left';
+		const listEditing = editor.plugins.get( 'ListEditing' );
+
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on<UpcastElementEvent>(
+				`element:${ element }`,
+				listBlockIndentUpcastConverter(
+					attributeName,
+					item => item.getStyle( marginProperty ),
+					( consumable, item ) => consumable.consume( item, { styles: marginProperty } )
+				),
+				{ priority: 'low' }
+			);
+		} );
+
+		listEditing.registerDowncastStrategy( {
+			scope,
+			attributeName,
+
+			setAttributeOnDowncast( writer, value, element ) {
+				if ( value ) {
+					writer.setStyle( marginProperty, value as string, element );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Setups conversion for list block indent using classes.
+	 */
+	private _setupConversionUsingClasses( classes: Array<string>, element: string, attributeName: string, scope: 'list' | 'item' ): void {
+		const editor = this.editor;
+		const conversion = editor.conversion;
+		const listEditing = editor.plugins.get( 'ListEditing' );
+
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on<UpcastElementEvent>(
+				`element:${ element }`,
+				listBlockIndentUpcastConverter(
+					attributeName,
+					item => classes.find( cls => item.hasClass( cls ) ),
+					( consumable, item, value ) => consumable.consume( item, { classes: value } )
+				),
+				{ priority: 'low' }
+			);
+		} );
+
+		listEditing.registerDowncastStrategy( {
+			scope,
+			attributeName,
+
+			setAttributeOnDowncast( writer, value, element ) {
+				if ( value ) {
+					writer.addClass( value as string, element );
+				}
+			}
+		} );
+	}
+}
+
+/**
+ * Returns an upcast converter for block list indentation.
+ *
+ * @param attributeName The name of the model attribute.
+ * @param getValue A function to get the value from the view element.
+ * @param consume A function to consume the view element.
+ * @returns A callback for the upcast conversion.
+ */
+function listBlockIndentUpcastConverter(
+	attributeName: string,
+	getValue: ( viewItem: ViewElement ) => string | undefined,
+	consume: ( consumable: ViewConsumable, viewItem: ViewElement, value: string ) => void
+): GetCallback<UpcastElementEvent> {
+	return ( evt, data, conversionApi ) => {
+		const { writer, consumable } = conversionApi;
+
+		if ( !data.modelRange ) {
+			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
+
+		const value = getValue( data.viewItem );
+
+		if ( value === undefined ) {
+			return;
+		}
+
+		let applied = false;
+		let indentLevel;
+
+		for ( const item of data.modelRange!.getItems( { shallow: true } ) ) {
+			if ( indentLevel === undefined ) {
+				indentLevel = item.getAttribute( 'listIndent' );
+			}
+
+			if ( item.hasAttribute( attributeName ) ) {
+				continue;
+			}
+
+			if ( item.getAttribute( 'listIndent' ) !== indentLevel ) {
+				continue;
+			}
+
+			writer.setAttribute( attributeName, value, item );
+			applied = true;
+		}
+
+		if ( applied ) {
+			consume( consumable, data.viewItem, value );
+		}
+	};
+}
+
+/**
+ * Ensures that two nodes have the same value of the given attribute.
+ * If the values are different, the attribute value from the previous node is applied to the given node.
+ * Returns true if the attribute value was changed, false otherwise.
+ */
+function ensureIndentValuesConsistency(
+	attributeName: string,
+	node: ModelElement,
+	previousNodeInList: ModelElement,
+	writer: ModelWriter
+): boolean {
+	const prevNodeIndentListValue = previousNodeInList.getAttribute( attributeName );
+
+	if ( node.getAttribute( attributeName ) === prevNodeIndentListValue ) {
+		return false;
+	}
+
+	if ( prevNodeIndentListValue ) {
+		writer.setAttribute( attributeName, prevNodeIndentListValue, node );
+	} else {
+		writer.removeAttribute( attributeName, node );
+	}
+
+	return true;
+}

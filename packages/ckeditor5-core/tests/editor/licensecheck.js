@@ -337,6 +337,71 @@ describe( 'Editor - license check', () => {
 				sinon.restore();
 			} );
 
+			it( 'should block editor after 10 minutes on evaluation license', () => {
+				const { licenseKey, todayTimestamp } = generateLicenseKey( {
+					licenseType: 'evaluation',
+					isExpired: false,
+					daysAfterExpiration: -1
+				} );
+
+				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+
+				sinon.clock.tick( 600100 );
+
+				sinon.assert.calledWithMatch( showErrorStub, 'evaluationLimit' );
+				expect( editor.isReadOnly ).to.be.true;
+
+				dateNow.restore();
+			} );
+
+			it( 'should not block editor after 10 minutes on trial license', () => {
+				const { licenseKey, todayTimestamp } = generateLicenseKey( {
+					licenseType: 'trial',
+					isExpired: false,
+					daysAfterExpiration: -1
+				} );
+
+				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+
+				const editor = new TestEditor( { licenseKey } );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+
+				sinon.clock.tick( 600100 );
+
+				sinon.assert.notCalled( showErrorStub );
+				expect( editor.isReadOnly ).to.be.false;
+
+				dateNow.restore();
+			} );
+
+			it( 'should clear timer on editor destroy on evaluation license', done => {
+				const { licenseKey, todayTimestamp } = generateLicenseKey( {
+					licenseType: 'evaluation',
+					isExpired: false,
+					daysAfterExpiration: -1
+				} );
+
+				const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
+				const editor = new TestEditor( { licenseKey } );
+				const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
+
+				editor.fire( 'ready' );
+				editor.on( 'destroy', () => {
+					sinon.assert.calledOnce( clearTimeoutSpy );
+					done();
+				} );
+
+				editor.destroy();
+				dateNow.restore();
+			} );
+
 			licenseTypes.forEach( licenseType => {
 				it( `should not block if ${ licenseType } license did not expired`, () => {
 					const { licenseKey, todayTimestamp } = generateLicenseKey( {
@@ -369,49 +434,6 @@ describe( 'Editor - license check', () => {
 					sinon.assert.calledWithMatch( showErrorStub, 'expired' );
 					expect( editor.isReadOnly ).to.be.true;
 
-					dateNow.restore();
-				} );
-
-				it( `should block editor after 10 minutes on ${ licenseType } license`, () => {
-					const { licenseKey, todayTimestamp } = generateLicenseKey( {
-						licenseType,
-						isExpired: false,
-						daysAfterExpiration: -1
-					} );
-
-					const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
-
-					const editor = new TestEditor( { licenseKey } );
-
-					sinon.assert.notCalled( showErrorStub );
-					expect( editor.isReadOnly ).to.be.false;
-
-					sinon.clock.tick( 600100 );
-
-					sinon.assert.calledWithMatch( showErrorStub, licenseType + 'Limit' );
-					expect( editor.isReadOnly ).to.be.true;
-
-					dateNow.restore();
-				} );
-
-				it( `should clear timer on editor destroy on ${ licenseType } license`, done => {
-					const { licenseKey, todayTimestamp } = generateLicenseKey( {
-						licenseType,
-						isExpired: false,
-						daysAfterExpiration: -1
-					} );
-
-					const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
-					const editor = new TestEditor( { licenseKey } );
-					const clearTimeoutSpy = sinon.spy( globalThis, 'clearTimeout' );
-
-					editor.fire( 'ready' );
-					editor.on( 'destroy', () => {
-						sinon.assert.calledOnce( clearTimeoutSpy );
-						done();
-					} );
-
-					editor.destroy();
 					dateNow.restore();
 				} );
 

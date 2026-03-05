@@ -10,10 +10,11 @@
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { addMarginStylesRules, type DowncastAttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
 
+import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 import { IndentBlockCommand } from './indentblockcommand.js';
 import { IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from './indentcommandbehavior/indentusingclasses.js';
-import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
+import { IndentBlockListIntegration } from './integrations/indentblocklistintegration.js';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
 
@@ -50,6 +51,13 @@ export class IndentBlock extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ IndentBlockListIntegration ] as const;
 	}
 
 	/**

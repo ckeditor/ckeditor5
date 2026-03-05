@@ -64,6 +64,23 @@ jobs:
         type: boolean
     steps:
       - checkout_command
+      - run:
+          name: Verify if the job should continue
+          command: |
+            #!/bin/bash
+
+            IS_NIGHTLY=<< pipeline.parameters.isNightly >>
+
+            if [[ "$IS_NIGHTLY" == "true" ]]; then
+              exit 0
+            fi
+
+            COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s ${CIRCLE_SHA1})
+
+            if [[ "$COMMIT_MESSAGE" == *"[skip ci]" ]]; then
+              echo "Skipping, because the commit message contains '[skip ci]'."
+              circleci-agent step halt
+            fi
       - install_ssh_keys_command
       - run:
           name: Disable Corepack
