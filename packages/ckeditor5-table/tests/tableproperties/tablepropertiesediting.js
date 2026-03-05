@@ -653,6 +653,32 @@ describe( 'table properties', () => {
 						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
 					} );
 
+					it( 'should not convert border="Infinite" (default width is set to `1px`)', () => {
+						editor.setData(
+							'<table border="Infinite">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					} );
+
+					it( 'should not convert negative border values (default width is set to `1px`)', () => {
+						editor.setData(
+							'<table border="-10">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
+					} );
+
 					it( 'should not convert border="1" to tableBorderWidth="1px" (default width)', () => {
 						editor.setData(
 							'<table border="1">' +
