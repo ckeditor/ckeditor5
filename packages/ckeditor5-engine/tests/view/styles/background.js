@@ -16,6 +16,12 @@ describe( 'Background styles normalization', () => {
 	} );
 
 	describe( 'background shorthand', () => {
+		it( 'should preserve incorrect background value', () => {
+			styles.setTo( 'background: rgba( hello, world )' );
+
+			expect( styles.toString() ).to.equal( 'background:rgba( hello, world );' );
+		} );
+
 		it( 'should normalize background', () => {
 			styles.setTo( 'background:url("example.jpg") center #f00 repeat-y fixed border-box;' );
 
