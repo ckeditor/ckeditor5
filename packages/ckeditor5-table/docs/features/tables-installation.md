@@ -240,10 +240,10 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 
 ### Table alignment in output
 
-Table alignment in the editor's output uses inline styles by default. But, you can control it with the `table.tableProperties.alignment.useInlineStyles` property.
+Table alignment in the editor's output uses CSS classes by default. But, you can control it with the `table.tableProperties.alignment.useInlineStyles` property.
 
-* When the property is `true` (default), output contains inline styles.
-* When the property is `false`, output contains CSS classes.
+* When the property is `false` (default), output contains CSS classes.
+* When the property is `true`, output contains inline styles.
 
 The option applies to all five alignment options. Learn more about them in the {@link features/tables#table-alignment Table alignment} section.
 
