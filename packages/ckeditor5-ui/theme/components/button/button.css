@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* Use :where(a) (not plain a) to keep the anchor variant at zero specificity. */
 .ck.ck-button,
-a.ck.ck-button {
+:where(a).ck.ck-button {
 	--ck-button-background: var(--ck-color-button-default-background);
 	--ck-button-hover-background: var(--ck-color-button-default-hover-background);
 	--ck-button-active-background: var(--ck-color-button-default-active-background);
