@@ -400,6 +400,56 @@ describe( 'table cell properties', () => {
 						}
 					} );
 
+					it( 'should convert border="Infinite" to tableCellBorderWidth="1px" on all table cells', () => {
+						editor.setData(
+							'<table border="Infinite">' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+						}
+					} );
+
+					it( 'should convert negative border values to tableCellBorderWidth="1px" on all table cells', () => {
+						editor.setData(
+							'<table border="-5">' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+						}
+					} );
+
 					it( 'should not override existing tableCellBorderStyle attribute', () => {
 						editor.setData(
 							'<table border="0">' +
