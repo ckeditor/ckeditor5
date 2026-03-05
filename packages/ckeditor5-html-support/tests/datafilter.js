@@ -4304,13 +4304,13 @@ describe( 'DataFilter', () => {
 				attributes: {
 					1: {
 						styles: {
-							'background-color': 'red'
+							'background': 'red'
 						}
 					}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p style="background:red;">foobar</p>' );
 		} );
 
 		it( 'should handle longhand style for shorthand filter (background vs background-color)', () => {
@@ -4326,13 +4326,13 @@ describe( 'DataFilter', () => {
 				attributes: {
 					1: {
 						styles: {
-							'background-color': 'red'
+							'background': 'red'
 						}
 					}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p style="background:red;">foobar</p>' );
 		} );
 
 		it( 'should handle shorthand style for longhand filter (background vs background-color)', () => {
@@ -4348,13 +4348,13 @@ describe( 'DataFilter', () => {
 				attributes: {
 					1: {
 						styles: {
-							'background-color': 'red'
+							'background': 'red'
 						}
 					}
 				}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p style="background-color:red;">foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p style="background:red;">foobar</p>' );
 		} );
 
 		it( 'should handle partial padding for generic padding filter (single box side)', () => {

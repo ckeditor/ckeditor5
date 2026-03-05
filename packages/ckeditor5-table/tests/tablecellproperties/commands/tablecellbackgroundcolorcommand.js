@@ -176,7 +176,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'background-color:#f00;' );
+						assertTableCellStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should change selected table cell backgroundColor to a passed value', () => {
@@ -184,7 +184,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'background-color:#f00;' );
+						assertTableCellStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should remove backgroundColor from a selected table cell if no value is passed', () => {
@@ -202,7 +202,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'background-color:#f00;' );
+						assertTableCellStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should change selected table cell backgroundColor to a passed value', () => {
@@ -210,7 +210,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableCellStyle( editor, 'background-color:#f00;' );
+						assertTableCellStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should remove backgroundColor from a selected table cell if no value is passed', () => {
@@ -234,8 +234,8 @@ describe( 'table cell properties', () => {
 						command.execute( { value: '#f00' } );
 
 						expect( editor.getData() ).to.equalMarkup( viewTable( [
-							[ { contents: '00', style: 'background-color:#f00;' }, '01' ],
-							[ '10', { contents: '11', style: 'background-color:#f00;' } ]
+							[ { contents: '00', style: 'background:#f00;' }, '01' ],
+							[ '10', { contents: '11', style: 'background:#f00;' } ]
 						] ) );
 					} );
 

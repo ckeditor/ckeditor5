@@ -98,10 +98,6 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
  *
  * Parses the raw CSS value into comma-separated layers and merges them into
  * a structured `Background` object stored under the `background` path.
- *
- * @example
- * // Input: 'url(a.png) no-repeat, red'
- * // Output: { path: 'background', value: { image: ['url(a.png)', 'none'], repeat: ['no-repeat'], color: 'red', ... } }
  */
 function getBackgroundNormalizer(): StylesNormalizer {
 	return value => {
@@ -119,9 +115,6 @@ function getBackgroundNormalizer(): StylesNormalizer {
  * Returns a normalizer for the `background-color` longhand property.
  *
  * Stores the raw color value directly under the `background.color` path.
- *
- * @example
- * // Input: '#fff'  →  { path: 'background.color', value: '#fff' }
  */
 function getBackgroundColorNormalizer(): StylesNormalizer {
 	return value => ( { path: 'background.color', value } );
@@ -134,10 +127,6 @@ function getBackgroundColorNormalizer(): StylesNormalizer {
  * Splits the raw value by top-level commas and stores the resulting array under the given path.
  *
  * @param path The target style path, e.g. `'background.image'`.
- *
- * @example
- * // path: 'background.image', value: 'url(a.png), url(b.png)'
- * // Output: { path: 'background.image', value: [ 'url(a.png)', 'url(b.png)' ] }
  */
 function getBackgroundArrayPropertyNormalizer( path: string ): StylesNormalizer {
 	return value => {
@@ -155,10 +144,6 @@ function getBackgroundArrayPropertyNormalizer( path: string ): StylesNormalizer 
  * Returns an empty array (property omitted) if the serialized value is empty.
  *
  * @param property The CSS property name to output, e.g. `'background-image'`.
- *
- * @example
- * // property: 'background-image', value: [ 'url(a.png)', 'url(b.png)' ]
- * // Output: [ [ 'background-image', 'url(a.png), url(b.png)' ] ]
  */
 function getBackgroundArrayPropertyReducer( property: string ): StylesReducer {
 	return value => {
@@ -174,11 +159,6 @@ function getBackgroundArrayPropertyReducer( property: string ): StylesReducer {
  * Converts a structured `Background` object back into a CSS `background` shorthand string,
  * omitting values that match their CSS initial values to keep the output concise.
  * Longhand values are serialized per layer in the order: image, position, repeat, attachment, color.
- *
- * @example
- * // Input: { image: ['url(a.png)'], repeat: ['no-repeat'], position: ['0% 0%'], attachment: ['scroll'], color: 'red' }
- * // Output: [ [ 'background', 'url(a.png) no-repeat red' ] ]
- * // (position and attachment are omitted because they equal their initial values)
  */
 function getBackgroundReducer(): StylesReducer {
 	return value => {
@@ -198,10 +178,6 @@ function getBackgroundReducer(): StylesReducer {
  *
  * @param layer A single background layer to serialize.
  * @returns A space-separated CSS string for the layer, or an empty string if no parts are present.
- *
- * @example
- * // Input: { image: 'url(bg.png)', repeat: [ 'no-repeat' ], position: [ '0%', '0%' ], attachment: 'scroll' }
- * // Output: 'url(bg.png) no-repeat'  (position and attachment match initial values, so they're omitted)
  */
 function serializeBackgroundLayer( layer: BackgroundLayer ): string {
 	const parts: Array<string> = [];

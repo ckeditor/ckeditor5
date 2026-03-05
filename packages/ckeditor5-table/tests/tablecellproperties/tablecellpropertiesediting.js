@@ -811,7 +811,7 @@ describe( 'table cell properties', () => {
 				it( 'should downcast tableCellBackgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 
-					assertTableCellStyle( editor, 'background-color:#f00;' );
+					assertTableCellStyle( editor, 'background:#f00;' );
 				} );
 
 				it( 'should downcast tableCellBackgroundColor removal', () => {
@@ -825,11 +825,11 @@ describe( 'table cell properties', () => {
 				it( 'should downcast tableCellBackgroundColor change', () => {
 					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 
-					assertTableCellStyle( editor, 'background-color:#f00;' );
+					assertTableCellStyle( editor, 'background:#f00;' );
 
 					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#ba7', tableCell ) );
 
-					assertTableCellStyle( editor, 'background-color:#ba7;' );
+					assertTableCellStyle( editor, 'background:#ba7;' );
 				} );
 			} );
 		} );
