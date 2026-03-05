@@ -245,8 +245,11 @@ export function upcastBorderStyles(
 				// If the `border` attribute has no value or has invalid value, it should be treated as `border="1"`.
 				const borderValue = parseFloat( viewTable.getAttribute( 'border' ) || '1' );
 
+				// If the `border` value is invalid (e.g. negative, infinite or non-numeric), it should be treated as `1`.
+				const shouldBeOne = Number.isNaN( borderValue ) || !Number.isFinite( borderValue ) || borderValue < 0;
+
 				// For table cells the `border` attribute should be clamped to 1px as higher values are not rendered in browsers.
-				const borderPx = Number.isNaN( borderValue ) || viewItem.name != 'table' && borderValue > 1 ?
+				const borderPx = shouldBeOne || viewItem.name != 'table' && borderValue > 1 ?
 					'1px' :
 					`${ borderValue }px`;
 
