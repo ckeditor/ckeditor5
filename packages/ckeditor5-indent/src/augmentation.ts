@@ -8,7 +8,10 @@ import type {
 	Indent,
 	IndentBlock,
 	IndentUI,
-	IndentBlockCommand
+	IndentBlockCommand,
+	IndentBlockListIntegration,
+	IndentBlockListCommand,
+	IndentBlockListItemCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -26,10 +29,15 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ Indent.pluginName ]: Indent;
 		[ IndentBlock.pluginName ]: IndentBlock;
 		[ IndentUI.pluginName ]: IndentUI;
+		[ IndentBlockListIntegration.pluginName ]: IndentBlockListIntegration;
 	}
 
 	interface CommandsMap {
 		indentBlock: IndentBlockCommand;
 		outdentBlock: IndentBlockCommand;
+		indentBlockList: IndentBlockListCommand;
+		outdentBlockList: IndentBlockListCommand;
+		indentBlockListItem: IndentBlockListItemCommand;
+		outdentBlockListItem: IndentBlockListItemCommand;
 	}
 }

@@ -71,7 +71,7 @@ const data = ref( '<p>Hello world!</p>' );
 
 const config = computed( () => {
 	return {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	};
