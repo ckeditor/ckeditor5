@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-02-11
+modified_at: 2026-03-04
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -39,6 +39,10 @@ Besides `true` or `false`, the `htmlSupport.htmlIframeSandbox` configuration opt
 The `srcdoc` attribute is no longer rendered in the editing view.
 
 Unlike iframe sandboxing, this change is permanent and cannot be disabled via configuration. Any iframe content provided through `srcdoc` will be ignored in the editing view going forward.
+
+### New ordered list styles
+
+We have introduced a new ordered list style: the `arabic-indic` numerals. To use them, you need to explicitly activate the style in the {@link features/lists#enabling-specific-enumerators feature configuration}.
 
 ## Update to CKEditor&nbsp;5 v47.5.0
 
