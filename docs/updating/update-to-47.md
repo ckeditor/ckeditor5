@@ -44,6 +44,10 @@ Unlike iframe sandboxing, this change is permanent and cannot be disabled via co
 
 We have introduced a new ordered list style: the `arabic-indic` numerals. To use them, you need to explicitly activate the style in the {@link features/lists#enabling-specific-enumerators feature configuration}.
 
+### Visual block indentation for lists
+
+The block indentation feature now supports applying visual indentation to list containers and list items. When the `Indent`, `IndentBlock`, and `List` plugins are all loaded, you can indent top-level lists using the toolbar buttons or keyboard shortcuts. The editor also recognizes `margin-left` styles on `<ol>`, `<ul>`, and `<li>` elements during data loading. See the {@link features/indent#indenting-lists Indenting lists} documentation for details.
+
 ## Update to CKEditor&nbsp;5 v47.5.0
 
 Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
