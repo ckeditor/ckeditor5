@@ -48,6 +48,10 @@ We have introduced a new ordered list style: the `arabic-indic` numerals. To use
 
 The block indentation feature now supports applying visual indentation to list containers and list items. When the `Indent`, `IndentBlock`, and `List` plugins are all loaded, you can indent top-level lists using the toolbar buttons or keyboard shortcuts. The editor also recognizes `margin-left` styles on `<ol>`, `<ul>`, and `<li>` elements during data loading. See the {@link features/indent#indenting-lists Indenting lists} documentation for details.
 
+### Mirror margins in Export to PDF V2
+
+The {@link features/export-pdf#export-to-pdf-v2 Export to PDF V2} now supports {@link features/export-pdf#mirror-margins-for-book-like-layouts mirror margins} for book-like layouts. When enabled, left and right margins are treated as inner and outer margins that swap between odd and even pages, making it easy to prepare documents for double-sided printing or binding.
+
 ## Update to CKEditor&nbsp;5 v47.5.0
 
 Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
