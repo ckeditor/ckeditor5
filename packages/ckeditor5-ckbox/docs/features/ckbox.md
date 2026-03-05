@@ -368,18 +368,26 @@ ClassicEditor
 
 ### Configuring the API service
 
-If you host the cloud service in your environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
+Using the CKBox cloud service, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option. The default region is United States (Northern Virginia).
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
 		ckbox: {
-			serviceOrigin: 'https://example.com/'
+			serviceOrigin: 'https://api.ckbox.io'
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
+```
+
+If you are using the EU cloud region instead, remember to adjust the endpoint:
+
+```js
+ckbox: {
+	serviceOrigin: 'https://api-eu.ckbox.io'
+}
 ```
 
 ### Editing external images
