@@ -248,15 +248,15 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
 		}
 
 		if ( background.position?.[ i ] ) {
-			layer.position = background.position[ i ].split( ' ' );
+			layer.position = background.position[ i ]!.split( ' ' );
 		}
 
 		if ( background.size?.[ i ] ) {
-			layer.size = background.size[ i ].split( ' ' );
+			layer.size = background.size[ i ]!.split( ' ' );
 		}
 
 		if ( background.repeat?.[ i ] ) {
-			layer.repeat = background.repeat[ i ].split( ' ' );
+			layer.repeat = background.repeat[ i ]!.split( ' ' );
 		}
 
 		if ( background.attachment?.[ i ] ) {
