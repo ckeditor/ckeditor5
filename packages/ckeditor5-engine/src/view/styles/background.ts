@@ -48,7 +48,7 @@ const IMAGE_FUNCTIONS = [
 /**
  * Adds background CSS styles processing rules to the given `StylesProcessor`.
  *
- * Registers normalizers for the `background` shorthand and all its longhand properties,
+ * Registers normalizers for the `background` shorthand and its longhand properties,
  * reducers that serialize them back to CSS strings, and the relation mapping between them.
  *
  * ```ts
