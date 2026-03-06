@@ -401,6 +401,12 @@ describe( 'Background styles normalization', () => {
 			expect( styles.toString() ).to.equal( 'background:0% 0% / cover;' );
 		} );
 
+		it( 'should output default values', () => {
+			styles.setTo( 'background: none repeat scroll 0% 0% #000;' );
+
+			expect( styles.toString() ).to.equal( 'background:none 0% 0% repeat scroll #000;' );
+		} );
+
 		describe( 'layers', () => {
 			it( 'should output inline background-image style with single gradient layer', () => {
 				styles.setTo(
