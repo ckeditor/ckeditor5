@@ -54,7 +54,7 @@ describe( 'Background styles normalization', () => {
 			styles.setTo(
 				'background: ' +
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%), ' +
-					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%) ' +
+					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%) ' +
 						'center #f00 repeat-y fixed border-box;'
 			);
 
@@ -62,7 +62,7 @@ describe( 'Background styles normalization', () => {
 				attachment: [ 'scroll', 'fixed' ],
 				image: [
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)',
-					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)'
+					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%)'
 				],
 				position: [ '0% 0%', 'center' ],
 				repeat: [ 'repeat', 'repeat-y' ],
@@ -151,13 +151,13 @@ describe( 'Background styles normalization', () => {
 			styles.setTo(
 				'background-image: ' +
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%), ' +
-					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%);'
+					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%);'
 			);
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
 				image: [
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)',
-					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)'
+					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%)'
 				]
 			} );
 		} );
