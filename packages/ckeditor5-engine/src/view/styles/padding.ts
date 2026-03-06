@@ -16,19 +16,6 @@ import { getPositionStyleShorthandNormalizer, getBoxSidesStyleValueReducer } fro
  * ```ts
  * editor.data.addStyleProcessorRules( addPaddingStylesRules );
  * ```
- *
- * The normalized value is stored as:
- *
- * ```ts
- * const styles = {
- * 	padding: {
- * 		top,
- * 		right,
- * 		bottom,
- * 		left
- * 	}
- * };
- * ```
  */
 export function addPaddingStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'padding', getPositionStyleShorthandNormalizer( 'padding' ) );

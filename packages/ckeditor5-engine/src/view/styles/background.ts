@@ -55,20 +55,6 @@ const IMAGE_FUNCTIONS = [
  * editor.data.addStyleProcessorRules( addBackgroundStylesRules );
  * ```
  *
- * The normalized value is stored as:
- *
- * ```ts
- * const styles = {
- * 	background: {
- * 		color,
- * 		repeat,
- * 		position,
- * 		attachment,
- * 		image
- * 	}
- * };
- * ```
- *
  * @param stylesProcessor The styles processor instance to register rules on.
  */
 export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): void {
@@ -281,8 +267,8 @@ function unwrapBackgroundLayers( background: Background ): Array<BackgroundLayer
  * Merges an array of `BackgroundLayer` objects into a single structured `Background` object,
  * storing each longhand property as an array of per-layer values.
  *
- * Missing properties in a layer are filled with their CSS initial values, as required by the spec
- * when parsing the `background` shorthand. Properties that contain only initial values across all
+ * Missing properties in a layer are filled with their CSS placeholder values, as required by the spec
+ * when parsing the `background` shorthand. Properties that contain only placeholder values across all
  * layers are reset to empty arrays to avoid redundant output.
  *
  * @param layers An array of parsed background layers.
