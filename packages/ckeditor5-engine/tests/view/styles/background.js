@@ -30,6 +30,7 @@ describe( 'Background styles normalization', () => {
 				image: [ 'url("example.jpg")' ],
 				position: [ 'center' ],
 				repeat: [ 'repeat-y' ],
+				size: [],
 				color: '#f00'
 			} );
 		} );
@@ -46,6 +47,7 @@ describe( 'Background styles normalization', () => {
 				image: [ 'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)' ],
 				position: [ 'center' ],
 				repeat: [ 'repeat-y' ],
+				size: [],
 				color: '#f00'
 			} );
 		} );
@@ -59,13 +61,14 @@ describe( 'Background styles normalization', () => {
 			);
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
-				attachment: [ 'scroll', 'fixed' ],
+				attachment: [ undefined, 'fixed' ],
 				image: [
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%)',
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%)'
 				],
-				position: [ '0% 0%', 'center' ],
-				repeat: [ 'repeat', 'repeat-y' ],
+				position: [ undefined, 'center' ],
+				repeat: [ undefined, 'repeat-y' ],
+				size: [],
 				color: '#f00'
 			} );
 		} );
@@ -78,6 +81,7 @@ describe( 'Background styles normalization', () => {
 				image: [ 'url("example.jpg")' ],
 				position: [ 'center' ],
 				repeat: [ 'repeat-y' ],
+				size: [],
 				color: 'rgb(253, 253, 119)'
 			} );
 		} );
@@ -90,6 +94,7 @@ describe( 'Background styles normalization', () => {
 				color: 'rgb(253, 253, 119)',
 				image: [],
 				position: [],
+				size: [],
 				repeat: []
 			} );
 		} );
@@ -99,10 +104,76 @@ describe( 'Background styles normalization', () => {
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
 				attachment: [],
-				image: [ 'url("test.jpg")', 'none' ],
+				image: [ 'url("test.jpg")', undefined ],
 				position: [],
-				repeat: [ 'repeat-y', 'repeat' ],
+				repeat: [ 'repeat-y', undefined ],
+				size: [],
 				color: '#f00'
+			} );
+		} );
+
+		it( 'should preserve default values that are explicit set in background shorthand', () => {
+			styles.setTo( 'background: none repeat scroll 0% 0% #000;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+				attachment: [ 'scroll' ],
+				image: [ 'none' ],
+				position: [ '0% 0%' ],
+				repeat: [ 'repeat' ],
+				size: [],
+				color: '#000'
+			} );
+		} );
+
+		it( 'should preserve background size written using percentage value', () => {
+			styles.setTo( 'background: 0% 0%;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+				attachment: [],
+				image: [],
+				position: [ '0% 0%' ],
+				repeat: [],
+				size: [],
+				color: undefined
+			} );
+		} );
+
+		it( 'should preserve background size and background position separated by slash', () => {
+			styles.setTo( 'background: url("test.jpg") center / contain;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+				attachment: [],
+				image: [ 'url("test.jpg")' ],
+				position: [ 'center' ],
+				repeat: [],
+				size: [ 'contain' ],
+				color: undefined
+			} );
+		} );
+
+		it( 'should preserve background size and background position separated by slash (digits)', () => {
+			styles.setTo( 'background: url("test.jpg") 0% 0% / 50% 50%;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+				attachment: [],
+				image: [ 'url("test.jpg")' ],
+				position: [ '0% 0%' ],
+				repeat: [],
+				size: [ '50% 50%' ],
+				color: undefined
+			} );
+		} );
+
+		it( 'should preserve background size and background position separated by slash (mixed)', () => {
+			styles.setTo( 'background: url("test.jpg") center / 50% 50%;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
+				attachment: [],
+				image: [ 'url("test.jpg")' ],
+				position: [ 'center' ],
+				repeat: [],
+				size: [ '50% 50%' ],
+				color: undefined
 			} );
 		} );
 	} );
@@ -229,6 +300,26 @@ describe( 'Background styles normalization', () => {
 		} );
 	} );
 
+	describe( 'background-size', () => {
+		it( 'should normalize single value', () => {
+			styles.setTo( 'background-size: contain;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { size: [ 'contain' ] } );
+		} );
+
+		it( 'should normalize multiple values', () => {
+			styles.setTo( 'background-size: contain, cover;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { size: [ 'contain', 'cover' ] } );
+		} );
+
+		it( 'should normalize multiple values with spaces', () => {
+			styles.setTo( 'background-size: contain, 50% 50%;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { size: [ 'contain', '50% 50%' ] } );
+		} );
+	} );
+
 	describe( 'background-attachment', () => {
 		it( 'should normalize single value', () => {
 			styles.setTo( 'background-attachment: fixed;' );
@@ -296,6 +387,18 @@ describe( 'Background styles normalization', () => {
 			styles.setTo( 'background-color: #f00;' );
 
 			expect( styles.toString() ).to.equal( 'background:#f00;' );
+		} );
+
+		it( 'should output background size and position separated by slash', () => {
+			styles.setTo( 'background: url("test.jpg") center / contain;' );
+
+			expect( styles.toString() ).to.equal( 'background:url("test.jpg") center / contain;' );
+		} );
+
+		it( 'should output background size alone', () => {
+			styles.setTo( 'background-size: cover' );
+
+			expect( styles.toString() ).to.equal( 'background:0% 0% / cover;' );
 		} );
 
 		describe( 'layers', () => {
@@ -516,6 +619,12 @@ describe( 'Background styles normalization', () => {
 			styles.setTo( 'background-position: center, top left;' );
 
 			expect( styles.getAsString( 'background-position' ) ).to.equal( 'center, top left' );
+		} );
+
+		it( 'should return background-size from background-size longhand', () => {
+			styles.setTo( 'background-size: cover, 50% 50%;' );
+
+			expect( styles.getAsString( 'background-size' ) ).to.equal( 'cover, 50% 50%' );
 		} );
 
 		it( 'should return background-attachment from background-attachment longhand', () => {

@@ -11,29 +11,21 @@ import { isEmpty } from 'es-toolkit/compat';
 import type {
 	StylesProcessor,
 	StylesNormalizer,
-	StylesReducer
+	StylesReducer,
+	StyleValue
 } from '../stylesmap.js';
 import {
 	getShorthandStylesValues,
 	isAttachmentStyleValue,
 	isColorStyleValue,
+	isPercentageStyleValue,
 	isPositionStyleValue,
-	isRepeatStyleValue
+	isRepeatStyleValue,
+	isSizeStyleValue
 } from './utils.js';
 
 /**
- * CSS initial values for background longhand properties.
- */
-const BACKGROUND_INITIAL_VALUES = {
-	image: 'none',
-	position: '0% 0%',
-	repeat: 'repeat',
-	attachment: 'scroll'
-} as const;
-
-/**
  * CSS function names that represent image values in the `background` shorthand.
- * Used to detect and extract image tokens before parsing the remaining parts of the value.
  */
 const IMAGE_FUNCTIONS = [
 	'linear-gradient',
@@ -63,12 +55,14 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 	stylesProcessor.setNormalizer( 'background-image', getBackgroundArrayPropertyNormalizer( 'background.image' ) );
 	stylesProcessor.setNormalizer( 'background-repeat', getBackgroundArrayPropertyNormalizer( 'background.repeat' ) );
 	stylesProcessor.setNormalizer( 'background-position', getBackgroundArrayPropertyNormalizer( 'background.position' ) );
+	stylesProcessor.setNormalizer( 'background-size', getBackgroundArrayPropertyNormalizer( 'background.size' ) );
 	stylesProcessor.setNormalizer( 'background-attachment', getBackgroundArrayPropertyNormalizer( 'background.attachment' ) );
 
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );
 	stylesProcessor.setReducer( 'background-image', getBackgroundArrayPropertyReducer( 'background-image' ) );
 	stylesProcessor.setReducer( 'background-repeat', getBackgroundArrayPropertyReducer( 'background-repeat' ) );
 	stylesProcessor.setReducer( 'background-position', getBackgroundArrayPropertyReducer( 'background-position' ) );
+	stylesProcessor.setReducer( 'background-size', getBackgroundArrayPropertyReducer( 'background-size' ) );
 	stylesProcessor.setReducer( 'background-attachment', getBackgroundArrayPropertyReducer( 'background-attachment' ) );
 
 	stylesProcessor.setStyleRelation( 'background', [
@@ -76,6 +70,7 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 		'background-image',
 		'background-repeat',
 		'background-position',
+		'background-size',
 		'background-attachment'
 	] );
 }
@@ -88,7 +83,7 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
  */
 function getBackgroundNormalizer(): StylesNormalizer {
 	return value => {
-		const layers = splitBackgroundIntoLayers( value );
+		const layers = parseBackgroundIntoLayers( value );
 
 		// If for some reason, it was impossible to extract any valid layers from the input,
 		// assume it's color value for a single layer background, as it's the most common use
@@ -101,7 +96,7 @@ function getBackgroundNormalizer(): StylesNormalizer {
 
 		return {
 			path: 'background',
-			value: background
+			value: background as StyleValue
 		};
 	};
 }
@@ -136,8 +131,18 @@ function getBackgroundArrayPropertyNormalizer( path: string ): StylesNormalizer 
  * @param property The CSS property name to output, e.g. `'background-image'`.
  */
 function getBackgroundArrayPropertyReducer( property: string ): StylesReducer {
+	const ARRAY_PROPERTY_INITIAL_VALUES: Record<string, string> = {
+		'background-repeat': 'repeat',
+		'background-position': '0% 0%',
+		'background-size': 'auto',
+		'background-attachment': 'scroll',
+		'background-image': 'none'
+	};
+
 	return value => {
-		const serialized = ( value as Array<string> ).join( ', ' );
+		const serialized = ( value as Array<string | undefined> )
+			.map( v => v ?? ARRAY_PROPERTY_INITIAL_VALUES[ property ]! )
+			.join( ', ' );
 
 		return [ [ property, serialized ] ];
 	};
@@ -178,17 +183,28 @@ function serializeBackgroundLayer( layer: BackgroundLayer ): string {
 
 	const positionStr = layer.position?.join( ' ' );
 
-	if ( positionStr && positionStr !== BACKGROUND_INITIAL_VALUES.position ) {
+	if ( positionStr ) {
 		parts.push( positionStr );
+	}
+
+	const sizeStr = layer.size?.join( ' ' );
+
+	if ( sizeStr ) {
+		if ( !positionStr ) {
+			parts.push( '0% 0%' );
+		}
+
+		parts.push( '/' );
+		parts.push( sizeStr );
 	}
 
 	const repeatStr = layer.repeat?.join( ' ' );
 
-	if ( repeatStr && repeatStr !== BACKGROUND_INITIAL_VALUES.repeat ) {
+	if ( repeatStr ) {
 		parts.push( repeatStr );
 	}
 
-	if ( layer.attachment && layer.attachment !== BACKGROUND_INITIAL_VALUES.attachment ) {
+	if ( layer.attachment ) {
 		parts.push( layer.attachment );
 	}
 
@@ -219,6 +235,7 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
 	const layerCount = Math.max(
 		background.image?.length ?? 0,
 		background.position?.length ?? 0,
+		background.size?.length ?? 0,
 		background.repeat?.length ?? 0,
 		background.attachment?.length ?? 0
 	);
@@ -232,6 +249,10 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
 
 		if ( background.position?.[ i ] ) {
 			layer.position = background.position[ i ].split( ' ' );
+		}
+
+		if ( background.size?.[ i ] ) {
+			layer.size = background.size[ i ].split( ' ' );
 		}
 
 		if ( background.repeat?.[ i ] ) {
@@ -272,7 +293,7 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
  * @example
  * // Input: [ { image: 'url(a.png)', repeat: [ 'no-repeat' ] }, { color: 'red' } ]
  * // Output: {
- * //   image: [ 'url(a.png)', 'none' ],
+ * //   image: [ 'url(a.png)', null ],
  * //   position: [],               // all initial → reset to []
  * //   repeat: [ 'no-repeat', 'repeat' ],
  * //   attachment: [],             // all initial → reset to []
@@ -280,31 +301,33 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
  * // }
  */
 function normalizeBackgroundLayers( layers: Array<BackgroundLayer> ): Background {
-	const image: Array<string> = [];
-	const position: Array<string> = [];
-	const repeat: Array<string> = [];
-	const attachment: Array<string> = [];
-
-	for ( const layer of layers ) {
-		image.push( layer.image || BACKGROUND_INITIAL_VALUES.image );
-		position.push( layer.position?.join( ' ' ) || BACKGROUND_INITIAL_VALUES.position );
-		repeat.push( layer.repeat?.join( ' ' ) || BACKGROUND_INITIAL_VALUES.repeat );
-		attachment.push( layer.attachment || BACKGROUND_INITIAL_VALUES.attachment );
-	}
-
-	// The background-color can ONLY be included in the final background layer.
-	const color = layers.at( -1 )?.color;
-
-	return {
-		image: resetIfAllInitial( image, BACKGROUND_INITIAL_VALUES.image ),
-		position: resetIfAllInitial( position, BACKGROUND_INITIAL_VALUES.position ),
-		repeat: resetIfAllInitial( repeat, BACKGROUND_INITIAL_VALUES.repeat ),
-		attachment: resetIfAllInitial( attachment, BACKGROUND_INITIAL_VALUES.attachment ),
-		color
+	const background: Background = {
+		image: [],
+		position: [],
+		size: [],
+		repeat: [],
+		attachment: []
 	};
 
-	function resetIfAllInitial( property: Array<string>, initialValue: string ): Array<string> {
-		return property.every( value => value === initialValue ) ? [] : property;
+	for ( const layer of layers ) {
+		background.image!.push( layer.image );
+		background.position!.push( layer.position?.join( ' ' ) );
+		background.size!.push( layer.size?.join( ' ' ) );
+		background.repeat!.push( layer.repeat?.join( ' ' ) );
+		background.attachment!.push( layer.attachment );
+	}
+
+	return {
+		color: layers.at( -1 )?.color,
+		image: resetIfAllPlaceholders( background.image! ),
+		position: resetIfAllPlaceholders( background.position! ),
+		size: resetIfAllPlaceholders( background.size! ),
+		repeat: resetIfAllPlaceholders( background.repeat! ),
+		attachment: resetIfAllPlaceholders( background.attachment! )
+	};
+
+	function resetIfAllPlaceholders( property: Array<string | undefined> ): Array<string | undefined> {
+		return property.every( value => value === undefined ) ? [] : property;
 	}
 }
 
@@ -325,10 +348,8 @@ function normalizeBackgroundLayers( layers: Array<BackgroundLayer> ): Background
  * splitBackgroundIntoLayers( 'url(a.png) no-repeat, red' );
  * // → [ { image: 'url(a.png)', repeat: [ 'no-repeat' ] }, { color: 'red' } ]
  */
-function splitBackgroundIntoLayers( value: string ): Array<BackgroundLayer> {
-	return splitByTopLevelCommas( value )
-		.map( parseBackgroundLayer )
-		.filter( obj => !isEmpty( obj ) );
+function parseBackgroundIntoLayers( value: string ): Array<BackgroundLayer> {
+	return splitByTopLevelCommas( value ).map( parseBackgroundLayer ).filter( obj => !isEmpty( obj ) );
 }
 
 /**
@@ -353,13 +374,26 @@ function parseBackgroundLayer( layer: string ): BackgroundLayer {
 		background.image = image;
 	}
 
-	for ( const part of parts ) {
-		if ( isRepeatStyleValue( part ) ) {
+	for ( let i = 0; i < parts.length; i++ ) {
+		const part = parts[ i ];
+
+		if ( part === '/' ) {
+			background.size = [];
+
+			while ( i + 1 < parts.length && isSizeStyleValue( parts[ i + 1 ] ) ) {
+				background.size.push( parts[ ++i ] );
+			}
+		} else if ( isRepeatStyleValue( part ) ) {
 			background.repeat ||= [];
 			background.repeat.push( part );
-		} else if ( isPositionStyleValue( part ) ) {
+		} else if ( isPositionStyleValue( part ) || isPercentageStyleValue( part ) ) {
 			background.position ||= [];
 			background.position.push( part );
+
+			// Percentage positions can be paired (e.g. '0% 0%'), so consume the next token if it's also a percentage.
+			if ( isPercentageStyleValue( part ) && i + 1 < parts.length && isPercentageStyleValue( parts[ i + 1 ] ) ) {
+				background.position.push( parts[ ++i ] );
+			}
 		} else if ( isAttachmentStyleValue( part ) ) {
 			background.attachment = part;
 		} else if ( isColorStyleValue( part ) ) {
@@ -419,6 +453,13 @@ function trimBackgroundImageFunction( value: string ): { value: string; image: s
 		}
 	}
 
+	if ( value.includes( 'none' ) ) {
+		return {
+			value: value.replace( 'none', '' ),
+			image: 'none'
+		};
+	}
+
 	return {
 		value,
 		image: null
@@ -466,24 +507,31 @@ function splitByTopLevelCommas( value: string ): Array<string> {
 
 /**
  * Represents a normalized, structured form of a CSS `background` shorthand.
- * Each longhand property is stored as an array — one entry per background layer.
+ * Each longhand property is stored as an array of per-layer values, and the `color` is stored separately
+ * as it applies to the whole background and is usually defined in the last layer.
+ *
+ * When layer do not define a value for a property, it is filled with a placeholder value to preserve the layer count and positions,
+ * as required by the CSS spec when parsing the `background` shorthand.
+ *
+ * Properties that contain only placeholder values across all layers are reset to empty arrays to avoid redundant output.
  */
 type Background = {
-	repeat?: Array<string>;
-	position?: Array<string>;
-	attachment?: Array<string>;
-	image?: Array<string>;
+	repeat?: Array<string | undefined>;
+	position?: Array<string | undefined>;
+	size?: Array<string | undefined>;
+	attachment?: Array<string | undefined>;
+	image?: Array<string | undefined>;
 	color?: string;
 };
 
 /**
  * Represents a single CSS background layer as parsed from one comma-separated segment.
- * Unlike `Background`, all longhand properties here are singular (not arrays).
  */
 type BackgroundLayer = {
+	color?: string;
 	repeat?: Array<string>;
 	position?: Array<string>;
+	size?: Array<string>;
 	attachment?: string;
-	color?: string;
 	image?: string;
 };
