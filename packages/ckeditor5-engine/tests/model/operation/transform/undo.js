@@ -540,6 +540,22 @@ describe( 'transform', () => {
 			expectClients( '<paragraph><m1:start></m1:start>Foo<m1:end></m1:end>bar</paragraph><paragraph></paragraph>' );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/19916
+		it( 'multi-element marker moved then undo', () => {
+			john.setData( '<paragraph>Fo[o</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.delete();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph><paragraph>Bar</paragraph><paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+		} );
+
 		it( 'marker on closing and opening tag - remove multiple elements #1', () => {
 			john.setData(
 				'<paragraph>Abc</paragraph>' +
