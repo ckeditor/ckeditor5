@@ -1112,6 +1112,8 @@ function toPath( name: string ): string {
 function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObject: StyleValue ) {
 	let valueToSet = valueOrObject;
 
+	// We don't want to merge it with existing value when it's array. It's because some styles can be defined
+	// as array of layers (e.g. background-image) and in such case we want to override whole array instead of merging it with existing one.
 	if ( isObject( valueOrObject ) && !Array.isArray( valueOrObject ) ) {
 		valueToSet = merge( {}, get( stylesObject, nameOrPath ), valueOrObject );
 	}
