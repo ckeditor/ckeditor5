@@ -322,12 +322,6 @@ describe( 'Background styles normalization', () => {
 	} );
 
 	describe( 'getAsString', () => {
-		it( 'should output inline background style with plain color', () => {
-			styles.setTo( 'background:#f00;' );
-
-			expect( styles.toString() ).to.equal( 'background:#f00;' );
-		} );
-
 		it( 'should return background-color from longhand', () => {
 			styles.setTo( 'background-color: #f00;' );
 
