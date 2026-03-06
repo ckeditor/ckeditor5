@@ -52,6 +52,14 @@ The block indentation feature now supports applying visual indentation to list c
 
 The {@link features/export-pdf#export-to-pdf-v2 Export to PDF V2} now supports {@link features/export-pdf#mirror-margins-for-book-like-layouts mirror margins} for book-like layouts. When enabled, left and right margins are treated as inner and outer margins that swap between odd and even pages, making it easy to prepare documents for double-sided printing or binding.
 
+### Preserving `<figure>` wrapper for content tables
+
+When using content tables together with layout tables, the `<figure>` element is stripped from tables in both cases by default. This version introduces a new flag {@link module:table/tableconfig~TableLayoutConfig#member-stripFigureFromContentTable `stripFigureFromContentTable`} which allows to change the behavior and preserve the `<figure>` element.
+
+<info-box warning>
+In next release, the default value of the flag will be set to `false`, resulting in `<figure>` being preserved for content tables by default.
+</info-box>
+
 ## Update to CKEditor&nbsp;5 v47.5.0
 
 Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
