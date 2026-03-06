@@ -7,8 +7,8 @@
  * @module table/tableconfig
  */
 
-import type { ToolbarConfigItem } from 'ckeditor5/src/core.js';
-import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
+import type { ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
+import type { ColorOption, ColorPickerConfig } from '@ckeditor/ckeditor5-ui';
 
 /**
  * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.
@@ -46,6 +46,33 @@ export interface TableConfig {
 		rows?: number;
 		columns?: number;
 	};
+
+	/**
+	 * Number of footer rows to render by default when inserting new tables.
+	 *
+	 * You can configure it like this:
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	defaultFooters: 1
+	 * };
+	 * ```
+	 *
+	 * The rows property is optional, defaulting to 0 (no footer).
+	 * This option is ignored when {@link module:table/tableconfig~TableConfig#enableFooters `config.table.enableFooters`} is `false`.
+	 */
+	defaultFooters?: number;
+
+	/**
+	 * Enables support for table footers (`<tfoot>`).
+	 *
+	 * When set to `true`, the editor will upcast and downcast `<tfoot>` elements, and the footer toggle will be visible
+	 * in the table row dropdown.
+	 * When set to `false` (default), footer rows are ignored and the footer toggle is hidden in the table row dropdown.
+	 *
+	 * @default false
+	 */
+	enableFooters?: boolean;
 
 	/**
 	 * Items to be placed in the table content toolbar.
@@ -345,7 +372,7 @@ export interface TablePropertiesConfig {
 	 * const tableConfig = {
 	 * 	tableProperties: {
 	 * 		alignment: {
-	 * 			useInlineStyles: false // Use CSS classes instead of inline styles
+	 * 			useInlineStyles: true // Use inline styles instead of CSS classes
 	 * 		}
 	 * 	}
 	 * };
@@ -499,6 +526,27 @@ export interface TableCellPropertiesConfig {
 	 * If set to `false` the picker will not appear.
 	 */
 	colorPicker?: false | ColorPickerConfig;
+
+	/**
+	 * If set to `true`, the `scope` attribute will be applied to table headers (`<th>`) based on their position in the table.
+	 *
+	 * The table cell properties UI will extend a dropdown with two more options that allow manually setting the header scope:
+	 *
+	 *   * `Column header` — sets `scope="col"` on `<th>`.
+	 *   * `Row header`    — sets `scope="row"` on `<th>`.
+	 *
+	 * If header cell is both in a heading row and a heading column, the `col` scope will be prioritized by the header rows
+	 * and columns setting logic. In such case, the user can manually change the scope using the table cell properties UI.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		scopedHeaders: true
+	 * 	}
+	 * };
+	 * ```
+	 */
+	scopedHeaders?: boolean;
 }
 
 /**
@@ -620,7 +668,7 @@ export interface TableLayoutConfig {
 	 * 	.create( {
 	 * 		table: {
 	 * 			tableLayout: {
-	 * 				stripFigureFromContentTable: false // or true
+	 * 				stripFigureFromContentTable: true // or false
 	 * 			}
 	 * 		}
 	 * 	} )
@@ -628,7 +676,7 @@ export interface TableLayoutConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * @default true
+	 * @default false
 	 */
 	stripFigureFromContentTable?: boolean;
 }
@@ -689,10 +737,10 @@ export interface TableAlignmentConfig {
 	/**
 	 * Whether to use inline styles for table alignment in the editor output.
 	 *
-	 * * When `true` (default), the alignment is rendered as inline styles.
-	 * * When `false`, the alignment is rendered as CSS classes.
+	 * * When `true`, the alignment is rendered as inline styles.
+	 * * When `false` (default), the alignment is rendered as CSS classes.
 	 *
-	 * @default true
+	 * @default false
 	 */
 	useInlineStyles?: boolean;
 }

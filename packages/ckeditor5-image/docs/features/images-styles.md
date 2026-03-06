@@ -23,7 +23,7 @@ This package allows for adjusting the image appearance by:
 
 	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/imagestyle.css).
 
-	Read more about {@link getting-started/advanced/content-styles styling the content of the editor}.
+	Read more about {@link getting-started/setup/css styling the content of the editor}.
 </info-box>
 
 ### Image classes
@@ -31,7 +31,7 @@ This package allows for adjusting the image appearance by:
 The styles applied to the image can either add the style-related class or remove it. This behavior depends on the particular configuration of the {@link module:image/imageconfig~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imageconfig~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
 
 <info-box warning>
-	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The integrator should handle the initial image appearance by defining the proper custom {@link getting-started/advanced/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
+	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The integrator should handle the initial image appearance by defining the proper custom {@link getting-started/setup/css content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
 	  * `.ck-content .image-inline` for the inline images,
 	  * `.ck-content .image` for the block images.
 </info-box>
@@ -243,7 +243,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link getting-started/advanced/content-styles content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
+It also applies multiple CSS rules to not only display custom image styles (the `'image-margin-right'`, `'image-margin-left'` and `'image-side'` classes) properly, but also to provide the default {@link getting-started/setup/css content styles}, so the appearance of headers, paragraphs, links, captions and newly inserted images is consistent.
 
 The most important rules regarding the image styling are presented below. You can see the complete content style sheet [here](https://github.com/ckeditor/ckeditor5/blob/a95554244e9fc71af5aa9e53c6841f114c6d2483/packages/ckeditor5-image/docs/_snippets/features/image-semantical-style-custom.html).
 

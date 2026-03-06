@@ -5,7 +5,7 @@
 			"className": "FontBackgroundColor",
 			"description": "Introduces font background color support with a configurable color palette panel.",
 			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
-			"path": "src/fontbackgroundcolor.js",
+			"path": "src/fontbackgroundcolor.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
@@ -25,7 +25,7 @@
 			"className": "FontColor",
 			"description": "Introduces font color support with a configurable color palette panel.",
 			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
-			"path": "src/fontcolor.js",
+			"path": "src/fontcolor.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
@@ -45,7 +45,7 @@
 			"className": "FontSize",
 			"description": "Introduces font size support.",
 			"docs": "features/font.html#configuring-the-font-size-feature",
-			"path": "src/fontsize.js",
+			"path": "src/fontsize.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
@@ -84,7 +84,7 @@
 			"className": "FontFamily",
 			"description": "Introduces font family support.",
 			"docs": "features/font.html#configuring-the-font-family-feature",
-			"path": "src/fontfamily.js",
+			"path": "src/fontfamily.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",

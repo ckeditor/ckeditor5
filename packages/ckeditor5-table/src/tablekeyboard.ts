@@ -11,13 +11,13 @@ import { TableSelection } from './tableselection.js';
 import { TableWalker } from './tablewalker.js';
 import { TableUtils } from './tableutils.js';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	getLocalizedArrowKeyCodeDirection,
 	type EventInfo,
 	type ArrowKeyCodeDirection,
 	type KeystrokeInfo
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
 import type {
 	BubblingEventInfo,
@@ -27,7 +27,7 @@ import type {
 	ModelSelection,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentTabEvent
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * This plugin enables keyboard navigation for tables.

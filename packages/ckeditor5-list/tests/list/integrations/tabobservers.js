@@ -14,7 +14,7 @@ import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
-import { Paragraph } from 'ckeditor5/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
 	_getModelData,

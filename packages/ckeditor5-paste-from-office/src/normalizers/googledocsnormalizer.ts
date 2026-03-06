@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizers/googledocsnormalizer
  */
 
-import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewDocument } from '@ckeditor/ckeditor5-engine';
 
 import { removeBoldWrapper } from '../filters/removeboldwrapper.js';
 import { transformBlockBrsToParagraphs } from '../filters/br.js';

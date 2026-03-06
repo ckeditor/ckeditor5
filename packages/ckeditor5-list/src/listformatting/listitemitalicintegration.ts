@@ -7,8 +7,8 @@
  * @module list/listformatting/listitemitalicintegration
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { env } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 import { ListEditing } from '../list/listediting.js';
 import type { ListFormatting } from '../listformatting.js';

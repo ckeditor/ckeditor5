@@ -15,7 +15,6 @@ export default function getChangelogOptions( cliArguments ) {
 		transformScope: name => {
 			const noScopedPackages = [
 				'ckeditor5',
-				'ckeditor5-collaboration',
 				'ckeditor5-premium-feature'
 			];
 

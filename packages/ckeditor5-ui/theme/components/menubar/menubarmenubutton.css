@@ -3,9 +3,106 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck.ck-menu-bar__menu  {
+
+.ck.ck-menu-bar__menu {
+	/*
+	 * All menu buttons.
+	 */
+	& > .ck-menu-bar__menu__button {
+		width: 100%;
+
+		& > .ck-button__label {
+			flex-grow: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&.ck-disabled > .ck-button__label {
+			opacity: var(--ck-disabled-opacity);
+		}
+
+		[dir="ltr"] & {
+			&:not(.ck-button_with-text) {
+				padding-left: var(--ck-spacing-small);
+			}
+		}
+
+		[dir="rtl"] & {
+			&:not(.ck-button_with-text) {
+				padding-right: var(--ck-spacing-small);
+			}
+		}
+	}
+
+	/*
+	 * Top-level menu buttons only.
+	 */
+	/* stylelint-disable-next-line no-descending-specificity */
+	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+		min-height: unset;
+
+		& .ck-button__label {
+			width: unset;
+			line-height: unset;
+
+			/*
+			 * Top-level buttons don't use ellipsis and overflow: hidden clips descenders.
+			 *  See https://github.com/ckeditor/ckeditor5/issues/17422.
+			 */
+			overflow: visible;
+		}
+
+		&.ck-on {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		& .ck-icon {
+			display: none;
+		}
+	}
+
 	& > .ck-menu-bar__menu__button > .ck-menu-bar__menu__button__arrow {
 		pointer-events: none;
 		z-index: var(--ck-z-default);
+	}
+
+	/*
+	 * Sub-menu buttons.
+	 */
+	/* stylelint-disable-next-line no-descending-specificity */
+	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
+		border-radius: 0;
+
+		& > .ck-menu-bar__menu__button__arrow {
+			width: var(--ck-dropdown-arrow-size);
+
+			[dir="ltr"] & {
+				transform: rotate(-90deg);
+
+				/* A space to accommodate the triangle. */
+				margin-left: var(--ck-spacing-standard);
+
+				/* Nudge the arrow gently to the right because its center of gravity is to the left */
+				margin-right: calc(-1 * var(--ck-spacing-small));
+			}
+
+			[dir="rtl"] & {
+				transform: rotate(90deg);
+
+				left: var(--ck-spacing-standard);
+
+				/* A space to accommodate the triangle. */
+				margin-right: var(--ck-spacing-small);
+
+				/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
+				margin-left: calc(-1 * var(--ck-spacing-small));
+			}
+		}
+
+		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
+			opacity: var(--ck-disabled-opacity);
+		}
 	}
 }

@@ -101,9 +101,6 @@ jobs:
       - bootstrap_repository_command
       - install_newest_emoji
       - run:
-          name: Prepare DLL builds in CKEditor 5
-          command: pnpm run dll:build
-      - run:
           name: Verify CKEditor 5 manual tests
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
@@ -164,10 +161,6 @@ jobs:
           when: always
           name: Execute Stylelint
           command: pnpm run stylelint
-      - run:
-          when: always
-          name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
-          command: pnpm run check-theme-lark-imports
       - run:
           when: always
           name: Check if all packages are exported in the "ckeditor5" package
@@ -355,6 +348,8 @@ workflows:
             branches:
               only:
                 - master
+                # TODO: Remove when this code lands on #master (see issue https://github.com/ckeditor/ckeditor5-internal/issues/4190).
+                - master-v48
                 - stable
                 - release
                 - /^release-v.*$/

@@ -16,7 +16,7 @@ import {
 	IconListStyleSquare,
 	IconListStyleUpperLatin,
 	IconListStyleUpperRoman
-} from 'ckeditor5/src/icons.js';
+} from '@ckeditor/ckeditor5-icons';
 import { LegacyListProperties } from '../../src/legacylistproperties.js';
 import { ListPropertiesUI } from '../../src/listproperties/listpropertiesui.js';
 

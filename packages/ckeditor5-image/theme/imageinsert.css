@@ -3,12 +3,67 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+
+:root {
+	--ck-image-insert-insert-by-url-width: 250px;
+}
+
 .ck.ck-image-insert-url {
+	--ck-input-width: 100%;
 	width: 400px;
-	padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
 
 	& .ck-image-insert-url__action-row {
+		grid-column-gap: var(--ck-spacing-large);
+		margin-top: var(--ck-spacing-large);
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+
+		& .ck-button-save,
+		& .ck-button-cancel {
+			justify-content: center;
+			min-width: auto;
+		}
+
+		& .ck-button .ck-button__label {
+			color: var(--ck-color-text);
+		}
+		grid-template-columns: repeat(2, 1fr)
+	}
+	padding: var(--ck-spacing-large) var(--ck-spacing-large) 0
+}
+
+.ck.ck-image-insert-form {
+	& > .ck.ck-button {
+		display: block;
+		width: 100%;
+
+		[dir="ltr"] & {
+			text-align: left;
+		}
+
+		[dir="rtl"] & {
+			text-align: right;
+		}
+	}
+
+	& > .ck.ck-collapsible {
+		&:not(:first-child) {
+			border-top: 1px solid var(--ck-color-base-border);
+		}
+
+		&:not(:last-child) {
+			border-bottom: 1px solid var(--ck-color-base-border);
+		}
+
+		min-width: var(--ck-image-insert-insert-by-url-width);
+	}
+
+	/* This is the case when there are no other integrations configured than insert by URL */
+	& > .ck.ck-image-insert-url {
+		min-width: var(--ck-image-insert-insert-by-url-width);
+		padding: var(--ck-spacing-large);
+	}
+
+	&:focus {
+		outline: none;
 	}
 }
