@@ -201,6 +201,12 @@ describe( 'Background styles normalization', () => {
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { repeat: [ 'repeat-x', 'no-repeat' ] } );
 		} );
+
+		it( 'should normalize multiple values with spaces', () => {
+			styles.setTo( 'background-repeat: repeat-x, no-repeat, space;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { repeat: [ 'repeat-x', 'no-repeat', 'space' ] } );
+		} );
 	} );
 
 	describe( 'background-position', () => {
@@ -211,6 +217,12 @@ describe( 'Background styles normalization', () => {
 		} );
 
 		it( 'should normalize multiple values', () => {
+			styles.setTo( 'background-position: center, top;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { position: [ 'center', 'top' ] } );
+		} );
+
+		it( 'should normalize multiple values with spaces', () => {
 			styles.setTo( 'background-position: center, top left;' );
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { position: [ 'center', 'top left' ] } );
@@ -228,6 +240,12 @@ describe( 'Background styles normalization', () => {
 			styles.setTo( 'background-attachment: scroll, fixed;' );
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { attachment: [ 'scroll', 'fixed' ] } );
+		} );
+
+		it( 'should normalize multiple values with spaces', () => {
+			styles.setTo( 'background-attachment: scroll, fixed, local;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { attachment: [ 'scroll', 'fixed', 'local' ] } );
 		} );
 	} );
 
@@ -316,6 +334,19 @@ describe( 'Background styles normalization', () => {
 				expect( styles.toString() ).to.equal(
 					'background:url("example.jpg") repeat-y, ' +
 					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%) center #f00;'
+				);
+			} );
+
+			it( 'should output multiple layers containing spaces in position fields', () => {
+				styles.setTo(
+					'background: ' +
+						'url("example.jpg") left top, ' +
+						'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%) center right;'
+				);
+
+				expect( styles.toString() ).to.equal(
+					'background:url("example.jpg") left top, ' +
+					'linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, #182168 100%) center right;'
 				);
 			} );
 		} );
