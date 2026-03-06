@@ -125,7 +125,7 @@ describe( 'Background styles normalization', () => {
 			} );
 		} );
 
-		it( 'should preserve background size written using percentage value', () => {
+		it( 'should preserve background position written using percentage value', () => {
 			styles.setTo( 'background: 0% 0%;' );
 
 			expect( styles.getNormalized( 'background' ) ).to.deep.equal( {
@@ -274,9 +274,9 @@ describe( 'Background styles normalization', () => {
 		} );
 
 		it( 'should normalize multiple values with spaces', () => {
-			styles.setTo( 'background-repeat: repeat-x, no-repeat, space;' );
+			styles.setTo( 'background-repeat: repeat-x no-repeat, space;' );
 
-			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { repeat: [ 'repeat-x', 'no-repeat', 'space' ] } );
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { repeat: [ 'repeat-x no-repeat', 'space' ] } );
 		} );
 	} );
 

@@ -59,11 +59,11 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 	stylesProcessor.setNormalizer( 'background-attachment', getBackgroundArrayPropertyNormalizer( 'background.attachment' ) );
 
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );
-	stylesProcessor.setReducer( 'background-image', getBackgroundArrayPropertyReducer( 'background-image' ) );
-	stylesProcessor.setReducer( 'background-repeat', getBackgroundArrayPropertyReducer( 'background-repeat' ) );
-	stylesProcessor.setReducer( 'background-position', getBackgroundArrayPropertyReducer( 'background-position' ) );
-	stylesProcessor.setReducer( 'background-size', getBackgroundArrayPropertyReducer( 'background-size' ) );
-	stylesProcessor.setReducer( 'background-attachment', getBackgroundArrayPropertyReducer( 'background-attachment' ) );
+	stylesProcessor.setReducer( 'background-image', getBackgroundArrayPropertyReducer( 'background-image', 'none' ) );
+	stylesProcessor.setReducer( 'background-repeat', getBackgroundArrayPropertyReducer( 'background-repeat', 'repeat' ) );
+	stylesProcessor.setReducer( 'background-position', getBackgroundArrayPropertyReducer( 'background-position', '0% 0%' ) );
+	stylesProcessor.setReducer( 'background-size', getBackgroundArrayPropertyReducer( 'background-size', 'auto' ) );
+	stylesProcessor.setReducer( 'background-attachment', getBackgroundArrayPropertyReducer( 'background-attachment', 'scroll' ) );
 
 	stylesProcessor.setStyleRelation( 'background', [
 		'background-color',
@@ -129,19 +129,12 @@ function getBackgroundArrayPropertyNormalizer( path: string ): StylesNormalizer 
  * Serializes an array of per-layer values back into a comma-separated CSS string.
  *
  * @param property The CSS property name to output, e.g. `'background-image'`.
+ * @param defaultValue The CSS initial value for the property, used as a placeholder for missing layer values.
  */
-function getBackgroundArrayPropertyReducer( property: string ): StylesReducer {
-	const ARRAY_PROPERTY_INITIAL_VALUES: Record<string, string> = {
-		'background-repeat': 'repeat',
-		'background-position': '0% 0%',
-		'background-size': 'auto',
-		'background-attachment': 'scroll',
-		'background-image': 'none'
-	};
-
+function getBackgroundArrayPropertyReducer( property: string, defaultValue: string ): StylesReducer {
 	return value => {
 		const serialized = ( value as Array<string | undefined> )
-			.map( v => v ?? ARRAY_PROPERTY_INITIAL_VALUES[ property ]! )
+			.map( v => v ?? defaultValue )
 			.join( ', ' );
 
 		return [ [ property, serialized ] ];
@@ -367,7 +360,7 @@ function parseBackgroundIntoLayers( value: string ): Array<BackgroundLayer> {
  */
 function parseBackgroundLayer( layer: string ): BackgroundLayer {
 	const background: BackgroundLayer = {};
-	const { value: valueWithoutImage, image } = trimBackgroundImageFunction( layer );
+	const { value: valueWithoutImage, image } = extractBackgroundImage( layer );
 	const parts = getShorthandStylesValues( valueWithoutImage );
 
 	if ( image ) {
@@ -421,38 +414,33 @@ function parseBackgroundLayer( layer: string ): BackgroundLayer {
  *          `image` (the extracted function string, or `null` if none was found).
  *
  * @example
- * trimBackgroundImageFunction( 'linear-gradient(red, blue) no-repeat' );
+ * extractBackgroundImage( 'linear-gradient(red, blue) no-repeat' );
  * // → { value: ' no-repeat', image: 'linear-gradient(red, blue)' }
  */
-function trimBackgroundImageFunction( value: string ): { value: string; image: string | null } {
+function extractBackgroundImage( value: string ): { value: string; image: string | null } {
 	for ( const imageFunction of IMAGE_FUNCTIONS ) {
 		const prefix = imageFunction + '(';
+		const firstIndex = value.indexOf( prefix );
 
-		// There might be multiple gradients or URLs in the value, so we need to loop until all of them are extracted.
-		// Limit iterations to prevent infinite loops in case of malformed input or an issue in the extraction logic.
-		for ( let watchdog = 0; value.includes( prefix ) && watchdog < 10; watchdog++ ) {
-			const firstIndex = value.indexOf( prefix );
+		let acc = imageFunction;
+		let nesting = 0;
 
-			let acc = imageFunction;
-			let nesting = 0;
+		for ( let i = firstIndex + imageFunction.length; i < value.length; i++ ) {
+			const char = value[ i ];
 
-			for ( let i = firstIndex + imageFunction.length; i < value.length; i++ ) {
-				const char = value[ i ];
+			if ( char === '(' ) {
+				nesting++;
+			} else if ( char === ')' ) {
+				nesting--;
+			}
 
-				if ( char === '(' ) {
-					nesting++;
-				} else if ( char === ')' ) {
-					nesting--;
-				}
+			acc += char;
 
-				acc += char;
-
-				if ( nesting === 0 ) {
-					return {
-						value: value.slice( 0, firstIndex ) + value.slice( i + 1 ),
-						image: acc
-					};
-				}
+			if ( nesting === 0 ) {
+				return {
+					value: value.slice( 0, firstIndex ) + value.slice( i + 1 ),
+					image: acc
+				};
 			}
 		}
 	}
