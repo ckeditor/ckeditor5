@@ -407,6 +407,8 @@ export {
 	isRepeatStyleValue,
 	isPositionStyleValue,
 	isAttachmentStyleValue,
+	isOriginStyleValue,
+	isClipStyleValue,
 	isURLStyleValue,
 	getBoxSidesStyleValues,
 	getBoxSidesStyleValueReducer,

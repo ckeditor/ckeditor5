@@ -17,7 +17,9 @@ import type {
 import {
 	getShorthandStylesValues,
 	isAttachmentStyleValue,
+	isClipStyleValue,
 	isColorStyleValue,
+	isOriginStyleValue,
 	isPercentageStyleValue,
 	isPositionStyleValue,
 	isRepeatStyleValue,
@@ -57,6 +59,8 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 	stylesProcessor.setNormalizer( 'background-position', getBackgroundArrayPropertyNormalizer( 'background.position' ) );
 	stylesProcessor.setNormalizer( 'background-size', getBackgroundArrayPropertyNormalizer( 'background.size' ) );
 	stylesProcessor.setNormalizer( 'background-attachment', getBackgroundArrayPropertyNormalizer( 'background.attachment' ) );
+	stylesProcessor.setNormalizer( 'background-origin', getBackgroundArrayPropertyNormalizer( 'background.origin' ) );
+	stylesProcessor.setNormalizer( 'background-clip', getBackgroundArrayPropertyNormalizer( 'background.clip' ) );
 
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );
 	stylesProcessor.setReducer( 'background-image', getBackgroundArrayPropertyReducer( 'background-image', 'none' ) );
@@ -64,6 +68,8 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 	stylesProcessor.setReducer( 'background-position', getBackgroundArrayPropertyReducer( 'background-position', '0% 0%' ) );
 	stylesProcessor.setReducer( 'background-size', getBackgroundArrayPropertyReducer( 'background-size', 'auto' ) );
 	stylesProcessor.setReducer( 'background-attachment', getBackgroundArrayPropertyReducer( 'background-attachment', 'scroll' ) );
+	stylesProcessor.setReducer( 'background-origin', getBackgroundArrayPropertyReducer( 'background-origin', 'padding-box' ) );
+	stylesProcessor.setReducer( 'background-clip', getBackgroundArrayPropertyReducer( 'background-clip', 'border-box' ) );
 
 	stylesProcessor.setStyleRelation( 'background', [
 		'background-color',
@@ -71,7 +77,9 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 		'background-repeat',
 		'background-position',
 		'background-size',
-		'background-attachment'
+		'background-attachment',
+		'background-origin',
+		'background-clip'
 	] );
 }
 
@@ -201,6 +209,16 @@ function serializeBackgroundLayer( layer: BackgroundLayer ): string {
 		parts.push( layer.attachment );
 	}
 
+	if ( layer.origin ) {
+		parts.push( layer.origin );
+
+		if ( layer.clip && layer.clip !== layer.origin ) {
+			parts.push( layer.clip );
+		}
+	} else if ( layer.clip ) {
+		parts.push( layer.clip );
+	}
+
 	if ( layer.color ) {
 		parts.push( layer.color );
 	}
@@ -230,7 +248,9 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
 		background.position?.length ?? 0,
 		background.size?.length ?? 0,
 		background.repeat?.length ?? 0,
-		background.attachment?.length ?? 0
+		background.attachment?.length ?? 0,
+		background.origin?.length ?? 0,
+		background.clip?.length ?? 0
 	);
 
 	const layers: Array<BackgroundLayer> = Array.from( { length: layerCount }, ( _, i ) => {
@@ -254,6 +274,14 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
 
 		if ( background.attachment?.[ i ] ) {
 			layer.attachment = background.attachment[ i ];
+		}
+
+		if ( background.origin?.[ i ] ) {
+			layer.origin = background.origin[ i ];
+		}
+
+		if ( background.clip?.[ i ] ) {
+			layer.clip = background.clip[ i ];
 		}
 
 		return layer;
@@ -299,7 +327,9 @@ function normalizeBackgroundLayers( layers: Array<BackgroundLayer> ): Background
 		position: [],
 		size: [],
 		repeat: [],
-		attachment: []
+		attachment: [],
+		origin: [],
+		clip: []
 	};
 
 	for ( const layer of layers ) {
@@ -308,6 +338,8 @@ function normalizeBackgroundLayers( layers: Array<BackgroundLayer> ): Background
 		background.size!.push( layer.size?.join( ' ' ) );
 		background.repeat!.push( layer.repeat?.join( ' ' ) );
 		background.attachment!.push( layer.attachment );
+		background.origin!.push( layer.origin );
+		background.clip!.push( layer.clip );
 	}
 
 	return {
@@ -316,7 +348,9 @@ function normalizeBackgroundLayers( layers: Array<BackgroundLayer> ): Background
 		position: resetIfAllPlaceholders( background.position! ),
 		size: resetIfAllPlaceholders( background.size! ),
 		repeat: resetIfAllPlaceholders( background.repeat! ),
-		attachment: resetIfAllPlaceholders( background.attachment! )
+		attachment: resetIfAllPlaceholders( background.attachment! ),
+		origin: resetIfAllPlaceholders( background.origin! ),
+		clip: resetIfAllPlaceholders( background.clip! )
 	};
 
 	function resetIfAllPlaceholders( property: Array<string | undefined> ): Array<string | undefined> {
@@ -393,6 +427,15 @@ function parseBackgroundLayer( layer: string ): BackgroundLayer {
 			}
 		} else if ( isAttachmentStyleValue( part ) ) {
 			background.attachment = part;
+		} else if ( isClipStyleValue( part ) ) {
+			if ( isOriginStyleValue( part ) && !background.origin ) {
+				// First box value sets both origin and clip (per CSS spec).
+				background.origin = part;
+				background.clip = part;
+			} else {
+				// Second box value (or 'text') sets only clip.
+				background.clip = part;
+			}
 		} else if ( isColorStyleValue( part ) ) {
 			background.color = part;
 		}
@@ -421,6 +464,10 @@ function extractBackgroundImage( value: string ): { value: string; image: string
 	for ( const imageFunction of IMAGE_FUNCTIONS ) {
 		const prefix = imageFunction + '(';
 		const firstIndex = value.indexOf( prefix );
+
+		if ( firstIndex < 0 ) {
+			continue;
+		}
 
 		let acc = imageFunction;
 		let nesting = 0;
@@ -514,6 +561,8 @@ type Background = {
 	size?: Array<string | undefined>;
 	attachment?: Array<string | undefined>;
 	image?: Array<string | undefined>;
+	origin?: Array<string | undefined>;
+	clip?: Array<string | undefined>;
 	color?: string;
 };
 
@@ -527,4 +576,6 @@ type BackgroundLayer = {
 	size?: Array<string>;
 	attachment?: string;
 	image?: string;
+	origin?: string;
+	clip?: string;
 };

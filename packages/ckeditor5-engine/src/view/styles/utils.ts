@@ -147,6 +147,24 @@ export function isAttachmentStyleValue( string: string ): boolean {
 	return attachmentValues.includes( string );
 }
 
+const originValues = [ 'border-box', 'padding-box', 'content-box' ];
+
+/**
+ * Checks if string contains [background origin](https://developer.mozilla.org/en-US/docs/Web/CSS/background-origin) CSS value.
+ */
+export function isOriginStyleValue( string: string ): boolean {
+	return originValues.includes( string );
+}
+
+const clipValues = [ 'border-box', 'padding-box', 'content-box', 'text' ];
+
+/**
+ * Checks if string contains [background clip](https://developer.mozilla.org/en-US/docs/Web/CSS/background-clip) CSS value.
+ */
+export function isClipStyleValue( string: string ): boolean {
+	return clipValues.includes( string );
+}
+
 const urlRegExp = /^url\(/;
 
 /**

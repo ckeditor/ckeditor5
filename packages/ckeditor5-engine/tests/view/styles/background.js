@@ -31,6 +31,8 @@ describe( 'Background styles normalization', () => {
 				position: [ 'center' ],
 				repeat: [ 'repeat-y' ],
 				size: [],
+				origin: [ 'border-box' ],
+				clip: [ 'border-box' ],
 				color: '#f00'
 			} );
 		} );
@@ -48,6 +50,8 @@ describe( 'Background styles normalization', () => {
 				position: [ 'center' ],
 				repeat: [ 'repeat-y' ],
 				size: [],
+				origin: [ 'border-box' ],
+				clip: [ 'border-box' ],
 				color: '#f00'
 			} );
 		} );
@@ -69,6 +73,8 @@ describe( 'Background styles normalization', () => {
 				position: [ undefined, 'center' ],
 				repeat: [ undefined, 'repeat-y' ],
 				size: [],
+				origin: [ undefined, 'border-box' ],
+				clip: [ undefined, 'border-box' ],
 				color: '#f00'
 			} );
 		} );
@@ -82,6 +88,8 @@ describe( 'Background styles normalization', () => {
 				position: [ 'center' ],
 				repeat: [ 'repeat-y' ],
 				size: [],
+				origin: [ 'border-box' ],
+				clip: [ 'border-box' ],
 				color: 'rgb(253, 253, 119)'
 			} );
 		} );
@@ -95,7 +103,9 @@ describe( 'Background styles normalization', () => {
 				image: [],
 				position: [],
 				size: [],
-				repeat: []
+				repeat: [],
+				origin: [],
+				clip: []
 			} );
 		} );
 
@@ -108,6 +118,8 @@ describe( 'Background styles normalization', () => {
 				position: [],
 				repeat: [ 'repeat-y', undefined ],
 				size: [],
+				origin: [],
+				clip: [],
 				color: '#f00'
 			} );
 		} );
@@ -121,6 +133,8 @@ describe( 'Background styles normalization', () => {
 				position: [ '0% 0%' ],
 				repeat: [ 'repeat' ],
 				size: [],
+				origin: [],
+				clip: [],
 				color: '#000'
 			} );
 		} );
@@ -134,6 +148,8 @@ describe( 'Background styles normalization', () => {
 				position: [ '0% 0%' ],
 				repeat: [],
 				size: [],
+				origin: [],
+				clip: [],
 				color: undefined
 			} );
 		} );
@@ -147,6 +163,8 @@ describe( 'Background styles normalization', () => {
 				position: [ 'center' ],
 				repeat: [],
 				size: [ 'contain' ],
+				origin: [],
+				clip: [],
 				color: undefined
 			} );
 		} );
@@ -160,6 +178,8 @@ describe( 'Background styles normalization', () => {
 				position: [ '0% 0%' ],
 				repeat: [],
 				size: [ '50% 50%' ],
+				origin: [],
+				clip: [],
 				color: undefined
 			} );
 		} );
@@ -173,6 +193,8 @@ describe( 'Background styles normalization', () => {
 				position: [ 'center' ],
 				repeat: [],
 				size: [ '50% 50%' ],
+				origin: [],
+				clip: [],
 				color: undefined
 			} );
 		} );
@@ -340,12 +362,52 @@ describe( 'Background styles normalization', () => {
 		} );
 	} );
 
+	describe( 'background-origin', () => {
+		it( 'should normalize single value', () => {
+			styles.setTo( 'background-origin: padding-box;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { origin: [ 'padding-box' ] } );
+		} );
+
+		it( 'should normalize multiple values', () => {
+			styles.setTo( 'background-origin: padding-box, border-box;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { origin: [ 'padding-box', 'border-box' ] } );
+		} );
+
+		it( 'should normalize content-box value', () => {
+			styles.setTo( 'background-origin: content-box;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { origin: [ 'content-box' ] } );
+		} );
+	} );
+
+	describe( 'background-clip', () => {
+		it( 'should normalize single value', () => {
+			styles.setTo( 'background-clip: border-box;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { clip: [ 'border-box' ] } );
+		} );
+
+		it( 'should normalize multiple values', () => {
+			styles.setTo( 'background-clip: padding-box, border-box;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { clip: [ 'padding-box', 'border-box' ] } );
+		} );
+
+		it( 'should normalize text value', () => {
+			styles.setTo( 'background-clip: text;' );
+
+			expect( styles.getNormalized( 'background' ) ).to.deep.equal( { clip: [ 'text' ] } );
+		} );
+	} );
+
 	describe( 'serialization', () => {
 		it( 'should output inline background style', () => {
 			styles.setTo( 'background:url("example.jpg") center #f00 repeat-y fixed border-box;' );
 
 			expect( styles.toString() ).to.equal(
-				'background:url("example.jpg") center repeat-y fixed #f00;'
+				'background:url("example.jpg") center repeat-y fixed border-box #f00;'
 			);
 		} );
 
@@ -407,6 +469,30 @@ describe( 'Background styles normalization', () => {
 			expect( styles.toString() ).to.equal( 'background:none 0% 0% repeat scroll #000;' );
 		} );
 
+		it( 'should output origin and clip when a single box value is set in shorthand', () => {
+			styles.setTo( 'background: red padding-box;' );
+
+			expect( styles.toString() ).to.equal( 'background:padding-box red;' );
+		} );
+
+		it( 'should output both origin and clip when they differ in shorthand', () => {
+			styles.setTo( 'background: red padding-box content-box;' );
+
+			expect( styles.toString() ).to.equal( 'background:padding-box content-box red;' );
+		} );
+
+		it( 'should output background-origin from longhand', () => {
+			styles.setTo( 'background-origin: content-box;' );
+
+			expect( styles.toString() ).to.equal( 'background:content-box;' );
+		} );
+
+		it( 'should output background-clip from longhand', () => {
+			styles.setTo( 'background-clip: text;' );
+
+			expect( styles.toString() ).to.equal( 'background:text;' );
+		} );
+
 		describe( 'layers', () => {
 			it( 'should output inline background-image style with single gradient layer', () => {
 				styles.setTo(
@@ -417,7 +503,7 @@ describe( 'Background styles normalization', () => {
 
 				expect( styles.toString() ).to.equal(
 					'background:linear-gradient(90deg,rgba(161, 29, 125, 0.55) 0%, rgba(24, 33, 104, 0.75) 100%) ' +
-						'center repeat-y fixed #f00;'
+						'center repeat-y fixed border-box #f00;'
 				);
 			} );
 
@@ -645,10 +731,34 @@ describe( 'Background styles normalization', () => {
 			expect( styles.getAsString( 'background-attachment' ) ).to.equal( 'scroll, fixed' );
 		} );
 
+		it( 'should return background-origin from longhand', () => {
+			styles.setTo( 'background-origin: content-box;' );
+
+			expect( styles.getAsString( 'background-origin' ) ).to.equal( 'content-box' );
+		} );
+
+		it( 'should return background-origin from background shorthand', () => {
+			styles.setTo( 'background: red padding-box;' );
+
+			expect( styles.getAsString( 'background-origin' ) ).to.equal( 'padding-box' );
+		} );
+
+		it( 'should return background-clip from longhand', () => {
+			styles.setTo( 'background-clip: text;' );
+
+			expect( styles.getAsString( 'background-clip' ) ).to.equal( 'text' );
+		} );
+
+		it( 'should return background-clip from background shorthand', () => {
+			styles.setTo( 'background: red padding-box content-box;' );
+
+			expect( styles.getAsString( 'background-clip' ) ).to.equal( 'content-box' );
+		} );
+
 		it( 'should return background shorthand from single-layer background shorthand', () => {
 			styles.setTo( 'background: url("example.jpg") center #f00 repeat-y fixed border-box;' );
 
-			expect( styles.getAsString( 'background' ) ).to.equal( 'url("example.jpg") center repeat-y fixed #f00' );
+			expect( styles.getAsString( 'background' ) ).to.equal( 'url("example.jpg") center repeat-y fixed border-box #f00' );
 		} );
 
 		it( 'should return background shorthand from multiple-layer background shorthand', () => {
