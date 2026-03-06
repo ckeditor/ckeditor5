@@ -1727,6 +1727,76 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>'
 			);
 
+			describe( 'navigation between empty paragraphs and widgets', () => {
+				test(
+					'arrow-up should work if selection is at the beginning of paragraph, that is placed after widget and empty paragraph',
+
+					'<imageBlock></imageBlock>' +
+					'<paragraph></paragraph>' +
+					'<paragraph>[]Foo</paragraph>',
+
+					keyCodes.arrowup,
+
+					// It's expected that selection will stay here, because the browser should move the caret.
+					'<imageBlock></imageBlock>' +
+					'<paragraph></paragraph>' +
+					'<paragraph>[]Foo</paragraph>'
+				);
+
+				test(
+					'arrow-down should work if selection is at the beginning of paragraph, that is placed after widget and empty paragraph',
+
+					'<paragraph>Foo[]</paragraph>' +
+					'<paragraph></paragraph>' +
+					'<imageBlock></imageBlock>',
+
+					keyCodes.arrowdown,
+
+					// It's expected that selection will stay here, because the browser should move the caret.
+					'<paragraph>Foo[]</paragraph>' +
+					'<paragraph></paragraph>' +
+					'<imageBlock></imageBlock>'
+				);
+
+				test(
+					'shift+arrow-up should work if selection is at the beginning of paragraph, ' +
+						'that is placed after widget and empty paragraph',
+
+					'<imageBlock></imageBlock>' +
+					'<paragraph></paragraph>' +
+					'<paragraph>[]Foo</paragraph>',
+
+					// It's expected that selection will stay here, because the browser should move the caret.
+					{
+						keyCode: keyCodes.arrowup,
+						shiftKey: true
+					},
+
+					'<imageBlock></imageBlock>' +
+					'<paragraph></paragraph>' +
+					'<paragraph>[]Foo</paragraph>'
+				);
+
+				test(
+					'shift+arrow-down should work if selection is at the beginning of paragraph, ' +
+						'that is placed after widget and empty paragraph',
+
+					'<paragraph>Foo[]</paragraph>' +
+					'<paragraph></paragraph>' +
+					'<imageBlock></imageBlock>',
+
+					// It's expected that selection will stay here, because the browser should move the caret.
+					{
+						keyCode: keyCodes.arrowdown,
+						shiftKey: true
+					},
+
+					'<paragraph>Foo[]</paragraph>' +
+					'<paragraph></paragraph>' +
+					'<imageBlock></imageBlock>'
+				);
+			} );
+
 			describe( 'RTL (right-to-left) content', () => {
 				test(
 					'should move selection forward from selected object - left arrow',
