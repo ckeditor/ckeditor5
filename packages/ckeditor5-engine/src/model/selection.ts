@@ -340,7 +340,7 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheck
 	 * selection.setTo( paragraph, 'on' );
 	 * ```
 	 *
-	 * `Selection#setTo()`' method allow passing additional options (`backward`) as the last argument.
+	 * `Selection#setTo()` method allows passing additional options (`backward`) as the last argument.
 	 *
 	 * ```ts
 	 * // Sets backward selection.
