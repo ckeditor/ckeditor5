@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-02-11
+modified_at: 2026-03-04
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -20,9 +20,9 @@ Released on 4 March, 2026. ([See full release notes](https://github.com/ckeditor
 
 ### New `htmlSupport.htmlIframeSandbox` configuration option in General HTML Support
 
-This release introduces a potential breaking change related to iframe handling in the editing view.
+This release introduces a potential breaking change related to `iframe` handling in the editing view.
 
-By default, iframe sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
+By default, `iframe` sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
 
 Previously, iframes were not sandboxed by default and had full access to the surrounding page context. With this change, iframes are now restricted unless explicitly configured otherwise.
 
@@ -39,6 +39,28 @@ Besides `true` or `false`, the `htmlSupport.htmlIframeSandbox` configuration opt
 The `srcdoc` attribute is no longer rendered in the editing view.
 
 Unlike iframe sandboxing, this change is permanent and cannot be disabled via configuration. Any iframe content provided through `srcdoc` will be ignored in the editing view going forward.
+
+### New ordered list styles
+
+We have introduced a new ordered list style: the `arabic-indic` numerals. To use them, you need to explicitly activate the style in the {@link features/lists#enabling-specific-enumerators feature configuration}.
+
+The same style is also available in the {@link features/footnotes#the-footnotesproperties-contextual-balloon footnotes} feature for numbering footnote markers.
+
+### Visual block indentation for lists
+
+The block indentation feature now supports applying visual indentation to list containers and list items. When the `Indent`, `IndentBlock`, and `List` plugins are all loaded, you can indent top-level lists using the toolbar buttons or keyboard shortcuts. The editor also recognizes `margin-left` styles on `<ol>`, `<ul>`, and `<li>` elements during data loading. See the {@link features/indent#indenting-lists Indenting lists} documentation for details.
+
+### Mirror margins in Export to PDF V2
+
+The {@link features/export-pdf#export-to-pdf-v2 Export to PDF V2} now supports {@link features/export-pdf#mirror-margins-for-book-like-layouts mirror margins} for book-like layouts. When enabled, left and right margins are treated as inner and outer margins that swap between odd and even pages, making it easy to prepare documents for double-sided printing or binding.
+
+### Preserving the `<figure>` wrapper for content tables
+
+When using content tables together with layout tables, the `<figure>` element is stripped from tables in both cases by default. This version introduces a new flag {@link module:table/tableconfig~TableLayoutConfig#member-stripFigureFromContentTable `stripFigureFromContentTable`} which allows to change the behavior and preserve the `<figure>` element.
+
+<info-box warning>
+In next release, the default value of the flag will be set to `false`, resulting in `<figure>` being preserved for content tables by default.
+</info-box>
 
 ## Update to CKEditor&nbsp;5 v47.5.0
 
