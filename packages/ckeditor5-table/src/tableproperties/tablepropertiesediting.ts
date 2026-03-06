@@ -33,6 +33,7 @@ import {
 	getDefaultValueAdjusted,
 	upcastBorderStyles,
 	upcastStyleToAttribute,
+	upcastTableCellPaddingAttribute,
 	upcastTableAlignmentConfig,
 	DEFAULT_TABLE_ALIGNMENT_OPTIONS
 } from '../converters/tableproperties.js';
@@ -165,6 +166,8 @@ export class TablePropertiesEditing extends Plugin {
 			'tableBackgroundColor',
 			new TableBackgroundColorCommand( editor, defaultTableProperties.backgroundColor )
 		);
+
+		upcastTableCellPaddingAttribute( editor, 'table' );
 
 		const viewDoc = editor.editing.view.document;
 
