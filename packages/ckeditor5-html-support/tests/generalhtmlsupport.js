@@ -245,7 +245,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<figure class="image foo" style="color:red;" id="test" data-foo="bar">' +
 				'<img class="bar" style="border-left:2px solid blue;" src="/assets/sample.png" alt="122">' +
-				'<figcaption style="background-color:yellow;">abc</figcaption>' +
+				'<figcaption style="background:yellow;">abc</figcaption>' +
 			'</figure>'
 		);
 
@@ -287,12 +287,12 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<figure class="table foo" ' +
-				'style="background-color:blue;color:red;float:right;width:60%;" ' +
+				'style="background:blue;color:red;float:right;width:60%;" ' +
 				'id="test" data-foo="bar"' +
 			'>' +
 				'<table class="ck-table-resized" style="color:pink;">' +
 					'<colgroup>' +
-						'<col style="background-color:green;width:30%;">' +
+						'<col style="background:green;width:30%;">' +
 						'<col style="width:70%;">' +
 					'</colgroup>' +
 					'<tbody>' +
@@ -302,7 +302,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 						'</tr>' +
 					'</tbody>' +
 				'</table>' +
-				'<figcaption style="background-color:yellow;">abc</figcaption>' +
+				'<figcaption style="background:yellow;">abc</figcaption>' +
 			'</figure>'
 		);
 
@@ -387,13 +387,13 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 			expect( editor.getData(), 'initial data' ).to.equal(
 				'<figure class="table foo" ' +
-					'style="background-color:blue;color:red;float:right;' +
+					'style="background:blue;color:red;float:right;' +
 					'margin-left:var(--ck-content-table-style-spacing, 1.5em);width:60%;" ' +
 					'id="test" data-foo="bar"' +
 				'>' +
 					'<table class="ck-table-resized" style="color:pink;">' +
 						'<colgroup>' +
-							'<col style="background-color:green;width:30%;">' +
+							'<col style="background:green;width:30%;">' +
 							'<col style="width:70%;">' +
 						'</colgroup>' +
 						'<tbody>' +
@@ -403,7 +403,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 							'</tr>' +
 						'</tbody>' +
 					'</table>' +
-					'<figcaption style="background-color:yellow;">abc</figcaption>' +
+					'<figcaption style="background:yellow;">abc</figcaption>' +
 				'</figure>'
 			);
 
@@ -488,7 +488,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<p>a</p>' +
-			'<blockquote class="abc" style="background-color:blue;" data-foo="bar"><p>foo</p><p>bar</p></blockquote>' +
+			'<blockquote class="abc" style="background:blue;" data-foo="bar"><p>foo</p><p>bar</p></blockquote>' +
 			'<p>b</p>'
 		);
 
@@ -517,8 +517,8 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		);
 
 		expect( editor.getData(), 'initial data' ).to.equal(
-			'<ol class="abc" style="background-color:red;" id="test" data-foo="bar">' +
-				'<li class="123" style="background-color:yellow;" id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
+			'<ol class="abc" style="background:red;" id="test" data-foo="bar">' +
+				'<li class="123" style="background:yellow;" id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
 			'</ol>'
 		);
 
@@ -548,8 +548,8 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<p>a</p>' +
-			'<div class="abc" style="background-color:red;" id="test" data-foo="bar">' +
-				'<p class="123" style="background-color:yellow;" id="test1" data-bar="foo">foo</p>' +
+			'<div class="abc" style="background:red;" id="test" data-foo="bar">' +
+				'<p class="123" style="background:yellow;" id="test1" data-bar="foo">foo</p>' +
 			'</div>' +
 			'<p>b</p>'
 		);

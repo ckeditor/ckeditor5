@@ -252,7 +252,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableBackgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'background-color:red;' );
+					assertPlainTableStyle( editor, 'background:red;' );
 				} );
 			} );
 
@@ -371,7 +371,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableBackgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'background-color:red;' );
+					assertPlainTableStyle( editor, 'background:red;' );
 
 					model.change( writer => writer.removeAttribute( 'tableBackgroundColor', table ) );
 

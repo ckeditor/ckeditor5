@@ -111,6 +111,15 @@ export function isPercentageStyleValue( string: string ): boolean {
 	return PERCENTAGE_VALUE_REGEXP.test( string );
 }
 
+const sizeValues = [ 'auto', 'cover', 'contain' ];
+
+/**
+ * Checks if a string is a valid CSS `background-size` value token.
+ */
+export function isSizeStyleValue( value: string ): boolean {
+	return sizeValues.includes( value ) || isLengthStyleValue( value ) || isPercentageStyleValue( value );
+}
+
 const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-repeat' ];
 
 /**

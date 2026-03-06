@@ -113,7 +113,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'background-color:#f00;' );
+						assertTableStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should change selected table backgroundColor to a passed value', () => {
@@ -121,7 +121,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'background-color:#f00;' );
+						assertTableStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
@@ -139,7 +139,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'background-color:#f00;' );
+						assertTableStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should change selected table backgroundColor to a passed value', () => {
@@ -147,7 +147,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'background-color:#f00;' );
+						assertTableStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
@@ -165,7 +165,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'background-color:#f00;' );
+						assertTableStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should change selected table backgroundColor to a passed value', () => {
@@ -173,7 +173,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: '#f00' } );
 
-						assertTableStyle( editor, 'background-color:#f00;' );
+						assertTableStyle( editor, 'background:#f00;' );
 					} );
 
 					it( 'should remove backgroundColor from a selected table if no value is passed', () => {

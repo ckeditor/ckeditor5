@@ -2628,7 +2628,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'background-color:red;margin-left:auto;margin-right:auto;',
+						'background:red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2644,7 +2644,7 @@ describe( 'downcast converters', () => {
 
 					expect( editor.getData() ).to.equalMarkup(
 						'<figure class="table">' +
-							'<table style="background-color:blue;border:2px solid red;">' +
+							'<table style="background:blue;border:2px solid red;">' +
 								'<tbody>' +
 									'<tr><td>foo</td></tr>' +
 								'</tbody>' +
@@ -2811,7 +2811,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'background-color:red;margin-left:auto;margin-right:auto;',
+						'background:red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);

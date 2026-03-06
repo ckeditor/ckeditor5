@@ -179,7 +179,7 @@ describe( 'FontBackgroundColorEditing', () => {
 				it( `should convert fontBackgroundColor attribute: "${ test }" to proper style value.`, () => {
 					_setModelData( doc, `<paragraph>fo<$text fontBackgroundColor="${ test }">o b</$text>ar</paragraph>` );
 
-					expect( editor.getData() ).to.equal( `<p>fo<span style="background-color:${ test };">o b</span>ar</p>` );
+					expect( editor.getData() ).to.equal( `<p>fo<span style="background:${ test };">o b</span>ar</p>` );
 				} );
 			} );
 		} );
@@ -226,17 +226,17 @@ describe( 'FontBackgroundColorEditing', () => {
 
 			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<span style="background-color:rgb(10,20,30);">o</span>o</p>' );
+			expect( editor.getData() ).to.equal( '<p>f<span style="background:rgb(10,20,30);">o</span>o</p>' );
 		} );
 
 		it( 'should convert from element with defined style when with other styles (using background style)', () => {
-			const data = '<p>f<span style="font-size: 18px;background-color: rgb(10, 20, 30);">o</span>o</p>';
+			const data = '<p>f<span style="font-size: 18px;background: rgb(10, 20, 30);">o</span>o</p>';
 
 			editor.setData( data );
 
 			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<span style="background-color:rgb(10,20,30);">o</span>o</p>' );
+			expect( editor.getData() ).to.equal( '<p>f<span style="background:rgb(10,20,30);">o</span>o</p>' );
 		} );
 
 		describe( 'should convert from different color versions', () => {
@@ -253,24 +253,24 @@ describe( 'FontBackgroundColorEditing', () => {
 
 			tests.forEach( test => {
 				it( `should convert fontBackgroundColor attribute: "${ test }" to proper style value.`, () => {
-					const data = `<p>f<span style="background-color: ${ test }">o</span>o</p>`;
+					const data = `<p>f<span style="background: ${ test }">o</span>o</p>`;
 					editor.setData( data );
 
 					expect( _getModelData( doc ) )
 						.to.equal( `<paragraph>[]f<$text fontBackgroundColor="${ test.replace( / /g, '' ) }">o</$text>o</paragraph>` );
 
 					expect( editor.getData() )
-						.to.equal( `<p>f<span style="background-color:${ test.replace( / /g, '' ) };">o</span>o</p>` );
+						.to.equal( `<p>f<span style="background:${ test.replace( / /g, '' ) };">o</span>o</p>` );
 				} );
 			} );
 		} );
 
 		it( 'should convert from complex definition', () => {
 			editor.setData(
-				'<p>f<span style="background-color: lightgreen;">o</span>o</p>' +
-				'<p>f<span style="background-color: hsl( 200, 100%, 50% );">o</span>o</p>' +
-				'<p>b<span style="background-color: rgba(1,2,3,.4);">a</span>r</p>' +
-				'<p>b<span style="background-color:#fff;">a</span>z</p>'
+				'<p>f<span style="background: lightgreen;">o</span>o</p>' +
+				'<p>f<span style="background: hsl( 200, 100%, 50% );">o</span>o</p>' +
+				'<p>b<span style="background: rgba(1,2,3,.4);">a</span>r</p>' +
+				'<p>b<span style="background:#fff;">a</span>z</p>'
 			);
 
 			expect( _getModelData( doc ) ).to.equal(
@@ -281,10 +281,10 @@ describe( 'FontBackgroundColorEditing', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<p>f<span style="background-color:lightgreen;">o</span>o</p>' +
-				'<p>f<span style="background-color:hsl(200,100%,50%);">o</span>o</p>' +
-				'<p>b<span style="background-color:rgba(1,2,3,.4);">a</span>r</p>' +
-				'<p>b<span style="background-color:#fff;">a</span>z</p>'
+				'<p>f<span style="background:lightgreen;">o</span>o</p>' +
+				'<p>f<span style="background:hsl(200,100%,50%);">o</span>o</p>' +
+				'<p>b<span style="background:rgba(1,2,3,.4);">a</span>r</p>' +
+				'<p>b<span style="background:#fff;">a</span>z</p>'
 			);
 		} );
 	} );

@@ -47,18 +47,6 @@ import {
  * and all corresponding longhand forms (like `border-top-color`, `border-top-style`, etc).
  *
  * It does not handle other shorthands (like `border-radius` or `border-image`).
- *
- * The normalized model stores border values as:
- *
- * ```ts
- * const styles = {
- * 	border: {
- * 		color: { top, right, bottom, left },
- * 		style: { top, right, bottom, left },
- * 		width: { top, right, bottom, left },
- * 	}
- * };
- * ```
  */
 export function addBorderStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'border', getBorderNormalizer() );
