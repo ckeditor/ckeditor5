@@ -23,6 +23,7 @@ import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js'
 import { type Batch } from './batch.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
+import { type ModelNode } from './node.js';
 import type { ModelPosition, ModelPositionOffset } from './position.js';
 import { type ModelRange } from './range.js';
 import { type ModelSchema } from './schema.js';
@@ -1157,7 +1158,7 @@ class LiveSelection extends ModelSelection {
 			return null;
 		}
 
-		let attrs = null;
+		let attrs: Iterable<[string, unknown]> | null = null;
 
 		if ( !this.isCollapsed ) {
 			// 1. If selection is a range...
@@ -1197,22 +1198,12 @@ class LiveSelection extends ModelSelection {
 			// 4. If not, try to find the first character on the left, that is in the same node.
 			// When gravity is overridden then don't take node before into consideration.
 			if ( !this.isGravityOverridden && !attrs ) {
-				let node = nodeBefore;
-
-				while ( node && !attrs ) {
-					node = node.previousSibling;
-					attrs = getTextAttributes( node, schema );
-				}
+				attrs = getTextAttributes( nodeBefore, schema, 'left' );
 			}
 
 			// 5. If not found, try to find the first character on the right, that is in the same node.
 			if ( !attrs ) {
-				let node = nodeAfter;
-
-				while ( node && !attrs ) {
-					node = node.nextSibling;
-					attrs = getTextAttributes( node, schema );
-				}
+				attrs = getTextAttributes( nodeAfter, schema, 'right' );
 			}
 
 			// 6. If not found, selection should retrieve attributes from parent.
@@ -1247,37 +1238,83 @@ class LiveSelection extends ModelSelection {
  * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
  * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
-function getTextAttributes( node: ModelItem | null, schema: ModelSchema ): Iterable<[string, unknown]> | null {
-	if ( !node ) {
+function getTextAttributes(
+	startNode: ModelItem | null,
+	schema: ModelSchema,
+	scan: 'single' | 'left' | 'right' = 'single'
+): Iterable<[string, unknown]> | null {
+	if ( !startNode ) {
 		return null;
 	}
 
-	if ( node instanceof ModelTextProxy || node instanceof ModelText ) {
-		return node.getAttributes();
+	// This case can happen only for non-collapsed selection.
+	// It is already handled in `_getSurroundingAttributes` as `if ( value.type == 'text' )`).
+	// However this condition was also in `getTextAttributes` before. It's kept as a paranoid check.
+	/* istanbul ignore if -- @preserve */
+	if ( startNode instanceof ModelTextProxy ) {
+		return startNode.getAttributes();
 	}
 
-	if ( !schema.isInline( node ) ) {
-		return null;
-	}
+	let crossedSoftBreak = false;
 
-	// Stop on inline elements (such as `<softBreak>`) that are not objects (such as `<imageInline>` or `<mathml>`).
-	if ( !schema.isObject( node ) ) {
-		return [];
-	}
+	for ( let node: ModelNode | null = startNode; node; node = getNextNode( node ) ) {
+		if ( node.is( 'element', 'softBreak' ) ) {
+			crossedSoftBreak = true;
+			continue;
+		}
 
-	const attributes: Array<[string, unknown]> = [];
+		const attrs = getTextAttributesFromSingleNode( node );
 
-	// Collect all attributes that can be applied to the text node.
-	for ( const [ key, value ] of node.getAttributes() ) {
-		if (
-			schema.checkAttribute( '$text', key ) &&
-			schema.getAttributeProperties( key ).copyFromObject !== false
-		) {
-			attributes.push( [ key, value ] );
+		if ( attrs ) {
+			return crossedSoftBreak ? collectCopyOnEnterAttributes( attrs ) : attrs;
 		}
 	}
 
-	return attributes;
+	return null;
+
+	function getNextNode( node: ModelNode ) {
+		switch ( scan ) {
+			case 'single': return null;
+			case 'left': return node.previousSibling;
+			case 'right': return node.nextSibling;
+		}
+	}
+
+	function getTextAttributesFromSingleNode( node: ModelNode ) {
+		if ( node instanceof ModelText ) {
+			return node.getAttributes();
+		}
+
+		if ( !schema.isInline( node ) ) {
+			return null;
+		}
+
+		if ( !schema.isObject( node ) ) {
+			return [];
+		}
+
+		const attributes: Array<[string, unknown]> = [];
+
+		// Collect all attributes that can be applied to the text node.
+		for ( const [ key, value ] of node.getAttributes() ) {
+			if (
+				schema.checkAttribute( '$text', key ) &&
+				schema.getAttributeProperties( key ).copyFromObject !== false
+			) {
+				attributes.push( [ key, value ] );
+			}
+		}
+
+		return attributes;
+	}
+
+	function* collectCopyOnEnterAttributes( attrs: Iterable<[string, unknown]> ): Iterable<[string, unknown]> {
+		for ( const [ key, value ] of attrs ) {
+			if ( schema.getAttributeProperties( key ).copyOnEnter ) {
+				yield [ key, value ];
+			}
+		}
+	}
 }
 
 /**
