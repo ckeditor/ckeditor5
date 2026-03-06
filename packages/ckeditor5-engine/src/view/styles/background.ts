@@ -293,7 +293,7 @@ function extractBackgroundLayers( background: Background ): Array<BackgroundLaye
  * @example
  * // Input: [ { image: 'url(a.png)', repeat: [ 'no-repeat' ] }, { color: 'red' } ]
  * // Output: {
- * //   image: [ 'url(a.png)', null ],
+ * //   image: [ 'url(a.png)', undefined ],
  * //   position: [],               // all initial → reset to []
  * //   repeat: [ 'no-repeat', 'repeat' ],
  * //   attachment: [],             // all initial → reset to []
@@ -391,7 +391,11 @@ function parseBackgroundLayer( layer: string ): BackgroundLayer {
 			background.position.push( part );
 
 			// Percentage positions can be paired (e.g. '0% 0%'), so consume the next token if it's also a percentage.
-			if ( isPercentageStyleValue( part ) && i + 1 < parts.length && isPercentageStyleValue( parts[ i + 1 ] ) ) {
+			if (
+				i + 1 < parts.length &&
+				isPercentageStyleValue( part ) &&
+				isPercentageStyleValue( parts[ i + 1 ] )
+			) {
 				background.position.push( parts[ ++i ] );
 			}
 		} else if ( isAttachmentStyleValue( part ) ) {
@@ -453,6 +457,7 @@ function trimBackgroundImageFunction( value: string ): { value: string; image: s
 		}
 	}
 
+	// If no image functions were found, check if the value contains 'none', which is also a valid background-image value.
 	if ( value.includes( 'none' ) ) {
 		return {
 			value: value.replace( 'none', '' ),
