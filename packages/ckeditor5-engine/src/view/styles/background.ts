@@ -97,7 +97,7 @@ function getBackgroundNormalizer(): StylesNormalizer {
 			layers.push( { color: value } );
 		}
 
-		const background = mergeBackgroundLayers( layers );
+		const background = normalizeBackgroundLayers( layers );
 
 		return {
 			path: 'background',
@@ -124,11 +124,7 @@ function getBackgroundColorNormalizer(): StylesNormalizer {
  * @param path The target style path, e.g. `'background.image'`.
  */
 function getBackgroundArrayPropertyNormalizer( path: string ): StylesNormalizer {
-	return value => {
-		const values = splitByTopLevelCommas( value );
-
-		return { path, value: values };
-	};
+	return value => ( { path, value: splitByTopLevelCommas( value ) } );
 }
 
 /**
@@ -136,7 +132,6 @@ function getBackgroundArrayPropertyNormalizer( path: string ): StylesNormalizer 
  * (e.g. `background-image`, `background-repeat`, `background-position`, `background-attachment`).
  *
  * Serializes an array of per-layer values back into a comma-separated CSS string.
- * Returns an empty array (property omitted) if the serialized value is empty.
  *
  * @param property The CSS property name to output, e.g. `'background-image'`.
  */
@@ -158,7 +153,7 @@ function getBackgroundArrayPropertyReducer( property: string ): StylesReducer {
 function getBackgroundReducer(): StylesReducer {
 	return value => {
 		const background = value as Background;
-		const shorthand = unwrapBackgroundLayers( background )
+		const shorthand = extractBackgroundLayers( background )
 			.map( serializeBackgroundLayer )
 			.filter( Boolean )
 			.join( ', ' );
@@ -169,7 +164,7 @@ function getBackgroundReducer(): StylesReducer {
 
 /**
  * Serializes a single `BackgroundLayer` into a CSS background layer string.
- * Properties equal to their CSS initial values are omitted.
+ * Properties equal to their CSS placeholder values are omitted.
  *
  * @param layer A single background layer to serialize.
  * @returns A space-separated CSS string for the layer, or an empty string if no parts are present.
@@ -220,7 +215,7 @@ function serializeBackgroundLayer( layer: BackgroundLayer ): string {
  * //   { image: 'url(b.png)', repeat: [ 'repeat' ], color: 'blue' }
  * // ]
  */
-function unwrapBackgroundLayers( background: Background ): Array<BackgroundLayer> {
+function extractBackgroundLayers( background: Background ): Array<BackgroundLayer> {
 	const layerCount = Math.max(
 		background.image?.length ?? 0,
 		background.position?.length ?? 0,
@@ -284,7 +279,7 @@ function unwrapBackgroundLayers( background: Background ): Array<BackgroundLayer
  * //   color: 'red'
  * // }
  */
-function mergeBackgroundLayers( layers: Array<BackgroundLayer> ): Background {
+function normalizeBackgroundLayers( layers: Array<BackgroundLayer> ): Background {
 	const image: Array<string> = [];
 	const position: Array<string> = [];
 	const repeat: Array<string> = [];
