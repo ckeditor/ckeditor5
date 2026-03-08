@@ -178,12 +178,13 @@ function getBackgroundReducer(): StylesReducer {
 	return value => {
 		const background = value as Background;
 
-		// Filling all of these fields by the hand is highly unlikely. These fields are most likely
-		// filled when the `background` shorthand is parsed, which populates all of them for every layer.
-		// If that's the case, we can safely serialize to the shorthand form without risking losing any values.
-		// If not all of these fields are filled, it means that the background was created by setting individual
-		// longhand properties, so we should preserve that and serialize to longhands to avoid emitting default
-		// values for missing properties.
+		// It is highly unlikely that all of these properties were set manually. If all fields are present,
+		// they were most likely populated by parsing the `background` shorthand, which fills all of them
+		// for every layer. In this case, we can safely serialize back to the `background` shorthand.
+		// On the other hand, if some fields are missing, it means the background was created by manually
+		// setting individual longhand properties (e.g., `background-origin`, `background-attachment`, etc.).
+		// We should preserve that intent and serialize to longhands to prevent emitting default values
+		// for the missing properties.
 		const allFieldsLayersFilled = Object.keys( BACKGROUND_INITIAL_ARRAY_VALUES ).every( key => {
 			const value = background[ key as keyof Background ];
 
@@ -202,12 +203,17 @@ function getBackgroundReducer(): StylesReducer {
  * Serializes a structured `Background` object into a concise CSS `background` shorthand string.
  */
 function serializeToShorthandBackground( background: Background ): Array<StylePropertyDescriptor> {
+	const result: Array<StylePropertyDescriptor> = [];
 	const shorthand = extractBackgroundLayers( background )
-		.map( serializeBackgroundLayer )
+		.map( layer => serializeBackgroundLayer( layer ).trim() )
 		.filter( Boolean )
 		.join( ', ' );
 
-	return [ [ 'background', shorthand ] ];
+	if ( shorthand ) {
+		result.push( [ 'background', shorthand ] );
+	}
+
+	return result;
 }
 
 /**

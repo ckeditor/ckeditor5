@@ -422,6 +422,21 @@ describe( 'Background styles normalization', () => {
 				expect( styles.toString() ).to.equal( 'background:padding-box content-box red;' );
 			} );
 
+			it( 'should not output background when all properties are removed', () => {
+				styles.setTo( 'background:url("example.jpg") center #f00 repeat-y fixed border-box;' );
+
+				styles.remove( 'background-attachment' );
+				styles.remove( 'background-image' );
+				styles.remove( 'background-position' );
+				styles.remove( 'background-repeat' );
+				styles.remove( 'background-size' );
+				styles.remove( 'background-origin' );
+				styles.remove( 'background-clip' );
+				styles.remove( 'background-color' );
+
+				expect( styles.toString() ).to.equal( '' );
+			} );
+
 			describe( 'layers', () => {
 				it( 'should output inline background-image style with single gradient layer', () => {
 					styles.setTo(
