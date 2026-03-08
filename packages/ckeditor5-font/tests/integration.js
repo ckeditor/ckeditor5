@@ -48,7 +48,7 @@ describe( 'Integration test Font', () => {
 				'<p>' +
 					'<span ' +
 						'class="text-big" ' +
-						'style="background:rgb(10,20,30);color:#123456;font-family:Arial, Helvetica, sans-serif;"' +
+						'style="background-color:rgb(10,20,30);color:#123456;font-family:Arial, Helvetica, sans-serif;"' +
 					'>foo' +
 					'</span>' +
 				'</p>'
@@ -88,7 +88,7 @@ describe( 'Integration test Font', () => {
 					expect( editor.getData() ).to.equal(
 						'<p>' +
 							'<span ' +
-								'style="background:rgb(10,20,30);color:#123456;font-family:docs-Roboto;font-size:48px;"' +
+								'style="background-color:rgb(10,20,30);color:#123456;font-family:docs-Roboto;font-size:48px;"' +
 								'>foo' +
 							'</span>' +
 						'</p>'

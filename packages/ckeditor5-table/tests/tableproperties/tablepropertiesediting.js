@@ -1213,7 +1213,7 @@ describe( 'table properties', () => {
 				it( 'should downcast tableBackgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#f00', table ) );
 
-					assertTableStyle( editor, 'background:#f00;' );
+					assertTableStyle( editor, 'background-color:#f00;' );
 				} );
 
 				it( 'should downcast tableBackgroundColor removal', () => {
@@ -1227,11 +1227,11 @@ describe( 'table properties', () => {
 				it( 'should downcast tableBackgroundColor change', () => {
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#f00', table ) );
 
-					assertTableStyle( editor, 'background:#f00;' );
+					assertTableStyle( editor, 'background-color:#f00;' );
 
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#ba7', table ) );
 
-					assertTableStyle( editor, 'background:#ba7;' );
+					assertTableStyle( editor, 'background-color:#ba7;' );
 				} );
 			} );
 
@@ -1245,7 +1245,7 @@ describe( 'table properties', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
-						'<table style="background:#ba7;">' +
+						'<table style="background-color:#ba7;">' +
 							'<tbody>' +
 								'<tr>' +
 									'<td>foo</td>' +
