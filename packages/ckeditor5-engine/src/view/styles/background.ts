@@ -76,6 +76,14 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 		);
 	}
 
+	// Normalized data format:
+	// {
+	// 	color: 'red',
+	// 	image: [ 'url(img1.png)', 'url(img2.png)' ],
+	// 	position: [ '0% 0%', '50% 50%' ],
+	// 	repeat: [ 'no-repeat', 'repeat' ],
+	// 	// ...
+	// }
 	stylesProcessor.setNormalizer( 'background', getBackgroundNormalizer() );
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );
 	stylesProcessor.setStyleRelation( 'background', [
@@ -229,7 +237,7 @@ function serializeToLonghandBackground( background: Background ): Array<StylePro
 
 /**
  * Serializes a single `BackgroundLayer` into a CSS background layer string.
- * Properties equal to their CSS placeholder values are omitted.
+ * Properties equal to their CSS initial values are omitted.
  *
  * @param layer A single background layer to serialize.
  * @returns A space-separated CSS string for the layer, or an empty string if no parts are present.
@@ -241,14 +249,14 @@ function serializeBackgroundLayer( layer: BackgroundLayer ): string {
 		parts.push( layer.image );
 	}
 
-	const positionStr = layer.position?.join( ' ' );
+	const positionStr = layer.position.join( ' ' );
 	const isPositionDefault = !positionStr || positionStr === BACKGROUND_INITIAL_ARRAY_VALUES.position;
 
 	if ( !isPositionDefault ) {
 		parts.push( positionStr );
 	}
 
-	const sizeStr = layer.size?.join( ' ' );
+	const sizeStr = layer.size.join( ' ' );
 	const isSizeDefault = !sizeStr || sizeStr === BACKGROUND_INITIAL_ARRAY_VALUES.size;
 
 	if ( !isSizeDefault ) {
@@ -259,7 +267,7 @@ function serializeBackgroundLayer( layer: BackgroundLayer ): string {
 		parts.push( '/', sizeStr );
 	}
 
-	const repeatStr = layer.repeat?.join( ' ' );
+	const repeatStr = layer.repeat.join( ' ' );
 
 	if ( repeatStr && repeatStr !== BACKGROUND_INITIAL_ARRAY_VALUES.repeat ) {
 		parts.push( repeatStr );

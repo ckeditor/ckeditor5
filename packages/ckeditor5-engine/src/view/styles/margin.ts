@@ -18,6 +18,13 @@ import { getPositionStyleShorthandNormalizer, getBoxSidesStyleValueReducer } fro
  * ```
  */
 export function addMarginStylesRules( stylesProcessor: StylesProcessor ): void {
+	// Normalized data format:
+	// {
+	// 	top: '1px',
+	// 	right: '2px',
+	// 	bottom: '3px',
+	// 	left: '4px'
+	// }
 	stylesProcessor.setNormalizer( 'margin', getPositionStyleShorthandNormalizer( 'margin' ) );
 
 	stylesProcessor.setNormalizer( 'margin-top', value => ( { path: 'margin.top', value } ) );

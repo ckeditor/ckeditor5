@@ -49,6 +49,12 @@ import {
  * It does not handle other shorthands (like `border-radius` or `border-image`).
  */
 export function addBorderStylesRules( stylesProcessor: StylesProcessor ): void {
+	// Normalized data format:
+	// {
+	// 	color: { top: 'red', right: 'red', bottom: 'red', left: 'red' },
+	// 	style: { top: 'solid', right: 'solid', bottom: 'solid', left: 'solid' },
+	// 	width: { top: '1px', right: '1px', bottom: '1px', left: '1px' }
+	// }
 	stylesProcessor.setNormalizer( 'border', getBorderNormalizer() );
 
 	// Border-position shorthands.
