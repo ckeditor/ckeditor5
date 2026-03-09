@@ -538,10 +538,12 @@ export interface TableCellPropertiesConfig {
 	 * If header cell is both in a heading row and a heading column, the `col` scope will be prioritized by the header rows
 	 * and columns setting logic. In such case, the user can manually change the scope using the table cell properties UI.
 	 *
+	 * To disable this behavior:
+	 *
 	 * ```ts
 	 * const tableConfig = {
 	 * 	tableCellProperties: {
-	 * 		scopedHeaders: true
+	 * 		scopedHeaders: false
 	 * 	}
 	 * };
 	 * ```
