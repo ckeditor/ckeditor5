@@ -64,7 +64,7 @@ In next release, the default value of the flag will be set to `false`, resulting
 
 ### CKEditor&nbsp;AI On-premises
 
-{@link features/ckeditor-ai-overview CKEditor AI} is now available as an **on-premises deployment**, giving you full control over the AI service by running it on your own infrastructure. The on-premises version supports everything the cloud option offers, plus:
+{@link features/ckeditor-ai-overview CKEditor AI} is now available as an **on-premises deployment**, giving you full control over the AI service by running it on your infrastructure. The on-premises version supports everything the cloud option offers, plus:
 
 * **Custom AI models and providers** &ndash; use your models from OpenAI, Google Cloud, Microsoft Azure, or self-hosted solutions.
 * **MCP (Model Context Protocol) support** &ndash; extend the AI with custom external tools by connecting MCP servers, enabling use cases like searching internal knowledge bases or querying company databases directly from the AI chat.
