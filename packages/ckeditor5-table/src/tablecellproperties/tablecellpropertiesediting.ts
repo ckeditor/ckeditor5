@@ -371,6 +371,8 @@ function enableCellTypeProperty( editor: Editor ) {
 	const { model, conversion, editing, config } = editor;
 	const { schema } = model;
 
+	config.define( 'table.tableCellProperties.scopedHeaders', true );
+
 	const scopedHeaders = !!config.get( 'table.tableCellProperties.scopedHeaders' );
 	const tableUtils = editor.plugins.get( TableUtils );
 
