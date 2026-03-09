@@ -27,8 +27,6 @@ onlyBuiltDependencies:
   - sharp
 
 overrides:
-  '@ckeditor/ckeditor5-dev-build-tools': github:ckeditor/ckeditor5-dev#ci/4266-replace-postcss-with-lightningcss&path:/packages/ckeditor5-dev-build-tools
-  '@ckeditor/ckeditor5-dev-utils': github:ckeditor/ckeditor5-dev#ci/4266-replace-postcss-with-lightningcss&path:/packages/ckeditor5-dev-utils
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   diff@<8: ^8.0.3
