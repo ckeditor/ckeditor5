@@ -39,6 +39,7 @@ export {
 
 export type {
 	EditorConfig,
+	RootConfig,
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
@@ -50,6 +51,7 @@ export type {
 export { attachToForm } from './editor/utils/attachtoform.js';
 export { ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
 export { secureSourceElement } from './editor/utils/securesourceelement.js';
+export { normalizeRootsConfig } from './editor/utils/normalizerootsconfig.js';
 
 export { PendingActions, type PendingAction, type PendingActionsAddEvent, type PendingActionsRemoveEvent } from './pendingactions.js';
 

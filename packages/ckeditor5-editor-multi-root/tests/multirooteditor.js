@@ -103,13 +103,15 @@ describe( 'MultiRootEditor', () => {
 
 				const editor = new MultiRootEditor( { 'foo': fooEl, 'bar': barEl } );
 
-				expect( editor.config.get( 'initialData' ) ).to.deep.equal( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' } );
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
 			} );
 
 			it( 'if not set, is set using data passed in constructor', () => {
 				const editor = new MultiRootEditor( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' } );
 
-				expect( editor.config.get( 'initialData' ) ).to.deep.equal( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' } );
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
 			} );
 
 			it( 'if set, is not overwritten with DOM element data', () => {
@@ -135,6 +137,27 @@ describe( 'MultiRootEditor', () => {
 						{ initialData: { foo: '<p>Foo</p>', bar: '<p>Bar</p>' } }
 					);
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.roots.<name>.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new MultiRootEditor( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+						{ roots: { foo: { initialData: '<p>Bar</p>' } }, bar: { initialData: '<p>Abc</p>' } }
+					);
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new MultiRootEditor( editorElement, {
+						root: { initialData: '<p>abc</p>' }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
 		} );
 	} );

@@ -208,14 +208,14 @@ describe( 'DecoupledEditor', () => {
 			} );
 		} );
 
-		describe( 'config.initialData', () => {
+		describe( 'config.roots.main.initialData', () => {
 			it( 'if not set, is set using DOM element data', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
 				const editor = new DecoupledEditor( editorElement );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -224,7 +224,7 @@ describe( 'DecoupledEditor', () => {
 			it( 'if not set, is set using data passed in constructor', async () => {
 				const editor = new DecoupledEditor( '<p>Foo</p>' );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -236,7 +236,7 @@ describe( 'DecoupledEditor', () => {
 
 				const editor = new DecoupledEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -247,6 +247,59 @@ describe( 'DecoupledEditor', () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root and config.roots.main is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( editorElement, {
+						root: { initialData: '<p>abc</p>' },
+						roots: { main: { initialData: '<p>Bar</p>' } }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+
+			it( 'it should throw if config.initialData and config.root.initialData is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( editorElement, {
+						initialData: '<p>abc</p>',
+						root: { initialData: '<p>abc</p>' }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+
+			it( 'it should throw if config.initialData and config.roots.main.initialData is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( editorElement, {
+						initialData: '<p>abc</p>',
+						roots: { main: { initialData: '<p>abc</p>' } }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
 		} );
 	} );

@@ -12,12 +12,13 @@ import {
 	ElementApiMixin,
 	attachToForm,
 	secureSourceElement,
+	normalizeRootsConfig,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
 
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
-import { CKEditorError, getDataFromElement } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { BalloonEditorUI } from './ballooneditorui.js';
 import { BalloonEditorUIView } from './ballooneditoruiview.js';
@@ -57,18 +58,9 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 */
 	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
-		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
-
 		super( config );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
-		}
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
@@ -84,7 +76,7 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		this.model.document.createRoot();
 
-		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement, this.config.get( 'label' ) );
+		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement, this.config.get( 'roots' )!.main.label );
 		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );
@@ -217,16 +209,12 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
-}
-
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
 
 function isElement( value: any ): value is Element {

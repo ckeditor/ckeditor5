@@ -12,10 +12,12 @@ import {
 	ElementApiMixin,
 	attachToForm,
 	secureSourceElement,
+	normalizeRootsConfig,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
-import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
+
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';
@@ -54,20 +56,11 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 */
 	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
-		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
-
 		super( config );
 
-		this.config.define( 'menuBar.isVisible', false );
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
-		}
+		this.config.define( 'menuBar.isVisible', false );
 
 		this.model.document.createRoot();
 
@@ -83,7 +76,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
-			label: this.config.get( 'label' )
+			label: this.config.get( 'roots' )!.main.label
 		} );
 		this.ui = new InlineEditorUI( this, view );
 
@@ -210,16 +203,12 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
-}
-
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
 
 function isElement( value: any ): value is Element {

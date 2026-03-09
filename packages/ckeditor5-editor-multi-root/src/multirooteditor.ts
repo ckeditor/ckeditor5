@@ -10,13 +10,14 @@
 import {
 	Editor,
 	secureSourceElement,
+	normalizeRootsConfig,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type RootConfig
 } from '@ckeditor/ckeditor5-core';
 
 import {
 	CKEditorError,
-	getDataFromElement,
 	setDataInElement,
 	logWarning,
 	decodeLicenseKey,
@@ -91,16 +92,12 @@ export class MultiRootEditor extends Editor {
 	 * @param config The editor configuration.
 	 */
 	protected constructor( sourceElementsOrData: Record<string, HTMLElement> | Record<string, string>, config: EditorConfig = {} ) {
-		const rootNames = Object.keys( sourceElementsOrData );
-		const sourceIsData = rootNames.length === 0 || typeof sourceElementsOrData[ rootNames[ 0 ] ] === 'string';
-
-		if ( sourceIsData && config.initialData !== undefined && Object.keys( config.initialData ).length > 0 ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
-
 		super( config );
+
+		normalizeRootsConfig( sourceElementsOrData, this.config, false );
+
+		const rootNames = Object.keys( this.config.get( 'roots' )! );
+		const sourceIsData = rootNames.length === 0 || typeof sourceElementsOrData[ rootNames[ 0 ] ] === 'string';
 
 		if ( !sourceIsData ) {
 			this.sourceElements = sourceElementsOrData as Record<string, HTMLElement>;
@@ -108,20 +105,11 @@ export class MultiRootEditor extends Editor {
 			this.sourceElements = {};
 		}
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			// Create initial data object containing data from all roots.
-			const initialData: Record<string, string> = {};
-
-			for ( const rootName of rootNames ) {
-				initialData[ rootName ] = getInitialData( sourceElementsOrData[ rootName ] );
-			}
-
-			this.config.set( 'initialData', initialData );
-		}
-
 		if ( !sourceIsData ) {
 			for ( const rootName of rootNames ) {
-				secureSourceElement( this, sourceElementsOrData[ rootName ] as HTMLElement );
+				if ( sourceElementsOrData[ rootName ] ) {
+					secureSourceElement( this, sourceElementsOrData[ rootName ] as HTMLElement );
+				}
 			}
 		}
 
@@ -153,6 +141,9 @@ export class MultiRootEditor extends Editor {
 		}
 
 		if ( this.config.get( 'lazyRoots' ) ) {
+			// TODO throw an error as config.lazyRoots is no longer supported.
+			// TODO handle it from roots.<name>.lazyLoad instead.
+
 			for ( const rootName of this.config.get( 'lazyRoots' )! ) {
 				const root = this.model.document.createRoot( '$root', rootName );
 
@@ -161,6 +152,9 @@ export class MultiRootEditor extends Editor {
 		}
 
 		if ( this.config.get( 'rootsAttributes' ) ) {
+			// TODO throw an error as config.rootsAttributes is no longer supported.
+			// TODO handle it from roots.<name>.modelElement.attributes instead.
+
 			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
 
 			for ( const [ rootName, attributes ] of Object.entries( rootsAttributes ) ) {
@@ -199,7 +193,7 @@ export class MultiRootEditor extends Editor {
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
 			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>,
-			label: this.config.get( 'label' )
+			label: this.config.get( 'label' ) // TODO
 		};
 
 		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootNames, options );
@@ -911,11 +905,13 @@ export class MultiRootEditor extends Editor {
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
 					.then( () => {
+						const initialData = collectInitialData( editor.config.get( 'roots' )! );
+
 						// This is checked directly before setting the initial data,
 						// as plugins may change `EditorConfig#initialData` value.
-						editor._verifyRootsWithInitialData();
+						editor._verifyRootsWithInitialData( initialData );
 
-						return editor.data.init( editor.config.get( 'initialData' )! );
+						return editor.data.init( initialData );
 					} )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
@@ -926,9 +922,7 @@ export class MultiRootEditor extends Editor {
 	/**
 	 * @internal
 	 */
-	private _verifyRootsWithInitialData(): void {
-		const initialData = this.config.get( 'initialData' ) as Record<string, string>;
-
+	private _verifyRootsWithInitialData( initialData: Record<string, unknown> ): void {
 		// Roots that are not in the initial data.
 		for ( const rootName of this.model.document.getRootNames() ) {
 			if ( !( rootName in initialData ) ) {
@@ -961,8 +955,11 @@ export class MultiRootEditor extends Editor {
 	}
 }
 
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+function collectInitialData( rootsConfig: Record<string, RootConfig> ): Record<string, string > {
+	return Object.fromEntries(
+		Object.entries( rootsConfig )
+			.map( ( [ rootName, { initialData } ] ) => [ rootName, initialData! ] )
+	);
 }
 
 function isElement( value: any ): value is Element {
