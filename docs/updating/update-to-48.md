@@ -40,6 +40,24 @@ However, if you followed the {@link getting-started/setup/optimizing-build-size 
 	 import '@ckeditor/ckeditor5-ui/dist/index.css';
 	 ```
 
+### Table cell scoped headers are now enabled by default
+
+The {@link module:table/tableconfig~TableCellPropertiesConfig#scopedHeaders `config.table.tableCellProperties.scopedHeaders`} configuration option now defaults to `true`.
+
+Previously, table header cells (`<th>`) were rendered without the `scope` attribute. With this change, the editor automatically adds `scope="col"` or `scope="row"` to header cells based on their position in the table. The table cell properties UI also includes two additional options: **Column header** and **Row header**.
+
+This improves table accessibility for screen readers. If you rely on the previous HTML output (plain `<th>` without `scope`), you can restore it by setting:
+
+```js
+const editorConfig = {
+	table: {
+		tableCellProperties: {
+			scopedHeaders: false
+		}
+	}
+};
+```
+
 ### Collaboration user colors now use CSS-variable-based styling
 
 The collaboration user coloring implementation has been refactored to use runtime CSS variables instead of using a mixin.
