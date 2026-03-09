@@ -62,6 +62,67 @@ When using content tables together with layout tables, the `<figure>` element is
 In next release, the default value of the flag will be set to `false`, resulting in `<figure>` being preserved for content tables by default.
 </info-box>
 
+### CKEditor&nbsp;AI On-premises
+
+{@link features/ckeditor-ai-overview CKEditor AI} is now available as an **on-premises deployment**, giving you full control over the AI service by running it on your own infrastructure. The on-premises version supports everything the cloud option offers, plus:
+
+* **Custom AI models and providers** &ndash; use your models from OpenAI, Google Cloud, Microsoft Azure, or self-hosted solutions.
+* **MCP (Model Context Protocol) support** &ndash; extend the AI with custom external tools by connecting MCP servers, enabling use cases like searching internal knowledge bases or querying company databases directly from the AI chat.
+
+Learn more about {@link features/ckeditor-ai-deployment deployment options} and {@link features/ckeditor-ai-mcp MCP support}.
+
+### Custom AI Review checks
+
+The {@link features/ckeditor-ai-review AI Review} feature now supports **custom review commands** defined by integrators. Until now, the review was limited to built-in commands like proofreading, clarity, readability, and tone adjustment. With this release, you can create review commands tailored to your editorial guidelines, brand voice, or domain-specific quality standards.
+
+Custom commands are registered via `config.ai.review.extraCommands` and made visible in the UI through `config.ai.review.availableCommands`. The same option lets you reorder, filter, or shorten the list of built-in commands to match your needs. See the {@link features/ckeditor-ai-review AI Review documentation} for details.
+
+### AI Chat Shortcuts
+
+We are introducing **AI Chat Shortcuts**, a new opt-in plugin that displays configurable shortcut buttons in the {@link features/ckeditor-ai-chat AI Chat} panel before the first message is sent. Shortcuts provide clear, actionable entry points that guide users toward the most useful AI capabilities &ndash; from launching a predefined prompt to starting a specific review or translation flow to navigating directly to the Review or Translate tab.
+
+Integrators define shortcuts with a name, icon, and an action. Each shortcut can also configure which AI capabilities (model, web search, reasoning) are active for the prompt. Learn more in the {@link features/ckeditor-ai-chat#chat-shortcuts AI Chat Shortcuts documentation}.
+
+### Upgrade `@aws-sdk/client-bedrock-runtime` to the latest version
+
+We upgraded `@aws-sdk/client-bedrock-runtime` to the latest version to address a recently disclosed security vulnerability in the `fast-xml-parser` dependency. This update is marked as a minor breaking change due to the use of dynamic imports in one of the underlying packages, which may impact certain build environments.
+
+<info-box warning>
+	The action is required only if you use the legacy CKEditor AI Assistant with a dedicated editor bundle.
+</info-box>
+
+If you use `webpack` to build an editor bundle, configure it to bundle dynamic imports eagerly:
+
+```js
+module: {
+	parser: {
+		javascript: {
+			dynamicImportMode: 'eager'
+		}
+	}
+}
+```
+
+If you do not use CKEditor AI with a dedicated bundle, no action is required.
+
+### Incoming old installation methods sunset reminder
+
+Please note that the old installation methods will only remain available up to CKEditor&nbsp;5 v48.0.0, which is planned for release at the beginning of Q2 2026. For more timeline details, refer to the [dedicated GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779).
+
+In CKEditor&nbsp;5 v42.0.0 in June 2024, we [introduced new installation methods](https://ckeditor.com/blog/ckeditor-5-new-era-installation-simplicity/) designed to improve and simplify the developer workflow. Soon, they will be the only available paths to install and use CKEditor&nbsp;5.
+
+If your project still relies on old installation methods, now is a good time to plan your next steps. We recommend choosing between these two options:
+
+1. {@link updating/nim-migration/migration-to-new-installation-methods Migrate to the new installation methods}, which are the recommended path for most users. The new installation methods provide a cleaner setup, easier upgrades, and better alignment with future CKEditor&nbsp;5 releases.
+2. Consider [CKEditor&nbsp;5 Long-Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/). If migrating in the near term is not feasible, you can extend support for legacy installation methods.
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified the default greeting message shown when starting a new AI Chat conversation. To restore the previous message content, set `config.ai.chat.welcomeMessage` to the following:
+
+  "Hi, I'm your AI assistant. Think of me as your writing buddy, reviewer, or research partner. I can suggest changes to your document, help generate ideas, offer feedback, discuss attached files, and much more!"
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Updated `@aws-sdk/client-bedrock-runtime` to version `3.994.0`. This update introduced dynamic imports in a dependency, which may affect some build environments.
+
 ## Update to CKEditor&nbsp;5 v47.5.0
 
 Released on 11 February, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.5.0))
