@@ -546,7 +546,7 @@ export interface TableCellPropertiesConfig {
 	 * };
 	 * ```
 	 *
-	 * @default 'true'
+	 * @default true
 	 */
 	scopedHeaders?: boolean;
 }
