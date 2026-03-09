@@ -2287,7 +2287,7 @@ describe( 'table cell properties', () => {
 									'01'
 								],
 								[
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-row' },
 									''
 								]
 							], { headingColumns: 1 } )
@@ -2314,8 +2314,8 @@ describe( 'table cell properties', () => {
 									'02'
 								],
 								[
-									{ contents: '', tableCellType: 'header' },
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-row' },
+									{ contents: '', tableCellType: 'header-row' },
 									''
 								]
 							], { headingColumns: 2 } )
@@ -2336,7 +2336,7 @@ describe( 'table cell properties', () => {
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
 								[
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-row' },
 									''
 								],
 								[
@@ -2362,8 +2362,8 @@ describe( 'table cell properties', () => {
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
 								[
-									{ contents: '', tableCellType: 'header' },
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-row' },
+									{ contents: '', tableCellType: 'header-row' },
 									''
 								],
 								[
@@ -2410,7 +2410,7 @@ describe( 'table cell properties', () => {
 
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
-								[ { contents: '', tableCellType: 'header' }, { contents: '', tableCellType: 'header' } ],
+								[ { contents: '', tableCellType: 'header-column' }, { contents: '', tableCellType: 'header-column' } ],
 								[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 								[ '10', '11' ]
 							], { headingRows: 2 } )
@@ -2489,7 +2489,7 @@ describe( 'table cell properties', () => {
 							modelTable( [
 								[
 									{ contents: '00', tableCellType: 'header' },
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-column' },
 									{ contents: '01', tableCellType: 'header' }
 								],
 								[
@@ -2521,12 +2521,12 @@ describe( 'table cell properties', () => {
 							modelTable( [
 								[
 									{ contents: '00', tableCellType: 'header' },
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-column' },
 									{ contents: '01', tableCellType: 'header' }
 								],
 								[
 									{ contents: '10', tableCellType: 'header' },
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-column' },
 									{ contents: '11', tableCellType: 'header' }
 								],
 								[
@@ -2575,12 +2575,12 @@ describe( 'table cell properties', () => {
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
 								[
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-row' },
 									{ contents: '00', tableCellType: 'header' },
 									'01'
 								],
 								[
-									{ contents: '', tableCellType: 'header' },
+									{ contents: '', tableCellType: 'header-row' },
 									{ contents: '10', tableCellType: 'header' },
 									'11'
 								]
@@ -2657,8 +2657,8 @@ describe( 'table cell properties', () => {
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						modelTable( [
 							[
-								{ contents: '00', tableCellType: 'header' },
-								{ contents: '01', tableCellType: 'header' }
+								{ contents: '00', tableCellType: 'header-column' },
+								{ contents: '01', tableCellType: 'header-column' }
 							],
 							[
 								{ contents: '10', tableCellType: 'header' },
@@ -2691,12 +2691,12 @@ describe( 'table cell properties', () => {
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						modelTable( [
 							[
-								{ contents: '00', tableCellType: 'header' },
+								{ contents: '00', tableCellType: 'header-row' },
 								{ contents: '01', tableCellType: 'header' },
 								'02'
 							],
 							[
-								{ contents: '10', tableCellType: 'header' },
+								{ contents: '10', tableCellType: 'header-row' },
 								{ contents: '11', tableCellType: 'header' },
 								'12'
 							]
@@ -2839,8 +2839,8 @@ describe( 'table cell properties', () => {
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						modelTable( [
 							[
-								{ contents: '00', tableCellType: 'header' },
-								{ contents: '01', tableCellType: 'header' }
+								{ contents: '00', tableCellType: 'header-column' },
+								{ contents: '01', tableCellType: 'header-column' }
 							],
 							[ '10', '11' ]
 						], { headingRows: 1 } )
@@ -2877,11 +2877,11 @@ describe( 'table cell properties', () => {
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						modelTable( [
 							[
-								{ contents: '00', tableCellType: 'header' },
+								{ contents: '00', tableCellType: 'header-row' },
 								'01'
 							],
 							[
-								{ contents: '10', tableCellType: 'header' },
+								{ contents: '10', tableCellType: 'header-row' },
 								'11'
 							]
 						], { headingColumns: 1 } )
@@ -3516,13 +3516,13 @@ describe( 'table cell properties', () => {
 			} );
 		} );
 
-		describe( 'scoped headers', () => {
+		describe( 'disabled scoped headers', () => {
 			beforeEach( async () => {
 				editor = await VirtualTestEditor.create( {
 					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
 					table: {
 						tableCellProperties: {
-							scopedHeaders: true
+							scopedHeaders: false
 						}
 					}
 				} );
@@ -3535,6 +3535,72 @@ describe( 'table cell properties', () => {
 				await editor.destroy();
 			} );
 
+			describe( 'upcast conversion', () => {
+				it( 'should not upcast `th scope="col"` to `tableCellType="header-column"` attribute', () => {
+					editor.setData(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'col' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should not upcast `th scope="row"` to `tableCellType="header-row"` attribute', () => {
+					editor.setData(
+						viewTable( [
+							[ { contents: '00', isHeading: true, scope: 'row' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+			} );
+
+			describe( 'downcast conversion', () => {
+				it( 'should not downcast `tableCellType="header-column"` to `th scope="col"`', () => {
+					_setModelData( model, modelTable( [
+						[ { contents: '00', tableCellType: 'header-column' }, '01' ],
+						[ '10', '11' ]
+					] ) );
+
+					expect( editor.getData() ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
+				it( 'should not downcast `tableCellType="header-row"` to `th scope="row"`', () => {
+					_setModelData( model, modelTable( [
+						[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+						[ '10', '11' ]
+					] ) );
+
+					expect( editor.getData() ).to.equal(
+						viewTable( [
+							[ { contents: '00', isHeading: true }, '01' ],
+							[ '10', '11' ]
+						] )
+					);
+				} );
+			} );
+		} );
+
+		describe( 'scoped headers', () => {
 			describe( 'upcast conversion', () => {
 				it( 'should upcast `th scope="col"` to `tableCellType="header-column"` attribute', () => {
 					editor.setData(
