@@ -79,7 +79,7 @@ importers:
         version: 8.14.0(ckeditor5@packages+ckeditor5)
       acorn:
         specifier: ^8.11.3
-        version: 8.15.0
+        version: 8.16.0
       assert:
         specifier: ^2.0.0
         version: 2.1.0
@@ -157,7 +157,7 @@ importers:
         version: 6.0.1
       schema-utils:
         specifier: ^4.2.0
-        version: 4.3.2
+        version: 4.3.3
       sharp:
         specifier: ^0.34.2
         version: 0.34.4
@@ -177,8 +177,8 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
       umberto:
-        specifier: ^10.0.0
-        version: 10.0.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)
+        specifier: ^10.1.3
+        version: 10.1.3(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -4372,10 +4372,6 @@ packages:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/jsdoc-plugins@43.1.0':
-    resolution: {integrity: sha512-GVSvNBDpXWJtP19T7u0jPRAY1YkdreT4ydn+1pdkXvBepWuVQc5uJh5gVzNaTYS1fXyzDxIC49RiC9cI37RwSA==}
-    engines: {node: '>=18.0.0', npm: '>=5.7.1'}
-
   '@ckeditor/typedoc-plugins@55.0.0-alpha.5':
     resolution: {integrity: sha512-oxMfhgRw7rpmytrSA/79jQ7Uox2F9edxWrYkLHMDQ4FjnN+Ves0oppYqipM8ObTZyPK7u7ServPdh5yqqaEzrQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
@@ -4692,9 +4688,6 @@ packages:
 
   '@iconify/utils@3.0.2':
     resolution: {integrity: sha512-EfJS0rLfVuRuJRn4psJHtK2A9TqVnkxPpHY6lYHiB9+8eSuudsxbwMiavocG45ujOo6FJ+CIRlRnlOGinzkaGQ==}
-
-  '@iktakahiro/markdown-it-katex@4.0.1':
-    resolution: {integrity: sha512-kGFooO7fIOgY34PSG8ZNVsUlKhhNoqhzW2kq94TNGa8COzh73PO4KsEoPOsQVG1mEAe8tg7GqG0FoVao0aMHaw==}
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -5031,9 +5024,6 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@inquirer/prompts': '>= 3 < 8'
-
-  '@maboloshi/markdown-it-toc@1.1.1':
-    resolution: {integrity: sha512-D5SLcPa4BmHE3LZ5zuyCchwL4nVMlnndNWcq8VV/ubrpEUm1KY1U/X3scWEzcG4KuwwpDgUyAkig26CTYXIyRQ==}
 
   '@mermaid-js/parser@0.6.3':
     resolution: {integrity: sha512-lnjOhe7zyHjc+If7yT4zoedx2vo4sHaTmtkl1+or8BRTnCtDmcTpAjpzDSfCZrshM5bCoz0GyidzadJAH1xobA==}
@@ -5645,6 +5635,9 @@ packages:
 
   '@sinonjs/text-encoding@0.7.3':
     resolution: {integrity: sha512-DE427ROAphMQzU4ENbliGYrBSYPXF+TtLg9S8vzeA+OF4ZKzoDdzfL8sxuMUGS/lgRhM6j1URSk9ghf7Xo1tyA==}
+    deprecated: |-
+      Deprecated: no longer maintained and no longer used by Sinon packages. See
+        https://github.com/sinonjs/nise/issues/243 for replacement details.
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
@@ -6058,6 +6051,9 @@ packages:
   '@vitest/utils@4.0.18':
     resolution: {integrity: sha512-msMRKLMVLWygpK3u2Hybgi4MNjcYJvwTb0Ru09+fOyCXIgT5raYP041DRRdiJiI3k/2U6SEbAETB3YtBrUkCFA==}
 
+  '@vscode/markdown-it-katex@1.1.2':
+    resolution: {integrity: sha512-+4IIv5PgrmhKvW/3LpkpkGg257OViEhXkOOgCyj5KMsjsOfnRXkni8XAuuF9Ui5p3B8WnUovlDXAQNb8RJ/RaQ==}
+
   '@vue/compiler-core@3.5.22':
     resolution: {integrity: sha512-jQ0pFPmZwTEiRNSb+i9Ow/I/cHv2tXYqsnHKKyCQ08irI2kdF5qmYedmF8si8mA7zepUFmJ2hqzS8CQmNOWOkQ==}
 
@@ -6169,11 +6165,6 @@ packages:
 
   acorn@7.4.1:
     resolution: {integrity: sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
-  acorn@8.15.0:
-    resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -6695,10 +6686,6 @@ packages:
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
-
-  clone@2.1.2:
-    resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
-    engines: {node: '>=0.8'}
 
   co-body@6.2.0:
     resolution: {integrity: sha512-Kbpv2Yd1NdL1V/V4cwLVxraHDV6K8ayohr2rmH0J87Er8+zJjcTa6dAn9QMPC9CRgU8+aNajKbSf1TzDB1yKPA==}
@@ -7441,10 +7428,6 @@ packages:
     resolution: {integrity: sha512-ZCkIjSYNDyGn0R6ewHDtXgns/Zre/NT6Agvq1/WobF7JXgFff4SeDroKiCO3fNJreU9YG429Sc81o4w5ok/W5g==}
     engines: {node: '>=10.2.0'}
 
-  enhanced-resolve@5.18.3:
-    resolution: {integrity: sha512-d4lC8xfavMeBjzGr2vECC3fsGXziXZQyJxD868h2M/mBI3PwAuODxAkLkq5HYuvrPYcUtiLzsTo8U3PgX3Ocww==}
-    engines: {node: '>=10.13.0'}
-
   enhanced-resolve@5.19.0:
     resolution: {integrity: sha512-phv3E1Xl4tQOShqSte26C7Fl84EwUdZsyOuSSk9qtAGyyQs2s3jJzComh+Abf4g187lUUAvH+H26omrqia2aGg==}
     engines: {node: '>=10.13.0'}
@@ -8128,9 +8111,6 @@ packages:
     resolution: {integrity: sha512-8oo1iozloZo7TojPVYg4IxL3SJKCBdSJ908fTlIxIK7TWJIKdYnQlW31+12DBJ0NhVZA/lZisPObGF08wT8fKw==}
     engines: {node: '>=14'}
 
-  hexo-renderer-markdown-it-plus@1.0.6:
-    resolution: {integrity: sha512-nuidp4IvyHC9G3hnRO4bY7BfBBZBhnOEfQjfk6AJI+qsy+BlaUwDvemuARFTD3APPIO78YamAv5mweo5XMRwfA==}
-
   hexo-renderer-pug@3.0.0:
     resolution: {integrity: sha512-PmbLx6VkNv+mPLOe97OC4F8iTzTuj665dSYN7bZKArd4M/q7gb2tNs29VGuAOC50i9tvWY2f+tPQimf0GZ9Hyw==}
     engines: {node: '>=12.4.0'}
@@ -8782,9 +8762,6 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  linkify-it@4.0.1:
-    resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
-
   linkify-it@5.0.0:
     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
 
@@ -9034,13 +9011,6 @@ packages:
 
   markdown-it-sup@1.0.0:
     resolution: {integrity: sha512-E32m0nV9iyhRR7CrhnzL5msqic7rL1juWre6TQNxsnApg7Uf+F97JOKxUijg5YwXz86lZ0mqfOnutoryyNdntQ==}
-
-  markdown-it-toc-and-anchor@4.2.0:
-    resolution: {integrity: sha512-DusSbKtg8CwZ92ztN7bOojDpP4h0+w7BVOPuA3PHDIaabMsERYpwsazLYSP/UlKedoQjOz21mwlai36TQ04EpA==}
-
-  markdown-it@13.0.2:
-    resolution: {integrity: sha512-FtwnEuuK+2yVU7goGn/MJ0WBZMM9ZPgU9spqlFs7/A/pDIUNSOQZhUgOqYCficIuR2QaFnrt8LHqBWsbTAoI5w==}
-    hasBin: true
 
   markdown-it@14.1.1:
     resolution: {integrity: sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==}
@@ -10580,10 +10550,6 @@ packages:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
     engines: {node: '>= 10.13.0'}
 
-  schema-utils@4.3.2:
-    resolution: {integrity: sha512-Gn/JaSk/Mt9gYubxTtSn/QCV4em9mpAPiR1rqy/Ocu19u/G9J5WWdNoUT4SiV6mFC3y6cxyFcFwdzPM3FgxGAQ==}
-    engines: {node: '>= 10.13.0'}
-
   schema-utils@4.3.3:
     resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
     engines: {node: '>= 10.13.0'}
@@ -10721,6 +10687,10 @@ packages:
   slice-ansi@7.1.2:
     resolution: {integrity: sha512-iOBWFgUX7caIZiuutICxVgX1SdxwAVFFKwt1EvMYYec/NWO5meOJ6K5uQxhrYBdQJne4KxiqZc+KptFOWFSI9w==}
     engines: {node: '>=18'}
+
+  slug@11.0.1:
+    resolution: {integrity: sha512-VrM060OM/E7rdLQSnp6JHrzFfJFmqQBp0+TMhZStnEB8PfNliaZ9UWYjTHGHLUFVJorZ8TjVd/aKvIxHWU2O7g==}
+    hasBin: true
 
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
@@ -11041,11 +11011,6 @@ packages:
       uglify-js:
         optional: true
 
-  terser@5.44.0:
-    resolution: {integrity: sha512-nIVck8DK+GM/0Frwd+nIhZ84pR/BX7rmXMfYwyg+Sri5oGVE99/E3KvXqpC2xHFxyqXyGHTKBSioxxplrO4I4w==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   terser@5.46.0:
     resolution: {integrity: sha512-jTwoImyr/QbOWFFso3YoU3ik0jBBDJ6JTOQiy/J2YxVJdZCc+5u7skhNwiOR3FQIygFqVUPHl7qbbxtjW2K3Qg==}
     engines: {node: '>=10'}
@@ -11210,17 +11175,14 @@ packages:
     resolution: {integrity: sha512-O3oYyCMPYgNNHuO7Jjk3uacJWZF8loBgwrfd/5LE/HyZ3lUIOdniQ7DNXJcIgZbwioZxk0fLfI4EVnetdiX5jg==}
     hasBin: true
 
-  uc.micro@1.0.6:
-    resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
-
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@10.0.0:
-    resolution: {integrity: sha512-9f/p0QYhMwMsXrvLkXbG8Rrn2Z2QxEFPvBlfaFaTrcF1sfzhp859EulZ8OV4SbJxI39/jYtJpNa3S5K3YzWbhw==}
+  umberto@10.1.3:
+    resolution: {integrity: sha512-VQMV9iKTjFF+w3bEhPJwujkJg5eii8tP/JNzzTGtGBsdoIbo4SE4xWoEU+4ZOS3akzLQpJ8HKqgzi3vz/NzPfA==}
     engines: {node: '>=24.11.0'}
 
   undici-types@7.18.2:
@@ -11286,10 +11248,6 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unorm@1.6.0:
-    resolution: {integrity: sha512-b2/KCUlYZUeA7JFUuRJZPUtr4gZvBh7tavtv4fvk4+KV9pfGiR6CQAQAWl49ZpR3ts2dk4FYkP7EIgDJoiOLDA==}
-    engines: {node: '>= 0.4.0'}
-
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
@@ -11310,10 +11268,6 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
-
-  uslug@1.0.4:
-    resolution: {integrity: sha512-Jrbpp/NS3TvIGNjfJT1sn3/BCeykoxR8GbNYW5lF6fUscLkbXFwj1b7m4DvIkHm8k3Qr6Co68lbTmoZTMGk/ow==}
-    engines: {node: '>= 0.4.0'}
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -12642,11 +12596,6 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/jsdoc-plugins@43.1.0':
-    dependencies:
-      fs-extra: 11.3.2
-      lodash: 4.17.23
-
   '@ckeditor/typedoc-plugins@55.0.0-alpha.5(typedoc@0.28.14(typescript@5.5.4))':
     dependencies:
       typedoc: 0.28.14(typescript@5.5.4)
@@ -12898,10 +12847,6 @@ snapshots:
       mlly: 1.8.0
     transitivePeerDependencies:
       - supports-color
-
-  '@iktakahiro/markdown-it-katex@4.0.1':
-    dependencies:
-      katex: 0.16.23
 
   '@img/colour@1.0.0': {}
 
@@ -13189,8 +13134,6 @@ snapshots:
     dependencies:
       '@inquirer/prompts': 7.8.6(@types/node@25.3.0)
       '@inquirer/type': 1.5.5
-
-  '@maboloshi/markdown-it-toc@1.1.1': {}
 
   '@mermaid-js/parser@0.6.3':
     dependencies:
@@ -13539,7 +13482,7 @@ snapshots:
     dependencies:
       serialize-javascript: 6.0.2
       smob: 1.5.0
-      terser: 5.44.0
+      terser: 5.46.0
     optionalDependencies:
       rollup: 4.59.0
 
@@ -14203,6 +14146,10 @@ snapshots:
       '@vitest/pretty-format': 4.0.18
       tinyrainbow: 3.0.3
 
+  '@vscode/markdown-it-katex@1.1.2':
+    dependencies:
+      katex: 0.16.23
+
   '@vue/compiler-core@3.5.22':
     dependencies:
       '@babel/parser': 7.29.0
@@ -14354,8 +14301,6 @@ snapshots:
       acorn: 8.16.0
 
   acorn@7.4.1: {}
-
-  acorn@8.15.0: {}
 
   acorn@8.16.0: {}
 
@@ -14899,8 +14844,6 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
-
-  clone@2.1.2: {}
 
   co-body@6.2.0:
     dependencies:
@@ -15723,11 +15666,6 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  enhanced-resolve@5.18.3:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.0
-
   enhanced-resolve@5.19.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -15861,7 +15799,7 @@ snapshots:
   eslint-plugin-ckeditor5-rules@13.0.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
-      enhanced-resolve: 5.18.3
+      enhanced-resolve: 5.19.0
       resolve.exports: 2.0.3
       upath: 2.0.1
       validate-npm-package-name: 6.0.2
@@ -16531,23 +16469,6 @@ snapshots:
       picocolors: 1.1.1
 
   hexo-pagination@3.0.0: {}
-
-  hexo-renderer-markdown-it-plus@1.0.6:
-    dependencies:
-      '@iktakahiro/markdown-it-katex': 4.0.1
-      clone: 2.1.2
-      highlight.js: 11.11.1
-      markdown-it: 13.0.2
-      markdown-it-abbr: 1.0.4
-      markdown-it-deflist: 2.1.0
-      markdown-it-emoji: 2.0.2
-      markdown-it-footnote: 3.0.3
-      markdown-it-ins: 3.0.1
-      markdown-it-mark: 3.0.1
-      markdown-it-sub: 1.0.0
-      markdown-it-sup: 1.0.0
-      markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
-      uslug: 1.0.4
 
   hexo-renderer-pug@3.0.0:
     dependencies:
@@ -17297,10 +17218,6 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  linkify-it@4.0.1:
-    dependencies:
-      uc.micro: 1.0.6
-
   linkify-it@5.0.0:
     dependencies:
       uc.micro: 2.1.0
@@ -17638,19 +17555,6 @@ snapshots:
   markdown-it-sub@1.0.0: {}
 
   markdown-it-sup@1.0.0: {}
-
-  markdown-it-toc-and-anchor@4.2.0:
-    dependencies:
-      clone: 2.1.2
-      uslug: 1.0.4
-
-  markdown-it@13.0.2:
-    dependencies:
-      argparse: 2.0.1
-      entities: 3.0.1
-      linkify-it: 4.0.1
-      mdurl: 1.0.1
-      uc.micro: 1.0.6
 
   markdown-it@14.1.1:
     dependencies:
@@ -19583,13 +19487,6 @@ snapshots:
       ajv: 6.14.0
       ajv-keywords: 3.5.2(ajv@6.14.0)
 
-  schema-utils@4.3.2:
-    dependencies:
-      '@types/json-schema': 7.0.15
-      ajv: 8.18.0
-      ajv-formats: 2.1.1(ajv@8.18.0)
-      ajv-keywords: 5.1.0(ajv@8.18.0)
-
   schema-utils@4.3.3:
     dependencies:
       '@types/json-schema': 7.0.15
@@ -19789,6 +19686,8 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
+
+  slug@11.0.1: {}
 
   smart-buffer@4.2.0: {}
 
@@ -20191,13 +20090,6 @@ snapshots:
       '@swc/core': 1.13.5
       esbuild: 0.25.10
 
-  terser@5.44.0:
-    dependencies:
-      '@jridgewell/source-map': 0.3.11
-      acorn: 8.16.0
-      commander: 2.20.3
-      source-map-support: 0.5.21
-
   terser@5.46.0:
     dependencies:
       '@jridgewell/source-map': 0.3.11
@@ -20341,18 +20233,16 @@ snapshots:
 
   ua-parser-js@0.7.41: {}
 
-  uc.micro@1.0.6: {}
-
   uc.micro@2.1.0: {}
 
   ufo@1.6.1: {}
 
-  umberto@10.0.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10):
+  umberto@10.1.3(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
-      '@ckeditor/jsdoc-plugins': 43.1.0
       '@minify-html/node': 0.17.1
+      '@vscode/markdown-it-katex': 1.1.2
       babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       css-select: 6.0.0
       dom-serializer: 2.0.0
@@ -20367,16 +20257,23 @@ snapshots:
       hexo-generator-category: 2.0.0
       hexo-generator-index: 4.0.0
       hexo-generator-tag: 2.0.0
-      hexo-renderer-markdown-it-plus: 1.0.6
       hexo-renderer-pug: 3.0.0
+      highlight.js: 11.11.1
       htmlparser2: 10.0.0
       javascript-stringify: 2.1.0
       jquery: 3.7.1
       js-beautify: 1.15.4
       lodash: 4.17.23
       markdown-it: 14.1.1
+      markdown-it-abbr: 1.0.4
+      markdown-it-deflist: 2.1.0
+      markdown-it-emoji: 2.0.2
       markdown-it-expand-tabs: 1.0.13
-      markdown-it-toc-and-anchor: 4.2.0
+      markdown-it-footnote: 3.0.3
+      markdown-it-ins: 3.0.1
+      markdown-it-mark: 3.0.1
+      markdown-it-sub: 1.0.0
+      markdown-it-sup: 1.0.0
       medium-zoom: 1.1.0
       minimatch: 10.2.4
       moment: 2.30.1
@@ -20384,6 +20281,7 @@ snapshots:
       sass: 1.93.2
       shiki: 3.13.0
       sitemap: 8.0.0
+      slug: 11.0.1
       tinypool: 2.0.0
       tippy.js: 6.3.7
       tree-model: 1.0.7
@@ -20464,8 +20362,6 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unorm@1.6.0: {}
-
   unpipe@1.0.0: {}
 
   unplugin@2.3.10:
@@ -20486,10 +20382,6 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
-
-  uslug@1.0.4:
-    dependencies:
-      unorm: 1.6.0
 
   util-deprecate@1.0.2: {}
 
