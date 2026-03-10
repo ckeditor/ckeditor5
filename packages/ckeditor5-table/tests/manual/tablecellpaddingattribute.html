@@ -1,0 +1,149 @@
+<div class="grid">
+	<div>
+		<div id="editor-table-cellpadding-attribute">
+			<table cellpadding="20">
+				<caption>
+					No inline styles on cells
+				</caption>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+
+			<table cellpadding="20">
+				<caption>
+					Inline style `padding: 0` on each cell
+				</caption>
+				<tr>
+					<td style="padding: 0">foo</td>
+					<td style="padding: 0">bar</td>
+					<td style="padding: 0">baz</td>
+				</tr>
+				<tr>
+					<td style="padding: 0">foo</td>
+					<td style="padding: 0">bar</td>
+					<td style="padding: 0">baz</td>
+				</tr>
+				<tr>
+					<td style="padding: 0">foo</td>
+					<td style="padding: 0">bar</td>
+					<td style="padding: 0">baz</td>
+				</tr>
+			</table>
+
+			<table cellpadding="20">
+				<caption>
+					Inline style `padding: 10px` on each cell
+				</caption>
+				<tr>
+					<td style="padding: 10px">foo</td>
+					<td style="padding: 10px">bar</td>
+					<td style="padding: 10px">baz</td>
+				</tr>
+				<tr>
+					<td style="padding: 10px">foo</td>
+					<td style="padding: 10px">bar</td>
+					<td style="padding: 10px">baz</td>
+				</tr>
+				<tr>
+					<td style="padding: 10px">foo</td>
+					<td style="padding: 10px">bar</td>
+					<td style="padding: 10px">baz</td>
+				</tr>
+			</table>
+
+			<table cellpadding="20">
+				<caption>
+					Different inline padding values applied to different sides of cells
+				</caption>
+				<tr>
+					<td style="padding-left: 5px">foo</td>
+					<td style="padding-right: 10px">bar</td>
+					<td style="padding-top: 15px">baz</td>
+				</tr>
+				<tr>
+					<td style="padding-left: 50px">foo</td>
+					<td style="padding-right: 40px">bar</td>
+					<td style="padding-top: 30px">baz</td>
+				</tr>
+				<tr>
+					<td style="padding-left: 1px">foo</td>
+					<td style="padding-right: 2px">bar</td>
+					<td style="padding-top: 3px">baz</td>
+				</tr>
+			</table>
+
+			<table cellpadding="0">
+				<caption>
+					cellpadding="0"
+				</caption>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+
+			<table cellpadding>
+				<caption>
+					cellpadding
+				</caption>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div>
+		<h2>Source data</h2>
+
+		<div id="cloned-source"></div>
+	</div>
+	<div>
+		<h2>Source data wrapped with<code>.ck-content</code> class</h2>
+
+		<div id="cloned-source2" class="ck-content"></div>
+	</div>
+</div>
+
+<style>
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 20px;
+	}
+</style>
