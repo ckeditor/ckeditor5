@@ -970,8 +970,6 @@ export interface RootConfig {
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
-	 * TODO link to root and roots config docs
-	 *
 	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
 	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,

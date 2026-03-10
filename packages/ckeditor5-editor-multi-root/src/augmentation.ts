@@ -100,7 +100,11 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface RootConfig {
 
 		/**
-		 * TODO
+		 * Configuration for the root model element of the root.
+		 * This is a configuration object for the model element that will be created for the root in the editor's model.
+		 *
+		 * **Note: This configuration option is supported only by the
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
 		 */
 		modelElement?: RootModelElementConfig;
 
@@ -125,6 +129,13 @@ declare module '@ckeditor/ckeditor5-core' {
 		 *
 		 * This is useful for handling big documents that contain hundreds of roots, or contain very large roots, which may have
 		 * impact editor performance if loaded all at once.
+		 *
+		 * **Note: This configuration option is supported only by the
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
+		 *
+		 * **Note: This property has been deprecated and will be removed in the future versions of CKEditor.**
+		 *
+		 * @deprecated
 		 */
 		lazyLoad?: boolean;
 	}

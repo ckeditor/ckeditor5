@@ -18,7 +18,14 @@ import {
 import { isElement as _isElement } from 'es-toolkit/compat';
 
 /**
- * TODO
+ * Normalizes the editor roots configuration. It ensures that all root configurations are defined in `config.roots`
+ * and that they have `initialData` defined.
+ *
+ * It normalizes a single-root configuration (where `config.root` is used) to a multi-root configuration
+ * (where all roots are defined in `config.roots`). This is considered a standard configuration format,
+ * so the editor features can always expect roots to be defined in `config.roots`.
+ *
+ * It also handles legacy configuration options, such as `config.initialData`, `config.placeholder`, and `config.label`.
  *
  * @internal
  */
