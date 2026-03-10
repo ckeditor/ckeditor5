@@ -287,7 +287,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<figure class="table table-style-align-right foo" ' +
-				'style="background:blue;color:red;float:right;width:60%;" ' +
+				'style="background:blue;color:red;width:60%;" ' +
 				'id="test" data-foo="bar"' +
 			'>' +
 				'<table class="ck-table-resized" style="color:pink;">' +
