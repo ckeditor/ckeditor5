@@ -7,8 +7,8 @@
  * @module style/styleui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { createDropdown } from 'ckeditor5/src/ui.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { createDropdown } from '@ckeditor/ckeditor5-ui';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import { StylePanelView } from './ui/stylepanelview.js';

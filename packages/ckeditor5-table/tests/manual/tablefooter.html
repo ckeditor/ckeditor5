@@ -1,0 +1,219 @@
+<style>
+	.container {
+		display: grid;
+		grid-template-columns: 700px 400px;
+		gap: 4em;
+	}
+</style>
+
+<div class="container">
+	<div>
+		<div id="editor">
+			<strong>Table with `tfoot`</strong>
+			<figure class="table content-table">
+				<table>
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with multiple `tfoot` at the end</strong>
+			<figure class="table content-table">
+				<table>
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tfoot>
+						<tr>
+							<td>Foot 3</td>
+							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with `tfoot` at the beginning and the end</strong>
+			<figure class="table content-table">
+				<table>
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 3</td>
+							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+			<strong>Table with single `tfoot` between multiple `tbody`</strong>
+			<figure class="table content-table">
+				<table>
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 3</td>
+							<td>Data 4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with multiple `tfoot` between multiple `tbody` </strong>
+			<figure class="table content-table">
+				<table>
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+
+					<tfoot>
+						<tr>
+							<td>Foot 3</td>
+							<td>Foot 4</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 5</td>
+							<td>Foot 6</td>
+						</tr>
+					</tfoot>
+
+					<tfoot>
+						<tr>
+							<td>Foot 7</td>
+							<td>Foot 8</td>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<tr>
+							<td>Data 3</td>
+							<td>Data 4</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 9</td>
+							<td>Foot 10</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with only `tfoot`</strong>
+			<figure class="table content-table">
+				<table>
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<br>
+
+			<strong>Table with `thead` and `tfoot`</strong>
+			<figure class="table content-table">
+				<table>
+					<thead>
+						<tr>
+							<th>Header 1</th>
+							<th>Header 2</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>Data 1</td>
+							<td>Data 2</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td>Foot 1</td>
+							<td>Foot 2</td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+		</div>
+	</div>
+	<div>
+		<h2>Source data</h2>
+
+		<div id="cloned-source" class="ck-content"></div>
+	</div>
+</div>
+

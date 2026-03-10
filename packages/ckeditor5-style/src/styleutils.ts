@@ -7,10 +7,10 @@
  * @module style/styleutils
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, MatcherObjectPattern, ModelDocumentSelection, ModelSelectable } from 'ckeditor5/src/engine.js';
-import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
-import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelElement, MatcherObjectPattern, ModelDocumentSelection, ModelSelectable } from '@ckeditor/ckeditor5-engine';
+import type { DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils';
+import type { TemplateDefinition } from '@ckeditor/ckeditor5-ui';
 
 import type {
 	DataFilter,

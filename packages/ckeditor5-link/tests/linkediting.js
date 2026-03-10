@@ -17,9 +17,8 @@ import { ImageBlockEditing, ImageInline } from '@ckeditor/ckeditor5-image';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Input, Delete } from '@ckeditor/ckeditor5-typing';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { isLinkElement } from '../src/utils.js';
-import { env } from 'ckeditor5/src/utils.js';
 
 describe( 'LinkEditing', () => {
 	let element, editor, model, view;

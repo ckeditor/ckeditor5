@@ -7,12 +7,12 @@
  * @module style/integrations/list
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { ModelElement } from 'ckeditor5/src/engine.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
-import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
+import type { TemplateDefinition } from '@ckeditor/ckeditor5-ui';
 
-import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import {
 	StyleUtils,
@@ -48,7 +48,7 @@ export class ListStyleSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ StyleUtils, 'GeneralHtmlSupport' ] as const;
+		return [ StyleUtils, GeneralHtmlSupport ] as const;
 	}
 
 	/**
@@ -63,7 +63,7 @@ export class ListStyleSupport extends Plugin {
 
 		this._styleUtils = editor.plugins.get( StyleUtils );
 		this._listUtils = this.editor.plugins.get( 'ListUtils' );
-		this._htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
+		this._htmlSupport = this.editor.plugins.get( GeneralHtmlSupport );
 
 		this.listenTo<StyleUtilsIsEnabledForBlockEvent>( this._styleUtils, 'isStyleEnabledForBlock', ( evt, [ definition, block ] ) => {
 			if ( this._isStyleEnabledForBlock( definition, block ) ) {
