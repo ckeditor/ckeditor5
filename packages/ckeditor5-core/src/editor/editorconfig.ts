@@ -912,7 +912,11 @@ export interface EditorConfig extends EngineConfig {
 }
 
 /**
- * TODO
+ * Configuration for a single editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
+ * {@link module:core/editor/editorconfig~EditorConfig#roots `EditorConfig#roots.<rootName>`}.
+ *
+ * **Note**: If your editor implementation uses only a single root, you can use `config.root` to set the root configuration instead of
+ * `config.roots.main`.
  */
 export interface RootConfig {
 
@@ -1099,6 +1103,18 @@ export interface RootConfig {
 	 * ```
 	 */
 	label?: string;
+}
+
+/**
+ * Configuration of a root element of the editor. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} and
+ * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>`} to specify details of the model root element.
+ */
+export interface RootModelElementConfig {
+
+	/**
+	 * TODO This will be used later to specify the name of the model element which will be used as a root. For now, it is always `'$root'`.
+	 */
+	name: string;
 }
 
 /**

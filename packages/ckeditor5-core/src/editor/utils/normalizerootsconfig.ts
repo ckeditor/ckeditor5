@@ -39,31 +39,29 @@ export function normalizeRootsConfig(
 
 	// Move `config.root` to `config.roots.main`.
 	// This makes access to root configuration more consistent as all roots will be defined in `config.roots`.
-	if ( defaultRootName ) {
+	if ( defaultRootName && !rootsConfig[ defaultRootName ] ) {
 		rootsConfig[ defaultRootName ] = mainRootConfig || {};
 	}
 
-	const sourceElementIsObject = isSourceElementOrDataPlainObject( sourceElementsOrData );
+	const sourceElementIsPlainObject = isPlainObject( sourceElementsOrData );
 
 	// Collect legacy configuration values for `initialData`, `placeholder`, and `label` from the config.
-	const legacyInitialData = getLegacyConfigValue( config, 'initialData', sourceElementIsObject, defaultRootName );
-	const legacyPlaceholder = getLegacyConfigValue( config, 'placeholder', sourceElementIsObject, defaultRootName );
-	const legacyLabel = getLegacyConfigValue( config, 'label', sourceElementIsObject, defaultRootName );
+	const legacyInitialData = getLegacyInitialData( config, sourceElementIsPlainObject, defaultRootName );
 
 	// Collect root names. This includes root names from the source element (if it's an object),
 	// from `config.roots`, and from legacy config. This ensures that all roots are processed in the next step.
 	const rootNames = Array.from( new Set( [
-		...sourceElementIsObject ? Object.keys( sourceElementsOrData ) : [],
+		...sourceElementIsPlainObject ? Object.keys( sourceElementsOrData ) : [],
 		...Object.keys( rootsConfig ),
 		...Object.keys( legacyInitialData )
 	] ) );
 
-	// TODO handle legacy data mismatch with source element keys.
+	// TODO should we throw when sourceElementsOrData keys mismatch with initialData keys?
 
 	// Ensure that all roots have `initialData` defined. If not, try to get it from the source element or data.
 	for ( const rootName of rootNames ) {
 		const rootConfig = rootsConfig[ rootName ] || {};
-		const sourceElementOrDataForRoot = sourceElementIsObject ? sourceElementsOrData[ rootName ] : sourceElementsOrData;
+		const sourceElementOrDataForRoot = sourceElementIsPlainObject ? sourceElementsOrData[ rootName ] : sourceElementsOrData;
 
 		// No dedicated initial data for the root.
 		if ( rootConfig.initialData === undefined ) {
@@ -96,8 +94,9 @@ export function normalizeRootsConfig(
 			throw new CKEditorError( 'editor-create-roots-initial-data' );
 		}
 
-		rootConfig.placeholder ??= legacyPlaceholder[ rootName ];
-		rootConfig.label ??= legacyLabel[ rootName ];
+		// Handle legacy `config.placeholder` and `config.label` for the root.
+		rootConfig.placeholder ??= getLegacyPlainConfigValue( config, 'placeholder', rootName );
+		rootConfig.label ??= getLegacyPlainConfigValue( config, 'label', rootName );
 
 		rootsConfig[ rootName ] = rootConfig;
 	}
@@ -106,9 +105,9 @@ export function normalizeRootsConfig(
 }
 
 /**
- * Type guard to check if the provided value is a plain object or plain value.
+ * Type guard to check if the provided value is a plain object.
  */
-function isSourceElementOrDataPlainObject(
+function isPlainObject(
 	sourceElementsOrData: HTMLElement | string | Record<string, HTMLElement> | Record<string, string>
 ): sourceElementsOrData is Record<string, HTMLElement> | Record<string, string> {
 	return (
@@ -127,20 +126,36 @@ function getInitialData( sourceElementOrData: HTMLElement | string ): string {
 }
 
 /**
- * Retrieve legacy configuration value for `initialData`, `placeholder`, or `label` from the config.
+ * Retrieve legacy configuration value for `initialData` from the config.
  * Normalize single-root config so returned value is always an object with root names as keys.
  */
-function getLegacyConfigValue(
+function getLegacyInitialData(
 	config: Config<EditorConfig>,
-	key: 'initialData' | 'placeholder' | 'label',
 	sourceElementIsObject: boolean,
 	defaultRootName: string | false
 ): Record<string, string | undefined> {
 	return (
 		sourceElementIsObject || !defaultRootName ?
-			config.get( key ) || {} :
-			{ [ defaultRootName ]: config.get( key ) }
+			config.get( 'initialData' ) || {} :
+			{
+				[ defaultRootName ]: config.get( 'initialData' )
+			}
 	) as Record<string, string | undefined>;
+}
+
+/**
+ * Retrieve legacy configuration value for `placeholder` or `label` from the config for a specific root.
+ */
+function getLegacyPlainConfigValue(
+	config: Config<EditorConfig>,
+	key: 'placeholder' | 'label',
+	rootName: string
+): string | undefined {
+	const legacyValue = config.get( key );
+
+	if ( legacyValue ) {
+		return typeof legacyValue == 'string' ? legacyValue : legacyValue[ rootName ];
+	}
 }
 
 /**

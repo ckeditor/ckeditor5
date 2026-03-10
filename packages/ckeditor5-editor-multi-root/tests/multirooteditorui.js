@@ -163,6 +163,8 @@ describe( 'MultiRootEditorUI', () => {
 		} );
 
 		describe( 'placeholder', () => {
+			// TODO add tests with editor.config.roots.<name>.placeholder.
+
 			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return MultiRootEditor
 					.create( { foo: '', bar: '' }, {
@@ -185,11 +187,11 @@ describe( 'MultiRootEditorUI', () => {
 						newEditor.model.change( writer => {
 							writer.addRoot( 'new' );
 							const editable = view.createEditable( 'new' );
-							ui.addEditable( editable );
+							ui.addEditable( editable, 'Added later' );
 						} );
 
 						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
-						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type here...' );
+						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'Added later' );
 
 						return newEditor.destroy();
 					} );
@@ -221,17 +223,16 @@ describe( 'MultiRootEditorUI', () => {
 						expect( bazP.hasAttribute( 'data-placeholder' ) ).to.be.false;
 
 						// New editable:
-						// Placeholder as it was defined in the config objects.
 						newEditor.model.change( writer => {
 							writer.addRoot( 'abc' );
 							const editable = view.createEditable( 'abc' );
-							ui.addEditable( editable );
+							ui.addEditable( editable, 'Added later' );
 						} );
 
 						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
-						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type abc...' );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Added later' );
 
-						// Placeholder not set as it was not defined in the config object.
+						// Placeholder not set as it was not provided to `ui.addEditable()`.
 						newEditor.model.change( writer => {
 							writer.addRoot( 'new' );
 							const editable = view.createEditable( 'new' );

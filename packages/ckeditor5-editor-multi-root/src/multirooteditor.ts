@@ -96,20 +96,14 @@ export class MultiRootEditor extends Editor {
 
 		normalizeRootsConfig( sourceElementsOrData, this.config, false );
 
-		const rootNames = Object.keys( this.config.get( 'roots' )! );
-		const sourceIsData = rootNames.length === 0 || typeof sourceElementsOrData[ rootNames[ 0 ] ] === 'string';
+		this.sourceElements = {};
 
-		if ( !sourceIsData ) {
-			this.sourceElements = sourceElementsOrData as Record<string, HTMLElement>;
-		} else {
-			this.sourceElements = {};
-		}
+		for ( const [ rootName, sourceElementOrData ] of Object.entries( sourceElementsOrData ) ) {
+			if ( isElement( sourceElementOrData ) ) {
+				const sourceElement = sourceElementOrData as HTMLElement;
 
-		if ( !sourceIsData ) {
-			for ( const rootName of rootNames ) {
-				if ( sourceElementsOrData[ rootName ] ) {
-					secureSourceElement( this, sourceElementsOrData[ rootName ] as HTMLElement );
-				}
+				this.sourceElements[ rootName ] = sourceElement;
+				secureSourceElement( this, sourceElement );
 			}
 		}
 
@@ -135,65 +129,78 @@ export class MultiRootEditor extends Editor {
 			} );
 		} );
 
-		for ( const rootName of rootNames ) {
-			// Create root and `UIView` element for each editable container.
-			this.model.document.createRoot( '$root', rootName );
-		}
-
 		if ( this.config.get( 'lazyRoots' ) ) {
-			// TODO throw an error as config.lazyRoots is no longer supported.
-			// TODO handle it from roots.<name>.lazyLoad instead.
-
-			for ( const rootName of this.config.get( 'lazyRoots' )! ) {
-				const root = this.model.document.createRoot( '$root', rootName );
-
-				root._isLoaded = false;
-			}
+			/**
+			 * Using deprecated `config.lazyRoots` configuration option.
+			 * Use `config.roots.<rootName>.lazyLoad` instead.
+			 *
+			 * @error multi-root-editor-root-deprecated-config-lazy-roots
+			 */
+			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-lazy-roots', null );
 		}
 
 		if ( this.config.get( 'rootsAttributes' ) ) {
-			// TODO throw an error as config.rootsAttributes is no longer supported.
-			// TODO handle it from roots.<name>.modelElement.attributes instead.
+			/**
+			 * Using deprecated `config.rootsAttributes` configuration option.
+			 * Use `config.roots.<rootName>.modelElement.attributes` instead.
+			 *
+			 * @error multi-root-editor-root-deprecated-config-roots-attributes
+			 */
+			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-roots-attributes', null );
+		}
 
-			const rootsAttributes = this.config.get( 'rootsAttributes' )!;
+		const rootNames = Object.keys( this.config.get( 'roots' )! );
 
-			for ( const [ rootName, attributes ] of Object.entries( rootsAttributes ) ) {
-				if ( !this.model.document.getRoot( rootName ) ) {
-					/**
-					 * Trying to set attributes on a non-existing root.
-					 *
-					 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
-					 * editor roots.
-					 *
-					 * @error multi-root-editor-root-attributes-no-root
-					 */
-					throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
-				}
+		for ( const rootName of rootNames ) {
+			const rootConfig = this.config.get( 'roots' )![ rootName ];
 
+			// Create root and `UIView` element for each editable container.
+			const root = this.model.document.createRoot( '$root', rootName );
+
+			if ( rootConfig.lazyLoad ) {
+				// TODO do not load initialData for lazy roots.
+				root._isLoaded = false;
+			}
+
+			// TODO keep the documentation of removed error but move it to better place.
+			/**
+			 * Trying to set attributes on a non-existing root.
+			 *
+			 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
+			 * editor roots.
+			 *
+			 * @error multi-root-editor-root-attributes-no-root
+			 */
+
+			const attributes = rootConfig.modelElement?.attributes;
+
+			if ( attributes ) {
 				for ( const key of Object.keys( attributes ) ) {
 					this.registerRootAttribute( key );
 				}
 			}
+		}
 
-			this.data.on( 'init', () => {
-				this.model.enqueueChange( { isUndoable: false }, writer => {
-					for ( const [ name, attributes ] of Object.entries( rootsAttributes ) ) {
-						const root = this.model.document.getRoot( name )!;
+		this.data.on( 'init', () => {
+			this.model.enqueueChange( { isUndoable: false }, writer => {
+				for ( const rootName of rootNames ) {
+					const rootConfig = this.config.get( 'roots' )![ rootName ];
+					const attributes = rootConfig.modelElement?.attributes || {};
+					const root = this.model.document.getRoot( rootName )!;
 
-						for ( const [ key, value ] of Object.entries( attributes ) ) {
-							if ( value !== null ) {
-								writer.setAttribute( key, value, root! );
-							}
+					for ( const [ key, value ] of Object.entries( attributes ) ) {
+						if ( value !== null ) {
+							writer.setAttribute( key, value, root! );
 						}
 					}
-				} );
+				}
 			} );
-		}
+		} );
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
-			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>,
-			label: this.config.get( 'label' ) // TODO
+			editableElements: this.sourceElements,
+			label: extractRootsConfigField( this.config.get( 'roots' )!, 'label' )
 		};
 
 		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootNames, options );
@@ -905,7 +912,7 @@ export class MultiRootEditor extends Editor {
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
 					.then( () => {
-						const initialData = collectInitialData( editor.config.get( 'roots' )! );
+						const initialData = extractRootsConfigField( editor.config.get( 'roots' )!, 'initialData' );
 
 						// This is checked directly before setting the initial data,
 						// as plugins may change `EditorConfig#initialData` value.
@@ -955,10 +962,19 @@ export class MultiRootEditor extends Editor {
 	}
 }
 
-function collectInitialData( rootsConfig: Record<string, RootConfig> ): Record<string, string > {
+/**
+ * Collects a specific field from the editor configuration for all roots.
+ * Returns a simple map of root names and values of the specified field.
+ * If a root does not have the specified field defined, it is not included in the returned object.
+ */
+function extractRootsConfigField<K extends keyof RootConfig>(
+	rootsConfig: Record<string, RootConfig>,
+	key: K
+): Record<string, NonNullable<RootConfig[K]>> {
 	return Object.fromEntries(
 		Object.entries( rootsConfig )
-			.map( ( [ rootName, { initialData } ] ) => [ rootName, initialData! ] )
+			.map( ( [ rootName, config ] ) => [ rootName, config[ key ] ] )
+			.filter( ( [ , value ] ) => value !== undefined )
 	);
 }
 
