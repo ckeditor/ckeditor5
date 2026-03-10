@@ -22,7 +22,7 @@ Released on 4 March, 2026. ([See full release notes](https://github.com/ckeditor
 
 This release introduces a potential breaking change related to `iframe` handling in the editing view.
 
-By default, `iframe` sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
+By default, iframe sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
 
 Previously, iframes were not sandboxed by default and had full access to the surrounding page context. With this change, iframes are now restricted unless explicitly configured otherwise.
 
