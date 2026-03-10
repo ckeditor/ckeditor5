@@ -403,7 +403,7 @@ export class ModelDocumentFragment extends ModelTypeCheckable implements Iterabl
 // Proper overload would interfere with that.
 ModelDocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'model:documentFragment';
-};
+} as any;
 
 /**
  * Converts strings to Text and non-iterables to arrays.

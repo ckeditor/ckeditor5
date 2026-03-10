@@ -797,7 +797,7 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheck
 // Proper overload would interfere with that.
 ModelSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'model:selection';
-};
+} as any;
 
 /**
  * Describes one of the events: `change:range` or `change:attribute`.

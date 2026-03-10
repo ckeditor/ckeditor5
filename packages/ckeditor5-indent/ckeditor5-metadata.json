@@ -5,7 +5,7 @@
 			"className": "Indent",
 			"description": "Implements the core of the indent feature. It requires compatible plugins, such as indent block or list, to work.",
 			"docs": "features/indent.html",
-			"path": "src/indent.js",
+			"path": "src/indent.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
@@ -24,7 +24,7 @@
 			"className": "IndentBlock",
 			"description": "The indent block feature, together with the indent feature, controls the indentation of elements such as paragraphs and headings.",
 			"docs": "features/indent.html",
-			"path": "src/indentblock.js",
+			"path": "src/indentblock.ts",
 			"requires": [
 				"Indent"
 			],
@@ -50,7 +50,7 @@
 			"className": "IndentBlockListIntegration",
 			"description": "Provides block indentation integration for lists, enabling indent and outdent of lists and list items.",
 			"docs": "features/indent.html",
-			"path": "src/integrations/indentblocklistintegration.js",
+			"path": "src/integrations/indentblocklistintegration.ts",
 			"requires": [
 				"IndentBlock"
 			],

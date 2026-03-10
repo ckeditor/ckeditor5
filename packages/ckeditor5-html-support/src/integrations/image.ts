@@ -7,14 +7,14 @@
  * @module html-support/integrations/image
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	ModelElement,
 	ModelNode,
 	UpcastDispatcher
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';

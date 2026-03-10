@@ -13,8 +13,7 @@ import { ImageStyleEditing } from '../../src/imagestyle/imagestyleediting.js';
 import { ImageStyleUI } from '../../src/imagestyle/imagestyleui.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
-import { ButtonView, DropdownView } from '@ckeditor/ckeditor5-ui';
-import { SplitButtonView } from '../../../ckeditor5/src/ui.js';
+import { ButtonView, DropdownView, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ImageStyleUI', () => {

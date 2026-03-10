@@ -7,9 +7,9 @@
  * @module minimap/utils
  */
 
-import { Rect, global } from 'ckeditor5/src/utils.js';
-import { ViewDomConverter, ViewRenderer } from 'ckeditor5/src/engine.js';
-import type { Editor } from 'ckeditor5/src/core.js';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
+import { ViewDomConverter, ViewRenderer } from '@ckeditor/ckeditor5-engine';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 /**
  * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~ViewRenderer} and

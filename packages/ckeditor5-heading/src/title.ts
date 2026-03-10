@@ -7,8 +7,9 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core.js';
-import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+import { Plugin, type Editor, type ElementApi } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import {
 	ViewDowncastWriter,
 	enableViewPlaceholder,
@@ -27,7 +28,7 @@ import {
 	type ViewElement,
 	type ModelWriter,
 	type PlaceholderableViewElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 // A list of element names that should be treated by the Title plugin as title-like.
 // This means that an element of a type from this list will be changed to a title element
@@ -64,7 +65,7 @@ export class Title extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Paragraph' ] as const;
+		return [ Paragraph ] as const;
 	}
 
 	/**

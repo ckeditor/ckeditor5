@@ -114,7 +114,7 @@ ModelLivePosition.prototype.is = function( type: string ): boolean {
 	return type === 'livePosition' || type === 'model:livePosition' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type == 'position' || type === 'model:position';
-};
+} as any;
 
 /**
  * Binds this `ModelLivePosition` to the {@link module:engine/model/document~ModelDocument document} that owns

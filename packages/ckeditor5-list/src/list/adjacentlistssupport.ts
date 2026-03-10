@@ -7,10 +7,10 @@
  * @module list/list/adjacentlistssupport
  */
 
-import type { GetCallback } from 'ckeditor5/src/utils.js';
-import { Plugin } from 'ckeditor5/src/core.js';
+import type { GetCallback } from '@ckeditor/ckeditor5-utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import type { UpcastElementEvent, ViewElement } from 'ckeditor5/src/engine.js';
+import type { UpcastElementEvent, ViewElement } from '@ckeditor/ckeditor5-engine';
 
 export class AdjacentListsSupport extends Plugin {
 	/**

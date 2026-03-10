@@ -5,7 +5,7 @@
 			"className": "GeneralHtmlSupport",
 			"description": "Allows enabling unsupported HTML features at low cost.",
 			"docs": "features/html/general-html-support.html",
-			"path": "src/generalhtmlsupport.js",
+			"path": "src/generalhtmlsupport.ts",
 			"htmlOutput": [
 				{
 					"elements": "*",
@@ -20,7 +20,7 @@
 			"name": "Data filter",
 			"className": "DataFilter",
 			"description": "Adds support for enabling and disabling HTML features and their attributes. Part of General HTML Support feature.",
-			"path": "src/datafilter.js",
+			"path": "src/datafilter.ts",
 			"htmlOutput": [
 				{
 					"elements": "*",
@@ -35,20 +35,20 @@
 			"name": "Data schema",
 			"className": "DataSchema",
 			"description": "Holds representation of the extended HTML document type definitions. Part of General HTML Support feature.",
-			"path": "src/dataschema.js"
+			"path": "src/dataschema.ts"
 		},
 		{
 			"name": "Empty block",
 			"className": "EmptyBlock",
 			"description": "Allows for preserving empty block elements in the editor content instead of automatically filling them with block fillers (`&nbsp;`).",
-			"path": "src/emptyblock.js"
+			"path": "src/emptyblock.ts"
 		},
 		{
 			"name": "HTML comment",
 			"className": "HtmlComment",
 			"description": "Preserves the HTML comments in the editor data.",
 			"docs": "features/html/html-comments.html",
-			"path": "src/htmlcomment.js",
+			"path": "src/htmlcomment.ts",
 			"htmlOutput": [
 				{
 					"_comment": "The plugin can output HTML comments that were added from the editor inital data or by the plugin API."
@@ -60,7 +60,7 @@
 			"className": "FullPage",
 			"description": "Allows editing entire HTML page including the page metadata.",
 			"docs": "features/html/full-page-html.html",
-			"path": "src/fullpage.js"
+			"path": "src/fullpage.ts"
 		}
 	]
 }

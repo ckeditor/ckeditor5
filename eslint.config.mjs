@@ -22,8 +22,11 @@ const allowedPackageNames = [
 		.filter( Boolean )
 ];
 
-const disallowedImportsPattern = `@ckeditor/ckeditor5-(?!${ allowedPackageNames.join( '|' ) })`;
-const disallowedImportsMessage = 'External `@ckeditor/ckeditor5-*` imports are forbidden.';
+const disallowedPackageImportsPattern = `@ckeditor/ckeditor5-(?!${ allowedPackageNames.join( '|' ) })`;
+const disallowedPackageImportsMessage = 'External `@ckeditor/ckeditor5-*` imports are forbidden.';
+
+const disallowedRelativePathImportsPattern = [ './**/src/**', '../**/src/**' ];
+const disallowedRelativePathImportsMessage = 'Imports to the `src` directory from within the `src` directory are forbidden.';
 
 export default defineConfig( [
 	{
@@ -38,9 +41,6 @@ export default defineConfig( [
 			'packages/*/src/lib/**',
 			'release/**',
 
-			// The CKEditor 5 core DLL build is created from JavaScript files.
-			// ESLint should not process compiled TypeScript.
-			'packages/ckeditor5/src/*.js',
 			'**/*.d.ts',
 
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
@@ -70,7 +70,6 @@ export default defineConfig( [
 		},
 
 		rules: {
-			'ckeditor5-rules/ckeditor-imports': 'error',
 			'ckeditor5-rules/prevent-license-key-leak': 'error',
 			'ckeditor5-rules/license-header': [ 'error', {
 				headerLines: [
@@ -100,14 +99,22 @@ export default defineConfig( [
 					name: 'isOfficialPlugin',
 					returnValue: true
 				} ]
+			} ],
+			'@typescript-eslint/no-restricted-imports': [ 'error', {
+				patterns: [ {
+					group: disallowedRelativePathImportsPattern,
+					message: disallowedRelativePathImportsMessage
+				}, {
+					regex: disallowedPackageImportsPattern,
+					message: disallowedPackageImportsMessage
+				} ]
 			} ]
 		}
 	},
 	{
 		files: [
 			'packages/*/@(src|tests)/**/*.js',
-			'**/docs/**/_snippets/**/*.js',
-			'src/**/*.js'
+			'**/docs/**/_snippets/**/*.js'
 		],
 
 		plugins: {
@@ -117,16 +124,15 @@ export default defineConfig( [
 		rules: {
 			'no-restricted-imports': [ 'error', {
 				patterns: [ {
-					regex: disallowedImportsPattern,
-					message: disallowedImportsMessage
+					regex: disallowedPackageImportsPattern,
+					message: disallowedPackageImportsMessage
 				} ]
 			} ]
 		}
 	},
 	{
 		files: [
-			'packages/*/@(src|tests)/**/*.ts',
-			'src/**/*.ts'
+			'packages/*/tests/**/*.ts'
 		],
 
 		plugins: {
@@ -136,8 +142,8 @@ export default defineConfig( [
 		rules: {
 			'@typescript-eslint/no-restricted-imports': [ 'error', {
 				patterns: [ {
-					regex: disallowedImportsPattern,
-					message: disallowedImportsMessage
+					regex: disallowedPackageImportsPattern,
+					message: disallowedPackageImportsMessage
 				} ]
 			} ]
 		}
@@ -166,7 +172,6 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': 'error',
-			'ckeditor5-rules/ckeditor-imports': 'off',
 			'ckeditor5-rules/no-cross-package-imports': 'off',
 			'mocha/no-pending-tests': 'off'
 		}
@@ -191,10 +196,6 @@ export default defineConfig( [
 			globals: {
 				...globals.browser
 			}
-		},
-
-		rules: {
-			'ckeditor5-rules/ckeditor-imports': 'off'
 		}
 	},
 	{
@@ -208,10 +209,6 @@ export default defineConfig( [
 			globals: {
 				...globals.browser
 			}
-		},
-
-		rules: {
-			'ckeditor5-rules/ckeditor-imports': 'off'
 		}
 	},
 	{

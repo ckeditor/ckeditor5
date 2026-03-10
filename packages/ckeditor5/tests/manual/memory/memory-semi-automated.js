@@ -32,7 +32,7 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
 import { WordCount } from '@ckeditor/ckeditor5-word-count';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-// import { MathType } from '@wiris/mathtype-ckeditor5';
+// import { MathType } from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

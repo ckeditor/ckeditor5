@@ -400,7 +400,7 @@ For image uploading, you can later retrieve the data in the {@link module:image/
 
 ### Activating a custom upload adapter
 
-Having implemented the adapter, you must figure out how to enable it in the WYSIWYG editor. The good news is that it is pretty easy, and you do not need to {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source rebuild the editor} to do that!
+Having implemented the adapter, you must figure out how to enable it in the WYSIWYG editor. The good news is that it is pretty easy, and you do not need to rebuild the editor to do that!
 
 You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, create a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
 
