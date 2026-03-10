@@ -3,11 +3,13 @@ Changelog
 
 ## [47.6.1](https://github.com/ckeditor/ckeditor5/compare/v47.6.0...v47.6.1) (March 11, 2026)
 
+We are releasing CKEditor 5 v47.6.1, a patch that fixed three regressions discovered after v47.6.0.
+
 ### Bug fixes
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine), [undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: Comments and suggestions were incorrectly restored in a scenario where a marker created over multiple paragraphs was removed and then restored using undo. Closes [#19916](https://github.com/ckeditor/ckeditor5/issues/19916).
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed a crash that could occur when opening conversations created with models that are no longer available.
-* **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The cursor no longer unexpectedly jumps over an empty paragraph when navigating with arrow keys near widgets. Closes [#19812](https://github.com/ckeditor/ckeditor5/issues/19812).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine), [undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: Fixed undo marker restoration for markers spanning multiple paragraphs. Previously, comments and suggestions could be restored to incorrect ranges. Closes [#19916](https://github.com/ckeditor/ckeditor5/issues/19916).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed a crash in AI Chat when opening a conversation from history if the model used to create it was no longer available.
+* **[widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: Fixed a regression where the caret (`|`) jumped over an empty paragraph when navigating with arrow keys near widgets. Closes [#19812](https://github.com/ckeditor/ckeditor5/issues/19812).
 
 ### Released packages
 
