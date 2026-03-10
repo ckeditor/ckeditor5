@@ -52,7 +52,7 @@ The block indentation feature now supports applying visual indentation to list c
 
 ### Mirror margins in Export to PDF V2
 
-The {@link features/export-pdf#export-to-pdf-v2 Export to PDF V2} now supports {@link features/export-pdf#mirror-margins-for-book-like-layouts mirror margins} for book-like layouts. When enabled, left and right margins are treated as inner and outer margins that swap between odd and even pages, making it easy to prepare documents for double-sided printing or binding.
+The {@link features/export-pdf export to PDF} feature now supports {@link features/export-pdf#mirror-margins mirror margins} for book-like layouts. When enabled, left and right margins are treated as inner and outer margins that swap between odd and even pages, making it easy to prepare documents for double-sided printing or binding.
 
 ### Preserving the `<figure>` wrapper for content tables
 
@@ -249,7 +249,7 @@ We improved how multiple changes proposed by the {@link features/ckeditor-ai-cha
 
 ### Export to PDF v2
 
-The {@link features/export-pdf export to PDF} feature now supports version 2 of the HTML to PDF converter API, bringing several {@link features/export-pdf#new-features-in-v2 powerful enhancements} to document generation.
+The {@link features/export-pdf export to PDF} feature now supports version 2 of the HTML to PDF converter API, bringing several {@link features/export-pdf#html-to-pdf-converter-features powerful enhancements} to document generation.
 
 Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
 
