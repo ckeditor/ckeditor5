@@ -33,9 +33,7 @@ const versionExceptions = {
 	'@codemirror/language': '^',
 	'@codemirror/state': '^',
 	'@codemirror/view': '^',
-	'@codemirror/theme-one-dark': '^',
-	// TODO Remove the line below, when the new imports are released in ccsc.
-	'@ckeditor/ckeditor-cloud-services-collaboration': '0.0.0-internal-20251222.0'
+	'@codemirror/theme-one-dark': '^'
 };
 
 const pkgJsonPatterns = [

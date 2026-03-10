@@ -105,7 +105,7 @@ jobs:
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
             bash scripts/check-manual-tests.sh -r ckeditor5-root
-  
+
   cke5_memory_leak_test:
     docker:
       - image: cimg/node:24.11.0-browsers
@@ -121,7 +121,7 @@ jobs:
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
             pnpm run test:memory
-  
+
   cke5_validators:
     docker:
       - image: cimg/node:24.11.0
@@ -348,8 +348,6 @@ workflows:
             branches:
               only:
                 - master
-                # TODO: Remove when this code lands on #master (see issue https://github.com/ckeditor/ckeditor5-internal/issues/4190).
-                - master-v48
                 - stable
                 - release
                 - /^release-v.*$/
