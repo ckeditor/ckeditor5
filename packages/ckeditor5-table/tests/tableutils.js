@@ -2857,7 +2857,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ],
 				[ '20', '21' ]
 			], { headingRows: 1 } ) );
@@ -2877,7 +2877,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ],
 				[ '20', '21' ]
 			], { headingRows: 1 } ) );
@@ -2896,7 +2896,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
 		} );
@@ -2924,7 +2924,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			// Row 2: Header (should remain header because processing stopped at Row 1)
 			// Row 3: Body
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
 				[ '10', '11' ],
 				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ],
 				[ '30', '31' ]
@@ -2944,8 +2944,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
-				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+				[ { contents: '10', tableCellType: 'header-column' }, { contents: '11', tableCellType: 'header-column' } ]
 			], { headingRows: 2 } ) );
 		} );
 
@@ -2963,9 +2963,9 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
-				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
-				[ { contents: '20', tableCellType: 'header' }, { contents: '21', tableCellType: 'header' } ]
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+				[ { contents: '10', tableCellType: 'header-column' }, { contents: '11', tableCellType: 'header-column' } ],
+				[ { contents: '20', tableCellType: 'header-column' }, { contents: '21', tableCellType: 'header-column' } ]
 			], { headingRows: 3 } ) );
 		} );
 	} );
@@ -2984,8 +2984,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, '01' ],
-				[ { contents: '10', tableCellType: 'header' }, '11' ]
+				[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+				[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 			], { headingColumns: 1 } ) );
 		} );
 
@@ -3002,8 +3002,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, '01' ],
-				[ { contents: '10', tableCellType: 'header' }, '11' ]
+				[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+				[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 			], { headingColumns: 1 } ) );
 		} );
 
@@ -3020,8 +3020,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, '01' ],
-				[ { contents: '10', tableCellType: 'header' }, '11' ]
+				[ { contents: '00', tableCellType: 'header-row' }, '01' ],
+				[ { contents: '10', tableCellType: 'header-row' }, '11' ]
 			], { headingColumns: 1 } ) );
 		} );
 
@@ -3056,8 +3056,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			// Col 2: Header (should remain header because processing stopped at Col 1)
 			// Col 3: Body
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, '01', { contents: '02', tableCellType: 'header' }, '03' ],
-				[ { contents: '10', tableCellType: 'header' }, '11', { contents: '12', tableCellType: 'header' }, '13' ]
+				[ { contents: '00', tableCellType: 'header-row' }, '01', { contents: '02', tableCellType: 'header' }, '03' ],
+				[ { contents: '10', tableCellType: 'header-row' }, '11', { contents: '12', tableCellType: 'header' }, '13' ]
 			], { headingColumns: 1 } ) );
 		} );
 
@@ -3074,8 +3074,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
-				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+				[ { contents: '00', tableCellType: 'header-row' }, { contents: '01', tableCellType: 'header-row' } ],
+				[ { contents: '10', tableCellType: 'header-row' }, { contents: '11', tableCellType: 'header-row' } ]
 			], { headingColumns: 2 } ) );
 		} );
 	} );
@@ -3149,8 +3149,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			} );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
-				[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ],
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+				[ { contents: '10', tableCellType: 'header-column' }, { contents: '11', tableCellType: 'header-column' } ],
 				[ '20', '21' ]
 			], { headingRows: 2, footerRows: 1 } ) );
 		} );
@@ -3168,7 +3168,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			tableUtils.insertRows( table, { at: 0, rows: 1 } );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '', tableCellType: 'header' }, { contents: '', tableCellType: 'header' } ],
+				[ { contents: '', tableCellType: 'header-column' }, { contents: '', tableCellType: 'header-column' } ],
 				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 				[ '10', '11' ]
 			], { headingRows: 2 } ) );
@@ -3185,7 +3185,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			tableUtils.insertRows( table, { at: 0, rows: 1 } );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '', tableCellType: 'header' }, '' ],
+				[ { contents: '', tableCellType: 'header-row' }, '' ],
 				[ { contents: '00', tableCellType: 'header' }, '01' ],
 				[ { contents: '10', tableCellType: 'header' }, '11' ]
 			], { headingColumns: 1 } ) );
@@ -3204,7 +3204,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ { contents: '00', tableCellType: 'header' }, '01' ],
 				[ { contents: '10', tableCellType: 'header' }, '11' ],
-				[ { contents: '', tableCellType: 'header' }, '' ]
+				[ { contents: '', tableCellType: 'header-row' }, '' ]
 			], { headingColumns: 1 } ) );
 		} );
 	} );
@@ -3221,8 +3221,8 @@ describe( 'TableUtils with TableCellProperties', () => {
 			tableUtils.insertColumns( table, { at: 0 } );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ { contents: '', tableCellType: 'header' }, { contents: '00', tableCellType: 'header' }, '01' ],
-				[ { contents: '', tableCellType: 'header' }, { contents: '10', tableCellType: 'header' }, '11' ]
+				[ { contents: '', tableCellType: 'header-row' }, { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '', tableCellType: 'header-row' }, { contents: '10', tableCellType: 'header' }, '11' ]
 			], { headingColumns: 2 } ) );
 		} );
 
@@ -3238,7 +3238,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[
-					{ contents: '', tableCellType: 'header' },
+					{ contents: '', tableCellType: 'header-column' },
 					{ contents: '00', tableCellType: 'header' },
 					{ contents: '01', tableCellType: 'header' }
 				],
@@ -3260,7 +3260,7 @@ describe( 'TableUtils with TableCellProperties', () => {
 				[
 					{ contents: '00', tableCellType: 'header' },
 					{ contents: '01', tableCellType: 'header' },
-					{ contents: '', tableCellType: 'header' }
+					{ contents: '', tableCellType: 'header-column' }
 				],
 				[ '10', '11', '' ]
 			], { headingRows: 1 } ) );
