@@ -540,6 +540,199 @@ describe( 'transform', () => {
 			expectClients( '<paragraph><m1:start></m1:start>Foo<m1:end></m1:end>bar</paragraph><paragraph></paragraph>' );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/19916
+		it( 'multi-element marker moved then undo redo', () => {
+			john.setData( '<paragraph>Fo[o</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.delete();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph><paragraph>Bar</paragraph><paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+		} );
+
+		it( 'multi-element marker moved then undo redo (#2, extra undo and redo)', () => {
+			john.setData( '<paragraph>Fo[o</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.delete();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph><paragraph>Bar</paragraph><paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph><paragraph>Bar</paragraph><paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+		} );
+
+		it( 'multi-element marker moved then undo redo (#3, more elements)', () => {
+			john.setData(
+				'<paragraph>Fo[o</paragraph>' +
+				'<paragraph>Bar</paragraph>' +
+				'<paragraph>Baz</paragraph>' +
+				'<paragraph>Xyz</paragraph>' +
+				'<paragraph>Ab]c</paragraph>'
+			);
+
+			john.setMarker( 'm1' );
+			john.delete();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph>' +
+				'<paragraph>Bar</paragraph>' +
+				'<paragraph>Baz</paragraph>' +
+				'<paragraph>Xyz</paragraph>' +
+				'<paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+		} );
+
+		it( 'multi-element marker moved then undo redo (#4, no middle elements)', () => {
+			john.setData(
+				'<paragraph>Fo[o</paragraph>' +
+				'<paragraph>Ab]c</paragraph>'
+			);
+
+			john.setMarker( 'm1' );
+			john.delete();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph>' +
+				'<paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fo<m1:start></m1:start>c</paragraph>' );
+		} );
+
+		it( 'multi-element marker moved then undo redo (#5, marker on elements edges)', () => {
+			// This case is a bit different, because with such selection only middle element is removed
+			// and the marker isn't really that affected in this case.
+			//
+			john.setData( '<paragraph>Foo[</paragraph><paragraph>Bar</paragraph><paragraph>]Abc</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.delete();
+
+			expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph><m1:end></m1:end>Abc</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Foo<m1:start></m1:start></paragraph><paragraph>Bar</paragraph><paragraph><m1:end></m1:end>Abc</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph><m1:end></m1:end>Abc</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Foo<m1:start></m1:start></paragraph><paragraph>Bar</paragraph><paragraph><m1:end></m1:end>Abc</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph><m1:end></m1:end>Abc</paragraph>' );
+		} );
+
+		it( 'multi-element marker moved then undo redo (#6, marker bigger than removed content)', () => {
+			john.setData( '<paragraph>F[oo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.setSelection( [ 0, 2 ], [ 2, 1 ] );
+			john.delete();
+
+			expectClients( '<paragraph>F<m1:start></m1:start>ob<m1:end></m1:end>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>F<m1:start></m1:start>oo</paragraph><paragraph>Bar</paragraph><paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>F<m1:start></m1:start>ob<m1:end></m1:end>c</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>F<m1:start></m1:start>oo</paragraph><paragraph>Bar</paragraph><paragraph>Ab<m1:end></m1:end>c</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>F<m1:start></m1:start>ob<m1:end></m1:end>c</paragraph>' );
+		} );
+
+		it.skip( 'multi-element marker moved then undo redo (#7, marker shorter than removed content)', () => {
+			john.setData( '<paragraph>Fo[o</paragraph><paragraph>Bar</paragraph><paragraph>A]bc</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.setSelection( [ 0, 1 ], [ 2, 2 ] );
+			john.delete();
+
+			expectClients( '<paragraph>Fc</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph><paragraph>Bar</paragraph><paragraph>A<m1:end></m1:end>bc</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fc</paragraph>' );
+
+			john.undo();
+
+			expectClients(
+				'<paragraph>Fo<m1:start></m1:start>o</paragraph><paragraph>Bar</paragraph><paragraph>A<m1:end></m1:end>bc</paragraph>'
+			);
+
+			john.redo();
+
+			expectClients( '<paragraph>Fc</paragraph>' );
+		} );
+
 		it( 'marker on closing and opening tag - remove multiple elements #1', () => {
 			john.setData(
 				'<paragraph>Abc</paragraph>' +
