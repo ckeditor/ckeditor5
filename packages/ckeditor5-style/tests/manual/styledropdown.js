@@ -155,7 +155,9 @@ const config = {
 			'resizeImage'
 		]
 	},
-	placeholder: 'Type the content here!',
+	root: {
+		placeholder: 'Type the content here!'
+	},
 	mention: {
 		feeds: [
 			{

@@ -33,9 +33,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor2' ), {
 		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'uploadImage', 'alignment' ],
-		placeholder: 'Custom body placeholder',
 		title: {
 			placeholder: 'Custom title placeholder'
+		},
+		root: {
+			placeholder: 'Custom body placeholder'
 		}
 	} )
 	.then( editor => {

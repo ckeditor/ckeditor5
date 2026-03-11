@@ -197,7 +197,9 @@ ClassicEditor
 				'resizeImage'
 			]
 		},
-		placeholder: 'Type the content here!'
+		root: {
+			placeholder: 'Type the content here!'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
