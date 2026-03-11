@@ -148,7 +148,9 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		root: {
+	 * 			initialData: '<p>Hello world!</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( editor => {
 	 * 		console.log( 'Editor was initialized', editor );

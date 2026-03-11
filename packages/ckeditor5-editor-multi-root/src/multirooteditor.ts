@@ -849,12 +849,22 @@ export class MultiRootEditor extends Editor {
 	 * 	sidePanelRight: document.querySelector( '#editor-side-right' ),
 	 * 	outro: document.querySelector( '#editor-outro' )
 	 * }, {
-	 * 	initialData: {
-	 * 		intro: '<p><strong>Exciting</strong> intro text to an article.</p>',
-	 * 		content: '<p>Lorem ipsum dolor sit amet.</p>',
-	 * 		sidePanelLeft '<blockquote>Strong quotation from article.</blockquote>':
-	 * 		sidePanelRight '<p>List of similar articles...</p>':
-	 * 		outro: '<p>Closing text.</p>'
+	 * 	roots: {
+	 * 		intro: {
+	 * 			initialData: '<p><strong>Exciting</strong> intro text to an article.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			initialData: '<p>Lorem ipsum dolor sit amet.</p>'
+	 * 		},
+	 * 		sidePanelLeft: {
+	 * 			initialData: '<blockquote>Strong quotation from article.</blockquote>'
+	 * 		},
+	 * 		sidePanelRight: {
+	 * 			initialData: '<p>List of similar articles...</p>'
+	 * 		},
+	 * 		outro: {
+	 * 			initialData: '<p>Closing text.</p>'
+	 * 		}
 	 * 	}
 	 * } )
 	 * .then( editor => {

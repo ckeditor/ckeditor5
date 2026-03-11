@@ -156,7 +156,9 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * ```ts
 	 * InlineEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( editor => {
 	 * 		console.log( 'Editor was initialized', editor );
