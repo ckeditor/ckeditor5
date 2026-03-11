@@ -34,15 +34,13 @@ ClassicEditor
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ],
-		root: {
-			initialData: '<p>Hello, world!</p>'
-		}
+		initialData: '<p>Hello, world!</p>'
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
-The {@link module:core/editor/editorconfig~EditorConfig.root.initialData `initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
+The {@link module:core/editor/editorconfig~EditorConfig.initialData `initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
 
 If you are setting up the editor with integrations like {@link getting-started/integrations/react-default-npm React}, consult the documentation for additional properties provided to initialize the data.
 

@@ -90,9 +90,7 @@ describe( 'Autosave', () => {
 					autosave: {
 						save: spy
 					},
-					root: {
-						initialData: '<p>Foo</p>'
-					}
+					initialData: '<p>Foo</p>'
 				} )
 				.then( _editor => {
 					editor = _editor;
@@ -718,9 +716,7 @@ describe( 'Autosave', () => {
 							spy();
 						}
 					},
-					root: {
-						initialData: '<p>Foo</p>'
-					}
+					initialData: '<p>Foo</p>'
 				} )
 				.then( _editor => {
 					editor = _editor;

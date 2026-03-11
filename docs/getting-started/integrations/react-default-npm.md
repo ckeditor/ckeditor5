@@ -60,9 +60,7 @@ function App() {
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ],
-				root: {
-					initialData: '<p>Hello from CKEditor 5 in React!</p>'
-				},
+				initialData: '<p>Hello from CKEditor 5 in React!</p>',
 			} }
 		/>
 	);
@@ -250,9 +248,7 @@ function App() {
 			config={ {
 				// ... Other configuration options ...
 				translations: [ coreTranslations, premiumFeaturesTranslations ],
-				root: {
-					initialData: '<p>Hola desde CKEditor 5 en React!</p>'
-				}
+				initialData: '<p>Hola desde CKEditor 5 en React!</p>'
 			} }
 		/>
 	);
