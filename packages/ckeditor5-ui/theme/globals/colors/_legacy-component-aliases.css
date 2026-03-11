@@ -1,0 +1,78 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* -- Buttons ------------------------------------------------------------------------------- */
+
+	--ck-color-button-default-background: transparent;
+	--ck-color-button-default-hover-background: hsl(0, 0%, 94.1%);
+	--ck-color-button-default-active-background: hsl(0, 0%, 94.1%);
+	--ck-color-button-default-disabled-background: transparent;
+
+	--ck-color-button-on-background: hsl(212, 100%, 97.1%);
+	--ck-color-button-on-hover-background: hsl(211.7, 100%, 92.9%);
+	--ck-color-button-on-active-background: hsl(211.7, 100%, 92.9%);
+	--ck-color-button-on-disabled-background: hsl(211, 15%, 95%);
+	--ck-color-button-on-color: hsl(218.1, 100%, 58%);
+
+	--ck-color-button-action-background: var(--ck-color-base-action);
+	--ck-color-button-action-hover-background: hsl(104, 53.2%, 40.2%);
+	--ck-color-button-action-active-background: hsl(104, 53.2%, 40.2%);
+	--ck-color-button-action-disabled-background: hsl(104, 44%, 58%);
+	--ck-color-button-action-text: var(--ck-color-base-background);
+
+	--ck-color-button-save: hsl(120, 100%, 27%);
+	--ck-color-button-cancel: hsl(15, 100%, 43%);
+
+	--ck-color-switch-button-off-background: hsl(0, 0%, 57.6%);
+	--ck-color-switch-button-off-hover-background: hsl(0, 0%, 49%);
+	--ck-color-switch-button-on-background: var(--ck-color-button-action-background);
+	--ck-color-switch-button-on-hover-background: hsl(104, 53.2%, 40.2%);
+	--ck-color-switch-button-inner-background: var(--ck-color-base-background);
+	--ck-color-switch-button-inner-shadow: hsla(0, 0%, 0%, 0.1);
+
+	/* -- Dropdown ------------------------------------------------------------------------------ */
+
+	--ck-color-dropdown-panel-background: var(--ck-color-base-background);
+	--ck-color-dropdown-panel-border: var(--ck-color-base-border);
+
+	/* -- Dialog -------------------------------------------------------------------------------- */
+
+	--ck-color-dialog-background: var(--ck-custom-background, var(--ck-color-surface-container));
+	--ck-color-dialog-form-header-border: var(--ck-custom-border, var(--ck-color-border-container));
+
+	/* -- Input --------------------------------------------------------------------------------- */
+
+	--ck-color-input-background: var(--ck-color-base-background);
+	--ck-color-input-border: var(--ck-color-base-border);
+	--ck-color-input-error-border: var(--ck-color-base-error);
+	--ck-color-input-text: var(--ck-color-base-text);
+	--ck-color-input-disabled-background: hsl(0, 0%, 95%);
+	--ck-color-input-disabled-border: var(--ck-color-base-border);
+	--ck-color-input-disabled-text: hsl(0, 0%, 46%);
+
+	/* -- List ---------------------------------------------------------------------------------- */
+
+	--ck-color-list-background: var(--ck-color-base-background);
+	--ck-color-list-button-hover-background: var(--ck-color-button-default-hover-background);
+	--ck-color-list-button-on-background: var(--ck-color-button-on-color);
+	--ck-color-list-button-on-background-focus: var(--ck-color-button-on-color);
+	--ck-color-list-button-on-text: var(--ck-color-base-background);
+
+	/* -- Panel --------------------------------------------------------------------------------- */
+
+	--ck-color-panel-background: var(--ck-color-base-background);
+	--ck-color-panel-border: var(--ck-color-base-border);
+
+	/* -- Toolbar ------------------------------------------------------------------------------- */
+
+	--ck-color-toolbar-background: var(--ck-color-base-background);
+	--ck-color-toolbar-border: var(--ck-color-base-border);
+
+	/* -- Tooltip ------------------------------------------------------------------------------- */
+
+	--ck-color-tooltip-background: var(--ck-color-base-text);
+	--ck-color-tooltip-text: var(--ck-color-base-background);
+}

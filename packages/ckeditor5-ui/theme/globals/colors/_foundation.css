@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-color-base-foreground: hsl(0, 0%, 98%);
+	--ck-color-base-background: hsl(0, 0%, 100%);
+	--ck-color-base-border: hsl(220, 6%, 81%);
+	--ck-color-base-action: hsl(104, 50.2%, 42.5%);
+	--ck-color-base-focus: hsl(209, 92%, 70%);
+	--ck-color-base-text: hsl(0, 0%, 20%);
+	--ck-color-base-active: hsl(218.1, 100%, 58%);
+	--ck-color-base-active-focus: hsl(218.2, 100%, 52.5%);
+	--ck-color-base-error: hsl(15, 100%, 43%);
+}

@@ -1,0 +1,10 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.15);
+	--ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.2);
+	--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+}
