@@ -35,7 +35,7 @@ export function normalizeRootsConfig(
 	defaultRootName: string | false = 'main'
 ): void {
 	const mainRootConfig = config.get( 'root' );
-	const rootsConfig = config.get( 'roots' ) || {};
+	const rootsConfig = config.get( 'roots' ) || Object.create( null );
 
 	// Avoid mixing `config.root` and `config.roots.main`.
 	if ( mainRootConfig && ( !defaultRootName || defaultRootName in rootsConfig ) ) {
@@ -47,7 +47,7 @@ export function normalizeRootsConfig(
 	// Move `config.root` to `config.roots.main`.
 	// This makes access to root configuration more consistent as all roots will be defined in `config.roots`.
 	if ( defaultRootName && !rootsConfig[ defaultRootName ] ) {
-		rootsConfig[ defaultRootName ] = mainRootConfig || {};
+		rootsConfig[ defaultRootName ] = mainRootConfig || Object.create( null );
 	}
 
 	const sourceElementIsPlainObject = isPlainObject( sourceElementsOrData );
@@ -67,7 +67,7 @@ export function normalizeRootsConfig(
 
 	// Ensure that all roots have `initialData` defined. If not, try to get it from the source element or data.
 	for ( const rootName of rootNames ) {
-		const rootConfig = rootsConfig[ rootName ] || {};
+		const rootConfig = rootsConfig[ rootName ] || Object.create( null );
 		const sourceElementOrDataForRoot = sourceElementIsPlainObject ? sourceElementsOrData[ rootName ] : sourceElementsOrData;
 
 		// No dedicated initial data for the root.
@@ -143,7 +143,7 @@ function getLegacyInitialData(
 ): Record<string, string | undefined> {
 	return (
 		sourceElementIsObject || !defaultRootName ?
-			config.get( 'initialData' ) || {} :
+			config.get( 'initialData' ) || Object.create( null ) :
 			{
 				[ defaultRootName ]: config.get( 'initialData' )
 			}
