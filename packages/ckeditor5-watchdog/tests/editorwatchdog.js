@@ -1602,15 +1602,24 @@ describe( 'EditorWatchdog', () => {
 					content: '<p>Bar</p>'
 				}, {
 					plugins: [ Paragraph ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							modelElement: {
+								attributes: { order: 1 }
+							}
 						},
 						content: {
-							order: 2
+							modelElement: {
+								attributes: { order: 2 }
+							}
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1640,6 +1649,7 @@ describe( 'EditorWatchdog', () => {
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
 
+				// Wait for throttled save.
 				clock.tick( 6000 );
 				clock.restore();
 
@@ -1732,15 +1742,28 @@ describe( 'EditorWatchdog', () => {
 						content: '<p>Bar</p>'
 					},
 					plugins: [ Paragraph, MultiRootEditorIntegration ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							modelElement: {
+								attributes: {
+									order: 1
+								}
+							}
 						},
 						content: {
-							order: 2
+							modelElement: {
+								attributes: {
+									order: 2
+								}
+							}
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );

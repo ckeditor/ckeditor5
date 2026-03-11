@@ -7,13 +7,19 @@
  * @module watchdog/editorwatchdog
  */
 
-import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'es-toolkit/compat';
+import { throttle, cloneDeepWith, isElement as _isElement, type DebouncedFunc } from 'es-toolkit/compat';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
 import { Watchdog, type WatchdogConfig } from './watchdog.js';
-import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { type CKEditorError, Config } from '@ckeditor/ckeditor5-utils';
 import type { ModelNode, ModelText, ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
-import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';
-import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
+import {
+	type Editor,
+	type EditorConfig,
+	type Context,
+	type EditorReadyEvent,
+	type RootConfig,
+	normalizeRootsConfig
+} from '@ckeditor/ckeditor5-core';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -57,9 +63,20 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	private _elementOrData?: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>;
 
 	/**
+	 * TODO
+	 */
+	private _editorAttachTo: HTMLElement | null = null;
+
+	/**
+	 * TODO
+	 */
+	private _isSingleRootEditor: boolean = true;
+
+	/**
 	 * Specifies whether the editor was initialized using document data (`true`) or HTML elements (`false`).
 	 */
-	private _initUsingData = true;
+	// TODO clean it
+	// private _initUsingData = true;
 
 	/**
 	 * The latest record of the editor editable elements. Used to restart the editor.
@@ -179,55 +196,58 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				// We are not interested in any data set in config or in `.create()` first parameter. It will be replaced anyway.
 				// But we need to set them correctly to make sure that proper roots are created.
 				//
-				// Since a different set of roots will be created, `lazyRoots` and `rootsAttributes` properties must be managed too.
+				// Since a different set of roots will be created, lazy-roots and roots-attributes must be managed too.
 
-				// Keys are root names, values are ''. Used when the editor was initialized by setting the first parameter to document data.
-				const existingRoots: Record<string, string> = {};
-				// Keeps lazy roots. They may be different when compared to initial config if some of the roots were loaded.
-				const lazyRoots: Array<string> = [];
-				// Roots attributes from the old config. Will be referred when setting new attributes.
-				const oldRootsAttributes: Record<string, RootAttributes> = this._config!.rootsAttributes || {};
-				// New attributes to be set. Is filled only for roots that still exist in the document.
-				const rootsAttributes: Record<string, RootAttributes> = {};
+				const elementOrData = this._isSingleRootEditor ?
+					this._editorAttachTo || '' :
+					this._editables;
 
-				// Traverse through the roots saved when the editor crashed and set up the discussed values.
-				for ( const [ rootName, rootData ] of Object.entries( this._data!.roots ) ) {
-					if ( rootData.isLoaded ) {
-						existingRoots[ rootName ] = '';
-						rootsAttributes[ rootName ] = oldRootsAttributes[ rootName ] || {};
-					} else {
-						lazyRoots.push( rootName );
-					}
-				}
+				// Normalize the roots configuration based on the editor source element or data and the editor configuration.
+				const config = new Config<EditorConfig>( this._config! );
+
+				normalizeRootsConfig( elementOrData, config, this._isSingleRootEditor ? 'main' : false );
 
 				const updatedConfig: EditorConfig = {
 					...this._config,
+					roots: config.get( 'roots' ),
 					extraPlugins: this._config!.extraPlugins || [],
-					lazyRoots,
-					rootsAttributes,
 					_watchdogInitialData: this._data
 				};
+
+				// Add content loading plugin to the editor configuration.
+				// This plugin will be responsible for loading the editor data into the editor after it is restarted.
+				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin );
+
+				// Collect existing roots configuration and update it. This will ensure that the same set of roots
+				// will be created after the restart, and they will have correct lazy loading and attributes configuration.
+				const updatedRootsConfig: Record<string, RootConfig> = {};
+
+				for ( const [ rootName, rootData ] of Object.entries( this._data!.roots ) ) {
+					const rootConfig = updatedConfig.roots![ rootName ] || Object.create( null );
+
+					// TODO update comment: Delete `initialData` as it is not needed. Data will be set by the watchdog
+					//  based on `_watchdogInitialData`.
+					rootConfig.initialData = '';
+
+					if ( rootData.isLoaded ) {
+						rootConfig.lazyLoad = false;
+					} else {
+						delete rootConfig.modelElement?.attributes;
+					}
+
+					updatedRootsConfig[ rootName ] = rootConfig;
+				}
+
+				updatedConfig.roots = updatedRootsConfig;
 
 				// Delete `initialData` as it is not needed. Data will be set by the watchdog based on `_watchdogInitialData`.
 				// First parameter of the editor `.create()` will be used to set up initial roots.
 				delete updatedConfig.initialData;
 
-				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
+				// Also alias for main root should not provide initial data.
+				delete updatedConfig.root?.initialData;
 
-				if ( this._initUsingData ) {
-					return this.create( existingRoots, updatedConfig, updatedConfig.context );
-				} else {
-					// Set correct editables to make sure that proper roots are created and linked with DOM elements.
-					// No need to set initial data, as it would be discarded anyway.
-					//
-					// If one element was initially set in `elementOrData`, then use that original element to restart the editor.
-					// This is for compatibility purposes with single-root editor types.
-					if ( isElement( this._elementOrData ) ) {
-						return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
-					} else {
-						return this.create( this._editables, updatedConfig, updatedConfig.context );
-					}
-				}
+				return this.create( elementOrData, updatedConfig, updatedConfig.context );
 			} )
 			.then( () => {
 				this._fire( 'restart' );
@@ -252,10 +272,10 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 
 				this._elementOrData = elementOrData;
 
-				// Use document data in the first parameter of the editor `.create()` call only if it was used like this originally.
-				// Use document data if a string or object with strings was passed.
-				this._initUsingData = typeof elementOrData == 'string' ||
-					( Object.keys( elementOrData ).length > 0 && typeof Object.values( elementOrData )[ 0 ] == 'string' );
+				// Store the original DOM element for single-root editors. We can't use editable elements as ClassicEditor
+				// expects the attachment element.
+				this._editorAttachTo = isElement( elementOrData ) ? elementOrData : null;
+				this._isSingleRootEditor = isElement( elementOrData ) || typeof elementOrData == 'string';
 
 				// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 				// when an error occurs in one of these editors, the watchdog will restart all of them.
@@ -273,7 +293,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				this._lastDocumentVersion = editor.model.document.version;
 				this._data = this._getData();
 
-				if ( !this._initUsingData ) {
+				if ( !this._editorAttachTo ) {
 					this._editables = this._getEditables();
 				}
 
@@ -337,7 +357,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 		try {
 			this._data = this._getData();
 
-			if ( !this._initUsingData ) {
+			if ( !this._editorAttachTo ) {
 				this._editables = this._getEditables();
 			}
 
@@ -628,3 +648,10 @@ export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
 	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
 	config: EditorConfig
 ) => Promise<TEditor>;
+
+/**
+ * An alias for `isElement` from `es-toolkit/compat` with additional type guard.
+ */
+function isElement( value: any ): value is Element {
+	return _isElement( value );
+}
