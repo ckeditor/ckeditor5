@@ -6,6 +6,13 @@
 :root {
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 	--ck-dropdown-max-width: 75vw;
+	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
+	--ck-dropdown-button-focus-shadow: var(--ck-focus-shadow-interactive);
+	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
+	--ck-dropdown-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
+	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
+	--ck-dropdown-icon-button-padding-inline: var(--ck-spacing-control-padding-inline-compact);
 }
 
 .ck.ck-dropdown {
@@ -22,19 +29,19 @@
 
 	[dir="ltr"] & {
 		& .ck-dropdown__arrow {
-			right: var(--ck-spacing-standard);
+			right: var(--ck-dropdown-arrow-offset-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-dropdown-arrow-gap-inline-ltr);
 		}
 	}
 
 	[dir="rtl"] & {
 		& .ck-dropdown__arrow {
-			left: var(--ck-spacing-standard);
+			left: var(--ck-dropdown-arrow-offset-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-dropdown-arrow-gap-inline-rtl);
 		}
 	}
 
@@ -46,14 +53,14 @@
 		[dir="ltr"] & {
 			&:not(.ck-button_with-text) {
 				/* Make sure dropdowns with just an icon have the right inner spacing */
-				padding-left: var(--ck-spacing-small);
+				padding-left: var(--ck-dropdown-icon-button-padding-inline);
 			}
 		}
 
 		[dir="rtl"] & {
 			&:not(.ck-button_with-text) {
 				/* Make sure dropdowns with just an icon have the right inner spacing */
-				padding-right: var(--ck-spacing-small);
+				padding-right: var(--ck-dropdown-icon-button-padding-inline);
 			}
 		}
 
@@ -85,7 +92,7 @@
 			box-shadow: none;
 
 			&:focus {
-				box-shadow: var(--ck-focus-outer-shadow), 0 0;
+				box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
 			}
 		}
 		width: 100%
@@ -159,8 +166,8 @@
 }
 
 .ck.ck-dropdown__panel {
-	border-radius: var(--ck-rounded-corners-radius);
-	box-shadow: var(--ck-drop-shadow), 0 0;
+	border-radius: var(--ck-dropdown-panel-border-radius);
+	box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);

@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Generic control surfaces (button/input backgrounds and borders). */
+	--ck-color-surface-control: var(--ck-color-base-background);
+	--ck-color-border-control: var(--ck-color-base-border);
+
+	/* Generic elevated surfaces (dropdown/panel/dialog/toolbar containers). */
+	--ck-color-surface-container: var(--ck-color-base-background);
+	--ck-color-border-container: var(--ck-color-base-border);
+
+	/* Generic separators and dividers. */
+	--ck-color-divider: var(--ck-color-base-border);
+
+	/* Generic floating surface shadows. */
+	--ck-shadow-surface-floating: var(--ck-drop-shadow);
+}

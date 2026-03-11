@@ -6,6 +6,7 @@
 
 :root {
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
+	--ck-dropdown-menu-menu-panel-max-height: var(--ck-size-menu-panel-max-height);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
@@ -17,7 +18,7 @@
 	height: fit-content;
 	max-width: var(--ck-dropdown-menu-menu-panel-max-width);
 	position: absolute;
-	max-height: 314px; /* With the default settings, this is equal to 10 menu items. */
+	max-height: var(--ck-dropdown-menu-menu-panel-max-height); /* With the default settings, this is equal to 10 menu items. */
 	overflow-y: auto;
 
 	/* Reset balloon styling */

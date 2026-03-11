@@ -4,8 +4,15 @@
  */
 
 
+:root {
+	--ck-list-item-button-padding-block: var(--ck-spacing-control-padding-block);
+	--ck-list-item-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
+	--ck-list-item-button-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
+	--ck-list-item-button-check-icon-gap: var(--ck-spacing-control-padding-inline-compact);
+}
+
 .ck.ck-button.ck-list-item-button {
-	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+	padding: var(--ck-list-item-button-padding-block) var(--ck-list-item-button-padding-inline);
 
 	&,
 	&.ck-on {
@@ -15,11 +22,11 @@
 
 	&:has(.ck-list-item-button__check-holder) {
 		[dir="ltr"] & {
-			padding-left: var(--ck-spacing-small);
+			padding-left: var(--ck-list-item-button-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			padding-right: var(--ck-spacing-small);
+			padding-right: var(--ck-list-item-button-padding-inline-compact);
 		}
 	}
 
@@ -55,11 +62,11 @@
 
 	&.ck-list-item-button_toggleable {
 		[dir="ltr"] & {
-			padding-left: var(--ck-spacing-small);
+			padding-left: var(--ck-list-item-button-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			padding-right: var(--ck-spacing-small);
+			padding-right: var(--ck-list-item-button-padding-inline-compact);
 		}
 	}
 
@@ -69,11 +76,11 @@
 		height: .9em;
 
 		[dir="ltr"] & {
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-list-item-button-check-icon-gap);
 		}
 
 		[dir="rtl"] & {
-			margin-left: var(--ck-spacing-small);
+			margin-left: var(--ck-list-item-button-check-icon-gap);
 		}
 	}
 

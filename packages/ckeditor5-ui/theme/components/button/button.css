@@ -3,6 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-button-border-radius: var(--ck-border-radius-control);
+	--ck-button-min-size: var(--ck-size-control-min-height);
+	--ck-button-focus-ring: var(--ck-focus-ring-interactive);
+	--ck-button-focus-shadow: var(--ck-focus-shadow-interactive);
+	--ck-button-focus-disabled-shadow: var(--ck-focus-shadow-disabled-interactive);
+	--ck-button-padding: var(--ck-spacing-control-padding-block);
+	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
+	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
+	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
+}
+
 .ck.ck-button,
 a.ck.ck-button {
 	--ck-button-background: var(--ck-color-button-default-background);
@@ -22,16 +34,16 @@ a.ck.ck-button {
 		}
 	}
 
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-button-border-radius);
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
-	padding: var(--ck-spacing-tiny);
+	padding: var(--ck-button-padding);
 	text-align: center;
 
 	/* A very important piece of styling. Go to variable declaration to learn more. */
-	min-width: var(--ck-ui-component-min-height);
-	min-height: var(--ck-ui-component-min-height);
+	min-width: var(--ck-button-min-size);
+	min-height: var(--ck-button-min-size);
 
 	/* Normalize the height of the line. Removing this will break consistent height
 	among text and text-less buttons (with icons). */
@@ -63,8 +75,8 @@ a.ck.ck-button {
 	&:active,
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border: var(--ck-button-focus-ring);
+		box-shadow: var(--ck-button-focus-shadow), 0 0;
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -102,11 +114,11 @@ a.ck.ck-button {
 		opacity: .5;
 
 		[dir="ltr"] & {
-			margin-left: var(--ck-spacing-large);
+			margin-left: var(--ck-button-keystroke-gap);
 		}
 
 		[dir="rtl"] & {
-			margin-right: var(--ck-spacing-large);
+			margin-right: var(--ck-button-keystroke-gap);
 		}
 	}
 
@@ -117,7 +129,7 @@ a.ck.ck-button {
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+			box-shadow: var(--ck-button-focus-disabled-shadow), 0 0;
 		}
 
 		& .ck-button__icon {
@@ -135,15 +147,15 @@ a.ck.ck-button {
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
+		padding: var(--ck-button-padding) var(--ck-button-padding-inline);
 
 		& .ck-button__icon {
 			[dir="ltr"] & {
-				margin-right: var(--ck-spacing-medium);
+				margin-right: var(--ck-button-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-spacing-medium);
+				margin-left: var(--ck-button-icon-gap);
 			}
 		}
 		& .ck-button__label {

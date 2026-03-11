@@ -6,6 +6,8 @@
 
 :root {
 	--ck-color-grid-tile-size: 24px;
+	--ck-color-grid-high-contrast-tile-padding-inline: var(--ck-spacing-surface-padding-inline);
+	--ck-color-grid-label-padding-inline: var(--ck-spacing-control-padding-inline);
 
 	/* Not using global colors here because these may change but some colors in a pallette
 	 * require special treatment. For instance, this ensures no matter what the UI text color is,
@@ -60,7 +62,7 @@
 		height: unset;
 		min-width: unset;
 		min-height: unset;
-		padding: 0 var(--ck-spacing-small);
+		padding: 0 var(--ck-color-grid-high-contrast-tile-padding-inline);
 
 		& .ck-button__label {
 			display: inline-block;
@@ -89,5 +91,5 @@
 }
 
 .ck.ck-color-grid__label {
-	padding: 0 var(--ck-spacing-standard);
+	padding: 0 var(--ck-color-grid-label-padding-inline);
 }

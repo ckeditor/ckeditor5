@@ -3,6 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-color-selector-picker-padding-block: calc(var(--ck-spacing-control-padding-inline) / 2);
+	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
+	--ck-color-selector-picker-icon-gap: var(--ck-spacing-control-padding-inline);
+}
 
 .ck.ck-color-selector {
 	/* View fragment with color grids. */
@@ -20,7 +25,7 @@
 
 		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button.ck-color-selector__color-picker {
-			padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
+			padding: var(--ck-color-selector-picker-padding-block) var(--ck-color-selector-picker-padding-inline);
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 
@@ -30,11 +35,11 @@
 
 			& .ck.ck-icon {
 				[dir="ltr"] & {
-					margin-right: var(--ck-spacing-standard);
+					margin-right: var(--ck-color-selector-picker-icon-gap);
 				}
 
 				[dir="rtl"] & {
-					margin-left: var(--ck-spacing-standard);
+					margin-left: var(--ck-color-selector-picker-icon-gap);
 				}
 			}
 		}

@@ -11,11 +11,13 @@
 	--ck-balloon-arrow-drop-shadow: 0 2px 2px var(--ck-color-shadow-drop);
 	/* Make sure the balloon arrow does not float over its children. */
 	--ck-balloon-panel-arrow-z-index: calc(var(--ck-z-default) - 3);
+	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
+	--ck-balloon-panel-shadow: var(--ck-shadow-surface-floating);
 }
 
 .ck.ck-balloon-panel {
-	border-radius: var(--ck-rounded-corners-radius);
-	box-shadow: var(--ck-drop-shadow), 0 0;
+	border-radius: var(--ck-balloon-panel-border-radius);
+	box-shadow: var(--ck-balloon-panel-shadow), 0 0;
 
 	min-height: 15px;
 

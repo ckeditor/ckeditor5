@@ -3,6 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-color-picker-row-margin-block-start: var(--ck-spacing-content-edge-margin-block);
+	--ck-color-picker-hash-padding-block-start: var(--ck-spacing-control-padding-block);
+	--ck-color-picker-hash-padding-inline-end: var(--ck-spacing-control-icon-gap);
+}
+
 .color-picker-hex-input {
 	width: max-content;
 
@@ -16,7 +22,7 @@
 	flex-direction: row;
 	flex-wrap: nowrap;
 	justify-content: space-between;
-	margin: var(--ck-spacing-large) 0 0;
+	margin: var(--ck-color-picker-row-margin-block-start) 0 0;
 	width: unset;
 
 	& .ck.ck-labeled-field-view {
@@ -28,7 +34,7 @@
 	}
 
 	& .ck-color-picker__hash-view {
-		padding-top: var(--ck-spacing-tiny);
-		padding-right: var(--ck-spacing-medium);
+		padding-top: var(--ck-color-picker-hash-padding-block-start);
+		padding-right: var(--ck-color-picker-hash-padding-inline-end);
 	}
 }

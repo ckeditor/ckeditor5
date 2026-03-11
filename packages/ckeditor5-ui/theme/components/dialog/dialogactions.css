@@ -3,13 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-dialog-actions-padding: var(--ck-spacing-content-edge-margin-block);
+	--ck-dialog-actions-gap: var(--ck-spacing-content-edge-margin-block);
+}
+
 .ck.ck-dialog {
 	& .ck.ck-dialog__actions {
-		padding: var(--ck-spacing-large);
+		padding: var(--ck-dialog-actions-padding);
 		display: flex;
 
 		& > * + * {
-			margin-left: var(--ck-spacing-large);
+			margin-left: var(--ck-dialog-actions-gap);
 		}
 		justify-content: flex-end
 	}

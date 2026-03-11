@@ -3,9 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-responsive-form-padding: var(--ck-spacing-content-edge-margin-block);
+	--ck-responsive-form-item-gap-inline: var(--ck-spacing-content-padding-inline);
+	--ck-responsive-form-mobile-item-margin: var(--ck-spacing-content-edge-margin-block);
+	--ck-responsive-form-mobile-button-padding: var(--ck-spacing-control-padding-inline);
+	--ck-responsive-form-mobile-button-margin: var(--ck-spacing-content-edge-margin-block);
+}
 
 .ck.ck-responsive-form {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-responsive-form-padding);
 
 	&:focus {
 		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
@@ -14,13 +21,13 @@
 
 	[dir="ltr"] & {
 		& > :not(:first-child) {
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-responsive-form-item-gap-inline);
 		}
 	}
 
 	[dir="rtl"] & {
 		& > :not(:last-child) {
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-responsive-form-item-gap-inline);
 		}
 	}
 
@@ -29,7 +36,7 @@
 		width: calc(.8 * var(--ck-input-width));
 
 		& .ck-labeled-field-view {
-			margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+			margin: var(--ck-responsive-form-mobile-item-margin) var(--ck-responsive-form-mobile-item-margin) 0;
 
 			& .ck-input-text,
 			& .ck-input-number {
@@ -45,8 +52,8 @@
 
 		& > .ck-button:nth-last-child(1),
 		& > .ck-button:nth-last-child(2) {
-			padding: var(--ck-spacing-standard);
-			margin-top: var(--ck-spacing-large);
+			padding: var(--ck-responsive-form-mobile-button-padding);
+			margin-top: var(--ck-responsive-form-mobile-button-margin);
 			border-radius: 0;
 
 			&:not(:focus) {

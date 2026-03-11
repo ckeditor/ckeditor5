@@ -11,6 +11,11 @@
 @import "./globals/_rounded.css";
 @import "./globals/_shadow.css";
 @import "./globals/_spacing.css";
+@import "./globals/_semantic-spacing.css";
+@import "./globals/_semantic-shape.css";
+@import "./globals/_semantic-surface.css";
+@import "./globals/_semantic-interactive.css";
+@import "./globals/_semantic-layout.css";
 @import "./globals/_hidden.css";
 @import "./globals/_zindex.css";
 @import "./globals/_transition.css";

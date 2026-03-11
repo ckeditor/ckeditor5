@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-menu-bar-list-item-icon-gap: var(--ck-spacing-control-icon-gap);
+}
 
 .ck.ck-menu-bar__menu {
 	/*
@@ -22,11 +25,11 @@
 			font-size: var(--ck-icon-font-size);
 
 			[dir="ltr"] & {
-				margin-right: var(--ck-spacing-medium);
+				margin-right: var(--ck-menu-bar-list-item-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-spacing-medium);
+				margin-left: var(--ck-menu-bar-list-item-icon-gap);
 			}
 		}
 	}

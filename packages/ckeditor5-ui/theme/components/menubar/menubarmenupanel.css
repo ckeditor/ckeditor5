@@ -6,11 +6,15 @@
 :root {
 	--ck-menu-bar-menu-max-width: 75vw;
 	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
+	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-menu-bar-panel-shadow: var(--ck-shadow-surface-floating);
+	--ck-menu-bar-item-focus-ring: var(--ck-focus-ring-interactive);
+	--ck-menu-bar-item-focus-shadow: var(--ck-focus-shadow-interactive);
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
-	border-radius: var(--ck-rounded-corners-radius);
-	box-shadow: var(--ck-drop-shadow), 0 0;
+	border-radius: var(--ck-menu-bar-panel-border-radius);
+	box-shadow: var(--ck-menu-bar-panel-shadow), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);
@@ -111,8 +115,8 @@
 			z-index: 2;
 
 			outline: none;
-			border: var(--ck-focus-ring);
-			box-shadow: var(--ck-focus-outer-shadow), 0 0;
+			border: var(--ck-menu-bar-item-focus-ring);
+			box-shadow: var(--ck-menu-bar-item-focus-shadow), 0 0;
 		}
 	}
 }

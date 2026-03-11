@@ -6,10 +6,13 @@
 
 :root {
 	--ck-form-default-width: 340px;
+	--ck-form-padding-block-end: var(--ck-spacing-content-edge-margin-block);
+	--ck-form-mobile-item-margin: var(--ck-spacing-content-edge-margin-block);
+	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-content-edge-margin-block);
 }
 
 .ck.ck-form {
-	padding: 0 0 var(--ck-spacing-large);
+	padding: 0 0 var(--ck-form-padding-block-end);
 
 	&.ck-form_default-width {
 		width: var(--ck-form-default-width);
@@ -51,7 +54,7 @@
 
 				> .ck {
 					@media screen and (max-width: 600px) {
-						margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+						margin: var(--ck-form-mobile-item-margin) var(--ck-form-mobile-item-margin) 0;
 					}
 				}
 
@@ -64,7 +67,7 @@
 
 			&.ck-form__row_large-bottom-padding {
 				@media screen and (max-width: 600px) {
-					padding-bottom: var(--ck-spacing-large);
+					padding-bottom: var(--ck-form-mobile-row-padding-block-end);
 				}
 			}
 		}

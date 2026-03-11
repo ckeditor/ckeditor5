@@ -19,7 +19,7 @@
 }
 
 .ck.ck-balloon-panel.ck-evaluation-badge-balloon {
-	--ck-border-radius: var(--ck-evaluation-badge-border-radius);
+	border-radius: var(--ck-evaluation-badge-border-radius);
 
 	box-shadow: none;
 	background: var(--ck-evaluation-badge-background);
@@ -51,4 +51,3 @@
 		border-color: var(--ck-evaluation-badge-border-color);
 	}
 }
-

@@ -5,10 +5,15 @@
 
 :root {
 	--ck-form-header-height: 3.384em;
+	--ck-form-header-padding-inline: var(--ck-spacing-control-meta-gap);
+	--ck-form-header-padding-inline-compact: var(--ck-spacing-surface-padding-inline);
+	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
+	--ck-form-header-icon-gap: var(--ck-spacing-control-icon-gap);
+	--ck-form-header-back-button-gap: var(--ck-spacing-surface-item-gap-inline);
 }
 
 .ck.ck-form__header {
-	padding: var(--ck-spacing-small) var(--ck-spacing-large);
+	padding: var(--ck-form-header-padding-block) var(--ck-form-header-padding-inline);
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
 	border-bottom: 1px solid var(--ck-color-base-border);
@@ -21,7 +26,7 @@
 	justify-content: space-between;
 
 	& > .ck-icon {
-		margin-inline-end: var(--ck-spacing-medium);
+		margin-inline-end: var(--ck-form-header-icon-gap);
 		flex-shrink: 0;
 	}
 
@@ -34,16 +39,16 @@
 
 	/* Padding when back button is hidden */
 	&:has(.ck-button-back.ck-hidden) {
-		padding-inline: var(--ck-spacing-large) var(--ck-spacing-large);
+		padding-inline: var(--ck-form-header-padding-inline) var(--ck-form-header-padding-inline);
 	}
 
 	/* Padding when back button is visible */
 	&:has(.ck-button-back:not(.ck-hidden)) {
-		padding-inline: var(--ck-spacing-small) var(--ck-spacing-small);
+		padding-inline: var(--ck-form-header-padding-inline-compact) var(--ck-form-header-padding-inline-compact);
 	}
 
 	& > .ck-button-back {
-		margin-inline-end: var(--ck-spacing-small);
+		margin-inline-end: var(--ck-form-header-back-button-gap);
 	}
 
 	& > .ck.ck-button {

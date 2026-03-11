@@ -24,7 +24,7 @@
 }
 
 .ck.ck-balloon-panel.ck-powered-by-balloon {
-	--ck-border-radius: var(--ck-powered-by-border-radius);
+	border-radius: var(--ck-powered-by-border-radius);
 
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
@@ -81,4 +81,3 @@
 		border-color: var(--ck-powered-by-border-color);
 	}
 }
-

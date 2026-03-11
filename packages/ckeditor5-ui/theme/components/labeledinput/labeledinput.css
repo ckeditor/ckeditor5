@@ -3,9 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-labeled-input-status-gap: var(--ck-spacing-surface-item-gap-inline);
+}
+
 .ck.ck-labeled-input .ck-labeled-input__status {
 	font-size: var(--ck-font-size-small);
-	margin-top: var(--ck-spacing-small);
+	margin-top: var(--ck-labeled-input-status-gap);
 
 	/* Let the info wrap to the next line to avoid stretching the layout horizontally.
 	The status could be very long. */
