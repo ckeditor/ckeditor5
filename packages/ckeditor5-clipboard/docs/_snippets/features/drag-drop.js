@@ -9,7 +9,9 @@ import { DragDropEditor } from './build-drag-drop-source.js';
 const contactsContainer = document.querySelector( '.contacts' );
 
 DragDropEditor.create( document.querySelector( '#snippet-drag-drop' ), {
-	placeholder: 'Drop the content here to test the feature.',
+	root: {
+		placeholder: 'Drop the content here to test the feature.'
+	},
 	cloudServices: CS_CONFIG
 } )
 	.then( editor => {

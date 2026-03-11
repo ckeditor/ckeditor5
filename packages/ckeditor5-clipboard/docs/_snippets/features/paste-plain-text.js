@@ -44,7 +44,9 @@ PasteEditor
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
 		},
-		placeholder: 'Paste the content here to test the feature.',
+		root: {
+			placeholder: 'Paste the content here to test the feature.'
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {

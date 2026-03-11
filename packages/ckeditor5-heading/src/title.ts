@@ -607,7 +607,9 @@ function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootEl
  *     title: {
  *       placeholder: 'My custom placeholder for the title'
  *     },
- *     placeholder: 'My custom placeholder for the body'
+ *     root: {
+ *       placeholder: 'My custom placeholder for the body'
+ *     }
  *   } )
  *   .then( ... )
  *   .catch( ... );

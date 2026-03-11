@@ -460,7 +460,9 @@ To display the {@link features/editor-placeholder placeholder} in the main edita
 } )
 export class MyComponent {
 	public config = {
-		placeholder: 'Type the content here!'
+		root: {
+			placeholder: 'Type the content here!'
+		}
 	}
 }
 ```
