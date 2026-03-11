@@ -428,7 +428,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'no command should be executed when all selected items cannot be indented (start of a list)', () => {
+				it( 'list item level should not change if none of the selected blocks can be indented.', () => {
 					runTest( {
 						input: [
 							'* [A',

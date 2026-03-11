@@ -8,12 +8,11 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 
-import {
-	TableCellPropertiesEditing, TableCellPropertiesUI,
-	TableLayout, TablePropertiesEditing, TablePropertiesUI
-} from '../../src/index.js';
+import { TableProperties } from '../../src/tableproperties.js';
+import { TableCellProperties } from '../../src/tablecellproperties.js';
+import { TableCaption } from '../../src/tablecaption.js';
 
-const sourceElement = document.querySelector( '#editor' );
+const sourceElement = document.querySelector( '#editor-table-cellpadding-attribute' );
 const clonedSource = sourceElement.cloneNode( true );
 
 document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
@@ -21,26 +20,19 @@ document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 ClassicEditor
 	.create( sourceElement, {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [
-			ArticlePluginSet, Alignment, Indent, IndentBlock,
-			TablePropertiesEditing, TablePropertiesUI,
-			TableCellPropertiesEditing, TableCellPropertiesUI,
-			TableLayout
-		],
+		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableCaption, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			enableFooters: true,
-			tableToolbar: [ 'bold', 'italic' ],
-			tableCellProperties: {
-				scopedHeaders: true
-			}
+			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		document.querySelector( '#cloned-source2' ).innerHTML = editor.getData();
 	} )
 	.catch( err => {
 		console.error( err.stack );

@@ -1427,8 +1427,6 @@ describe( 'DataController utils', () => {
 						return true;
 					}
 				} );
-
-				config.set( 'experimentalFlags.modelInsertContentDeepSchemaVerification', true );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {

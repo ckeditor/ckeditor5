@@ -1,7 +1,7 @@
 {
   "name": "ckeditor5-root",
   "private": true,
-  "version": "47.6.0",
+  "version": "47.6.1",
   "description": "The development environment of CKEditor 5 - the best browser-based rich text editor.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -87,7 +87,7 @@
     "svgo": "^3.3.2",
     "table": "^6.8.1",
     "typescript": "5.5.4",
-    "umberto": "^10.0.0",
+    "umberto": "^10.1.3",
     "upath": "^2.0.0",
     "vitest": "^4.0.18",
     "wait-on": "^9.0.4"

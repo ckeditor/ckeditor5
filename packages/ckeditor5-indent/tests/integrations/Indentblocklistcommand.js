@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
-import { isFirstListItemInList } from '../../../ckeditor5-list/src/list/utils/model.js';
+import { isFirstListItemInList, expandListBlocksToCompleteList } from '../../../ckeditor5-list/src/list/utils/model.js';
 import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
 import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
@@ -31,7 +31,7 @@ describe( 'IndentBlockListCommand', () => {
 
 				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
 					if ( name === 'ListUtils' ) {
-						return { isFirstListItemInList };
+						return { isFirstListItemInList, expandListBlocksToCompleteList };
 					}
 
 					if ( name === 'IndentBlockListIntegration' ) {
@@ -223,6 +223,22 @@ describe( 'IndentBlockListCommand', () => {
 						] ) );
 					} );
 
+					it( 'should indent list when selection starts at start of list and ends in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo',
+							'* ba]r',
+							'* baz'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo {blockIndentList:40px}',
+							'* ba]r {blockIndentList:40px}',
+							'* baz {blockIndentList:40px}'
+						] ) );
+					} );
+
 					it( 'should indent list when selection starts at the start of first list item and spans across multiple items', () => {
 						_setModelData( model, modelList( [
 							'* [foo',
@@ -299,6 +315,22 @@ describe( 'IndentBlockListCommand', () => {
 						] ) );
 					} );
 
+					it( 'should indent list when selection starts at start of list and ends in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentList:50px}',
+							'* ba]r {blockIndentList:50px}',
+							'* baz {blockIndentList:50px}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo {blockIndentList:90px}',
+							'* ba]r {blockIndentList:90px}',
+							'* baz {blockIndentList:90px}'
+						] ) );
+					} );
+
 					it( 'should indent lists when selection starts at the start of first list item and spans across multiple lists', () => {
 						_setModelData( model, modelList( [
 							'* [foo {blockIndentList:50px}',
@@ -357,6 +389,23 @@ describe( 'IndentBlockListCommand', () => {
 							'* [foo',
 							'* bar',
 							'* ba]z'
+						] ) );
+					} );
+
+					it( 'should reset indentation to 0 when selection starts at the start of the first list item ' +
+					'and ends in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentList:-50px}',
+							'* ba]r {blockIndentList:-50px}',
+							'* baz {blockIndentList:-50px}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo',
+							'* ba]r',
+							'* baz'
 						] ) );
 					} );
 
@@ -644,6 +693,22 @@ describe( 'IndentBlockListCommand', () => {
 						] ) );
 					} );
 
+					it( 'should indent list when selection starts at start of list and ends in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo',
+							'* ba]r',
+							'* baz'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo {blockIndentList:indent-1}',
+							'* ba]r {blockIndentList:indent-1}',
+							'* baz {blockIndentList:indent-1}'
+						] ) );
+					} );
+
 					it( 'should indent lists when selection starts at the start of first list item and spans across multiple lists', () => {
 						_setModelData( model, modelList( [
 							'* [foo',
@@ -701,6 +766,22 @@ describe( 'IndentBlockListCommand', () => {
 							'* [foo {blockIndentList:indent-2}',
 							'* bar {blockIndentList:indent-2}',
 							'* ba]z {blockIndentList:indent-2}'
+						] ) );
+					} );
+
+					it( 'should indent list when selection starts at start of list and ends in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentList:indent-1}',
+							'* ba]r {blockIndentList:indent-1}',
+							'* baz {blockIndentList:indent-1}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo {blockIndentList:indent-2}',
+							'* ba]r {blockIndentList:indent-2}',
+							'* baz {blockIndentList:indent-2}'
 						] ) );
 					} );
 
@@ -1047,6 +1128,23 @@ describe( 'IndentBlockListCommand', () => {
 						expect( command.isEnabled ).to.be.true;
 					} );
 
+					it( 'should outdent list when selection starts at the start of first list item and ends ' +
+					'in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentList:50px}',
+							'* ba]r {blockIndentList:50px}',
+							'* baz {blockIndentList:50px}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo {blockIndentList:10px}',
+							'* ba]r {blockIndentList:10px}',
+							'* baz {blockIndentList:10px}'
+						] ) );
+					} );
+
 					it( 'should outdent lists when selection starts at the start of the first list item and spans ' +
 					'across multiple lists', () => {
 						_setModelData( model, modelList( [
@@ -1336,6 +1434,23 @@ describe( 'IndentBlockListCommand', () => {
 						] ) );
 
 						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should outdent list when selection starts at the start of first list item and ends ' +
+					'in the middle of the list', () => {
+						_setModelData( model, modelList( [
+							'* [foo {blockIndentList:indent-2}',
+							'* ba]r {blockIndentList:indent-2}',
+							'* baz {blockIndentList:indent-2}'
+						] ) );
+
+						command.execute();
+
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+							'* [foo {blockIndentList:indent-1}',
+							'* ba]r {blockIndentList:indent-1}',
+							'* baz {blockIndentList:indent-1}'
+						] ) );
 					} );
 
 					it( 'should outdent lists when selection starts at the start of the first list item and spans ' +
