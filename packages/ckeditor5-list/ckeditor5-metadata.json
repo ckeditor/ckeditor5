@@ -10,12 +10,12 @@
 				{
 					"type": "Button",
 					"name": "numberedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/numbered-list.svg"
+					"iconName": "IconNumberedList"
 				},
 				{
 					"type": "Button",
 					"name": "bulletedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bulleted-list.svg"
+					"iconName": "IconBulletedList"
 				}
 			],
 			"htmlOutput": [
@@ -41,7 +41,7 @@
 				{
 					"type": "Button",
 					"name": "todoList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/todo-list.svg"
+					"iconName": "IconTodoList"
 				}
 			],
 			"htmlOutput": [
@@ -103,12 +103,12 @@
 				{
 					"type": "Button",
 					"name": "numberedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/numbered-list.svg"
+					"iconName": "IconNumberedList"
 				},
 				{
 					"type": "Button",
 					"name": "bulletedList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bulleted-list.svg"
+					"iconName": "IconBulletedList"
 				}
 			],
 			"htmlOutput": [
@@ -239,7 +239,7 @@
 				{
 					"type": "Button",
 					"name": "todoList",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/todo-list.svg"
+					"iconName": "IconTodoList"
 				}
 			],
 			"htmlOutput": [
@@ -252,7 +252,10 @@
 				},
 				{
 					"elements": "label",
-					"classes": [ "todo-list__label", "todo-list__label_without-description" ]
+					"classes": [
+						"todo-list__label",
+						"todo-list__label_without-description"
+					]
 				},
 				{
 					"elements": "span",

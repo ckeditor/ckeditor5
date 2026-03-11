@@ -5,7 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'node:url';
 import fs from 'fs-extra';
 import upath from 'upath';
 import parser from '@babel/parser';
@@ -30,13 +29,15 @@ async function main() {
 	const packagesData = await Promise.all( packagesPaths.map( getPackageData ) );
 	const packagesWithMetadata = packagesData.filter( p => p.metadata );
 
+	const validIconNames = getValidIconNames( options );
+
 	const invalidMetadata = [];
 
 	for ( const packageData of packagesWithMetadata ) {
 		const { hasEntryPoint, missingExports } = getMissingExports( packageData );
-		const missingIcons = getMissingIcons( packageData, options );
+		const invalidIconNames = getInvalidIconNames( packageData, validIconNames );
 
-		if ( hasEntryPoint && ![ ...missingExports, ...missingIcons ].length ) {
+		if ( hasEntryPoint && ![ ...missingExports, ...invalidIconNames ].length ) {
 			continue;
 		}
 
@@ -44,7 +45,7 @@ async function main() {
 			name: packageData.name,
 			hasEntryPoint,
 			missingExports,
-			missingIcons
+			invalidIconNames
 		} );
 	}
 
@@ -54,7 +55,7 @@ async function main() {
 		return;
 	}
 
-	for ( const { name, hasEntryPoint, missingExports, missingIcons } of invalidMetadata ) {
+	for ( const { name, hasEntryPoint, missingExports, invalidIconNames } of invalidMetadata ) {
 		console.log( chalk.red( `\nPackage "${ name }" has failed validation:` ) );
 
 		if ( !hasEntryPoint ) {
@@ -68,10 +69,10 @@ async function main() {
 			].join( '\n' ) ) );
 		}
 
-		if ( missingIcons.length ) {
+		if ( invalidIconNames.length ) {
 			console.log( chalk.red( [
-				'Missing icons:',
-				...missingIcons.map( missingIcon => ` - ${ missingIcon }` )
+				'Invalid icon names:',
+				...invalidIconNames.map( invalidIconName => ` - ${ invalidIconName }` )
 			].join( '\n' ) ) );
 		}
 	}
@@ -134,40 +135,42 @@ function getMissingExports( packageData ) {
 	return output;
 }
 
-function getMissingIcons( packageData, options ) {
+function getValidIconNames( options ) {
+	const iconsIndexPath = upath.join( options.cwd, 'packages', 'ckeditor5-icons', 'src', 'index.ts' );
+	const iconsIndexContent = fs.readFileSync( iconsIndexPath, 'utf-8' );
+	const iconNames = new Set();
+
+	for ( const match of iconsIndexContent.matchAll( /export\s*\{\s*default\s+as\s+(\w+)\s*\}/g ) ) {
+		iconNames.add( match[ 1 ] );
+	}
+
+	return iconNames;
+}
+
+function getInvalidIconNames( packageData, validIconNames ) {
 	return packageData.metadata.plugins
 		.filter( plugin => plugin.uiComponents )
 		.flatMap( plugin => plugin.uiComponents.map( uiComponent => ( {
-			...plugin,
-			iconPath: uiComponent.iconPath,
+			pluginName: plugin.name,
+			iconName: uiComponent.iconName,
 			uiComponentName: uiComponent.name
 		} ) ) )
-		.filter( ( { iconPath } ) => iconPath !== undefined )
-		.map( ( { iconPath, name, uiComponentName } ) => {
-			if ( iconPath === '' ) {
-				return `${ name } (\`${ uiComponentName }\`) has an empty \`iconPath\` value. Either define or remove it.`;
+		.filter( ( { iconName } ) => iconName !== undefined )
+		.filter( ( { iconName } ) => {
+			if ( iconName === '' ) {
+				return true;
 			}
 
-			if ( iconPath.startsWith( 'ckeditor' ) || iconPath.startsWith( '@ckeditor/' ) ) {
-				return iconPath;
-			}
-
-			return upath.join( options.cwd, 'packages', packageData.name, iconPath );
+			return !validIconNames.has( iconName );
 		} )
-		.filter( isIconMissing );
-}
+		.map( ( { iconName, pluginName, uiComponentName } ) => {
+			if ( iconName === '' ) {
+				return `${ pluginName } (\`${ uiComponentName }\`) has an empty \`iconName\` value. Either define or remove it.`;
+			}
 
-function isIconMissing( iconPath ) {
-	try {
-		fs.accessSync(
-			fileURLToPath( import.meta.resolve( iconPath ) ),
-			fs.constants.R_OK
-		);
-
-		return false;
-	} catch {
-		return true;
-	}
+			return `${ pluginName } (\`${ uiComponentName }\`) has an invalid \`iconName\`: "${ iconName }". ` +
+				'It must match an export name from @ckeditor/ckeditor5-icons.';
+		} );
 }
 
 /**

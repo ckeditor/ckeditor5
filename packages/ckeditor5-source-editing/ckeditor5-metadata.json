@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "sourceEditing",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/source.svg"
+					"iconName": "IconSource"
 				}
 			]
 		}

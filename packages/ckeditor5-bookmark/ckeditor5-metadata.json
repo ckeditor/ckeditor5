@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "bookmark",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bookmark.svg"
+					"iconName": "IconBookmark"
 				}
 			],
 			"htmlOutput": [
