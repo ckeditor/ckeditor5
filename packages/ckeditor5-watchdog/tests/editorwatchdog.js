@@ -1602,15 +1602,16 @@ describe( 'EditorWatchdog', () => {
 					content: '<p>Bar</p>'
 				}, {
 					plugins: [ Paragraph ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							lazyLoad: true,
+							attributes: { order: 1 }
 						},
 						content: {
-							order: 2
+							lazyLoad: true,
+							attributes: { order: 2 }
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1732,15 +1733,21 @@ describe( 'EditorWatchdog', () => {
 						content: '<p>Bar</p>'
 					},
 					plugins: [ Paragraph, MultiRootEditorIntegration ],
-					rootsAttributes: {
+					lazyRoots: [ 'lazyOne', 'lazyTwo' ],
+					roots: {
 						header: {
-							order: 1
+							attributes: { order: 1 }
 						},
 						content: {
-							order: 2
+							attributes: { order: 2 }
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
