@@ -889,6 +889,17 @@ export interface EditorConfig extends EngineConfig {
 	 * The root configuration options for the default `main` root.
 	 *
 	 * This option is an alias for `config.roots.main`.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		root: {
+	 * 			initialData: '<p>Hello world!</p>',
+	 * 			placeholder: 'Type some text...',
+	 * 			label: 'Main content'
+	 * 		}
+	 * 	} );
+	 * ```
 	 */
 	root?: RootConfig;
 
@@ -906,6 +917,30 @@ export interface EditorConfig extends EngineConfig {
 	 * 			}
 	 * 		}
 	 * 	} );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
+	 *
+	 * ```ts
+	 * MultiRootEditor
+	 * 	.create(
+	 * 		{
+	 * 			header: document.querySelector( '#header' ),
+	 * 			content: document.querySelector( '#content' )
+	 * 		},
+	 * 		{
+	 * 			roots: {
+	 * 				header: {
+	 * 					initialData: '<h2>Header data</h2>',
+	 * 					placeholder: 'Type the document header...'
+	 * 				},
+	 * 				content: {
+	 * 					initialData: '<p>Content data</p>',
+	 * 					placeholder: 'Type the main content...'
+	 * 				}
+	 * 			}
+	 * 		}
+	 * 	);
 	 * ```
 	 */
 	roots?: Record<string, RootConfig>;
