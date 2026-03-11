@@ -148,7 +148,7 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 * # Using an existing DOM element (and data provided in `config.initialData`)
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
