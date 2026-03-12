@@ -39,7 +39,8 @@ ClassicEditor
 		},
 		cloudServices: CS_CONFIG,
 		// A proper indentation is required for the Mermaid syntax to work.
-		initialData: `<h2>CKEditor timeline diagram</h2>
+		root: {
+			initialData: `<h2>CKEditor timeline diagram</h2>
 <pre spellcheck="false"><code class="language-mermaid">timeline
 title History of CKEditor
 2003 : FCKeditor
@@ -49,15 +50,16 @@ title History of CKEditor
 
 <h2>Collaboration features mindmap</h2>
 <pre spellcheck="false"><code class="language-mermaid">mindmap
-  root((CKEditor 5<br>Collaboration))
-    Change control
-      Track changes
-      Revision history
-    Comments
-      Comments archive
-    Other tools
-      Mentions
-      User list</code></pre>`
+root((CKEditor 5<br>Collaboration))
+	Change control
+	Track changes
+	Revision history
+	Comments
+	Comments archive
+	Other tools
+	Mentions
+	User list</code></pre>`
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
