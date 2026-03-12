@@ -5,8 +5,8 @@
 
 :root {
 	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
-	--ck-editor-chrome-border-radius: var(--ck-border-radius-surface);
-	--ck-editor-chrome-border-color: var(--ck-color-border-container);
+	--ck-editor-frame-border-radius: var(--ck-border-radius-surface);
+	--ck-editor-frame-border-color: var(--ck-color-border-container);
 	--ck-editor-editable-focus-ring: var(--ck-focus-ring-interactive);
 	--ck-editor-editable-padding-inline: var(--ck-spacing-content-padding-inline);
 	--ck-editor-editable-edge-margin-block: var(--ck-spacing-content-edge-margin-block);
@@ -15,11 +15,11 @@
 .ck.ck-editor__top {
 	& .ck-sticky-panel {
 		& .ck-sticky-panel__content {
-			border-radius: var(--ck-editor-chrome-border-radius);
+			border-radius: var(--ck-editor-frame-border-radius);
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 
-			border: 1px solid var(--ck-editor-chrome-border-color);
+			border: 1px solid var(--ck-editor-frame-border-color);
 			border-bottom-width: 0;
 
 			&.ck-sticky-panel__content_sticky {
@@ -28,7 +28,7 @@
 
 			& .ck-menu-bar {
 				border: 0;
-				border-bottom: 1px solid var(--ck-editor-chrome-border-color);
+				border-bottom: 1px solid var(--ck-editor-frame-border-color);
 			}
 
 			& .ck-toolbar {
@@ -39,7 +39,7 @@
 }
 
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
-	border-radius: var(--ck-editor-chrome-border-radius);
+	border-radius: var(--ck-editor-frame-border-radius);
 
 	&.ck-focused {
 		outline: none;

@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-color-interactive-focus-border: var(--ck-color-focus-border);
+	--ck-color-interactive-focus-shadow: var(--ck-color-focus-outer-shadow);
+	--ck-color-interactive-focus-disabled-shadow: var(--ck-color-focus-disabled-shadow);
+	--ck-color-interactive-focus-error-shadow: var(--ck-color-focus-error-shadow);
+
+	--ck-color-interactive-hover-surface: hsl(0, 0%, 94.1%);
+	--ck-color-interactive-active-surface: hsl(0, 0%, 94.1%);
+	--ck-color-interactive-selected-surface: hsl(212, 100%, 97.1%);
+	--ck-color-interactive-selected-surface-hover: hsl(211.7, 100%, 92.9%);
+	--ck-color-interactive-selected-content: hsl(218.1, 100%, 58%);
+
+	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
+	--ck-color-interactive-primary-surface-hover: hsl(104, 53.2%, 40.2%);
+	--ck-color-interactive-primary-content: var(--ck-color-content-inverse);
+
+	--ck-color-focus-border-coordinates: 218, 81.8%, 56.9%;
+	--ck-color-focus-border: hsl(var(--ck-color-focus-border-coordinates));
+	--ck-color-focus-outer-shadow: hsl(212.4, 89.3%, 89%);
+	--ck-color-focus-disabled-shadow: hsla(209, 90%, 72%, .3);
+	--ck-color-focus-error-shadow: hsla(9, 100%, 56%, .3);
+}

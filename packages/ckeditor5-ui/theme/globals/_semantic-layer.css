@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-layer-base: var(--ck-z-default);
+	--ck-layer-control-raised: calc(var(--ck-layer-base) + 1);
+
+	--ck-layer-panel: var(--ck-z-panel);
+	--ck-layer-panel-above: calc(var(--ck-layer-panel) + 1);
+	--ck-layer-panel-below: calc(var(--ck-layer-panel) - 1);
+
+	--ck-layer-dialog: var(--ck-z-dialog);
+	--ck-layer-tooltip: calc(var(--ck-layer-dialog) + 100);
+
+	--ck-layer-balloon-arrow-back: calc(var(--ck-layer-base) - 3);
+	--ck-layer-balloon-arrow-front: calc(var(--ck-layer-balloon-arrow-back) + 1);
+}

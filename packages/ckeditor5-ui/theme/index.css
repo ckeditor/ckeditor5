@@ -18,6 +18,7 @@
 @import "./globals/_semantic-layout.css";
 @import "./globals/_hidden.css";
 @import "./globals/_zindex.css";
+@import "./globals/_semantic-layer.css";
 @import "./globals/_transition.css";
 @import "./globals/_poweredby.css";
 @import "./globals/_evaluationbadge.css";

@@ -14,7 +14,7 @@
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
 	 */
 	& .ck-splitbutton__action:focus {
-		z-index: calc(var(--ck-z-default) + 1);
+		z-index: var(--ck-layer-control-raised);
 	}
 
 	&:hover > .ck-splitbutton__action,

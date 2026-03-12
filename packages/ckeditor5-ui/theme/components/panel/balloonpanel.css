@@ -10,7 +10,7 @@
 	--ck-balloon-arrow-half-width: 8px;
 	--ck-balloon-arrow-drop-shadow: 0 2px 2px var(--ck-color-shadow-drop);
 	/* Make sure the balloon arrow does not float over its children. */
-	--ck-balloon-panel-arrow-z-index: calc(var(--ck-z-default) - 3);
+	--ck-balloon-panel-arrow-z-index: var(--ck-layer-balloon-arrow-back);
 	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
 	--ck-balloon-panel-shadow: var(--ck-shadow-surface-floating);
 }
@@ -26,7 +26,7 @@
 	display: none;
 	position: absolute;
 
-	z-index: var(--ck-z-panel);
+	z-index: var(--ck-layer-panel);
 
 	&.ck-balloon-panel_with-arrow {
 		&::before,
@@ -43,7 +43,7 @@
 		}
 
 		&::after {
-			z-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);
+			z-index: var(--ck-layer-balloon-arrow-front);
 		}
 	}
 
@@ -62,7 +62,7 @@
 		&::after {
 			border-color: transparent transparent var(--ck-color-panel-background) transparent;
 			margin-top: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
-			z-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);
+			z-index: var(--ck-layer-balloon-arrow-front);
 		}
 	}
 
@@ -82,7 +82,7 @@
 		&::after {
 			border-color: var(--ck-color-panel-background) transparent transparent transparent;
 			margin-bottom: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
-			z-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);
+			z-index: var(--ck-layer-balloon-arrow-front);
 		}
 	}
 

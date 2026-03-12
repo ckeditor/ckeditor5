@@ -38,5 +38,5 @@
 		display: none;
 	}
 
-	z-index: calc( var(--ck-z-dialog) + 100 )
+	z-index: var(--ck-layer-tooltip)
 }

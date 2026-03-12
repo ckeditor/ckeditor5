@@ -24,7 +24,7 @@
 	& .ck-dropdown__arrow {
 		width: var(--ck-dropdown-arrow-size);
 		pointer-events: none;
-		z-index: var(--ck-z-default);
+		z-index: var(--ck-layer-base);
 	}
 
 	[dir="ltr"] & {
@@ -102,7 +102,7 @@
 
 	& .ck-dropdown__panel {
 		display: none;
-		z-index: var(--ck-z-panel);
+		z-index: var(--ck-layer-panel);
 		max-width: var(--ck-dropdown-max-width);
 
 		position: absolute;
@@ -205,5 +205,5 @@
  */
 
 .ck.ck-toolbar .ck-dropdown__panel {
-	z-index: calc( var(--ck-z-panel) + 1 );
+	z-index: var(--ck-layer-panel-above);
 }

@@ -4,7 +4,6 @@
  */
 
 :root {
-	--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.15);
-	--ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.2);
-	--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+	--ck-color-feedback-error: var(--ck-color-base-error);
+	--ck-color-feedback-highlight: hsl(60, 100%, 50%);
 }
