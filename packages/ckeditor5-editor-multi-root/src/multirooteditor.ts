@@ -149,16 +149,13 @@ export class MultiRootEditor extends Editor {
 			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-roots-attributes', null );
 		}
 
-		const rootNames = Object.keys( this.config.get( 'roots' )! );
+		const rootsConfig = Object.entries( this.config.get( 'roots' )! );
 
-		for ( const rootName of rootNames ) {
-			const rootConfig = this.config.get( 'roots' )![ rootName ];
-
+		for ( const [ rootName, rootConfig ] of rootsConfig ) {
 			// Create root and `UIView` element for each editable container.
 			const root = this.model.document.createRoot( '$root', rootName );
 
 			if ( rootConfig.lazyLoad ) {
-				// TODO do not load initialData for lazy roots.
 				root._isLoaded = false;
 			}
 
@@ -172,6 +169,7 @@ export class MultiRootEditor extends Editor {
 			 * @error multi-root-editor-root-attributes-no-root
 			 */
 
+			// TODO is this correct for lazy root?
 			const attributes = rootConfig.modelElement?.attributes;
 
 			if ( attributes ) {
@@ -183,8 +181,8 @@ export class MultiRootEditor extends Editor {
 
 		this.data.on( 'init', () => {
 			this.model.enqueueChange( { isUndoable: false }, writer => {
-				for ( const rootName of rootNames ) {
-					const rootConfig = this.config.get( 'roots' )![ rootName ];
+				for ( const [ rootName, rootConfig ] of rootsConfig ) {
+					// TODO check if should set on non loaded root.
 					const attributes = rootConfig.modelElement?.attributes || {};
 					const root = this.model.document.getRoot( rootName )!;
 
@@ -203,7 +201,12 @@ export class MultiRootEditor extends Editor {
 			label: extractRootsConfigField( this.config.get( 'roots' )!, 'label' )
 		};
 
-		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootNames, options );
+		// TODO make it nicer
+		const rootsNames = rootsConfig
+			.filter( ( [ , { lazyLoad } ] ) => !lazyLoad )
+			.map( ( [ rootName ] ) => rootName );
+
+		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootsNames, options );
 
 		this.ui = new MultiRootEditorUI( this, view );
 
@@ -515,7 +518,7 @@ export class MultiRootEditor extends Editor {
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement {
+	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement { // TODO
 		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
 
 		this.ui.addEditable( editable, placeholder );
@@ -983,6 +986,7 @@ function extractRootsConfigField<K extends keyof RootConfig>(
 ): Record<string, NonNullable<RootConfig[K]>> {
 	return Object.fromEntries(
 		Object.entries( rootsConfig )
+			.filter( ( [ , config ] ) => !config.lazyLoad )
 			.map( ( [ rootName, config ] ) => [ rootName, config[ key ] ] )
 			.filter( ( [ , value ] ) => value !== undefined )
 	);

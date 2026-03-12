@@ -80,12 +80,8 @@ const editorConfig = {
 		]
 	},
 	roots: {
-		lazyFoo: {
-			lazyLoad: true
-		},
-		lazyBar: {
-			lazyLoad: true
-		}
+		lazyFoo: { lazyLoad: true },
+		lazyBar: { lazyLoad: true }
 	}
 };
 
