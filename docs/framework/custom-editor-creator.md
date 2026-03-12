@@ -44,18 +44,19 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
-		if ( this.config.get( 'roots' ) === undefined ) {
-			// Create root config object containing data from all roots.
-			const roots = {};
+		// Populate missing initial data for roots from source elements while preserving
+		// any root configuration passed by the integration (for example placeholders).
+		const roots = this.config.get( 'roots' ) || {};
 
-			for ( const rootName of Object.keys( sourceElements ) ) {
-				roots[ rootName ] = {
-					initialData: getDataFromElement( sourceElements[ rootName ] )
-				};
+		for ( const rootName of Object.keys( sourceElements ) ) {
+			roots[ rootName ] = roots[ rootName ] || {};
+
+			if ( roots[ rootName ].initialData === undefined ) {
+				roots[ rootName ].initialData = getDataFromElement( sourceElements[ rootName ] );
 			}
-
-			this.config.set( 'roots', roots );
 		}
+
+		this.config.set( 'roots', roots );
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
@@ -107,7 +108,7 @@ class MultirootEditor extends Editor {
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
 					.then( () => editor.data.init( Object.fromEntries(
-						Object.entries( editor.config.get( 'roots' ) ).map( ( [ rootName, rootConfig ] ) => [ rootName, rootConfig.initialData || '' ] )
+						Object.entries( editor.config.get( 'roots' ) ).map( ( [ rootName, rootConfig ] ) => [ rootName, rootConfig.initialData ?? '' ] )
 					) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
