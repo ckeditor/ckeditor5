@@ -12,7 +12,7 @@ import minimist from 'minimist';
 import { glob } from 'glob';
 import chalk from 'chalk';
 
-main()
+await main()
 	.catch( err => {
 		console.error( err );
 
