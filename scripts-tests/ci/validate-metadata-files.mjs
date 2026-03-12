@@ -164,4 +164,21 @@ describe( 'scripts/ci/validate-metadata-files (iconName validation)', () => {
 		expect( process.exit ).not.toHaveBeenCalled();
 		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'Validation successful' ) );
 	} );
+
+	it( 'should pass when plugin has no uiComponents array', async () => {
+		setupPackage( {
+			packageName: 'ckeditor5-image',
+			metadata: {
+				plugins: [ {
+					name: 'ImageUtils',
+					className: 'ImageUtils'
+				} ]
+			}
+		} );
+
+		await import( '../../scripts/ci/validate-metadata-files.mjs' );
+
+		expect( process.exit ).not.toHaveBeenCalled();
+		expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( 'Validation successful' ) );
+	} );
 } );
