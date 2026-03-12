@@ -50,15 +50,15 @@ title History of CKEditor
 
 <h2>Collaboration features mindmap</h2>
 <pre spellcheck="false"><code class="language-mermaid">mindmap
-root((CKEditor 5<br>Collaboration))
-	Change control
-	Track changes
-	Revision history
-	Comments
-	Comments archive
-	Other tools
-	Mentions
-	User list</code></pre>`
+  root((CKEditor 5<br>Collaboration))
+    Change control
+    Track changes
+    Revision history
+    Comments
+    Comments archive
+    Other tools
+    Mentions
+    User list</code></pre>`
 		}
 	} )
 	.then( editor => {
