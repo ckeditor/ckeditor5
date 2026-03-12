@@ -252,6 +252,38 @@ describe( 'MultiRootEditor', () => {
 				.catch( done );
 		} );
 
+		it( 'throws error when deprecated config.lazyRoots is used', done => {
+			MultiRootEditor.create( editorData, {
+				lazyRoots: [ 'baz' ]
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when deprecated lazyRoots config is used.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-deprecated-config-lazy-roots', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'throws error when deprecated config.rootsAttributes is used', done => {
+			MultiRootEditor.create( editorData, {
+				rootsAttributes: { foo: { order: 1 }, bar: { order: 2 } }
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when deprecated rootsAttributes config is used.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-deprecated-config-roots-attributes', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
 		// This case should not throw as 'foo' and 'bar' roots are defined, but the DOM element for 'foo' is provided
 		// and the DOM element for 'bar' is created by the editor.
 		it.skip( 'throws error when initial roots are different than initial data - missing root in initial roots', done => {
