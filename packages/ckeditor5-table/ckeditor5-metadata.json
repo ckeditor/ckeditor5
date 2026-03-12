@@ -10,31 +10,31 @@
 				{
 					"type": "SplitButton",
 					"name": "insertTable",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table.svg"
+					"iconName": "IconTable"
 				},
 				{
 					"type": "Button",
 					"name": "tableColumn",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-column.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableColumn"
 				},
 				{
 					"type": "Button",
 					"name": "tableRow",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-row.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableRow"
 				},
 				{
 					"type": "Button",
 					"name": "mergeTableCells",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-merge-cell.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableMergeCell"
 				}
 			],
 			"htmlOutput": [
@@ -77,10 +77,10 @@
 				{
 					"type": "Button",
 					"name": "tableCellProperties",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableCellProperties"
 				}
 			],
 			"htmlOutput": [
@@ -116,10 +116,10 @@
 				{
 					"type": "Button",
 					"name": "tableProperties",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableProperties"
 				}
 			],
 			"htmlOutput": [
@@ -164,20 +164,23 @@
 				{
 					"type": "Button",
 					"name": "insertTableLayout",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg"
+					"iconName": "IconTableLayout"
 				},
 				{
 					"type": "Button",
 					"name": "tableType",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableProperties"
 				}
 			],
 			"htmlOutput": [
 				{
-					"classes": [ "layout-table", "content-table" ]
+					"classes": [
+						"layout-table",
+						"content-table"
+					]
 				}
 			]
 		},
