@@ -4,9 +4,20 @@
  */
 
 
+:root {
+	--ck-dropdown-menu-button-padding-block: var(--ck-spacing-control-padding-block);
+	--ck-dropdown-menu-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
+	--ck-dropdown-menu-button-label-icon-offset: calc(var(--ck-icon-size) - var(--ck-spacing-control-padding-inline-compact));
+	--ck-dropdown-menu-button-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
+	--ck-dropdown-menu-button-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
+	--ck-dropdown-menu-button-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
+	--ck-dropdown-menu-button-arrow-nudge: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
+	--ck-dropdown-menu-button-icon-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
+}
+
 .ck.ck-button.ck-dropdown-menu-list__nested-menu__button {
 	width: 100%;
-	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+	padding: var(--ck-dropdown-menu-button-padding-block) var(--ck-dropdown-menu-button-padding-inline);
 	border-radius: 0;
 
 	&:focus {
@@ -30,7 +41,7 @@
 
 	/* Spacing in buttons that miss the icon. */
 	&.ck-icon-spacing:not(:has(.ck-button__icon)) > .ck-button__label {
-		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+		margin-left: var(--ck-dropdown-menu-button-label-icon-offset);
 	}
 
 	& > .ck-dropdown-menu-list__nested-menu__button__arrow {
@@ -40,24 +51,24 @@
 
 		[dir="ltr"] & {
 			transform: rotate(-90deg);
-			right: var(--ck-spacing-standard);
+			right: var(--ck-dropdown-menu-button-arrow-offset-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-dropdown-menu-button-arrow-gap-inline-ltr);
 
 			/* Nudge the arrow gently to the right because its center of gravity is to the left */
-			margin-right: calc(-1 * var(--ck-spacing-small));
+			margin-right: var(--ck-dropdown-menu-button-arrow-nudge);
 		}
 
 		[dir="rtl"] & {
 			transform: rotate(90deg);
-			left: var(--ck-spacing-standard);
+			left: var(--ck-dropdown-menu-button-arrow-offset-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-dropdown-menu-button-arrow-gap-inline-rtl);
 
 			/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
-			margin-left: calc(-1 * var(--ck-spacing-small));
+			margin-left: var(--ck-dropdown-menu-button-arrow-nudge);
 		}
 	}
 
@@ -67,13 +78,13 @@
 
 	[dir="ltr"] & {
 		&:not(.ck-button_with-text) {
-			padding-left: var(--ck-spacing-small);
+			padding-left: var(--ck-dropdown-menu-button-icon-padding-inline-compact);
 		}
 	}
 
 	[dir="rtl"] & {
 		&:not(.ck-button_with-text) {
-			padding-right: var(--ck-spacing-small);
+			padding-right: var(--ck-dropdown-menu-button-icon-padding-inline-compact);
 		}
 	}
 }

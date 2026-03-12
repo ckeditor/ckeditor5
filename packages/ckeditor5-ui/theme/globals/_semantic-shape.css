@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
+	--ck-border-radius-control: var(--ck-border-radius);
+
+	/* Semantic radii for elevated surfaces (dropdowns, panels, dialogs, toolbars). */
+	--ck-border-radius-surface: var(--ck-border-radius);
+
+	/* Radius for attached surfaces where one edge touches trigger/control. */
+	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);
+}

@@ -6,6 +6,11 @@
 
 :root {
 	--ck-search-field-view-horizontal-spacing: calc(var(--ck-icon-size) + var(--ck-spacing-medium));
+	--ck-search-icon-offset-inline: var(--ck-spacing-control-icon-gap);
+	--ck-search-reset-offset-inline: var(--ck-spacing-control-icon-gap);
+	--ck-search-results-info-padding-block: var(--ck-spacing-surface-section-gap-block);
+	--ck-search-results-info-padding-inline: var(--ck-spacing-control-meta-gap);
+	--ck-search-results-info-gap: var(--ck-spacing-surface-section-gap-block);
 }
 
 .ck.ck-search {
@@ -20,11 +25,11 @@
 			transform: translateY(-50%);
 
 			[dir="ltr"] & {
-				left: var(--ck-spacing-medium);
+				left: var(--ck-search-icon-offset-inline);
 			}
 
 			[dir="rtl"] & {
-				right: var(--ck-spacing-medium);
+				right: var(--ck-search-icon-offset-inline);
 			}
 		}
 
@@ -61,7 +66,7 @@
 			--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-search-field-view-horizontal-spacing);
 
 			&.ck-labeled-field-view_empty {
-				--ck-labeled-field-empty-unfocused-max-width: 100% - var(--ck-search-field-view-horizontal-spacing) - var(--ck-spacing-medium);
+				--ck-labeled-field-empty-unfocused-max-width: 100% - var(--ck-search-field-view-horizontal-spacing) - var(--ck-search-icon-offset-inline);
 			}
 
 			& .ck-search__reset {
@@ -73,11 +78,11 @@
 				padding: 0;
 
 				[dir="ltr"] & {
-					right: var(--ck-spacing-medium);
+					right: var(--ck-search-reset-offset-inline);
 				}
 
 				[dir="rtl"] & {
-					left: var(--ck-spacing-medium);
+					left: var(--ck-search-reset-offset-inline);
 				}
 
 				&:hover {
@@ -108,7 +113,7 @@
 
 		& > .ck-search__info {
 			width: 100%;
-			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+			padding: var(--ck-search-results-info-padding-block) var(--ck-search-results-info-padding-inline);
 
 			& * {
 				white-space: normal;
@@ -120,7 +125,7 @@
 			}
 
 			& > span:last-child {
-				margin-top: var(--ck-spacing-medium);
+				margin-top: var(--ck-search-results-info-gap);
 			}
 
 			/* Hide the filtered view when nothing was found */

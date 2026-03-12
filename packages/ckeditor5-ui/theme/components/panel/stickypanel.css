@@ -5,13 +5,15 @@
 
 
 .ck.ck-sticky-panel {
+	--ck-sticky-panel-shadow: var(--ck-shadow-surface-floating);
+
 	& .ck-sticky-panel__content_sticky {
-		box-shadow: var(--ck-drop-shadow), 0 0;
+		box-shadow: var(--ck-sticky-panel-shadow), 0 0;
 
 		border-width: 0 1px 1px;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
-		z-index: var(--ck-z-panel); /* #315 */
+		z-index: var(--ck-layer-panel); /* #315 */
 		position: fixed;
 		top: 0;
 	}

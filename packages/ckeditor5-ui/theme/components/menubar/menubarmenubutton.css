@@ -3,6 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-menu-bar-button-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
+	--ck-menu-bar-button-padding-block: var(--ck-spacing-control-padding-block-regular);
+	--ck-menu-bar-button-padding-inline: var(--ck-spacing-control-icon-gap);
+	--ck-menu-bar-button-arrow-gap-inline: var(--ck-spacing-control-padding-inline);
+	--ck-menu-bar-button-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
+	--ck-menu-bar-button-arrow-nudge: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
+}
 
 .ck.ck-menu-bar__menu {
 	/*
@@ -23,13 +31,13 @@
 
 		[dir="ltr"] & {
 			&:not(.ck-button_with-text) {
-				padding-left: var(--ck-spacing-small);
+				padding-left: var(--ck-menu-bar-button-padding-inline-compact);
 			}
 		}
 
 		[dir="rtl"] & {
 			&:not(.ck-button_with-text) {
-				padding-right: var(--ck-spacing-small);
+				padding-right: var(--ck-menu-bar-button-padding-inline-compact);
 			}
 		}
 	}
@@ -39,7 +47,7 @@
 	 */
 	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
-		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+		padding: var(--ck-menu-bar-button-padding-block) var(--ck-menu-bar-button-padding-inline);
 		min-height: unset;
 
 		& .ck-button__label {
@@ -82,22 +90,22 @@
 				transform: rotate(-90deg);
 
 				/* A space to accommodate the triangle. */
-				margin-left: var(--ck-spacing-standard);
+				margin-left: var(--ck-menu-bar-button-arrow-gap-inline);
 
 				/* Nudge the arrow gently to the right because its center of gravity is to the left */
-				margin-right: calc(-1 * var(--ck-spacing-small));
+				margin-right: var(--ck-menu-bar-button-arrow-nudge);
 			}
 
 			[dir="rtl"] & {
 				transform: rotate(90deg);
 
-				left: var(--ck-spacing-standard);
+				left: var(--ck-menu-bar-button-arrow-offset-inline);
 
 				/* A space to accommodate the triangle. */
-				margin-right: var(--ck-spacing-small);
+				margin-right: var(--ck-menu-bar-button-padding-inline-compact);
 
 				/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
-				margin-left: calc(-1 * var(--ck-spacing-small));
+				margin-left: var(--ck-menu-bar-button-arrow-nudge);
 			}
 		}
 

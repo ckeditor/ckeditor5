@@ -5,6 +5,10 @@
 
 :root {
 	--ck-collapsible-arrow-size: calc(0.5 * var(--ck-icon-size));
+	--ck-collapsible-arrow-gap: var(--ck-spacing-control-icon-gap);
+	--ck-collapsible-children-padding-block-start: var(--ck-spacing-surface-section-gap-block);
+	--ck-collapsible-children-padding-inline: var(--ck-spacing-control-meta-gap);
+	--ck-collapsible-children-padding-block-end: var(--ck-spacing-content-edge-margin-block);
 }
 
 .ck.ck-collapsible {
@@ -25,13 +29,13 @@
 		}
 
 		& > .ck-icon {
-			margin-right: var(--ck-spacing-medium);
+			margin-right: var(--ck-collapsible-arrow-gap);
 			width: var(--ck-collapsible-arrow-size);
 		}
 	}
 
 	& > .ck-collapsible__children {
-		padding: var(--ck-spacing-medium) var(--ck-spacing-large) var(--ck-spacing-large);
+		padding: var(--ck-collapsible-children-padding-block-start) var(--ck-collapsible-children-padding-inline) var(--ck-collapsible-children-padding-block-end);
 	}
 
 	&.ck-collapsible_collapsed {

@@ -10,9 +10,10 @@
 	--ck-balloon-arrow-half-width: 4px;
 	--ck-balloon-arrow-height: 4px;
 	--ck-tooltip-text-padding: 4px;
+	--ck-tooltip-padding-inline: var(--ck-spacing-control-icon-gap);
 	--ck-color-panel-background: var(--ck-color-tooltip-background);
 
-	padding: 0 var(--ck-spacing-medium);
+	padding: 0 var(--ck-tooltip-padding-inline);
 
 	/* Reset balloon panel styles */
 	box-shadow: none;
@@ -37,5 +38,5 @@
 		display: none;
 	}
 
-	z-index: calc( var(--ck-z-dialog) + 100 )
+	z-index: var(--ck-layer-tooltip)
 }

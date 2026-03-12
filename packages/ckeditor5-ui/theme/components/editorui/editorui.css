@@ -5,16 +5,21 @@
 
 :root {
 	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
+	--ck-editor-frame-border-radius: var(--ck-border-radius-surface);
+	--ck-editor-frame-border-color: var(--ck-color-border-container);
+	--ck-editor-editable-focus-ring: var(--ck-focus-ring-interactive);
+	--ck-editor-editable-padding-inline: var(--ck-spacing-content-padding-inline);
+	--ck-editor-editable-edge-margin-block: var(--ck-spacing-content-edge-margin-block);
 }
 
 .ck.ck-editor__top {
 	& .ck-sticky-panel {
 		& .ck-sticky-panel__content {
-			border-radius: var(--ck-rounded-corners-radius);
+			border-radius: var(--ck-editor-frame-border-radius);
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
 
-			border: 1px solid var(--ck-color-base-border);
+			border: 1px solid var(--ck-editor-frame-border-color);
 			border-bottom-width: 0;
 
 			&.ck-sticky-panel__content_sticky {
@@ -23,7 +28,7 @@
 
 			& .ck-menu-bar {
 				border: 0;
-				border-bottom: 1px solid var(--ck-color-base-border);
+				border-bottom: 1px solid var(--ck-editor-frame-border-color);
 			}
 
 			& .ck-toolbar {
@@ -34,18 +39,18 @@
 }
 
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-editor-frame-border-radius);
 
 	&.ck-focused {
 		outline: none;
-		border: var(--ck-focus-ring);
+		border: var(--ck-editor-editable-focus-ring);
 		box-shadow: var(--ck-inner-shadow), 0 0;
 	}
 }
 
 .ck.ck-editor__editable_inline {
 	overflow: auto;
-	padding: 0 var(--ck-spacing-standard);
+	padding: 0 var(--ck-editor-editable-padding-inline);
 	border: 1px solid transparent;
 
 	&[dir="ltr"] {
@@ -58,7 +63,7 @@
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3385 */
 	& > *:first-child {
-		margin-top: var(--ck-spacing-large);
+		margin-top: var(--ck-editor-editable-edge-margin-block);
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/847 */
@@ -67,7 +72,7 @@
 		 * This value should match with the default margins of the block elements (like .media or .image)
 		 * to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
 		 */
-		margin-bottom: var(--ck-spacing-large);
+		margin-bottom: var(--ck-editor-editable-edge-margin-block);
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/6517 */

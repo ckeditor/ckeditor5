@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Spacing used by controls like buttons and inputs. */
+	--ck-spacing-control-padding-block: var(--ck-spacing-tiny);
+	--ck-spacing-control-padding-inline: var(--ck-spacing-standard);
+	--ck-spacing-control-padding-inline-compact: var(--ck-spacing-small);
+	--ck-spacing-control-padding-inline-start-compact: var(--ck-spacing-tiny);
+	--ck-spacing-control-padding-block-regular: var(--ck-spacing-small);
+	--ck-spacing-control-padding-block-compact: var(--ck-spacing-extra-tiny);
+	--ck-spacing-control-icon-gap: var(--ck-spacing-medium);
+	--ck-spacing-control-meta-gap: var(--ck-spacing-large);
+
+	/* Spacing used by grouped surfaces like toolbars and lists. */
+	--ck-spacing-surface-padding-inline: var(--ck-spacing-small);
+	--ck-spacing-surface-padding-block: var(--ck-spacing-small);
+	--ck-spacing-surface-item-gap-inline: var(--ck-spacing-small);
+	--ck-spacing-surface-item-gap-block: var(--ck-spacing-small);
+	--ck-spacing-surface-section-gap-block: var(--ck-spacing-medium);
+
+	/* Spacing used by content/editable surfaces. */
+	--ck-spacing-content-padding-inline: var(--ck-spacing-standard);
+	--ck-spacing-content-padding-inline-wide: var(--ck-spacing-large);
+	--ck-spacing-content-padding-block: var(--ck-spacing-standard);
+	--ck-spacing-content-edge-margin-block: var(--ck-spacing-large);
+}

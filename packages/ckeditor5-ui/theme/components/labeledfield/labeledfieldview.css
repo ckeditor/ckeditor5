@@ -5,8 +5,11 @@
 
 :root {
 	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
-	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
-	--ck-labeled-field-label-default-position-x: var(--ck-spacing-medium);
+	--ck-labeled-field-status-gap: var(--ck-spacing-surface-item-gap-inline);
+	--ck-labeled-field-label-default-position-x: var(--ck-spacing-control-icon-gap);
+	--ck-labeled-field-label-floating-offset-x: var(--ck-labeled-field-label-default-position-x);
+	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-labeled-field-label-default-position-x);
+	--ck-labeled-field-label-dropdown-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-labeled-field-label-default-position-y: calc(0.6 * var(--ck-font-size-base));
 	--ck-color-labeled-field-label-background: var(--ck-color-base-background);
 }
@@ -48,13 +51,13 @@
 				left: 0px;
 				transform-origin: 0 0;
 				/* By default, display the label scaled down above the field. */
-				transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
+				transform: translate(var(--ck-labeled-field-label-floating-offset-x), -6px) scale(.75);
 			}
 
 			[dir="rtl"] & {
 				right: 0px;
 				transform-origin: 100% 0;
-				transform: translate(calc(-1 * var(--ck-spacing-medium)), -6px) scale(.75);
+				transform: translate(calc(-1 * var(--ck-labeled-field-label-floating-offset-x)), -6px) scale(.75);
 			}
 
 			@media (prefers-reduced-motion: reduce) {
@@ -76,7 +79,7 @@
 
 	& .ck-labeled-field-view__status {
 		font-size: var(--ck-font-size-small);
-		margin-top: var(--ck-spacing-small);
+		margin-top: var(--ck-labeled-field-status-gap);
 
 		/* Let the info wrap to the next line to avoid stretching the layout horizontally.
 		The status could be very long. */
@@ -127,7 +130,7 @@
 
 	/* Make sure the label of the empty, unfocused input does not cover the dropdown arrow. */
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown + .ck-label {
-		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width) - var(--ck-dropdown-arrow-size) - var(--ck-spacing-standard));
+		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width) - var(--ck-dropdown-arrow-size) - var(--ck-labeled-field-label-dropdown-offset-inline));
 	}
 
 	&.ck-labeled-field-view_full-width {

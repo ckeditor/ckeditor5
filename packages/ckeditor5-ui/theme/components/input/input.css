@@ -5,20 +5,28 @@
 
 :root {
 	--ck-input-width: 18em;
+	--ck-input-border-radius: var(--ck-border-radius-control);
+	--ck-input-min-height: var(--ck-size-control-min-height);
+	--ck-input-focus-ring: var(--ck-focus-ring-interactive);
+	--ck-input-focus-shadow: var(--ck-focus-shadow-interactive);
+	--ck-input-focus-disabled-shadow: var(--ck-focus-shadow-disabled-interactive);
+	--ck-input-focus-error-shadow: var(--ck-focus-shadow-error-interactive);
+	--ck-input-padding-block: var(--ck-spacing-control-padding-block-compact);
+	--ck-input-padding-inline: var(--ck-spacing-control-padding-inline-compact);
 
 	/* Backward compatibility. */
 	--ck-input-text-width: var(--ck-input-width);
 }
 
 .ck.ck-input {
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-input-border-radius);
 	background: var(--ck-color-input-background);
 	border: 1px solid var(--ck-color-input-border);
-	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	padding: var(--ck-input-padding-block) var(--ck-input-padding-inline);
 	min-width: var(--ck-input-width);
 
 	/* This is important to stay of the same height as surrounding buttons */
-	min-height: var(--ck-ui-component-min-height);
+	min-height: var(--ck-input-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
 	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
@@ -29,8 +37,8 @@
 
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border: var(--ck-input-focus-ring);
+		box-shadow: var(--ck-input-focus-shadow), 0 0;
 	}
 
 	&[readonly] {
@@ -40,7 +48,7 @@
 
 		&:focus {
 			/* The read-only input should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+			box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
 		}
 	}
 
@@ -53,7 +61,7 @@
 		}
 
 		&:focus {
-			box-shadow: var(--ck-focus-error-outer-shadow), 0 0;
+			box-shadow: var(--ck-input-focus-error-shadow), 0 0;
 		}
 	}
 }
