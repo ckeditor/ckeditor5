@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "fullscreen",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/fullscreen-enter.svg"
+					"iconName": "IconFullscreenEnter"
 				}
 			]
 		}

@@ -20,7 +20,7 @@
 				{
 					"type": "Button",
 					"name": "link",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/link.svg"
+					"iconName": "IconLink"
 				}
 			],
 			"htmlOutput": [
@@ -61,10 +61,10 @@
 				{
 					"type": "Button",
 					"name": "linkImage",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/link.svg",
 					"toolbars": [
 						"image.toolbar"
-					]
+					],
+					"iconName": "IconLink"
 				}
 			],
 			"htmlOutput": [
