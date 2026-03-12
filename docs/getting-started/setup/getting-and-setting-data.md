@@ -26,7 +26,7 @@ By default, the editor has the content of the DOM element on which it was initia
 </div>
 ```
 
-However, if you cannot alter the HTML or you load the data asynchronously using JavaScript, you can use the `initialData` configuration property to set the initial state of the editor.
+However, if you cannot alter the HTML or you load the data asynchronously using JavaScript, you can use the `root.initialData` configuration property to set the initial state of the editor.
 
 ```js
 ClassicEditor
@@ -42,7 +42,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-The {@link module:core/editor/editorconfig~EditorConfig.root.initialData `initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
+The {@link module:core/editor/editorconfig~RootConfig#initialData `root.initialData`} property will initialize the editor with the provided data, overriding the content provided at the HTML level.
 
 If you are setting up the editor with integrations like {@link getting-started/integrations/react-default-npm React}, consult the documentation for additional properties provided to initialize the data.
 
