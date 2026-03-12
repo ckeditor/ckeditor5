@@ -52,13 +52,13 @@ title History of CKEditor
 <pre spellcheck="false"><code class="language-mermaid">mindmap
   root((CKEditor 5<br>Collaboration))
     Change control
-    Track changes
-    Revision history
+      Track changes
+      Revision history
     Comments
-    Comments archive
+      Comments archive
     Other tools
-    Mentions
-    User list</code></pre>`
+      Mentions
+      User list</code></pre>`
 		}
 	} )
 	.then( editor => {
