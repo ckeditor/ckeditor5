@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -25,7 +25,6 @@ import { TableProperties } from '../../src/tableproperties.js';
 import { TableCellProperties } from '../../src/tablecellproperties.js';
 import { TableColumnResize } from '../../src/tablecolumnresize.js';
 import { TableCaption } from '../../src/tablecaption.js';
-import { PlainTableOutput } from '../../src/plaintableoutput.js';
 import { TableLayout } from '../../src/tablelayout.js';
 
 const config = {
@@ -47,7 +46,6 @@ const config = {
 		List,
 		MediaEmbed,
 		Paragraph,
-		PlainTableOutput,
 		Table,
 		TableCaption,
 		TableCellProperties,

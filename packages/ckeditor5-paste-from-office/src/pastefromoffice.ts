@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -76,8 +76,8 @@ export class PasteFromOffice extends Plugin {
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<PasteFromOfficeNormalizer> = [];
-		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
-		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TableProperties' );
+		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelListEditing' );
+		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TablePropertiesEditing' );
 		const hasExtendedTableBlockAlignment = !!this.editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' );
 
 		normalizers.push(

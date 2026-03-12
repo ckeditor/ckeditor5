@@ -13,9 +13,7 @@ CKEditor is dual-licensed. This means you can choose between an open-source and 
 
 ## Open source license
 
-The open-source distribution of CKEditor&nbsp;5 is licensed under the terms of GPL 2+. If you plan to use CKEditor&nbsp;5 under this license, you can register your application using the [CKEditor&nbsp;5 GPL 2+ license registration form](https://info.ckeditor.com/l/1018062/2024-08-22/39jtg).
-
-If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a [CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
+The open-source distribution of CKEditor&nbsp;5 is licensed under the terms of GPL 2+. If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a [CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
 
 The following features are available for the GPL-compliant projects, but their availability varies depending on the commercial licensing plans:
 
@@ -73,6 +71,13 @@ Cloud-hosting is available in self-service and custom plans. The packages are ma
 **Self-hosted distribution**
 
 Self-hosted distribution is available with custom plans, allowing you to host CKEditor&nbsp;5 on your own infrastructure. This option provides greater flexibility and complete control over your deployment environment.
+
+## CKEditor&nbsp;5 LTS Edition
+
+[CKEditor&nbsp;5 LTS Edition](https://ckeditor.com/ckeditor-5-lts/) provides an extended support cycle of up to three years with security updates and critical compatibility fixes, without introducing breaking changes. It is available entirely under commercial terms and follows the same licensing model as our commercially licensed functionalities.
+
+While the source code of the LTS-only distribution (meaning the versions available only to LTS Edition customers) will continue to be published in our public repositories, the LTS-only distribution cannot be used under GPL.
+To learn more about using the LTS Edition, please visit the {@link getting-started/setup/using-lts-edition dedicated guide}  in our documentation or [contact our sales team](https://ckeditor.com/contact-sales/) for details.
 
 ## Sources of intellectual property included in CKEditor
 

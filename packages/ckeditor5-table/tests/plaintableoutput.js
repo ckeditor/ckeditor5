@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,8 +11,8 @@ import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Table } from '../src/table.js';
 import { PlainTableOutput } from '../src/plaintableoutput.js';
 import { modelTable } from './_utils/utils.js';
-import { TableCaption } from '../src/tablecaption.js';
-import { TableProperties } from '../src/tableproperties.js';
+import { TableCaptionEditing } from '../src/tablecaption/tablecaptionediting.js';
+import { TablePropertiesEditing } from '../src/tableproperties/tablepropertiesediting.js';
 
 describe( 'PlainTableOutput', () => {
 	let editor, editorElement, model;
@@ -22,7 +22,7 @@ describe( 'PlainTableOutput', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Table, TableCaption, TableProperties, PlainTableOutput, ClipboardPipeline ]
+			plugins: [ Paragraph, Table, TableCaptionEditing, TablePropertiesEditing, PlainTableOutput, ClipboardPipeline ]
 		} );
 
 		model = editor.model;
@@ -264,7 +264,7 @@ describe( 'PlainTableOutput', () => {
 					document.body.appendChild( editorElement );
 
 					editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaption, TableProperties, PlainTableOutput, ClipboardPipeline ],
+						plugins: [ Paragraph, Table, TableCaptionEditing, TablePropertiesEditing, PlainTableOutput, ClipboardPipeline ],
 						experimentalFlags: {
 							useExtendedTableBlockAlignment: true
 						}
@@ -387,7 +387,7 @@ describe( 'PlainTableOutput', () => {
 					document.body.appendChild( editorElement );
 
 					editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaption, TableProperties, PlainTableOutput, ClipboardPipeline ],
+						plugins: [ Paragraph, Table, TableCaptionEditing, TablePropertiesEditing, PlainTableOutput, ClipboardPipeline ],
 						experimentalFlags: {
 							useExtendedTableBlockAlignment: true
 						}
@@ -502,7 +502,7 @@ describe( 'PlainTableOutput', () => {
 
 			it( 'should not convert image captions', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput, ClipboardPipeline ],
+					plugins: [ ArticlePluginSet, Table, TableCaptionEditing, PlainTableOutput, ClipboardPipeline ],
 					image: { toolbar: [ '|' ] }
 				} );
 
@@ -526,7 +526,7 @@ describe( 'PlainTableOutput', () => {
 			// See: https://github.com/ckeditor/ckeditor5/issues/11394
 			it( 'should allow overriding image caption converters', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput, ClipboardPipeline ],
+					plugins: [ ArticlePluginSet, Table, TableCaptionEditing, PlainTableOutput, ClipboardPipeline ],
 					image: { toolbar: [ '|' ] }
 				} );
 

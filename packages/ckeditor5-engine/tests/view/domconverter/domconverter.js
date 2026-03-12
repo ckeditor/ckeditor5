@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -730,6 +730,20 @@ describe( 'ViewDomConverter', () => {
 							'bar' +
 							'</span>' +
 							'</div>'
+					},
+					// Newline characters in the src attribute are unsafe on Chromium as it executes
+					// javascript: URLs with line breaks.
+					{
+						html: '<iframe src="jav&#10;ascript:console.log(\'unsafe\')"></iframe>',
+						expected: '<iframe data-ck-unsafe-attribute-src="jav\nascript:console.log(\'unsafe\')"></iframe>'
+					},
+					{
+						html: '<iframe src="jav&#13;ascript:console.log(\'unsafe\')"></iframe>',
+						expected: '<iframe data-ck-unsafe-attribute-src="jav\rascript:console.log(\'unsafe\')"></iframe>'
+					},
+					{
+						html: '<iframe srcdoc="<div>Hello&#10;World</div>"></iframe>',
+						expected: '<iframe data-ck-unsafe-attribute-srcdoc="&lt;div&gt;Hello\nWorld&lt;/div&gt;"></iframe>'
 					}
 				];
 

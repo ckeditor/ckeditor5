@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -29,7 +29,7 @@
  * @param {String} options.text The description to be shown in the tooltip.
  * @param {module:core/editor/editor~Editor} options.editor The editor instance.
  */
-export function attachTourBalloon( { target, text, editor, tippyOptions } ) {
+export function attachTourBalloon( { id, target, text, editor, tippyOptions } ) {
 	if ( !target ) {
 		console.warn( '[attachTourBalloon] The target DOM node for the feature tour balloon does not exist.', { text } );
 
@@ -43,6 +43,7 @@ export function attachTourBalloon( { target, text, editor, tippyOptions } ) {
 	}
 
 	const tooltip = window.umberto.Tooltip.create( {
+		id,
 		text,
 		trigger: target,
 		mode: 'click',

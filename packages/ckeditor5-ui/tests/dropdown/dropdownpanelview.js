@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -84,6 +84,21 @@ describe( 'DropdownPanelView', () => {
 
 						labeledInput.fieldView.element.dispatchEvent( event );
 						sinon.assert.notCalled( spy );
+					} );
+
+					it( 'handles non-element targets', () => {
+						const textNode = document.createTextNode( 'Selectable text' );
+
+						view.element.appendChild( textNode );
+
+						const event = new Event( 'selectstart', {
+							bubbles: true,
+							cancelable: true
+						} );
+						const spy = sinon.spy( event, 'preventDefault' );
+
+						textNode.dispatchEvent( event );
+						sinon.assert.calledOnce( spy );
 					} );
 				} );
 			} );

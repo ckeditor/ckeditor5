@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -55,7 +55,9 @@ export class IndentUsingClasses implements IndentBehavior {
 	public getNextIndent( indentAttributeValue: string ): string | undefined {
 		const currentIndex = this.classes.indexOf( indentAttributeValue );
 		const indexStep = this.isForward ? 1 : -1;
+		const nextIndex = currentIndex + indexStep;
+		const nextIndexClamped = Math.min( nextIndex, this.classes.length - 1 );
 
-		return this.classes[ currentIndex + indexStep ];
+		return this.classes[ nextIndexClamped ];
 	}
 }

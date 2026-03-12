@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -14,20 +14,20 @@ describe( 'isValidAttributeName', () => {
 		'style',
 		'id',
 		'name',
-		undefined
-		// Uncomment last valid test case when every major browser (Chrome, Firefox, Safari) will support creating elements with this value.
-		// Currently, only Chrome supports it since v143.
+		undefined,
+		// Below values for this test are currently only supported in Chrome since v143.
 		// See details:
 		// [x] Chrome: bugs.chromium.org/p/chromium/issues/detail?id=1334640
 		// [ ] Firefox: bugzilla.mozilla.org/show_bug.cgi?id=1773312
 		// [ ] Safari: bugs.webkit.org/show_bug.cgi?id=241419
-		// '200',
-		// '<',
-		// '"',
-		// "'",
-		// '`',
-		// 200,
-		// '🙂'
+		'200',
+		'<',
+		'"',
+		// eslint-disable-next-line @stylistic/quotes
+		"'",
+		'`',
+		200,
+		'🙂'
 	];
 
 	for ( const name of validTestCases ) {

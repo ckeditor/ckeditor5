@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -22,7 +22,8 @@ const LIST_STYLE_TYPES: Array<{ listStyle: string; typeAttribute: string | null;
 	{ listStyle: 'lower-alpha', typeAttribute: 'a', listType: 'numbered' },
 	{ listStyle: 'upper-alpha', typeAttribute: 'A', listType: 'numbered' },
 	{ listStyle: 'lower-latin', typeAttribute: 'a', listType: 'numbered' },
-	{ listStyle: 'upper-latin', typeAttribute: 'A', listType: 'numbered' }
+	{ listStyle: 'upper-latin', typeAttribute: 'A', listType: 'numbered' },
+	{ listStyle: 'arabic-indic', typeAttribute: null, listType: 'numbered' }
 ];
 
 for ( const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES ) {

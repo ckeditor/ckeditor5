@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -330,6 +330,26 @@ describe( 'AttributeCommand', () => {
 
 				expect( spy.called ).to.be.true;
 			} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/18430
+		it( 'When applying bold to range that includes empty paragraph, empty paragraph should get selection:bold', () => {
+			// Three paragraphs: bold "foo", empty, bold "foo". Selection spans all three [ ... ].
+			_setModelData( model, '[<p>foo</p><p></p><p>foo</p>]' );
+
+			command.execute();
+
+			// Move selection to the empty middle paragraph.
+			model.change( writer => {
+				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
+			} );
+
+			expect( _getModelData( model ) ).to.equal(
+				'<p><$text bold="true">foo</$text></p>' +
+				'<p selection:bold="true"><$text bold="true">[]</$text></p>' +
+				'<p><$text bold="true">foo</$text></p>'
+			);
+			expect( command.value ).to.be.true;
 		} );
 	} );
 } );

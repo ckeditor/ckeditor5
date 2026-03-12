@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -60,12 +60,15 @@ export class IndentUsingOffset implements IndentBehavior {
 		const currentOffset = parseFloat( indentAttributeValue || '0' );
 		const isSameUnit = !indentAttributeValue || indentAttributeValue.endsWith( this.unit );
 
+		if ( currentOffset < 0 ) {
+			return;
+		}
+
 		if ( !isSameUnit ) {
 			return this.isForward ? this.offset + this.unit : undefined;
 		}
 
 		const nextOffset = this.isForward ? this.offset : -this.offset;
-
 		const offsetToSet = currentOffset + nextOffset;
 
 		return offsetToSet > 0 ? offsetToSet + this.unit : undefined;

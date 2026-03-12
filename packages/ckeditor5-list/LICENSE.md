@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor&nbsp;5 List feature** (https://github.com/ckeditor/ckeditor5)<br>
-Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
+Copyright (c) 2003–2026, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under a dual-license model, this software is available under:
 
@@ -15,6 +15,10 @@ Sources of Intellectual Property Included in CKEditor&nbsp;5
 ------------------------------------------------------------
 
 Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor&nbsp;5 will incorporate work done by developers outside of CKSource with their express permission.
+
+The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):
+
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 
 Trademarks
 ----------

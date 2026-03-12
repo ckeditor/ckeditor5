@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { AlignmentEditing } from '../src/alignmentediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -59,7 +59,7 @@ describe( 'AlignmentEditing', () => {
 		beforeEach( async () => {
 			const editor = await VirtualTestEditor
 				.create( {
-					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, LegacyListEditing, HeadingEditing ]
+					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, ListEditing, HeadingEditing ]
 				} );
 
 			model = editor.model;
@@ -73,10 +73,11 @@ describe( 'AlignmentEditing', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'alignment' ) ).to.be.true;
 		} );
 
-		it( 'is allowed on listItem', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'alignment' ) ).to.be.true;
+		it( 'is allowed on paragraph with list attributes', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listItemId' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listIndent' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listType' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'alignment' ) ).to.be.true;
 		} );
 
 		it( 'is allowed on heading', () => {

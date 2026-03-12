@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -67,8 +67,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: {
+				1: {
 					attributes: {
 						nonce: 'qwerty',
 						type: 'c++'
@@ -89,8 +88,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: {
+				1: {
 					attributes: {
 						type: 'c++'
 					}
@@ -170,8 +168,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: { attributes: { nonce: 'qwerty' } }
+				1: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
@@ -192,8 +189,7 @@ describe( 'StyleElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: STYLE,
-				2: { attributes: { type: 'text/css' } }
+				1: { attributes: { type: 'text/css' } }
 			}
 		} );
 	} );

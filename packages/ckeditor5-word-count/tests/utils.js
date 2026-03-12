@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,7 +11,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
 
@@ -37,7 +37,7 @@ describe( 'utils', () => {
 				return VirtualTestEditor
 					.create( {
 						plugins: [
-							Enter, ShiftEnter, Paragraph, BoldEditing, LinkEditing, BlockQuoteEditing, LegacyListEditing, TableEditing
+							Enter, ShiftEnter, Paragraph, BoldEditing, LinkEditing, BlockQuoteEditing, ListEditing, TableEditing
 						]
 					} )
 					.then( newEditor => {
@@ -53,8 +53,8 @@ describe( 'utils', () => {
 			it( 'extracts plain text from blockqoutes', () => {
 				_setModelData( model, '<blockQuote>' +
 						'<paragraph>Hello</paragraph>' +
-						'<listItem listIndent="0" listType="numbered">world</listItem>' +
-						'<listItem listIndent="0" listType="numbered">foo</listItem>' +
+						'<paragraph listIndent="0" listItemId="000" listType="numbered">world</paragraph>' +
+						'<paragraph listIndent="0" listItemId="001" listType="numbered">foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 					'</blockQuote>' );
 
@@ -115,8 +115,8 @@ describe( 'utils', () => {
 						'<tableRow>' +
 							'<tableCell><paragraph>000</paragraph></tableCell>' +
 							'<tableCell><blockQuote>' +
-								'<listItem listIndent="0" listType="numbered">111</listItem>' +
-								'<listItem listIndent="0" listType="numbered">222</listItem>' +
+								'<paragraph listIndent="0" listItemId="000" listType="numbered">111</paragraph>' +
+								'<paragraph listIndent="0" listItemId="001" listType="numbered">222</paragraph>' +
 							'</blockQuote></tableCell>' +
 						'</tableRow>' +
 					'</table>' );

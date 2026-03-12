@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -22,11 +22,12 @@ export class Library {
 		this.modules = typeScriptFileNames.map( fileName => Module.load( fileName, this.errorCollector ) );
 
 		for ( const module of this.modules ) {
-			const packageName = module.packageName;
+			const { packageName, isPublicPackage } = module;
 
 			if ( !this.packages.has( packageName ) ) {
 				this.packages.set( packageName, {
 					packageName,
+					isPublicPackage,
 					dirName: packageDirName( module.fileName ),
 					index: null,
 					modules: []

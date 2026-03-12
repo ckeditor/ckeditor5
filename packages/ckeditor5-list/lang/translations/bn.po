@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
 #
 # Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
@@ -142,3 +142,11 @@ msgstr "একটি টু-ডু তালিকা প্রবেশ কর�
 msgctxt "Assistive technologies label for leaving the to-do list."
 msgid "Leaving a to-do list"
 msgstr "একটি টু-ডু তালিকা ছেড়ে যাচ্ছে"
+
+msgctxt "The ARIA label of the button that toggles the \"arabic-indic\" list style."
+msgid "Toggle the arabic-indic list style"
+msgstr "আরবি-ইন্ডিক তালিকা স্টাইল টগল করুন"
+
+msgctxt "The tooltip text of the button that toggles the \"arabic-indic\" list style."
+msgid "Arabic-indic"
+msgstr "আরবি-ইন্ডিক"

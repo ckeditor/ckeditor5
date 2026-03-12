@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -200,10 +200,13 @@ export function ensureParagraphInTableCell( elementName: string ) {
  * headingRows    - The number of rows that go as table headers.
  * headingColumns - The maximum number of row headings.
  * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
+ *
+ * @param viewTable The view table element.
+ * @returns The table metadata.
  */
 function scanTable( viewTable: ViewElement ) {
-	let headingRows = 0;
 	let headingColumns: number | undefined = undefined;
+	let shouldAccumulateHeadingRows: boolean = true;
 
 	// The `<tbody>` and `<thead>` sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more than one
 	// of them.
@@ -233,6 +236,7 @@ function scanTable( viewTable: ViewElement ) {
 
 		// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
 		if ( tableChild.name === 'thead' && !firstTheadElement ) {
+			shouldAccumulateHeadingRows = true;
 			firstTheadElement = tableChild;
 		}
 
@@ -261,13 +265,16 @@ function scanTable( viewTable: ViewElement ) {
 					// of the cell span from the previous row.
 					// Issue: https://github.com/ckeditor/ckeditor5/issues/17556
 					( maxPrevColumns === null || trColumns.length === maxPrevColumns ) &&
-					trColumns.every( e => e.is( 'element', 'th' ) )
+					trColumns.every( e => e.is( 'element', 'th' ) ) &&
+					// If there is at least one "normal" table row between heading rows, then stop accumulating heading rows.
+					shouldAccumulateHeadingRows
 				)
 			) {
-				headingRows++;
 				headRows.push( tr );
+				shouldAccumulateHeadingRows = true;
 			} else {
 				bodyRows.push( tr );
+				shouldAccumulateHeadingRows = false;
 			}
 
 			// We use the maximum number of columns to avoid false positives when detecting
@@ -293,13 +300,13 @@ function scanTable( viewTable: ViewElement ) {
 		}
 
 		// Update headingColumns.
-		if ( !headingColumns || index < headingColumns ) {
+		if ( headingColumns === undefined || index < headingColumns ) {
 			headingColumns = index;
 		}
 	}
 
 	return {
-		headingRows,
+		headingRows: headRows.length,
 		headingColumns: headingColumns || 0,
 		rows: [ ...headRows, ...bodyRows ]
 	};

@@ -226,7 +226,7 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
 ```
 
-After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.
+After following these steps and running the `npm run dev` command, you should be able to open the editor in the browser.
 
 <info-box>
 	**What's next**

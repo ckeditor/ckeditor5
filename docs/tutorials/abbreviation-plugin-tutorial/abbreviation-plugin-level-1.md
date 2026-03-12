@@ -432,7 +432,7 @@ const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
 	The CDN build is not licensed under the GPL. Therefore, you need to use a commercial license key. Otherwise, you will get a `license-key-invalid-distribution-channel` error.
 </info-box>
 
-After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.
+After following these steps and running the `npm run dev` command, you should be able to open the editor in the browser.
 
 <info-box>
 	**What's next**

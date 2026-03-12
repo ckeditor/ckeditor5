@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -64,6 +64,35 @@ describe( 'TableCellWidthEditing', () => {
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '20px' );
+			} );
+
+			it( 'should upcast width attribute on table cell', () => {
+				editor.setData( '<table><tr><td width="50.5">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '50.5px' );
+			} );
+
+			it( 'should upcast width (px) attribute on table cell', () => {
+				editor.setData( '<table><tr><td width="50.5px">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '50.5px' );
+			} );
+
+			it( 'should upcast width (%) attribute on table cell', () => {
+				editor.setData( '<table><tr><td width="50.5%">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '50.5%' );
+			} );
+
+			it( 'should upcast width (em) attribute on table cell', () => {
+				editor.setData( '<table><tr><td width="50.5em">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				// Normalize to px as other units are not supported by browsers.
+				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '50.5px' );
 			} );
 
 			// #12426

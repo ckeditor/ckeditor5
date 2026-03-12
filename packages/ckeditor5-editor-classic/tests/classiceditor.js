@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -16,9 +16,6 @@ import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -486,18 +483,5 @@ describe( 'ClassicEditor', () => {
 		it( 'ClassicEditor.ContextWatchdog', () => {
 			expect( ClassicEditor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
-	} );
-
-	describeMemoryUsage( () => {
-		testMemoryUsage(
-			'should not grow on multiple create/destroy',
-			() => ClassicEditor
-				.create( document.querySelector( '#mem-editor' ), {
-					plugins: [ ArticlePluginSet ],
-					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
-					image: {
-						toolbar: [ 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
-					}
-				} ) );
 	} );
 } );

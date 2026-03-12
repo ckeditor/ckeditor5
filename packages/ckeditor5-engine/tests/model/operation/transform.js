@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -847,6 +847,23 @@ describe( 'transform', () => {
 				const transOp = transform( op, transformBy, strongContext );
 
 				expected.oldValue = 'xyz';
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'sets same value for same key on same root and is strong: update oldValue', () => {
+				const transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					'abc',
+					'bar',
+					0
+				);
+
+				const transOp = transform( op, transformBy, strongContext );
+
+				expected.oldValue = 'bar';
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -46,7 +46,10 @@ export default defineConfig( [
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
 
 			// This file includes JSX which eslint can't parse without additional configuration.
-			'docs/_snippets/framework/tutorials/using-react-in-widget.js'
+			'docs/_snippets/framework/tutorials/using-react-in-widget.js',
+
+			// Editor builds in memory leak detection test.
+			'scripts/memory/assets/'
 		]
 	},
 	{
@@ -72,7 +75,7 @@ export default defineConfig( [
 			'ckeditor5-rules/license-header': [ 'error', {
 				headerLines: [
 					'/**',
-					' * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.',
+					' * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.',
 					' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options',
 					' */'
 				]
@@ -179,6 +182,23 @@ export default defineConfig( [
 	},
 	{
 		files: [ '**/docs/**/*.@(js|cjs|mjs)' ],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules
+		},
+
+		languageOptions: {
+			globals: {
+				...globals.browser
+			}
+		},
+
+		rules: {
+			'ckeditor5-rules/ckeditor-imports': 'off'
+		}
+	},
+	{
+		files: [ 'scripts/memory/page-test.js' ],
 
 		plugins: {
 			'ckeditor5-rules': ckeditor5Rules

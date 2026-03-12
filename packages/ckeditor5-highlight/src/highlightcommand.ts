@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { ModelTreeWalkerValue } from 'ckeditor5/src/engine.js';
+import { ModelDocumentSelection, type ModelTreeWalkerValue, type ModelRange, type ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
@@ -98,13 +98,23 @@ export class HighlightCommand extends Command {
 					writer.setSelectionAttribute( 'highlight', highlighter );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight', {
+					includeEmptyRanges: true
+				} );
 
 				for ( const range of ranges ) {
+					let itemOrRange: ModelRange | ModelElement = range;
+					let attributeKey = 'highlight';
+
+					if ( range.isCollapsed ) {
+						itemOrRange = range.start.parent as ModelElement;
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( 'highlight' );
+					}
+
 					if ( highlighter ) {
-						writer.setAttribute( 'highlight', highlighter, range );
+						writer.setAttribute( attributeKey, highlighter, itemOrRange );
 					} else {
-						writer.removeAttribute( 'highlight', range );
+						writer.removeAttribute( attributeKey, itemOrRange );
 					}
 				}
 			}

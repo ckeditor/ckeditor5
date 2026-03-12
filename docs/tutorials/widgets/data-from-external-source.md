@@ -601,7 +601,7 @@ First, clone the repository the same way as before. But do not install the depen
 </html>
 ```
 
-The CSS file contains the editor and content styles. Consequentially, you do not need to import styles into your JavaScript file.
+The CSS file contains the editor and content styles. Consequently, you do not need to import styles into your JavaScript file.
 
 ```js
 // Before:
@@ -621,4 +621,4 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
 ```
 
-After following these steps and running the `npm run dev` command, you should be able to open the editor in browser.
+After following these steps and running the `npm run dev` command, you should be able to open the editor in the browser.

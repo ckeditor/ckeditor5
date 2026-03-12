@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,6 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { ModelDocumentSelection, type ModelRange, type ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command
@@ -92,13 +93,23 @@ export class AttributeCommand extends Command {
 					writer.removeSelectionAttribute( this.attributeKey );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey, {
+					includeEmptyRanges: true
+				} );
 
 				for ( const range of ranges ) {
+					let itemOrRange: ModelRange | ModelElement = range;
+					let attributeKey = this.attributeKey;
+
+					if ( range.isCollapsed ) {
+						itemOrRange = range.start.parent as ModelElement;
+						attributeKey = ModelDocumentSelection._getStoreAttributeKey( this.attributeKey );
+					}
+
 					if ( value ) {
-						writer.setAttribute( this.attributeKey, value, range );
+						writer.setAttribute( attributeKey, value, itemOrRange );
 					} else {
-						writer.removeAttribute( this.attributeKey, range );
+						writer.removeAttribute( attributeKey, itemOrRange );
 					}
 				}
 			}

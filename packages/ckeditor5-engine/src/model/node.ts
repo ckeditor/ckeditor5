@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -439,6 +439,9 @@ ModelNode.prototype.is = function( type: string ): boolean {
 };
 
 /**
- * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
+ * Represents a set of model node attributes, accepted as either a plain object
+ * with string keys or an iterable of `[ key, value ]` pairs (e.g., a `Map`).
+ *
+ * See {@link module:utils/tomap~toMap} for more details and examples.
  */
 export type ModelNodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;

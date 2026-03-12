@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -493,19 +493,11 @@ export const defaultConfig = {
 			}
 		},
 		{
-			model: 'htmlDivDl',
-			view: 'div',
-			modelSchema: {
-				allowChildren: [ 'htmlDt', 'htmlDd' ],
-				allowIn: 'htmlDl'
-			}
-		},
-		{
 			model: 'htmlDl',
 			view: 'dl',
 			modelSchema: {
 				allowWhere: '$container',
-				allowChildren: [ 'htmlDt', 'htmlDd', 'htmlDivDl' ],
+				allowChildren: [ 'htmlDt', 'htmlDd', 'htmlDiv' ],
 				isBlock: false
 			}
 		},
@@ -514,6 +506,7 @@ export const defaultConfig = {
 			view: 'dt',
 			modelSchema: {
 				allowChildren: '$block',
+				allowIn: 'htmlDiv',
 				isBlock: false
 			}
 		},
@@ -522,6 +515,7 @@ export const defaultConfig = {
 			view: 'dd',
 			modelSchema: {
 				allowChildren: '$block',
+				allowIn: 'htmlDiv',
 				isBlock: false
 			}
 		},

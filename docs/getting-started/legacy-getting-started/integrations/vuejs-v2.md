@@ -196,7 +196,7 @@ Unpack it into you application main directory. The directory with the editor bui
 
 Then, add the package located in the `ckeditor5` directory as a dependency of your project:
 
-```
+```bash
 yarn add file:./ckeditor5
 ```
 
@@ -314,8 +314,8 @@ First, install the necessary dependencies:
 ```bash
 npm install --save \
 	@ckeditor/ckeditor5-vue2 \
-	@ckeditor/ckeditor5-dev-translations@43 \
-	@ckeditor/ckeditor5-dev-utils@43 \
+	@ckeditor/ckeditor5-dev-translations@54 \
+	@ckeditor/ckeditor5-dev-utils@54 \
 	postcss-loader@4 \
 	raw-loader@4
 ```

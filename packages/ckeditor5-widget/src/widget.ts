@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -440,8 +440,13 @@ export class Widget extends Plugin {
 			return;
 		}
 
-		// Move probe one step further to make it visually recognizable.
-		if ( probe.focus!.isTouching( originalSelection.focus! ) ) {
+		// Move probe one step further to make it visually recognizable
+		// but only when there is a block allowing text, and we are not already on the exiting edge of it.
+		if (
+			probe.focus!.isTouching( originalSelection.focus! ) &&
+			schema.checkChild( probe.focus!.parent as ModelElement, '$text' ) &&
+			( isForward ? !probe.focus!.isAtEnd : !probe.focus!.isAtStart )
+		) {
 			model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
 		}
 

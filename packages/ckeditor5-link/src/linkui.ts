@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -442,8 +442,10 @@ export class LinkUI extends Plugin {
 			} );
 
 			button.on( 'execute', () => {
-				manualDecorator.set( 'value', !button.isOn );
-				editor.execute( 'link', linkCommand.value!, this._getDecoratorSwitchesState() );
+				editor.execute( 'link', linkCommand.value!, {
+					...this._getDecoratorSwitchesState(),
+					[ manualDecorator.id ]: !button.isOn
+				} );
 			} );
 
 			return button;
@@ -460,7 +462,7 @@ export class LinkUI extends Plugin {
 
 		return Array
 			.from( linkCommand.manualDecorators )
-			.reduce( ( accumulator, manualDecorator ) => {
+			.reduce<Record<string, boolean>>( ( accumulator, manualDecorator ) => {
 				const value = linkCommand.value === undefined && manualDecorator.value === undefined ?
 					manualDecorator.defaultValue :
 					manualDecorator.value;
@@ -469,7 +471,7 @@ export class LinkUI extends Plugin {
 					...accumulator,
 					[ manualDecorator.id ]: !!value
 				};
-			}, {} as Record<string, boolean> );
+			}, {} );
 	}
 
 	/**

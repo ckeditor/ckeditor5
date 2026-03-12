@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image';
 
@@ -90,6 +91,41 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).to.be.true;
+	} );
+
+	it( 'should define table.showHiddenBorders config', async () => {
+		const editorElement = document.createElement( 'div' );
+
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ TableEditing, Paragraph ]
+		} );
+
+		expect( editor.config.get( 'table.showHiddenBorders' ) ).to.be.true;
+		expect( editor.editing.view.getDomRoot().classList.contains( 'ck-table-show-hidden-borders' ) ).to.be.true;
+
+		editorElement.remove();
+		await editor.destroy();
+	} );
+
+	it( 'should get `table.showHiddenBorders` config set to false', async () => {
+		const editorElement = document.createElement( 'div' );
+
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ TableEditing, Paragraph ],
+			table: {
+				showHiddenBorders: false
+			}
+		} );
+
+		expect( editor.config.get( 'table.showHiddenBorders' ) ).to.be.false;
+		expect( editor.editing.view.getDomRoot().classList.contains( 'ck-table-show-hidden-borders' ) ).to.be.false;
+
+		editorElement.remove();
+		await editor.destroy();
 	} );
 
 	it( 'inherits attributes from $blockObject', () => {

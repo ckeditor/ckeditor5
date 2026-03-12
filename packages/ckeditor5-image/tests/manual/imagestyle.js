@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -97,5 +97,19 @@ async function startEditors() {
 		formatting: window.editorFormatting,
 		withDropdown: window.editorWithDropdown
 	} );
+
+	bindPreview( window.editorSemantic, 'preview-semantic' );
+	bindPreview( window.editorFormatting, 'preview-formatting' );
+	bindPreview( window.editorWithDropdown, 'preview-with-dropdown' );
+}
+
+function bindPreview( editor, previewId ) {
+	const preview = document.querySelector( '#' + previewId );
+
+	editor.model.document.on( 'change:data', () => {
+		preview.innerHTML = editor.getData();
+	} );
+
+	preview.innerHTML = editor.getData();
 }
 

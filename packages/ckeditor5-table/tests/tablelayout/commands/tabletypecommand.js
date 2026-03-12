@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,6 +11,8 @@ import { TableEditing } from '../../../src/tableediting.js';
 import { TableCaptionEditing } from '../../../src/tablecaption/tablecaptionediting.js';
 import { TableLayoutEditing } from '../../../src/tablelayout/tablelayoutediting.js';
 import { TableTypeCommand } from '../../../src/tablelayout/commands/tabletypecommand.js';
+import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellWidthEditing } from '../../../src/tablecellwidth/tablecellwidthediting.js';
 
 import { modelTable } from '../../_utils/utils.js';
 
@@ -341,6 +343,62 @@ describe( 'TableTypeCommand', () => {
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
+			);
+		} );
+	} );
+
+	describe( 'integration with TableCellPropertiesEditing', () => {
+		let editor, model, command;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( {
+				plugins: [
+					Paragraph,
+					TableEditing,
+					TableCaptionEditing,
+					TableLayoutEditing,
+					TableCellPropertiesEditing,
+					TableCellWidthEditing
+				],
+				experimentalFlags: {
+					tableCellTypeSupport: true
+				}
+			} );
+
+			model = editor.model;
+			command = new TableTypeCommand( editor );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should remove tableCellType attribute from cells when changing table type to layout', () => {
+			editor.setData(
+				'<table class="table content-table">' +
+					'<thead>' +
+						'<tr><th>1</th></tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr><td>2</td></tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ { contents: '1', tableCellType: 'header' } ],
+					[ '2' ]
+				], { tableType: 'content', headingRows: 1 } )
+			);
+
+			command.execute( 'layout' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '1' ],
+					[ '2' ]
+				], { tableType: 'layout' } )
 			);
 		} );
 	} );

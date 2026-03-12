@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -679,6 +679,31 @@ describe( 'table properties', () => {
 						);
 					} );
 
+					it( 'should not override existing tableBorderStyle if there is also ' +
+							'border-color and border-width defined on the table', () => {
+						editor.setData(
+							'<table border="0" style="border-style: solid; border-color: #f00; border-width: 2px;">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+						);
+
+						expectModel(
+							'<table ' +
+								'tableBorderColor="#f00" ' +
+								'tableBorderStyle="solid" ' +
+								'tableBorderWidth="2px"' +
+							'>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>foo</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						);
+					} );
+
 					it( 'should work with tables in figures', () => {
 						editor.setData(
 							'<figure class="table">' +
@@ -1278,10 +1303,72 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast width attribute from <table>', () => {
-					editor.setData( '<table width="1337"><tr><td>foo</td></tr></table>' );
+					editor.setData( '<table width="1337.3"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast width (px) attribute from <table>', () => {
+					editor.setData( '<table width="1337.3px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast width (%) attribute from <table>', () => {
+					editor.setData( '<table width="37.3%"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '37.3%' );
+				} );
+
+				it( 'should upcast width (em) attribute from <table>', () => {
+					editor.setData( '<table width="1337.3em"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					// Normalize to px as other units are not supported by browsers.
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast width (float) with space between number and unit attribute from <table>', () => {
+					editor.setData( '<table width="100.5 %"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should upcast width (float) with spaces around attribute from <table>', () => {
+					editor.setData( '<table width="  100.5   %  "><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should upcast only the digits before the unknown unit in width attribute from <table>', () => {
+					editor.setData( '<table width="100.5abc11"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5px' );
+				} );
+
+				it( 'should upcast only the digits before the percentage unit in width attribute from <table>', () => {
+					editor.setData( '<table width="  100.5%11  "><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '100.5%' );
+				} );
+
+				it( 'should not upcast NaN width attribute on table', () => {
+					editor.setData( '<table width="not-a-number"><tr><td>foo</td></tr></table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should upcast width from style not <table> attribute', () => {
@@ -1477,10 +1564,32 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast height attribute from <table>', () => {
-					editor.setData( '<table height="1337"><tr><td>foo</td></tr></table>' );
+					editor.setData( '<table height="1337.3"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast height (px) attribute from <table>', () => {
+					editor.setData( '<table height="1337.3px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
+				} );
+
+				it( 'should upcast height (%) attribute from <table>', () => {
+					editor.setData( '<table height="1337.3%"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3%' );
+				} );
+
+				it( 'should upcast height (em) attribute from <table>', () => {
+					editor.setData( '<table height="1337.3em"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					// Normalize to px as other units are not supported by browsers.
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337.3px' );
 				} );
 
 				it( 'should upcast height from style not <table> attribute', () => {
@@ -1886,13 +1995,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="float:none;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="float:none;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -1907,13 +2014,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>layout table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
+								'<tbody>' +
+									'<tr><td>layout table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 				} );
@@ -2645,13 +2750,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:auto;margin-right:auto;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="margin-left:auto;margin-right:auto;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2667,13 +2770,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>layout table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table layout-table" style="margin-left:auto;margin-right:auto;" role="presentation">' +
+								'<tbody>' +
+									'<tr><td>layout table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2689,13 +2790,11 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:0;margin-right:auto;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="margin-left:0;margin-right:auto;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2711,13 +2810,30 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="margin-left:auto;margin-right:0;">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>content table</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
+							'<table class="table content-table" style="margin-left:auto;margin-right:0;">' +
+								'<tbody>' +
+									'<tr><td>content table</td></tr>' +
+								'</tbody>' +
+							'</table>'
+						);
+					} );
+
+					it( 'should downcast border styles for layout table', () => {
+						editor.setData(
+							'<table class="table layout-table" style="border:2px solid #f00"></table>'
+						);
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<table tableBorderColor="#f00" tableBorderStyle="solid" tableBorderWidth="2px" tableType="layout">' +
+								'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+							'</table>'
+						);
+						expect( editor.getData() ).to.be.equal(
+							'<table class="table layout-table" style="border:2px solid #f00;" role="presentation">' +
+								'<tbody>' +
+									'<tr><td>&nbsp;</td></tr>' +
+								'</tbody>' +
+							'</table>'
 						);
 					} );
 
@@ -2757,13 +2873,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>layout table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table layout-table table-style-block-align-left" role="presentation">' +
+									'<tbody>' +
+										'<tr><td>layout table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 
@@ -2778,13 +2892,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>layout table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table layout-table table-style-block-align-left" role="presentation">' +
+									'<tbody>' +
+										'<tr><td>layout table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 
@@ -2799,13 +2911,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table content-table table-style-align-center">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>content table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table content-table table-style-align-center">' +
+									'<tbody>' +
+										'<tr><td>content table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 
@@ -2820,13 +2930,11 @@ describe( 'table properties', () => {
 							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
-								'<figure class="table layout-table table-style-align-center" role="presentation">' +
-									'<table>' +
-										'<tbody>' +
-											'<tr><td>layout table</td></tr>' +
-										'</tbody>' +
-									'</table>' +
-								'</figure>'
+								'<table class="table layout-table table-style-align-center" role="presentation">' +
+									'<tbody>' +
+										'<tr><td>layout table</td></tr>' +
+									'</tbody>' +
+								'</table>'
 							);
 						} );
 					} );

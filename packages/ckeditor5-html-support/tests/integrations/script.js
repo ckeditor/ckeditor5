@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -68,8 +68,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE_CPP,
-				2: {
+				1: {
 					attributes: {
 						nonce: 'qwerty',
 						type: 'c++'
@@ -90,8 +89,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE_CPP,
-				2: {
+				1: {
 					attributes: {
 						type: 'c++'
 					}
@@ -171,8 +169,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE,
-				2: { attributes: { nonce: 'qwerty' } }
+				1: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
@@ -193,8 +190,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: CODE_CPP,
-				2: { attributes: { type: 'c++' } }
+				1: { attributes: { type: 'c++' } }
 			}
 		} );
 	} );

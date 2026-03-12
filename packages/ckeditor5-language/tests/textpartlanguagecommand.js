@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -311,6 +311,20 @@ describe( 'TextPartLanguageCommand', () => {
 
 			expect( command.value ).to.equal( 'ar:rtl' );
 			expect( doc.selection.getAttribute( 'language' ) ).to.equal( 'ar:rtl' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/18430
+		it( 'when applying language to range that includes empty paragraph, empty paragraph should get selection:language', () => {
+			_setModelData( model, '[<p>foo</p><p></p><p>foo</p>]' );
+
+			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
+
+			model.change( writer => {
+				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
+			} );
+
+			expect( _getModelData( model ) ).to.include( 'selection:language="fr:ltr"' );
+			expect( command.value ).to.equal( 'fr:ltr' );
 		} );
 
 		describe( 'model change event', () => {

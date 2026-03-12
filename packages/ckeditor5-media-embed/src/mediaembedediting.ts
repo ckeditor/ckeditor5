@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -108,7 +108,8 @@ export class MediaEmbedEditing extends Plugin {
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
 								`<iframe src="https://www.youtube.com/embed/${ id }${ time ? `?start=${ time }` : '' }" ` +
 									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+									'frameborder="0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" ' +
+									'allowfullscreen>' +
 								'</iframe>' +
 							'</div>'
 						);

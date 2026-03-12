@@ -103,7 +103,7 @@ A token URL and other authentication methods will be assigned to this specific e
 
 ### Trial license key
 
-This key grants access to **all features.** It is valid for **14 days.** It limits the editor's functionality (like session time or number of changes). It is perfect for evaluating the platform and all its features. The key exists only for evaluation purposes.
+This key grants access to **all features.** It is valid for **14 days.** It is perfect for evaluating the platform and all its features. The key exists only for evaluation purposes.
 
 * **Features**: Grants access to all features and add-ons.
 * **Duration**: Valid for 14 days.

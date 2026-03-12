@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -16,6 +16,7 @@ import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 
 import { PasteFromOffice } from '../../src/pastefromoffice.js';
 
@@ -49,7 +50,9 @@ ClassicEditor
 			FontColor,
 			FontBackgroundColor,
 			ListProperties,
-			Bookmark
+			Bookmark,
+			Indent,
+			IndentBlock
 		],
 		bookmark: {
 			enableNonEmptyAnchorConversion: false

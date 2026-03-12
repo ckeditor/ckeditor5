@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -169,7 +169,7 @@ export class PluginCollection<TContext extends object>
 	 *   * Both plugins must not depend on other plugins.
 	 * @returns A promise which gets resolved once all plugins are loaded and available in the collection.
 	 */
-	public init(
+	public async init(
 		plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 		pluginsToRemove: ReadonlyArray<PluginConstructor<TContext> | string> = [],
 		pluginsSubstitutions: ReadonlyArray<PluginConstructor<TContext>> = []
@@ -204,9 +204,10 @@ export class PluginCollection<TContext extends object>
 
 		const pluginInstances = loadPlugins( pluginConstructors );
 
-		return initPlugins( pluginInstances, 'init' )
-			.then( () => initPlugins( pluginInstances, 'afterInit' ) )
-			.then( () => pluginInstances );
+		await initPlugins( pluginInstances, 'init' );
+		await initPlugins( pluginInstances, 'afterInit' );
+
+		return pluginInstances;
 
 		function isPluginConstructor( plugin: PluginConstructor<TContext> | string | null ): plugin is PluginConstructor<TContext> {
 			return typeof plugin === 'function';
@@ -308,10 +309,30 @@ export class PluginCollection<TContext extends object>
 						that._availablePlugins.get( plugin ) || plugin;
 				} )
 				.forEach( plugin => {
+					checkPluginConstructor( plugin );
 					checkMissingPlugin( plugin, parentPluginConstructor );
 					checkContextPlugin( plugin, parentPluginConstructor );
 					checkRemovedPlugin( plugin, parentPluginConstructor );
 				} );
+		}
+
+		function checkPluginConstructor( plugin: PluginConstructor<TContext> | string ) {
+			if ( typeof plugin !== 'function' ) {
+				return;
+			}
+
+			if ( ( plugin as any )._throwErrorWhenUsedAsAPlugin ) {
+				/**
+				 * The provided class constructor is not a plugin.
+				 *
+				 * This error is usually caused by passing an editor, context, or command
+				 * constructor in the `config.plugins` array.
+				 *
+				 * @param {String} name The name of the provided constructor.
+				 * @error plugincollection-plugin-invalid-constructor
+				 */
+				throw new CKEditorError( 'plugincollection-plugin-invalid-constructor', context, { name: plugin.name } );
+			}
 		}
 
 		function checkMissingPlugin(

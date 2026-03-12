@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -297,6 +297,17 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
+	 * `Editor` class is commonly put in `config.plugins` array.
+	 *
+	 * This property helps with better error detection.
+	 *
+	 * @internal
+	 */
+	public static get _throwErrorWhenUsedAsAPlugin(): true {
+		return true;
+	};
+
+	/**
 	 * Creates a new instance of the editor class.
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
@@ -305,6 +316,20 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	constructor( config: EditorConfig = {} ) {
 		super();
+
+		if ( typeof config !== 'object' || Array.isArray( config ) ) {
+			/**
+			 * Editor configuration must be an object.
+			 *
+			 * A common cause of this error is passing an Editor class (for example
+			 * `ClassicEditor`) in the `config.plugins` array. In such case, the editor
+			 * constructor is called with an Editor or Context instance instead of
+			 * the configuration object.
+			 *
+			 * @error editor-config-invalid-type
+			 */
+			throw new CKEditorError( 'editor-config-invalid-type' );
+		}
 
 		if ( 'sanitizeHtml' in config ) {
 			/**
@@ -539,10 +564,9 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				}
 			}
 
-			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
+			if ( licensePayload.licenseType === 'evaluation' ) {
 				const timerId = setTimeout( () => {
-					blockEditor( `${ licenseType }Limit` );
+					blockEditor( 'evaluationLimit' );
 				}, 600000 );
 
 				editor.on( 'destroy', () => {
@@ -1117,7 +1141,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * This part of the code is _not_ executed in installations under the GPL license (with `config.licenseKey = 'GPL'`).
-     *
+	 *
 	 * It is only executed when a specific license key is provided. If you are uncertain whether
 	 * this applies to your installation, please contact our support team.
 	 */
@@ -1243,4 +1267,20 @@ export type EditorDestroyEvent = {
  * ```
  *
  * @error editor-wrong-element
+ */
+
+/**
+ * You are running [CKEditor 5 Long-term Support Edition (LTS)](https://ckeditor.com/ckeditor-5-lts/),
+ * but the provided license key does not include access to the LTS version, or the key is invalid.
+ *
+ * Please ensure that it is copied correctly from the [Customer Portal](http://portal.ckeditor.com/),
+ * and if the issue persists, please [contact our customer support](https://ckeditor.com/contact/).
+ *
+ * In case you intended to use the [LTS Edition](https://ckeditor.com/ckeditor-5-lts/),
+ * but have not yet made a purchase, please [contact our sales team](https://ckeditor.com/contact-sales/)
+ *
+ * If you did not intend to use LTS, please switch to non-LTS edition, for example,
+ * the [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html) build.
+ *
+ * @error license-key-lts-not-allowed
  */

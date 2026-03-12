@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -15,6 +15,7 @@ import { ModelLivePosition, type ModelRange, type ModelItem, type ModelTextProxy
 import { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
 import { type LinkManualDecorator } from './utils/manualdecorator.js';
+import { resolveConflictingDecorators } from './utils/conflictingdecorators.js';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -163,12 +164,18 @@ export class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
+		// Resolve conflicting decorators and get the final decorator states.
+		const resolvedDecoratorsIds = resolveConflictingDecorators( {
+			allDecorators: Array.from( this.manualDecorators ),
+			decoratorStates: manualDecoratorIds
+		} );
+
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
 
-		for ( const name in manualDecoratorIds ) {
-			if ( manualDecoratorIds[ name ] ) {
+		for ( const name in resolvedDecoratorsIds ) {
+			if ( resolvedDecoratorsIds[ name ] ) {
 				truthyManualDecorators.push( name );
 			} else {
 				falsyManualDecorators.push( name );
@@ -362,6 +369,8 @@ export class LinkCommand extends Command {
 				} ) );
 			}
 		} );
+
+		this.restoreManualDecoratorStates();
 	}
 
 	/**

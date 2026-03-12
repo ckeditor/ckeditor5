@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -54,7 +54,7 @@ export type {
 	NormalizedLinkDecoratorDefinition
 } from './utils.js';
 
-export { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
+export { AutomaticLinkDecorators, type LinkDecoratorConflictChecker } from './utils/automaticdecorators.js';
 export { LinkManualDecorator } from './utils/manualdecorator.js';
 
 export type {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -112,8 +112,14 @@ export function upcastStyleToAttribute(
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let value = viewElement.getAttribute( attributeName );
 
-					if ( value && attributeType == 'length' && !value.endsWith( 'px' ) ) {
-						value += 'px';
+					if ( value && attributeType == 'length' ) {
+						const parsedValue = parseFloat( value );
+
+						if ( isNaN( parsedValue ) ) {
+							value = localDefaultValue;
+						} else {
+							value = parsedValue + ( value.includes( '%' ) ? '%' : 'px' );
+						}
 					}
 
 					if ( localDefaultValue !== value ) {
@@ -259,8 +265,11 @@ export function upcastBorderStyles(
 
 				const modelElement = modelRange?.start?.nodeAfter;
 
-				// If model element has already border style attribute, skip the conversion.
-				if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+				// If model element has any non-default border attribute, skip the conversion.
+				if (
+					!modelElement ||
+					Object.values( modelAttributes ).some( attributeName => modelElement.hasAttribute( attributeName ) )
+				) {
 					return;
 				}
 

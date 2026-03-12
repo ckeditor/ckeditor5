@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -276,24 +276,32 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 					listItemId: String( idx ).padStart( 3, '0' )
 				};
 
-				content = content.replace( /\s*{(?:(id|style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
-					switch ( key ) {
-						case 'id':
-							props.listItemId = value;
-							break;
-						case 'style':
-							props.listStyle = value;
-							break;
-						case 'start':
-							props.listStart = parseInt( value );
-							break;
-						case 'reversed':
-							props.listReversed = value;
-							break;
-					}
+				content = content.replace(
+					/\s*{(?:(id|style|start|reversed|blockIndentList|blockIndentListItem):)([^}]+)}\s*/g,
+					( match, key, value ) => {
+						switch ( key ) {
+							case 'id':
+								props.listItemId = value;
+								break;
+							case 'style':
+								props.listStyle = value;
+								break;
+							case 'start':
+								props.listStart = parseInt( value );
+								break;
+							case 'reversed':
+								props.listReversed = value;
+								break;
+							case 'blockIndentList':
+								props.blockIndentList = value;
+								break;
+							case 'blockIndentListItem':
+								props.blockIndentListItem = value;
+								break;
+						}
 
-					return '';
-				} );
+						return '';
+					} );
 
 				if ( !ignoreIdConflicts && seenIds.has( props.listItemId ) ) {
 					throw new Error( 'ID conflict: ' + props.listItemId );
