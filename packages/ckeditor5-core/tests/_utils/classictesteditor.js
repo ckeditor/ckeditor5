@@ -5,6 +5,7 @@
 
 import { Editor } from '../../src/editor/editor.js';
 import { ElementApiMixin } from '../../src/editor/utils/elementapimixin.js';
+import { normalizeRootsConfig } from '../../src/editor/utils/normalizerootsconfig.js';
 import { EditorUI, BoxedEditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 import { ElementReplacer, getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isElement } from 'es-toolkit/compat';
@@ -21,6 +22,8 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 	 */
 	constructor( sourceElementOrData, config ) {
 		super( config );
+
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
