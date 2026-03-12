@@ -69,6 +69,7 @@ export function normalizeRootsConfig(
 	for ( const rootName of rootNames ) {
 		const rootConfig = rootsConfig[ rootName ] || Object.create( null );
 		const sourceElementOrDataForRoot = sourceElementIsPlainObject ? sourceElementsOrData[ rootName ] : sourceElementsOrData;
+		const sourceElementOrDataForRootIsDefined = sourceElementOrDataForRoot !== undefined && sourceElementOrDataForRoot !== null;
 
 		// No dedicated initial data for the root.
 		if ( rootConfig.initialData === undefined ) {
@@ -78,7 +79,7 @@ export function normalizeRootsConfig(
 				rootConfig.initialData = getInitialData( sourceElementOrDataForRoot );
 			}
 			// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
-			else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
+			else if ( sourceElementOrDataForRootIsDefined && !isElement( sourceElementOrDataForRoot ) ) {
 				// Documented in core/editor/editorconfig.ts.
 				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'editor-create-initial-data', null );
@@ -89,7 +90,7 @@ export function normalizeRootsConfig(
 			}
 		}
 		// If both `rootConfig.initialData` is set and initial data is passed as the constructor parameter, then throw.
-		else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
+		else if ( sourceElementOrDataForRootIsDefined && !isElement( sourceElementOrDataForRoot ) ) {
 			// Documented in core/editor/editorconfig.ts.
 			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 			throw new CKEditorError( 'editor-create-initial-data', null );

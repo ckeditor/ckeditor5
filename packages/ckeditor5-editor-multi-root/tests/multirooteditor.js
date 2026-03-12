@@ -143,7 +143,7 @@ describe( 'MultiRootEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new MultiRootEditor( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
-						{ roots: { foo: { initialData: '<p>Bar</p>' } }, bar: { initialData: '<p>Abc</p>' } }
+						{ roots: { foo: { initialData: '<p>Bar</p>' }, bar: { initialData: '<p>Abc</p>' } } }
 					);
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
 			} );

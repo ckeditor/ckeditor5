@@ -42,8 +42,9 @@ describe( 'normalizeRootsConfig()', () => {
 
 		it( 'should use initialData from config.root if set', () => {
 			config.set( 'root', { initialData: '<p>bar</p>' } );
+			const sourceElement = document.createElement( 'div' );
 
-			normalizeRootsConfig( '', config );
+			normalizeRootsConfig( sourceElement, config );
 
 			const roots = config.get( 'roots' );
 
