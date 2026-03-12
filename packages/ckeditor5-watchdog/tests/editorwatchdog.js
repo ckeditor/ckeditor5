@@ -1836,6 +1836,97 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 		} );
+
+		it( 'should recover original legacy placeholders after restart', async () => {
+			await watchdog.create( {}, {
+				plugins: [ Paragraph ],
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelElement: {
+							attributes: { order: 1 }
+						}
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelElement: {
+							attributes: { order: 2 }
+						}
+					}
+				},
+				placeholder: {
+					header: 'Type in header',
+					content: 'Type in content'
+				}
+			} );
+
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			const editables = watchdog.editor.ui.view.editables;
+
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in header' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in content' );
+		} );
+
+		it( 'should recover original legacy placeholder after restart', async () => {
+			await watchdog.create( {}, {
+				plugins: [ Paragraph ],
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelElement: {
+							attributes: { order: 1 }
+						}
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelElement: {
+							attributes: { order: 2 }
+						}
+					}
+				},
+				placeholder: 'Type in some content'
+			} );
+
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			const editables = watchdog.editor.ui.view.editables;
+
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
+		} );
 	} );
 } );
 
