@@ -35,6 +35,7 @@
   ],
   "devDependencies": {
     "@babel/parser": "^7.23.3",
+    "@ckbox/uploader": "2.11.0",
     "@ckeditor/ckeditor5-dev-build-tools": "^55.0.0",
     "@ckeditor/ckeditor5-dev-bump-year": "^55.0.0",
     "@ckeditor/ckeditor5-dev-changelog": "^55.0.0",

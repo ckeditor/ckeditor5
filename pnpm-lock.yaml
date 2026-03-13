@@ -20,6 +20,9 @@ importers:
       '@babel/parser':
         specifier: ^7.23.3
         version: 7.29.0
+      '@ckbox/uploader':
+        specifier: 2.11.0
+        version: 2.11.0(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
       '@ckeditor/ckeditor5-dev-build-tools':
         specifier: ^55.0.0
         version: 55.0.0(postcss@8.5.6)(tslib@2.8.1)(typescript@5.5.4)
@@ -4313,6 +4316,9 @@ packages:
     resolution: {integrity: sha512-R9d3KN8tDrHlw3gQFGbZm/3GbF+/VGBC9+5/abeTOm3naA/Ath7Iu2t9JqgMQeRidyvxJNHzv0zOSwPM8cbowQ==}
     peerDependencies:
       react: ^19
+
+  '@ckbox/uploader@2.11.0':
+    resolution: {integrity: sha512-joskUAalQIBDF0bvRpDBQDxQteVqUrU7Fvx+peQy+0Al/Cj5bzkSZlkChMBPAPsc6HqZyuNfaAN+CSO5sCHt0A==}
 
   '@ckeditor/ckeditor5-dev-build-tools@55.0.0':
     resolution: {integrity: sha512-7B0njsGc+rQFkmGnszGZQmn8V9dJnhFv8yIUxom7/y+cIIM+WDJUuXh7C/ahjW/fiMnyql6h8zYsDmbfTzhEvA==}
@@ -12383,6 +12389,38 @@ snapshots:
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@opentelemetry/api'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/browser-playwright'
+      - '@vitest/browser-preview'
+      - '@vitest/browser-webdriverio'
+      - '@vitest/ui'
+      - happy-dom
+      - jiti
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
+
+  '@ckbox/uploader@2.11.0(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)':
+    dependencies:
+      '@ckbox/core': 2.11.0(@types/node@25.3.0)(@types/react@19.2.14)(jiti@2.6.1)(lightningcss@1.32.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
+      '@types/react': 19.2.14
+      '@types/react-dom': 19.2.3(@types/react@19.2.14)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@opentelemetry/api'
+      - '@types/hoist-non-react-statics'
       - '@types/node'
       - '@vitest/browser'
       - '@vitest/browser-playwright'

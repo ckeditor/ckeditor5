@@ -96,6 +96,13 @@ async function buildCKBoxAssets( paths ) {
 		} ),
 		esbuild( {
 			...sharedOptions,
+			entryPoints: [ '@ckbox/uploader' ],
+			format: 'esm',
+			target: 'es2022',
+			outfile: upath.join( outputDir, 'ckboxWidget.js' )
+		} ),
+		esbuild( {
+			...sharedOptions,
 			entryPoints: [ 'ckbox/dist/styles/ckbox.css' ],
 			outfile: upath.join( outputDir, 'ckbox.css' )
 		} )
@@ -243,10 +250,15 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckbox.js">',
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckboxWidget.js">',
 		'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="%BASE_PATH%/assets/global.js"></script>',
-		'<script type="module">import * as CKBox from \'ckbox\'; window.CKBox = CKBox;</script>',
+		'<script type="module">' +
+			'import * as CKBox from \'ckbox\';' +
+			'import * as CKBoxUploader from \'@ckbox/uploader\'; ' +
+			'window.CKBox = Object.assign( {}, CKBox, CKBoxUploader );' +
+		'</script>',
 		getLayeredStyles( 'editor', editorStylePaths )
 	];
 
@@ -331,7 +343,8 @@ async function getImportMap() {
 		'ckeditor5/': '%BASE_PATH%/assets/ckeditor5/',
 		'ckeditor5-premium-features': '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js',
 		'ckeditor5-premium-features/': '%BASE_PATH%/assets/ckeditor5-premium-features/',
-		'ckbox': '%BASE_PATH%/assets/ckbox/ckbox.js'
+		'ckbox': '%BASE_PATH%/assets/ckbox/ckbox.js',
+		'@ckbox/uploader': '%BASE_PATH%/assets/ckbox/ckboxWidget.js'
 	};
 
 	/**
