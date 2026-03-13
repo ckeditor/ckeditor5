@@ -19,8 +19,10 @@ import { fromDom } from 'hast-util-from-dom';
 import type { Element, Node, Root, RootContent } from 'hast';
 
 /**
- * The default unified plugin chain used by {@link module:markdown-gfm/markdown2html/markdown2html~MarkdownGfmMdToHtml}.
+ * The default `unified()` plugin chain used by {@link module:markdown-gfm/markdown2html/markdown2html~MarkdownGfmMdToHtml}.
  * This object is frozen and must not be mutated. Pass a copy to the constructor if you need to customize the plugin chain.
+ *
+ * Learn more about the `unified()` plugin chain in the [unified](https://github.com/unifiedjs/unified) documentation.
  */
 export const MarkdownGfmMdToHtmlDefaultPlugins: Readonly<Record<string, Pluggable>> = Object.freeze( {
 	// Parses Markdown to an abstract syntax tree (AST).
@@ -48,8 +50,11 @@ export class MarkdownGfmMdToHtml {
 	/**
 	 * Creates a new instance of MarkdownGfmMdToHtml.
 	 * @param {Object} options - The options for the MarkdownGfmMdToHtml instance.
-	 * @param {Record<string, Pluggable>} options.plugins - The plugins to be used by the `unified()` processor for converting Markdown
-	 * to HTML. By default, {@link MarkdownGfmMdToHtmlDefaultPlugins} are used. You can override the defaults by passing your own plugins.
+	 * @param {Record<string, Pluggable>} options.plugins - The plugins to be used by the `unified().use()` processor for converting
+	 * Markdown to HTML. By default, {@link MarkdownGfmMdToHtmlDefaultPlugins} is used. You can override the defaults by passing your
+	 * own plugins.
+	 *
+	 * Learn more about the `unified()` plugin chain in the [unified](https://github.com/unifiedjs/unified) documentation.
 	 */
 	constructor( { plugins = MarkdownGfmMdToHtmlDefaultPlugins }: { plugins?: Record<string, Pluggable> } = {} ) {
 		this._processor = unified().use( {
