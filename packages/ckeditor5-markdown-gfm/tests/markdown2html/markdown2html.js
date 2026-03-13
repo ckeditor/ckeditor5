@@ -33,7 +33,7 @@ describe( 'MarkdownGfmMdToHtml', () => {
 
 describe( 'MarkdownGfmMdToHtmlDefaultPlugins', () => {
 	it( 'should load the default plugins', () => {
-		expect( MarkdownGfmMdToHtmlDefaultPlugins ).to.have.keys( [
+		expect( MarkdownGfmMdToHtmlDefaultPlugins ).to.have.ordered.keys( [
 			'remarkParse',
 			'remarkGfm',
 			'remarkBreaks',
