@@ -72,7 +72,9 @@ function CustomEditor() {
 				licenseKey: '<YOUR_LICENSE_KEY>',
 				plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 				toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ],
-				initialData: '<p>Hello from CKEditor 5 in React!</p>'
+				root: {
+					initialData: '<p>Hello from CKEditor 5 in Next.js!</p>'
+				}
 			} }
 		/>
 	);

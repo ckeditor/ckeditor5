@@ -290,7 +290,9 @@ function createEditor( number, table, type ) {
 	];
 
 	let config = {
-		initialData: table,
+		root: {
+			initialData: table
+		},
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		toolbar: [ 'insertTable', 'sourceEditing' ],
 		table: {

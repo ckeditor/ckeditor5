@@ -64,7 +64,9 @@ function App() {
 				mention: {
 					// Mention configuration
 				},
-				initialData: '<p>Hello from CKEditor 5 in React!</p>',
+				root: {
+					initialData: '<p>Hello from CKEditor 5 in React!</p>'
+				}
 			} }
 		/>
 	);
@@ -122,7 +124,9 @@ function App() {
 					Undo
 				],
 				licenseKey: '<YOUR_LICENSE_KEY>',
-				initialData: '<p>Hello from CKEditor 5 in React!</p>',
+				root: {
+					initialData: '<p>Hello from CKEditor 5 in React!</p>'
+				}
 			} }
 		/>
 	);
