@@ -19,7 +19,7 @@ import { fromDom } from 'hast-util-from-dom';
 import type { Element, Node, Root, RootContent } from 'hast';
 
 /**
- * The default unified plugin chain used by {@link MarkdownGfmMdToHtml}.
+ * The default unified plugin chain used by {@link module:markdown-gfm/markdown2html/markdown2html~MarkdownGfmMdToHtml}.
  * This object is frozen and must not be mutated. Pass a copy to the constructor if you need to customize the plugin chain.
  */
 export const MarkdownGfmMdToHtmlDefaultPlugins: Readonly<Record<string, Pluggable>> = Object.freeze( {
