@@ -10,7 +10,7 @@
 export { Markdown } from './markdown.js';
 export { PasteFromMarkdownExperimental } from './pastefrommarkdownexperimental.js';
 export { MarkdownGfmDataProcessor } from './gfmdataprocessor.js';
-export { MarkdownGfmMdToHtml, DEFAULT_GFM_MD_TO_HTML_PLUGINS } from './markdown2html/markdown2html.js';
+export { MarkdownGfmMdToHtml, MarkdownGfmMdToHtmlDefaultPlugins } from './markdown2html/markdown2html.js';
 export { MarkdownGfmHtmlToMd } from './html2markdown/html2markdown.js';
 
 import './augmentation.js';

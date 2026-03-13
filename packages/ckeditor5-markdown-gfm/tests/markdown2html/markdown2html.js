@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { MarkdownGfmMdToHtml, DEFAULT_GFM_MD_TO_HTML_PLUGINS } from '../../src/markdown2html/markdown2html.js';
+import { MarkdownGfmMdToHtml, MarkdownGfmMdToHtmlDefaultPlugins } from '../../src/markdown2html/markdown2html.js';
 
 describe( 'MarkdownGfmMdToHtml', () => {
 	describe( 'constructor', () => {
@@ -19,7 +19,7 @@ describe( 'MarkdownGfmMdToHtml', () => {
 
 			const converter = new MarkdownGfmMdToHtml( {
 				plugins: {
-					...DEFAULT_GFM_MD_TO_HTML_PLUGINS,
+					...MarkdownGfmMdToHtmlDefaultPlugins,
 					customPlugin
 				}
 			} );
@@ -31,9 +31,9 @@ describe( 'MarkdownGfmMdToHtml', () => {
 	} );
 } );
 
-describe( 'DEFAULT_GFM_MD_TO_HTML_PLUGINS', () => {
+describe( 'MarkdownGfmMdToHtmlDefaultPlugins', () => {
 	it( 'should load the default plugins', () => {
-		expect( DEFAULT_GFM_MD_TO_HTML_PLUGINS ).to.have.keys( [
+		expect( MarkdownGfmMdToHtmlDefaultPlugins ).to.have.keys( [
 			'remarkParse',
 			'remarkGfm',
 			'remarkBreaks',

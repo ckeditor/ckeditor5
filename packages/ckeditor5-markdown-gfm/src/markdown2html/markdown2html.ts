@@ -21,7 +21,7 @@ import type { Element, Node, Root, RootContent } from 'hast';
 /**
  * The default unified plugin chain used by {@link MarkdownGfmMdToHtml}.
  */
-export const DEFAULT_GFM_MD_TO_HTML_PLUGINS: Record<string, Pluggable> = {
+export const MarkdownGfmMdToHtmlDefaultPlugins: Record<string, Pluggable> = {
 	// Parses Markdown to an abstract syntax tree (AST).
 	remarkParse,
 	// Adds support for GitHub Flavored Markdown (GFM).
@@ -50,7 +50,7 @@ export class MarkdownGfmMdToHtml {
 	 * @param {Record<string, Pluggable>} options.plugins - The plugins to be used by the `unified()` processor for converting Markdown
 	 * to HTML. By default, {@link DEFAULT_GFM_MD_TO_HTML_PLUGINS} are used. You can override the defaults by passing your own plugins.
 	 */
-	constructor( { plugins = DEFAULT_GFM_MD_TO_HTML_PLUGINS }: { plugins?: Record<string, Pluggable> } = {} ) {
+	constructor( { plugins = MarkdownGfmMdToHtmlDefaultPlugins }: { plugins?: Record<string, Pluggable> } = {} ) {
 		this._processor = unified().use( Object.values( plugins ) );
 	}
 
