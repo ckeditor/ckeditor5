@@ -5,7 +5,7 @@
 
 import packageJson from '../../package.json' with { type: 'json' };
 
-export default async function fetchCKEditor5LtsVersion( config ) {
+export default async function injectCKBoxVersion( config ) {
 	config.variables ??= {};
 	config.variables.CKBOX_VERSION = packageJson.devDependencies.ckbox;
 }
