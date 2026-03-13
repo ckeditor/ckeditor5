@@ -1101,6 +1101,13 @@ export interface RootConfig {
 	 * ```
 	 */
 	label?: string;
+
+	/**
+	 * Attributes of the model root element.
+	 *
+	 * This option replaces the legacy `config.rootsAttributes[ rootName ]` structure.
+	 */
+	modelAttributes?: Record<string, unknown>;
 }
 
 /**
