@@ -13,7 +13,7 @@
 				{
 					"type": "Button",
 					"name": "emoji",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/emoji.svg"
+					"iconName": "IconEmoji"
 				}
 			]
 		},
@@ -37,7 +37,7 @@
 				{
 					"type": "Button",
 					"name": "emoji",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/emoji.svg"
+					"iconName": "IconEmoji"
 				}
 			]
 		}

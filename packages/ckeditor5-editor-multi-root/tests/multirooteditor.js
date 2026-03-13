@@ -142,8 +142,9 @@ describe( 'MultiRootEditor', () => {
 			it( 'it should throw if config.roots.<name>.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
-					new MultiRootEditor( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
-						{ roots: { foo: { initialData: '<p>Bar</p>' } }, bar: { initialData: '<p>Abc</p>' } }
+					new MultiRootEditor(
+						{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+						{ roots: { foo: { initialData: '<p>Bar</p>' }, bar: { initialData: '<p>Abc</p>' } } }
 					);
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
 			} );
@@ -246,6 +247,38 @@ describe( 'MultiRootEditor', () => {
 					},
 					err => {
 						assertCKEditorError( err, 'editor-wrong-element', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'throws error when deprecated config.lazyRoots is used', done => {
+			MultiRootEditor.create( editorData, {
+				lazyRoots: [ 'baz' ]
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when deprecated lazyRoots config is used.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-deprecated-config-lazy-roots', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'throws error when deprecated config.rootsAttributes is used', done => {
+			MultiRootEditor.create( editorData, {
+				rootsAttributes: { foo: { order: 1 }, bar: { order: 2 } }
+			} )
+				.then(
+					() => {
+						expect.fail( 'Multi-root editor should throw an error when deprecated rootsAttributes config is used.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-deprecated-config-roots-attributes', null );
 					}
 				)
 				.then( done )

@@ -1112,7 +1112,7 @@ export interface RootModelElementConfig {
 	/**
 	 * TODO This will be used later to specify the name of the model element which will be used as a root. For now, it is always `'$root'`.
 	 */
-	name: string;
+	name?: string;
 }
 
 /**

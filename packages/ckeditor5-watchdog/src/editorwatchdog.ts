@@ -7,19 +7,35 @@
  * @module watchdog/editorwatchdog
  */
 
-import { throttle, cloneDeepWith, isElement as _isElement, type DebouncedFunc } from 'es-toolkit/compat';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
+import { normalizeRootsConfig } from './utils/normalizerootsconfig.js';
 import { Watchdog, type WatchdogConfig } from './watchdog.js';
-import { type CKEditorError, Config } from '@ckeditor/ckeditor5-utils';
-import type { ModelNode, ModelText, ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
-import {
-	type Editor,
-	type EditorConfig,
-	type Context,
-	type EditorReadyEvent,
-	type RootConfig,
-	normalizeRootsConfig
+
+import type {
+	CKEditorError
+} from '@ckeditor/ckeditor5-utils';
+
+import type {
+	ModelNode,
+	ModelText,
+	ModelElement,
+	ModelWriter
+} from '@ckeditor/ckeditor5-engine';
+
+import type {
+	Editor,
+	EditorConfig,
+	Context,
+	EditorReadyEvent,
+	RootConfig
 } from '@ckeditor/ckeditor5-core';
+
+import {
+	throttle,
+	cloneDeepWith,
+	isElement as _isElement,
+	type DebouncedFunc
+} from 'es-toolkit/compat';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -203,13 +219,10 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 					this._editables;
 
 				// Normalize the roots configuration based on the editor source element or data and the editor configuration.
-				const config = new Config<EditorConfig>( this._config! );
-
-				normalizeRootsConfig( elementOrData, config, this._isSingleRootEditor ? 'main' : false );
+				normalizeRootsConfig( elementOrData, this._config!, this._isSingleRootEditor ? 'main' : false );
 
 				const updatedConfig: EditorConfig = {
 					...this._config,
-					roots: config.get( 'roots' ),
 					extraPlugins: this._config!.extraPlugins || [],
 					_watchdogInitialData: this._data
 				};
