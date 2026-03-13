@@ -48,7 +48,7 @@ export class MarkdownGfmMdToHtml {
 	 * Creates a new instance of MarkdownGfmMdToHtml.
 	 * @param {Object} options - The options for the MarkdownGfmMdToHtml instance.
 	 * @param {Record<string, Pluggable>} options.plugins - The plugins to be used by the `unified()` processor for converting Markdown
-	 * to HTML. By default, {@link DEFAULT_GFM_MD_TO_HTML_PLUGINS} are used. You can override the defaults by passing your own plugins.
+	 * to HTML. By default, {@link MarkdownGfmMdToHtmlDefaultPlugins} are used. You can override the defaults by passing your own plugins.
 	 */
 	constructor( { plugins = MarkdownGfmMdToHtmlDefaultPlugins }: { plugins?: Record<string, Pluggable> } = {} ) {
 		this._processor = unified().use( Object.values( plugins ) );
