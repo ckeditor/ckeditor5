@@ -20,8 +20,9 @@ import type { Element, Node, Root, RootContent } from 'hast';
 
 /**
  * The default unified plugin chain used by {@link MarkdownGfmMdToHtml}.
+ * This object is frozen and must not be mutated. Pass a copy to the constructor if you need to customize the plugin chain.
  */
-export const MarkdownGfmMdToHtmlDefaultPlugins: Record<string, Pluggable> = {
+export const MarkdownGfmMdToHtmlDefaultPlugins: Readonly<Record<string, Pluggable>> = Object.freeze( {
 	// Parses Markdown to an abstract syntax tree (AST).
 	remarkParse,
 	// Adds support for GitHub Flavored Markdown (GFM).
@@ -36,7 +37,7 @@ export const MarkdownGfmMdToHtmlDefaultPlugins: Record<string, Pluggable> = {
 	deleteClassesFromToDoLists,
 	// Serializes HTML syntax tree to HTML string.
 	rehypeStringify
-} as const;
+} );
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
