@@ -34,7 +34,7 @@ import {
 
 import { LineView } from './lineview.js';
 
-import { throttle } from 'es-toolkit/compat';
+import throttle from 'es-toolkit/compat/throttle';
 
 /**
  * Part of the Drag and Drop handling. Responsible for finding and displaying the drop target.

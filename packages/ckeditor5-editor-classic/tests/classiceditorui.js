@@ -16,7 +16,7 @@ import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { isElement } from 'es-toolkit/compat';
+import isElement from 'es-toolkit/compat/isElement';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;

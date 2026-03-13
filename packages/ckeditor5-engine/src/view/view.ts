@@ -48,7 +48,7 @@ import {
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
 
-import { cloneDeep } from 'es-toolkit/compat';
+import cloneDeep from 'es-toolkit/compat/cloneDeep';
 
 // type IfTrue<T> = T extends true ? true : never;
 type DomRange = globalThis.Range;

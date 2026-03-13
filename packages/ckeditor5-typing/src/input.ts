@@ -30,7 +30,7 @@ import {
 	type ViewDocumentInputEvent
 } from '@ckeditor/ckeditor5-engine';
 
-import { debounce } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
 

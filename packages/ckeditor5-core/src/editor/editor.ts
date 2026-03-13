@@ -7,7 +7,8 @@
  * @module core/editor/editor
  */
 
-import { set, get } from 'es-toolkit/compat';
+import set from 'es-toolkit/compat/set';
+import get from 'es-toolkit/compat/get';
 
 import {
 	Config,

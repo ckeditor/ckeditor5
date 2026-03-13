@@ -7,7 +7,10 @@
  * @module watchdog/editorwatchdog
  */
 
-import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'es-toolkit/compat';
+import type { DebouncedFunc } from 'es-toolkit/compat';
+import throttle from 'es-toolkit/compat/throttle';
+import cloneDeepWith from 'es-toolkit/compat/cloneDeepWith';
+import isElement from 'es-toolkit/compat/isElement';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
 import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';

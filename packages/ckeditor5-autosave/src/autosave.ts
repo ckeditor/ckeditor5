@@ -20,7 +20,8 @@ import { DomEmitterMixin, type DomEmitter } from '@ckeditor/ckeditor5-utils';
 
 import type { ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 
-import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
+import type { DebouncedFunc } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 /**
  * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)

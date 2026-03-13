@@ -18,7 +18,7 @@ import {
 	type LabeledFieldView
 } from '@ckeditor/ckeditor5-ui';
 
-import { debounce } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 import { TablePropertiesView } from './ui/tablepropertiesview.js';
 import {

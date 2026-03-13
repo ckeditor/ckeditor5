@@ -40,7 +40,8 @@ import {
 	type EventInfo
 } from '@ckeditor/ckeditor5-utils';
 
-import { throttle, type DebouncedFunc } from 'es-toolkit/compat';
+import type { DebouncedFunc } from 'es-toolkit/compat';
+import throttle from 'es-toolkit/compat/throttle';
 
 import '../theme/widgetresize.css';
 

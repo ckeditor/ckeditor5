@@ -11,7 +11,7 @@ import { DomEmitterMixin } from './dom/emittermixin.js';
 import { ObservableMixin } from './observablemixin.js';
 import { CKEditorError } from './ckeditorerror.js';
 import type { View } from '@ckeditor/ckeditor5-ui';
-import { isElement as _isElement } from 'es-toolkit/compat';
+import _isElement from 'es-toolkit/compat/isElement';
 
 /**
  * Allows observing a group of DOM `Element`s or {@link module:ui/view~View view instances} whether at least one of them (or their child)

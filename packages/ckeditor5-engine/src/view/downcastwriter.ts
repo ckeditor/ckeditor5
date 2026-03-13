@@ -24,7 +24,7 @@ import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5
 import { ViewDocumentFragment } from './documentfragment.js';
 import { ViewText } from './text.js';
 import { ViewEditableElement } from './editableelement.js';
-import { isPlainObject } from 'es-toolkit/compat';
+import isPlainObject from 'es-toolkit/compat/isPlainObject';
 
 import { type ViewDocument } from './document.js';
 import { type ViewNode } from './node.js';
