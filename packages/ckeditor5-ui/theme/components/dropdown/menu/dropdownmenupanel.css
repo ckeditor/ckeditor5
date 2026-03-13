@@ -8,9 +8,19 @@
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
 	--ck-dropdown-menu-menu-panel-max-height: var(--ck-size-menu-panel-max-height);
 	--ck-dropdown-menu-menu-panel-shadow: var(--ck-shadow-surface-floating);
+	--ck-dropdown-menu-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-dropdown-menu-menu-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-menu-menu-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-menu-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-menu-menu-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-menu-menu-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-menu-menu-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-menu-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-dropdown-menu-menu-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
+	border-radius: var(--ck-dropdown-menu-menu-panel-border-radius);
 	box-shadow: var(--ck-dropdown-menu-menu-panel-shadow), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background);
@@ -31,22 +41,22 @@
 	/* Corner border radius consistent with the button. */
 	&.ck-balloon-panel_es,
 	&.ck-balloon-panel_se {
-		border-top-left-radius: 0;
+		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-es);
 	}
 
 	&.ck-balloon-panel_ws,
 	&.ck-balloon-panel_sw {
-		border-top-right-radius: 0;
+		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-ws);
 	}
 
 	&.ck-balloon-panel_en,
 	&.ck-balloon-panel_ne {
-		border-bottom-left-radius: 0;
+		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-en);
 	}
 
 	&.ck-balloon-panel_wn,
 	&.ck-balloon-panel_nw {
-		border-bottom-right-radius: 0;
+		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-wn);
 	}
 
 	&:focus {

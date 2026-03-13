@@ -7,6 +7,14 @@
 	--ck-menu-bar-menu-max-width: 75vw;
 	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
 	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-menu-bar-panel-border-radius-position-es: var(--ck-border-radius-surface-cut-top-left);
+	--ck-menu-bar-panel-border-radius-position-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-menu-bar-panel-border-radius-position-ws: var(--ck-border-radius-surface-cut-top-right);
+	--ck-menu-bar-panel-border-radius-position-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-menu-bar-panel-border-radius-position-en: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-menu-bar-panel-border-radius-position-ne: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-menu-bar-panel-border-radius-position-wn: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-menu-bar-panel-border-radius-position-nw: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-menu-bar-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-menu-bar-item-focus-ring: var(--ck-focus-ring-interactive);
 	--ck-menu-bar-item-focus-shadow: var(--ck-focus-shadow-interactive);
@@ -28,22 +36,22 @@
 	/* Corner border radius consistent with the button. */
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_se {
-		border-top-left-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-border-radius-position-es);
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_sw {
-		border-top-right-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-border-radius-position-ws);
 	}
 
 	&.ck-menu-bar__menu__panel_position_en,
 	&.ck-menu-bar__menu__panel_position_ne {
-		border-bottom-left-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-border-radius-position-en);
 	}
 
 	&.ck-menu-bar__menu__panel_position_wn,
 	&.ck-menu-bar__menu__panel_position_nw {
-		border-bottom-right-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-border-radius-position-wn);
 	}
 
 	&:focus {

@@ -5,6 +5,8 @@
 
 :root {
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-autocomplete-results-border-radius-n: var(--ck-border-radius-surface-attached-bottom);
+	--ck-autocomplete-results-border-radius-s: var(--ck-border-radius-surface-attached-top);
 	--ck-autocomplete-results-shadow: var(--ck-shadow-surface-floating);
 	--ck-autocomplete-results-max-height: var(--ck-size-autocomplete-max-height);
 	--ck-autocomplete-results-box-shadow: var(--ck-autocomplete-results-shadow), 0 0;
@@ -26,8 +28,7 @@
 		position: absolute;
 
 		&.ck-search__results_n {
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-autocomplete-results-border-radius-n);
 
 			/* Prevent duplicated borders between the input and the results pane. */
 			margin-bottom: var(--ck-autocomplete-results-margin-n);
@@ -35,8 +36,7 @@
 		}
 
 		&.ck-search__results_s {
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
+			border-radius: var(--ck-autocomplete-results-border-radius-s);
 
 			/* Prevent duplicated borders between the input and the results pane. */
 			margin-top: var(--ck-autocomplete-results-margin-s);

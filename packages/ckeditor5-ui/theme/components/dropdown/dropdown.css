@@ -7,6 +7,11 @@
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 	--ck-dropdown-max-width: 75vw;
 	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-dropdown-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
+	--ck-dropdown-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-dropdown-button-focus-shadow: var(--ck-focus-shadow-interactive);
 	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
@@ -78,8 +83,7 @@
 
 		/* https://github.com/ckeditor/ckeditor5/issues/816 */
 		&.ck-on {
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-dropdown-button-border-radius-on);
 		}
 
 		&.ck-dropdown__button_label-width_auto .ck-button__label {
@@ -179,19 +183,19 @@
 	/* Disabled corner border radius to be consistent with the .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
 	&.ck-dropdown__panel_se {
-		border-top-left-radius: 0;
+		border-radius: var(--ck-dropdown-panel-border-radius-se);
 	}
 
 	&.ck-dropdown__panel_sw {
-		border-top-right-radius: 0;
+		border-radius: var(--ck-dropdown-panel-border-radius-sw);
 	}
 
 	&.ck-dropdown__panel_ne {
-		border-bottom-left-radius: 0;
+		border-radius: var(--ck-dropdown-panel-border-radius-ne);
 	}
 
 	&.ck-dropdown__panel_nw {
-		border-bottom-right-radius: 0;
+		border-radius: var(--ck-dropdown-panel-border-radius-nw);
 	}
 
 	&:focus {

@@ -12,4 +12,12 @@
 
 	/* Radius for attached surfaces where one edge touches trigger/control. */
 	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);
+	--ck-border-radius-surface-attached-top: 0 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-attached-bottom: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 0;
+
+	/* Radius with one corner cut for positioned attached surfaces. */
+	--ck-border-radius-surface-cut-top-left: 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-top-right: var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-bottom-right: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-bottom-left: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0;
 }
