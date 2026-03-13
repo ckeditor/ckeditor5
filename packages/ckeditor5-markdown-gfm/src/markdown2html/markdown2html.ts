@@ -51,7 +51,9 @@ export class MarkdownGfmMdToHtml {
 	 * to HTML. By default, {@link MarkdownGfmMdToHtmlDefaultPlugins} are used. You can override the defaults by passing your own plugins.
 	 */
 	constructor( { plugins = MarkdownGfmMdToHtmlDefaultPlugins }: { plugins?: Record<string, Pluggable> } = {} ) {
-		this._processor = unified().use( Object.values( plugins ) );
+		this._processor = unified().use( {
+			plugins: Object.values( plugins )
+		} );
 	}
 
 	public parse( markdown: string ): string {
