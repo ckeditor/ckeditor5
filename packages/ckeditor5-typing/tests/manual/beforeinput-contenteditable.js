@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { debounce } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 if ( window.logNative === undefined ) {
 	window.logNative = true;

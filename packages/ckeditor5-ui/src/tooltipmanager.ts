@@ -22,7 +22,9 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import { isElement, debounce, type DebouncedFunc } from 'es-toolkit/compat';
+import isElement from 'es-toolkit/compat/isElement';
+import type { DebouncedFunc } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 import '../theme/components/tooltip/tooltip.css';
 

@@ -40,7 +40,8 @@ import {
 	type ModelSchema
 } from '@ckeditor/ckeditor5-engine';
 
-import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
+import type { DebouncedFunc } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 

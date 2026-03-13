@@ -17,7 +17,8 @@ import type {
 	ViewDocumentObserverSelectionEventData
 } from './selectionobserver.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
+import type { DebouncedFunc } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens

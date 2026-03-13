@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.45.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",

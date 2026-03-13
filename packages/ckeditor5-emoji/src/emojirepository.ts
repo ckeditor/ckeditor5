@@ -8,7 +8,7 @@
  */
 
 import fuzzysort from 'fuzzysort';
-import { groupBy } from 'es-toolkit/compat';
+import groupBy from 'es-toolkit/compat/groupBy';
 
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import { logWarning, version as editorVersion } from '@ckeditor/ckeditor5-utils';

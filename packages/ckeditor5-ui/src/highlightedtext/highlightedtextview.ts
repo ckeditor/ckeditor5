@@ -8,7 +8,7 @@
  */
 
 import { View } from '../view.js';
-import { escape } from 'es-toolkit/compat';
+import escape from 'es-toolkit/compat/escape';
 
 import '../../theme/components/highlightedtext/highlightedtext.css';
 

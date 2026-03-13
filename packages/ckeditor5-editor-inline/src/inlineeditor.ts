@@ -20,7 +20,7 @@ import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';
 
-import { isElement as _isElement } from 'es-toolkit/compat';
+import _isElement from 'es-toolkit/compat/isElement';
 
 /**
  * The inline editor implementation. It uses an inline editable and a floating toolbar.
