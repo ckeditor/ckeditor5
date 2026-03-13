@@ -9,9 +9,14 @@
 	--ck-list-padding-block: var(--ck-spacing-surface-padding-block);
 	--ck-list-item-padding-block: var(--ck-spacing-control-padding-block);
 	--ck-list-item-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
+	--ck-list-item-padding: var(--ck-list-item-padding-block) var(--ck-list-item-padding-inline);
 	--ck-list-group-gap: var(--ck-spacing-surface-section-gap-block);
 	--ck-list-label-padding-inline: var(--ck-spacing-control-meta-gap);
 	--ck-list-separator-gap: var(--ck-spacing-surface-item-gap-inline);
+	--ck-list-padding: var(--ck-list-padding-block) 0;
+	--ck-list-group-label-padding: var(--ck-list-group-gap) var(--ck-list-label-padding-inline) 0;
+	--ck-list-separator-margin: var(--ck-list-separator-gap) 0;
+	--ck-list-focused-item-layer: var(--ck-layer-base);
 }
 
 .ck.ck-list {
@@ -20,7 +25,7 @@
 	background: var(--ck-color-list-background);
 
 	/* A spacing at the beginning and end of the list */
-	padding: var(--ck-list-padding-block) 0;
+	padding: var(--ck-list-padding);
 	-webkit-user-select: none;
 	user-select: none;
 
@@ -37,7 +42,7 @@
 	adjacent list items. */
 	& .ck-list__item > *:focus {
 		position: relative;
-		z-index: var(--ck-z-default);
+		z-index: var(--ck-list-focused-item-layer);
 	}
 }
 
@@ -48,7 +53,7 @@
 	min-width: 15em;
 
 	& > .ck-button:not(.ck-list-item-button) {
-		padding: var(--ck-list-item-padding-block) var(--ck-list-item-padding-inline);
+		padding: var(--ck-list-item-padding);
 		min-height: unset;
 		width: 100%;
 		border-radius: 0;
@@ -123,7 +128,7 @@
 	& > .ck-label {
 		font-size: 11px;
 		font-weight: bold;
-		padding: var(--ck-list-group-gap) var(--ck-list-label-padding-inline) 0;
+		padding: var(--ck-list-group-label-padding);
 	}
 }
 
@@ -133,5 +138,5 @@
 	background: var(--ck-list-divider-color);
 
 	/* Give the separator some air */
-	margin: var(--ck-list-separator-gap) 0;
+	margin: var(--ck-list-separator-margin);
 }

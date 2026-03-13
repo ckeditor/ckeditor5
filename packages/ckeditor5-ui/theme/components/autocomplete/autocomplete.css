@@ -7,13 +7,17 @@
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
 	--ck-autocomplete-results-shadow: var(--ck-shadow-surface-floating);
 	--ck-autocomplete-results-max-height: var(--ck-size-autocomplete-max-height);
+	--ck-autocomplete-results-box-shadow: var(--ck-autocomplete-results-shadow), 0 0;
+	--ck-autocomplete-results-edge-overlap: 1px;
+	--ck-autocomplete-results-margin-n: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
+	--ck-autocomplete-results-margin-s: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
 	--ck-color-autocomplete-results-background: var(--ck-color-surface-container);
 }
 
 .ck.ck-autocomplete {
 	& > .ck-search__results {
 		border-radius: var(--ck-autocomplete-results-border-radius);
-		box-shadow: var(--ck-autocomplete-results-shadow), 0 0;
+		box-shadow: var(--ck-autocomplete-results-box-shadow);
 		max-height: var(--ck-autocomplete-results-max-height);
 		overflow-y: auto;
 		background: var(--ck-color-autocomplete-results-background);
@@ -26,7 +30,7 @@
 			border-bottom-right-radius: 0;
 
 			/* Prevent duplicated borders between the input and the results pane. */
-			margin-bottom: -1px;
+			margin-bottom: var(--ck-autocomplete-results-margin-n);
 			bottom: 100%;
 		}
 
@@ -35,7 +39,7 @@
 			border-top-right-radius: 0;
 
 			/* Prevent duplicated borders between the input and the results pane. */
-			margin-top: -1px;
+			margin-top: var(--ck-autocomplete-results-margin-s);
 			top: 100%;
 			bottom: auto;
 		}

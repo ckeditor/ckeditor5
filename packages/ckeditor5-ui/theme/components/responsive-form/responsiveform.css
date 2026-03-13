@@ -7,6 +7,7 @@
 	--ck-responsive-form-padding: var(--ck-spacing-region-edge-margin-block);
 	--ck-responsive-form-item-gap-inline: var(--ck-spacing-region-padding-inline);
 	--ck-responsive-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
+	--ck-responsive-form-mobile-item-margin-shorthand: var(--ck-responsive-form-mobile-item-margin) var(--ck-responsive-form-mobile-item-margin) 0;
 	--ck-responsive-form-mobile-button-padding: var(--ck-spacing-control-padding-inline);
 	--ck-responsive-form-mobile-button-margin: var(--ck-spacing-region-edge-margin-block);
 }
@@ -36,7 +37,7 @@
 		width: calc(.8 * var(--ck-input-width));
 
 		& .ck-labeled-field-view {
-			margin: var(--ck-responsive-form-mobile-item-margin) var(--ck-responsive-form-mobile-item-margin) 0;
+			margin: var(--ck-responsive-form-mobile-item-margin-shorthand);
 
 			& .ck-input-text,
 			& .ck-input-number {

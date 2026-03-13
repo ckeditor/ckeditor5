@@ -11,12 +11,13 @@
 	--ck-toolbar-separator-gap: var(--ck-spacing-surface-item-gap-block);
 	--ck-toolbar-group-gap-inline: var(--ck-spacing-surface-item-gap-inline);
 	--ck-toolbar-grouped-dropdown-padding-inline-start: var(--ck-spacing-control-padding-inline-start-compact);
+	--ck-toolbar-padding: 0 var(--ck-toolbar-padding-inline);
 }
 
 .ck.ck-toolbar {
 	border-radius: var(--ck-toolbar-border-radius);
 	background: var(--ck-color-toolbar-background);
-	padding: 0 var(--ck-toolbar-padding-inline);
+	padding: var(--ck-toolbar-padding);
 	border: 1px solid var(--ck-color-toolbar-border);
 	-webkit-user-select: none;
 	user-select: none;

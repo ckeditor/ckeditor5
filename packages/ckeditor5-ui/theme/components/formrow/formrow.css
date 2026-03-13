@@ -8,6 +8,7 @@
 	--ck-form-row-padding-inline: var(--ck-spacing-region-padding-inline-wide);
 	--ck-form-row-padding-block-lg: var(--ck-spacing-region-edge-margin-block);
 	--ck-form-row-item-gap-inline: var(--ck-spacing-region-padding-inline);
+	--ck-form-row-padding: var(--ck-form-row-padding-block-start) var(--ck-form-row-padding-inline) 0;
 }
 
 .ck.ck-form__row {
@@ -15,7 +16,7 @@
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding: var(--ck-form-row-padding-block-start) var(--ck-form-row-padding-inline) 0;
+	padding: var(--ck-form-row-padding);
 
 	&.ck-form__row_large-top-padding {
 		padding-top: var(--ck-form-row-padding-block-lg);

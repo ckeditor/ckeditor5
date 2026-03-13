@@ -5,28 +5,25 @@
 
 :root {
 	--ck-list-dropdown-panel-border-radius: var(--ck-dropdown-panel-border-radius);
+	--ck-list-dropdown-panel-attached-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
+	--ck-list-dropdown-item-first-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) 0 0;
+	--ck-list-dropdown-item-last-border-radius: 0 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
 }
 
 .ck.ck-dropdown > .ck-dropdown__panel > .ck-list {
 	/* Disabled radius of top-left border to be consistent with .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
-	border-radius: var(--ck-list-dropdown-panel-border-radius);
-	border-top-left-radius: 0;
+	border-radius: var(--ck-list-dropdown-panel-attached-border-radius);
 
 	/* Make sure the button belonging to the first/last child of the list goes well with the
 	border radius of the entire panel. */
 	& .ck-list__item {
 		&:first-child > .ck-button {
-			border-radius: var(--ck-list-dropdown-panel-border-radius);
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-list-dropdown-item-first-border-radius);
 		}
 
 		&:last-child > .ck-button {
-			border-radius: var(--ck-list-dropdown-panel-border-radius);
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
+			border-radius: var(--ck-list-dropdown-item-last-border-radius);
 		}
 	}
 }

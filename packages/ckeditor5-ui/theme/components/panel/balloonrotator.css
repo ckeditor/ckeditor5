@@ -5,6 +5,7 @@
 
 :root {
 	--ck-balloon-rotator-padding-inline: var(--ck-spacing-surface-padding-inline);
+	--ck-balloon-rotator-padding: 0 var(--ck-balloon-rotator-padding-inline);
 	--ck-balloon-rotator-item-gap-inline: var(--ck-spacing-surface-item-gap-inline);
 	--ck-balloon-rotator-item-gap-block: var(--ck-spacing-surface-item-gap-block);
 	--ck-balloon-rotator-counter-gap-inline: var(--ck-spacing-control-padding-inline);
@@ -13,7 +14,7 @@
 .ck .ck-balloon-rotator__navigation {
 	background: var(--ck-color-toolbar-background);
 	border-bottom: 1px solid var(--ck-color-toolbar-border);
-	padding: 0 var(--ck-balloon-rotator-padding-inline);
+	padding: var(--ck-balloon-rotator-padding);
 	display: flex;
 	align-items: center;
 

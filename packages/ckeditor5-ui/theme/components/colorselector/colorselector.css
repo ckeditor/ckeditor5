@@ -7,6 +7,13 @@
 	--ck-color-selector-picker-padding-block: calc(var(--ck-spacing-control-padding-inline) / 2);
 	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
 	--ck-color-selector-picker-icon-gap: var(--ck-spacing-control-padding-inline);
+	--ck-color-selector-hex-picker-padding: 8px;
+	--ck-color-selector-hex-picker-height: 100px;
+	--ck-color-selector-hex-picker-min-width: 180px;
+	--ck-color-selector-hex-picker-pointer-size: 15px;
+	--ck-color-selector-hex-picker-action-bar-padding: 0 var(--ck-color-selector-hex-picker-padding) var(--ck-color-selector-hex-picker-padding);
+	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
 }
 
 .ck.ck-color-selector {
@@ -52,30 +59,30 @@
 	/* View fragment with a color picker. */
 	& .ck-color-picker-fragment {
 		& .ck.ck-color-picker {
-			padding: 8px;
+			padding: var(--ck-color-selector-hex-picker-padding);
 
 			& .hex-color-picker {
-				height: 100px;
-				min-width: 180px;
+				height: var(--ck-color-selector-hex-picker-height);
+				min-width: var(--ck-color-selector-hex-picker-min-width);
 
 				&::part(saturation) {
-					border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+					border-radius: var(--ck-color-selector-saturation-border-radius);
 				}
 
 				&::part(hue) {
-					border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+					border-radius: var(--ck-color-selector-hue-border-radius);
 				}
 
 				&::part(saturation-pointer),
 				&::part(hue-pointer) {
-					width: 15px;
-					height: 15px;
+					width: var(--ck-color-selector-hex-picker-pointer-size);
+					height: var(--ck-color-selector-hex-picker-pointer-size);
 				}
 			}
 		}
 
 		& .ck.ck-color-selector_action-bar {
-			padding: 0 8px 8px;
+			padding: var(--ck-color-selector-hex-picker-action-bar-padding);
 			display: flex;
 			flex-direction: row;
 			justify-content: space-around;
@@ -86,7 +93,4 @@
 			}
 		}
 	}
-	/* View fragment with color grids. */
-
-	/* View fragment with a color picker. */
 }

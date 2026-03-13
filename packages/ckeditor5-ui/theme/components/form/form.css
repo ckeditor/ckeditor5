@@ -9,10 +9,12 @@
 	--ck-form-padding-block-end: var(--ck-spacing-region-edge-margin-block);
 	--ck-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
 	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-region-edge-margin-block);
+	--ck-form-padding: 0 0 var(--ck-form-padding-block-end);
+	--ck-form-mobile-item-margin-shorthand: var(--ck-form-mobile-item-margin) var(--ck-form-mobile-item-margin) 0;
 }
 
 .ck.ck-form {
-	padding: 0 0 var(--ck-form-padding-block-end);
+	padding: var(--ck-form-padding);
 
 	&.ck-form_default-width {
 		width: var(--ck-form-default-width);
@@ -54,7 +56,7 @@
 
 				> .ck {
 					@media screen and (max-width: 600px) {
-						margin: var(--ck-form-mobile-item-margin) var(--ck-form-mobile-item-margin) 0;
+						margin: var(--ck-form-mobile-item-margin-shorthand);
 					}
 				}
 

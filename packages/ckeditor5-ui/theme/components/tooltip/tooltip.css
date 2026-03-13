@@ -4,16 +4,32 @@
  */
 
 
-.ck.ck-balloon-panel.ck-tooltip {
-	--ck-balloon-border-width: 0px;
-	--ck-balloon-arrow-offset: 0px;
-	--ck-balloon-arrow-half-width: 4px;
-	--ck-balloon-arrow-height: 4px;
+:root {
 	--ck-tooltip-text-padding: 4px;
 	--ck-tooltip-padding-inline: var(--ck-spacing-control-icon-gap);
+	--ck-tooltip-padding: 0 var(--ck-tooltip-padding-inline);
+	--ck-tooltip-text-padding-block-inline: var(--ck-tooltip-text-padding) 0;
+	--ck-tooltip-arrow-half-width: 4px;
+	--ck-tooltip-arrow-height: 4px;
+	--ck-tooltip-balloon-border-width: 0px;
+	--ck-tooltip-balloon-arrow-offset: 0px;
+	--ck-tooltip-max-width: 200px;
+	--ck-tooltip-balloon-arrow-border-width: 0 var(--ck-tooltip-arrow-half-width) var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width);
+	--ck-tooltip-balloon-arrow-border-width-up: var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width) 0 var(--ck-tooltip-arrow-half-width);
+}
+
+.ck.ck-balloon-panel.ck-tooltip {
+	--ck-balloon-border-width: var(--ck-tooltip-balloon-border-width);
+	--ck-balloon-arrow-offset: var(--ck-tooltip-balloon-arrow-offset);
+	--ck-balloon-arrow-half-width: var(--ck-tooltip-arrow-half-width);
+	--ck-balloon-arrow-height: var(--ck-tooltip-arrow-height);
+	--ck-balloon-arrow-border-width: var(--ck-tooltip-balloon-arrow-border-width);
+	--ck-balloon-arrow-border-width-up: var(--ck-tooltip-balloon-arrow-border-width-up);
 	--ck-color-panel-background: var(--ck-color-tooltip-background);
 
-	padding: 0 var(--ck-tooltip-padding-inline);
+	padding: var(--ck-tooltip-padding);
+
+	z-index: var(--ck-layer-tooltip);
 
 	/* Reset balloon panel styles */
 	box-shadow: none;
@@ -29,14 +45,12 @@
 	&.ck-tooltip_multi-line .ck-tooltip__text {
 		white-space: break-spaces;
 		display: inline-block;
-		padding: var(--ck-tooltip-text-padding) 0;
-		max-width: 200px;
+		padding: var(--ck-tooltip-text-padding-block-inline);
+		max-width: var(--ck-tooltip-max-width);
 	}
 
 	/* Hide the default shadow of the .ck-balloon-panel tip */
 	&::before {
 		display: none;
 	}
-
-	z-index: var(--ck-layer-tooltip)
 }
