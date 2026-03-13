@@ -29,6 +29,10 @@ describe( 'Emoji integration', () => {
 				toolbar: 'emoji',
 				menubar: {
 					isVisible: true
+				},
+				// To prevent warnings from EmojiRepository about mixing commercial license with CDN.
+				emoji: {
+					definitionsUrl: 'cdn'
 				}
 			} )
 			.then( newEditor => {

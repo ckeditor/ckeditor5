@@ -210,8 +210,7 @@ const tasks = new Listr( [
 					task: async () => {
 						const filenamesToCopy = [
 							'CHANGELOG.md',
-							'README.md',
-							'COPYING.GPL'
+							'README.md'
 						];
 
 						for ( const filename of filenamesToCopy ) {
@@ -290,7 +289,6 @@ const tasks = new Listr( [
 						await fs.copy( translationsPath, `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
 						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 						await fs.copy( `./${ PACKAGES_DIRECTORY }/ckeditor5/LICENSE.md`, `./${ RELEASE_ZIP_DIRECTORY }/LICENSE.md` );
-						await fs.copy( './COPYING.GPL', `./${ RELEASE_ZIP_DIRECTORY }/COPYING.GPL` );
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 

@@ -106,6 +106,7 @@ class EvaluationBadgeView extends View<HTMLDivElement> {
  * Returns the license type based on the license key.
  */
 function getLicenseTypeFromLicenseKey( licenseKey: string ): string | null {
+	/* istanbul ignore if -- @preserve */
 	if ( licenseKey == 'GPL' ) {
 		return 'GPL';
 	}

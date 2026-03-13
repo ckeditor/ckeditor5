@@ -9,6 +9,7 @@ modified_at: 2024-11-20
 
 # Editor license and legal terms
 
+<!-- TODO: To update. -->
 CKEditor is dual-licensed. This means you can choose between an open-source and a commercial license.
 
 ## Open source license

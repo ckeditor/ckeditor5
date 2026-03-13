@@ -38,7 +38,6 @@
     "build/ckeditor5-dll.js",
     "build/ckeditor5-dll.manifest.json",
     "build/translations/*.js",
-    "COPYING.GPL",
     "CHANGELOG.md",
     "LICENSE.md",
     "README.md"
@@ -113,8 +112,8 @@
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-translations": "^54.3.4",
-    "@ckeditor/ckeditor5-dev-utils": "^54.3.4",
+    "@ckeditor/ckeditor5-dev-translations": "^54.5.0",
+    "@ckeditor/ckeditor5-dev-utils": "^54.5.0",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.3.3",
