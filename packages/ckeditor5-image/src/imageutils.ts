@@ -351,7 +351,7 @@ function getInsertImageParent( selection: ModelSelection | ModelDocumentSelectio
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
-	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
+	if ( parent.isEmpty && !parent.is( 'rootElement' ) ) {
 		return parent.parent!;
 	}
 

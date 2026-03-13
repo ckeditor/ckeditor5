@@ -51,6 +51,7 @@ export class ClassicEditorUIView extends BoxedEditorUIView {
 		editingView: EditingView,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
+			editableElementName?: string; // TODO docs
 			useMenuBar?: boolean;
 			label?: string | Record<string, string>;
 		} = {}
@@ -67,7 +68,7 @@ export class ClassicEditorUIView extends BoxedEditorUIView {
 			this.menuBarView = new MenuBarView( locale );
 		}
 
-		this.editable = new InlineEditableUIView( locale, editingView, undefined, {
+		this.editable = new InlineEditableUIView( locale, editingView, options.editableElementName, {
 			label: options.label
 		} );
 	}
