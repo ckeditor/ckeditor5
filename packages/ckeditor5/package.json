@@ -38,7 +38,6 @@
     "build/ckeditor5-dll.js",
     "build/ckeditor5-dll.manifest.json",
     "build/translations/*.js",
-    "COPYING.GPL",
     "CHANGELOG.md",
     "LICENSE.md",
     "README.md"
