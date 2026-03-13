@@ -70,8 +70,9 @@ export class MultiRootEditor extends Editor {
 	public readonly sourceElements: Record<string, HTMLElement>;
 
 	/**
-	 * Holds attributes keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
-	 * config property and should be returned by {@link #getRootsAttributes}.
+	 * Holds attributes keys that were passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 * and should be returned by {@link #getRootsAttributes}.
 	 */
 	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
@@ -142,7 +143,7 @@ export class MultiRootEditor extends Editor {
 		if ( this.config.get( 'rootsAttributes' ) ) {
 			/**
 			 * Using deprecated `config.rootsAttributes` configuration option.
-			 * Use `config.roots.<rootName>.modelElement.attributes` instead.
+			 * Use `config.roots.<rootName>.modelAttributes` instead.
 			 *
 			 * @error multi-root-editor-root-deprecated-config-roots-attributes
 			 */
@@ -163,14 +164,14 @@ export class MultiRootEditor extends Editor {
 			/**
 			 * Trying to set attributes on a non-existing root.
 			 *
-			 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
-			 * editor roots.
+			 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+			 * do not match initial editor roots.
 			 *
 			 * @error multi-root-editor-root-attributes-no-root
 			 */
 
 			// TODO is this correct for lazy root?
-			const attributes = rootConfig.modelElement?.attributes;
+			const attributes = rootConfig.modelAttributes;
 
 			if ( attributes ) {
 				for ( const key of Object.keys( attributes ) ) {
@@ -183,7 +184,7 @@ export class MultiRootEditor extends Editor {
 			this.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const [ rootName, rootConfig ] of rootsConfig ) {
 					// TODO check if should set on non loaded root.
-					const attributes = rootConfig.modelElement?.attributes || {};
+					const attributes = rootConfig.modelAttributes || {};
 					const root = this.model.document.getRoot( rootName )!;
 
 					for ( const [ key, value ] of Object.entries( attributes ) ) {
@@ -399,7 +400,7 @@ export class MultiRootEditor extends Editor {
 	 * Note that attributes added together with a root are automatically registered.
 	 *
 	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes` configuration option}.
 	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
@@ -513,8 +514,8 @@ export class MultiRootEditor extends Editor {
 	 * The new DOM editable is attached to the model root and can be used to modify the root content.
 	 *
 	 * @param root Root for which the editable element should be created.
-	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.placeholder`} will be used (if provided).
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
@@ -545,8 +546,8 @@ export class MultiRootEditor extends Editor {
 	}
 
 	/**
-	 * Loads a root that has previously been declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
-	 * configuration option.
+	 * Loads a root that has previously been declared in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.lazyLoad`} configuration option.
 	 *
 	 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following
 	 * known limitations:**
@@ -575,7 +576,7 @@ export class MultiRootEditor extends Editor {
 	 * Note that attributes loaded together with a root are automatically registered.
 	 *
 	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes` configuration option}.
 	 *
 	 * When this method is used in real-time collaboration environment, its effects become asynchronous as the editor will first synchronize
 	 * with the remote editing session, before the root is added to the editor.
@@ -671,9 +672,10 @@ export class MultiRootEditor extends Editor {
 	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
 	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
 	 *
-	 * Note: attributes passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes`} are
-	 * automatically registered as the editor is initialized. However, registering the same attribute twice does not have any negative
-	 * impact, so it is recommended to use this method in any feature that uses roots attributes.
+	 * Note: attributes passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 * are automatically registered as the editor is initialized. However, registering the same attribute twice does not have any
+	 * negative impact, so it is recommended to use this method in any feature that uses roots attributes.
 	 */
 	public registerRootAttribute( key: string ): void {
 		if ( this._registeredRootsAttributesKeys.has( key ) ) {
