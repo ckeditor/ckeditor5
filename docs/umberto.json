@@ -458,7 +458,8 @@
 	},
 	"hooks": {
 		"beforeHexo": [
-			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
+			"../scripts/docs/fetch-ckeditor5-lts-version.mjs",
+			"../scripts/docs/inject-ckbox-version.mjs"
 		]
 	},
 	"docsearch": {
@@ -921,8 +922,5 @@
 			"navigationIncludeIndex": true,
 			"slug": "support"
 		}
-	],
-	"variables": {
-		"CKBOX_VERSION": "2.11.0"
-	}
+	]
 }
