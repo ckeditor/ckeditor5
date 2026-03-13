@@ -9,13 +9,11 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "MathType",
-					"iconPath": "theme/icons/formula.svg"
+					"name": "MathType"
 				},
 				{
 					"type": "Button",
-					"name": "ChemType",
-					"iconPath": "theme/icons/chem.svg"
+					"name": "ChemType"
 				}
 			],
 			"htmlOutput": [
