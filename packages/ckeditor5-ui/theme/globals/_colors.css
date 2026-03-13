@@ -6,7 +6,7 @@
 @import "./colors/_foundation.css";
 @import "./colors/_semantic-surface.css";
 @import "./colors/_semantic-feedback.css";
-@import "./colors/_semantic-content.css";
+@import "./colors/_semantic-text.css";
 @import "./colors/_semantic-interactive.css";
 @import "./colors/_legacy-component-aliases.css";
 @import "./colors/_legacy-misc.css";

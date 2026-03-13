@@ -8,7 +8,7 @@
 	--ck-collapsible-arrow-gap: var(--ck-spacing-control-icon-gap);
 	--ck-collapsible-children-padding-block-start: var(--ck-spacing-surface-section-gap-block);
 	--ck-collapsible-children-padding-inline: var(--ck-spacing-control-meta-gap);
-	--ck-collapsible-children-padding-block-end: var(--ck-spacing-content-edge-margin-block);
+	--ck-collapsible-children-padding-block-end: var(--ck-spacing-region-edge-margin-block);
 }
 
 .ck.ck-collapsible {

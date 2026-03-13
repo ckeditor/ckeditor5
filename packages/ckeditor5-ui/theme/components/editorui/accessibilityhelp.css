@@ -10,7 +10,7 @@
 	--ck-accessibility-help-dialog-border-color: hsl(220, 6%, 81%);
 	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
 	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
-	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-content-edge-margin-block);
+	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-region-edge-margin-block);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {

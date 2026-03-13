@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-color-text-primary: var(--ck-color-base-text);
+	--ck-color-text-secondary: hsl(0, 0%, 46%);
+	--ck-color-text-disabled: hsl(0, 0%, 46%);
+	--ck-color-text-inverse: var(--ck-color-base-background);
+	--ck-color-text-error: var(--ck-color-feedback-error);
+
+	--ck-color-text: var(--ck-color-text-primary);
+}

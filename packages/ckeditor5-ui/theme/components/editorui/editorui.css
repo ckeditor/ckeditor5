@@ -8,8 +8,8 @@
 	--ck-editor-frame-border-radius: var(--ck-border-radius-surface);
 	--ck-editor-frame-border-color: var(--ck-color-border-container);
 	--ck-editor-editable-focus-ring: var(--ck-focus-ring-interactive);
-	--ck-editor-editable-padding-inline: var(--ck-spacing-content-padding-inline);
-	--ck-editor-editable-edge-margin-block: var(--ck-spacing-content-edge-margin-block);
+	--ck-editor-editable-padding-inline: var(--ck-spacing-region-padding-inline);
+	--ck-editor-editable-edge-margin-block: var(--ck-spacing-region-edge-margin-block);
 }
 
 .ck.ck-editor__top {

@@ -4,10 +4,10 @@
  */
 
 :root {
-	--ck-form-row-padding-block-start: var(--ck-spacing-content-padding-block);
-	--ck-form-row-padding-inline: var(--ck-spacing-content-padding-inline-wide);
-	--ck-form-row-padding-block-lg: var(--ck-spacing-content-edge-margin-block);
-	--ck-form-row-item-gap-inline: var(--ck-spacing-content-padding-inline);
+	--ck-form-row-padding-block-start: var(--ck-spacing-region-padding-block);
+	--ck-form-row-padding-inline: var(--ck-spacing-region-padding-inline-wide);
+	--ck-form-row-padding-block-lg: var(--ck-spacing-region-edge-margin-block);
+	--ck-form-row-item-gap-inline: var(--ck-spacing-region-padding-inline);
 }
 
 .ck.ck-form__row {

@@ -21,7 +21,7 @@
 	--ck-color-button-action-hover-background: var(--ck-color-interactive-primary-surface-hover);
 	--ck-color-button-action-active-background: var(--ck-color-interactive-primary-surface-hover);
 	--ck-color-button-action-disabled-background: hsl(104, 44%, 58%);
-	--ck-color-button-action-text: var(--ck-color-interactive-primary-content);
+	--ck-color-button-action-text: var(--ck-color-interactive-primary-text);
 
 	--ck-color-button-save: hsl(120, 100%, 27%);
 	--ck-color-button-cancel: hsl(15, 100%, 43%);
@@ -30,7 +30,7 @@
 	--ck-color-switch-button-off-hover-background: hsl(0, 0%, 49%);
 	--ck-color-switch-button-on-background: var(--ck-color-button-action-background);
 	--ck-color-switch-button-on-hover-background: var(--ck-color-interactive-primary-surface-hover);
-	--ck-color-switch-button-inner-background: var(--ck-color-content-inverse);
+	--ck-color-switch-button-inner-background: var(--ck-color-surface-canvas);
 	--ck-color-switch-button-inner-shadow: hsla(0, 0%, 0%, 0.1);
 
 	/* -- Dropdown ------------------------------------------------------------------------------ */
@@ -48,10 +48,10 @@
 	--ck-color-input-background: var(--ck-color-surface-control);
 	--ck-color-input-border: var(--ck-color-border-control);
 	--ck-color-input-error-border: var(--ck-color-feedback-error);
-	--ck-color-input-text: var(--ck-color-content-primary);
+	--ck-color-input-text: var(--ck-color-text-primary);
 	--ck-color-input-disabled-background: hsl(0, 0%, 95%);
 	--ck-color-input-disabled-border: var(--ck-color-border-control);
-	--ck-color-input-disabled-text: var(--ck-color-content-disabled);
+	--ck-color-input-disabled-text: var(--ck-color-text-disabled);
 
 	/* -- List ---------------------------------------------------------------------------------- */
 
@@ -59,7 +59,7 @@
 	--ck-color-list-button-hover-background: var(--ck-color-button-default-hover-background);
 	--ck-color-list-button-on-background: var(--ck-color-button-on-color);
 	--ck-color-list-button-on-background-focus: var(--ck-color-button-on-color);
-	--ck-color-list-button-on-text: var(--ck-color-content-inverse);
+	--ck-color-list-button-on-text: var(--ck-color-text-inverse);
 
 	/* -- Panel --------------------------------------------------------------------------------- */
 
@@ -74,5 +74,5 @@
 	/* -- Tooltip ------------------------------------------------------------------------------- */
 
 	--ck-color-tooltip-background: var(--ck-color-surface-inverse);
-	--ck-color-tooltip-text: var(--ck-color-content-inverse);
+	--ck-color-tooltip-text: var(--ck-color-text-inverse);
 }

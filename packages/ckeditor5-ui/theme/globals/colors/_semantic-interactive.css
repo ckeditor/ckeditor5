@@ -17,7 +17,7 @@
 
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
 	--ck-color-interactive-primary-surface-hover: hsl(104, 53.2%, 40.2%);
-	--ck-color-interactive-primary-content: var(--ck-color-content-inverse);
+	--ck-color-interactive-primary-text: var(--ck-color-text-inverse);
 
 	--ck-color-focus-border-coordinates: 218, 81.8%, 56.9%;
 	--ck-color-focus-border: hsl(var(--ck-color-focus-border-coordinates));

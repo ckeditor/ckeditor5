@@ -4,8 +4,8 @@
  */
 
 :root {
-	--ck-dialog-actions-padding: var(--ck-spacing-content-edge-margin-block);
-	--ck-dialog-actions-gap: var(--ck-spacing-content-edge-margin-block);
+	--ck-dialog-actions-padding: var(--ck-spacing-region-edge-margin-block);
+	--ck-dialog-actions-gap: var(--ck-spacing-region-edge-margin-block);
 }
 
 .ck.ck-dialog {

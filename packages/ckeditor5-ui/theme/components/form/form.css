@@ -6,9 +6,9 @@
 
 :root {
 	--ck-form-default-width: 340px;
-	--ck-form-padding-block-end: var(--ck-spacing-content-edge-margin-block);
-	--ck-form-mobile-item-margin: var(--ck-spacing-content-edge-margin-block);
-	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-content-edge-margin-block);
+	--ck-form-padding-block-end: var(--ck-spacing-region-edge-margin-block);
+	--ck-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
+	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-region-edge-margin-block);
 }
 
 .ck.ck-form {
