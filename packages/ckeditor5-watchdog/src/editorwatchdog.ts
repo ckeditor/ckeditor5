@@ -251,7 +251,10 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				delete updatedConfig.initialData;
 
 				// Also alias for main root should not provide initial data.
-				delete updatedConfig.root?.initialData;
+				// In fact, it should not provide any data as it is only an alias for the root defined in `config.roots`
+				// and it is the `config.roots` that should be used to set up the initial data for the main root.
+				// This would cause a crash while normalizing conflict when left as is.
+				delete updatedConfig.root;
 
 				return this.create( elementOrData, updatedConfig, updatedConfig.context );
 			} )
