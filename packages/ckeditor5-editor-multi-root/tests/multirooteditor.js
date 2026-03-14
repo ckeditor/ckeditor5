@@ -1268,7 +1268,7 @@ describe( 'MultiRootEditor', () => {
 			expect( editableElement.children[ 0 ].dataset.placeholder ).to.equal( 'new' );
 		} );
 
-		it( 'should alow for setting a custom label to the editable', () => {
+		it( 'should allow for setting a custom label to the editable', () => {
 			editor.addRoot( 'new' );
 
 			editor.createEditable( editor.model.document.getRoot( 'new' ), undefined, 'Custom label' );
