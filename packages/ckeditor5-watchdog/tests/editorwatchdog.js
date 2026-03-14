@@ -1604,14 +1604,10 @@ describe( 'EditorWatchdog', () => {
 					plugins: [ Paragraph ],
 					roots: {
 						header: {
-							modelElement: {
-								attributes: { order: 1 }
-							}
+							modelAttributes: { order: 1 }
 						},
 						content: {
-							modelElement: {
-								attributes: { order: 2 }
-							}
+							modelAttributes: { order: 2 }
 						},
 						lazyOne: {
 							lazyLoad: true
@@ -1744,17 +1740,13 @@ describe( 'EditorWatchdog', () => {
 					plugins: [ Paragraph, MultiRootEditorIntegration ],
 					roots: {
 						header: {
-							modelElement: {
-								attributes: {
-									order: 1
-								}
+							modelAttributes: {
+								order: 1
 							}
 						},
 						content: {
-							modelElement: {
-								attributes: {
-									order: 2
-								}
+							modelAttributes: {
+								order: 2
 							}
 						},
 						lazyOne: {
@@ -1843,15 +1835,11 @@ describe( 'EditorWatchdog', () => {
 				roots: {
 					header: {
 						initialData: '<p>Foo</p>',
-						modelElement: {
-							attributes: { order: 1 }
-						}
+						modelAttributes: { order: 1 }
 					},
 					content: {
 						initialData: '<p>Bar</p>',
-						modelElement: {
-							attributes: { order: 2 }
-						}
+						modelAttributes: { order: 2 }
 					}
 				},
 				placeholder: {
@@ -1890,15 +1878,11 @@ describe( 'EditorWatchdog', () => {
 				roots: {
 					header: {
 						initialData: '<p>Foo</p>',
-						modelElement: {
-							attributes: { order: 1 }
-						}
+						modelAttributes: { order: 1 }
 					},
 					content: {
 						initialData: '<p>Bar</p>',
-						modelElement: {
-							attributes: { order: 2 }
-						}
+						modelAttributes: { order: 2 }
 					}
 				},
 				placeholder: 'Type in some content'

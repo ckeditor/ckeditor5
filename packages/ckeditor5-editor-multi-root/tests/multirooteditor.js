@@ -1391,14 +1391,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10, isLocked: null }
-						}
+						modelAttributes: { order: 10, isLocked: null }
 					},
 					bar: {
-						modelElement: {
-							attributes: { order: null, isLocked: false }
-						}
+						modelAttributes: { order: null, isLocked: false }
 					}
 				}
 			} );
@@ -1419,14 +1415,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10 }
-						}
+						modelAttributes: { order: 10 }
 					},
 					bar: {
-						modelElement: {
-							attributes: { isLocked: false }
-						}
+						modelAttributes: { isLocked: false }
 					}
 				}
 			} );
@@ -1446,9 +1438,7 @@ describe( 'MultiRootEditor', () => {
 			MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					abc: {
-						modelElement: {
-							attributes: { order: 10, isLocked: null }
-						}
+						modelAttributes: { order: 10, isLocked: null }
 					}
 				}
 			} ).then(
@@ -1469,14 +1459,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10, isLocked: true }
-						}
+						modelAttributes: { order: 10, isLocked: true }
 					},
 					bar: {
-						modelElement: {
-							attributes: { order: 20, isLocked: false }
-						}
+						modelAttributes: { order: 20, isLocked: false }
 					}
 				}
 			} );
@@ -1503,14 +1489,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10 }
-						}
+						modelAttributes: { order: 10 }
 					},
 					bar: {
-						modelElement: {
-							attributes: {}
-						}
+						modelAttributes: {}
 					}
 				}
 			} );
@@ -1538,14 +1520,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10, isLocked: true }
-						}
+						modelAttributes: { order: 10, isLocked: true }
 					},
 					bar: {
-						modelElement: {
-							attributes: { order: 20, isLocked: false }
-						}
+						modelAttributes: { order: 20, isLocked: false }
 					}
 				}
 			} );
@@ -1572,14 +1550,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10, isLocked: null }
-						}
+						modelAttributes: { order: 10, isLocked: null }
 					},
 					bar: {
-						modelElement: {
-							attributes: { order: null, isLocked: false }
-						}
+						modelAttributes: { order: null, isLocked: false }
 					}
 				}
 			} );
@@ -1631,14 +1605,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10, isLocked: true }
-						}
+						modelAttributes: { order: 10, isLocked: true }
 					},
 					bar: {
-						modelElement: {
-							attributes: { order: 20, isLocked: false }
-						}
+						modelAttributes: { order: 20, isLocked: false }
 					}
 				}
 			} );
@@ -1671,14 +1641,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10 }
-						}
+						modelAttributes: { order: 10 }
 					},
 					bar: {
-						modelElement: {
-							attributes: {}
-						}
+						modelAttributes: {}
 					}
 				}
 			} );
@@ -1711,14 +1677,10 @@ describe( 'MultiRootEditor', () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
-						modelElement: {
-							attributes: { order: 10, isLocked: true }
-						}
+						modelAttributes: { order: 10, isLocked: true }
 					},
 					bar: {
-						modelElement: {
-							attributes: { order: 20, isLocked: false }
-						}
+						modelAttributes: { order: 20, isLocked: false }
 					},
 					xxx: { lazyLoad: true },
 					yyy: { lazyLoad: true }

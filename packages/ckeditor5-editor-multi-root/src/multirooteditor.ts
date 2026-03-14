@@ -142,7 +142,7 @@ export class MultiRootEditor extends Editor {
 		if ( this.config.get( 'rootsAttributes' ) ) {
 			/**
 			 * Using deprecated `config.rootsAttributes` configuration option.
-			 * Use `config.roots.<rootName>.modelElement.attributes` instead.
+			 * Use `config.roots.<rootName>.modelAttributes` instead.
 			 *
 			 * @error multi-root-editor-root-deprecated-config-roots-attributes
 			 */
@@ -170,7 +170,7 @@ export class MultiRootEditor extends Editor {
 			 */
 
 			// TODO is this correct for lazy root?
-			const attributes = rootConfig.modelElement?.attributes;
+			const attributes = rootConfig.modelAttributes;
 
 			if ( attributes ) {
 				for ( const key of Object.keys( attributes ) ) {
@@ -183,7 +183,7 @@ export class MultiRootEditor extends Editor {
 			this.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const [ rootName, rootConfig ] of rootsConfig ) {
 					// TODO check if should set on non loaded root.
-					const attributes = rootConfig.modelElement?.attributes || {};
+					const attributes = rootConfig.modelAttributes || {};
 					const root = this.model.document.getRoot( rootName )!;
 
 					for ( const [ key, value ] of Object.entries( attributes ) ) {

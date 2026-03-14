@@ -245,7 +245,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 					if ( rootData.isLoaded ) {
 						rootConfig.lazyLoad = false;
 					} else {
-						delete rootConfig.modelElement?.attributes;
+						delete rootConfig.modelAttributes;
 					}
 
 					updatedRootsConfig[ rootName ] = rootConfig;

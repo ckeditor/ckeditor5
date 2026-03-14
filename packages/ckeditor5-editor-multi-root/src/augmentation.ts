@@ -6,7 +6,7 @@
 import { type RootAttributes } from './multirooteditor.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface RootModelElementConfig {
+	interface RootConfig {
 
 		/**
 		 * Initial root attributes for a single root.
@@ -39,24 +39,16 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * 	{
 		 * 		roots: {
 		 * 			uid1: {
-		 * 				modelElement: {
-		 * 					attributes: { order: 20, isLocked: false } // Third, unlocked.
-		 * 				}
+		 * 				modelAttributes: { order: 20, isLocked: false } // Third, unlocked.
 		 * 			},
 		 * 			uid2: {
-		 * 				modelElement: {
-		 * 					attributes: { order: 10, isLocked: true } // Second, locked.
-		 * 				}
+		 * 				modelAttributes: { order: 10, isLocked: true } // Second, locked.
 		 * 			},
 		 * 			uid3: {
-		 * 				modelElement: {
-		 * 					attributes: { order: 30, isLocked: true } // Fourth, locked.
-		 * 				}
+		 * 				modelAttributes: { order: 30, isLocked: true } // Fourth, locked.
 		 * 			},
 		 * 			uid4: {
-		 * 				modelElement: {
-		 * 					attributes: { order: 0, isLocked: false } // First, unlocked.
-		 * 				}
+		 * 				modelAttributes: { order: 0, isLocked: false } // First, unlocked.
 		 * 			}
 		 * 		}
 		 * 	}
@@ -94,19 +86,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * } );
 		 * ```
 		 */
-		attributes?: RootAttributes;
-	}
-
-	interface RootConfig {
-
-		/**
-		 * Configuration for the root model element of the root.
-		 * This is a configuration object for the model element that will be created for the root in the editor's model.
-		 *
-		 * **Note: This configuration option is supported only by the
-		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
-		 */
-		modelElement?: RootModelElementConfig;
+		modelAttributes?: RootAttributes;
 
 		/**
 		 * Flag for the root that exist in the document but is not initially loaded by the editor.
