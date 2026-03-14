@@ -84,7 +84,7 @@ export class MultiRootEditorUIView extends EditorUIView {
 
 		// Create `InlineEditableUIView` instance for each editable.
 		for ( const editableName of editableNames ) {
-			const editableElement = options.editableElements ? options.editableElements[ editableName ] : undefined;
+			const editableElement = options.editableElements?.[ editableName ];
 			let { label } = options;
 
 			if ( typeof label === 'object' ) {

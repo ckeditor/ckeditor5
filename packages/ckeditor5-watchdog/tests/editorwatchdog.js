@@ -1602,15 +1602,20 @@ describe( 'EditorWatchdog', () => {
 					content: '<p>Bar</p>'
 				}, {
 					plugins: [ Paragraph ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							modelAttributes: { order: 1 }
 						},
 						content: {
-							order: 2
+							modelAttributes: { order: 2 }
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1640,6 +1645,7 @@ describe( 'EditorWatchdog', () => {
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
 
+				// Wait for throttled save.
 				clock.tick( 6000 );
 				clock.restore();
 
@@ -1732,15 +1738,24 @@ describe( 'EditorWatchdog', () => {
 						content: '<p>Bar</p>'
 					},
 					plugins: [ Paragraph, MultiRootEditorIntegration ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							modelAttributes: {
+								order: 1
+							}
 						},
 						content: {
-							order: 2
+							modelAttributes: {
+								order: 2
+							}
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1812,6 +1827,89 @@ describe( 'EditorWatchdog', () => {
 					lazyTwo: { order: 5 }
 				} );
 			} );
+		} );
+
+		it( 'should recover original legacy placeholders after restart', async () => {
+			await watchdog.create( {}, {
+				plugins: [ Paragraph ],
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelAttributes: { order: 1 }
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelAttributes: { order: 2 }
+					}
+				},
+				placeholder: {
+					header: 'Type in header',
+					content: 'Type in content'
+				}
+			} );
+
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			const editables = watchdog.editor.ui.view.editables;
+
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in header' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in content' );
+		} );
+
+		it( 'should recover original legacy placeholder after restart', async () => {
+			await watchdog.create( {}, {
+				plugins: [ Paragraph ],
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelAttributes: { order: 1 }
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelAttributes: { order: 2 }
+					}
+				},
+				placeholder: 'Type in some content'
+			} );
+
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			const editables = watchdog.editor.ui.view.editables;
+
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
 		} );
 	} );
 } );

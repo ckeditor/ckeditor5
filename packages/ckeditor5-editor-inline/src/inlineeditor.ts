@@ -12,10 +12,12 @@ import {
 	ElementApiMixin,
 	attachToForm,
 	secureSourceElement,
+	normalizeRootsConfig,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
-import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
+
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';
@@ -54,20 +56,11 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 */
 	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
-		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
-
 		super( config );
 
-		this.config.define( 'menuBar.isVisible', false );
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
-		}
+		this.config.define( 'menuBar.isVisible', false );
 
 		this.model.document.createRoot();
 
@@ -83,7 +76,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
-			label: this.config.get( 'label' )
+			label: this.config.get( 'roots' )!.main.label
 		} );
 		this.ui = new InlineEditorUI( this, view );
 
@@ -156,14 +149,16 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 * # Using an existing DOM element (and data provided in `config.initialData`)
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
 	 * ```ts
 	 * InlineEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( editor => {
 	 * 		console.log( 'Editor was initialized', editor );
@@ -210,16 +205,12 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
-}
-
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
 
 function isElement( value: any ): value is Element {
