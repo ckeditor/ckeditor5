@@ -524,7 +524,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 // Proper overload would interfere with that.
 Marker.prototype.is = function( type: string ): boolean {
 	return type === 'marker' || type === 'model:marker';
-};
+} as any;
 
 export { Marker };
 

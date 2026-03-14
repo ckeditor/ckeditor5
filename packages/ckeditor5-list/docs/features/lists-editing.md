@@ -69,7 +69,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
+This feature only works for pasted contents or on data load, it does not support entering adjacent lists via the editor UI. Find more about it in the `#changes-to-list-merging` section of `Update to 41.x` guide in the {@link updating/updating-from-older-versions updating from older versions}  guide. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
 
 ## Indenting lists
 
@@ -82,4 +82,8 @@ The target behavior comes from two other plugins:
 * {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
 * {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
 
-This means that if you want to allow indenting lists only, you can do that by loading just the `Indent` and `List` plugins.<!-- If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`). -->
+This means that if you want to allow indenting lists only, you can do that by loading just the `Indent` and `List` plugins.
+
+When both the `IndentBlock` and `List` plugins are loaded, the editor also supports visual block indentation of list containers (`<ol>`, `<ul>`) and list items (`<li>`), applying a `margin-left` style or CSS class. Refer to the {@link features/indent#indenting-lists Indenting lists} section in the block indentation guide for details on the behavior, UX, and configuration.
+
+If you want the full behavior &ndash; nesting list items, block indentation of paragraphs, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.

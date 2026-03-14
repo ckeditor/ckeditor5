@@ -65,7 +65,7 @@ msgstr "Zeile"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Zelle verbinden"
+msgstr "Zelle oben verbinden"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"

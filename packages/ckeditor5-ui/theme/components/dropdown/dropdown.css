@@ -4,22 +4,94 @@
  */
 
 :root {
+	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 	--ck-dropdown-max-width: 75vw;
 }
 
 .ck.ck-dropdown {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
 	display: inline-block;
 	position: relative;
 
 	& .ck-dropdown__arrow {
+		width: var(--ck-dropdown-arrow-size);
 		pointer-events: none;
 		z-index: var(--ck-z-default);
 	}
 
-	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
-	& .ck-button.ck-dropdown__button {
-		width: 100%;
+	[dir="ltr"] & {
+		& .ck-dropdown__arrow {
+			right: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-left: var(--ck-spacing-standard);
+		}
 	}
+
+	[dir="rtl"] & {
+		& .ck-dropdown__arrow {
+			left: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-right: var(--ck-spacing-small);
+		}
+	}
+
+	&.ck-disabled .ck-dropdown__arrow {
+		opacity: var(--ck-disabled-opacity);
+	}
+
+	& .ck-button.ck-dropdown__button {
+		[dir="ltr"] & {
+			&:not(.ck-button_with-text) {
+				/* Make sure dropdowns with just an icon have the right inner spacing */
+				padding-left: var(--ck-spacing-small);
+			}
+		}
+
+		[dir="rtl"] & {
+			&:not(.ck-button_with-text) {
+				/* Make sure dropdowns with just an icon have the right inner spacing */
+				padding-right: var(--ck-spacing-small);
+			}
+		}
+
+		/* #23 */
+		& .ck-button__label {
+			width: 7em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/3362 */
+		&.ck-disabled .ck-button__label {
+			opacity: var(--ck-disabled-opacity);
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/816 */
+		&.ck-on {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		&.ck-dropdown__button_label-width_auto .ck-button__label {
+			width: auto;
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/8699 */
+		&.ck-off:active,
+		&.ck-on:active {
+			box-shadow: none;
+
+			&:focus {
+				box-shadow: var(--ck-focus-outer-shadow), 0 0;
+			}
+		}
+		width: 100%
+	}
+
+	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
 
 	& .ck-dropdown__panel {
 		display: none;
@@ -86,10 +158,45 @@
 	}
 }
 
+.ck.ck-dropdown__panel {
+	border-radius: var(--ck-rounded-corners-radius);
+	box-shadow: var(--ck-drop-shadow), 0 0;
+
+	background: var(--ck-color-dropdown-panel-background);
+	border: 1px solid var(--ck-color-dropdown-panel-border);
+	bottom: 0;
+
+	/* Make sure the panel is at least as wide as the drop-down's button. */
+	min-width: 100%;
+
+	/* Disabled corner border radius to be consistent with the .dropdown__button
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	&.ck-dropdown__panel_se {
+		border-top-left-radius: 0;
+	}
+
+	&.ck-dropdown__panel_sw {
+		border-top-right-radius: 0;
+	}
+
+	&.ck-dropdown__panel_ne {
+		border-bottom-left-radius: 0;
+	}
+
+	&.ck-dropdown__panel_nw {
+		border-bottom-right-radius: 0;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}
+
 /*
  * Toolbar dropdown panels should be always above the UI (eg. other dropdown panels) from the editor's content.
  * See https://github.com/ckeditor/ckeditor5/issues/7874
  */
+
 .ck.ck-toolbar .ck-dropdown__panel {
 	z-index: calc( var(--ck-z-panel) + 1 );
 }

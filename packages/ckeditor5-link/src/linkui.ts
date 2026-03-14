@@ -7,15 +7,15 @@
  * @module link/linkui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { IconLink, IconPencil, IconUnlink, IconSettings } from 'ckeditor5/src/icons.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { IconLink, IconPencil, IconUnlink, IconSettings } from '@ckeditor/ckeditor5-icons';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
 	type ViewDocumentClickEvent,
 	type ViewElement,
 	type ViewPosition
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 import {
 	ButtonView,
 	SwitchButtonView,
@@ -26,10 +26,10 @@ import {
 	ToolbarView,
 	type ViewWithCssTransitionDisabler,
 	type ButtonExecuteEvent
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
-import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
-import { isWidget } from 'ckeditor5/src/widget.js';
+import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions } from '@ckeditor/ckeditor5-utils';
+import { isWidget } from '@ckeditor/ckeditor5-widget';
 
 import { LinkEditing } from './linkediting.js';
 
@@ -442,8 +442,10 @@ export class LinkUI extends Plugin {
 			} );
 
 			button.on( 'execute', () => {
-				manualDecorator.set( 'value', !button.isOn );
-				editor.execute( 'link', linkCommand.value!, this._getDecoratorSwitchesState() );
+				editor.execute( 'link', linkCommand.value!, {
+					...this._getDecoratorSwitchesState(),
+					[ manualDecorator.id ]: !button.isOn
+				} );
 			} );
 
 			return button;
@@ -460,7 +462,7 @@ export class LinkUI extends Plugin {
 
 		return Array
 			.from( linkCommand.manualDecorators )
-			.reduce( ( accumulator, manualDecorator ) => {
+			.reduce<Record<string, boolean>>( ( accumulator, manualDecorator ) => {
 				const value = linkCommand.value === undefined && manualDecorator.value === undefined ?
 					manualDecorator.defaultValue :
 					manualDecorator.value;
@@ -469,7 +471,7 @@ export class LinkUI extends Plugin {
 					...accumulator,
 					[ manualDecorator.id ]: !!value
 				};
-			}, {} as Record<string, boolean> );
+			}, {} );
 	}
 
 	/**

@@ -5,17 +5,17 @@
 			"className": "Indent",
 			"description": "Implements the core of the indent feature. It requires compatible plugins, such as indent block or list, to work.",
 			"docs": "features/indent.html",
-			"path": "src/indent.js",
+			"path": "src/indent.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "indent",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/indent.svg"
+					"iconName": "IconIndent"
 				},
 				{
 					"type": "Button",
 					"name": "outdent",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/outdent.svg"
+					"iconName": "IconOutdent"
 				}
 			]
 		},
@@ -24,7 +24,7 @@
 			"className": "IndentBlock",
 			"description": "The indent block feature, together with the indent feature, controls the indentation of elements such as paragraphs and headings.",
 			"docs": "features/indent.html",
-			"path": "src/indentblock.js",
+			"path": "src/indentblock.ts",
 			"requires": [
 				"Indent"
 			],
@@ -39,6 +39,40 @@
 				},
 				{
 					"elements": "$block",
+					"classes": "*",
+					"isAlternative": true,
+					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles."
+				}
+			]
+		},
+		{
+			"name": "Indent block list integration",
+			"className": "IndentBlockListIntegration",
+			"description": "Provides block indentation integration for lists, enabling indent and outdent of lists and list items.",
+			"docs": "features/indent.html",
+			"path": "src/integrations/indentblocklistintegration.ts",
+			"requires": [
+				"IndentBlock"
+			],
+			"htmlOutput": [
+				{
+					"elements": [
+						"ol",
+						"ul",
+						"li"
+					],
+					"styles": [
+						"margin-left",
+						"margin-right"
+					],
+					"_comment": "By default, the plugin uses inline styles for indentation."
+				},
+				{
+					"elements": [
+						"ol",
+						"ul",
+						"li"
+					],
 					"classes": "*",
 					"isAlternative": true,
 					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles."

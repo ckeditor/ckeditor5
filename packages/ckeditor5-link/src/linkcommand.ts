@@ -7,14 +7,15 @@
  * @module link/linkcommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
-import { findAttributeRange } from 'ckeditor5/src/typing.js';
-import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { ModelLivePosition, type ModelRange, type ModelItem, type ModelTextProxy } from 'ckeditor5/src/engine.js';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { findAttributeRange } from '@ckeditor/ckeditor5-typing';
+import { Collection, diff, first, toMap } from '@ckeditor/ckeditor5-utils';
+import { ModelLivePosition, type ModelRange, type ModelItem, type ModelTextProxy } from '@ckeditor/ckeditor5-engine';
 
 import { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
 import { type LinkManualDecorator } from './utils/manualdecorator.js';
+import { resolveConflictingDecorators } from './utils/conflictingdecorators.js';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -163,12 +164,18 @@ export class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
+		// Resolve conflicting decorators and get the final decorator states.
+		const resolvedDecoratorsIds = resolveConflictingDecorators( {
+			allDecorators: Array.from( this.manualDecorators ),
+			decoratorStates: manualDecoratorIds
+		} );
+
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
 
-		for ( const name in manualDecoratorIds ) {
-			if ( manualDecoratorIds[ name ] ) {
+		for ( const name in resolvedDecoratorsIds ) {
+			if ( resolvedDecoratorsIds[ name ] ) {
 				truthyManualDecorators.push( name );
 			} else {
 				falsyManualDecorators.push( name );
@@ -362,6 +369,8 @@ export class LinkCommand extends Command {
 				} ) );
 			}
 		} );
+
+		this.restoreManualDecoratorStates();
 	}
 
 	/**

@@ -3,7 +3,7 @@ category: tables
 menu-title: Layout tables
 meta-title: Layout tables | CKEditor 5 Documentation
 meta-description: Add support for different table types to distinguish between content tables and layout tables and allow to create table-based layouts.
-order: 50
+order: 60
 modified_at: 2025-04-07
 badges: [ premium ]
 ---
@@ -125,6 +125,29 @@ ClassicEditor
 		table: {
 			tableLayout :{
 				preferredExternalTableType: 'content' // or 'layout'
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+### Stripping the `<figure>` wrapper from content tables
+
+By default, the `<figure>` wrapper is preserved on content tables. To strip the `<figure>` element, set the {@link module:table/tableconfig~TableLayoutConfig#stripFigureFromContentTable `config.table.tableLayout.stripFigureFromContentTable`} option to `true`.
+
+<code-switcher>
+```js
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Table, TableLayout /* ... */ ],
+		table: {
+			tableLayout :{
+				stripFigureFromContentTable: true // or false
 			}
 		}
 	} )

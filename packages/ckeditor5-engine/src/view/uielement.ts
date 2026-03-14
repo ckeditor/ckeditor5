@@ -144,7 +144,7 @@ export class ViewUIElement extends ViewElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewUIElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewUIElement.prototype.is = function( this: ViewUIElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'uiElement' || type === 'view:uiElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -156,7 +156,7 @@ ViewUIElement.prototype.is = function( type: string, name?: string ): boolean {
 			type === 'element' || type === 'view:element'
 		);
 	}
-};
+} as any;
 
 /**
  * This function injects UI element handling to the given {@link module:engine/view/document~ViewDocument document}.

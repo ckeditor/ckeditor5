@@ -16,7 +16,7 @@ import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
 import IS_COMMUNITY_PR from './is-community-pr.mjs';
-import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import { parseArgs } from 'node:util';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
@@ -39,14 +39,38 @@ const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
 ];
 
+const FRAMEWORK_PACKAGES = [
+	'ckeditor5-clipboard',
+	'ckeditor5-core',
+	'ckeditor5-engine',
+	'ckeditor5-enter',
+	'ckeditor5-icons',
+	'ckeditor5-paragraph',
+	'ckeditor5-select-all',
+	'ckeditor5-typing',
+	'ckeditor5-ui',
+	'ckeditor5-undo',
+	'ckeditor5-upload',
+	'ckeditor5-utils',
+	'ckeditor5-watchdog',
+	'ckeditor5-widget'
+];
+
 const { values: options } = parseArgs( {
 	options: {
 		'chrome-version': {
 			type: 'string',
 			default: 'latest'
+		},
+		// A boolean flag does not accept positional arguments. Hence, `string`, and custom casting.
+		'is-lts-pipeline': {
+			type: 'string',
+			default: 'false'
 		}
 	}
 } );
+
+const isLtsPipeline = options[ 'is-lts-pipeline' ] === 'true';
 
 const bootstrapCommands = () => ( [
 	'checkout_command',
@@ -87,12 +111,8 @@ const persistToWorkspace = fileName => ( {
 } );
 
 ( async () => {
-	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'src' ) ) )
-		.filter( filename => !filename.startsWith( 'index' ) )
-		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
-
 	const featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_PATH, 'packages' ) } ) )
-		.filter( packageName => !frameworkPackages.includes( packageName ) );
+		.filter( packageName => !FRAMEWORK_PACKAGES.includes( packageName ) );
 
 	featurePackages.sort();
 
@@ -142,7 +162,7 @@ const persistToWorkspace = fileName => ( {
 		steps: [
 			...bootstrapCommands(),
 			prepareCodeCoverageDirectories(),
-			...generateTestSteps( frameworkPackages, {
+			...generateTestSteps( FRAMEWORK_PACKAGES, {
 				checkCoverage: true,
 				coverageFile: '.out/combined_framework.info'
 			} ),
@@ -171,6 +191,31 @@ const persistToWorkspace = fileName => ( {
 			]
 		};
 	} );
+
+	// Force using the `GPL` license by default.
+	if ( !isLtsPipeline ) {
+		const environment = {
+			CKEDITOR_LICENSE_KEY: 'GPL'
+		};
+
+		for ( const jobName of [ 'cke5_manual', 'cke5_tests_framework' ] ) {
+			config.jobs[ jobName ].environment ??= {};
+
+			config.jobs[ jobName ].environment = {
+				...config.jobs[ jobName ].environment,
+				...environment
+			};
+		}
+
+		featureTestBatches.forEach( ( _, batchIndex ) => {
+			config.jobs[ featureTestBatchNames[ batchIndex ] ].environment ??= {};
+
+			config.jobs[ featureTestBatchNames[ batchIndex ] ].environment = {
+				...config.jobs[ featureTestBatchNames[ batchIndex ] ].environment,
+				...environment
+			};
+		} );
+	}
 
 	Object.values( config.workflows ).forEach( workflow => {
 		if ( !( workflow instanceof Object ) ) {

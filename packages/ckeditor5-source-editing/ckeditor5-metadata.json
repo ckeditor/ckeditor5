@@ -5,12 +5,12 @@
 			"className": "SourceEditing",
 			"description": "Allows for viewing and editing the source of the document.",
 			"docs": "features/source-editing/source-editing.html",
-			"path": "src/sourceediting.js",
+			"path": "src/sourceediting.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "sourceEditing",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/source.svg"
+					"iconName": "IconSource"
 				}
 			]
 		}

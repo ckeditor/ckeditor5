@@ -3,27 +3,62 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "../../mixins/_dir.css";
+
+.ck.ck-button.ck-list-item-button {
+	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+
+	&,
+	&.ck-on {
+		background: var(--ck-color-list-background);
+		color: var(--ck-color-text);
+	}
+
+	&:has(.ck-list-item-button__check-holder) {
+		[dir="ltr"] & {
+			padding-left: var(--ck-spacing-small);
+		}
+
+		[dir="rtl"] & {
+			padding-right: var(--ck-spacing-small);
+		}
+	}
+
+	/*
+	 * `.ck-on` class and background styling is overridden for `ck-button` in many places.
+	 * This is a workaround to make sure that the background is not overridden and uses similar
+	 * selector specificity as the other overrides.
+	 */
+	&:hover:not(.ck-disabled),
+	&.ck-button.ck-on:hover,
+	&.ck-on:not(.ck-list-item-button_toggleable),
+	&.ck-on:hover {
+		background: var(--ck-color-list-button-hover-background);
+
+		&:not(.ck-disabled) {
+			color: var(--ck-color-text);
+		}
+	}
+}
 
 .ck.ck-list-item-button {
 	min-height: unset;
 	width: 100%;
 	border-radius: 0;
 
-	@mixin ck-dir ltr {
+	[dir="ltr"] & {
 		text-align: left;
 	}
 
-	@mixin ck-dir rtl {
+	[dir="rtl"] & {
 		text-align: right;
 	}
 
 	&.ck-list-item-button_toggleable {
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			padding-left: var(--ck-spacing-small);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			padding-right: var(--ck-spacing-small);
 		}
 	}
@@ -33,11 +68,11 @@
 		width: .9em;
 		height: .9em;
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			margin-right: var(--ck-spacing-small);
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			margin-left: var(--ck-spacing-small);
 		}
 	}

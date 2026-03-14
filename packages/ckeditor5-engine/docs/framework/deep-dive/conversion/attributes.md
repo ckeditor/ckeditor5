@@ -17,7 +17,7 @@ Generally speaking, there are two main types of content in the editor view and d
 
 The inline content means elements like `<strong>`, `<a>`, or `<span>`. Unlike `<p>`, `<blockquote>`, or `<div>`, the inline elements do not structure the data. Instead, they format some text in a specific (visual and semantical) way. These elements are characteristic of text. For instance, you could say that some part of the text is bold, is linked, and so on. This concept has its reflection in the model of the rich-text editor, where `<a>` or `<strong>` are not represented as elements. Instead, they are the attributes of the text.
 
-For example &ndash; in the model, you might have a `<paragraph>` element with the "Foo bar" text, where "bar" has the `bold` attribute set to `true`. A pseudo–code of this *model* data structure could look as follows:
+For example &ndash; in the model, you might have a `<paragraph>` element with the "Foo bar" text, where "bar" has the `bold` attribute set to `true`. A pseudo-code of this *model* data structure could look as follows:
 
 ```html
 <paragraph>
@@ -127,5 +127,5 @@ If you need to keep attributes separated (for example, to prevent merging betwee
 
 If you want to learn more about converting model attributes, we recommend checking out the following guides:
 
-* {@link tutorials/widgets/implementing-a-block-widget#defining-converters Implementing a block widget} &mdash; A practical tutorial showing conversion in action.
-* {@link tutorials/widgets/implementing-an-inline-widget#defining-converters Implementing an inline widget} &mdash; Learn how to implement inline widgets with custom conversion.
+* {@link tutorials/widgets/implementing-a-block-widget#defining-converters Implementing a block widget} &ndash; A practical tutorial showing conversion in action.
+* {@link tutorials/widgets/implementing-an-inline-widget#defining-converters Implementing an inline widget} &ndash; Learn how to implement inline widgets with custom conversion.

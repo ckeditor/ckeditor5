@@ -13,7 +13,7 @@ import type {
 	ModelWriter,
 	DifferItem,
 	DifferItemAttribute
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { TableWalker } from './../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js';
@@ -372,9 +372,12 @@ function fixTableRowsSizes( table: ModelElement, writer: ModelWriter ) {
  */
 function findCellsToTrim( table: ModelElement ) {
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
+	const footerRows = parseInt( table.getAttribute( 'footerRows' ) as string || '0' );
+
 	const maxRows = Array.from( table.getChildren() )
 		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
 
+	const footerIndex = maxRows - footerRows;
 	const cellsToTrim = [];
 
 	for ( const { row, cell, cellHeight } of new TableWalker( table ) ) {
@@ -384,9 +387,23 @@ function findCellsToTrim( table: ModelElement ) {
 		}
 
 		const isInHeader = row < headingRows;
+		const isInFooter = row >= footerIndex;
 
 		// Row limit is either end of header section or whole table as table body is after the header.
-		const rowLimit = isInHeader ? headingRows : maxRows;
+		let rowLimit;
+
+		// If in header, row limit is the end of header section.
+		if ( isInHeader ) {
+			rowLimit = headingRows;
+		}
+		// If in footer, row limit is the end of the table.
+		else if ( isInFooter ) {
+			rowLimit = maxRows;
+		}
+		// If in body, row limit is the start of the footer section.
+		else {
+			rowLimit = footerIndex;
+		}
 
 		// If table cell expands over its limit reduce it height to proper value.
 		if ( row + cellHeight > rowLimit ) {

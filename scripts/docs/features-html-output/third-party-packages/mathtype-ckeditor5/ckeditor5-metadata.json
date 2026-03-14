@@ -5,17 +5,15 @@
 			"className": "MathType",
 			"description": "A mathematical and science formula editor with classical and handwriting input modes. Use it to create math equations or chemical formulas inside your content. MathType is a commercial solution delivered by our partner, Wiris.",
 			"docs": "features/math-equations.html",
-			"path": "src/plugin.js",
+			"path": "src/plugin.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "MathType",
-					"iconPath": "theme/icons/formula.svg"
+					"name": "MathType"
 				},
 				{
 					"type": "Button",
-					"name": "ChemType",
-					"iconPath": "theme/icons/chem.svg"
+					"name": "ChemType"
 				}
 			],
 			"htmlOutput": [

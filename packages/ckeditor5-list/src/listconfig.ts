@@ -7,7 +7,7 @@
  * @module list/listconfig
  */
 
-import { type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import { type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The configuration of the {@link module:list/list~List list} feature
@@ -247,7 +247,8 @@ export type NumberedListStyleType =
 	| 'lower-roman'
 	| 'upper-roman'
 	| 'lower-latin'
-	| 'upper-latin';
+	| 'upper-latin'
+	| 'arabic-indic';
 
 export type BulletedListStyleType =
 	| 'disc'

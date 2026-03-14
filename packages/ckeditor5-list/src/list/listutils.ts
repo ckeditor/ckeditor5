@@ -7,15 +7,16 @@
  * @module list/list/listutils
  */
 
-import type { ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
-import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type { ModelElement, ModelNode } from '@ckeditor/ckeditor5-engine';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	type ListElement,
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
 	isFirstBlockOfListItem,
+	isFirstListItemInList,
 	isListItemBlock,
 	isNumberedListType
 } from './utils/model.js';
@@ -84,5 +85,12 @@ export class ListUtils extends Plugin {
 	 */
 	public isNumberedListType( listType: ListType ): boolean {
 		return isNumberedListType( listType );
+	}
+
+	/**
+	 * Returns true if the given list item is the first item in the list.
+	 */
+	public isFirstListItemInList( listItem: ModelElement ): boolean {
+		return isFirstListItemInList( listItem );
 	}
 }

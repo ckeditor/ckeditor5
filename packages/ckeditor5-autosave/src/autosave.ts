@@ -14,11 +14,11 @@ import {
 	type PendingAction,
 	type EditorDestroyEvent,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
-import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils.js';
+import { DomEmitterMixin, type DomEmitter } from '@ckeditor/ckeditor5-utils';
 
-import type { ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 
 import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
 

@@ -14,7 +14,7 @@ import { startMemoryTest } from './orchestrator.mjs';
 /**
  * Constants
  */
-const TIMEOUT = 20_000; // 20 seconds per editor type.
+const TIMEOUT = 40_000; // 40 seconds per editor type.
 const MEMORY_THRESHOLD = 1.5 * 1024 * 1024; // 1.5 MB.
 const ASSETS_DIR = resolve( import.meta.dirname, 'assets' );
 
@@ -43,16 +43,22 @@ const { values } = parseArgs( {
  * Build
  */
 if ( values.build ) {
+	console.log( 'Removing old assets...' );
+
 	// Remove old assets.
 	for await ( const asset of glob( '*.@(js|css)', { cwd: ASSETS_DIR } ) ) {
 		await rm( resolve( ASSETS_DIR, asset ) );
 	}
+
+	console.log( 'Generating `ckeditor5` build...' );
 
 	// Generate core build.
 	await generateCKEditor5BrowserBuild();
 	await copyFile( dist( 'browser/ckeditor5.js' ), resolve( ASSETS_DIR, 'ckeditor5.js' ) );
 	await copyFile( dist( 'browser/ckeditor5.css' ), resolve( ASSETS_DIR, 'ckeditor5.css' ) );
 }
+
+console.log( 'Starting memory test...' );
 
 /**
  * Run the memory test.

@@ -392,7 +392,7 @@ export class ViewPosition extends ViewTypeCheckable {
 // Proper overload would interfere with that.
 ViewPosition.prototype.is = function( type: string ): boolean {
 	return type === 'position' || type === 'view:position';
-};
+} as any;
 
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.

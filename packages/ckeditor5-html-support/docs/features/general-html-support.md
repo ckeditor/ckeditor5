@@ -29,7 +29,7 @@ Here are some examples of HTML features that you can enable using General HTML S
 * The `<section>`, `<article>`, and `<div>` elements.
 * The `<audio>`, `<video>`, and `<iframe>` elements.
 * The `<span>` and `<cite>` elements.
-* Some of the attributes on existing dedicated CKEditor&nbsp;5 features:
+* Some attributes of existing dedicated CKEditor&nbsp;5 features:
 	* The `data-*` and `id` attributes on, for example, `<p>` and `<h1-h6>`.
 	* The `style` and `classes` attributes on, for example, `<strong>` and `<a>`.
 
@@ -195,15 +195,72 @@ htmlSupport: {
 
 This configuration will work similarly to the [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 
+### Enabling script tags for legacy use cases
+
+<info-box warning>
+	Scripts are blocked by default for [security reasons](#security). For new implementations, we discourage embedding scripts in editor content.
+</info-box>
+
+Scripts are blocked by default because allowing `<script>` tags in editor content would let arbitrary JavaScript run whenever that content is rendered. It creates a serious cross-site scripting (XSS) risk—content from untrusted sources (e.g., copied from a malicious site or supplied by an attacker) could steal session data, modify the page, or perform actions on behalf of the user. If you attempt to place the `<script>` tag in the content, you may see an error like this:
+
+```plain
+view renderer filler not found
+```
+
+Blocking scripts by default keeps the editing surface and the published output safe unless you explicitly enable scripts for a controlled, legacy scenario. For example, if you have content from CKEditor&nbsp;4 and script tags are necessary. For such a case you can explicitly allow `<script>` tags using the configuration:
+
+```js
+htmlSupport: {
+	allow: [
+		{
+			name: 'script',
+			attributes: true,
+			classes: true,
+			styles: true
+		}
+	]
+}
+```
+
+This configuration allows `<script>` elements along with their attributes, classes, and styles, preventing the editor from crashing when such content is loaded.
+
 ### Security
 
 When you set up the GHS to allow elements like `<script>` or attributes like `onclick`, you expose the users of your application to a possibly malicious markup. This can be code mistakenly copied from a risky website or purposely provided by a bad actor. An example of that could be: `<div onclick="leakUserData()">`.
 
-The content inside the editor (what you see in the editing area) is filtered by default from typical content that could break the editor. However, the editor does not feature a full XSS filter. We recommend configuring GHS to enable specific HTML markup, instead of enabling all markup at once.
+The content inside the editor (what you see in the editing area) is filtered by default from typical content that could break the editor. However, the editor does not feature a full XSS filter. We recommend configuring GHS to enable specific HTML markup instead of enabling all markup at once.
 
-Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the backend side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated, thus bypassing the frontend filtering. This can quickly become a security risk.
+Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the backend side of your application. Even the best filtering done on the browser side of your application can be mitigated, and every network call can be manipulated, thus bypassing the frontend filtering. This can quickly become a security risk.
 
 In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link getting-started/setup/csp Content Security Policy} rules.
+
+#### Iframe sandbox
+
+`<iframe>` elements can introduce security risks if not properly restricted. To address this, browsers support the [`sandbox` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox) on iframes, which restricts what the embedded content is allowed to do.
+
+GHS automatically enforces a `sandbox` attribute on all `<iframe>` elements in the **editing view** via the built-in `IframeElementSupport` plugin. This behavior is controlled by the `htmlSupport.htmlIframeSandbox` configuration option.
+
+<info-box>
+	The `htmlIframeSandbox` option only affects what is rendered in the editing area. It does **not** modify the document data returned by `editor.getData()`. Your backend sanitization pipeline should independently enforce iframe sandboxing in the output HTML.
+</info-box>
+
+The `htmlIframeSandbox` option accepts `true` (the default), an array of allowed [sandbox flag values](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox), or `false`. Setting it to `true` enforces the strictest mode — every `<iframe>` in the editing view gets an empty `sandbox=""` attribute, disabling scripts, forms, popups, and all other privileged features. Passing an array limits the sandbox to only the specified flags; any flag not on the list is stripped from existing iframes. Setting the option to `false` disables enforcement entirely and leaves the attribute untouched.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		htmlSupport: {
+			// Default. Enforces empty sandbox on all iframes.
+			htmlIframeSandbox: true,
+
+			// Only these flags are kept.
+			// htmlIframeSandbox: [ 'allow-scripts', 'allow-same-origin' ],
+
+			// No enforcement — attribute is left as-is.
+			// htmlIframeSandbox: false
+		}
+	} );
+```
 
 ### Enabling custom elements
 
@@ -309,6 +366,7 @@ dataSchema.registerBlockElement( {
 
 dataFilter.allowElement( 'object-block' );
 ```
+
 ### Predefined supported elements
 
 The HTML elements listed below can be turned on directly via the `allow` setting of the `config.htmlSupport` option [mentioned above](#configuration).
@@ -417,7 +475,7 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 
 ## Known issues
 
-You can add support for arbitrary styles, classes, and other attributes to existing CKEditor&nbsp;5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor&nbsp;5 features can already be extended this way, however, some cannot yet.
+You can add support for arbitrary styles, classes, and other attributes to existing CKEditor&nbsp;5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor&nbsp;5 features can already be extended this way; however, some cannot yet.
 
 <info-box info>
 	While the GHS feature is stable, some problems with complex documents may occur if you use it together with {@link features/real-time-collaboration real-time collaboration}.

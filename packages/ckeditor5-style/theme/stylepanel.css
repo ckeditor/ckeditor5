@@ -3,3 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-style-panel-max-height: 470px;
+}
+
+.ck.ck-style-panel {
+	padding: var(--ck-spacing-large);
+	overflow-y: auto;
+	max-height: var(--ck-style-panel-max-height);
+}
