@@ -79,20 +79,14 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	private _elementOrData?: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>;
 
 	/**
-	 * TODO
+	 * Stores the original DOM element for single-root editors.
 	 */
 	private _editorAttachTo: HTMLElement | null = null;
 
 	/**
-	 * TODO
+	 * Specifies whether the editor is a single-root editor (e.g. ClassicEditor) or a multi-root editor (e.g. MultiRootEditor).
 	 */
 	private _isSingleRootEditor: boolean = true;
-
-	/**
-	 * Specifies whether the editor was initialized using document data (`true`) or HTML elements (`false`).
-	 */
-	// TODO clean it
-	// private _initUsingData = true;
 
 	/**
 	 * The latest record of the editor editable elements. Used to restart the editor.
@@ -238,8 +232,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				for ( const [ rootName, rootData ] of Object.entries( this._data!.roots ) ) {
 					const rootConfig = updatedConfig.roots![ rootName ] || Object.create( null );
 
-					// TODO update comment: Delete `initialData` as it is not needed. Data will be set by the watchdog
-					//  based on `_watchdogInitialData`.
+					// Delete `initialData` as it is not needed. Data will be set by the watchdog based on `_watchdogInitialData`.
 					rootConfig.initialData = '';
 
 					if ( rootData.isLoaded ) {

@@ -159,16 +159,6 @@ export class MultiRootEditor extends Editor {
 				root._isLoaded = false;
 			}
 
-			// TODO keep the documentation of removed error but move it to better place.
-			/**
-			 * Trying to set attributes on a non-existing root.
-			 *
-			 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
-			 * editor roots.
-			 *
-			 * @error multi-root-editor-root-attributes-no-root
-			 */
-
 			const attributes = rootConfig.modelAttributes;
 
 			if ( attributes ) {
@@ -213,12 +203,7 @@ export class MultiRootEditor extends Editor {
 			label: extractRootsConfigField( this.config.get( 'roots' )!, 'label' )
 		};
 
-		// TODO make it nicer
-		const rootsNames = rootsConfig
-			.filter( ( [ , { lazyLoad } ] ) => !lazyLoad )
-			.map( ( [ rootName ] ) => rootName );
-
-		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootsNames, options );
+		const view = new MultiRootEditorUIView( this.locale, this.editing.view, getNonLazyLoadRootsNames( rootsConfig ), options );
 
 		this.ui = new MultiRootEditorUI( this, view );
 
@@ -1045,6 +1030,17 @@ export class MultiRootEditor extends Editor {
 			}
 		}
 	}
+}
+
+/**
+ * Returns names of roots that are not lazy-loaded.
+ */
+function getNonLazyLoadRootsNames(
+	rootsConfig: Array<[ string, RootConfig ]>
+): Array<string> {
+	return rootsConfig
+		.filter( ( [ , { lazyLoad } ] ) => !lazyLoad )
+		.map( ( [ rootName ] ) => rootName );
 }
 
 /**

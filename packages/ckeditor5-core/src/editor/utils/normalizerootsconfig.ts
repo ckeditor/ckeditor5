@@ -63,8 +63,6 @@ export function normalizeRootsConfig(
 		...Object.keys( legacyInitialData )
 	] ) );
 
-	// TODO should we throw when sourceElementsOrData keys mismatch with initialData keys?
-
 	// Ensure that all roots have `initialData` defined. If not, try to get it from the source element or data.
 	for ( const rootName of rootNames ) {
 		const rootConfig = rootsConfig[ rootName ] || Object.create( null );

@@ -625,7 +625,7 @@ export interface HeadingTitleConfig {
 	 *
 	 * Read more in {@link module:heading/title~HeadingTitleConfig}.
 	 */
-	placeholder?: string; // TODO
+	placeholder?: string;
 }
 
 /**
