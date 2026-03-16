@@ -11,6 +11,7 @@
 	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
 	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
 	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-region-edge-margin-block);
+	--ck-accessibility-help-content-focus-box-shadow: var(--ck-focus-outer-shadow), 0 0;
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
@@ -25,7 +26,7 @@
 	&:focus {
 		outline: none;
 		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		box-shadow: var(--ck-accessibility-help-content-focus-box-shadow);
 	}
 
 	* {

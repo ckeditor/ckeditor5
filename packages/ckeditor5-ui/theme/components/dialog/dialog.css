@@ -10,6 +10,7 @@
 	--ck-dialog-max-height: 90vh;
 	--ck-dialog-border-radius: var(--ck-border-radius-surface);
 	--ck-dialog-shadow: var(--ck-dialog-drop-shadow);
+	--ck-dialog-box-shadow: var(--ck-dialog-shadow), 0 0;
 	--ck-color-dialog-background: var(--ck-color-surface-container);
 	--ck-color-dialog-border: var(--ck-color-border-container);
 	--ck-color-dialog-form-header-border: var(--ck-color-border-container);
@@ -37,7 +38,7 @@
 
 .ck.ck-dialog {
 	border-radius: var(--ck-dialog-border-radius);
-	box-shadow: var(--ck-dialog-shadow), 0 0;
+	box-shadow: var(--ck-dialog-box-shadow);
 
 	background: var(--ck-color-dialog-background);
 	max-height: var(--ck-dialog-max-height);

@@ -12,6 +12,10 @@
 	--ck-toolbar-group-gap-inline: var(--ck-spacing-surface-item-gap-inline);
 	--ck-toolbar-grouped-dropdown-padding-inline-start: var(--ck-spacing-control-padding-inline-start-compact);
 	--ck-toolbar-padding: 0 var(--ck-toolbar-padding-inline);
+	--ck-toolbar-compact-item-first-border-radius-rtl: var(--ck-border-radius-surface-cut-top-right);
+	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
+	--ck-toolbar-compact-item-first-border-radius-ltr: var(--ck-border-radius-surface-cut-top-left);
+	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-border-radius-surface-cut-top-right);
 }
 
 .ck.ck-toolbar {
@@ -186,14 +190,12 @@
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* No rounded corners on the right side of the first child. */
 		&:first-child {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+			border-radius: var(--ck-toolbar-compact-item-first-border-radius-rtl);
 		}
 
 		/* No rounded corners on the left side of the last child. */
 		&:last-child {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-toolbar-compact-item-last-border-radius-rtl);
 		}
 	}
 
@@ -224,14 +226,12 @@
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* No rounded corners on the right side of the first child. */
 		&:first-child {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-toolbar-compact-item-first-border-radius-ltr);
 		}
 
 		/* No rounded corners on the left side of the last child. */
 		&:last-child {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+			border-radius: var(--ck-toolbar-compact-item-last-border-radius-ltr);
 		}
 	}
 

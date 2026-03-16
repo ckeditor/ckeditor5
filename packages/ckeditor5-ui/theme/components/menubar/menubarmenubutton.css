@@ -10,6 +10,7 @@
 	--ck-menu-bar-button-arrow-gap-inline: var(--ck-spacing-control-padding-inline);
 	--ck-menu-bar-button-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-menu-bar-button-arrow-nudge: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
+	--ck-menu-bar-top-level-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
 }
 
 .ck.ck-menu-bar__menu {
@@ -62,8 +63,7 @@
 		}
 
 		&.ck-on {
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-menu-bar-top-level-button-border-radius-on);
 		}
 
 		& .ck-icon {

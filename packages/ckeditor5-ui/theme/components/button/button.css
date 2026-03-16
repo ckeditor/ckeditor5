@@ -9,6 +9,8 @@
 	--ck-button-focus-ring: var(--ck-focus-ring-interactive);
 	--ck-button-focus-shadow: var(--ck-focus-shadow-interactive);
 	--ck-button-focus-disabled-shadow: var(--ck-focus-shadow-disabled-interactive);
+	--ck-button-focus-box-shadow: var(--ck-button-focus-shadow), 0 0;
+	--ck-button-focus-disabled-box-shadow: var(--ck-button-focus-disabled-shadow), 0 0;
 	--ck-button-padding: var(--ck-spacing-control-padding-block);
 	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
 	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
@@ -76,7 +78,7 @@ a.ck.ck-button {
 	&:focus {
 		outline: none;
 		border: var(--ck-button-focus-ring);
-		box-shadow: var(--ck-button-focus-shadow), 0 0;
+		box-shadow: var(--ck-button-focus-box-shadow);
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -129,7 +131,7 @@ a.ck.ck-button {
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-button-focus-disabled-shadow), 0 0;
+			box-shadow: var(--ck-button-focus-disabled-box-shadow);
 		}
 
 		& .ck-button__icon {

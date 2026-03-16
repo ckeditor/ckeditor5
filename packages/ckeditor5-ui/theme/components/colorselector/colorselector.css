@@ -12,6 +12,7 @@
 	--ck-color-selector-hex-picker-min-width: 180px;
 	--ck-color-selector-hex-picker-pointer-size: 15px;
 	--ck-color-selector-hex-picker-action-bar-padding: 0 var(--ck-color-selector-hex-picker-padding) var(--ck-color-selector-hex-picker-padding);
+	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-border-radius-surface-attached-top);
 	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
 	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
 }
@@ -33,8 +34,7 @@
 		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button.ck-color-selector__color-picker {
 			padding: var(--ck-color-selector-picker-padding-block) var(--ck-color-selector-picker-padding-inline);
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-color-selector-picker-button-border-radius-attached-top);
 
 			&:not(:focus) {
 				border-top: 1px solid var(--ck-color-base-border);

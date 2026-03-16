@@ -13,7 +13,9 @@
 	--ck-dropdown-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
 	--ck-dropdown-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
+	--ck-dropdown-panel-box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
 	--ck-dropdown-button-focus-shadow: var(--ck-focus-shadow-interactive);
+	--ck-dropdown-button-focus-box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
 	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
@@ -96,7 +98,7 @@
 			box-shadow: none;
 
 			&:focus {
-				box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
+				box-shadow: var(--ck-dropdown-button-focus-box-shadow);
 			}
 		}
 		width: 100%
@@ -171,7 +173,7 @@
 
 .ck.ck-dropdown__panel {
 	border-radius: var(--ck-dropdown-panel-border-radius);
-	box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
+	box-shadow: var(--ck-dropdown-panel-box-shadow);
 
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);

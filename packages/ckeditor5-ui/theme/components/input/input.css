@@ -11,6 +11,9 @@
 	--ck-input-focus-shadow: var(--ck-focus-shadow-interactive);
 	--ck-input-focus-disabled-shadow: var(--ck-focus-shadow-disabled-interactive);
 	--ck-input-focus-error-shadow: var(--ck-focus-shadow-error-interactive);
+	--ck-input-focus-box-shadow: var(--ck-input-focus-shadow), 0 0;
+	--ck-input-focus-disabled-box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
+	--ck-input-focus-error-box-shadow: var(--ck-input-focus-error-shadow), 0 0;
 	--ck-input-padding-block: var(--ck-spacing-control-padding-block-compact);
 	--ck-input-padding-inline: var(--ck-spacing-control-padding-inline-compact);
 
@@ -38,7 +41,7 @@
 	&:focus {
 		outline: none;
 		border: var(--ck-input-focus-ring);
-		box-shadow: var(--ck-input-focus-shadow), 0 0;
+		box-shadow: var(--ck-input-focus-box-shadow);
 	}
 
 	&[readonly] {
@@ -48,7 +51,7 @@
 
 		&:focus {
 			/* The read-only input should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
+			box-shadow: var(--ck-input-focus-disabled-box-shadow);
 		}
 	}
 
@@ -61,7 +64,7 @@
 		}
 
 		&:focus {
-			box-shadow: var(--ck-input-focus-error-shadow), 0 0;
+			box-shadow: var(--ck-input-focus-error-box-shadow);
 		}
 	}
 }
