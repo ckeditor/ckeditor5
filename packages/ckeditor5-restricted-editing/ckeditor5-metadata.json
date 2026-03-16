@@ -10,7 +10,7 @@
 				{
 					"type": "Dropdown",
 					"name": "restrictedEditing",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/content-lock.svg"
+					"iconName": "IconContentLock"
 				}
 			],
 			"htmlOutput": [
@@ -34,17 +34,17 @@
 				{
 					"type": "Button",
 					"name": "restrictedEditingException:inline",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg"
+					"iconName": "IconContentUnlock"
 				},
 				{
 					"type": "Button",
 					"name": "restrictedEditingException:block",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg"
+					"iconName": "IconContentUnlock"
 				},
 				{
 					"type": "Dropdown",
 					"name": "restrictedEditingException:dropdown",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg"
+					"iconName": "IconContentUnlock"
 				}
 			],
 			"htmlOutput": [

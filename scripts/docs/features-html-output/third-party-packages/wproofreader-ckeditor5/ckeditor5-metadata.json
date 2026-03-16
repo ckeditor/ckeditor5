@@ -9,8 +9,7 @@
 			"uiComponents": [
 				{
 					"type": "SplitButton",
-					"name": "wproofreader",
-					"iconPath": "theme/icons/wproofreader.svg"
+					"name": "wproofreader"
 				}
 			]
 		}

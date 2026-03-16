@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "bold",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bold.svg"
+					"iconName": "IconBold"
 				}
 			],
 			"htmlOutput": [
@@ -29,7 +29,7 @@
 				{
 					"type": "Button",
 					"name": "code",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/code.svg"
+					"iconName": "IconCode"
 				}
 			],
 			"htmlOutput": [
@@ -48,7 +48,7 @@
 				{
 					"type": "Button",
 					"name": "italic",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/italic.svg"
+					"iconName": "IconItalic"
 				}
 			],
 			"htmlOutput": [
@@ -67,7 +67,7 @@
 				{
 					"type": "Button",
 					"name": "strikethrough",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/strikethrough.svg"
+					"iconName": "IconStrikethrough"
 				}
 			],
 			"htmlOutput": [
@@ -86,7 +86,7 @@
 				{
 					"type": "Button",
 					"name": "subscript",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/subscript.svg"
+					"iconName": "IconSubscript"
 				}
 			],
 			"htmlOutput": [
@@ -105,7 +105,7 @@
 				{
 					"type": "Button",
 					"name": "superscript",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/superscript.svg"
+					"iconName": "IconSuperscript"
 				}
 			],
 			"htmlOutput": [
@@ -124,7 +124,7 @@
 				{
 					"type": "Button",
 					"name": "underline",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/underline.svg"
+					"iconName": "IconUnderline"
 				}
 			],
 			"htmlOutput": [

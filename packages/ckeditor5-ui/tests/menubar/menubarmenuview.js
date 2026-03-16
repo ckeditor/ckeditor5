@@ -221,6 +221,25 @@ describe( 'MenuBarMenuView', () => {
 			sinon.assert.calledOnceWithExactly( spy, menuView );
 		} );
 
+		it( 'should close the menu when it gets disabled', () => {
+			menuView.render();
+			menuView.isOpen = true;
+
+			menuView.isEnabled = false;
+
+			expect( menuView.isOpen ).to.be.false;
+		} );
+
+		it( 'should not close the menu when it gets enabled', () => {
+			menuView.render();
+			menuView.isEnabled = false;
+			menuView.isOpen = true;
+
+			menuView.isEnabled = true;
+
+			expect( menuView.isOpen ).to.be.true;
+		} );
+
 		describe( 'panel repositioning upon open', () => {
 			let menuView, menuBarView, parentMenuView;
 
