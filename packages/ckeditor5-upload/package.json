@@ -39,7 +39,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "node ../../scripts/nim/build-package.mjs"
+    "build": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run"
   },
   "files": [
     "dist",
