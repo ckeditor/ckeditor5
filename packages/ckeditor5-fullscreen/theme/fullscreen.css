@@ -19,7 +19,11 @@ body.ck-fullscreen {
 	& .ckbox:not(#n) {
 		--ckbox-z-index-root: calc(var(--ck-z-dialog) + 1);
 
-		/* To make the overlay visible in Safari. */
+		/*
+		 * Safari composites `overflow: auto` scroll layers (like `.ck-fullscreen__editable-wrapper`) on top of
+		 * sibling stacking contexts regardless of z-index. Setting `position: absolute` promotes `.ckbox` to its
+		 * own compositing layer, which Safari then sorts correctly above the editable wrapper's layer.
+		 */
 		position: absolute;
 	}
 
