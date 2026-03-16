@@ -13,8 +13,8 @@ if ( false ) {
 	/**
 	 * Trying to set attributes on a non-existing root.
 	 *
-	 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
-	 * editor roots.
+	 * Roots specified in legacy `config.rootsAttributes` do not match initial editor roots.
+	 * Use `config.roots.<rootName>.modelAttributes` instead.
 	 *
 	 * @error multi-root-editor-root-attributes-no-root
 	 */
