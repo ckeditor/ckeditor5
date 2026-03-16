@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@ckeditor/ckeditor5-dev-tests': file:./ckeditor-ckeditor5-dev-tests-54.3.4.tgz
   markdown-it-toc: npm:@maboloshi/markdown-it-toc@1.1.1
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
@@ -48,8 +49,8 @@ importers:
         specifier: ^55.0.0-alpha.5
         version: 55.0.0-alpha.5(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: https://12da-195-128-172-106.ngrok-free.app/ckeditor-ckeditor5-dev-tests-54.3.4.tgz
-        version: https://12da-195-128-172-106.ngrok-free.app/ckeditor-ckeditor5-dev-tests-54.3.4.tgz(@swc/core@1.13.5)(@types/node@25.3.0)(esbuild@0.25.10)
+        specifier: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz
+        version: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz(@swc/core@1.13.5)(@types/node@25.3.0)(esbuild@0.25.10)
       '@ckeditor/ckeditor5-dev-web-crawler':
         specifier: ^55.0.0-alpha.5
         version: 55.0.0-alpha.5(typescript@5.5.4)
@@ -4371,8 +4372,8 @@ packages:
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@https://12da-195-128-172-106.ngrok-free.app/ckeditor-ckeditor5-dev-tests-54.3.4.tgz':
-    resolution: {integrity: sha512-BDfxR4+iqNCZ/nG9HA8ZwmrdZa74FrqzDeE4uhRDQAxoA8l9c39n5ywHRhKtbbJy5FjkmlDaWOszMBvxlS9YkQ==, tarball: https://12da-195-128-172-106.ngrok-free.app/ckeditor-ckeditor5-dev-tests-54.3.4.tgz}
+  '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz':
+    resolution: {integrity: sha512-BDfxR4+iqNCZ/nG9HA8ZwmrdZa74FrqzDeE4uhRDQAxoA8l9c39n5ywHRhKtbbJy5FjkmlDaWOszMBvxlS9YkQ==, tarball: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz}
     version: 54.3.4
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
@@ -8362,10 +8363,6 @@ packages:
     resolution: {integrity: sha512-Kpk9Sm7NmI+RHhnj6OIWDI1d6fIoFAtFt9RLaTMRlg/8w49juAStsrBgp0Dp4OdxdVbRIeKhtCUvoi/RuAhO4g==}
     engines: {node: '>= 0.6'}
 
-  http-errors@2.0.0:
-    resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
-    engines: {node: '>= 0.8'}
-
   http-errors@2.0.1:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
     engines: {node: '>= 0.8'}
@@ -10495,10 +10492,6 @@ packages:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
 
-  raw-body@2.5.2:
-    resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
-    engines: {node: '>= 0.8'}
-
   raw-body@2.5.3:
     resolution: {integrity: sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA==}
     engines: {node: '>= 0.8'}
@@ -10972,10 +10965,6 @@ packages:
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
-
-  statuses@2.0.1:
-    resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
-    engines: {node: '>= 0.8'}
 
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
@@ -12786,7 +12775,7 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@https://12da-195-128-172-106.ngrok-free.app/ckeditor-ckeditor5-dev-tests-54.3.4.tgz(@swc/core@1.13.5)(@types/node@25.3.0)(esbuild@0.25.10)':
+  '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz(@swc/core@1.13.5)(@types/node@25.3.0)(esbuild@0.25.10)':
     dependencies:
       '@babel/core': 7.28.4
       '@ckeditor/ckeditor5-dev-translations': 54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
@@ -12978,6 +12967,8 @@ snapshots:
       '@ckeditor/ckeditor5-utils': 47.6.1
       ckeditor5: 47.6.1
       es-toolkit: 1.39.5
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-editor-decoupled@47.6.1':
     dependencies:
@@ -13028,12 +13019,16 @@ snapshots:
     dependencies:
       '@ckeditor/ckeditor5-utils': 47.6.1
       es-toolkit: 1.39.5
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-enter@47.6.1':
     dependencies:
       '@ckeditor/ckeditor5-core': 47.6.1
       '@ckeditor/ckeditor5-engine': 47.6.1
       '@ckeditor/ckeditor5-utils': 47.6.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-essentials@47.6.1':
     dependencies:
@@ -13365,6 +13360,8 @@ snapshots:
       '@ckeditor/ckeditor5-ui': 47.6.1
       '@ckeditor/ckeditor5-utils': 47.6.1
       ckeditor5: 47.6.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-special-characters@47.6.1':
     dependencies:
@@ -13436,6 +13433,8 @@ snapshots:
       '@ckeditor/ckeditor5-icons': 47.6.1
       '@ckeditor/ckeditor5-ui': 47.6.1
       '@ckeditor/ckeditor5-utils': 47.6.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-upload@47.6.1':
     dependencies:
@@ -13446,6 +13445,8 @@ snapshots:
     dependencies:
       '@ckeditor/ckeditor5-ui': 47.6.1
       es-toolkit: 1.39.5
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-watchdog@47.6.1':
     dependencies:
@@ -15802,7 +15803,7 @@ snapshots:
       '@hapi/bourne': 3.0.0
       inflation: 2.1.0
       qs: 6.15.0
-      raw-body: 2.5.2
+      raw-body: 2.5.3
       type-is: 1.6.18
 
   co@4.6.0: {}
@@ -17539,14 +17540,6 @@ snapshots:
       inherits: 2.0.4
       setprototypeof: 1.2.0
       statuses: 1.5.0
-      toidentifier: 1.0.1
-
-  http-errors@2.0.0:
-    dependencies:
-      depd: 2.0.0
-      inherits: 2.0.4
-      setprototypeof: 1.2.0
-      statuses: 2.0.1
       toidentifier: 1.0.1
 
   http-errors@2.0.1:
@@ -20133,13 +20126,6 @@ snapshots:
 
   range-parser@1.2.1: {}
 
-  raw-body@2.5.2:
-    dependencies:
-      bytes: 3.1.2
-      http-errors: 2.0.0
-      iconv-lite: 0.4.24
-      unpipe: 1.0.0
-
   raw-body@2.5.3:
     dependencies:
       bytes: 3.1.2
@@ -20773,8 +20759,6 @@ snapshots:
   stackback@0.0.2: {}
 
   statuses@1.5.0: {}
-
-  statuses@2.0.1: {}
 
   statuses@2.0.2: {}
 
