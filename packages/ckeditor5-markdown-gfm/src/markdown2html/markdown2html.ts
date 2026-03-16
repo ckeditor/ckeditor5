@@ -51,8 +51,8 @@ export class MarkdownGfmMdToHtml {
 	 * Creates a new instance of MarkdownGfmMdToHtml.
 	 * @param {Object} options - The options for the MarkdownGfmMdToHtml instance.
 	 * @param {Record<string, Pluggable>} options.plugins - The plugins to be used by the `unified().use()` processor for converting
-	 * Markdown to HTML. By default, {@link MarkdownGfmMdToHtmlDefaultPlugins} is used. You can override the defaults by passing your
-	 * own plugins.
+	 * Markdown to HTML. By default, {@link ~MarkdownGfmMdToHtmlDefaultPlugins} is used.
+	 * You can override the defaults by passing your own plugins.
 	 *
 	 * Learn more about the `unified()` plugin chain in the [unified](https://github.com/unifiedjs/unified) documentation.
 	 */
