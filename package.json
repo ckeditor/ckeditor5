@@ -76,7 +76,7 @@
     "nyc": "^17.1.0",
     "postcss-loader": "^8.0.0",
     "publint": "^0.3.4",
-    "puppeteer": "^24.1.0",
+    "puppeteer": "^24.39.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^6.0.1",
