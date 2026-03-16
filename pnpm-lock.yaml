@@ -4373,7 +4373,7 @@ packages:
     hasBin: true
 
   '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz':
-    resolution: {integrity: sha512-BDfxR4+iqNCZ/nG9HA8ZwmrdZa74FrqzDeE4uhRDQAxoA8l9c39n5ywHRhKtbbJy5FjkmlDaWOszMBvxlS9YkQ==, tarball: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz}
+    resolution: {integrity: sha512-VKFYmFF9n3o9TVsnVoTMHrsJvrJjXFteZgko4vnPxbw/UuC6RvPBIgCTSFRoVQACV1RGN2dQ5XXKbxVNRQE0lw==, tarball: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz}
     version: 54.3.4
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
@@ -13360,8 +13360,6 @@ snapshots:
       '@ckeditor/ckeditor5-ui': 47.6.1
       '@ckeditor/ckeditor5-utils': 47.6.1
       ckeditor5: 47.6.1
-    transitivePeerDependencies:
-      - supports-color
 
   '@ckeditor/ckeditor5-special-characters@47.6.1':
     dependencies:
