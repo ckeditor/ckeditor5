@@ -405,6 +405,8 @@ export class Rect {
 	/**
 	 * Returns an array of rects of the given native DOM Range.
 	 *
+	 * Also see {@link module:utils/dom/rect~Rect.getDomElementRects}.
+	 *
 	 * @param range A native DOM range.
 	 * @returns DOM Range rects.
 	 */
@@ -442,6 +444,23 @@ export class Rect {
 		}
 
 		return rects;
+	}
+
+	/**
+	 * Returns an array of Rects of the given DOM Element based on its native `getClientRects()` method.
+	 *
+	 * Also see {@link module:utils/dom/rect~Rect.getDomRangeRects}.
+	 */
+	public static getDomElementRects( element: HTMLElement ): Array<Rect> {
+		return Array.from( element.getClientRects() ).map( clientRect => {
+			const rect = new Rect( clientRect );
+
+			// Point the rect source to the DOM element instead of of the DOM client rect to allow proper clipping,
+			// in `Rect#getVisible()` method.
+			rect._source = element;
+
+			return rect;
+		} );
 	}
 
 	/**
