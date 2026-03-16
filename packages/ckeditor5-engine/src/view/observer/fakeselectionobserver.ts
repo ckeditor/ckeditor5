@@ -17,7 +17,6 @@ import type {
 	ViewDocumentObserverSelectionEventData
 } from './selectionobserver.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import type { DebouncedFunc } from 'es-toolkit/compat';
 import debounce from 'es-toolkit/compat/debounce';
 
 /**
@@ -31,7 +30,9 @@ export class FakeSelectionObserver extends Observer {
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentObserverSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: ReturnType<
+		typeof debounce<( data: ViewDocumentObserverSelectionEventData ) => void>
+	>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.

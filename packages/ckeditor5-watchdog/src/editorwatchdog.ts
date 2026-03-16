@@ -7,7 +7,6 @@
  * @module watchdog/editorwatchdog
  */
 
-import type { DebouncedFunc } from 'es-toolkit/compat';
 import throttle from 'es-toolkit/compat/throttle';
 import cloneDeepWith from 'es-toolkit/compat/cloneDeepWith';
 import isElement from 'es-toolkit/compat/isElement';
@@ -42,7 +41,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
-	private _throttledSave: DebouncedFunc<() => void>;
+	private _throttledSave: ReturnType<typeof throttle<() => void>>;
 
 	/**
 	 * The latest saved editor data represented as a root name -> root data object.

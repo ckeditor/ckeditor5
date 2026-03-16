@@ -11,7 +11,6 @@ import { convertColor, convertToHex, registerCustomElement, type ColorPickerView
 
 import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
-import type { DebouncedFunc } from 'es-toolkit/compat';
 import debounce from 'es-toolkit/compat/debounce';
 import { View } from '../view.js';
 import { type InputTextView } from '../inputtext/inputtextview.js';
@@ -77,7 +76,7 @@ export class ColorPickerView extends View {
 	 *
 	 * @private
 	 */
-	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
+	private _debounceColorPickerEvent: ReturnType<typeof debounce<( arg: string ) => void>>;
 
 	/**
 	 * A reference to the configuration of the color picker specified in the constructor.
