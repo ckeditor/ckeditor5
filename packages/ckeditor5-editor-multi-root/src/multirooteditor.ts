@@ -160,17 +160,6 @@ export class MultiRootEditor extends Editor {
 				root._isLoaded = false;
 			}
 
-			// TODO keep the documentation of removed error but move it to better place.
-			/**
-			 * Trying to set attributes on a non-existing root.
-			 *
-			 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-			 * do not match initial editor roots.
-			 *
-			 * @error multi-root-editor-root-attributes-no-root
-			 */
-
-			// TODO is this correct for lazy root?
 			const attributes = rootConfig.modelAttributes;
 
 			if ( attributes ) {
@@ -180,18 +169,31 @@ export class MultiRootEditor extends Editor {
 			}
 		}
 
+		// Registering `$rootEditableOptions` attribute to make it available in the editor model.
+		// This allows to store editable options for each root in the model, and make them available on other RTC clients.
+		// We do not use `registerRootAttribute()` method here, as this attribute is used internally
+		// and should not be returned by `getRootsAttributes()` method.
+		this.editing.model.schema.extend( '$root', { allowAttributes: '$rootEditableOptions' } );
+
 		this.data.on( 'init', () => {
 			this.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const [ rootName, rootConfig ] of rootsConfig ) {
-					// TODO check if should set on non loaded root.
-					const attributes = rootConfig.modelAttributes || {};
 					const root = this.model.document.getRoot( rootName )!;
 
-					for ( const [ key, value ] of Object.entries( attributes ) ) {
+					for ( const [ key, value ] of Object.entries( rootConfig.modelAttributes || {} ) ) {
 						if ( value !== null ) {
-							writer.setAttribute( key, value, root! );
+							writer.setAttribute( key, value, root );
 						}
 					}
+
+					// Set editable config for consistency with `addRoot()` method. This will allow features
+					// to use the same configuration for both initially loaded and dynamically added roots.
+					const rootEditableOptions: RootEditableOptions = {
+						...rootConfig.placeholder && { placeholder: rootConfig.placeholder },
+						...rootConfig.label && { label: rootConfig.label }
+					};
+
+					writer.setAttribute( '$rootEditableOptions', rootEditableOptions, root );
 				}
 			} );
 		} );
@@ -202,12 +204,7 @@ export class MultiRootEditor extends Editor {
 			label: extractRootsConfigField( this.config.get( 'roots' )!, 'label' )
 		};
 
-		// TODO make it nicer
-		const rootsNames = rootsConfig
-			.filter( ( [ , { lazyLoad } ] ) => !lazyLoad )
-			.map( ( [ rootName ] ) => rootName );
-
-		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootsNames, options );
+		const view = new MultiRootEditorUIView( this.locale, this.editing.view, getNonLazyLoadRootsNames( rootsConfig ), options );
 
 		this.ui = new MultiRootEditorUI( this, view );
 
@@ -352,8 +349,10 @@ export class MultiRootEditor extends Editor {
 	/**
 	 * Adds a new root to the editor.
 	 *
+	 * TODO check if this description requires an update.
+	 *
 	 * ```ts
-	 * editor.addRoot( 'myRoot', { data: '<p>Initial root data.</p>' } );
+	 * editor.addRoot( 'myRoot', { initialData: '<p>Initial root data.</p>' } );
 	 * ```
 	 *
 	 * After a root is added, you will be able to modify and retrieve its data.
@@ -394,7 +393,7 @@ export class MultiRootEditor extends Editor {
 	 * ```ts
 	 * // Add a collapsed root at fourth position from top.
 	 * // Keep in mind that these are just examples of attributes. You need to provide your own features that will handle the attributes.
-	 * editor.addRoot( 'myRoot', { attributes: { isCollapsed: true, index: 4 } } );
+	 * editor.addRoot( 'myRoot', { modelAttributes: { isCollapsed: true, index: 4 } } );
 	 * ```
 	 *
 	 * Note that attributes added together with a root are automatically registered.
@@ -422,24 +421,52 @@ export class MultiRootEditor extends Editor {
 	 * @param rootName Name of the root to add.
 	 * @param options Additional options for the added root.
 	 */
-	public addRoot(
-		rootName: string,
-		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
-	): void {
+	public addRoot( rootName: string, options?: RootConfig & AddRootUndoable ): void;
+
+	/**
+	 * Adds a new root to the editor.
+	 *
+	 * ```ts
+	 * editor.addRoot( 'myRoot', { data: '<p>Initial root data.</p>' } );
+	 * ```
+	 *
+	 * TODO link to other signature for more details
+	 *
+	 * @deprecated
+	 *
+	 * @param rootName Name of the root to add.
+	 * @param options Additional options for the added root.
+	 */
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
+	public addRoot( rootName: string, options?: AddRootOptions ): void;
+
+	public addRoot( rootName: string, options: AddRootOptions & RootConfig & AddRootUndoable = {} ): void {
+		const initialData: string = options.initialData || options.data || '';
+		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
+		const modelElement: string = options.elementName || '$root';
+
 		const _addRoot = ( writer: ModelWriter ) => {
-			const root = writer.addRoot( rootName, elementName );
+			const root = writer.addRoot( rootName, modelElement );
 
-			if ( data ) {
-				writer.insert( this.data.parse( data, root ), root, 0 );
+			if ( initialData ) {
+				writer.insert( this.data.parse( initialData, root ), root, 0 );
 			}
 
-			for ( const key of Object.keys( attributes ) ) {
+			for ( const key of Object.keys( modelAttributes ) ) {
 				this.registerRootAttribute( key );
-				writer.setAttribute( key, attributes[ key ], root );
+				writer.setAttribute( key, modelAttributes[ key ], root );
 			}
+
+			// Storing editable options as a root attribute to make them available on other RTC clients.
+			const rootEditableOptions: RootEditableOptions = {
+				...options.placeholder && { placeholder: options.placeholder },
+				...options.label && { label: options.label }
+			};
+
+			writer.setAttribute( '$rootEditableOptions', rootEditableOptions, root );
 		};
 
-		if ( isUndoable ) {
+		if ( options.isUndoable ) {
 			this.model.change( _addRoot );
 		} else {
 			this.model.enqueueChange( { isUndoable: false }, _addRoot );
@@ -514,15 +541,45 @@ export class MultiRootEditor extends Editor {
 	 * The new DOM editable is attached to the model root and can be used to modify the root content.
 	 *
 	 * @param root Root for which the editable element should be created.
-	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.placeholder`} will be used (if provided).
+	 * @param options.placeholder Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @param options.label The accessible label text describing the editable to the assistive technologies.
+	 * @returns The created DOM element. Append it in a desired place in your application.
+	 */
+	public createEditable( root: ModelRootElement, options?: RootEditableOptions ): HTMLElement;
+
+	/**
+	 * Creates and returns a new DOM editable element for the given root element.
+	 *
+	 * The new DOM editable is attached to the model root and can be used to modify the root content.
+	 *
+	 * **Note**: this method signature is deprecated and will be removed in one of the next releases.
+	 * Use the signature with options object instead.
+	 *
+	 * @deprecated
+	 *
+	 * @param root Root for which the editable element should be created.
+	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement { // TODO
-		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
+	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement;
 
-		this.ui.addEditable( editable, placeholder );
+	public createEditable( root: ModelRootElement, optionsOrPlaceholder?: RootEditableOptions | string, label?: string ): HTMLElement {
+		let placeholder: string | undefined;
+
+		if ( !optionsOrPlaceholder || typeof optionsOrPlaceholder === 'string' ) {
+			placeholder = optionsOrPlaceholder;
+		} else {
+			placeholder = optionsOrPlaceholder?.placeholder;
+			label = optionsOrPlaceholder?.label;
+		}
+
+		const rootEditableConfig: RootEditableOptions = root.getAttribute( '$rootEditableOptions' ) || {};
+		const editable = this.ui.view.createEditable( root.rootName, undefined, label || rootEditableConfig.label );
+
+		this.ui.addEditable( editable, placeholder || rootEditableConfig.placeholder );
 
 		this.editing.view.forceRender();
 
@@ -978,6 +1035,17 @@ export class MultiRootEditor extends Editor {
 }
 
 /**
+ * Returns names of roots that are not lazy-loaded.
+ */
+function getNonLazyLoadRootsNames(
+	rootsConfig: Array<[ string, RootConfig ]>
+): Array<string> {
+	return rootsConfig
+		.filter( ( [ , { lazyLoad } ] ) => !lazyLoad )
+		.map( ( [ rootName ] ) => rootName );
+}
+
+/**
  * Collects a specific field from the editor configuration for all roots.
  * Returns a simple map of root names and values of the specified field.
  * If a root does not have the specified field defined, it is not included in the returned object.
@@ -1045,6 +1113,8 @@ export type LoadRootEvent = DecoratedMethodEvent<MultiRootEditor, 'loadRoot'>;
 
 /**
  * Additional options available when adding a root.
+ *
+ * @deprecated
  */
 export type AddRootOptions = {
 
@@ -1070,6 +1140,17 @@ export type AddRootOptions = {
 };
 
 /**
+ * Declares an additional options available when adding a root.
+ */
+export type AddRootUndoable = {
+
+	/**
+	 * Whether creating the root can be undone (using the undo feature) or not.
+	 */
+	isUndoable?: boolean;
+};
+
+/**
  * Additional options available when loading a root.
  */
 export type LoadRootOptions = Omit<AddRootOptions, 'elementName' | 'isUndoable'>;
@@ -1078,3 +1159,20 @@ export type LoadRootOptions = Omit<AddRootOptions, 'elementName' | 'isUndoable'>
  * Attributes set on a model root element.
  */
 export type RootAttributes = Record<string, unknown>;
+
+/**
+ * Additional options for the created editable element.
+ */
+export interface RootEditableOptions {
+
+	/**
+	 * Placeholder for the editable element. If not set, placeholder value from the
+	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided). TODO link
+	 */
+	placeholder?: string;
+
+	/**
+	 * The accessible label text describing the editable to the assistive technologies.
+	 */
+	label?: string;
+}

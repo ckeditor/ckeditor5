@@ -163,7 +163,97 @@ describe( 'MultiRootEditorUI', () => {
 		} );
 
 		describe( 'placeholder', () => {
-			// TODO add tests with editor.config.roots.<name>.placeholder.
+			it( 'sets placeholder from config.roots.<name>.placeholder for initial editables', () => {
+				return MultiRootEditor
+					.create( { foo: '', bar: '' }, {
+						extraPlugins: [ Paragraph ],
+						roots: {
+							foo: { placeholder: 'Type foo...' },
+							bar: { placeholder: 'Type bar...' }
+						}
+					} )
+					.then( newEditor => {
+						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
+
+						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
+						expect( barP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type bar...' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets placeholder from config.roots.<name>.placeholder only for roots that have it defined', () => {
+				return MultiRootEditor
+					.create( { foo: '', bar: '', baz: '' }, {
+						extraPlugins: [ Paragraph ],
+						roots: {
+							foo: { placeholder: 'Type foo...' }
+						}
+					} )
+					.then( newEditor => {
+						const fooP = newEditor.editing.view.document.getRoot( 'foo' ).getChild( 0 );
+						expect( fooP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type foo...' );
+
+						const barP = newEditor.editing.view.document.getRoot( 'bar' ).getChild( 0 );
+						expect( barP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+
+						const bazP = newEditor.editing.view.document.getRoot( 'baz' ).getChild( 0 );
+						expect( bazP.hasAttribute( 'data-placeholder' ) ).to.be.false;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'explicit placeholder parameter overrides config.roots.<name>.placeholder', () => {
+				return MultiRootEditor
+					.create( { foo: '' }, {
+						extraPlugins: [ Paragraph ],
+						roots: {
+							foo: { placeholder: 'From config...' }
+						}
+					} )
+					.then( newEditor => {
+						ui = newEditor.ui;
+						view = ui.view;
+
+						newEditor.model.change( writer => {
+							writer.addRoot( 'new' );
+							const editable = view.createEditable( 'new' );
+							ui.addEditable( editable, 'Explicit placeholder' );
+						} );
+
+						const newP = newEditor.editing.view.document.getRoot( 'new' ).getChild( 0 );
+						expect( newP.getAttribute( 'data-placeholder' ) ).to.equal( 'Explicit placeholder' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'dynamically added root uses config.roots.<name>.placeholder if defined', () => {
+				return MultiRootEditor
+					.create( { foo: '' }, {
+						extraPlugins: [ Paragraph ],
+						roots: {
+							foo: { placeholder: 'Type foo...' },
+							abc: { placeholder: 'Type abc...', lazyLoad: true }
+						}
+					} )
+					.then( newEditor => {
+						ui = newEditor.ui;
+						view = ui.view;
+
+						newEditor.loadRoot( 'abc' );
+
+						const editable = view.createEditable( 'abc' );
+						ui.addEditable( editable );
+
+						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
+						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type abc...' );
+
+						return newEditor.destroy();
+					} );
+			} );
 
 			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return MultiRootEditor

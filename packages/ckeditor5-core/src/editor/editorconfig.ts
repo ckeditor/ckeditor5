@@ -1104,18 +1104,6 @@ export interface RootConfig {
 }
 
 /**
- * Configuration of a root element of the editor. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} and
- * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>`} to specify details of the model root element.
- */
-export interface RootModelElementConfig {
-
-	/**
-	 * TODO This will be used later to specify the name of the model element which will be used as a root. For now, it is always `'$root'`.
-	 */
-	name?: string;
-}
-
-/**
  * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of
  * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
  *

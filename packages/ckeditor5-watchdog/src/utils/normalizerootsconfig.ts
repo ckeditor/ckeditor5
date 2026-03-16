@@ -4,7 +4,7 @@
  */
 
 /**
- * @module core/editor/utils/normalizerootsconfig
+ * @module watchdog/utils/normalizerootsconfig
  */
 
 import { isElement as _isElement } from 'es-toolkit/compat';

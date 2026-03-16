@@ -40,7 +40,6 @@ export {
 export type {
 	EditorConfig,
 	RootConfig,
-	RootModelElementConfig,
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
