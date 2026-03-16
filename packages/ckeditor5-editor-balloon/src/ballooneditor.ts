@@ -318,8 +318,6 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
 		config: EditorConfig = {}
 	): Promise<BalloonEditor> {
-		console.log( 'args', arguments.length );
-
 		const {
 			sourceElementOrData,
 			editorConfig
