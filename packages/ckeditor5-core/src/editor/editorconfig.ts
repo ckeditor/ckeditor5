@@ -976,8 +976,8 @@ export interface RootConfig {
 	 * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
 	 *
 	 * If `config.root.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
-	 * will be used to set `config.roots.main.initialData`. As a result, `initialData` is always set in the editor's config and
-	 * plugins can read and/or modify it during initialization. TODO breaking change - the updated initialData changes location
+	 * will be used to set `config.roots.main.initialData`. As a result, `config.roots.main.initialData` is always set
+	 * in the editor's config and plugins can read and/or modify it during initialization.
 	 */
 	initialData?: string;
 

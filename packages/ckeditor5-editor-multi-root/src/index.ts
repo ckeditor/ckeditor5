@@ -18,7 +18,7 @@ export type {
 	LoadRootEvent,
 	AddRootOptions,
 	LoadRootOptions,
-	AddRootUndoable,
+	AddRootRootConfig,
 	RootEditableOptions
 } from './multirooteditor.js';
 
