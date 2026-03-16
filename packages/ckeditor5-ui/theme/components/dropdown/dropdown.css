@@ -16,10 +16,12 @@
 	--ck-dropdown-panel-box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
 	--ck-dropdown-button-focus-shadow: var(--ck-focus-shadow-interactive);
 	--ck-dropdown-button-focus-box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
+	--ck-dropdown-button-active-box-shadow: none;
 	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
 	--ck-dropdown-icon-button-padding-inline: var(--ck-spacing-control-padding-inline-compact);
+	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity);
 }
 
 .ck.ck-dropdown {
@@ -80,7 +82,7 @@
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 		&.ck-disabled .ck-button__label {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-dropdown-button-label-disabled-opacity);
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/816 */
@@ -95,7 +97,7 @@
 		/* https://github.com/ckeditor/ckeditor5/issues/8699 */
 		&.ck-off:active,
 		&.ck-on:active {
-			box-shadow: none;
+			box-shadow: var(--ck-dropdown-button-active-box-shadow);
 
 			&:focus {
 				box-shadow: var(--ck-dropdown-button-focus-box-shadow);

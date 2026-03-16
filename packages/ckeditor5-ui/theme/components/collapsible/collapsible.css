@@ -9,6 +9,10 @@
 	--ck-collapsible-children-padding-block-start: var(--ck-spacing-surface-section-gap-block);
 	--ck-collapsible-children-padding-inline: var(--ck-spacing-control-meta-gap);
 	--ck-collapsible-children-padding-block-end: var(--ck-spacing-region-edge-margin-block);
+	--ck-collapsible-button-focus-background: transparent;
+	--ck-collapsible-button-active-background: transparent;
+	--ck-collapsible-button-active-border-color: transparent;
+	--ck-collapsible-button-active-box-shadow: none;
 }
 
 .ck.ck-collapsible {
@@ -19,13 +23,13 @@
 		color: inherit;
 
 		&:focus {
-			background: transparent;
+			background: var(--ck-collapsible-button-focus-background);
 		}
 
 		&:active, &:not(:focus), &:hover:not(:focus) {
-			background: transparent;
-			border-color: transparent;
-			box-shadow: none;
+			background: var(--ck-collapsible-button-active-background);
+			border-color: var(--ck-collapsible-button-active-border-color);
+			box-shadow: var(--ck-collapsible-button-active-box-shadow);
 		}
 
 		& > .ck-icon {

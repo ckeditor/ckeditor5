@@ -17,6 +17,11 @@
 	--ck-list-group-label-padding: var(--ck-list-group-gap) var(--ck-list-label-padding-inline) 0;
 	--ck-list-separator-margin: var(--ck-list-separator-gap) 0;
 	--ck-list-focused-item-layer: var(--ck-layer-base);
+	--ck-list-item-active-box-shadow: none;
+	--ck-list-item-on-active-box-shadow: none;
+	--ck-list-item-on-focus-border-color: var(--ck-color-surface-control);
+	--ck-list-switch-item-on-color: inherit;
+	--ck-list-switch-item-on-hover-color: inherit;
 }
 
 .ck.ck-list {
@@ -72,7 +77,7 @@
 		}
 
 		&:active {
-			box-shadow: none;
+			box-shadow: var(--ck-list-item-active-box-shadow);
 		}
 
 		&.ck-on {
@@ -80,7 +85,7 @@
 			color: var(--ck-color-list-button-on-text);
 
 			&:active {
-				box-shadow: none;
+				box-shadow: var(--ck-list-item-on-active-box-shadow);
 			}
 
 			&:hover:not(.ck-disabled) {
@@ -88,7 +93,7 @@
 			}
 
 			&:focus:not(.ck-disabled) {
-				border-color: var(--ck-color-surface-control);
+				border-color: var(--ck-list-item-on-focus-border-color);
 			}
 		}
 
@@ -102,11 +107,11 @@
 	& > .ck-button.ck-switchbutton {
 		&.ck-on {
 			background: var(--ck-color-list-background);
-			color: inherit;
+			color: var(--ck-list-switch-item-on-color);
 
 			&:hover:not(.ck-disabled) {
 				background: var(--ck-color-list-button-hover-background);
-				color: inherit;
+				color: var(--ck-list-switch-item-on-hover-color);
 			}
 		}
 	}

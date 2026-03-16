@@ -20,6 +20,9 @@
 	--ck-menu-bar-item-focus-ring: var(--ck-focus-ring-interactive);
 	--ck-menu-bar-item-focus-shadow: var(--ck-focus-shadow-interactive);
 	--ck-menu-bar-item-focus-box-shadow: var(--ck-menu-bar-item-focus-shadow), 0 0;
+	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
+	--ck-menu-bar-item-focus-reset-border-color: transparent;
+	--ck-menu-bar-item-focus-reset-box-shadow: none;
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
@@ -112,8 +115,8 @@
 	& .ck-list-item-button {
 		&:focus,
 		&:active {
-			border-color: transparent;
-			box-shadow: none;
+			border-color: var(--ck-menu-bar-item-focus-reset-border-color);
+			box-shadow: var(--ck-menu-bar-item-focus-reset-box-shadow);
 		}
 	}
 
@@ -122,7 +125,7 @@
 		&:active {
 			/* Fix truncated shadows due to rendering order. */
 			position: relative;
-			z-index: 2;
+			z-index: var(--ck-menu-bar-item-focus-layer);
 
 			outline: none;
 			border: var(--ck-menu-bar-item-focus-ring);
