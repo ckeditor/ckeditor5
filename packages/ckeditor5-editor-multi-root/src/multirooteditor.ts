@@ -348,8 +348,6 @@ export class MultiRootEditor extends Editor {
 	/**
 	 * Adds a new root to the editor.
 	 *
-	 * TODO check if this description requires an update.
-	 *
 	 * ```ts
 	 * editor.addRoot( 'myRoot', { initialData: '<p>Initial root data.</p>' } );
 	 * ```
@@ -398,7 +396,7 @@ export class MultiRootEditor extends Editor {
 	 * Note that attributes added together with a root are automatically registered.
 	 *
 	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
+	 * {@link module:core/editor/editorconfig~RootConfig#modelAttributes `config.roots.<rootName>.modelAttributes` configuration option}.
 	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
 	 *
@@ -417,10 +415,11 @@ export class MultiRootEditor extends Editor {
 	 * } );
 	 * ```
 	 *
+	 * @label ROOT_CONFIG
 	 * @param rootName Name of the root to add.
 	 * @param options Additional options for the added root.
 	 */
-	public addRoot( rootName: string, options?: RootConfig & AddRootUndoable ): void;
+	public addRoot( rootName: string, options?: AddRootRootConfig ): void;
 
 	/**
 	 * Adds a new root to the editor.
@@ -429,17 +428,18 @@ export class MultiRootEditor extends Editor {
 	 * editor.addRoot( 'myRoot', { data: '<p>Initial root data.</p>' } );
 	 * ```
 	 *
-	 * TODO link to other signature for more details
+	 * **Note**: This method signature is deprecated and will be removed in one of the next releases.
+	 * Use the signature with root options object instead {@link #addRoot:ROOT_CONFIG `addRoot( rootName, options )`}.
 	 *
 	 * @deprecated
-	 *
+	 * @label LEGACY_ADD_ROOT_OPTIONS
 	 * @param rootName Name of the root to add.
 	 * @param options Additional options for the added root.
 	 */
 	// eslint-disable-next-line @typescript-eslint/unified-signatures
 	public addRoot( rootName: string, options?: AddRootOptions ): void;
 
-	public addRoot( rootName: string, options: AddRootOptions & RootConfig & AddRootUndoable = {} ): void {
+	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
 		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
 		const modelElement: string = options.elementName || '$root';
@@ -897,7 +897,7 @@ export class MultiRootEditor extends Editor {
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 * # Using an existing DOM element (and data provided in `config.roots.<root name>.initialData`)
+	 * # Using an existing DOM element (and data provided in `config.roots.<rootName>.initialData`)
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
@@ -1140,13 +1140,13 @@ export type AddRootOptions = {
 /**
  * Declares an additional options available when adding a root.
  */
-export type AddRootUndoable = {
+export interface AddRootRootConfig extends RootConfig {
 
 	/**
 	 * Whether creating the root can be undone (using the undo feature) or not.
 	 */
 	isUndoable?: boolean;
-};
+}
 
 /**
  * Additional options available when loading a root.
@@ -1165,7 +1165,7 @@ export interface RootEditableOptions {
 
 	/**
 	 * Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided). TODO link
+	 * {@link module:core/editor/editorconfig~RootConfig#placeholder editor configuration} will be used (if it was provided).
 	 */
 	placeholder?: string;
 
