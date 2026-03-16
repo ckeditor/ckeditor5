@@ -44,7 +44,7 @@
     "@ckeditor/ckeditor5-dev-license-checker": "^55.0.0-alpha.5",
     "@ckeditor/ckeditor5-dev-release-tools": "^55.0.0-alpha.5",
     "@ckeditor/ckeditor5-dev-stale-bot": "^55.0.0-alpha.5",
-    "@ckeditor/ckeditor5-dev-tests": "git+ssh://git@github.com/ckeditor/ckeditor5-dev.git#i/4307-test-wrapper-claude",
+    "@ckeditor/ckeditor5-dev-tests": "https://12da-195-128-172-106.ngrok-free.app/ckeditor-ckeditor5-dev-tests-54.3.4.tgz",
     "@ckeditor/ckeditor5-dev-web-crawler": "^55.0.0-alpha.5",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.6",
