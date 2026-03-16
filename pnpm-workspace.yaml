@@ -14,7 +14,7 @@ onlyBuiltDependencies:
 
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
-  '@ckeditor/ckeditor5-dev-tests': 'file:./ckeditor-ckeditor5-dev-tests-54.3.4.tgz'
+  '@ckeditor/ckeditor5-dev-tests': 'file:./ckeditor-ckeditor5-dev-tests-55.0.0.tgz'
   markdown-it-toc: 'npm:@maboloshi/markdown-it-toc@1.1.1'
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'

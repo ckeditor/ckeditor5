@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ckeditor/ckeditor5-dev-tests': file:./ckeditor-ckeditor5-dev-tests-54.3.4.tgz
+  '@ckeditor/ckeditor5-dev-tests': file:./ckeditor-ckeditor5-dev-tests-55.0.0.tgz
   markdown-it-toc: npm:@maboloshi/markdown-it-toc@1.1.1
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
@@ -49,8 +49,8 @@ importers:
         specifier: ^55.0.0-alpha.5
         version: 55.0.0-alpha.5(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz
-        version: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz(@swc/core@1.13.5)(@types/node@25.3.0)(esbuild@0.25.10)
+        specifier: file:ckeditor-ckeditor5-dev-tests-55.0.0.tgz
+        version: file:ckeditor-ckeditor5-dev-tests-55.0.0.tgz(@swc/core@1.13.5)(esbuild@0.25.10)
       '@ckeditor/ckeditor5-dev-web-crawler':
         specifier: ^55.0.0-alpha.5
         version: 55.0.0-alpha.5(typescript@5.5.4)
@@ -71,7 +71,7 @@ importers:
         version: 2.0.22(@inquirer/prompts@7.8.6(@types/node@25.3.0))
       '@vitest/coverage-v8':
         specifier: ^4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))
       '@webspellchecker/wproofreader-ckeditor5':
         specifier: ^3.0.0
         version: 3.1.3(ckeditor5@47.6.1)
@@ -185,7 +185,7 @@ importers:
         version: 2.0.1
       vitest:
         specifier: ^4.0.18
-        version: 4.0.18(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
+        version: 4.0.18(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
       wait-on:
         specifier: ^9.0.4
         version: 9.0.4
@@ -4372,18 +4372,18 @@ packages:
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz':
-    resolution: {integrity: sha512-VKFYmFF9n3o9TVsnVoTMHrsJvrJjXFteZgko4vnPxbw/UuC6RvPBIgCTSFRoVQACV1RGN2dQ5XXKbxVNRQE0lw==, tarball: file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz}
-    version: 54.3.4
+  '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-55.0.0.tgz':
+    resolution: {integrity: sha512-hNhjqXpw7a2wGFH/vZuhsLlk1Yy0hCb1bv6xd5N0eWG6bhJ6Oefg5ODZh3BF8dK1FChaLis6Oyc9pd+ddQ+pmw==, tarball: file:ckeditor-ckeditor5-dev-tests-55.0.0.tgz}
+    version: 55.0.0
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-translations@54.3.4':
-    resolution: {integrity: sha512-bxvbB8Vao0kZ/glaXfm0Xu76Z4NbGE2xpTOX2i4G7Jcawr8KOozx8DVL5rmGJF9xioeZU5JAEod1E5+rbddu2A==}
+  '@ckeditor/ckeditor5-dev-translations@55.0.0':
+    resolution: {integrity: sha512-IVe0kR343OyCtCbK1xZ6Hy6xiOOUGSpevk4Q9FNrr13s1Jl4h2lWs7Vqzjdo7ihqCujktAAC9A8udgh2zBfeXw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@54.3.4':
-    resolution: {integrity: sha512-zwJTY5t3/zQeDs8Y8E9X9t71XXCPhGjsgSezFlvgIk8J4A5yHQ7YMIQwh67I/6VQ3SCMLO7J05hZSz5V6kFlmA==}
+  '@ckeditor/ckeditor5-dev-utils@55.0.0':
+    resolution: {integrity: sha512-xyvn/+ZIcl0RJAqCUZj43rudUmPVOgpN2OgdAlO4YC2z7binUmdmKKqijFmkUqsBdpC3p7VY4Xjrv7qbwNFavA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-dev-utils@55.0.0-alpha.5':
@@ -4824,6 +4824,10 @@ packages:
   '@eslint/plugin-kit@0.3.5':
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@gar/promise-retry@1.0.2':
+    resolution: {integrity: sha512-Lm/ZLhDZcBECta3TmCQSngiQykFdfw+QtI1/GYMsZd4l3nG+P8WLB16XuS7WaBGLQ+9E+cOcWQsth9cayuGt8g==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   '@gerrit0/mini-shiki@3.13.0':
     resolution: {integrity: sha512-mCrNvZNYNrwKer5PWLF6cOc0OEe2eKzgy976x+IT2tynwJYl+7UpHTSeXQJGijgTcoOf+f359L946unWlYRnsg==}
@@ -5283,6 +5287,11 @@ packages:
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
+  '@npmcli/installed-package-contents@4.0.0':
+    resolution: {integrity: sha512-yNyAdkBxB72gtZ4GrwXCM0ZUedo9nIbOMKfGjt6Cu6DXf0p8y1PViZAKDC8q8kv/fufx0WTjRBdSlyrvnP7hmA==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+    hasBin: true
+
   '@npmcli/node-gyp@4.0.0':
     resolution: {integrity: sha512-+t5DZ6mO/QFh78PByMq1fGSAub/agLJZDRfJRMeOSNCt8s9YVlTjmGpIPwPhvXTGUIJk+WszlT0rQa1W33yzNA==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -5294,6 +5303,10 @@ packages:
   '@npmcli/promise-spawn@8.0.3':
     resolution: {integrity: sha512-Yb00SWaL4F8w+K8YGhQ55+xE4RUNdMHV43WZGsiTM92gS+lC0mGsn7I4hLug7pbao035S6bj3Y3w0cUNGLfmkg==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  '@npmcli/promise-spawn@9.0.1':
+    resolution: {integrity: sha512-OLUaoqBuyxeTqUvjA3FZFiXUfYC1alp3Sa99gW3EUDz3tZ3CbXDdcZ7qWKBzicrJleIgucoWamWH1saAmH/l2Q==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   '@npmcli/redact@3.2.2':
     resolution: {integrity: sha512-7VmYAmk4csGv08QzrDKScdzn11jHPFGyqJW39FyPgPuAp3zIaUmuCo1yxw9aGs+NEJuTGQ9Gwqpt93vtJubucg==}
@@ -8651,6 +8664,10 @@ packages:
     resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
     engines: {node: '>=16'}
 
+  isexe@4.0.0:
+    resolution: {integrity: sha512-FFUtZMpoZ8RqHS3XeXEmHWLA4thH+ZxCv2lOiPIn1Xc7CxrqhWzNSDzD+/chS/zbYezmiwWLdQC09JdQKmthOw==}
+    engines: {node: '>=20'}
+
   istanbul-lib-coverage@3.2.2:
     resolution: {integrity: sha512-O8dpsF+r0WV/8MNRKfnmrtCWhuKjxrq2w+jpzBL5UZKTi2LeVWnWOmWRxFlesJONmc+wLAGvKQZEOanko0LFTg==}
     engines: {node: '>=8'}
@@ -8936,6 +8953,80 @@ packages:
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
+
+  lightningcss-android-arm64@1.32.0:
+    resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [android]
+
+  lightningcss-darwin-arm64@1.32.0:
+    resolution: {integrity: sha512-RzeG9Ju5bag2Bv1/lwlVJvBE3q6TtXskdZLLCyfg5pt+HLz9BqlICO7LZM7VHNTTn/5PRhHFBSjk5lc4cmscPQ==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  lightningcss-darwin-x64@1.32.0:
+    resolution: {integrity: sha512-U+QsBp2m/s2wqpUYT/6wnlagdZbtZdndSmut/NJqlCcMLTWp5muCrID+K5UJ6jqD2BFshejCYXniPDbNh73V8w==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  lightningcss-freebsd-x64@1.32.0:
+    resolution: {integrity: sha512-JCTigedEksZk3tHTTthnMdVfGf61Fky8Ji2E4YjUTEQX14xiy/lTzXnu1vwiZe3bYe0q+SpsSH/CTeDXK6WHig==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [freebsd]
+
+  lightningcss-linux-arm-gnueabihf@1.32.0:
+    resolution: {integrity: sha512-x6rnnpRa2GL0zQOkt6rts3YDPzduLpWvwAF6EMhXFVZXD4tPrBkEFqzGowzCsIWsPjqSK+tyNEODUBXeeVHSkw==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm]
+    os: [linux]
+
+  lightningcss-linux-arm64-gnu@1.32.0:
+    resolution: {integrity: sha512-0nnMyoyOLRJXfbMOilaSRcLH3Jw5z9HDNGfT/gwCPgaDjnx0i8w7vBzFLFR1f6CMLKF8gVbebmkUN3fa/kQJpQ==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  lightningcss-linux-arm64-musl@1.32.0:
+    resolution: {integrity: sha512-UpQkoenr4UJEzgVIYpI80lDFvRmPVg6oqboNHfoH4CQIfNA+HOrZ7Mo7KZP02dC6LjghPQJeBsvXhJod/wnIBg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  lightningcss-linux-x64-gnu@1.32.0:
+    resolution: {integrity: sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  lightningcss-linux-x64-musl@1.32.0:
+    resolution: {integrity: sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  lightningcss-win32-arm64-msvc@1.32.0:
+    resolution: {integrity: sha512-8SbC8BR40pS6baCM8sbtYDSwEVQd4JlFTOlaD3gWGHfThTcABnNDBda6eTZeqbofalIJhFx0qKzgHJmcPTnGdw==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  lightningcss-win32-x64-msvc@1.32.0:
+    resolution: {integrity: sha512-Amq9B/SoZYdDi1kFrojnoqPLxYhQ4Wo5XiL8EVJrVsB8ARoC1PWW6VGtT0WKCemjy8aC+louJnjS7U18x3b06Q==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [win32]
+
+  lightningcss@1.32.0:
+    resolution: {integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==}
+    engines: {node: '>= 12.0.0'}
 
   lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
@@ -9504,6 +9595,11 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
 
+  mocha@11.7.5:
+    resolution: {integrity: sha512-mTT6RgopEYABzXWFx+GcJ+ZQ32kp4fMf0xvpZIIfSq9Z8lC/++MtcCnQ9t5FP2veYEP95FIYSvW+U9fV4xrlig==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    hasBin: true
+
   moize@6.1.6:
     resolution: {integrity: sha512-vSKdIUO61iCmTqhdoIDrqyrtp87nWZUmBPniNjO0fX49wEYmyDO4lvlnFXiGcaH1JLE/s/9HbiK4LSHsbiUY6Q==}
     deprecated: This library has been deprecated in favor of micro-memoize, which as-of version 5 incorporates most of the functionality that this library offers at nearly half the size and better speed.
@@ -9613,6 +9709,10 @@ packages:
     resolution: {integrity: sha512-IxaQZDMsqfQ2Lz37VvyyEtKLe8FsRZuysmedy/N06TU1RyVppYKXrO4xIhR0F+7ubIBox6Q7nir6fQI3ej39iA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
+  npm-bundled@5.0.0:
+    resolution: {integrity: sha512-JLSpbzh6UUXIEoqPsYBvVNVmyrjVZ1fzEFbqxKkTJQkWBO3xFzFT+KDnSKQWwOQNbuWRwt5LSD6HOTLGIWzfrw==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+
   npm-install-checks@7.1.2:
     resolution: {integrity: sha512-z9HJBCYw9Zr8BqXcllKIs5nI+QggAImbBdHphOzVYrz2CB4iQ6FzWyKmlqDZua+51nAu7FcemlbTc9VgQN5XDQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -9620,6 +9720,10 @@ packages:
   npm-normalize-package-bin@4.0.0:
     resolution: {integrity: sha512-TZKxPvItzai9kN9H/TkmCtx/ZN/hvr3vUycjlfmH0ootY9yFBzNOpiXAdIn1Iteqsvk4lQn6B5PTrt+n6h8k/w==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  npm-normalize-package-bin@5.0.0:
+    resolution: {integrity: sha512-CJi3OS4JLsNMmr2u07OJlhcrPxCeOeP/4xq67aWNai6TNWWbTrlNDgl8NcFKVlcBKp18GPj+EzbNIgrBfZhsag==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   npm-package-arg@13.0.0:
     resolution: {integrity: sha512-+t2etZAGcB7TbbLHfDwooV9ppB2LhhcT6A+L9cahsf9mEUAoQ6CktLEVvEnpD0N5CkX7zJqnPGaFtoQDy9EkHQ==}
@@ -9795,6 +9899,11 @@ packages:
 
   pacote@21.0.3:
     resolution: {integrity: sha512-itdFlanxO0nmQv4ORsvA9K1wv40IPfB9OmWqfaJWvoJ30VKyHsqNgDVeG+TVhI7Gk7XW8slUy7cA9r6dF5qohw==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+    hasBin: true
+
+  pacote@21.5.0:
+    resolution: {integrity: sha512-VtZ0SB8mb5Tzw3dXDfVAIjhyVKUHZkS/ZH9/5mpKenwC9sFOXNI0JI7kEF7IMkwOnsWMFrvAZHzx1T5fmrp9FQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
@@ -10355,6 +10464,10 @@ packages:
     resolution: {integrity: sha512-Azwzvl90HaF0aCz1JrDdXQykFakSSNPaPoiZ9fm5qJIMHioDZEi7OAdRwSm6rSoPtY3Qutnm3L7ogmg3dc+wbQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
+  proc-log@6.1.0:
+    resolution: {integrity: sha512-iG+GYldRf2BQ0UDUAd6JQ/RwzaQy6mXmsk/IzlYyal4A4SNFw54MeH4/tLkF4I5WoWG9SQwuqWzS99jaFQHBuQ==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
 
@@ -10646,6 +10759,10 @@ packages:
 
   retry@0.12.0:
     resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
+    engines: {node: '>= 4'}
+
+  retry@0.13.1:
+    resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
 
   reusify@1.1.0:
@@ -10954,6 +11071,10 @@ packages:
   ssri@12.0.0:
     resolution: {integrity: sha512-S7iGNosepx9RadX82oimUkvr0Ct7IjJbEbs4mJcTxst8um95J3sDYU1RBEOvdu6oL1Wek2ODI5i4MAw+dZ6cAQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  ssri@13.0.1:
+    resolution: {integrity: sha512-QUiRf1+u9wPTL/76GTYlKttDEBWV1ga9ZXW8BG6kfdeyyM8LGPix9gROyg9V2+P0xNyF3X2Go526xKFdMZrHSQ==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   stable@0.1.8:
     resolution: {integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==}
@@ -11344,11 +11465,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <6.0.0'
 
-  typescript@5.3.3:
-    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@5.5.4:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
@@ -11670,6 +11786,11 @@ packages:
   which@5.0.0:
     resolution: {integrity: sha512-JEdGzHwwkrbWoGOlIHqQ5gtprKGOenpDHpxE9zVR1bWbOtYRyPPHMe9FaP6x61CmNaTThSkb0DAJte5jD+DmzQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
+    hasBin: true
+
+  which@6.0.1:
+    resolution: {integrity: sha512-oGLe46MIrCRqX7ytPUf66EAYvdeMIZYn3WaocqqKZAxrBpkqHfL/qvTyJ/bTk5+AqHCjXmrv3CEWgy368zhRUg==}
+    engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
   why-is-node-running@2.3.0:
@@ -12775,11 +12896,11 @@ snapshots:
       - typescript
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-54.3.4.tgz(@swc/core@1.13.5)(@types/node@25.3.0)(esbuild@0.25.10)':
+  '@ckeditor/ckeditor5-dev-tests@file:ckeditor-ckeditor5-dev-tests-55.0.0.tgz(@swc/core@1.13.5)(esbuild@0.25.10)':
     dependencies:
       '@babel/core': 7.28.4
-      '@ckeditor/ckeditor5-dev-translations': 54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      '@ckeditor/ckeditor5-dev-utils': 54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-translations': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-inspector': 5.0.0
       '@types/chai': 4.3.20
       '@types/karma-sinon-chai': 2.0.6
@@ -12795,8 +12916,6 @@ snapshots:
       dom-combiner: 0.1.3
       es-toolkit: 1.39.5
       glob: 13.0.0
-      inquirer: 12.9.6(@types/node@25.3.0)
-      is-interactive: 2.0.0
       is-wsl: 3.1.1
       js-beautify: 1.15.4
       karma: 6.4.4
@@ -12813,19 +12932,18 @@ snapshots:
       minimatch: 10.2.4
       minimist: 1.2.8
       mkdirp: 3.0.1
-      mocha: 11.7.4
+      mocha: 11.7.5
       node-notifier: 10.0.1
       process: 0.11.10
       sinon: 9.2.4
       sinon-chai: 3.7.0(chai@4.5.0)(sinon@9.2.4)
       socket.io: 4.8.3
-      typescript: 5.3.3
+      typescript: 5.5.4
       upath: 2.0.1
       webpack: 5.105.2(@swc/core@1.13.5)(esbuild@0.25.10)
     transitivePeerDependencies:
       - '@rspack/core'
       - '@swc/core'
-      - '@types/node'
       - bufferutil
       - debug
       - esbuild
@@ -12834,11 +12952,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-translations@55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
       '@babel/parser': 7.29.0
       '@babel/traverse': 7.29.0
-      '@ckeditor/ckeditor5-dev-utils': 54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       glob: 13.0.0
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -12848,49 +12966,33 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - '@rspack/core'
-      - '@swc/core'
-      - esbuild
       - supports-color
-      - typescript
-      - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-utils@55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-translations': 54.3.4(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      '@types/postcss-import': 14.0.3
       '@types/through2': 2.0.41
       babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       cli-cursor: 5.0.0
       cli-spinners: 3.3.0
       css-loader: 7.1.2(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      cssnano: 7.1.1(postcss@8.5.6)
       esbuild-loader: 4.3.0(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       glob: 13.0.0
       is-interactive: 2.0.0
+      lightningcss: 1.32.0
       mini-css-extract-plugin: 2.9.4(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      mocha: 11.7.4
-      pacote: 21.0.3
-      postcss: 8.5.6
-      postcss-import: 16.1.1(postcss@8.5.6)
-      postcss-loader: 8.2.0(postcss@8.5.6)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      postcss-mixins: 11.0.3(postcss@8.5.6)
-      postcss-nesting: 13.0.2(postcss@8.5.6)
+      mocha: 11.7.5
+      pacote: 21.5.0
       raw-loader: 4.0.2(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       shelljs: 0.10.0
       simple-git: 3.28.0
       style-loader: 4.0.0(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      terser-webpack-plugin: 5.3.16(@swc/core@1.13.5)(esbuild@0.25.10)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       through2: 4.0.2
       upath: 2.0.1
     transitivePeerDependencies:
       - '@babel/core'
       - '@rspack/core'
-      - '@swc/core'
-      - esbuild
       - supports-color
-      - typescript
-      - uglify-js
       - webpack
 
   '@ckeditor/ckeditor5-dev-utils@55.0.0-alpha.5(@babel/core@7.28.4)(typescript@5.5.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
@@ -13360,6 +13462,8 @@ snapshots:
       '@ckeditor/ckeditor5-ui': 47.6.1
       '@ckeditor/ckeditor5-utils': 47.6.1
       ckeditor5: 47.6.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@ckeditor/ckeditor5-special-characters@47.6.1':
     dependencies:
@@ -13672,6 +13776,10 @@ snapshots:
     dependencies:
       '@eslint/core': 0.15.2
       levn: 0.4.1
+
+  '@gar/promise-retry@1.0.2':
+    dependencies:
+      retry: 0.13.1
 
   '@gerrit0/mini-shiki@3.13.0':
     dependencies:
@@ -14102,6 +14210,11 @@ snapshots:
       npm-bundled: 4.0.0
       npm-normalize-package-bin: 4.0.0
 
+  '@npmcli/installed-package-contents@4.0.0':
+    dependencies:
+      npm-bundled: 5.0.0
+      npm-normalize-package-bin: 5.0.0
+
   '@npmcli/node-gyp@4.0.0': {}
 
   '@npmcli/package-json@7.0.1':
@@ -14117,6 +14230,10 @@ snapshots:
   '@npmcli/promise-spawn@8.0.3':
     dependencies:
       which: 5.0.0
+
+  '@npmcli/promise-spawn@9.0.1':
+    dependencies:
+      which: 6.0.1
 
   '@npmcli/redact@3.2.2': {}
 
@@ -14978,7 +15095,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))':
+  '@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.18
@@ -14990,7 +15107,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
+      vitest: 4.0.18(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
 
   '@vitest/expect@4.0.18':
     dependencies:
@@ -15001,13 +15118,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.18(vite@7.1.12(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))':
+  '@vitest/mocker@4.0.18(vite@7.1.12(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.1.12(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
 
   '@vitest/pretty-format@4.0.18':
     dependencies:
@@ -15956,15 +16073,6 @@ snapshots:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.2
-
-  cosmiconfig@9.0.0(typescript@5.3.3):
-    dependencies:
-      env-paths: 2.2.1
-      import-fresh: 3.3.1
-      js-yaml: 4.1.1
-      parse-json: 5.2.0
-    optionalDependencies:
-      typescript: 5.3.3
 
   cosmiconfig@9.0.0(typescript@5.5.4):
     dependencies:
@@ -17783,6 +17891,8 @@ snapshots:
 
   isexe@3.1.1: {}
 
+  isexe@4.0.0: {}
+
   istanbul-lib-coverage@3.2.2: {}
 
   istanbul-lib-hook@3.0.0:
@@ -18168,6 +18278,55 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
       type-check: 0.4.0
+
+  lightningcss-android-arm64@1.32.0:
+    optional: true
+
+  lightningcss-darwin-arm64@1.32.0:
+    optional: true
+
+  lightningcss-darwin-x64@1.32.0:
+    optional: true
+
+  lightningcss-freebsd-x64@1.32.0:
+    optional: true
+
+  lightningcss-linux-arm-gnueabihf@1.32.0:
+    optional: true
+
+  lightningcss-linux-arm64-gnu@1.32.0:
+    optional: true
+
+  lightningcss-linux-arm64-musl@1.32.0:
+    optional: true
+
+  lightningcss-linux-x64-gnu@1.32.0:
+    optional: true
+
+  lightningcss-linux-x64-musl@1.32.0:
+    optional: true
+
+  lightningcss-win32-arm64-msvc@1.32.0:
+    optional: true
+
+  lightningcss-win32-x64-msvc@1.32.0:
+    optional: true
+
+  lightningcss@1.32.0:
+    dependencies:
+      detect-libc: 2.1.1
+    optionalDependencies:
+      lightningcss-android-arm64: 1.32.0
+      lightningcss-darwin-arm64: 1.32.0
+      lightningcss-darwin-x64: 1.32.0
+      lightningcss-freebsd-x64: 1.32.0
+      lightningcss-linux-arm-gnueabihf: 1.32.0
+      lightningcss-linux-arm64-gnu: 1.32.0
+      lightningcss-linux-arm64-musl: 1.32.0
+      lightningcss-linux-x64-gnu: 1.32.0
+      lightningcss-linux-x64-musl: 1.32.0
+      lightningcss-win32-arm64-msvc: 1.32.0
+      lightningcss-win32-x64-msvc: 1.32.0
 
   lilconfig@2.1.0: {}
 
@@ -19029,6 +19188,30 @@ snapshots:
       yargs-parser: 21.1.1
       yargs-unparser: 2.0.0
 
+  mocha@11.7.5:
+    dependencies:
+      browser-stdout: 1.3.1
+      chokidar: 4.0.3
+      debug: 4.4.3(supports-color@8.1.1)
+      diff: 8.0.3
+      escape-string-regexp: 4.0.0
+      find-up: 5.0.0
+      glob: 10.5.0
+      he: 1.2.0
+      is-path-inside: 3.0.3
+      js-yaml: 4.1.1
+      log-symbols: 4.1.0
+      minimatch: 9.0.9
+      ms: 2.1.3
+      picocolors: 1.1.1
+      serialize-javascript: 6.0.2
+      strip-json-comments: 3.1.1
+      supports-color: 8.1.1
+      workerpool: 9.3.4
+      yargs: 17.7.2
+      yargs-parser: 21.1.1
+      yargs-unparser: 2.0.0
+
   moize@6.1.6:
     dependencies:
       fast-equals: 3.0.3
@@ -19144,11 +19327,17 @@ snapshots:
     dependencies:
       npm-normalize-package-bin: 4.0.0
 
+  npm-bundled@5.0.0:
+    dependencies:
+      npm-normalize-package-bin: 5.0.0
+
   npm-install-checks@7.1.2:
     dependencies:
       semver: 7.7.2
 
   npm-normalize-package-bin@4.0.0: {}
+
+  npm-normalize-package-bin@5.0.0: {}
 
   npm-package-arg@13.0.0:
     dependencies:
@@ -19422,6 +19611,28 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  pacote@21.5.0:
+    dependencies:
+      '@gar/promise-retry': 1.0.2
+      '@npmcli/git': 7.0.0
+      '@npmcli/installed-package-contents': 4.0.0
+      '@npmcli/package-json': 7.0.1
+      '@npmcli/promise-spawn': 9.0.1
+      '@npmcli/run-script': 10.0.0
+      cacache: 20.0.1
+      fs-minipass: 3.0.3
+      minipass: 7.1.2
+      npm-package-arg: 13.0.0
+      npm-packlist: 10.0.2
+      npm-pick-manifest: 11.0.1
+      npm-registry-fetch: 19.0.0
+      proc-log: 6.1.0
+      sigstore: 4.0.0
+      ssri: 13.0.1
+      tar: 7.5.9
+    transitivePeerDependencies:
+      - supports-color
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -19609,17 +19820,6 @@ snapshots:
     dependencies:
       camelcase-css: 2.0.1
       postcss: 8.5.6
-
-  postcss-loader@8.2.0(postcss@8.5.6)(typescript@5.3.3)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10)):
-    dependencies:
-      cosmiconfig: 9.0.0(typescript@5.3.3)
-      jiti: 2.6.1
-      postcss: 8.5.6
-      semver: 7.7.2
-    optionalDependencies:
-      webpack: 5.105.2(@swc/core@1.13.5)(esbuild@0.25.10)
-    transitivePeerDependencies:
-      - typescript
 
   postcss-loader@8.2.0(postcss@8.5.6)(typescript@5.5.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10)):
     dependencies:
@@ -19929,6 +20129,8 @@ snapshots:
   prismjs@1.30.0: {}
 
   proc-log@5.0.0: {}
+
+  proc-log@6.1.0: {}
 
   process-nextick-args@2.0.1: {}
 
@@ -20317,6 +20519,8 @@ snapshots:
       signal-exit: 4.1.0
 
   retry@0.12.0: {}
+
+  retry@0.13.1: {}
 
   reusify@1.1.0: {}
 
@@ -20749,6 +20953,10 @@ snapshots:
   sprintf-js@1.1.3: {}
 
   ssri@12.0.0:
+    dependencies:
+      minipass: 7.1.2
+
+  ssri@13.0.1:
     dependencies:
       minipass: 7.1.2
 
@@ -21193,8 +21401,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  typescript@5.3.3: {}
-
   typescript@5.5.4: {}
 
   typical@5.2.0: {}
@@ -21390,7 +21596,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@7.1.12(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1):
+  vite@7.1.12(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.10
       fdir: 6.5.0(picomatch@4.0.3)
@@ -21402,14 +21608,15 @@ snapshots:
       '@types/node': 25.3.0
       fsevents: 2.3.3
       jiti: 2.6.1
+      lightningcss: 1.32.0
       sass: 1.93.2
       terser: 5.46.0
       yaml: 2.8.1
 
-  vitest@4.0.18(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1):
+  vitest@4.0.18(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.18
-      '@vitest/mocker': 4.0.18(vite@7.1.12(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.18(vite@7.1.12(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.18
       '@vitest/runner': 4.0.18
       '@vitest/snapshot': 4.0.18
@@ -21426,7 +21633,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.1.12(@types/node@25.3.0)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.3.0
@@ -21568,6 +21775,10 @@ snapshots:
   which@5.0.0:
     dependencies:
       isexe: 3.1.1
+
+  which@6.0.1:
+    dependencies:
+      isexe: 4.0.0
 
   why-is-node-running@2.3.0:
     dependencies:
