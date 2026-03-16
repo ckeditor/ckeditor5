@@ -539,9 +539,10 @@ export class MultiRootEditor extends Editor {
 	 *
 	 * The new DOM editable is attached to the model root and can be used to modify the root content.
 	 *
+	 * @label OPTIONS
 	 * @param root Root for which the editable element should be created.
 	 * @param options.placeholder Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * {@link module:core/editor/editorconfig~RootConfig#placeholder root configuration} will be used (if it was provided).
 	 * @param options.label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
@@ -553,13 +554,13 @@ export class MultiRootEditor extends Editor {
 	 * The new DOM editable is attached to the model root and can be used to modify the root content.
 	 *
 	 * **Note**: this method signature is deprecated and will be removed in one of the next releases.
-	 * Use the signature with options object instead.
+	 * Use the signature with options object instead {@link #createEditable:OPTIONS `createEditable( root, options )`}.
 	 *
 	 * @deprecated
-	 *
+	 * @label LEGACY
 	 * @param root Root for which the editable element should be created.
 	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
-	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * {@link module:core/editor/editorconfig~RootConfig#placeholder root configuration} will be used (if it was provided).
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
