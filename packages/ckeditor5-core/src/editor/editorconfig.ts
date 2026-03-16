@@ -34,6 +34,28 @@ import type { EngineConfig } from '@ckeditor/ckeditor5-engine';
  * ```
  */
 export interface EditorConfig extends EngineConfig {
+
+	/**
+	 * The DOM element that will be the source for the created editor.
+	 *
+	 * **Note:** This option is only available in the {@link module:editor-classic/classiceditor~ClassicEditor}.
+	 * Other editor types expect configuration for the root elements to be passed in the
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} configuration.
+	 *
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization
+	 * and the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element editor element} will replace the passed element
+	 * in the DOM (the original one will be hidden and the editor will be injected next to it).
+	 *
+	 * If the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`, the editor data will be set back to the original element once the editor is destroyed and when a form,
+	 * in which this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration
+	 * with native web forms.
+	 *
+	 * If the element is not provided, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 * It is available under the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.
+	 */
+	attachTo?: HTMLElement;
+
 	context?: Context;
 
 	/**
@@ -919,6 +941,20 @@ export interface EditorConfig extends EngineConfig {
  * `config.roots.main`.
  */
 export interface RootConfig {
+
+	/**
+	 * The DOM element that will be the source for the created editor root (on which the editor root will be initialized).
+	 *
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization (but only when
+	 * {@link #initialData `initialData`} is not set).
+	 *
+	 * The editor data will be set back to the original element once the editor is destroyed only if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`.
+	 *
+	 * If this config property is not set, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 */
+	element?: HTMLElement;
 
 	/**
 	 * The initial editor data to be used instead of the provided element's HTML content.

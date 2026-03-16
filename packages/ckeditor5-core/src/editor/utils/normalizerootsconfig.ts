@@ -110,6 +110,37 @@ export function normalizeRootsConfig(
 }
 
 /**
+ * Normalizes the parameters passed to the editor constructor when a single root is used. It supports both of the following signatures:
+ *
+ * ```ts
+ * new Editor( editorConfig: EditorConfig );
+ * new Editor( sourceElementOrData: HTMLElement | string, editorConfig: EditorConfig );
+ * ```
+ *
+ * @internal
+ */
+export function normalizeSingleRootEditorConstructorParams(
+	sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
+	editorConfig: EditorConfig
+): { sourceElementOrData: HTMLElement | string; editorConfig: EditorConfig } {
+	if (
+		typeof sourceElementOrDataOrConfig === 'string' ||
+		isElement( sourceElementOrDataOrConfig ) ||
+		editorConfig && Object.keys( editorConfig ).length
+	) {
+		return {
+			sourceElementOrData: sourceElementOrDataOrConfig as HTMLElement | string,
+			editorConfig
+		};
+	} else {
+		return {
+			sourceElementOrData: '',
+			editorConfig: sourceElementOrDataOrConfig as EditorConfig
+		};
+	}
+}
+
+/**
  * Type guard to check if the provided value is a plain object.
  */
 function isPlainObject(
