@@ -22,6 +22,7 @@
 	--ck-list-item-on-focus-border-color: var(--ck-color-surface-control);
 	--ck-list-switch-item-on-color: inherit;
 	--ck-list-switch-item-on-hover-color: inherit;
+	--ck-list-group-label-font-weight: var(--ck-font-weight-ui-label);
 }
 
 .ck.ck-list {
@@ -132,7 +133,7 @@
 
 	& > .ck-label {
 		font-size: 11px;
-		font-weight: bold;
+		font-weight: var(--ck-list-group-label-font-weight);
 		padding: var(--ck-list-group-label-padding);
 	}
 }

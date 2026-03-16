@@ -15,6 +15,8 @@
 	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
 	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
 	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
+	--ck-button-bold-font-weight: var(--ck-font-weight-ui-emphasis);
+	--ck-button-label-font-weight: var(--ck-font-weight-ui-inherit);
 }
 
 .ck.ck-button,
@@ -92,7 +94,7 @@ a.ck.ck-button {
 	& .ck-button__label {
 		/* Enable font size inheritance, which allows fluid UI scaling. */
 		font-size: inherit;
-		font-weight: inherit;
+		font-weight: var(--ck-button-label-font-weight);
 		color: inherit;
 		cursor: inherit;
 
@@ -220,5 +222,5 @@ a.ck.ck-button-action {
 
 .ck.ck-button-bold,
 a.ck.ck-button-bold {
-	font-weight: bold;
+	font-weight: var(--ck-button-bold-font-weight);
 }

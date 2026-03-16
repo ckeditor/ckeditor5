@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-font-weight-ui-default: var(--ck-font-weight-normal);
+	--ck-font-weight-ui-strong: var(--ck-font-weight-semibold);
+	--ck-font-weight-ui-heading: var(--ck-font-weight-bold);
+	--ck-font-weight-ui-label: var(--ck-font-weight-bold);
+	--ck-font-weight-ui-emphasis: var(--ck-font-weight-bold);
+	--ck-font-weight-ui-muted: var(--ck-font-weight-normal);
+	--ck-font-weight-ui-inherit: inherit;
+}

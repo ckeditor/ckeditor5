@@ -13,6 +13,7 @@
 	--ck-color-selector-hex-picker-pointer-size: 15px;
 	--ck-color-selector-hex-picker-action-bar-padding: 0 var(--ck-color-selector-hex-picker-padding) var(--ck-color-selector-hex-picker-padding);
 	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-border-radius-surface-attached-top);
+	--ck-color-selector-grid-label-font-weight: var(--ck-font-weight-ui-inherit);
 	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
 	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
 }
@@ -52,7 +53,7 @@
 		}
 
 		& label.ck.ck-color-grid__label {
-			font-weight: unset;
+			font-weight: var(--ck-color-selector-grid-label-font-weight);
 		}
 	}
 

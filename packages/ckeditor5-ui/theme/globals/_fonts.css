@@ -13,4 +13,9 @@
 	--ck-font-size-normal: 1em;
 	--ck-font-size-big: 1.4em;
 	--ck-font-size-large: 1.8em;
+
+	--ck-font-weight-normal: 400;
+	--ck-font-weight-medium: 500;
+	--ck-font-weight-semibold: 600;
+	--ck-font-weight-bold: 700;
 }

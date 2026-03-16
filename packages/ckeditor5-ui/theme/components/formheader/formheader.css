@@ -10,6 +10,7 @@
 	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
 	--ck-form-header-icon-gap: var(--ck-spacing-control-icon-gap);
 	--ck-form-header-back-button-gap: var(--ck-spacing-surface-item-gap-inline);
+	--ck-form-header-label-font-weight: var(--ck-font-weight-ui-heading);
 }
 
 .ck.ck-form__header {
@@ -34,7 +35,7 @@
 		/* Defaults to 15px. */
 		--ck-font-size-base: 1.153em;
 
-		font-weight: bold;
+		font-weight: var(--ck-form-header-label-font-weight);
 	}
 
 	/* Padding when back button is hidden */

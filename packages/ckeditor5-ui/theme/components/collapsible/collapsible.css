@@ -13,12 +13,13 @@
 	--ck-collapsible-button-active-background: transparent;
 	--ck-collapsible-button-active-border-color: transparent;
 	--ck-collapsible-button-active-box-shadow: none;
+	--ck-collapsible-button-font-weight: var(--ck-font-weight-ui-strong);
 }
 
 .ck.ck-collapsible {
 	& > .ck.ck-button {
 		width: 100%;
-		font-weight: bold;
+		font-weight: var(--ck-collapsible-button-font-weight);
 		border-radius: 0;
 		color: inherit;
 

@@ -12,6 +12,8 @@
 	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
 	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-region-edge-margin-block);
 	--ck-accessibility-help-content-focus-box-shadow: var(--ck-focus-outer-shadow), 0 0;
+	--ck-accessibility-help-h3-font-weight: var(--ck-font-weight-ui-heading);
+	--ck-accessibility-help-h4-font-weight: var(--ck-font-weight-ui-heading);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
@@ -39,12 +41,12 @@
 	}
 
 	& h3 {
-		font-weight: bold;
+		font-weight: var(--ck-accessibility-help-h3-font-weight);
 		font-size: 1.2em;
 	}
 
 	& h4 {
-		font-weight: bold;
+		font-weight: var(--ck-accessibility-help-h4-font-weight);
 		font-size: 1em;
 	}
 

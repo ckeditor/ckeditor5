@@ -13,6 +13,7 @@
 	--ck-search-results-info-padding-block: var(--ck-spacing-surface-section-gap-block);
 	--ck-search-results-info-padding-inline: var(--ck-spacing-control-meta-gap);
 	--ck-search-results-info-gap: var(--ck-spacing-surface-section-gap-block);
+	--ck-search-results-title-font-weight: var(--ck-font-weight-ui-heading);
 }
 
 .ck.ck-search {
@@ -122,7 +123,7 @@
 			}
 
 			& > span:first-child {
-				font-weight: bold;
+				font-weight: var(--ck-search-results-title-font-weight);
 				display: block;
 			}
 

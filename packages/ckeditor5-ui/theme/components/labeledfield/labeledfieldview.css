@@ -11,6 +11,7 @@
 	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-labeled-field-label-default-position-x);
 	--ck-labeled-field-label-dropdown-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-labeled-field-label-default-position-y: calc(0.6 * var(--ck-font-size-base));
+	--ck-labeled-field-label-font-weight: var(--ck-font-weight-ui-muted);
 	--ck-color-labeled-field-label-background: var(--ck-color-base-background);
 }
 
@@ -34,7 +35,7 @@
 			background: var(--ck-color-labeled-field-label-background);
 			padding: 0 calc(.5 * var(--ck-font-size-tiny));
 			line-height: initial;
-			font-weight: normal;
+			font-weight: var(--ck-labeled-field-label-font-weight);
 
 			/* Prevent overflow when the label is longer than the input */
 			text-overflow: ellipsis;
