@@ -326,7 +326,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
+					.then( () => editor.ui.init( editor.config.get( 'attachTo' ) || null ) )
 					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
