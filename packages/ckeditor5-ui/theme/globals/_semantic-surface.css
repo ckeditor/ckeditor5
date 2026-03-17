@@ -4,16 +4,7 @@
  */
 
 :root {
-	/* Generic control surfaces (button/input backgrounds and borders). */
-	--ck-color-surface-control: var(--ck-color-base-background);
-	--ck-color-border-control: var(--ck-color-base-border);
-
-	/* Generic elevated surfaces (dropdown/panel/dialog/toolbar containers). */
-	--ck-color-surface-container: var(--ck-color-base-background);
-	--ck-color-border-container: var(--ck-color-base-border);
-
-	/* Generic separators and dividers. */
-	--ck-color-divider: var(--ck-color-base-border);
+	/* Color surface roles are defined in ./colors/_semantic-surface.css. */
 
 	/* Generic floating surface shadows. */
 	--ck-shadow-surface-floating: var(--ck-drop-shadow);

@@ -17,8 +17,8 @@
 	--ck-menu-bar-panel-border-radius-position-nw: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-menu-bar-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-menu-bar-panel-box-shadow: var(--ck-menu-bar-panel-shadow), 0 0;
-	--ck-menu-bar-item-focus-ring: var(--ck-focus-ring-interactive);
-	--ck-menu-bar-item-focus-shadow: var(--ck-focus-shadow-interactive);
+	--ck-menu-bar-item-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-menu-bar-item-focus-shadow: var(--ck-interactive-focus-shadow);
 	--ck-menu-bar-item-focus-box-shadow: var(--ck-menu-bar-item-focus-shadow), 0 0;
 	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
 	--ck-menu-bar-item-focus-reset-border-color: transparent;

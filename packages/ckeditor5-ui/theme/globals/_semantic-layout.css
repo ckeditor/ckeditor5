@@ -4,8 +4,6 @@
  */
 
 :root {
-	/* Semantic sizing for interactive controls and list/menu panels. */
+	/* Semantic sizing for shared cross-component layout constraints. */
 	--ck-size-control-min-height: var(--ck-ui-component-min-height);
-	--ck-size-menu-panel-max-height: 314px;
-	--ck-size-autocomplete-max-height: 200px;
 }

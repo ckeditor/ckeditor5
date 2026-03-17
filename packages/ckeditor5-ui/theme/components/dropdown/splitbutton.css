@@ -4,8 +4,8 @@
  */
 
 :root {
-	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
-	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
+	--ck-splitbutton-hover-background-color: hsl(0, 0%, 92%);
+	--ck-splitbutton-hover-border-color: hsl(0, 0%, 70%);
 	--ck-splitbutton-border-radius: var(--ck-border-radius-control);
 }
 
@@ -83,7 +83,7 @@
 	&:hover {
 		/* When the split button hovered as a whole, not as individual buttons. */
 		& > .ck-button:not(.ck-on):not(.ck-disabled):not(:hover) {
-			background: var(--ck-color-split-button-hover-background);
+			background: var(--ck-splitbutton-hover-background-color);
 		}
 
 		/* Splitbutton separator needs to be set with the ::after pseudoselector
@@ -93,12 +93,12 @@
 			position: absolute;
 			width: 1px;
 			height: 100%;
-			background-color: var(--ck-color-split-button-hover-border);
+			background-color: var(--ck-splitbutton-hover-border-color);
 		}
 
 		/* Make sure the divider between the buttons looks fine when the button is focused */
 		& > .ck-splitbutton__arrow:focus::after {
-			--ck-color-split-button-hover-border: var(--ck-color-focus-border);
+			--ck-splitbutton-hover-border-color: var(--ck-color-interactive-focus-border);
 		}
 
 		[dir="ltr"] & {

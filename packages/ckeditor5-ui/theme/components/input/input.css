@@ -7,10 +7,10 @@
 	--ck-input-width: 18em;
 	--ck-input-border-radius: var(--ck-border-radius-control);
 	--ck-input-min-height: var(--ck-size-control-min-height);
-	--ck-input-focus-ring: var(--ck-focus-ring-interactive);
-	--ck-input-focus-shadow: var(--ck-focus-shadow-interactive);
-	--ck-input-focus-disabled-shadow: var(--ck-focus-shadow-disabled-interactive);
-	--ck-input-focus-error-shadow: var(--ck-focus-shadow-error-interactive);
+	--ck-input-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-input-focus-shadow: var(--ck-interactive-focus-shadow);
+	--ck-input-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
+	--ck-input-focus-error-shadow: var(--ck-interactive-focus-error-shadow);
 	--ck-input-focus-box-shadow: var(--ck-input-focus-shadow), 0 0;
 	--ck-input-focus-disabled-box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
 	--ck-input-focus-error-box-shadow: var(--ck-input-focus-error-shadow), 0 0;

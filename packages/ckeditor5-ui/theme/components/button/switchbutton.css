@@ -8,7 +8,7 @@
 	--ck-switch-button-toggle-width: 2.6153846154em;
 	--ck-switch-button-toggle-border-radius: var(--ck-border-radius-control);
 	--ck-switch-button-toggle-inner-border-radius: calc(.5 * var(--ck-switch-button-toggle-border-radius));
-	--ck-switch-button-focus-ring: var(--ck-focus-ring-interactive);
+	--ck-switch-button-focus-ring: var(--ck-interactive-focus-ring);
 	--ck-switch-button-label-gap: calc(2 * var(--ck-spacing-control-meta-gap));
 	/* 14px at 13px font-size */
 	--ck-switch-button-toggle-inner-size: calc(1.0769230769em + 1px);
@@ -98,7 +98,7 @@
 		box-shadow: none;
 
 		& .ck-button__toggle {
-			box-shadow: 0 0 0 1px var(--ck-color-base-background), 0 0 0 5px var(--ck-color-focus-outer-shadow);
+			box-shadow: 0 0 0 1px var(--ck-color-base-background), 0 0 0 5px var(--ck-color-interactive-focus-shadow);
 			outline-offset: 1px;
 			outline: var(--ck-switch-button-focus-ring);
 		}

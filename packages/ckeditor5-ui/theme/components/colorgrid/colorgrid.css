@@ -11,7 +11,7 @@
 	--ck-color-grid-tile-state-border: 0;
 	--ck-color-grid-tile-bordered-box-shadow: 0 0 0 1px var(--ck-color-base-border);
 	--ck-color-grid-tile-on-box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
-	--ck-color-grid-tile-hover-box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+	--ck-color-grid-tile-hover-box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-interactive-focus-border);
 	--ck-color-grid-tile-focus-box-shadow: var(--ck-color-grid-tile-hover-box-shadow);
 	--ck-color-grid-tile-disabled-cursor: unset;
 	--ck-color-grid-tile-disabled-transition: unset;
@@ -21,7 +21,7 @@
 	/* Not using global colors here because these may change but some colors in a pallette
 	 * require special treatment. For instance, this ensures no matter what the UI text color is,
 	 * the check icon will look good on the black color tile. */
-	--ck-color-color-grid-check-icon: hsl(212, 81%, 46%);
+	--ck-color-grid-check-icon-color: hsl(212, 81%, 46%);
 }
 
 .ck.ck-color-grid {
@@ -92,7 +92,7 @@
 
 	& .ck.ck-icon {
 		display: none;
-		color: var(--ck-color-color-grid-check-icon);
+		color: var(--ck-color-grid-check-icon-color);
 	}
 
 	&.ck-on {

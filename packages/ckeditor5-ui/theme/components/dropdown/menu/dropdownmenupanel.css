@@ -6,7 +6,7 @@
 
 :root {
 	--ck-dropdown-menu-menu-panel-max-width: 75vw;
-	--ck-dropdown-menu-menu-panel-max-height: var(--ck-size-menu-panel-max-height);
+	--ck-dropdown-menu-menu-panel-max-height: 314px;
 	--ck-dropdown-menu-menu-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-dropdown-menu-menu-panel-box-shadow: var(--ck-dropdown-menu-menu-panel-shadow), 0 0;
 	--ck-dropdown-menu-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
