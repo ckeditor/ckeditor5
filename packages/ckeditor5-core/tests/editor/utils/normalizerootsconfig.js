@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { normalizeRootsConfig } from '../../../src/index.ts';
+import {
+	normalizeRootsConfig,
+	normalizeSingleRootEditorConstructorParams,
+	normalizeMultiRootEditorConstructorParams
+} from '../../../src/index.ts';
 import { Config } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -347,6 +351,153 @@ describe( 'normalizeRootsConfig()', () => {
 			expect( Object.keys( roots ) ).to.include( 'main' );
 			expect( Object.keys( roots ) ).to.include( 'header' );
 			expect( Object.keys( roots ) ).to.include( 'content' );
+		} );
+	} );
+
+	describe( 'separateAttachTo parameter', () => {
+		it( 'should assign source element to rootConfig.element by default', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>data</p>';
+
+			normalizeRootsConfig( sourceElement, config );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.element ).to.equal( sourceElement );
+		} );
+
+		it( 'should not assign source element to rootConfig.element when separateAttachTo is true', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>data</p>';
+
+			normalizeRootsConfig( sourceElement, config, 'main', true );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.element ).to.be.undefined;
+		} );
+
+		it( 'should set config.attachTo when separateAttachTo is true and source is an element', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>data</p>';
+
+			normalizeRootsConfig( sourceElement, config, 'main', true );
+
+			expect( config.get( 'attachTo' ) ).to.equal( sourceElement );
+		} );
+
+		it( 'should not set config.attachTo when separateAttachTo is false', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>data</p>';
+
+			normalizeRootsConfig( sourceElement, config );
+
+			expect( config.get( 'attachTo' ) ).to.be.undefined;
+		} );
+
+		it( 'should not set config.attachTo when source is a string', () => {
+			normalizeRootsConfig( '<p>data</p>', config, 'main', true );
+
+			expect( config.get( 'attachTo' ) ).to.be.undefined;
+		} );
+
+		it( 'should extract initialData from config.attachTo when separateAttachTo is true and source is empty', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>from attachTo</p>';
+
+			config.set( 'attachTo', el );
+
+			normalizeRootsConfig( '', config, 'main', true );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.initialData ).to.equal( '<p>from attachTo</p>' );
+		} );
+
+		it( 'should extract initialData from rootConfig.element when source is empty', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>from element</p>';
+
+			config.set( 'roots', { main: { element: el } } );
+
+			normalizeRootsConfig( '', config );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.initialData ).to.equal( '<p>from element</p>' );
+		} );
+
+		it( 'should assign source elements to rootConfig.element for multi-root', () => {
+			const fooEl = document.createElement( 'div' );
+			fooEl.innerHTML = '<p>Foo</p>';
+			const barEl = document.createElement( 'div' );
+			barEl.innerHTML = '<p>Bar</p>';
+
+			normalizeRootsConfig( { foo: fooEl, bar: barEl }, config, false );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.foo.element ).to.equal( fooEl );
+			expect( roots.bar.element ).to.equal( barEl );
+		} );
+	} );
+
+	describe( 'normalizeSingleRootEditorConstructorParams()', () => {
+		it( 'should return source element and config when element is first argument', () => {
+			const el = document.createElement( 'div' );
+			const editorConfig = { plugins: [] };
+
+			const result = normalizeSingleRootEditorConstructorParams( el, editorConfig );
+
+			expect( result.sourceElementOrData ).to.equal( el );
+			expect( result.editorConfig ).to.equal( editorConfig );
+		} );
+
+		it( 'should return source string and config when string is first argument', () => {
+			const editorConfig = { plugins: [] };
+
+			const result = normalizeSingleRootEditorConstructorParams( '<p>Foo</p>', editorConfig );
+
+			expect( result.sourceElementOrData ).to.equal( '<p>Foo</p>' );
+			expect( result.editorConfig ).to.equal( editorConfig );
+		} );
+
+		it( 'should return empty string and config when config object is first argument', () => {
+			const editorConfig = { plugins: [] };
+
+			const result = normalizeSingleRootEditorConstructorParams( editorConfig );
+
+			expect( result.sourceElementOrData ).to.equal( '' );
+			expect( result.editorConfig ).to.equal( editorConfig );
+		} );
+	} );
+
+	describe( 'normalizeMultiRootEditorConstructorParams()', () => {
+		it( 'should return source data and config when data object is first argument with config', () => {
+			const sourceData = { foo: '<p>Foo</p>' };
+			const editorConfig = { plugins: [] };
+
+			const result = normalizeMultiRootEditorConstructorParams( sourceData, editorConfig );
+
+			expect( result.sourceElementsOrData ).to.equal( sourceData );
+			expect( result.editorConfig ).to.equal( editorConfig );
+		} );
+
+		it( 'should return empty object and config when config object is first argument', () => {
+			const editorConfig = { plugins: [] };
+
+			const result = normalizeMultiRootEditorConstructorParams( editorConfig );
+
+			expect( result.sourceElementsOrData ).to.deep.equal( {} );
+			expect( result.editorConfig ).to.equal( editorConfig );
+		} );
+
+		it( 'should return source data and empty config when source data is passed without config', () => {
+			const sourceData = { foo: '<p>Foo</p>', bar: '<p>Bar</p>' };
+
+			const result = normalizeMultiRootEditorConstructorParams( sourceData );
+
+			expect( result.sourceElementsOrData ).to.equal( sourceData );
 		} );
 	} );
 } );

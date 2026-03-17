@@ -183,6 +183,83 @@ describe( 'InlineEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
 		} );
+
+		describe( 'config-only constructor', () => {
+			it( 'should create editor with config.root.initialData', async () => {
+				const editor = new InlineEditor( {
+					root: {
+						initialData: '<p>Foo</p>'
+					}
+				} );
+
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should create editor with config.root.element', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Bar</p>';
+
+				const editor = new InlineEditor( {
+					root: {
+						element: el
+					}
+				} );
+
+				expect( editor.sourceElement ).to.equal( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should create editor with config.root.element and initialData', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Foo</p>';
+
+				const editor = new InlineEditor( {
+					root: {
+						element: el,
+						initialData: '<p>Bar</p>'
+					}
+				} );
+
+				expect( editor.sourceElement ).to.equal( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should log warning when config.attachTo is set', async () => {
+				const el = document.createElement( 'div' );
+
+				const editor = new InlineEditor( {
+					attachTo: el,
+					root: {
+						initialData: '<p>Foo</p>'
+					}
+				} );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should throw when config.root.element is a textarea', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new InlineEditor( {
+						root: {
+							element: document.createElement( 'textarea' )
+						}
+					} );
+				} ).to.throw( CKEditorError, 'editor-wrong-element' );
+			} );
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -335,6 +412,62 @@ describe( 'InlineEditor', () => {
 				)
 				.then( done )
 				.catch( done );
+		} );
+
+		it( 'creates editor from config-only', () => {
+			return InlineEditor
+				.create( {
+					root: { initialData: '<p>Hello world!</p>' },
+					plugins: [ Paragraph ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'creates editor from config-only with root.element', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>Hello world!</p>';
+			document.body.appendChild( el );
+
+			return InlineEditor
+				.create( {
+					root: { element: el },
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.equal( el );
+
+					return newEditor.destroy();
+				} )
+				.then( () => {
+					el.remove();
+				} );
+		} );
+
+		it( 'creates editor from config-only with root.element and initialData', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>Foo</p>';
+			document.body.appendChild( el );
+
+			return InlineEditor
+				.create( {
+					root: { element: el, initialData: '<p>Hello world!</p>' },
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.equal( el );
+
+					return newEditor.destroy();
+				} )
+				.then( () => {
+					el.remove();
+				} );
 		} );
 
 		describe( 'configurable editor label (aria-label)', () => {

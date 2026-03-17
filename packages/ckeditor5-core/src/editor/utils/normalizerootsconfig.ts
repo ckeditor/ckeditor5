@@ -74,13 +74,16 @@ export function normalizeRootsConfig(
 			// No legacy initial data for the root, either.
 			if ( legacyInitialData[ rootName ] === undefined ) {
 				// Use source element data or data itself as a string.
-				rootConfig.initialData = getInitialData( sourceElementOrDataForRoot );
+				// Fall back to `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
+				rootConfig.initialData = getInitialData(
+					sourceElementOrDataForRoot || rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
+				);
 			}
 			// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 			else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
 				// Documented in core/editor/editorconfig.ts.
 				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-create-initial-data' );
+				throw new CKEditorError( 'editor-create-initial-data', null );
 			}
 			// Use legacy `config.initialData`.
 			else {
@@ -91,7 +94,7 @@ export function normalizeRootsConfig(
 		else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
 			// Documented in core/editor/editorconfig.ts.
 			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data' );
+			throw new CKEditorError( 'editor-create-initial-data', null );
 		}
 		// If both `rootConfig.initialData` and legacy initial data are set, then throw.
 		else if ( legacyInitialData[ rootName ] !== undefined ) {
