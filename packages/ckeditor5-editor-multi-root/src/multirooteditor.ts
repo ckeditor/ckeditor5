@@ -149,6 +149,12 @@ export class MultiRootEditor extends Editor {
 
 		for ( const [ rootName, { element } ] of rootsConfig ) {
 			if ( isElement( element ) ) {
+				if ( element.tagName === 'TEXTAREA' ) {
+					// Documented in core/editor/editor.js
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+					throw new CKEditorError( 'editor-wrong-element', null );
+				}
+
 				this.sourceElements[ rootName ] = element;
 				secureSourceElement( this, element );
 			}
@@ -1156,14 +1162,6 @@ export class MultiRootEditor extends Editor {
 		} = normalizeMultiRootEditorConstructorParams( sourceElementsOrDataOrConfig, config );
 
 		return new Promise( resolve => {
-			for ( const sourceItem of Object.values( sourceElementsOrData ) ) {
-				if ( isElement( sourceItem ) && sourceItem.tagName === 'TEXTAREA' ) {
-					// Documented in core/editor/editor.js
-					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-					throw new CKEditorError( 'editor-wrong-element', null );
-				}
-			}
-
 			const editor = new this( sourceElementsOrData, editorConfig );
 
 			resolve(

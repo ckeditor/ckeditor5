@@ -89,14 +89,20 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		// From this point use only normalized `roots.main.element`.
 		const sourceElement = this.config.get( 'roots' )!.main.element;
 
-		this.config.define( 'menuBar.isVisible', false );
-
-		this.model.document.createRoot();
-
 		if ( isElement( sourceElement ) ) {
+			if ( sourceElement.tagName === 'TEXTAREA' ) {
+				// Documented in core/editor/editor.js
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
+			}
+
 			this.sourceElement = sourceElement;
 			secureSourceElement( this, sourceElement );
 		}
+
+		this.config.define( 'menuBar.isVisible', false );
+
+		this.model.document.createRoot();
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
@@ -321,13 +327,6 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
 
 		return new Promise( resolve => {
-			// TODO check this in `config.root.element`
-			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
 			const editor = new this( sourceElementOrData, editorConfig );
 
 			resolve(

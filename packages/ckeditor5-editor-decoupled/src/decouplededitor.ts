@@ -98,6 +98,12 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const sourceElement = this.config.get( 'roots' )!.main.element;
 
 		if ( isElement( sourceElement ) ) {
+			if ( sourceElement.tagName === 'TEXTAREA' ) {
+				// Documented in core/editor/editor.js
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
+			}
+
 			this.sourceElement = sourceElement;
 			secureSourceElement( this, sourceElement );
 		}
@@ -364,13 +370,6 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
 
 		return new Promise( resolve => {
-			// TODO check this in `config.root.element`
-			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
 			const editor = new this( sourceElementOrData, editorConfig );
 
 			resolve(
