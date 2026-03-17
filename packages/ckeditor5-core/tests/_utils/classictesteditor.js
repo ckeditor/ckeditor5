@@ -83,7 +83,7 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 					// should be rendered after plugins are initialized.
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => {
-						const initialData = config.initialData ?? config.root?.initialData ?? config.roots?.main?.initialData;
+						const initialData = config.initialData || config.root?.initialData || config.roots?.main?.initialData;
 
 						if ( !isElement( sourceElementOrData ) && initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
@@ -169,9 +169,5 @@ export class ClassicTestEditorUI extends EditorUI {
 }
 
 function getInitialData( sourceElementOrData ) {
-	if ( isElement( sourceElementOrData ) ) {
-		return getDataFromElement( sourceElementOrData );
-	}
-
-	return sourceElementOrData.roots?.main?.initialData || sourceElementOrData.root?.initialData || sourceElementOrData.initialData || '';
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
