@@ -36,8 +36,19 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 			this.sourceElement = sourceElement;
 		}
 
+		const useInlineRoot = this.config.get( 'useInlineRoot' );
+
+		if ( useInlineRoot ) {
+			this.model.schema.register( '$inlineRoot', {
+				allowIn: '$root',
+				isLimit: true,
+				isInline: true
+			} );
+			this.model.schema.extend( '$text', { allowIn: '$inlineRoot' } );
+		}
+
 		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
+		this.model.document.createRoot( useInlineRoot ? '$inlineRoot' : '$root' );
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
