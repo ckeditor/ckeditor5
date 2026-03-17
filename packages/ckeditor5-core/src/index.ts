@@ -53,7 +53,8 @@ export { ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin
 export { secureSourceElement } from './editor/utils/securesourceelement.js';
 export {
 	normalizeRootsConfig,
-	normalizeSingleRootEditorConstructorParams
+	normalizeSingleRootEditorConstructorParams,
+	normalizeMultiRootEditorConstructorParams
 } from './editor/utils/normalizerootsconfig.js';
 
 export { PendingActions, type PendingAction, type PendingActionsAddEvent, type PendingActionsRemoveEvent } from './pendingactions.js';

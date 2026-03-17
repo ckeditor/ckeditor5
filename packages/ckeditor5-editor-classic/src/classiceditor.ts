@@ -69,7 +69,6 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig );
 
 	protected constructor( sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig, config: EditorConfig = {} ) {
-		// TODO handle config.attachTo and throw when config.root.element is set
 		const {
 			sourceElementOrData,
 			editorConfig
@@ -77,12 +76,19 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		super( editorConfig );
 
-		normalizeRootsConfig( sourceElementOrData, this.config );
+		normalizeRootsConfig( sourceElementOrData, this.config, 'main', true );
+
+		if ( isElement( this.config.get( 'roots' )!.main.element ) ) {
+			// TODO console.warn
+		}
+
+		// From this point use only normalized `roots.main.element`.
+		const sourceElement = this.config.get( 'attachTo' );
 
 		this.config.define( 'menuBar.isVisible', false );
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
+		if ( isElement( sourceElement ) ) {
+			this.sourceElement = sourceElement;
 		}
 
 		this.model.document.createRoot();

@@ -81,13 +81,20 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
+		if ( isElement( this.config.get( 'attachTo' ) ) ) {
+			// TODO console.warn
+		}
+
+		// From this point use only normalized `roots.main.element`.
+		const sourceElement = this.config.get( 'roots' )!.main.element;
+
 		this.config.define( 'menuBar.isVisible', false );
 
 		this.model.document.createRoot();
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this, sourceElementOrData );
+		if ( isElement( sourceElement ) ) {
+			this.sourceElement = sourceElement;
+			secureSourceElement( this, sourceElement );
 		}
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );

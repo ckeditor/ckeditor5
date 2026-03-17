@@ -83,9 +83,16 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this, sourceElementOrData );
+		if ( isElement( this.config.get( 'attachTo' ) ) ) {
+			// TODO console.warn
+		}
+
+		// From this point use only normalized `roots.main.element`.
+		const sourceElement = this.config.get( 'roots' )!.main.element;
+
+		if ( isElement( sourceElement ) ) {
+			this.sourceElement = sourceElement;
+			secureSourceElement( this, sourceElement );
 		}
 
 		const plugins = this.config.get( 'plugins' )!;

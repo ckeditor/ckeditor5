@@ -7,7 +7,7 @@
  * @module core/editor/utils/normalizerootsconfig
  */
 
-import type { EditorConfig } from '../editorconfig.js';
+import type { EditorConfig, RootConfig } from '../editorconfig.js';
 
 import {
 	CKEditorError,
@@ -32,10 +32,11 @@ import { isElement as _isElement } from 'es-toolkit/compat';
 export function normalizeRootsConfig(
 	sourceElementsOrData: HTMLElement | string | Record<string, HTMLElement> | Record<string, string>,
 	config: Config<EditorConfig>,
-	defaultRootName: string | false = 'main'
+	defaultRootName: string | false = 'main',
+	separateAttachTo: boolean = false
 ): void {
 	const mainRootConfig = config.get( 'root' );
-	const rootsConfig = config.get( 'roots' ) || Object.create( null );
+	const rootsConfig: Record<string, RootConfig> = config.get( 'roots' ) || Object.create( null );
 
 	// Avoid mixing `config.root` and `config.roots.main`.
 	if ( mainRootConfig && ( !defaultRootName || defaultRootName in rootsConfig ) ) {
@@ -99,11 +100,22 @@ export function normalizeRootsConfig(
 			throw new CKEditorError( 'editor-create-roots-initial-data' );
 		}
 
+		// Assign `sourceElement` to root config if it's an element.
+		if ( !separateAttachTo && isElement( sourceElementOrDataForRoot ) ) {
+			rootConfig.element = sourceElementOrDataForRoot;
+		}
+
 		// Handle legacy `config.placeholder` and `config.label` for the root.
 		rootConfig.placeholder ??= getLegacyPlainConfigValue( config, 'placeholder', rootName );
 		rootConfig.label ??= getLegacyPlainConfigValue( config, 'label', rootName );
 
 		rootsConfig[ rootName ] = rootConfig;
+	}
+
+	// The ClassicEditor has a special separate config option `attachTo`.
+	// It is used as a source of editor data and attachment element, but not the root element.
+	if ( separateAttachTo && config.get( 'attachTo' ) === undefined && isElement( sourceElementsOrData ) ) {
+		config.set( 'attachTo', sourceElementsOrData );
 	}
 
 	config.set( 'roots', rootsConfig );
@@ -135,6 +147,37 @@ export function normalizeSingleRootEditorConstructorParams(
 	} else {
 		return {
 			sourceElementOrData: '',
+			editorConfig: sourceElementOrDataOrConfig as EditorConfig
+		};
+	}
+}
+
+/**
+ * Normalizes the parameters passed to the editor constructor when a multi root is used. It supports both of the following signatures:
+ *
+ * ```ts
+ * new Editor( editorConfig: EditorConfig );
+ * new Editor( sourceElementsOrData: Record<string, string> | Record<string, HTMLElement>, editorConfig: EditorConfig );
+ * ```
+ *
+ * @internal
+ */
+export function normalizeMultiRootEditorConstructorParams(
+	sourceElementOrDataOrConfig: Record<string, string> | Record<string, HTMLElement>,
+	editorConfig: EditorConfig
+): { sourceElementsOrData: Record<string, string> | Record<string, HTMLElement>; editorConfig: EditorConfig } {
+	if (
+		editorConfig && Object.keys( editorConfig ).length ||
+		Object.keys( sourceElementOrDataOrConfig ).length == 0 ||
+		Object.values( sourceElementOrDataOrConfig ).every( value => typeof value === 'string' || isElement( value ) )
+	) {
+		return {
+			sourceElementsOrData: sourceElementOrDataOrConfig as Record<string, string> | Record<string, HTMLElement>,
+			editorConfig
+		};
+	} else {
+		return {
+			sourceElementsOrData: {},
 			editorConfig: sourceElementOrDataOrConfig as EditorConfig
 		};
 	}
