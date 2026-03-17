@@ -211,12 +211,18 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 	 * await watchdog.add( [ {
 	 * 	id: 'editor1',
 	 * 	type: 'editor',
-	 * 	sourceElementOrData: document.querySelector( '#editor' ),
 	 * 	config: {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 	 * 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	 * 	},
-	 * 	creator: ( element, config ) => ClassicEditor.create( element, config )
+	 * 	creator: ( elementOrData, config ) => {
+	 * 		if ( !elementOrData ) {
+	 * 			return ClassicEditor.create( config );
+	 * 		}
+	 *
+	 * 		return ClassicEditor.create( elementOrData, config );
+	 * 	}
 	 * } ] );
 	 * ```
 	 *
@@ -226,13 +232,19 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 	 * await watchdog.add( {
 	 * 	id: 'editor1',
 	 * 	type: 'editor',
-	 * 	sourceElementOrData: document.querySelector( '#editor' ),
 	 * 	config: {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 	 * 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	 * 	},
-	 * 	creator: ( element, config ) => ClassicEditor.create( element, config )
-	 * ] );
+	 * 	creator: ( elementOrData, config ) => {
+	 * 		if ( !elementOrData ) {
+	 * 			return ClassicEditor.create( config );
+	 * 		}
+	 *
+	 * 		return ClassicEditor.create( elementOrData, config );
+	 * 	}
+	 * } );
 	 * ```
 	 *
 	 * Then an instance can be retrieved using the {@link #getItem} method:
@@ -299,7 +311,13 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 						} ) );
 					} );
 
-					return watchdog.create( item.sourceElementOrData, item.config, this._context );
+					if ( item.sourceElementOrData !== undefined ) {
+						return watchdog.create( item.sourceElementOrData, item.config, this._context! );
+					}
+
+					return ( watchdog.create as ( config: EditorConfig, context?: Context ) => Promise<unknown> )(
+						item.config, this._context!
+					);
 				} else {
 					throw new Error( `Not supported item type: '${ item.type }'.` );
 				}
@@ -391,7 +409,9 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 						.map( watchdog => {
 							watchdog._setExcludedProperties( this._contextProps );
 
-							return watchdog.create( undefined, undefined, this._context! );
+							return watchdog.create(
+								undefined as any, undefined as any, this._context!
+							);
 						} )
 				);
 			} );
@@ -612,8 +632,13 @@ export interface ContextWatchdogItemConfiguration {
 	/**
 	 * The source element or data that will be passed
 	 * as the first argument to the `Editor.create()` method.
+	 *
+	 * When not provided, the watchdog will use config-based creator mode, passing only the {@link #config}
+	 * to the editor creator.
+	 *
+	 * @deprecated
 	 */
-	sourceElementOrData: string | HTMLElement;
+	sourceElementOrData?: string | HTMLElement;
 
 	/**
 	 * An editor configuration.

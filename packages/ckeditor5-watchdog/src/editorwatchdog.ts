@@ -89,6 +89,11 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	private _isSingleRootEditor: boolean = true;
 
 	/**
+	 * Specifies whether the editor was created using config-based creator mode (without a source element or data as the first argument).
+	 */
+	private _isUsingConfigBasedCreator: boolean = false;
+
+	/**
 	 * The latest record of the editor editable elements. Used to restart the editor.
 	 */
 	private _editables: Record<string, HTMLElement> = {};
@@ -130,7 +135,13 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 
 		// Set default creator and destructor functions:
 		if ( Editor ) {
-			this._creator = ( ( elementOrData, config ) => Editor.create( elementOrData, config ) );
+			this._creator = ( ( elementOrData, config ) => {
+				if ( elementOrData === undefined ) {
+					return Editor.create( config );
+				}
+
+				return Editor.create( elementOrData, config );
+			} );
 		}
 
 		this._destructor = editor => editor.destroy();
@@ -156,6 +167,18 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 *
 	 * ```ts
 	 * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
+	 * ```
+	 *
+	 * When the watchdog is used in config-based creator mode (see {@link #create}), `elementOrData` will be `undefined`:
+	 *
+	 * ```ts
+	 * watchdog.setCreator( ( elementOrData, config ) => {
+	 * 	if ( !elementOrData ) {
+	 * 		return ClassicEditor.create( config );
+	 * 	}
+	 *
+	 * 	return ClassicEditor.create( elementOrData, config );
+	 * } );
 	 * ```
 	 */
 	public setCreator( creator: EditorWatchdogCreatorFunction<TEditor> ): void {
@@ -208,12 +231,22 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				//
 				// Since a different set of roots will be created, lazy-roots and roots-attributes must be managed too.
 
-				const elementOrData = this._isSingleRootEditor ?
-					this._editorAttachTo || '' :
-					this._editables;
-
-				// Normalize the roots configuration based on the editor source element or data and the editor configuration.
-				normalizeRootsConfig( elementOrData, this._config!, this._isSingleRootEditor ? 'main' : false );
+				if ( this._isUsingConfigBasedCreator ) {
+					// In config-based creator mode, normalize using an empty source to ensure `config.root` is moved
+					// to `config.roots.main` and other legacy config properties are handled.
+					normalizeRootsConfig(
+						this._isSingleRootEditor ? '' : {},
+						this._config!,
+						this._isSingleRootEditor ? 'main' : false
+					);
+				} else {
+					// Normalize the roots configuration based on the editor source element or data and the editor configuration.
+					normalizeRootsConfig(
+						this._isSingleRootEditor ? this._editorAttachTo || '' : this._editables,
+						this._config!,
+						this._isSingleRootEditor ? 'main' : false
+					);
+				}
 
 				const updatedConfig: EditorConfig = {
 					...this._config,
@@ -256,6 +289,14 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				// This would cause a crash while normalizing conflict when left as is.
 				delete updatedConfig.root;
 
+				if ( this._isUsingConfigBasedCreator ) {
+					return this.create( updatedConfig, updatedConfig.context );
+				}
+
+				const elementOrData = this._isSingleRootEditor ?
+					this._editorAttachTo || '' :
+					this._editables;
+
 				return this.create( elementOrData, updatedConfig, updatedConfig.context );
 			} )
 			.then( () => {
@@ -266,31 +307,77 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	/**
 	 * Creates the editor instance and keeps it running, using the defined creator and destructor.
 	 *
+	 * @param config The editor configuration.
+	 * @param context A context for the editor.
+	 */
+	public create( config: EditorConfig, context?: Context ): Promise<unknown>;
+
+	/**
+	 * Creates the editor instance and keeps it running, using the defined creator and destructor.
+	 *
+	 * **Note**: This method signature is deprecated and will be removed in the future release.
+	 *
+	 * @deprecated
 	 * @param elementOrData The editor source element or the editor data.
 	 * @param config The editor configuration.
 	 * @param context A context for the editor.
 	 */
 	public create(
-		elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> = this._elementOrData!,
-		config: EditorConfig = this._config!,
+		elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
+		config: EditorConfig,
+		context?: Context
+	): Promise<unknown>;
+
+	public create(
+		elementOrDataOrConfig: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> |
+			EditorConfig | undefined = this._isUsingConfigBasedCreator ? this._config! : this._elementOrData!,
+		configOrContext: EditorConfig | Context | undefined = this._isUsingConfigBasedCreator ? undefined : this._config!,
 		context?: Context
 	): Promise<unknown> {
+		// Detect config-based creator mode: first argument is a config object (not an element, string, or record of strings/elements).
+		// The detection is skipped during restart (when `_elementOrData` or `_config` is already set).
+		const isUsingConfigBasedCreator = this._detectConfigBasedCreator( elementOrDataOrConfig, configOrContext );
+		const elementOrData = isUsingConfigBasedCreator ?
+			undefined :
+			elementOrDataOrConfig as typeof this._elementOrData;
+		const config = isUsingConfigBasedCreator ?
+			elementOrDataOrConfig as EditorConfig :
+			configOrContext as EditorConfig | undefined;
+		const resolvedContext = isUsingConfigBasedCreator ?
+			configOrContext as Context | undefined :
+			context;
+
 		this._lifecyclePromise = Promise.resolve( this._lifecyclePromise )
 			.then( () => {
 				super._startErrorHandling();
 
+				this._isUsingConfigBasedCreator = isUsingConfigBasedCreator;
 				this._elementOrData = elementOrData;
-
-				// Store the original DOM element for single-root editors. We can't use editable elements as ClassicEditor
-				// expects the attachment element.
-				this._editorAttachTo = isElement( elementOrData ) ? elementOrData : null;
-				this._isSingleRootEditor = isElement( elementOrData ) || typeof elementOrData == 'string';
 
 				// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 				// when an error occurs in one of these editors, the watchdog will restart all of them.
-				this._config = this._cloneEditorConfiguration( config ) || {};
+				this._config = this._cloneEditorConfiguration( config || {} ) || {};
 
-				this._config!.context = context;
+				this._config!.context = resolvedContext;
+
+				// Store the original DOM element for single-root editors. We can't use editable elements as ClassicEditor
+				// expects the attachment element.
+				if ( isUsingConfigBasedCreator ) {
+					// In config-based creator mode, element references are already in the config
+					// (`config.attachTo` or `config.roots.*.element`), so there's no need to store them separately.
+					this._editorAttachTo = null;
+
+					// Detect single-root vs multi-root from config. The config might use `config.root` (alias),
+					// `config.roots`, `config.attachTo`, or legacy `config.initialData`.
+					const rootsCount = this._config!.roots ? Object.keys( this._config!.roots ).length : 0;
+					const legacyInitialData = this._config!.initialData;
+					const isMultiRootFromLegacy = legacyInitialData && typeof legacyInitialData === 'object';
+
+					this._isSingleRootEditor = !isMultiRootFromLegacy && rootsCount <= 1;
+				} else {
+					this._editorAttachTo = isElement( elementOrData ) ? elementOrData : null;
+					this._isSingleRootEditor = isElement( elementOrData ) || typeof elementOrData == 'string';
+				}
 
 				return this._creator( elementOrData, this._config! );
 			} )
@@ -462,6 +549,47 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 */
 	public _isErrorComingFromThisItem( error: CKEditorError ): boolean {
 		return areConnectedThroughProperties( this._editor, error.context, this._excludedProps );
+	}
+
+	/**
+	 * Detects whether the `create()` call was made in config-based creator mode
+	 * (i.e., the first argument is a config object rather than a source element or data).
+	 */
+	private _detectConfigBasedCreator(
+		elementOrDataOrConfig: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> | EditorConfig | undefined,
+		configOrContext: EditorConfig | Context | undefined
+	): boolean {
+		// If the stored state is already set (restart), keep it.
+		if ( elementOrDataOrConfig === undefined && this._config ) {
+			return this._isUsingConfigBasedCreator;
+		}
+
+		// A string or DOM element is clearly the legacy signature.
+		if ( typeof elementOrDataOrConfig === 'string' || isElement( elementOrDataOrConfig ) ) {
+			return false;
+		}
+
+		// If the second argument is a plain object with keys, it's a config → legacy signature.
+		if (
+			configOrContext &&
+			typeof configOrContext === 'object' &&
+			!( 'destroy' in configOrContext ) &&
+			Object.keys( configOrContext ).length > 0
+		) {
+			return false;
+		}
+
+		// If the first argument is an object where all values are strings or elements, it's multi-root legacy.
+		if ( elementOrDataOrConfig && typeof elementOrDataOrConfig === 'object' ) {
+			const values = Object.values( elementOrDataOrConfig );
+
+			if ( values.length > 0 && values.every( v => typeof v === 'string' || isElement( v ) ) ) {
+				return false;
+			}
+		}
+
+		// Otherwise, it's config-based.
+		return true;
 	}
 
 	/**
@@ -654,7 +782,7 @@ export type EditorWatchdogRestartEvent = {
 };
 
 export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
-	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
+	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> | undefined,
 	config: EditorConfig
 ) => Promise<TEditor>;
 
