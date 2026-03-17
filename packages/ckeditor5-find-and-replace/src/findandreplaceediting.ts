@@ -25,7 +25,7 @@ import { FindAndReplaceState, type FindCallback } from './findandreplacestate.js
 import { FindAndReplaceUtils } from './findandreplaceutils.js';
 import type { FindResultType } from './findandreplace.js';
 
-import { debounce } from 'es-toolkit/compat';
+import debounce from 'es-toolkit/compat/debounce';
 
 import '../theme/findandreplace.css';
 

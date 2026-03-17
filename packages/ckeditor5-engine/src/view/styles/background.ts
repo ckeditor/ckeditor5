@@ -7,7 +7,7 @@
  * @module engine/view/styles/background
  */
 
-import { isEmpty } from 'es-toolkit/compat';
+import isEmpty from 'es-toolkit/compat/isEmpty';
 import type {
 	StylesProcessor,
 	StylesNormalizer,

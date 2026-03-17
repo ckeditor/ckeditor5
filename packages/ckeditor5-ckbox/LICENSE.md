@@ -19,7 +19,7 @@ Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSour
 The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):
 
 * blurhash - Copyright (c) 2018 Wolt Enterprises.
-* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc and Copyright OpenJS Foundation and other contributors.
 
 Trademarks
 ----------

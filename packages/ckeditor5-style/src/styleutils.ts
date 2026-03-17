@@ -20,7 +20,7 @@ import type {
 } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig.js';
-import { isObject } from 'es-toolkit/compat';
+import isObject from 'es-toolkit/compat/isObject';
 
 // These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
 const NON_PREVIEWABLE_ELEMENT_NAMES = [
