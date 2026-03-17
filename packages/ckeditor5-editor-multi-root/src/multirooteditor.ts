@@ -468,6 +468,10 @@ export class MultiRootEditor extends Editor {
 		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
 		const modelElement: string = options.elementName || '$root';
 
+		if ( isElement( options.element ) ) {
+			// TODO console.warn
+		}
+
 		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, modelElement );
 
@@ -481,6 +485,8 @@ export class MultiRootEditor extends Editor {
 			}
 
 			// Storing editable options as a root attribute to make them available on other RTC clients.
+			// TODO the RootConfig#element option is not supported in the `addRoot()` method as we can't pass DOM element
+			//  to other RTC clients.
 			const rootEditableOptions: RootEditableOptions = {
 				...options.placeholder && { placeholder: options.placeholder },
 				...options.label && { label: options.label }
@@ -1322,6 +1328,11 @@ export type AddRootOptions = {
  * Declares an additional options available when adding a root.
  */
 export interface AddRootRootConfig extends RootConfig {
+
+	/**
+	 * Passing a DOM element to {@link ~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot( rootName, options )`} is not supported.
+	 */
+	element?: undefined;
 
 	/**
 	 * Whether creating the root can be undone (using the undo feature) or not.
