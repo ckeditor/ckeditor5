@@ -22,7 +22,7 @@ import { CKEditorError, getDataFromElement } from '@ckeditor/ckeditor5-utils';
 import { BalloonEditorUI } from './ballooneditorui.js';
 import { BalloonEditorUIView } from './ballooneditoruiview.js';
 
-import { isElement as _isElement } from 'es-toolkit/compat';
+import _isElement from 'es-toolkit/compat/isElement';
 
 /**
  * The balloon editor implementation (Medium-like editor).

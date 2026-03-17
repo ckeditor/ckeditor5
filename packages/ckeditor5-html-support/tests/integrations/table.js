@@ -15,7 +15,7 @@ import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { TableElementSupport } from '../../src/integrations/table.js';
 
-import { range } from 'es-toolkit/compat';
+import range from 'es-toolkit/compat/range';
 
 describe( 'TableElementSupport', () => {
 	let editor, model, editorElement, dataFilter;

@@ -19,7 +19,7 @@ import type { TextTransformationConfig, TextTypingTransformationDescription } fr
 import { Delete } from './delete.js';
 import { Input } from './input.js';
 
-import { escapeRegExp } from 'es-toolkit/compat';
+import escapeRegExp from 'es-toolkit/compat/escapeRegExp';
 
 // All named transformations.
 const TRANSFORMATIONS: Record<string, TextTypingTransformationDescription> = {

@@ -100,15 +100,24 @@ export default defineConfig( [
 					returnValue: true
 				} ]
 			} ],
-			'@typescript-eslint/no-restricted-imports': [ 'error', {
-				patterns: [ {
-					group: disallowedRelativePathImportsPattern,
-					message: disallowedRelativePathImportsMessage
-				}, {
-					regex: disallowedPackageImportsPattern,
-					message: disallowedPackageImportsMessage
-				} ]
-			} ]
+			'@typescript-eslint/no-restricted-imports': [ 'error',
+				{
+					patterns: [
+						{
+							group: disallowedRelativePathImportsPattern,
+							message: disallowedRelativePathImportsMessage
+						},
+						{
+							regex: disallowedPackageImportsPattern,
+							message: disallowedPackageImportsMessage
+						},
+						{
+							regex: '^es-toolkit(/compat)?$', // `es-toolkit` and `es-toolkit/compat`
+							message: 'Import directly from the specific module file (e.g. `es-toolkit/compat/debounce`).'
+						}
+					]
+				}
+			]
 		}
 	},
 	{
