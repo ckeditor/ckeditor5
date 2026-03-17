@@ -7,7 +7,10 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set } from 'es-toolkit/compat';
+import get from 'es-toolkit/compat/get';
+import isObject from 'es-toolkit/compat/isObject';
+import merge from 'es-toolkit/compat/merge';
+import set from 'es-toolkit/compat/set';
 import type { ViewElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';

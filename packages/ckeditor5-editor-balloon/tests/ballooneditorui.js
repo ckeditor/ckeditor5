@@ -12,7 +12,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import { isElement } from 'es-toolkit/compat';
+import isElement from 'es-toolkit/compat/isElement';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';

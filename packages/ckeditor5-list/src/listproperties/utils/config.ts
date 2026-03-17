@@ -7,7 +7,7 @@
  * @module list/listproperties/utils/config
  */
 
-import { pick } from 'es-toolkit/compat';
+import pick from 'es-toolkit/compat/pick';
 import { toArray } from '@ckeditor/ckeditor5-utils';
 import type { ListPropertiesConfig, ListPropertiesStyleListType } from '../../listconfig.js';
 

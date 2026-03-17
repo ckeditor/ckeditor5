@@ -7,7 +7,8 @@
  * @module table/tablecolumnresize/tablecolumnresizeediting
  */
 
-import { throttle, isEqual } from 'es-toolkit/compat';
+import throttle from 'es-toolkit/compat/throttle';
+import isEqual from 'es-toolkit/compat/isEqual';
 
 import {
 	global,

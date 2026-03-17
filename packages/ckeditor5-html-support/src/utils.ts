@@ -15,7 +15,8 @@ import type {
 	ViewElement,
 	ModelWriter
 } from '@ckeditor/ckeditor5-engine';
-import { startCase, cloneDeep } from 'es-toolkit/compat';
+import startCase from 'es-toolkit/compat/startCase';
+import cloneDeep from 'es-toolkit/compat/cloneDeep';
 
 export interface GHSViewAttributes {
 	attributes?: Record<string, unknown>;

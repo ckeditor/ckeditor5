@@ -8,7 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import { range } from 'es-toolkit/compat';
+import range from 'es-toolkit/compat/range';
 import { MediaEmbedElementSupport } from '../../src/integrations/mediaembed.js';
 
 describe( 'MediaEmbedElementSupport', () => {

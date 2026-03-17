@@ -26,7 +26,7 @@ import {
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
-import { isElement } from 'es-toolkit/compat';
+import isElement from 'es-toolkit/compat/isElement';
 import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );

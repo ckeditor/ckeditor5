@@ -7,7 +7,7 @@
  * @module html-support/integrations/list
  */
 
-import { isEqual } from 'es-toolkit/compat';
+import isEqual from 'es-toolkit/compat/isEqual';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 import type { GetCallback } from '@ckeditor/ckeditor5-utils';

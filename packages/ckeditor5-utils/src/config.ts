@@ -7,7 +7,9 @@
  * @module utils/config
  */
 
-import { isPlainObject, isElement, cloneDeepWith } from 'es-toolkit/compat';
+import isPlainObject from 'es-toolkit/compat/isPlainObject';
+import isElement from 'es-toolkit/compat/isElement';
+import cloneDeepWith from 'es-toolkit/compat/cloneDeepWith';
 
 /**
  * Handles a configuration dictionary.

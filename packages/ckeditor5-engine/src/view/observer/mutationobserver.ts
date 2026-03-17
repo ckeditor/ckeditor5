@@ -9,7 +9,7 @@
 
 import { Observer } from './observer.js';
 import { startsWithFiller } from '../filler.js';
-import { isEqualWith } from 'es-toolkit/compat';
+import isEqualWith from 'es-toolkit/compat/isEqualWith';
 
 import { type ViewDomConverter } from '../domconverter.js';
 import { type EditingView } from '../view.js';

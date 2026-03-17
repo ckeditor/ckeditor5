@@ -18,7 +18,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import { Notification } from '@ckeditor/ckeditor5-ui';
-import { isEqual } from 'es-toolkit/compat';
+import isEqual from 'es-toolkit/compat/isEqual';
 
 import { sendHttpRequest } from '../utils.js';
 import { prepareImageAssetAttributes } from '../ckboxcommand.js';

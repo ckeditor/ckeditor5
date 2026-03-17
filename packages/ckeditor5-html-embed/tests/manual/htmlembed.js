@@ -4,7 +4,7 @@
  */
 
 import sanitizeHtml from 'sanitize-html';
-import { clone } from 'es-toolkit/compat';
+import clone from 'es-toolkit/compat/clone';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';

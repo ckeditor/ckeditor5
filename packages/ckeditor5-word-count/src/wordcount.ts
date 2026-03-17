@@ -15,7 +15,8 @@ import { env } from '@ckeditor/ckeditor5-utils';
 import { modelElementToPlainText } from './utils.js';
 import type { WordCountConfig } from './wordcountconfig.js';
 
-import { throttle, isElement } from 'es-toolkit/compat';
+import throttle from 'es-toolkit/compat/throttle';
+import isElement from 'es-toolkit/compat/isElement';
 
 /**
  * The word count plugin.
