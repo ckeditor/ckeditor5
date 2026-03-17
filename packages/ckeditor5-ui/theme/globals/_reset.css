@@ -55,33 +55,33 @@
 		text-align: right;
 	}
 
-	& iframe:not(.ck-reset_all-excluded *) {
+	& iframe:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 		/* For IE */
 		vertical-align: inherit;
 	}
 
-	& textarea:not(.ck-reset_all-excluded *) {
+	& textarea:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 		white-space: pre-wrap;
 	}
 
-	& textarea:not(.ck-reset_all-excluded *),
-	& input[type="text"]:not(.ck-reset_all-excluded *),
-	& input[type="password"]:not(.ck-reset_all-excluded *) {
+	& textarea:not(.ck-reset_all-excluded, .ck-reset_all-excluded *),
+	& input[type="text"]:not(.ck-reset_all-excluded, .ck-reset_all-excluded *),
+	& input[type="password"]:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 		cursor: text;
 	}
 
-	& textarea[disabled]:not(.ck-reset_all-excluded *),
-	& input[type="text"][disabled]:not(.ck-reset_all-excluded *),
-	& input[type="password"][disabled]:not(.ck-reset_all-excluded *) {
+	& textarea[disabled]:not(.ck-reset_all-excluded, .ck-reset_all-excluded *),
+	& input[type="text"][disabled]:not(.ck-reset_all-excluded, .ck-reset_all-excluded *),
+	& input[type="password"][disabled]:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 		cursor: default;
 	}
 
-	& fieldset:not(.ck-reset_all-excluded *) {
+	& fieldset:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 		padding: 10px;
 		border: 2px groove hsl(255, 7%, 88%);
 	}
 
-	& button:not(.ck-reset_all-excluded *)::-moz-focus-inner {
+	& button:not(.ck-reset_all-excluded, .ck-reset_all-excluded *)::-moz-focus-inner {
 		/* See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox */
 		padding: 0;
 		border: 0
