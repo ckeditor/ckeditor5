@@ -476,7 +476,10 @@ export class MultiRootEditor extends Editor {
 		const modelElement: string = options.elementName || '$root';
 
 		if ( isElement( options.element ) ) {
-			// TODO console.warn
+			/**
+			 * The `element` option is not supported in {@link #addRoot `addRoot()`} method, and will be ignored.
+			 */
+			logWarning( 'multi-root-editor-add-root-element-option-ignored' );
 		}
 
 		const _addRoot = ( writer: ModelWriter ) => {
@@ -492,8 +495,6 @@ export class MultiRootEditor extends Editor {
 			}
 
 			// Storing editable options as a root attribute to make them available on other RTC clients.
-			// TODO the RootConfig#element option is not supported in the `addRoot()` method as we can't pass DOM element
-			//  to other RTC clients.
 			const rootEditableOptions: RootEditableOptions = {
 				...options.placeholder && { placeholder: options.placeholder },
 				...options.label && { label: options.label }
