@@ -19,7 +19,7 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, logWarning } from '@ckeditor/ckeditor5-utils';
 
 import { BalloonEditorUI } from './ballooneditorui.js';
 import { BalloonEditorUIView } from './ballooneditoruiview.js';
@@ -84,7 +84,8 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
 		if ( isElement( this.config.get( 'attachTo' ) ) ) {
-			// TODO console.warn
+			// Documented in core/editor/editorconfig.ts.
+			logWarning( 'editor-create-attachto-ignored' );
 		}
 
 		// From this point use only normalized `roots.main.element`.

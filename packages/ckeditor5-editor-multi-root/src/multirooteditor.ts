@@ -118,7 +118,8 @@ export class MultiRootEditor extends Editor {
 		normalizeRootsConfig( sourceElementsOrData, this.config, false );
 
 		if ( isElement( this.config.get( 'attachTo' ) ) ) {
-			// TODO console.warn
+			// Documented in core/editor/editorconfig.ts.
+			logWarning( 'editor-create-attachto-ignored' );
 		}
 
 		if ( this.config.get( 'lazyRoots' ) ) {

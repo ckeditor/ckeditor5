@@ -80,7 +80,7 @@ export function normalizeRootsConfig(
 			else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
 				// Documented in core/editor/editorconfig.ts.
 				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-create-initial-data', null );
+				throw new CKEditorError( 'editor-create-initial-data' );
 			}
 			// Use legacy `config.initialData`.
 			else {
@@ -91,7 +91,7 @@ export function normalizeRootsConfig(
 		else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
 			// Documented in core/editor/editorconfig.ts.
 			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
+			throw new CKEditorError( 'editor-create-initial-data' );
 		}
 		// If both `rootConfig.initialData` and legacy initial data are set, then throw.
 		else if ( legacyInitialData[ rootName ] !== undefined ) {

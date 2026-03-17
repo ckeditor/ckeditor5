@@ -1153,6 +1153,12 @@ export interface RootConfig {
  */
 
 /**
+ * The `config.attachTo` option is available only for the {@link module:editor-classic/classiceditor~ClassicEditor}.
+ *
+ * @error editor-create-attachto-ignored
+ */
+
+/**
  * The configuration of the editor language.
  *
  * ```ts
