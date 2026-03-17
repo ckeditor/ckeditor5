@@ -98,6 +98,9 @@ export function deleteContent(
 	}
 
 	const schema = model.schema;
+	const documentSelection = model.document.selection;
+	const selectionAttributes = Array.from( model.document.selection.getAttributes() );
+	const selectionParentWasEmpty = !!documentSelection.anchor?.parent.isEmpty;
 
 	model.change( writer => {
 		// 1. Replace the entire content with paragraph.
@@ -162,6 +165,8 @@ export function deleteContent(
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
 			insertParagraph( writer, startPosition, selection, attributesForAutoparagraph );
 		}
+
+		restoreSelectionAttributesOnEmptyParent( writer, selectionAttributes, selectionParentWasEmpty );
 
 		startPosition.detach();
 		endPosition.detach();
@@ -625,5 +630,38 @@ function collapseSelectionAt(
 		writer.setSelection( positionOrRange );
 	} else {
 		selection.setTo( positionOrRange );
+	}
+}
+
+function restoreSelectionAttributesOnEmptyParent(
+	writer: ModelWriter,
+	selectionAttributes: Array<[ string, unknown ]>,
+	selectionParentWasEmpty: boolean
+) {
+	if ( !selectionAttributes.length ) {
+		return;
+	}
+
+	const documentSelection = writer.model.document.selection;
+
+	const selectionParent = documentSelection.anchor!.parent as ModelElement;
+
+	if ( !selectionParent.isEmpty ) {
+		return;
+	}
+
+	// Preserve attributes only when the delete operation leaves the live selection in an empty parent
+	// that was not empty before the change. This avoids reasserting attributes on unrelated empty blocks
+	// when deleteContent() operates on a synthetic selection somewhere else in the document.
+	if ( selectionParentWasEmpty ) {
+		return;
+	}
+
+	// Setting document selection attributes here also persists them as `selection:*`
+	// on the empty parent, so future typing keeps the pre-delete formatting.
+	for ( const [ key, value ] of selectionAttributes ) {
+		if ( writer.model.schema.checkAttributeInSelection( documentSelection, key ) ) {
+			writer.setSelectionAttribute( key, value );
+		}
 	}
 }

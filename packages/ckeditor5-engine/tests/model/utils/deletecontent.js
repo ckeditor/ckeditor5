@@ -8,12 +8,17 @@ import { ModelPosition } from '../../../src/model/position.js';
 import { ModelRange } from '../../../src/model/range.js';
 import { ModelSelection } from '../../../src/model/selection.js';
 import { ModelElement } from '../../../src/model/element.js';
+import { ModelWriter } from '../../../src/model/writer.js';
 import { deleteContent } from '../../../src/model/utils/deletecontent.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
 import { _stringifyView } from '../../../src/dev-utils/view.js';
 
 describe( 'DataController utils', () => {
 	let model, doc;
+
+	afterEach( () => {
+		sinon.restore();
+	} );
 
 	describe( 'deleteContent', () => {
 		it( 'should use parent batch', () => {
@@ -167,15 +172,19 @@ describe( 'DataController utils', () => {
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
 			} );
 
-			it( 'clears selection attrs when emptied content', () => {
+			it( 'preserves selection attrs when emptied content', () => {
 				_setModelData( model,
 					'<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>'
 				);
 
 				deleteContent( model, doc.selection );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
-				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph>x</paragraph>' +
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' +
+					'<paragraph>y</paragraph>'
+				);
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'leaves selection attributes when text contains them', () => {
@@ -193,6 +202,75 @@ describe( 'DataController utils', () => {
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>x<$text bold="true">a[]b</$text>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'clears selection attrs when replacing the entire content with a paragraph', () => {
+				_setModelData(
+					model,
+					'<paragraph>[<$text bold="true">foo</$text></paragraph><paragraph>bar]</paragraph>',
+					{
+						selectionAttributes: {
+							bold: true
+						}
+					}
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
+			} );
+
+			it( 'preserves selection attrs when deleting the entire content of a single paragraph', () => {
+				_setModelData(
+					model,
+					'<paragraph>[<$text bold="true">foo</$text>]</paragraph>',
+					{
+						selectionAttributes: {
+							bold: true
+						}
+					}
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
+				);
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'does not restore attrs when the live selection is already in an unrelated empty paragraph', () => {
+				const setSelectionAttributeSpy = sinon.spy( ModelWriter.prototype, 'setSelectionAttribute' );
+
+				_setModelData(
+					model,
+					'<paragraph>[]</paragraph>' +
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>bar</paragraph>',
+					{
+						selectionAttributes: {
+							bold: true
+						}
+					}
+				);
+				setSelectionAttributeSpy.resetHistory();
+
+				const range = new ModelRange(
+					new ModelPosition( doc.getRoot(), [ 1, 0 ] ),
+					new ModelPosition( doc.getRoot(), [ 1, 3 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( setSelectionAttributeSpy.called ).to.be.false;
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' +
+					'<paragraph></paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
 			} );
 		} );
 
