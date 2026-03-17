@@ -797,7 +797,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * However, a range containing an `<imageBlock></imageBlock>` (which would normally be marked in the schema as an object element)
 	 * is considered non-empty.
 	 *
-	 * @param subject
+	 * @param subject Subject to check if includes meaningful content. Could be a model range, an element, a document fragment, or a
+	 * selection.
 	 * @param options.ignoreWhitespaces Whether text node with whitespaces only should be considered empty.
 	 * @param options.ignoreMarkers Whether markers should be ignored.
 	 */
