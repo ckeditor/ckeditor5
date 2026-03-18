@@ -1157,13 +1157,8 @@ export class MultiRootEditor extends Editor {
 		sourceElementsOrDataOrConfig: Record<string, HTMLElement> | Record<string, string>,
 		config: EditorConfig = {}
 	): Promise<MultiRootEditor> {
-		const {
-			sourceElementsOrData,
-			editorConfig
-		} = normalizeMultiRootEditorConstructorParams( sourceElementsOrDataOrConfig, config );
-
 		return new Promise( resolve => {
-			const editor = new this( sourceElementsOrData, editorConfig );
+			const editor = new this( sourceElementsOrDataOrConfig as any, config );
 
 			resolve(
 				editor.initPlugins()

@@ -316,13 +316,8 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
 		config: EditorConfig = {}
 	): Promise<ClassicEditor> {
-		const {
-			sourceElementOrData,
-			editorConfig
-		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
-
 		return new Promise( resolve => {
-			const editor = new this( sourceElementOrData, editorConfig );
+			const editor = new this( sourceElementOrDataOrConfig as any, config );
 
 			resolve(
 				editor.initPlugins()
