@@ -53,7 +53,7 @@ export default function parseArguments( cliArguments ) {
 			),
 			'compile-only': false,
 			packages: null,
-			branch: 'release',
+			branch: 'release-v47',
 			'npm-tag': 'staging',
 			verbose: false,
 			ci: false,
