@@ -216,13 +216,7 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 	 * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 	 * 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	 * 	},
-	 * 	creator: ( elementOrData, config ) => {
-	 * 		if ( !elementOrData ) {
-	 * 			return ClassicEditor.create( config );
-	 * 		}
-	 *
-	 * 		return ClassicEditor.create( elementOrData, config );
-	 * 	}
+	 * 	creator: config => ClassicEditor.create( config )
 	 * } ] );
 	 * ```
 	 *
@@ -237,13 +231,7 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 	 * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 	 * 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	 * 	},
-	 * 	creator: ( elementOrData, config ) => {
-	 * 		if ( !elementOrData ) {
-	 * 			return ClassicEditor.create( config );
-	 * 		}
-	 *
-	 * 		return ClassicEditor.create( elementOrData, config );
-	 * 	}
+	 * 	creator: config => ClassicEditor.create( config )
 	 * } );
 	 * ```
 	 *
@@ -624,8 +612,8 @@ export interface ContextWatchdogItemConfiguration {
 	type: 'editor';
 
 	/**
-	 * A function that initializes the item (the editor). The function takes editor initialization arguments
-	 * and should return a promise. For example: `( el, config ) => ClassicEditor.create( el, config )`.
+	 * A function that initializes the item (the editor). The function takes the editor configuration
+	 * and should return a promise. For example: `config => ClassicEditor.create( config )`.
 	 */
 	creator: EditorWatchdogCreatorFunction;
 

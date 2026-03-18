@@ -125,8 +125,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
-	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
-	 * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
+	 * **Note:** If `config.initialData` is set together with `config.root.initialData` or `config.roots.<rootName>.initialData`,
+	 * an error will be thrown as those options exclude themselves.
 	 *
 	 * If `config.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
 	 * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
@@ -147,7 +147,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		// The UI of the editor as well as its content will be in German.
 	 * 		language: 'de'
 	 * 	} )
@@ -164,7 +165,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		language: {
 	 * 			// The UI will be in English.
 	 * 			ui: 'en',
@@ -203,7 +205,8 @@ export interface EditorConfig extends EngineConfig {
 	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 	 * import { translations } from 'ckeditor5/dist/translations/pl.js';
 	 *
-	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 * await ClassicEditor.create( {
+	 *   attachTo: document.querySelector( '#editor' ),
 	 *   plugins: [
 	 *     Essentials,
 	 *     Paragraph,
@@ -224,7 +227,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * import 'ckeditor5/dist/styles.css';
 	 *
-	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 * await ClassicEditor.create( {
+	 *   attachTo: document.querySelector( '#editor' ),
 	 *   plugins: [
 	 *     Essentials,
 	 *     Paragraph,
@@ -253,7 +257,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			isVisible: true
 	 * 		}
@@ -265,7 +270,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * DecoupledEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		root: { element: document.querySelector( '#editor' ) },
 	 * 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	 * 	} )
 	 *  .then( editor => {
@@ -291,7 +297,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			// Removes "Bold" and "Block quote" buttons from their respective menus.
 	 * 			removeItems: [ 'menuBar:bold', 'menuBar:blockQuote' ]
@@ -304,7 +311,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			// Removes the entire basic styles group ("Bold", "Italic", "Underline", etc.) from the "Format" menu.
 	 * 			removeItems: [ 'basicStyles' ]
@@ -317,7 +325,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			// Removes the whole top-level "Insert" menu from the menu bar.
 	 * 			removeItems: [ 'insert' ]
@@ -358,7 +367,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -388,7 +398,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -411,7 +422,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -428,7 +440,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -462,7 +475,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			items: [
 	 * 				{
@@ -769,7 +783,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		ui: { ... }
 	 * 	} )
 	 * 	.then( ... )
@@ -919,7 +934,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		roots: {
 	 * 			main: {
 	 * 				initialData: '<p>Hello world!</p>',
@@ -961,7 +977,8 @@ export interface RootConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		root: {
 	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
 	 * 		}
@@ -977,39 +994,33 @@ export interface RootConfig {
 	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		roots: {
-	 * 			header: {
-	 * 				initialData: '<p>Content for header part.</p>'
-	 * 			},
-	 * 			content: {
-	 * 				initialData: '<p>Content for main part.</p>'
-	 * 			},
-	 * 			leftSide: {
-	 * 				initialData: '<p>Content for left-side box.</p>'
-	 * 			},
-	 * 			rightSide: {
-	 * 				initialData: '<p>Content for right-side box.</p>'
-	 * 			}
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			initialData: '<p>Content for header part.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			initialData: '<p>Content for main part.</p>'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			initialData: '<p>Content for left-side box.</p>'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			initialData: '<p>Content for right-side box.</p>'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
 	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
-	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
-	 * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
+	 * **Note:** If `config.initialData` is set together with `config.root.initialData` or `config.roots.<rootName>.initialData`,
+	 * an error will be thrown as those options exclude themselves.
 	 *
 	 * If `config.root.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
 	 * will be used to set `config.roots.main.initialData`. As a result, `config.roots.main.initialData` is always set
@@ -1026,7 +1037,8 @@ export interface RootConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		root: {
 	 * 			placeholder: 'Type some text...'
 	 * 		}
@@ -1038,32 +1050,26 @@ export interface RootConfig {
 	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		roots: {
-	 * 			header: {
-	 * 				placeholder: 'Type header...'
-	 * 			},
-	 * 			content: {
-	 * 				placeholder: 'Type content...'
-	 * 			},
-	 * 			leftSide: {
-	 * 				placeholder: 'Type left-side...'
-	 * 			},
-	 * 			rightSide: {
-	 * 				placeholder: 'Type right-side...'
-	 * 			}
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			placeholder: 'Type header...'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			placeholder: 'Type content...'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			placeholder: 'Type left-side...'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			placeholder: 'Type right-side...'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -1094,7 +1100,8 @@ export interface RootConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		root: {
 	 * 			label: 'My editor'
 	 * 		}
@@ -1106,32 +1113,26 @@ export interface RootConfig {
 	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		roots: {
-	 * 			header: {
-	 * 				label: 'Header label'
-	 * 			},
-	 * 			content: {
-	 * 				label: 'Content label'
-	 * 			},
-	 * 			leftSide: {
-	 * 				label: 'Left side label'
-	 * 			},
-	 * 			rightSide: {
-	 * 				label: 'Right side label'
-	 * 			}
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			label: 'Header label'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			label: 'Content label'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			label: 'Left side label'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			label: 'Right side label'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -1140,8 +1141,8 @@ export interface RootConfig {
 }
 
 /**
- * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of
- * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
+ * The `config.initialData` option cannot be used together with `config.root.initialData` or
+ * `config.roots.<rootName>.initialData` passed in the {@link module:core/editor/editor~Editor.create `Editor.create()`} configuration.
  *
  * @error editor-create-initial-data
  */
@@ -1163,7 +1164,8 @@ export interface RootConfig {
  *
  * ```ts
  * ClassicEditor
- * 	.create( document.querySelector( '#editor' ), {
+ * 	.create( {
+ * 		attachTo: document.querySelector( '#editor' ),
  * 		language: ... // The editor language configuration.
  * 	} )
  * 	.then( editor => {

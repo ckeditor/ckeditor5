@@ -226,7 +226,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 			.then( () => {
 				// Pre-process some data from the original editor config.
 				// Our goal here is to make sure that the restarted editor will be reinitialized with correct set of roots.
-				// We are not interested in any data set in config or in `.create()` first parameter. It will be replaced anyway.
+				// We are not interested in any data set in config. It will be replaced anyway.
 				// But we need to set them correctly to make sure that proper roots are created.
 				//
 				// Since a different set of roots will be created, lazy-roots and roots-attributes must be managed too.
@@ -280,7 +280,6 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 				updatedConfig.roots = updatedRootsConfig;
 
 				// Delete `initialData` as it is not needed. Data will be set by the watchdog based on `_watchdogInitialData`.
-				// First parameter of the editor `.create()` will be used to set up initial roots.
 				delete updatedConfig.initialData;
 
 				// Also alias for main root should not provide initial data.
