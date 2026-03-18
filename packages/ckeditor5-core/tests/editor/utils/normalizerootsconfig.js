@@ -427,6 +427,65 @@ describe( 'normalizeRootsConfig()', () => {
 			expect( roots.main.initialData ).to.equal( '<p>from element</p>' );
 		} );
 
+		it( 'should prefer source data string over rootConfig.element for initialData extraction', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>from element</p>';
+
+			config.set( 'roots', { main: { element: el } } );
+
+			normalizeRootsConfig( '<p>from source</p>', config );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.initialData ).to.equal( '<p>from source</p>' );
+		} );
+
+		it( 'should prefer source data string over config.attachTo for initialData extraction when separateAttachTo is true', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>from attachTo</p>';
+
+			config.set( 'attachTo', el );
+
+			normalizeRootsConfig( '<p>from source</p>', config, 'main', true );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.initialData ).to.equal( '<p>from source</p>' );
+		} );
+
+		it( 'should prefer rootConfig.element over config.attachTo for initialData extraction', () => {
+			const rootEl = document.createElement( 'div' );
+			rootEl.innerHTML = '<p>from root element</p>';
+
+			const attachToEl = document.createElement( 'div' );
+			attachToEl.innerHTML = '<p>from attachTo</p>';
+
+			config.set( 'roots', { main: { element: rootEl } } );
+			config.set( 'attachTo', attachToEl );
+
+			normalizeRootsConfig( '', config, 'main', true );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.main.initialData ).to.equal( '<p>from root element</p>' );
+		} );
+
+		it( 'should prefer rootConfig.element over source element for multi-root initialData extraction', () => {
+			const configEl = document.createElement( 'div' );
+			configEl.innerHTML = '<p>from config element</p>';
+
+			const sourceEl = document.createElement( 'div' );
+			sourceEl.innerHTML = '<p>from source element</p>';
+
+			config.set( 'roots', { foo: { element: configEl } } );
+
+			normalizeRootsConfig( { foo: sourceEl }, config, false );
+
+			const roots = config.get( 'roots' );
+
+			expect( roots.foo.initialData ).to.equal( '<p>from config element</p>' );
+		} );
+
 		it( 'should assign source elements to rootConfig.element for multi-root', () => {
 			const fooEl = document.createElement( 'div' );
 			fooEl.innerHTML = '<p>Foo</p>';

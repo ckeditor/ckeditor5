@@ -213,6 +213,40 @@ describe( 'MultiRootEditor', () => {
 				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
 			} );
 
+			it( 'should prefer legacy source data string over config.roots.*.element for initialData extraction', () => {
+				const fooEl = document.createElement( 'div' );
+				fooEl.innerHTML = '<p>from element</p>';
+
+				const editor = new MultiRootEditor( {
+					foo: '<p>from source</p>'
+				}, {
+					roots: {
+						foo: { element: fooEl }
+					}
+				} );
+
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>from source</p>' );
+			} );
+
+			it( 'should prefer config.roots.*.element over legacy source elements for initialData extraction', () => {
+				const sourceFooEl = document.createElement( 'div' );
+				sourceFooEl.innerHTML = '<p>from source</p>';
+
+				const configFooEl = document.createElement( 'div' );
+				configFooEl.innerHTML = '<p>from config</p>';
+
+				const editor = new MultiRootEditor( {
+					foo: sourceFooEl
+				}, {
+					roots: {
+						foo: { element: configFooEl }
+					}
+				} );
+
+				expect( editor.sourceElements.foo ).to.equal( configFooEl );
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>from config</p>' );
+			} );
+
 			it( 'should log warning when config.attachTo is set', () => {
 				const el = document.createElement( 'div' );
 
