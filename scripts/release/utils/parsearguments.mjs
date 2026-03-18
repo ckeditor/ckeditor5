@@ -81,7 +81,7 @@ export default function parseArguments( cliArguments ) {
 	}
 
 	if ( options.nightlyAlpha ) {
-		options.branch = 'release';
+		options.branch = 'release-v47';
 		options.npmTag = 'alpha';
 	}
 
