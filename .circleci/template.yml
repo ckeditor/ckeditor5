@@ -283,7 +283,7 @@ jobs:
     docker:
       - image: cimg/node:24.11.0
     steps:
-      - checkout
+      - checkout_command
       - bootstrap_repository_command
       - run:
           name: Upload Snyk snapshots
