@@ -90,8 +90,10 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 
 	/**
 	 * Specifies whether the editor was created using config-based creator mode (without a source element or data as the first argument).
+	 *
+	 * @internal
 	 */
-	private _isUsingConfigBasedCreator: boolean = false;
+	public _isUsingConfigBasedCreator: boolean = false;
 
 	/**
 	 * The latest record of the editor editable elements. Used to restart the editor.

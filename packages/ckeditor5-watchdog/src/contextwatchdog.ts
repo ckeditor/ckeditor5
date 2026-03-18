@@ -409,6 +409,12 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 						.map( watchdog => {
 							watchdog._setExcludedProperties( this._contextProps );
 
+							if ( watchdog._isUsingConfigBasedCreator ) {
+								return ( watchdog.create as ( config: EditorConfig, context?: Context ) => Promise<unknown> )(
+									undefined as any, this._context!
+								);
+							}
+
 							return watchdog.create(
 								undefined as any, undefined as any, this._context!
 							);
