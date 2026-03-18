@@ -791,6 +791,25 @@ describe( 'HtmlEmbedEditing', () => {
 						'<div class="raw-html-embed"><script>console.warn( \'Should be called.\' )</script></div>'
 					);
 				} );
+
+				it( 'should preserve <script> attributes when re-creating the element for execution', () => {
+					_setModelData( model, '[<rawHtml value=""></rawHtml>]' );
+
+					editor.execute(
+						'htmlEmbed',
+						'<script async nonce="some-nonce" type="module" data-test="123">console.warn( \'Attrs\' )</script>'
+					);
+
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const domPreview = getDomPreview( widget );
+					const script = domPreview.querySelector( 'script' );
+
+					expect( script ).to.not.equal( null );
+					expect( script.hasAttribute( 'async' ) ).to.be.true;
+					expect( script.getAttribute( 'nonce' ) ).to.equal( 'some-nonce' );
+					expect( script.getAttribute( 'type' ) ).to.equal( 'module' );
+					expect( script.getAttribute( 'data-test' ) ).to.equal( '123' );
+				} );
 			} );
 
 			describe( 'different setting of ui and content language', () => {
@@ -841,14 +860,14 @@ describe( 'HtmlEmbedEditing', () => {
 					expect( widget.getAttribute( 'dir' ) ).to.equal( 'rtl' );
 					expect( domPreview.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 				} );
-
-				function getDomPreview( widget ) {
-					const contentWrapper = widget.getChild( 1 );
-					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
-
-					return domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' );
-				}
 			} );
+
+			function getDomPreview( widget ) {
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				return domContentWrapper.querySelector( 'div.raw-html-embed__preview-content' );
+			}
 		} );
 
 		describe( 'integration with command and editor states', () => {
