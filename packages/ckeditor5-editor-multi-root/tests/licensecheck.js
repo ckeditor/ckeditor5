@@ -25,13 +25,13 @@ describe( 'MultiRootEditor - license check', () => {
 		} ).to.not.throw();
 	} );
 
-	it( 'should not block if license key is GPL', () => {
+	it( 'should block if license key is GPL', () => {
 		const licenseKey = 'GPL';
 
 		const editor = new MultiRootEditor( {}, { licenseKey } );
 
-		sinon.assert.notCalled( showErrorStub );
-		expect( editor.isReadOnly ).to.be.false;
+		sinon.assert.calledWithMatch( showErrorStub, 'lts' );
+		expect( editor.isReadOnly ).to.be.true;
 	} );
 
 	it( 'should not block if multi-root editor is allowed by license key', () => {

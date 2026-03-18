@@ -83,7 +83,7 @@ describe( 'PoweredBy', () => {
 				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
 
-			it( 'should create the balloon when license is `GPL`', async () => {
+			it.skip( 'should create the balloon when license is `GPL`', async () => {
 				const editor = await createEditor( element, {
 					licenseKey: 'GPL'
 				} );

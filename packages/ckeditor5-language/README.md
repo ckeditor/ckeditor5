@@ -21,17 +21,14 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the text part language feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/language.html#demo).
+Check out the [demo in the text part language feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/language.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-language` package](https://ckeditor.com/docs/ckeditor5/latest/api/language.html) page as well as the [text part language feature](https://ckeditor.com/docs/ckeditor5/latest/features/language.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-language` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/language.html) page as well as the [text part language feature](https://ckeditor.com/docs/ckeditor5/lts-v47/features/language.html) guide in the [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).

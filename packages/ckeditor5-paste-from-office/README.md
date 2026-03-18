@@ -23,7 +23,7 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
+Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/lts-v47/features/pasting/paste-from-office.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/lts-v47/features/pasting/paste-from-google-docs.html#demo) features.
 
 ## Documentation
 
@@ -31,9 +31,6 @@ See the [`@ckeditor/ckeditor5-paste-from-office` package](https://docs.ckeditor.
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).
