@@ -9,11 +9,24 @@
 	--ck-transition-duration-slow: .3s;
 	--ck-transition-duration-slower: .4s;
 
+	--ck-animation-duration-fast: var(--ck-transition-duration-fast);
+	--ck-animation-duration-base: var(--ck-transition-duration-base);
+	--ck-animation-duration-slow: var(--ck-transition-duration-slow);
+	--ck-animation-duration-emphasis: 1.5s;
+	--ck-animation-duration-reduced: 0s;
+
+	--ck-transition-none: none;
+
 	--ck-transition-timing-function-standard: ease;
 	--ck-transition-timing-function-interactive: ease-in-out;
 	--ck-transition-timing-function-emphasized: cubic-bezier(0, 0, 0.24, 0.95);
+	--ck-animation-timing-function-standard: var(--ck-transition-timing-function-standard);
+	--ck-animation-timing-function-interactive: var(--ck-transition-timing-function-interactive);
+	--ck-animation-timing-function-linear: linear;
 
-	--ck-transition-none: none;
+	--ck-animation-fill-mode-both: both;
+	--ck-animation-iteration-count-infinite: infinite;
+	--ck-animation-none: var(--ck-transition-none);
 }
 
 /**

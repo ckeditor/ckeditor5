@@ -23,6 +23,12 @@
 	--ck-input-border-width: var(--ck-border-width-control);
 	--ck-input-border: var(--ck-input-border-width) solid var(--ck-color-input-border);
 	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-color-input-disabled-border);
+	--ck-input-error-animation-name: ck-input-shake;
+	--ck-input-error-animation-duration: var(--ck-animation-duration-feedback);
+	--ck-input-error-animation-timing-function: var(--ck-animation-timing-function-feedback);
+	--ck-input-error-animation-fill-mode: var(--ck-animation-fill-mode-feedback);
+	--ck-input-error-animation: var(--ck-input-error-animation-name) var(--ck-input-error-animation-duration) var(--ck-input-error-animation-timing-function) var(--ck-input-error-animation-fill-mode);
+	--ck-input-error-animation-reduced: var(--ck-animation-none);
 
 	/* Backward compatibility. */
 	--ck-input-text-width: var(--ck-input-width);
@@ -64,10 +70,10 @@
 
 	&.ck-error {
 		border-color: var(--ck-color-input-error-border);
-		animation: ck-input-shake .3s ease both;
+		animation: var(--ck-input-error-animation);
 
 		@media (prefers-reduced-motion: reduce) {
-			animation: none;
+			animation: var(--ck-input-error-animation-reduced);
 		}
 
 		&:focus {

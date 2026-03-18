@@ -12,4 +12,13 @@
 	--ck-transition-timing-function-control: var(--ck-transition-timing-function-interactive);
 	--ck-transition-timing-function-control-emphasized: var(--ck-transition-timing-function-emphasized);
 	--ck-transition-timing-function-surface: var(--ck-transition-timing-function-standard);
+
+	--ck-animation-duration-feedback: var(--ck-animation-duration-slow);
+	--ck-animation-duration-surface-entrance: var(--ck-animation-duration-slow);
+	--ck-animation-duration-progress: var(--ck-animation-duration-emphasis);
+	--ck-animation-duration-progress-reduced: var(--ck-animation-duration-reduced);
+
+	--ck-animation-timing-function-feedback: var(--ck-animation-timing-function-standard);
+	--ck-animation-timing-function-progress: var(--ck-animation-timing-function-linear);
+	--ck-animation-fill-mode-feedback: var(--ck-animation-fill-mode-both);
 }

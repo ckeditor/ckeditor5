@@ -17,10 +17,14 @@
 	--ck-dialog-border-width: var(--ck-border-width-surface);
 	--ck-dialog-border: var(--ck-dialog-border-width) solid var(--ck-dialog-border-color);
 	--ck-dialog-header-border: var(--ck-dialog-border-width) solid var(--ck-color-dialog-form-header-border);
+	--ck-dialog-overlay-animation-name: ck-dialog-fade-in;
+	--ck-dialog-overlay-animation-duration: var(--ck-animation-duration-surface-entrance);
+	--ck-dialog-overlay-animation: var(--ck-dialog-overlay-animation-name) var(--ck-dialog-overlay-animation-duration);
+	--ck-dialog-overlay-animation-none: var(--ck-animation-none);
 }
 
 .ck.ck-dialog-overlay {
-	animation: ck-dialog-fade-in .3s;
+	animation: var(--ck-dialog-overlay-animation);
 	background: var(--ck-dialog-overlay-background-color);
 	z-index: var(--ck-z-dialog);
 	user-select: none;
@@ -34,7 +38,7 @@
 
 	&.ck-dialog-overlay__transparent {
 		pointer-events: none;
-		animation: none;
+		animation: var(--ck-dialog-overlay-animation-none);
 		background: none;
 	}
 }
