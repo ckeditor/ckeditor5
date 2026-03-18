@@ -912,7 +912,7 @@ export interface EditorConfig extends EngineConfig {
 }
 
 /**
- * Configuration for a single editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
+ * Configuration for a an editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
  * {@link module:core/editor/editorconfig~EditorConfig#roots `EditorConfig#roots.<rootName>`}.
  *
  * **Note**: If your editor implementation uses only a single root, you can use `config.root` to set the root configuration instead of
