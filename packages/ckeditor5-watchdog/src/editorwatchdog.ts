@@ -137,13 +137,15 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 
 		// Set default creator and destructor functions:
 		if ( Editor ) {
-			this._creator = ( ( elementOrData, config ) => {
-				if ( elementOrData === undefined ) {
-					return Editor.create( config );
+			this._creator = ( ( elementOrDataOrConfig: any, config?: EditorConfig ) => {
+				if ( config === undefined ) {
+					// Config-based mode: first argument is the config.
+					return Editor.create( elementOrDataOrConfig );
 				}
 
-				return Editor.create( elementOrData, config );
-			} );
+				// Legacy mode: first argument is element/data, second is config.
+				return Editor.create( elementOrDataOrConfig, config );
+			} ) as EditorWatchdogCreatorFunction<TEditor>;
 		}
 
 		this._destructor = editor => editor.destroy();
@@ -167,20 +169,16 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 * Sets the function that is responsible for the editor creation.
 	 * It expects a function that should return a promise.
 	 *
+	 * For config-based editor creation:
+	 *
 	 * ```ts
-	 * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
+	 * watchdog.setCreator( config => ClassicEditor.create( config ) );
 	 * ```
 	 *
-	 * When the watchdog is used in config-based creator mode (see {@link #create}), `elementOrData` will be `undefined`:
+	 * For legacy editor creation (with element or data as the first argument):
 	 *
 	 * ```ts
-	 * watchdog.setCreator( ( elementOrData, config ) => {
-	 * 	if ( !elementOrData ) {
-	 * 		return ClassicEditor.create( config );
-	 * 	}
-	 *
-	 * 	return ClassicEditor.create( elementOrData, config );
-	 * } );
+	 * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
 	 * ```
 	 */
 	public setCreator( creator: EditorWatchdogCreatorFunction<TEditor> ): void {
@@ -381,7 +379,13 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 					this._isSingleRootEditor = isElement( elementOrData ) || typeof elementOrData == 'string';
 				}
 
-				return this._creator( elementOrData, this._config! );
+				if ( isUsingConfigBasedCreator ) {
+					return ( this._creator as ( config: EditorConfig ) => Promise<TEditor> )( this._config! );
+				}
+
+				return ( this._creator as (
+					elementOrData: typeof this._elementOrData, config: EditorConfig
+				) => Promise<TEditor> )( elementOrData, this._config! );
 			} )
 			.then( editor => {
 				this._editor = editor;
@@ -778,10 +782,10 @@ export type EditorWatchdogRestartEvent = {
 	return: undefined;
 };
 
-export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
-	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> | undefined,
-	config: EditorConfig
-) => Promise<TEditor>;
+export type EditorWatchdogCreatorFunction<TEditor = Editor> =
+	( ( config: EditorConfig ) => Promise<TEditor> ) |
+	( ( elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> | undefined,
+		config: EditorConfig ) => Promise<TEditor> );
 
 /**
  * An alias for `isElement` from `es-toolkit/compat` with additional type guard.
