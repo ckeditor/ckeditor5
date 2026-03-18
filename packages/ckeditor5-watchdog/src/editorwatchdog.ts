@@ -356,7 +356,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 
 				// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 				// when an error occurs in one of these editors, the watchdog will restart all of them.
-				this._config = this._cloneEditorConfiguration( config || {} ) || {};
+				this._config = this._cloneEditorConfiguration( config || {} );
 
 				this._config!.context = resolvedContext;
 
@@ -559,11 +559,6 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 		elementOrDataOrConfig: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> | EditorConfig | undefined,
 		configOrContext: EditorConfig | Context | undefined
 	): boolean {
-		// If the stored state is already set (restart), keep it.
-		if ( elementOrDataOrConfig === undefined && this._config ) {
-			return this._isUsingConfigBasedCreator;
-		}
-
 		// A string or DOM element is clearly the legacy signature.
 		if ( typeof elementOrDataOrConfig === 'string' || isElement( elementOrDataOrConfig ) ) {
 			return false;

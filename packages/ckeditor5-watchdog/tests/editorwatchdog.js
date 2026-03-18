@@ -1806,6 +1806,54 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.destroy();
 		} );
+
+		// Covers: multi-root legacy detection when config is not passed as the second argument.
+		// This ensures the `values.every()` branch in `_detectConfigBasedCreator()` is reached.
+		it( 'should detect legacy signature when first arg is an object with string values and no config', async () => {
+			class CustomMultiRootEditor extends MultiRootEditor {}
+			CustomMultiRootEditor.builtinPlugins = [ Paragraph ];
+
+			const watchdog = new EditorWatchdog( CustomMultiRootEditor );
+
+			await watchdog.create( { foo: '<p>Foo</p>' } );
+
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+
+			await watchdog.destroy();
+		} );
+	} );
+
+	describe( 'config-based multi-root detection from legacy initialData', () => {
+		// Covers: `legacyInitialData && typeof legacyInitialData === 'object'` true branch in `create()`.
+		it( 'should detect multi-root from config.initialData as object', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			await watchdog.create( {
+				initialData: { foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p>' );
+
+			await watchdog.destroy();
+		} );
+	} );
+
+	describe( 'create() with no config', () => {
+		// Covers: `config || {}` fallback in `create()` when config is undefined.
+		it( 'should handle create() call without config for legacy signature', async () => {
+			class CustomEditor extends ClassicTestEditor {}
+			CustomEditor.builtinPlugins = [ Paragraph ];
+
+			const watchdog = new EditorWatchdog( CustomEditor );
+
+			await watchdog.create( '<p>foo</p>' );
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
+		} );
 	} );
 
 	describe( 'multi-root editor', () => {
