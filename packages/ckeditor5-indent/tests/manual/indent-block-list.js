@@ -183,7 +183,9 @@ function getEditorConfig() {
 				'resizeImage'
 			]
 		},
-		placeholder: 'Type the content here!',
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: html => ( { html, hasChange: false } )

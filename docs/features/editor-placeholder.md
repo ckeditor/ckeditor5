@@ -50,7 +50,7 @@ ClassicEditor
 
 ### Using the editor configuration
 
-You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder `editor.config.placeholder`} configuration option:
+You can use the {@link module:core/editor/editorconfig~EditorConfig#root `editor.config.root.placeholder`} configuration option:
 
 * when no element was passed into `Editor.create()` method,
 * when the element passed into `Editor.create()` was not a `<textarea>` (for instance, a `<div>` element),
@@ -60,7 +60,9 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
-		placeholder: 'Type the content here!'
+		root: {
+			placeholder: 'Type the content here!'
+		}
 	} )
 	.then( editor => {
 		console.log( editor );
@@ -70,7 +72,7 @@ ClassicEditor
 	} );
 ```
 
-If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots names and values equal to the placeholder that should be set in each root:
+If your editor implementation uses multiple roots, configure placeholders using `roots.<rootName>.placeholder`:
 
 ```js
 MultiRootEditor
@@ -84,11 +86,19 @@ MultiRootEditor
 		},
 		// Config:
 		{
-			placeholder: {
-				header: 'Type header...',
-				content: 'Type content...',
-				leftSide: 'Type left-side...',
-				rightSide: 'Type right-side...'
+			roots: {
+				header: {
+					placeholder: 'Type header...'
+				},
+				content: {
+					placeholder: 'Type content...'
+				},
+				leftSide: {
+					placeholder: 'Type left-side...'
+				},
+				rightSide: {
+					placeholder: 'Type right-side...'
+				}
 			}
 		} )
 	.then( editor => {

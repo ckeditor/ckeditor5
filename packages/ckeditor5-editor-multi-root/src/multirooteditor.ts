@@ -71,8 +71,9 @@ export class MultiRootEditor extends Editor {
 	public readonly sourceElements: Record<string, HTMLElement>;
 
 	/**
-	 * Holds attributes keys that were passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `rootsAttributes`}
-	 * config property and should be returned by {@link #getRootsAttributes}.
+	 * Holds attributes keys that were passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 * and should be returned by {@link #getRootsAttributes}.
 	 */
 	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
@@ -641,8 +642,8 @@ export class MultiRootEditor extends Editor {
 	}
 
 	/**
-	 * Loads a root that has previously been declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
-	 * configuration option.
+	 * Loads a root that has previously been declared in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.lazyLoad`} configuration option.
 	 *
 	 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following
 	 * known limitations:**
@@ -671,7 +672,7 @@ export class MultiRootEditor extends Editor {
 	 * Note that attributes loaded together with a root are automatically registered.
 	 *
 	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes` configuration option}.
 	 *
 	 * When this method is used in real-time collaboration environment, its effects become asynchronous as the editor will first synchronize
 	 * with the remote editing session, before the root is added to the editor.
@@ -767,9 +768,10 @@ export class MultiRootEditor extends Editor {
 	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
 	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
 	 *
-	 * Note: attributes passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes`} are
-	 * automatically registered as the editor is initialized. However, registering the same attribute twice does not have any negative
-	 * impact, so it is recommended to use this method in any feature that uses roots attributes.
+	 * Note: attributes passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 * are automatically registered as the editor is initialized. However, registering the same attribute twice does not have any
+	 * negative impact, so it is recommended to use this method in any feature that uses roots attributes.
 	 */
 	public registerRootAttribute( key: string ): void {
 		if ( this._registeredRootsAttributesKeys.has( key ) ) {

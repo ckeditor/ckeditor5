@@ -44,7 +44,9 @@ BalloonEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		placeholder: 'Text of the post',
+		root: {
+			placeholder: 'Text of the post'
+		},
 		image: {
 			toolbar: [
 				'imageStyle:inline',

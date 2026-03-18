@@ -70,7 +70,9 @@ ClassicEditor
 			'undo', 'redo', 'findAndReplace'
 		],
 		cloudServices: CS_CONFIG,
-		placeholder: 'Type the content here!',
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		list: {
 			properties: {
 				styles: true,
