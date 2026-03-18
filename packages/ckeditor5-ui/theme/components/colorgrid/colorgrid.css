@@ -92,7 +92,8 @@
 
 	& .ck.ck-icon {
 		display: none;
-		color: var(--ck-color-grid-check-icon-color);
+		/* Fallback to `--ck-color-color-grid-check-icon` for backward compatibility. */
+		color: var(--ck-color-color-grid-check-icon, var(--ck-color-grid-check-icon-color));
 	}
 
 	&.ck-on {

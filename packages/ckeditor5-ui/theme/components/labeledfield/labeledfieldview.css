@@ -31,8 +31,8 @@
 			top: 0px;
 
 			pointer-events: none;
-
-			background: var(--ck-labeled-field-label-background-color);
+			/* Fallback to `--ck-color-labeled-field-label-background` for backward compatibility. */
+			background: var(--ck-color-labeled-field-label-background, var(--ck-labeled-field-label-background-color));
 			padding: 0 calc(.5 * var(--ck-font-size-tiny));
 			line-height: initial;
 			font-weight: var(--ck-labeled-field-label-font-weight);

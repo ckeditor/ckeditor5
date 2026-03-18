@@ -78,7 +78,8 @@
 
 	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
 	&.ck-blurred ::selection {
-		background: var(--ck-editor-editable-blur-selection-color);
+		/* Fallback to `--ck-color-editable-blur-selection` for backward compatibility. */
+		background: var(--ck-color-editable-blur-selection, var(--ck-editor-editable-blur-selection-color));
 	}
 }
 
