@@ -21,8 +21,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import isObject from 'es-toolkit/compat/isObject';
-import cloneDeepWith from 'es-toolkit/compat/cloneDeepWith';
+import { isObject, cloneDeepWith } from 'es-toolkit/compat';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 

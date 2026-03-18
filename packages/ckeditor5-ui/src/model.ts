@@ -8,7 +8,7 @@
  */
 
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
-import extend from 'es-toolkit/compat/extend';
+import { extend } from 'es-toolkit/compat';
 
 /**
  * The base MVC model class.

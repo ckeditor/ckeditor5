@@ -8,7 +8,7 @@
  */
 
 import { isIterable } from '../isiterable.js';
-import isString from 'es-toolkit/compat/isString';
+import { isString } from 'es-toolkit/compat';
 
 /**
  * Attributes to be applied to the HTML element.

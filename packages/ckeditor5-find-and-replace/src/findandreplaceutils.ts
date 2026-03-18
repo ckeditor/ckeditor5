@@ -10,7 +10,7 @@
 import type { ModelElement, ModelItem, Marker, Model, ModelRange } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Collection, uid } from '@ckeditor/ckeditor5-utils';
-import escapeRegExp from 'es-toolkit/compat/escapeRegExp';
+import { escapeRegExp } from 'es-toolkit/compat';
 import type { FindResultType } from './findandreplace.js';
 
 /**

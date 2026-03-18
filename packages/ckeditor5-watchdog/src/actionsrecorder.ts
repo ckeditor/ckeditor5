@@ -27,7 +27,7 @@ import type {
 	ActionsRecorderMaxEntriesCallback
 } from './actionsrecorderconfig.js';
 
-import isPlainObject from 'es-toolkit/compat/isPlainObject';
+import { isPlainObject } from 'es-toolkit/compat';
 
 /**
  * A plugin that records user actions and editor state changes for debugging purposes. It tracks commands execution, model operations,

@@ -112,8 +112,8 @@ export default defineConfig( [
 							message: disallowedPackageImportsMessage
 						},
 						{
-							regex: '^es-toolkit(/compat)?$', // `es-toolkit` and `es-toolkit/compat`
-							message: 'Import directly from the specific module file (e.g. `es-toolkit/compat/debounce`).'
+							regex: '^es-toolkit$',
+							message: 'Import from `es-toolkit/compat` instead.'
 						}
 					]
 				}
@@ -132,10 +132,16 @@ export default defineConfig( [
 
 		rules: {
 			'no-restricted-imports': [ 'error', {
-				patterns: [ {
-					regex: disallowedPackageImportsPattern,
-					message: disallowedPackageImportsMessage
-				} ]
+				patterns: [
+					{
+						regex: disallowedPackageImportsPattern,
+						message: disallowedPackageImportsMessage
+					},
+					{
+						regex: '^es-toolkit$',
+						message: 'Import from `es-toolkit/compat` instead.'
+					}
+				]
 			} ]
 		}
 	},
@@ -150,10 +156,16 @@ export default defineConfig( [
 
 		rules: {
 			'@typescript-eslint/no-restricted-imports': [ 'error', {
-				patterns: [ {
-					regex: disallowedPackageImportsPattern,
-					message: disallowedPackageImportsMessage
-				} ]
+				patterns: [
+					{
+						regex: disallowedPackageImportsPattern,
+						message: disallowedPackageImportsMessage
+					},
+					{
+						regex: '^es-toolkit$',
+						message: 'Import from `es-toolkit/compat` instead.'
+					}
+				]
 			} ]
 		}
 	},

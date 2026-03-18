@@ -9,8 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
-import isObject from 'es-toolkit/compat/isObject';
-import identity from 'es-toolkit/compat/identity';
+import { isObject, identity } from 'es-toolkit/compat';
 import { ImageStyleEditing } from './imagestyleediting.js';
 import { utils } from './utils.js';
 import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';

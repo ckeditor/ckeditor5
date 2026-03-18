@@ -22,7 +22,7 @@ import {
 import { DecoupledEditorUI } from './decouplededitorui.js';
 import { DecoupledEditorUIView } from './decouplededitoruiview.js';
 
-import _isElement from 'es-toolkit/compat/isElement';
+import { isElement as _isElement } from 'es-toolkit/compat';
 
 /**
  * The decoupled editor implementation. It provides an inline editable and a toolbar. However, unlike other editors,

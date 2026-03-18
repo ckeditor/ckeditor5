@@ -15,7 +15,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import isElement from 'es-toolkit/compat/isElement';
+import { isElement } from 'es-toolkit/compat';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'InlineEditorUI', () => {

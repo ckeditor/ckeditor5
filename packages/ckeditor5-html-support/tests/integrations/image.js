@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import range from 'es-toolkit/compat/range';
+import { range } from 'es-toolkit/compat';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Image, ImageCaption, ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';

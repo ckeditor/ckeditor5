@@ -13,7 +13,7 @@ import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { ImageUtils } from './imageutils.js';
 import type { ImageStyleDropdownDefinition } from './imageconfig.js';
 
-import isObject from 'es-toolkit/compat/isObject';
+import { isObject } from 'es-toolkit/compat';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).

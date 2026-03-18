@@ -13,7 +13,7 @@ import { SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtex
 import { SearchInfoView } from '../searchinfoview.js';
 import { SearchResultsView } from '../searchresultsview.js';
 import { FocusCycler, type FocusableView } from '../../focuscycler.js';
-import escapeRegExp from 'es-toolkit/compat/escapeRegExp';
+import { escapeRegExp } from 'es-toolkit/compat';
 
 import { type FilteredView } from '../filteredview.js';
 import { type ViewCollection } from '../../viewcollection.js';

@@ -10,7 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { toArray } from '@ckeditor/ckeditor5-utils';
 import { defaultConfig } from './schemadefinitions.js';
-import mergeWith from 'es-toolkit/compat/mergeWith';
+import { mergeWith } from 'es-toolkit/compat';
 import type { ModelAttributeProperties, ModelSchemaItemDefinition } from '@ckeditor/ckeditor5-engine';
 
 /**

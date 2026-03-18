@@ -10,7 +10,7 @@
 import { ViewDocumentFragment } from './documentfragment.js';
 import { ViewElement, type ViewElementAttributes } from './element.js';
 import { ViewText } from './text.js';
-import isPlainObject from 'es-toolkit/compat/isPlainObject';
+import { isPlainObject } from 'es-toolkit/compat';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewRange } from './range.js';
 import {

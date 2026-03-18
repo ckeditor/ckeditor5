@@ -28,7 +28,7 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties.js';
-import debounce from 'es-toolkit/compat/debounce';
+import { debounce } from 'es-toolkit/compat';
 import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
 import {

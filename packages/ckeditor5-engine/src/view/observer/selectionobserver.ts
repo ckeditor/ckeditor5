@@ -11,7 +11,7 @@ import { Observer } from './observer.js';
 import { MutationObserver } from './mutationobserver.js';
 import { FocusObserver } from './focusobserver.js';
 import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import debounce from 'es-toolkit/compat/debounce';
+import { debounce } from 'es-toolkit/compat';
 
 import type { EditingView } from '../view.js';
 import type { ViewDocumentSelection } from '../documentselection.js';

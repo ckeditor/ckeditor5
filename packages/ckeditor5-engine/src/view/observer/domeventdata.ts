@@ -7,7 +7,7 @@
  * @module engine/view/observer/domeventdata
  */
 
-import extend from 'es-toolkit/compat/extend';
+import { extend } from 'es-toolkit/compat';
 
 import { type ViewDocument } from '../document.js';
 import { type ViewElement } from '../element.js';
