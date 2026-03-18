@@ -985,7 +985,7 @@ export interface RootConfig {
 	/**
 	 * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
 	 * help users locate the editor in the application (form) and prompt them to input the content. Works similarly
-	 * as to the native DOM
+	 * to the native DOM
 	 * [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute)
 	 * used by inputs.
 	 *
