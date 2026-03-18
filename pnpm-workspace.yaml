@@ -11,6 +11,7 @@ onlyBuiltDependencies:
   - hexo-util
   - puppeteer
   - sharp
+  - snyk
 
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
