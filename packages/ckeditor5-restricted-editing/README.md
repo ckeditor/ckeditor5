@@ -29,6 +29,6 @@ See the [`@ckeditor/ckeditor5-restricted-editing` package](https://ckeditor.com/
 
 ## License
 
-CKEditor&nbsp;5 is licensed under a commercial license and is protected by copyright law.
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
 For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).
