@@ -603,7 +603,8 @@ function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootEl
  *
  * ```ts
  * ClassicEditor
- *   .create( document.querySelector( '#editor' ), {
+ *   .create( {
+ *     attachTo: document.querySelector( '#editor' ),
  *     plugins: [ Title, ... ],
  *     title: {
  *       placeholder: 'My custom placeholder for the title'

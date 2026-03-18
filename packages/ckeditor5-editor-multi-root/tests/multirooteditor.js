@@ -161,6 +161,83 @@ describe( 'MultiRootEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
 		} );
+
+		describe( 'config-only constructor', () => {
+			it( 'should create editor with config.roots.*.initialData', () => {
+				const editor = new MultiRootEditor( {
+					roots: {
+						foo: { initialData: '<p>Foo</p>' },
+						bar: { initialData: '<p>Bar</p>' }
+					}
+				} );
+
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'should create editor with config.roots.*.element', () => {
+				const fooEl = document.createElement( 'div' );
+				fooEl.innerHTML = '<p>Foo</p>';
+				const barEl = document.createElement( 'div' );
+				barEl.innerHTML = '<p>Bar</p>';
+
+				const editor = new MultiRootEditor( {
+					roots: {
+						foo: { element: fooEl },
+						bar: { element: barEl }
+					}
+				} );
+
+				expect( editor.sourceElements.foo ).to.equal( fooEl );
+				expect( editor.sourceElements.bar ).to.equal( barEl );
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'should create editor with config.roots.*.element and initialData', () => {
+				const fooEl = document.createElement( 'div' );
+				fooEl.innerHTML = '<p>123</p>';
+				const barEl = document.createElement( 'div' );
+				barEl.innerHTML = '<p>456</p>';
+
+				const editor = new MultiRootEditor( {
+					roots: {
+						foo: { element: fooEl, initialData: '<p>Foo</p>' },
+						bar: { element: barEl, initialData: '<p>Bar</p>' }
+					}
+				} );
+
+				expect( editor.sourceElements.foo ).to.equal( fooEl );
+				expect( editor.sourceElements.bar ).to.equal( barEl );
+				expect( editor.config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'should log warning when config.attachTo is set', () => {
+				const el = document.createElement( 'div' );
+
+				// eslint-disable-next-line no-new
+				new MultiRootEditor( {
+					attachTo: el,
+					roots: {
+						foo: { initialData: '' }
+					}
+				} );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
+			} );
+
+			it( 'should throw when config.roots.*.element is a textarea', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new MultiRootEditor( {
+						roots: {
+							foo: { element: document.createElement( 'textarea' ) }
+						}
+					} );
+				} ).to.throw( CKEditorError, 'editor-wrong-element' );
+			} );
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -216,6 +293,71 @@ describe( 'MultiRootEditor', () => {
 
 		it( 'initializes the editor if no roots are specified', done => {
 			MultiRootEditor.create( {} ).then( editor => editor.destroy() ).then( done );
+		} );
+
+		it( 'creates editor from config-only', () => {
+			return MultiRootEditor
+				.create( {
+					roots: {
+						foo: { initialData: '<p>Foo</p>' },
+						bar: { initialData: '<p>Bar</p>' }
+					},
+					plugins: [ Paragraph ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+					expect( newEditor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p>' );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'creates editor from config-only with roots.*.element', () => {
+			const fooEl = document.createElement( 'div' );
+			fooEl.innerHTML = '<p>Foo</p>';
+			const barEl = document.createElement( 'div' );
+			barEl.innerHTML = '<p>Bar</p>';
+
+			return MultiRootEditor
+				.create( {
+					roots: {
+						foo: { element: fooEl },
+						bar: { element: barEl }
+					},
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+					expect( newEditor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p>' );
+					expect( newEditor.sourceElements.foo ).to.equal( fooEl );
+					expect( newEditor.sourceElements.bar ).to.equal( barEl );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'creates editor from config-only with roots.*.element and initialData', () => {
+			const fooEl = document.createElement( 'div' );
+			fooEl.innerHTML = '<p>123</p>';
+			const barEl = document.createElement( 'div' );
+			barEl.innerHTML = '<p>456</p>';
+
+			return MultiRootEditor
+				.create( {
+					roots: {
+						foo: { element: fooEl, initialData: '<p>Foo</p>' },
+						bar: { element: barEl, initialData: '<p>Bar</p>' }
+					},
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+					expect( newEditor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p>' );
+					expect( newEditor.sourceElements.foo ).to.equal( fooEl );
+					expect( newEditor.sourceElements.bar ).to.equal( barEl );
+
+					return newEditor.destroy();
+				} );
 		} );
 
 		it( 'should throw when trying to create the editor using the same source element more than once', done => {
@@ -890,6 +1032,14 @@ describe( 'MultiRootEditor', () => {
 			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root.getAttribute( 'order' ) ).to.equal( 10 );
+		} );
+
+		it( 'should log warning when options.element is a DOM element', () => {
+			const el = document.createElement( 'div' );
+
+			editor.addRoot( 'baz', { element: el } );
+
+			sinon.assert.calledWithMatch( console.warn, 'multi-root-editor-add-root-element-option-ignored' );
 		} );
 	} );
 

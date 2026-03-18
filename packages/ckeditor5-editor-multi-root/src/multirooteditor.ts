@@ -11,6 +11,7 @@ import {
 	Editor,
 	secureSourceElement,
 	normalizeRootsConfig,
+	normalizeMultiRootEditorConstructorParams,
 	type EditorConfig,
 	type EditorReadyEvent,
 	type RootConfig
@@ -87,24 +88,76 @@ export class MultiRootEditor extends Editor {
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} method instead.
 	 *
+	 * @param config The editor configuration.
+	 */
+	protected constructor( config: EditorConfig );
+
+	/**
+	 * Creates an instance of the multi-root editor.
+	 *
+	 * **Note:** Do not use the constructor to create editor instances. Use the static
+	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} method instead.
+	 *
+	 * **Note**: This constructor signature is deprecated and will be removed in the future release.
+	 *
+	 * @deprecated
 	 * @param sourceElementsOrData The DOM elements that will be the source for the created editor
 	 * or the editor's initial data. The editor will initialize multiple roots with names according to the keys in the passed object.
 	 * For more information see {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`}.
 	 * @param config The editor configuration.
 	 */
-	protected constructor( sourceElementsOrData: Record<string, HTMLElement> | Record<string, string>, config: EditorConfig = {} ) {
-		super( config );
+	protected constructor( sourceElementsOrData: Record<string, HTMLElement> | Record<string, string>, config: EditorConfig );
+
+	protected constructor( sourceElementsOrDataOrConfig: Record<string, HTMLElement> | Record<string, string>, config: EditorConfig = {} ) {
+		const {
+			sourceElementsOrData,
+			editorConfig
+		} = normalizeMultiRootEditorConstructorParams( sourceElementsOrDataOrConfig, config );
+
+		super( editorConfig );
 
 		normalizeRootsConfig( sourceElementsOrData, this.config, false );
 
+		if ( isElement( this.config.get( 'attachTo' ) ) ) {
+			// Documented in core/editor/editorconfig.ts.
+			logWarning( 'editor-create-attachto-ignored' );
+		}
+
+		if ( this.config.get( 'lazyRoots' ) ) {
+			/**
+			 * Using deprecated `config.lazyRoots` configuration option.
+			 * Use `config.roots.<rootName>.lazyLoad` instead.
+			 *
+			 * @error multi-root-editor-root-deprecated-config-lazy-roots
+			 */
+			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-lazy-roots', null );
+		}
+
+		if ( this.config.get( 'rootsAttributes' ) ) {
+			/**
+			 * Using deprecated `config.rootsAttributes` configuration option.
+			 * Use `config.roots.<rootName>.modelAttributes` instead.
+			 *
+			 * @error multi-root-editor-root-deprecated-config-roots-attributes
+			 */
+			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-roots-attributes', null );
+		}
+
+		// From this point use only normalized `roots.<rootName>.element`, etc.
+		const rootsConfig = Object.entries( this.config.get( 'roots' )! );
+
 		this.sourceElements = {};
 
-		for ( const [ rootName, sourceElementOrData ] of Object.entries( sourceElementsOrData ) ) {
-			if ( isElement( sourceElementOrData ) ) {
-				const sourceElement = sourceElementOrData as HTMLElement;
+		for ( const [ rootName, { element } ] of rootsConfig ) {
+			if ( isElement( element ) ) {
+				if ( element.tagName === 'TEXTAREA' ) {
+					// Documented in core/editor/editor.js
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+					throw new CKEditorError( 'editor-wrong-element', null );
+				}
 
-				this.sourceElements[ rootName ] = sourceElement;
-				secureSourceElement( this, sourceElement );
+				this.sourceElements[ rootName ] = element;
+				secureSourceElement( this, element );
 			}
 		}
 
@@ -129,28 +182,6 @@ export class MultiRootEditor extends Editor {
 				}
 			} );
 		} );
-
-		if ( this.config.get( 'lazyRoots' ) ) {
-			/**
-			 * Using deprecated `config.lazyRoots` configuration option.
-			 * Use `config.roots.<rootName>.lazyLoad` instead.
-			 *
-			 * @error multi-root-editor-root-deprecated-config-lazy-roots
-			 */
-			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-lazy-roots', null );
-		}
-
-		if ( this.config.get( 'rootsAttributes' ) ) {
-			/**
-			 * Using deprecated `config.rootsAttributes` configuration option.
-			 * Use `config.roots.<rootName>.modelAttributes` instead.
-			 *
-			 * @error multi-root-editor-root-deprecated-config-roots-attributes
-			 */
-			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-roots-attributes', null );
-		}
-
-		const rootsConfig = Object.entries( this.config.get( 'roots' )! );
 
 		for ( const [ rootName, rootConfig ] of rootsConfig ) {
 			// Create root and `UIView` element for each editable container.
@@ -444,6 +475,13 @@ export class MultiRootEditor extends Editor {
 		const initialData: string = options.initialData || options.data || '';
 		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
 		const modelElement: string = options.elementName || '$root';
+
+		if ( isElement( options.element ) ) {
+			/**
+			 * The `element` option is not supported in {@link #addRoot `addRoot()`} method, and will be ignored.
+			 */
+			logWarning( 'multi-root-editor-add-root-element-option-ignored' );
+		}
 
 		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, modelElement );
@@ -846,6 +884,151 @@ export class MultiRootEditor extends Editor {
 	 *
 	 * ```ts
 	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		intro: {
+	 * 			element: document.querySelector( '#editor-intro' )
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#editor-content' )
+	 * 		},
+	 * 		sidePanelLeft: {
+	 * 			element: document.querySelector( '#editor-side-left' )
+	 * 		},
+	 * 		sidePanelRight: {
+	 * 			element: document.querySelector( '#editor-side-right' )
+	 * 		},
+	 * 		outro: {
+	 * 			element: document.querySelector( '#editor-outro' )
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( editor => {
+	 * 	console.log( 'Editor was initialized', editor );
+	 *
+	 * 	// Append the toolbar inside a provided DOM element.
+	 * 	document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+	 * } )
+	 * .catch( err => {
+	 * 	console.error( err.stack );
+	 * } );
+	 * ```
+	 *
+	 * The elements' content will be used as the editor data and elements will become editable elements.
+	 *
+	 * # Creating a detached editor
+	 *
+	 * Alternatively, you can initialize the editor by passing the initial data directly as strings.
+	 * In this case, you will have to manually append both the toolbar element and the editable elements to your web page.
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		intro: {
+	 * 			initialData: '<p><strong>Exciting</strong> intro text to an article.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			initialData: '<p>Lorem ipsum dolor sit amet.</p>'
+	 * 		},
+	 * 		sidePanelLeft: {
+	 * 			initialData: '<blockquote>Strong quotation from article.</blockquote>'
+	 * 		},
+	 * 		sidePanelRight: {
+	 * 			initialData: '<p>List of similar articles...</p>'
+	 * 		},
+	 * 		outro: {
+	 * 			initialData: '<p>Closing text.</p>'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( editor => {
+	 * 	console.log( 'Editor was initialized', editor );
+	 *
+	 * 	// Append the toolbar inside a provided DOM element.
+	 * 	document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+	 *
+	 * 	// Append DOM editable elements created by the editor.
+	 * 	const editables = editor.ui.view.editables;
+	 * 	const container = document.querySelector( '#editable-container' );
+	 *
+	 * 	container.appendChild( editables.intro.element );
+	 * 	container.appendChild( editables.content.element );
+	 * 	container.appendChild( editables.outro.element );
+	 * } )
+	 * .catch( err => {
+	 * 	console.error( err.stack );
+	 * } );
+	 * ```
+	 *
+	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * # Using an existing DOM element (and data provided in `config.roots.<rootName>.initialData`)
+	 *
+	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		intro: {
+	 * 			element: document.querySelector( '#editor-intro' ),
+	 * 			initialData: '<p><strong>Exciting</strong> intro text to an article.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#editor-content' ),
+	 * 			initialData: '<p>Lorem ipsum dolor sit amet.</p>'
+	 * 		},
+	 * 		sidePanelLeft: {
+	 * 			element: document.querySelector( '#editor-side-left' ),
+	 * 			initialData: '<blockquote>Strong quotation from article.</blockquote>'
+	 * 		},
+	 * 		sidePanelRight: {
+	 * 			element: document.querySelector( '#editor-side-right' ),
+	 * 			initialData: '<p>List of similar articles...</p>'
+	 * 		},
+	 * 		outro: {
+	 * 			element: document.querySelector( '#editor-outro' ),
+	 * 			initialData: '<p>Closing text.</p>'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( editor => {
+	 * 	console.log( 'Editor was initialized', editor );
+	 *
+	 * 	// Append the toolbar inside a provided DOM element.
+	 * 	document.querySelector( '#toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+	 * } )
+	 * .catch( err => {
+	 * 	console.error( err.stack );
+	 * } );
+	 * ```
+	 *
+	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
+	 * makes it difficult to set the content of the source element.
+	 *
+	 * # Configuring the editor
+	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * customizing plugins, toolbar and more.
+	 *
+	 * @param config The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 */
+	public static override create( config: EditorConfig ): Promise<MultiRootEditor>;
+
+	/**
+	 * Creates a new multi-root editor instance.
+	 *
+	 * **Note**: This method signature is deprecated and will be removed in the future release.
+	 *
+	 * **Note:** remember that `MultiRootEditor` does not append the toolbar element to your web page, so you have to do it manually
+	 * after the editor has been initialized.
+	 *
+	 * There are a few different ways to initialize the multi-root editor.
+	 *
+	 * # Using existing DOM elements:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
 	 * 	intro: document.querySelector( '#editor-intro' ),
 	 * 	content: document.querySelector( '#editor-content' ),
 	 * 	sidePanelLeft: document.querySelector( '#editor-side-left' ),
@@ -951,6 +1134,7 @@ export class MultiRootEditor extends Editor {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and more.
 	 *
+	 * @deprecated
 	 * @param sourceElementsOrData The DOM elements that will be the source for the created editor
 	 * or the editor's initial data. The editor will initialize multiple roots with names according to the keys in the passed object.
 	 *
@@ -968,18 +1152,15 @@ export class MultiRootEditor extends Editor {
 	 */
 	public static override create(
 		sourceElementsOrData: Record<string, HTMLElement> | Record<string, string>,
+		config: EditorConfig
+	): Promise<MultiRootEditor>;
+
+	public static override create(
+		sourceElementsOrDataOrConfig: Record<string, HTMLElement> | Record<string, string>,
 		config: EditorConfig = {}
 	): Promise<MultiRootEditor> {
 		return new Promise( resolve => {
-			for ( const sourceItem of Object.values( sourceElementsOrData ) ) {
-				if ( isElement( sourceItem ) && sourceItem.tagName === 'TEXTAREA' ) {
-					// Documented in core/editor/editor.js
-					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-					throw new CKEditorError( 'editor-wrong-element', null );
-				}
-			}
-
-			const editor = new this( sourceElementsOrData, config );
+			const editor = new this( sourceElementsOrDataOrConfig as any, config );
 
 			resolve(
 				editor.initPlugins()
@@ -1144,6 +1325,11 @@ export type AddRootOptions = {
  * Declares an additional options available when adding a root.
  */
 export interface AddRootRootConfig extends RootConfig {
+
+	/**
+	 * Passing a DOM element to {@link ~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot( rootName, options )`} is not supported.
+	 */
+	element?: undefined;
 
 	/**
 	 * Whether creating the root can be undone (using the undo feature) or not.

@@ -13,12 +13,13 @@ import {
 	attachToForm,
 	secureSourceElement,
 	normalizeRootsConfig,
+	normalizeSingleRootEditorConstructorParams,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
 
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, logWarning } from '@ckeditor/ckeditor5-utils';
 
 import { BalloonEditorUI } from './ballooneditorui.js';
 import { BalloonEditorUIView } from './ballooneditoruiview.js';
@@ -52,19 +53,53 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * **Note:** do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method instead.
 	 *
+	 * @param config The editor configuration.
+	 */
+	protected constructor( config: EditorConfig );
+
+	/**
+	 * Creates an instance of the balloon editor.
+	 *
+	 * **Note:** do not use the constructor to create editor instances. Use the static
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method instead.
+	 *
+	 * **Note**: This constructor signature is deprecated and will be removed in the future release.
+	 *
+	 * @deprecated
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param config The editor configuration.
 	 */
-	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		super( config );
+	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig );
+
+	protected constructor( sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig, config: EditorConfig = {} ) {
+		const {
+			sourceElementOrData,
+			editorConfig
+		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
+
+		super( editorConfig );
 
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this, sourceElementOrData );
+		if ( isElement( this.config.get( 'attachTo' ) ) ) {
+			// Documented in core/editor/editorconfig.ts.
+			logWarning( 'editor-create-attachto-ignored' );
+		}
+
+		// From this point use only normalized `roots.main.element`.
+		const sourceElement = this.config.get( 'roots' )!.main.element;
+
+		if ( isElement( sourceElement ) ) {
+			if ( sourceElement.tagName === 'TEXTAREA' ) {
+				// Documented in core/editor/editor.js
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
+			}
+
+			this.sourceElement = sourceElement;
+			secureSourceElement( this, sourceElement );
 		}
 
 		const plugins = this.config.get( 'plugins' )!;
@@ -106,6 +141,99 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 	/**
 	 * Creates a new balloon editor instance.
+	 *
+	 * There are three general ways how the editor can be initialized.
+	 *
+	 * # Using an existing DOM element (and loading data from it)
+	 *
+	 * You can initialize the editor using an existing DOM element:
+	 *
+	 * ```ts
+	 * BalloonEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' )
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * The element's content will be used as the editor data and the element will become the editable element.
+	 *
+	 * # Creating a detached editor
+	 *
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
+	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
+	 *
+	 * ```ts
+	 * BalloonEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			initialData: '<p>Hello world!</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 *
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
+	 *
+	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
+	 *
+	 * ```ts
+	 * BalloonEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' ),
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
+	 * makes it difficult to set the content of the source element.
+	 *
+	 * # Configuring the editor
+	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * customizing plugins, toolbar and more.
+	 *
+	 * # Using the editor from source
+	 *
+	 * If you want to use the balloon editor, you need to define the list of
+	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}.
+	 *
+	 * @param config The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 */
+	public static override create( config: EditorConfig ): Promise<BalloonEditor>;
+
+	/**
+	 * Creates a new balloon editor instance.
+	 *
+	 * **Note**: This method signature is deprecated and will be removed in the future release.
 	 *
 	 * There are three general ways how the editor can be initialized.
 	 *
@@ -179,11 +307,11 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 *
 	 * # Using the editor from source
 	 *
-	 * If you want to use the balloon editor,
-	 * you need to define the list of
+	 * If you want to use the balloon editor, you need to define the list of
 	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}.
 	 *
+	 * @deprecated
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
@@ -198,15 +326,14 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<BalloonEditor> {
-		return new Promise( resolve => {
-			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig ): Promise<BalloonEditor>;
 
-			const editor = new this( sourceElementOrData, config );
+	public static override create(
+		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
+		config: EditorConfig = {}
+	): Promise<BalloonEditor> {
+		return new Promise( resolve => {
+			const editor = new this( sourceElementOrDataOrConfig as any, config );
 
 			resolve(
 				editor.initPlugins()

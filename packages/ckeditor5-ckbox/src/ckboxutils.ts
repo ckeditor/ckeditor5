@@ -84,7 +84,8 @@ export class CKBoxUtils extends Plugin {
 			 * configuration is required for the CKBox plugin.
 			 *
 			 * ```ts
-			 * ClassicEditor.create( document.createElement( 'div' ), {
+			 * ClassicEditor.create( {
+			 * 	attachTo: document.createElement( 'div' ),
 			 * 	ckbox: {
 			 * 		tokenUrl: "YOUR_TOKEN_URL"
 			 * 		// ...

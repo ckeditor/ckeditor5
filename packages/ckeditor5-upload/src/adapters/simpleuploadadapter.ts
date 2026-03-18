@@ -19,7 +19,7 @@ import { logWarning } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( document.querySelector( '#editor' ), {
+ * 	.create( {
  * 		simpleUpload: {
  * 			uploadUrl: 'http://example.com',
  * 			headers: {
