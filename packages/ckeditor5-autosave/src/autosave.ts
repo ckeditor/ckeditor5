@@ -32,7 +32,8 @@ import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
  *
  * ```ts
  * ClassicEditor
- * 	.create( document.querySelector( '#editor' ), {
+ * 	.create( {
+ * 		attachTo: document.querySelector( '#editor' ),
  * 		plugins: [ ArticlePluginSet, Autosave ],
  * 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
  * 		image: {
@@ -367,7 +368,8 @@ export interface AutosaveAdapter {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
+ * 		attachTo: editorElement,
  * 		autosave: {
  * 			save( editor: Editor ) {
  * 				// The saveData() function must return a promise
@@ -393,7 +395,8 @@ export interface AutosaveConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		autosave: {
 	 * 			save( editor: Editor ) {
 	 * 				return saveData( editor.getData() );
@@ -412,7 +415,8 @@ export interface AutosaveConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		autosave: {
 	 * 			save( editor: Editor ) {
 	 * 				return saveData( editor.getData() );
