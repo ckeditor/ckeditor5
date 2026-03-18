@@ -470,6 +470,16 @@ describe( 'normalizeRootsConfig()', () => {
 			expect( result.sourceElementOrData ).to.equal( '' );
 			expect( result.editorConfig ).to.equal( editorConfig );
 		} );
+
+		it( 'should return first argument as sourceElementOrData when it is an object but non-empty config is provided', () => {
+			const sourceData = { foo: '<p>Foo</p>' };
+			const editorConfig = { plugins: [] };
+
+			const result = normalizeSingleRootEditorConstructorParams( sourceData, editorConfig );
+
+			expect( result.sourceElementOrData ).to.equal( sourceData );
+			expect( result.editorConfig ).to.equal( editorConfig );
+		} );
 	} );
 
 	describe( 'normalizeMultiRootEditorConstructorParams()', () => {
