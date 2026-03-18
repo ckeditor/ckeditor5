@@ -83,12 +83,14 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 					// should be rendered after plugins are initialized.
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => {
-						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+						const initialData = config.initialData || config.root?.initialData || config.roots?.main?.initialData;
+
+						if ( !isElement( sourceElementOrData ) && initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
 							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
-						return editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
+						return editor.data.init( initialData || getInitialData( sourceElementOrData ) );
 					} )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )

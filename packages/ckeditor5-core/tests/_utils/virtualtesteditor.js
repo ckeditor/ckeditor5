@@ -27,7 +27,11 @@ export class VirtualTestEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.data.init( config.initialData || '' ) )
+					.then( () => {
+						const initialData = config.initialData ?? config.root?.initialData ?? config.roots?.main?.initialData;
+
+						return editor.data.init( initialData || '' );
+					} )
 					.then( () => {
 						editor.fire( 'ready' );
 						return editor;

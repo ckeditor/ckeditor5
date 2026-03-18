@@ -59,7 +59,9 @@ TableEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		placeholder: 'Insert the new table with the default styles applied.'
+		root: {
+			placeholder: 'Insert the new table with the default styles applied.'
+		}
 	} )
 	.then( editor => {
 		window.editorDefaultStyles = editor;

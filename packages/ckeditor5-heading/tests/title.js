@@ -722,7 +722,9 @@ describe( 'Title', () => {
 					title: {
 						placeholder: 'foo'
 					},
-					placeholder: 'bar'
+					root: {
+						placeholder: 'bar'
+					}
 				} ).then( _editor => {
 					editor = _editor;
 					model = editor.model;

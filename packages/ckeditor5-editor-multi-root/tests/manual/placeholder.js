@@ -23,9 +23,13 @@ function initEditor() {
 		.create( editorData, {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
-			placeholder: {
-				intro: 'Type intro...',
-				outro: 'Type outro...'
+			roots: {
+				intro: {
+					placeholder: 'Type intro...'
+				},
+				outro: {
+					placeholder: 'Type outro...'
+				}
 			}
 		} )
 		.then( newEditor => {
