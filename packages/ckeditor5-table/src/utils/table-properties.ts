@@ -8,7 +8,7 @@
  */
 
 import type { BoxStyleSides } from '@ckeditor/ckeditor5-engine';
-import isObject from 'es-toolkit/compat/isObject';
+import { isObject } from 'es-toolkit/compat';
 
 /**
  * Returns a string if all four values of box sides are equal.

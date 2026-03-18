@@ -9,7 +9,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { diffString } from 'json-diff';
-import debounce from 'es-toolkit/compat/debounce';
+import { debounce } from 'es-toolkit/compat';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { TableWalker } from '../../src/tablewalker.js';
 

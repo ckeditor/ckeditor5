@@ -69,7 +69,7 @@ import { type ModelElement } from '../model/element.js';
 
 import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import isPlainObject from 'es-toolkit/compat/isPlainObject';
+import { isPlainObject } from 'es-toolkit/compat';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~ModelDocument document} to an HTML-like string.

@@ -40,7 +40,7 @@ import {
 	type EventInfo
 } from '@ckeditor/ckeditor5-utils';
 
-import throttle from 'es-toolkit/compat/throttle';
+import { throttle } from 'es-toolkit/compat';
 
 import '../theme/widgetresize.css';
 

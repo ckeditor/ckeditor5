@@ -7,7 +7,7 @@ import { Editor } from '../../src/editor/editor.js';
 import { ElementApiMixin } from '../../src/editor/utils/elementapimixin.js';
 import { EditorUI, BoxedEditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 import { ElementReplacer, getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
-import isElement from 'es-toolkit/compat/isElement';
+import { isElement } from 'es-toolkit/compat';
 
 /**
  * A simplified classic editor. Useful for testing features.

@@ -11,7 +11,7 @@
  * @module engine/dev-utils/utils
  */
 
-// @if CK_DEBUG_TYPING // const debounce = require( 'es-toolkit/compat/debounce' );
+// @if CK_DEBUG_TYPING // const { debounce } = require( 'es-toolkit/compat' );
 
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.

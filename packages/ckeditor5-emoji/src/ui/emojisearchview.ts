@@ -7,7 +7,7 @@
  * @module emoji/ui/emojisearchview
  */
 
-import escapeRegExp from 'es-toolkit/compat/escapeRegExp';
+import { escapeRegExp } from 'es-toolkit/compat';
 import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearchEvent, type SearchInfoView } from '@ckeditor/ckeditor5-ui';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import { type EmojiGridView } from './emojigridview.js';

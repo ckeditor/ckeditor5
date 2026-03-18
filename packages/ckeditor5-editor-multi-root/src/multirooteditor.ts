@@ -28,7 +28,7 @@ import {
 import { MultiRootEditorUI } from './multirooteditorui.js';
 import { MultiRootEditorUIView } from './multirooteditoruiview.js';
 
-import _isElement from 'es-toolkit/compat/isElement';
+import { isElement as _isElement } from 'es-toolkit/compat';
 import {
 	type ModelRootElement,
 	type ViewRootEditableElement,

@@ -8,7 +8,7 @@ import { MediaEmbedEditing } from '../src/mediaembedediting.js';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import escapeRegExp from 'es-toolkit/compat/escapeRegExp';
+import { escapeRegExp } from 'es-toolkit/compat';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;

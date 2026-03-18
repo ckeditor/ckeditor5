@@ -55,7 +55,7 @@ import {
 	type GHSViewAttributes
 } from './utils.js';
 
-import isPlainObject from 'es-toolkit/compat/isPlainObject';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import '../theme/datafilter.css';
 

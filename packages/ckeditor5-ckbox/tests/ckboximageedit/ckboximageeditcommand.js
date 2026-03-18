@@ -16,7 +16,7 @@ import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Notification } from '@ckeditor/ckeditor5-ui';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import * as isEqualCompat from 'es-toolkit/compat/isEqual';
+import * as isEqualCompat from 'es-toolkit/compat';
 import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
@@ -632,7 +632,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should disable command for images being processed', async () => {
 				const clock = sinon.useFakeTimers();
 
-				sinon.stub( isEqualCompat, 'default' ).returns( true );
+				sinon.stub( isEqualCompat, 'isEqual' ).returns( true );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,

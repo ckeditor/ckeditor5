@@ -56,7 +56,7 @@ import {
 	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
 
-import cloneDeep from 'es-toolkit/compat/cloneDeep';
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Downcast conversion helper functions.

@@ -7,7 +7,7 @@
  * @module core/editor/utils/attachtoform
  */
 
-import isFunction from 'es-toolkit/compat/isFunction';
+import { isFunction } from 'es-toolkit/compat';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
