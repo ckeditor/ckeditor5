@@ -21,7 +21,7 @@ The following libraries are included in CKEditor&nbsp;5 under the [MIT license](
 * @types/color-convert - Copyright (c) Microsoft Corporation.
 * color-convert - Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com> and Copyright (c) 2016-2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
-* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc and Copyright OpenJS Foundation and other contributors.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
 
 Trademarks
