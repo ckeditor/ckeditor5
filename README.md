@@ -38,9 +38,9 @@ To learn more about using the LTS Edition, please visit the [dedicated guide](ht
 
 Refer to the [Quick Start](https://ckeditor.com/docs/ckeditor5/lts-v47/getting-started/installation/quick-start.html) guide to learn more about CKEditor&nbsp;5 installation.
 
-### CKEditor 5 Builder
+### CKEditor 5 Long Term Support Builder
 
-The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
+The easiest way to start using CKEditor&nbsp;5 LTS Edition with all the features you need is to prepare a customized setup with the [CKEditor&nbsp;5 LTS Edition Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/). All you need to do is choose the preferred editor type as a base, add all the required plugins, and download the ready-to-use package.
 
 ### TypeScript support
 
