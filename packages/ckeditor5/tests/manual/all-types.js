@@ -17,7 +17,9 @@ window.editors = {};
 
 function createEditor( EditorConstructor, containerId, extraPlugins = [], afterCreate ) {
 	const config = {
-		initialData: document.getElementById( 'fixtures' ).innerHTML,
+		root: {
+			initialData: document.getElementById( 'fixtures' ).innerHTML
+		},
 		plugins: [ ArticlePluginSet ],
 		extraPlugins,
 		toolbar: [

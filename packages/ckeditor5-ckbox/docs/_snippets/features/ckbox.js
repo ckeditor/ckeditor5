@@ -16,7 +16,9 @@ const { CKBoxWidget, CKBox } = window;
 
 CkBoxEditor
 	.create( document.querySelector( '#snippet-ckbox-ckeditor' ), {
-		initialData: document.querySelector( '#snippet-ckbox-content' ).innerHTML,
+		root: {
+			initialData: document.querySelector( '#snippet-ckbox-content' ).innerHTML
+		},
 		toolbar: {
 			items: [
 				'undo', 'redo',

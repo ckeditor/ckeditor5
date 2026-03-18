@@ -17,6 +17,7 @@ import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
+import { normalizeRootsConfig } from '@ckeditor/ckeditor5-core';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -179,7 +180,7 @@ describe( 'ClassicEditorUI', () => {
 				return VirtualClassicTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
-						placeholder: 'placeholder-text'
+						root: { placeholder: 'placeholder-text' }
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
@@ -190,11 +191,50 @@ describe( 'ClassicEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from editor.config.placeholder - object', () => {
+			it( 'sets placeholder from the "placeholder" attribute of a passed <textarea>', () => {
+				const element = document.createElement( 'textarea' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualClassicTestEditor
+					.create( element, {
+						extraPlugins: [ Paragraph ]
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'uses editor.config.placeholder rather than the "placeholder" attribute of a passed <textarea>', () => {
+				const element = document.createElement( 'textarea' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualClassicTestEditor
+					.create( element, {
+						root: { placeholder: 'config takes precedence' },
+						extraPlugins: [ Paragraph ]
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+
+		describe( 'placeholder - legacy config', () => {
+			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return VirtualClassicTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
-						placeholder: { main: 'placeholder-text' }
+						placeholder: 'placeholder-text'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
@@ -1044,6 +1084,8 @@ function viewCreator( name ) {
 class VirtualClassicTestEditor extends VirtualTestEditor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
+
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;

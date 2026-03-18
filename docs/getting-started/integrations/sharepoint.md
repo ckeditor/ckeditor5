@@ -142,7 +142,9 @@ export default class RichTextEditor extends React.Component<IRichTextEditorProps
 									'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
 									'formatPainter', 'insertTable', 'bulletedList', 'numberedList'
 								],
-								initialData: '<p>Hello from CKEditor 5 in SPFX React app!</p>',
+								root: {
+									initialData: '<p>Hello from CKEditor 5 in SPFX React app!</p>'
+								},
 								table: {
 									contentToolbar: [
 										'tableColumn', 'tableRow', 'mergeTableCells',
@@ -244,9 +246,9 @@ const ForceTableBorderImportant = ( editor: Editor ) => {
 	*/
 	const enforceBorderStyles = ( domElement: HTMLElement, defaults: { width: string, style: string, color: string } ) => {
 	// Skip layout tables (used for positioning, not data)
-	if ( 
-		domElement.closest('figure')?.classList.contains( 'layout-table' ) || 
-		domElement.classList.contains( 'layout-table' ) 
+	if (
+		domElement.closest('figure')?.classList.contains( 'layout-table' ) ||
+		domElement.classList.contains( 'layout-table' )
 	) {
 		return;
 	}
@@ -302,7 +304,7 @@ const ForceTableBorderImportant = ( editor: Editor ) => {
 
 <info-box important>
 	The internal `StylesMap` utility used by the editor's conversion system does not natively support the `!important` flag during style normalization.
-	
+
 	The provided workaround, therefore, performs low-level DOM manipulation during the render cycle instead of relying solely on `StylesMap`. By applying these styles directly to the DOM elements after they are mapped, we ensure the priority flag remains intact and is correctly interpreted by the browser.
 </info-box>
 

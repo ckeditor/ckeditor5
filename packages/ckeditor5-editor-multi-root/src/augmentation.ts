@@ -6,10 +6,10 @@
 import { type RootAttributes } from './multirooteditor.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-	interface EditorConfig {
+	interface RootConfig {
 
 		/**
-		 * Initial roots attributes for the document roots.
+		 * Initial root attributes for a root.
 		 *
 		 * **Note: This configuration option is supported only by the
 		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
@@ -37,11 +37,19 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * 	},
 		 * 	// Config:
 		 * 	{
-		 * 		rootsAttributes: {
-		 * 			uid1: { order: 20, isLocked: false }, // Third, unlocked.
-		 * 			uid2: { order: 10, isLocked: true }, // Second, locked.
-		 * 			uid3: { order: 30, isLocked: true }, // Fourth, locked.
-		 * 			uid4: { order: 0, isLocked: false } // First, unlocked.
+		 * 		roots: {
+		 * 			uid1: {
+		 * 				modelAttributes: { order: 20, isLocked: false } // Third, unlocked.
+		 * 			},
+		 * 			uid2: {
+		 * 				modelAttributes: { order: 10, isLocked: true } // Second, locked.
+		 * 			},
+		 * 			uid3: {
+		 * 				modelAttributes: { order: 30, isLocked: true } // Fourth, locked.
+		 * 			},
+		 * 			uid4: {
+		 * 				modelAttributes: { order: 0, isLocked: false } // First, unlocked.
+		 * 			}
 		 * 		}
 		 * 	}
 		 * )
@@ -78,10 +86,10 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * } );
 		 * ```
 		 */
-		rootsAttributes?: Record<string, RootAttributes>;
+		modelAttributes?: RootAttributes;
 
 		/**
-		 * A list of names of all the roots that exist in the document but are not initially loaded by the editor.
+		 * Flag for the root that exist in the document but is not initially loaded by the editor.
 		 *
 		 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following
 		 * known limitations:**
@@ -101,7 +109,14 @@ declare module '@ckeditor/ckeditor5-core' {
 		 *
 		 * This is useful for handling big documents that contain hundreds of roots, or contain very large roots, which may have
 		 * impact editor performance if loaded all at once.
+		 *
+		 * **Note: This configuration option is supported only by the
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
+		 *
+		 * **Note: This property has been deprecated and will be removed in the future versions of CKEditor.**
+		 *
+		 * @deprecated
 		 */
-		lazyRoots?: Array<string>;
+		lazyLoad?: boolean;
 	}
 }

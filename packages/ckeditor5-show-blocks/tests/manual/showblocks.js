@@ -174,7 +174,9 @@ ClassicEditor
 				}
 			]
 		},
-		placeholder: 'Type or paste your content here!',
+		root: {
+			placeholder: 'Type or paste your content here!'
+		},
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
