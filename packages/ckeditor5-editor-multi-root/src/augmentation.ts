@@ -9,7 +9,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface RootConfig {
 
 		/**
-		 * Initial root attributes for a single root.
+		 * Initial root attributes for a root.
 		 *
 		 * **Note: This configuration option is supported only by the
 		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**

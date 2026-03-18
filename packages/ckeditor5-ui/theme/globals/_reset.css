@@ -16,7 +16,7 @@
  */
 .ck.ck-reset,
 .ck.ck-reset_all,
-.ck-reset_all *:not(.ck-reset_all-excluded *) {
+.ck-reset_all *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 	box-sizing: border-box;
 	width: auto;
 	height: auto;
@@ -39,7 +39,7 @@
  * Resets an element AND its children.
  */
 .ck.ck-reset_all,
-.ck-reset_all *:not(.ck-reset_all-excluded *) {
+.ck-reset_all *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 	/* These are rule inherited by all children elements. */
 	border-collapse: collapse;
 	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
@@ -51,7 +51,7 @@
 }
 
 .ck-reset_all {
-	& .ck-rtl *:not(.ck-reset_all-excluded *) {
+	& .ck-rtl *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 		text-align: right;
 	}
 

@@ -950,7 +950,7 @@ export interface EditorConfig extends EngineConfig {
 }
 
 /**
- * Configuration for a single editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
+ * Configuration for a an editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
  * {@link module:core/editor/editorconfig~EditorConfig#roots `EditorConfig#roots.<rootName>`}.
  *
  * **Note**: If your editor implementation uses only a single root, you can use `config.root` to set the root configuration instead of
@@ -1017,10 +1017,11 @@ export interface RootConfig {
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
+	 *
 	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
-	 * **Note:** If `config.initialData` is set together with `config.root.initialData` or `config.roots.<rootName>.initialData`,
-	 * an error will be thrown as those options exclude themselves.
+	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
+	 * at the same time, root `initialData` is set, an error will be thrown as those two options exclude themselves.
 	 *
 	 * If `config.root.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
 	 * will be used to set `config.roots.main.initialData`. As a result, `config.roots.main.initialData` is always set
@@ -1030,8 +1031,8 @@ export interface RootConfig {
 
 	/**
 	 * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
-	 * help users locate the editor in the application (form) and prompt them to input the content. Work similarly
-	 * as to the native DOM
+	 * help users locate the editor in the application (form) and prompt them to input the content. Works similarly
+	 * to the native DOM
 	 * [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute)
 	 * used by inputs.
 	 *
