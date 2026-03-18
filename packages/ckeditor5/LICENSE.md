@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor&nbsp;5** (https://github.com/ckeditor/ckeditor5)<br>
+**CKEditor&nbsp;5 Long Term Support Edition** (https://github.com/ckeditor/ckeditor5)<br>
 Copyright (c) 2003–2026, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.

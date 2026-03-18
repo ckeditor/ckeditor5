@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the demo in the [mentions (autocomplete) feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#demo).
+Check out the demo in the [mentions (autocomplete) feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/mentions.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-mention` package](https://ckeditor.com/docs/ckeditor5/latest/api/mention.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-mention` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/mention.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

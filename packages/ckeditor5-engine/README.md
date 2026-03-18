@@ -23,7 +23,7 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 * **Custom data model.** CKEditor&nbsp;5 implements a tree-structured custom data model, designed to fit multiple requirements such as enabling real-time collaboration and complex editing features (like tables or nested blocks).
 * **Virtual DOM.** CKEditor&nbsp;5's editing engine features a custom, editing-oriented virtual DOM implementation that aims to hide browser quirks from your sight. **No more `contentEditable` nightmares!**
-* **Real-time collaborative editing**. The editor implements Operational Transformation for the tree-structured model as well as many other mechanisms which were required to create a seamless collaborative UX. Additionally, we provide cloud infrastructure and plugins enabling real-time collaborative editing in your application! [Check the collaboration demo](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html).
+* **Real-time collaborative editing**. The editor implements Operational Transformation for the tree-structured model as well as many other mechanisms which were required to create a seamless collaborative UX. Additionally, we provide cloud infrastructure and plugins enabling real-time collaborative editing in your application! [Check the collaboration demo](https://ckeditor.com/docs/ckeditor5/lts-v47/features/collaboration/overview.html).
 * **Extensible.** The entire editor architecture was designed for maximum flexibility. The code is event-based and highly decoupled, allowing you to plug in or replace selected pieces. Features do not directly depend on each other and communicate in standardized ways.
 * **Schema-less core**. The core makes minimal assumptions and can be controlled through the schema. This leaves all decisions to plugins and to you.
 * **Modular architecture.** Not only can the core modules be reused and recomposed but even the features were implemented in a highly granular way. Feel like running a headless CKEditor&nbsp;5 with a couple of features in Node.js? Not a problem!
@@ -33,9 +33,9 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Documentation
 
-For a general introduction see the [Overview of CKEditor&nbsp;5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html) guide and then the [Editing engine architecture guide](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/editing-engine.html).
+For a general introduction see the [Overview of CKEditor&nbsp;5 Framework](https://ckeditor.com/docs/ckeditor5/lts-v47/framework/architecture/core-editor-architecture.html) guide and then the [Editing engine architecture guide](https://ckeditor.com/docs/ckeditor5/lts-v47/framework/architecture/editing-engine.html).
 
-Additionally, refer to the [`@ckeditor/ckeditor5-engine` package](https://ckeditor.com/docs/ckeditor5/latest/api/engine.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) for even more information.
+Additionally, refer to the [`@ckeditor/ckeditor5-engine` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/engine.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/) for even more information.
 
 ## License
 

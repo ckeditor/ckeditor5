@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the media embed feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo).
+Check out the [demo in the media embed feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/media-embed.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-media-embed` package](https://ckeditor.com/docs/ckeditor5/latest/api/media-embed.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-media-embed` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/media-embed.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

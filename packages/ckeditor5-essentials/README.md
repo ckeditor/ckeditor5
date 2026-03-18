@@ -7,13 +7,13 @@ CKEditor&nbsp;5 essentials plugin
 
 Essential editing features for CKEditor&nbsp;5 wrapped in one plugin.
 
-The [`Essentials`](https://ckeditor.com/docs/ckeditor5/latest/api/module_essentials_essentials-Essentials.html) plugin includes all fundamental editing features:
+The [`Essentials`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_essentials_essentials-Essentials.html) plugin includes all fundamental editing features:
 
-* [`Clipboard`](https://ckeditor.com/docs/ckeditor5/latest/api/module_clipboard_clipboard-Clipboard.html)
-* [`Enter`](https://ckeditor.com/docs/ckeditor5/latest/api/module_enter_enter-Enter.html)
-* [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html)
-* [`Typing`](https://ckeditor.com/docs/ckeditor5/latest/api/module_typing_typing-Typing.html)
-* [`Undo`](https://ckeditor.com/docs/ckeditor5/latest/api/module_undo_undo-Undo.html)
+* [`Clipboard`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_clipboard_clipboard-Clipboard.html)
+* [`Enter`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_enter_enter-Enter.html)
+* [`SelectAll`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_select-all_selectall-SelectAll.html)
+* [`Typing`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_typing_typing-Typing.html)
+* [`Undo`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_undo_undo-Undo.html)
 
 ## Installation
 
@@ -29,7 +29,7 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-essentials` package](https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-essentials` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/essentials.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

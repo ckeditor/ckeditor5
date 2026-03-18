@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the show blocks feature](https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html#demo) guide.
+Check out the [demo in the show blocks feature](https://ckeditor.com/docs/ckeditor5/lts-v47/features/show-blocks.html#demo) guide.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-show-blocks` package](https://ckeditor.com/docs/ckeditor5/latest/api/show-blocks.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [Show blocks](https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html) feature guide.
+See the [`@ckeditor/ckeditor5-show-blocks` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/show-blocks.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/) as well as the [Show blocks](https://ckeditor.com/docs/ckeditor5/lts-v47/features/show-blocks.html) feature guide.
 
 ## License
 

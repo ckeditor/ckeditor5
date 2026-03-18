@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the table feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#demo).
+Check out the [demo in the table feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/tables/tables.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-table` package](https://ckeditor.com/docs/ckeditor5/latest/api/table.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-table` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/table.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

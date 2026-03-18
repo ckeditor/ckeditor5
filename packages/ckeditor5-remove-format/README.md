@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the demo in the [remove formatting feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html#demo).
+Check out the demo in the [remove formatting feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/remove-format.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-remove-format` package](https://ckeditor.com/docs/ckeditor5/latest/api/remove-format.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-remove-format` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/remove-format.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

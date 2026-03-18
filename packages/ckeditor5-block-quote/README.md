@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the block quote feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html#demo).
+Check out the [demo in the block quote feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/block-quote.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-block-quote` package](https://ckeditor.com/docs/ckeditor5/latest/api/block-quote.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-block-quote` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/block-quote.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

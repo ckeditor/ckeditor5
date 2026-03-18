@@ -7,11 +7,11 @@ CKEditor&nbsp;5 inline editor implementation
 
 The inline editor implementation for CKEditor&nbsp;5.
 
-This package exposes the [`InlineEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-inline_inlineeditor-InlineEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+This package exposes the [`InlineEditor`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_editor-inline_inlineeditor-InlineEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-editor-inline` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-inline.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-editor-inline` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/editor-inline.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## Installation
 

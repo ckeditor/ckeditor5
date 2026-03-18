@@ -23,7 +23,7 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
+Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/lts-v47/features/pasting/paste-from-office.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/lts-v47/features/pasting/paste-from-google-docs.html#demo) features.
 
 ## Documentation
 

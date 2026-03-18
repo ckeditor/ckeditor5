@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the Block indentation feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#demo).
+Check out the [demo in the Block indentation feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/indent.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-indent` package](https://ckeditor.com/docs/ckeditor5/latest/api/indent.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-indent` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/indent.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 

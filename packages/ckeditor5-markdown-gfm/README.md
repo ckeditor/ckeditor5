@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the Markdown output feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html#demo) to see the editor configured to input and output Markdown code. Use the [demo in the Paste Markdown feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html#demo) to try out experimental pasting Markdown-formatted content straight into the editor.
+Check out the [demo in the Markdown output feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/markdown.html#demo) to see the editor configured to input and output Markdown code. Use the [demo in the Paste Markdown feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/pasting/paste-markdown.html#demo) to try out experimental pasting Markdown-formatted content straight into the editor.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-markdown-gfm` package](https://ckeditor.com/docs/ckeditor5/latest/api/markdown-gfm.html) page as well as the [Markdown output](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html) and [Paste Markdown](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html) in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-markdown-gfm` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/markdown-gfm.html) page as well as the [Markdown output](https://ckeditor.com/docs/ckeditor5/lts-v47/features/markdown.html) and [Paste Markdown](https://ckeditor.com/docs/ckeditor5/lts-v47/features/pasting/paste-markdown.html) in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 
 ## License

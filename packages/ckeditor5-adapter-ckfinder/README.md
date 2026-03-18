@@ -21,13 +21,13 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the CKFinder feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html#demos).
+Check out the [demo in the CKFinder feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/ckfinder.html#demos).
 
 ## Documentation
 
-See the ["CKFinder integration" guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/adapter-ckfinder.html) to learn how to configure the adapter.
+See the ["CKFinder integration" guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/api/adapter-ckfinder.html) to learn how to configure the adapter.
 
-Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
+Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
 
 ## License
 

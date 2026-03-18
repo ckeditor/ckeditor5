@@ -7,11 +7,11 @@ CKEditor&nbsp;5 balloon editor implementation
 
 The balloon editor implementation (Medium-like editor) for CKEditor&nbsp;5.
 
-This package contains the [`BalloonEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BalloonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+This package contains the [`BalloonEditor`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_editor-balloon_ballooneditor-BalloonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-editor-balloon` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-balloon.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-editor-balloon` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/editor-balloon.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## Installation
 

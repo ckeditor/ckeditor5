@@ -21,11 +21,11 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the demo in the [style feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/style.html#demo) in the CKEditor&nbsp;5 documentation.
+Check out the demo in the [style feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/style.html#demo) in the CKEditor&nbsp;5 documentation.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-style` package](https://ckeditor.com/docs/ckeditor5/latest/api/style.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-style` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/style.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## License
 
