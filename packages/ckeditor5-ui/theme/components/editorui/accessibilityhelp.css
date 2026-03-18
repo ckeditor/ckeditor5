@@ -11,9 +11,21 @@
 	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
 	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
 	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-region-edge-margin-block);
+	--ck-accessibility-help-content-border: 1px solid transparent;
 	--ck-accessibility-help-content-focus-box-shadow: var(--ck-focus-outer-shadow), 0 0;
 	--ck-accessibility-help-h3-font-weight: var(--ck-font-weight-ui-heading);
+	--ck-accessibility-help-h3-font-size: 1.2em;
 	--ck-accessibility-help-h4-font-weight: var(--ck-font-weight-ui-heading);
+	--ck-accessibility-help-h4-font-size: 1em;
+	--ck-accessibility-help-section-margin: 1em 0;
+	--ck-accessibility-help-dl-item-padding: .4em 0;
+	--ck-accessibility-help-code-padding: .4em;
+	--ck-accessibility-help-code-border-radius: 2px;
+	--ck-accessibility-help-code-font-size: .9em;
+	--ck-accessibility-help-kbd-min-width: 1.8em;
+	--ck-accessibility-help-kbd-box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
+	--ck-accessibility-help-kbd-margin: 0 1px;
+	--ck-accessibility-help-kbd-adjacent-margin-inline-start: 2px;
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
@@ -23,7 +35,7 @@
 	overflow: auto;
 	user-select: text;
 
-	border: 1px solid transparent;
+	border: var(--ck-accessibility-help-content-border);
 
 	&:focus {
 		outline: none;
@@ -42,19 +54,19 @@
 
 	& h3 {
 		font-weight: var(--ck-accessibility-help-h3-font-weight);
-		font-size: 1.2em;
+		font-size: var(--ck-accessibility-help-h3-font-size);
 	}
 
 	& h4 {
 		font-weight: var(--ck-accessibility-help-h4-font-weight);
-		font-size: 1em;
+		font-size: var(--ck-accessibility-help-h4-font-size);
 	}
 
 	& p,
 	& h3,
 	& h4,
 	& table {
-		margin: 1em 0;
+		margin: var(--ck-accessibility-help-section-margin);
 	}
 
 	& dl {
@@ -65,7 +77,7 @@
 
 		& dt, & dd {
 			border-bottom: 1px solid var(--ck-accessibility-help-dialog-border-color);
-			padding: .4em 0;
+			padding: var(--ck-accessibility-help-dl-item-padding);
 		}
 
 		& dt {
@@ -81,12 +93,12 @@
 	& kbd, & code {
 		display: inline-block;
 		background: var(--ck-accessibility-help-dialog-code-background-color);
-		padding: .4em;
+		padding: var(--ck-accessibility-help-code-padding);
 		vertical-align: middle;
 		line-height: 1;
-		border-radius: 2px;
+		border-radius: var(--ck-accessibility-help-code-border-radius);
 		text-align: center;
-		font-size: .9em;
+		font-size: var(--ck-accessibility-help-code-font-size);
 	}
 
 	& code {
@@ -94,12 +106,12 @@
 	}
 
 	& kbd {
-		min-width: 1.8em;
-		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
-		margin: 0 1px;
+		min-width: var(--ck-accessibility-help-kbd-min-width);
+		box-shadow: var(--ck-accessibility-help-kbd-box-shadow);
+		margin: var(--ck-accessibility-help-kbd-margin);
 
 		& + kbd {
-			margin-left: 2px;
+			margin-left: var(--ck-accessibility-help-kbd-adjacent-margin-inline-start);
 		}
 	}
 }

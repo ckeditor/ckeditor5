@@ -9,6 +9,7 @@
 	--ck-list-item-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
 	--ck-list-item-button-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
 	--ck-list-item-button-check-icon-gap: var(--ck-spacing-control-padding-inline-compact);
+	--ck-list-item-button-check-size: .9em;
 }
 
 .ck.ck-button.ck-list-item-button {
@@ -72,8 +73,8 @@
 
 	& .ck-list-item-button__check-holder {
 		display: inline-flex;
-		width: .9em;
-		height: .9em;
+		width: var(--ck-list-item-button-check-size);
+		height: var(--ck-list-item-button-check-size);
 
 		[dir="ltr"] & {
 			margin-right: var(--ck-list-item-button-check-icon-gap);

@@ -12,6 +12,8 @@
 	--ck-powered-by-letter-spacing: calc(var(--ck-font-size-base) * -0.2 / 13);
 	--ck-powered-by-padding-vertical: 2px;
 	--ck-powered-by-padding-horizontal: 4px;
+	--ck-powered-by-label-padding-inline-start: 2px;
+	--ck-powered-by-label-margin-inline-end: 4px;
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
 	--ck-powered-by-border-radius: var(--ck-border-radius);
 	--ck-powered-by-background: hsl(0, 0%, 100%);
@@ -47,10 +49,10 @@
 		& .ck-powered-by__label {
 			font-size: var(--ck-powered-by-font-size);
 			letter-spacing: var(--ck-powered-by-letter-spacing);
-			padding-left: 2px;
+			padding-left: var(--ck-powered-by-label-padding-inline-start);
 			text-transform: uppercase;
 			font-weight: bold;
-			margin-right: 4px;
+			margin-right: var(--ck-powered-by-label-margin-inline-end);
 			cursor: pointer;
 			line-height: normal;
 			color: var(--ck-powered-by-text-color);

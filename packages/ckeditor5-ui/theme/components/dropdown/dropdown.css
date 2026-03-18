@@ -5,6 +5,7 @@
 
 :root {
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
+	--ck-dropdown-button-label-width: 7em;
 	--ck-dropdown-max-width: 75vw;
 	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
 	--ck-dropdown-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
@@ -75,7 +76,7 @@
 
 		/* #23 */
 		& .ck-button__label {
-			width: 7em;
+			width: var(--ck-dropdown-button-label-width);
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}

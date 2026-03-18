@@ -8,6 +8,8 @@
 	--ck-color-grid-tile-size: 24px;
 	--ck-color-grid-high-contrast-tile-padding-inline: var(--ck-spacing-surface-padding-inline);
 	--ck-color-grid-label-padding-inline: var(--ck-spacing-control-padding-inline);
+	--ck-color-grid-gap: 5px;
+	--ck-color-grid-padding: 8px;
 	--ck-color-grid-tile-state-border: 0;
 	--ck-color-grid-tile-bordered-box-shadow: 0 0 0 1px var(--ck-color-base-border);
 	--ck-color-grid-tile-on-box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
@@ -25,8 +27,8 @@
 }
 
 .ck.ck-color-grid {
-	grid-gap: 5px;
-	padding: 8px;
+	grid-gap: var(--ck-color-grid-gap);
+	padding: var(--ck-color-grid-padding);
 	display: grid;
 }
 

@@ -11,6 +11,7 @@
 	--ck-toolbar-separator-gap: var(--ck-spacing-surface-item-gap-block);
 	--ck-toolbar-group-gap-inline: var(--ck-spacing-surface-item-gap-inline);
 	--ck-toolbar-grouped-dropdown-padding-inline-start: var(--ck-spacing-control-padding-inline-start-compact);
+	--ck-toolbar-nested-toolbar-dropdown-label-max-width: 7em;
 	--ck-toolbar-padding: 0 var(--ck-toolbar-padding-inline);
 	--ck-toolbar-compact-item-first-border-radius-rtl: var(--ck-border-radius-surface-cut-top-right);
 	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
@@ -137,7 +138,7 @@
 		}
 
 		& > .ck-button > .ck-button__label {
-			max-width: 7em;
+			max-width: var(--ck-toolbar-nested-toolbar-dropdown-label-max-width);
 			width: auto;
 		}
 	}

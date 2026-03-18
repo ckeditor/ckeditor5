@@ -9,6 +9,7 @@
 	--ck-list-padding-block: var(--ck-spacing-surface-padding-block);
 	--ck-list-item-padding-block: var(--ck-spacing-control-padding-block);
 	--ck-list-item-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
+	--ck-list-item-min-width: 15em;
 	--ck-list-item-padding: var(--ck-list-item-padding-block) var(--ck-list-item-padding-inline);
 	--ck-list-group-gap: var(--ck-spacing-surface-section-gap-block);
 	--ck-list-label-padding-inline: var(--ck-spacing-control-meta-gap);
@@ -56,7 +57,7 @@
 	cursor: default;
 
 	/* Almost as wide as menu bar items. */
-	min-width: 15em;
+	min-width: var(--ck-list-item-min-width);
 
 	& > .ck-button:not(.ck-list-item-button) {
 		padding: var(--ck-list-item-padding);

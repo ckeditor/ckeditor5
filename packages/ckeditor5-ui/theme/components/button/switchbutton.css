@@ -18,6 +18,12 @@
 		2px /* Border */
 	);
 	--ck-switch-button-inner-hover-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
+	--ck-switch-button-focus-outline-offset: 1px;
+	--ck-switch-button-focus-inner-ring-width: 1px;
+	--ck-switch-button-focus-outer-ring-width: 5px;
+	--ck-switch-button-focus-box-shadow:
+		0 0 0 var(--ck-switch-button-focus-inner-ring-width) var(--ck-color-base-background),
+		0 0 0 var(--ck-switch-button-focus-outer-ring-width) var(--ck-color-interactive-focus-shadow);
 }
 
 .ck.ck-button.ck-switchbutton {
@@ -98,8 +104,8 @@
 		box-shadow: none;
 
 		& .ck-button__toggle {
-			box-shadow: 0 0 0 1px var(--ck-color-base-background), 0 0 0 5px var(--ck-color-interactive-focus-shadow);
-			outline-offset: 1px;
+			box-shadow: var(--ck-switch-button-focus-box-shadow);
+			outline-offset: var(--ck-switch-button-focus-outline-offset);
 			outline: var(--ck-switch-button-focus-ring);
 		}
 	}
