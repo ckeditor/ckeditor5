@@ -13,6 +13,7 @@
 	--ck-tooltip-arrow-height: 4px;
 	--ck-tooltip-balloon-border-width: 0px;
 	--ck-tooltip-balloon-arrow-offset: 0px;
+	--ck-tooltip-panel-background-color: var(--ck-color-tooltip-background);
 	--ck-tooltip-max-width: 200px;
 	--ck-tooltip-text-font-size: .9em;
 	--ck-tooltip-text-line-height: 1.5;
@@ -27,7 +28,7 @@
 	--ck-balloon-arrow-height: var(--ck-tooltip-arrow-height);
 	--ck-balloon-arrow-border-width: var(--ck-tooltip-balloon-arrow-border-width);
 	--ck-balloon-arrow-border-width-up: var(--ck-tooltip-balloon-arrow-border-width-up);
-	--ck-color-panel-background: var(--ck-color-tooltip-background);
+	--ck-color-panel-background: var(--ck-tooltip-panel-background-color);
 
 	padding: var(--ck-tooltip-padding);
 

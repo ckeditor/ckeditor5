@@ -10,6 +10,7 @@
 	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
 	--ck-form-header-icon-gap: var(--ck-spacing-control-icon-gap);
 	--ck-form-header-back-button-gap: var(--ck-spacing-surface-item-gap-inline);
+	--ck-form-header-label-font-size: 1.153em;
 	--ck-form-header-label-font-weight: var(--ck-font-weight-ui-heading);
 	--ck-form-header-border-width: var(--ck-border-width-divider);
 	--ck-form-header-border: var(--ck-form-header-border-width) solid var(--ck-color-base-border);
@@ -35,8 +36,7 @@
 
 	& .ck-form__header__label {
 		/* Defaults to 15px. */
-		--ck-font-size-base: 1.153em;
-
+		--ck-font-size-base: var(--ck-form-header-label-font-size);
 		font-weight: var(--ck-form-header-label-font-weight);
 	}
 
