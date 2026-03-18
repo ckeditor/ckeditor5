@@ -279,39 +279,6 @@ describe( 'ClassicEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should prefer legacy source data string over config.attachTo for initialData extraction', async () => {
-				const el = document.createElement( 'div' );
-				el.innerHTML = '<p>from attachTo</p>';
-
-				const editor = new ClassicEditor( '<p>from source</p>', {
-					attachTo: el
-				} );
-
-				expect( editor.sourceElement ).to.equal( el );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>from source</p>' );
-
-				editor.fire( 'ready' );
-				await editor.destroy();
-			} );
-
-			it( 'should prefer config.attachTo element over legacy source element for initialData extraction', async () => {
-				const sourceEl = document.createElement( 'div' );
-				sourceEl.innerHTML = '<p>from source element</p>';
-
-				const attachToEl = document.createElement( 'div' );
-				attachToEl.innerHTML = '<p>from attachTo element</p>';
-
-				const editor = new ClassicEditor( sourceEl, {
-					attachTo: attachToEl
-				} );
-
-				expect( editor.sourceElement ).to.equal( attachToEl );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>from attachTo element</p>' );
-
-				editor.fire( 'ready' );
-				await editor.destroy();
-			} );
-
 			it( 'should log warning when config.root.element is set', async () => {
 				const el = document.createElement( 'div' );
 				el.innerHTML = '<p>Foo</p>';

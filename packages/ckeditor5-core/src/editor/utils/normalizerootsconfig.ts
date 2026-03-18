@@ -75,16 +75,9 @@ export function normalizeRootsConfig(
 			if ( legacyInitialData[ rootName ] === undefined ) {
 				// Use source element data or data itself as a string.
 				// Fall back to `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
-				// Prefer direct initial content provided over extracting element data.
-				if ( typeof sourceElementOrDataForRoot == 'string' ) {
-					rootConfig.initialData = getInitialData(
-						sourceElementOrDataForRoot || rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
-					);
-				} else {
-					rootConfig.initialData = getInitialData(
-						rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || sourceElementOrDataForRoot || ''
-					);
-				}
+				rootConfig.initialData = getInitialData(
+					sourceElementOrDataForRoot || rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
+				);
 			}
 			// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 			else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {

@@ -352,43 +352,6 @@ describe( 'DecoupledEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should prefer legacy source data string over config.root.element for initialData extraction', async () => {
-				const el = document.createElement( 'div' );
-				el.innerHTML = '<p>from element</p>';
-
-				const editor = new DecoupledEditor( '<p>from source</p>', {
-					root: {
-						element: el
-					}
-				} );
-
-				expect( editor.sourceElement ).to.equal( el );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>from source</p>' );
-
-				editor.fire( 'ready' );
-				await editor.destroy();
-			} );
-
-			it( 'should prefer config.root.element over legacy source element for initialData extraction', async () => {
-				const sourceEl = document.createElement( 'div' );
-				sourceEl.innerHTML = '<p>from source element</p>';
-
-				const configEl = document.createElement( 'div' );
-				configEl.innerHTML = '<p>from config element</p>';
-
-				const editor = new DecoupledEditor( sourceEl, {
-					root: {
-						element: configEl
-					}
-				} );
-
-				expect( editor.sourceElement ).to.equal( configEl );
-				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>from config element</p>' );
-
-				editor.fire( 'ready' );
-				await editor.destroy();
-			} );
-
 			it( 'should log warning when config.attachTo is set', async () => {
 				const el = document.createElement( 'div' );
 
