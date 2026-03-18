@@ -17,6 +17,10 @@
 	--ck-color-grid-tile-focus-box-shadow: var(--ck-color-grid-tile-hover-box-shadow);
 	--ck-color-grid-tile-disabled-cursor: unset;
 	--ck-color-grid-tile-disabled-transition: unset;
+	--ck-color-grid-tile-transition-duration: var(--ck-transition-duration-control);
+	--ck-color-grid-tile-transition-timing-function: var(--ck-transition-timing-function-surface);
+	--ck-color-grid-tile-transition: box-shadow var(--ck-color-grid-tile-transition-duration) var(--ck-color-grid-tile-transition-timing-function);
+	--ck-color-grid-tile-transition-reduced: var(--ck-transition-none);
 	--ck-color-grid-high-contrast-tile-padding: 0 var(--ck-color-grid-high-contrast-tile-padding-inline);
 	--ck-color-grid-label-padding: 0 var(--ck-color-grid-label-padding-inline);
 
@@ -33,7 +37,7 @@
 }
 
 .ck.ck-color-grid__tile {
-	transition: .2s ease box-shadow;
+	transition: var(--ck-color-grid-tile-transition);
 
 	@media (forced-colors: none) {
 		width: var(--ck-color-grid-tile-size);
@@ -84,7 +88,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-color-grid-tile-transition-reduced);
 	}
 
 	&.ck-disabled {

@@ -16,6 +16,10 @@
 	--ck-input-focus-error-box-shadow: var(--ck-input-focus-error-shadow), 0 0;
 	--ck-input-padding-block: var(--ck-spacing-control-padding-block-compact);
 	--ck-input-padding-inline: var(--ck-spacing-control-padding-inline-compact);
+	--ck-input-transition-duration: var(--ck-transition-duration-control-fast);
+	--ck-input-transition-timing-function: var(--ck-transition-timing-function-control);
+	--ck-input-transition: box-shadow var(--ck-input-transition-duration) var(--ck-input-transition-timing-function), border var(--ck-input-transition-duration) var(--ck-input-transition-timing-function);
+	--ck-input-transition-reduced: var(--ck-transition-none);
 
 	/* Backward compatibility. */
 	--ck-input-text-width: var(--ck-input-width);
@@ -32,10 +36,10 @@
 	min-height: var(--ck-input-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
+	transition: var(--ck-input-transition);
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-input-transition-reduced);
 	}
 
 	&:focus {

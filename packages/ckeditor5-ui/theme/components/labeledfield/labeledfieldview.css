@@ -4,7 +4,10 @@
  */
 
 :root {
-	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
+	--ck-labeled-field-view-transition-duration: var(--ck-transition-duration-control-fast);
+	--ck-labeled-field-view-transition-timing-function: var(--ck-transition-timing-function-control-emphasized);
+	--ck-labeled-field-view-transition: var(--ck-labeled-field-view-transition-duration) var(--ck-labeled-field-view-transition-timing-function);
+	--ck-labeled-field-view-transition-reduced: var(--ck-transition-none);
 	--ck-labeled-field-status-gap: var(--ck-spacing-surface-item-gap-inline);
 	--ck-labeled-field-label-default-position-x: var(--ck-spacing-control-icon-gap);
 	--ck-labeled-field-label-floating-offset-x: var(--ck-labeled-field-label-default-position-x);
@@ -65,7 +68,7 @@
 			}
 
 			@media (prefers-reduced-motion: reduce) {
-				transition: none;
+				transition: var(--ck-labeled-field-view-transition-reduced);
 			}
 		}
 		position: relative

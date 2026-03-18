@@ -17,6 +17,10 @@
 	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
 	--ck-button-bold-font-weight: var(--ck-font-weight-ui-emphasis);
 	--ck-button-label-font-weight: var(--ck-font-weight-ui-inherit);
+	--ck-button-transition-duration: var(--ck-transition-duration-control);
+	--ck-button-transition-timing-function: var(--ck-transition-timing-function-control);
+	--ck-button-transition: box-shadow var(--ck-button-transition-duration) var(--ck-button-transition-timing-function), border var(--ck-button-transition-duration) var(--ck-button-transition-timing-function);
+	--ck-button-transition-reduced: var(--ck-transition-none);
 }
 
 .ck.ck-button,
@@ -60,7 +64,7 @@ a.ck.ck-button {
 	border: 1px solid transparent;
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
+	transition: var(--ck-button-transition);
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;
@@ -72,7 +76,7 @@ a.ck.ck-button {
 	align-items: center;
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-button-transition-reduced);
 	}
 
 	/* stylelint-disable no-descending-specificity */

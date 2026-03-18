@@ -3,6 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-transition-duration-fast: .1s;
+	--ck-transition-duration-base: .2s;
+	--ck-transition-duration-slow: .3s;
+	--ck-transition-duration-slower: .4s;
+
+	--ck-transition-timing-function-standard: ease;
+	--ck-transition-timing-function-interactive: ease-in-out;
+	--ck-transition-timing-function-emphasized: cubic-bezier(0, 0, 0.24, 0.95);
+
+	--ck-transition-none: none;
+}
+
 /**
  * A class that disables all transitions of the element and its children.
  */

@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-transition-duration-control-fast: var(--ck-transition-duration-fast);
+	--ck-transition-duration-control: var(--ck-transition-duration-base);
+	--ck-transition-duration-control-emphasized: var(--ck-transition-duration-slow);
+	--ck-transition-duration-surface: var(--ck-transition-duration-slower);
+
+	--ck-transition-timing-function-control: var(--ck-transition-timing-function-interactive);
+	--ck-transition-timing-function-control-emphasized: var(--ck-transition-timing-function-emphasized);
+	--ck-transition-timing-function-surface: var(--ck-transition-timing-function-standard);
+}
