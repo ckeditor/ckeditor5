@@ -6,6 +6,8 @@
 :root {
 	--ck-menu-bar-padding: var(--ck-spacing-surface-padding-inline);
 	--ck-menu-bar-gap: var(--ck-spacing-surface-item-gap-inline);
+	--ck-menu-bar-border-width: var(--ck-border-width-surface);
+	--ck-menu-bar-border: var(--ck-menu-bar-border-width) solid var(--ck-color-toolbar-border);
 }
 
 .ck.ck-menu-bar {
@@ -15,6 +17,6 @@
 	background: var(--ck-color-base-background);
 	padding: var(--ck-menu-bar-padding);
 	gap: var(--ck-menu-bar-gap);
-	border: 1px solid var(--ck-color-toolbar-border);
+	border: var(--ck-menu-bar-border);
 	width: 100%;
 }

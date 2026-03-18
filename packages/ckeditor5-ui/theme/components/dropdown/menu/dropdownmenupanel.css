@@ -18,6 +18,8 @@
 	--ck-dropdown-menu-menu-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
 	--ck-dropdown-menu-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-dropdown-menu-menu-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-dropdown-menu-menu-panel-border-width: var(--ck-border-width-surface);
+	--ck-dropdown-menu-menu-panel-border: var(--ck-dropdown-menu-menu-panel-border-width) solid var(--ck-color-dropdown-panel-border);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
@@ -25,7 +27,7 @@
 	box-shadow: var(--ck-dropdown-menu-menu-panel-box-shadow);
 
 	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
+	border: var(--ck-dropdown-menu-menu-panel-border);
 	bottom: 0;
 	height: fit-content;
 	max-width: var(--ck-dropdown-menu-menu-panel-max-width);

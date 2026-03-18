@@ -10,6 +10,9 @@
 	--ck-responsive-form-mobile-item-margin-shorthand: var(--ck-responsive-form-mobile-item-margin) var(--ck-responsive-form-mobile-item-margin) 0;
 	--ck-responsive-form-mobile-button-padding: var(--ck-spacing-control-padding-inline);
 	--ck-responsive-form-mobile-button-margin: var(--ck-spacing-region-edge-margin-block);
+	--ck-responsive-form-divider-border-width: var(--ck-border-width-divider);
+	--ck-responsive-form-divider-border: var(--ck-responsive-form-divider-border-width) solid var(--ck-color-base-border);
+	--ck-responsive-form-divider-offset: calc(-1 * var(--ck-responsive-form-divider-border-width));
 }
 
 .ck.ck-responsive-form {
@@ -58,7 +61,7 @@
 			border-radius: 0;
 
 			&:not(:focus) {
-				border-top: 1px solid var(--ck-color-base-border);
+				border-top: var(--ck-responsive-form-divider-border);
 			}
 
 			[dir="ltr"] & {
@@ -69,7 +72,7 @@
 				margin-left: 0;
 
 				&:last-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
+					border-right: var(--ck-responsive-form-divider-border);
 				}
 			}
 		}
@@ -78,14 +81,14 @@
 				content: "";
 				width: 0;
 				position: absolute;
-				right: -1px;
-				top: -1px;
-				bottom: -1px;
+				right: var(--ck-responsive-form-divider-offset);
+				top: var(--ck-responsive-form-divider-offset);
+				bottom: var(--ck-responsive-form-divider-offset);
 				z-index: 1;
 			}
 
 			&:nth-last-child(2)::after {
-				border-right: 1px solid var(--ck-color-base-border);
+				border-right: var(--ck-responsive-form-divider-border);
 			}
 
 			&:focus::after {
@@ -96,7 +99,7 @@
 }
 
 .ck-vertical-form > .ck-button:nth-last-child(2)::after {
-	border-right: 1px solid var(--ck-color-base-border);
+	border-right: var(--ck-responsive-form-divider-border);
 }
 
 .ck-vertical-form .ck-button {
@@ -104,9 +107,9 @@
 		content: "";
 		width: 0;
 		position: absolute;
-		right: -1px;
-		top: -1px;
-		bottom: -1px;
+		right: var(--ck-responsive-form-divider-offset);
+		top: var(--ck-responsive-form-divider-offset);
+		bottom: var(--ck-responsive-form-divider-offset);
 		z-index: 1;
 	}
 

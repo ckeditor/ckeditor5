@@ -23,6 +23,8 @@
 	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
 	--ck-menu-bar-item-focus-reset-border-color: transparent;
 	--ck-menu-bar-item-focus-reset-box-shadow: none;
+	--ck-menu-bar-panel-border-width: var(--ck-border-width-surface);
+	--ck-menu-bar-panel-border: var(--ck-menu-bar-panel-border-width) solid var(--ck-color-dropdown-panel-border);
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
@@ -30,7 +32,7 @@
 	box-shadow: var(--ck-menu-bar-panel-box-shadow);
 
 	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
+	border: var(--ck-menu-bar-panel-border);
 	bottom: 0;
 	height: fit-content;
 

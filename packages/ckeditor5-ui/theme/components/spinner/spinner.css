@@ -5,6 +5,8 @@
 
 :root {
 	--ck-toolbar-spinner-size: 18px;
+	--ck-spinner-border-width: var(--ck-border-width-emphasis);
+	--ck-spinner-border: var(--ck-spinner-border-width) solid var(--ck-color-text);
 }
 
 .ck.ck-spinner-container {
@@ -23,7 +25,7 @@
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
 	border-radius: 50%;
-	border: 2px solid var(--ck-color-text);
+	border: var(--ck-spinner-border);
 	border-top-color: transparent;
 	position: absolute;
 	top: 50%;

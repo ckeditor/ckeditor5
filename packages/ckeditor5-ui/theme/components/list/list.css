@@ -24,6 +24,8 @@
 	--ck-list-switch-item-on-color: inherit;
 	--ck-list-switch-item-on-hover-color: inherit;
 	--ck-list-group-label-font-weight: var(--ck-font-weight-ui-label);
+	--ck-list-divider-border-width: var(--ck-border-width-divider);
+	--ck-list-divider-border: var(--ck-list-divider-border-width) solid var(--ck-list-divider-color);
 }
 
 .ck.ck-list {
@@ -129,7 +131,7 @@
 
 	/* The group should have a border when it's not the first item. */
 	*:not(.ck-hidden) ~ & {
-		border-top: 1px solid var(--ck-list-divider-color);
+		border-top: var(--ck-list-divider-border);
 	}
 
 	& > .ck-label {

@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-balloon-border-width: 1px;
+	--ck-balloon-border-width: var(--ck-border-width-surface);
 	--ck-balloon-arrow-offset: 2px;
 	--ck-balloon-arrow-height: 10px;
 	--ck-balloon-arrow-half-width: 8px;

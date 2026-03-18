@@ -7,6 +7,7 @@
 @import "./globals/_disabled.css";
 @import "./globals/_focus.css";
 @import "./globals/_fonts.css";
+@import "./globals/_border.css";
 @import "./globals/_reset.css";
 @import "./globals/_rounded.css";
 @import "./globals/_shadow.css";

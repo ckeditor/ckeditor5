@@ -16,6 +16,8 @@
 	--ck-color-selector-grid-label-font-weight: var(--ck-font-weight-ui-inherit);
 	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
 	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+	--ck-color-selector-picker-divider-border-width: var(--ck-border-width-divider);
+	--ck-color-selector-picker-divider-border: var(--ck-color-selector-picker-divider-border-width) solid var(--ck-color-base-border);
 }
 
 .ck.ck-color-selector {
@@ -38,7 +40,7 @@
 			border-radius: var(--ck-color-selector-picker-button-border-radius-attached-top);
 
 			&:not(:focus) {
-				border-top: 1px solid var(--ck-color-base-border);
+				border-top: var(--ck-color-selector-picker-divider-border);
 			}
 
 			& .ck.ck-icon {

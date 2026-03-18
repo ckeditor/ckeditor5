@@ -23,6 +23,8 @@
 	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
 	--ck-dropdown-icon-button-padding-inline: var(--ck-spacing-control-padding-inline-compact);
 	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity);
+	--ck-dropdown-panel-border-width: var(--ck-border-width-surface);
+	--ck-dropdown-panel-border: var(--ck-dropdown-panel-border-width) solid var(--ck-color-dropdown-panel-border);
 }
 
 .ck.ck-dropdown {
@@ -179,7 +181,7 @@
 	box-shadow: var(--ck-dropdown-panel-box-shadow);
 
 	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
+	border: var(--ck-dropdown-panel-border);
 	bottom: 0;
 
 	/* Make sure the panel is at least as wide as the drop-down's button. */

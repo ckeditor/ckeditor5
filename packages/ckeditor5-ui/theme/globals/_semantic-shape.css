@@ -4,6 +4,11 @@
  */
 
 :root {
+	--ck-border-width-control: var(--ck-border-width-thin);
+	--ck-border-width-surface: var(--ck-border-width-thin);
+	--ck-border-width-divider: var(--ck-border-width-thin);
+	--ck-border-width-emphasis: var(--ck-border-width-thick);
+
 	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
 	--ck-border-radius-control: var(--ck-border-radius);
 

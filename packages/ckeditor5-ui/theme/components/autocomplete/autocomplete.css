@@ -10,7 +10,9 @@
 	--ck-autocomplete-results-shadow: var(--ck-shadow-surface-floating);
 	--ck-autocomplete-results-max-height: 200px;
 	--ck-autocomplete-results-box-shadow: var(--ck-autocomplete-results-shadow), 0 0;
-	--ck-autocomplete-results-edge-overlap: 1px;
+	--ck-autocomplete-results-border-width: var(--ck-border-width-surface);
+	--ck-autocomplete-results-border: var(--ck-autocomplete-results-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-autocomplete-results-edge-overlap: var(--ck-autocomplete-results-border-width);
 	--ck-autocomplete-results-margin-n: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
 	--ck-autocomplete-results-margin-s: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
 	--ck-autocomplete-results-background-color: var(--ck-color-surface-container);
@@ -23,7 +25,7 @@
 		max-height: var(--ck-autocomplete-results-max-height);
 		overflow-y: auto;
 		background: var(--ck-autocomplete-results-background-color);
-		border: 1px solid var(--ck-color-dropdown-panel-border);
+		border: var(--ck-autocomplete-results-border);
 		min-width: auto;
 		position: absolute;
 

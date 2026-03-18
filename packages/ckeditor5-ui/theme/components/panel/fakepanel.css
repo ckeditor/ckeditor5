@@ -10,6 +10,8 @@
 	--ck-fake-panel-border-radius: var(--ck-border-radius-surface);
 	--ck-fake-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-fake-panel-box-shadow: var(--ck-fake-panel-shadow), 0 0;
+	--ck-fake-panel-border-width: var(--ck-border-width-surface);
+	--ck-fake-panel-border: var(--ck-fake-panel-border-width) solid var(--ck-color-panel-border);
 }
 
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
@@ -20,7 +22,7 @@
 	min-height: 15px;
 
 	background: var(--ck-color-panel-background);
-	border: 1px solid var(--ck-color-panel-border);
+	border: var(--ck-fake-panel-border);
 	border-radius: var(--ck-fake-panel-border-radius);
 
 	width: 100%;

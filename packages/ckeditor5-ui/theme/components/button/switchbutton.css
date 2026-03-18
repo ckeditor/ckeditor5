@@ -12,10 +12,12 @@
 	--ck-switch-button-label-gap: calc(2 * var(--ck-spacing-control-meta-gap));
 	/* 14px at 13px font-size */
 	--ck-switch-button-toggle-inner-size: calc(1.0769230769em + 1px);
+	--ck-switch-button-toggle-border-width: var(--ck-border-width-control);
+	--ck-switch-button-toggle-border: var(--ck-switch-button-toggle-border-width) solid transparent;
 	--ck-switch-button-translation: calc(
 		var(--ck-switch-button-toggle-width) -
 		var(--ck-switch-button-toggle-inner-size) -
-		2px /* Border */
+		calc(2 * var(--ck-switch-button-toggle-border-width))
 	);
 	--ck-switch-button-inner-hover-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
 	--ck-switch-button-focus-outline-offset: 1px;
@@ -66,7 +68,7 @@
 		/* Apply some smooth transition to the box-shadow and border. */
 		/* Gently animate the background color of the toggle switch */
 		transition: var(--ck-switch-button-toggle-transition);
-		border: 1px solid transparent;
+		border: var(--ck-switch-button-toggle-border);
 		width: var(--ck-switch-button-toggle-width);
 		background: var(--ck-color-switch-button-off-background);
 

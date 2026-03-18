@@ -20,6 +20,9 @@
 	--ck-input-transition-timing-function: var(--ck-transition-timing-function-control);
 	--ck-input-transition: box-shadow var(--ck-input-transition-duration) var(--ck-input-transition-timing-function), border var(--ck-input-transition-duration) var(--ck-input-transition-timing-function);
 	--ck-input-transition-reduced: var(--ck-transition-none);
+	--ck-input-border-width: var(--ck-border-width-control);
+	--ck-input-border: var(--ck-input-border-width) solid var(--ck-color-input-border);
+	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-color-input-disabled-border);
 
 	/* Backward compatibility. */
 	--ck-input-text-width: var(--ck-input-width);
@@ -28,7 +31,7 @@
 .ck.ck-input {
 	border-radius: var(--ck-input-border-radius);
 	background: var(--ck-color-input-background);
-	border: 1px solid var(--ck-color-input-border);
+	border: var(--ck-input-border);
 	padding: var(--ck-input-padding-block) var(--ck-input-padding-inline);
 	min-width: var(--ck-input-width);
 
@@ -49,7 +52,7 @@
 	}
 
 	&[readonly] {
-		border: 1px solid var(--ck-color-input-disabled-border);
+		border: var(--ck-input-disabled-border);
 		background: var(--ck-color-input-disabled-background);
 		color: var(--ck-color-input-disabled-text);
 

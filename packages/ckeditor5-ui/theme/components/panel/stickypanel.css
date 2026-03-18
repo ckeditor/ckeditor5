@@ -8,11 +8,13 @@
 	--ck-sticky-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-sticky-panel-box-shadow: var(--ck-sticky-panel-shadow), 0 0;
 	--ck-sticky-panel-border-radius-sticky: var(--ck-border-radius-surface-attached-top);
+	--ck-sticky-panel-border-width: var(--ck-border-width-surface);
+	--ck-sticky-panel-border-width-sticky: 0 var(--ck-sticky-panel-border-width) var(--ck-sticky-panel-border-width);
 
 	& .ck-sticky-panel__content_sticky {
 		box-shadow: var(--ck-sticky-panel-box-shadow);
 
-		border-width: 0 1px 1px;
+		border-width: var(--ck-sticky-panel-border-width-sticky);
 		border-radius: var(--ck-sticky-panel-border-radius-sticky);
 		z-index: var(--ck-layer-panel); /* #315 */
 		position: fixed;

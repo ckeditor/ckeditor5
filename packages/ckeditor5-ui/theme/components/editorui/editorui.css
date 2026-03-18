@@ -13,6 +13,10 @@
 	--ck-editor-editable-padding-inline: var(--ck-spacing-region-padding-inline);
 	--ck-editor-editable-padding: 0 var(--ck-editor-editable-padding-inline);
 	--ck-editor-editable-edge-margin-block: var(--ck-spacing-region-edge-margin-block);
+	--ck-editor-frame-border-width: var(--ck-border-width-surface);
+	--ck-editor-frame-border: var(--ck-editor-frame-border-width) solid var(--ck-editor-frame-border-color);
+	--ck-editor-inline-editable-border-width: var(--ck-border-width-control);
+	--ck-editor-inline-editable-border: var(--ck-editor-inline-editable-border-width) solid transparent;
 }
 
 .ck.ck-editor__top {
@@ -20,16 +24,16 @@
 		& .ck-sticky-panel__content {
 			border-radius: var(--ck-editor-sticky-frame-border-radius);
 
-			border: 1px solid var(--ck-editor-frame-border-color);
+			border: var(--ck-editor-frame-border);
 			border-bottom-width: 0;
 
 			&.ck-sticky-panel__content_sticky {
-				border-bottom-width: 1px;
+				border-bottom-width: var(--ck-editor-frame-border-width);
 			}
 
 			& .ck-menu-bar {
 				border: 0;
-				border-bottom: 1px solid var(--ck-editor-frame-border-color);
+				border-bottom: var(--ck-editor-frame-border);
 			}
 
 			& .ck-toolbar {
@@ -52,7 +56,7 @@
 .ck.ck-editor__editable_inline {
 	overflow: auto;
 	padding: var(--ck-editor-editable-padding);
-	border: 1px solid transparent;
+	border: var(--ck-editor-inline-editable-border);
 
 	&[dir="ltr"] {
 		text-align: left;

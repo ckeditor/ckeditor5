@@ -17,13 +17,15 @@
 	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-first-border-radius-ltr: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-border-radius-surface-cut-top-right);
+	--ck-toolbar-border-width: var(--ck-border-width-surface);
+	--ck-toolbar-border: var(--ck-toolbar-border-width) solid var(--ck-color-toolbar-border);
 }
 
 .ck.ck-toolbar {
 	border-radius: var(--ck-toolbar-border-radius);
 	background: var(--ck-color-toolbar-background);
 	padding: var(--ck-toolbar-padding);
-	border: 1px solid var(--ck-color-toolbar-border);
+	border: var(--ck-toolbar-border);
 	-webkit-user-select: none;
 	user-select: none;
 

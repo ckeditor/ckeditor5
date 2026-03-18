@@ -14,6 +14,9 @@
 	--ck-color-dialog-background: var(--ck-color-surface-container);
 	--ck-dialog-border-color: var(--ck-color-border-container);
 	--ck-color-dialog-form-header-border: var(--ck-color-border-container);
+	--ck-dialog-border-width: var(--ck-border-width-surface);
+	--ck-dialog-border: var(--ck-dialog-border-width) solid var(--ck-dialog-border-color);
+	--ck-dialog-header-border: var(--ck-dialog-border-width) solid var(--ck-color-dialog-form-header-border);
 }
 
 .ck.ck-dialog-overlay {
@@ -43,14 +46,14 @@
 	background: var(--ck-color-dialog-background);
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
-	border: 1px solid var(--ck-dialog-border-color);
+	border: var(--ck-dialog-border);
 	overscroll-behavior: contain;
 	overscroll-behavior: none;
 	width: fit-content;
 	position: absolute;
 
 	& .ck.ck-form__header {
-		border-bottom: 1px solid var(--ck-color-dialog-form-header-border);
+		border-bottom: var(--ck-dialog-header-border);
 		flex-shrink: 0;
 	}
 

@@ -17,6 +17,8 @@
 	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
 	--ck-button-bold-font-weight: var(--ck-font-weight-ui-emphasis);
 	--ck-button-label-font-weight: var(--ck-font-weight-ui-inherit);
+	--ck-button-border-width: var(--ck-border-width-control);
+	--ck-button-border: var(--ck-button-border-width) solid transparent;
 	--ck-button-transition-duration: var(--ck-transition-duration-control);
 	--ck-button-transition-timing-function: var(--ck-transition-timing-function-control);
 	--ck-button-transition: box-shadow var(--ck-button-transition-duration) var(--ck-button-transition-timing-function), border var(--ck-button-transition-duration) var(--ck-button-transition-timing-function);
@@ -61,7 +63,7 @@ a.ck.ck-button {
 	font-size: inherit;
 
 	/* Avoid flickering when the foucs border shows up. */
-	border: 1px solid transparent;
+	border: var(--ck-button-border);
 
 	/* Apply some smooth transition to the box-shadow and border. */
 	transition: var(--ck-button-transition);

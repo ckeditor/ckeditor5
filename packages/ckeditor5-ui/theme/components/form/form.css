@@ -11,6 +11,8 @@
 	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-region-edge-margin-block);
 	--ck-form-padding: 0 0 var(--ck-form-padding-block-end);
 	--ck-form-mobile-item-margin-shorthand: var(--ck-form-mobile-item-margin) var(--ck-form-mobile-item-margin) 0;
+	--ck-form-dropdown-border-width: var(--ck-border-width-control);
+	--ck-form-dropdown-border: var(--ck-form-dropdown-border-width) solid var(--ck-color-base-border);
 }
 
 .ck.ck-form {
@@ -35,7 +37,7 @@
 
 		& .ck-dropdown__button {
 			&:not(:focus) {
-				border: 1px solid var(--ck-color-base-border);
+				border: var(--ck-form-dropdown-border);
 			}
 
 			& .ck-button__label {
