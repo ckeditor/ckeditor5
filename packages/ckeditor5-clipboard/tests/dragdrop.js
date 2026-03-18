@@ -2497,7 +2497,6 @@ describe( 'Drag and Drop', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				useInlineRoot: true,
 				plugins: [ DragDrop, PastePlainText, Paragraph, Bold ]
 			} );
 
