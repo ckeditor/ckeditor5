@@ -127,8 +127,8 @@ This approach is **only available in the Classic editor**, and only if the edito
 		} = CKEDITOR;
 
 		ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+			.create( {
+				attachTo: document.querySelector( '#editor' ),
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Essentials, Paragraph, Bold, Italic ],
 				toolbar: [ 'bold', 'italic' ]
