@@ -7,7 +7,7 @@
  * @module markdown-gfm/markdown2html/markdown2html
  */
 
-import { unified, type Plugin } from 'unified';
+import { unified, type Plugin, type Pluggable } from 'unified';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
@@ -19,27 +19,47 @@ import { fromDom } from 'hast-util-from-dom';
 import type { Element, Node, Root, RootContent } from 'hast';
 
 /**
+ * The default `unified()` plugin chain used by {@link module:markdown-gfm/markdown2html/markdown2html~MarkdownGfmMdToHtml}.
+ * This object is frozen and must not be mutated. Pass a copy to the constructor if you need to customize the plugin chain.
+ *
+ * Learn more about the `unified()` plugin chain in the [unified](https://github.com/unifiedjs/unified) documentation.
+ */
+export const MarkdownGfmMdToHtmlDefaultPlugins: Readonly<Record<string, Pluggable>> = Object.freeze( {
+	// Parses Markdown to an abstract syntax tree (AST).
+	remarkParse,
+	// Adds support for GitHub Flavored Markdown (GFM).
+	remarkGfm: [ remarkGfm, { singleTilde: true } ],
+	// Replaces line breaks with `<br>` tags.
+	remarkBreaks,
+	// Turns markdown syntax tree to HTML syntax tree, ignoring embedded HTML.
+	remarkRehype: [ remarkRehype, { allowDangerousHtml: true } ],
+	// Handles HTML embedded in Markdown.
+	rehypeDomRaw,
+	// Removes classes from list elements.
+	deleteClassesFromToDoLists,
+	// Serializes HTML syntax tree to HTML string.
+	rehypeStringify
+} );
+
+/**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
  */
 export class MarkdownGfmMdToHtml {
 	private _processor;
 
-	constructor() {
-		this._processor = unified()
-			// Parses Markdown to an abstract syntax tree (AST).
-			.use( remarkParse )
-			// Adds support for GitHub Flavored Markdown (GFM).
-			.use( remarkGfm, { singleTilde: true } )
-			// Replaces line breaks with `<br>` tags.
-			.use( remarkBreaks )
-			// Turns markdown syntax tree to HTML syntax tree, ignoring embedded HTML.
-			.use( remarkRehype, { allowDangerousHtml: true } )
-			// Handles HTML embedded in Markdown.
-			.use( rehypeDomRaw )
-			// Removes classes from list elements.
-			.use( deleteClassesFromToDoLists )
-			// Serializes HTML syntax tree to HTML string.
-			.use( rehypeStringify );
+	/**
+	 * Creates a new instance of MarkdownGfmMdToHtml.
+	 * @param {Object} options - The options for the MarkdownGfmMdToHtml instance.
+	 * @param {Record<string, Pluggable>} options.plugins - The plugins to be used by the `unified().use()` processor for converting
+	 * Markdown to HTML. By default, {@link ~MarkdownGfmMdToHtmlDefaultPlugins} is used.
+	 * You can override the defaults by passing your own plugins.
+	 *
+	 * Learn more about the `unified()` plugin chain in the [unified](https://github.com/unifiedjs/unified) documentation.
+	 */
+	constructor( { plugins = MarkdownGfmMdToHtmlDefaultPlugins }: { plugins?: Record<string, Pluggable> } = {} ) {
+		this._processor = unified().use( {
+			plugins: Object.values( plugins )
+		} );
 	}
 
 	public parse( markdown: string ): string {

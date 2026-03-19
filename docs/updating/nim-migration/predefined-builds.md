@@ -1795,7 +1795,9 @@ One notable difference between the old build and the new ESM build is that the f
 					extraPlugins: [ Bold, Italic, Underline, List ]
 				}
 			},
-			placeholder: 'Type the content here!',
+			root: {
+				placeholder: 'Type the content here!',
+			},
 			language: 'en'
 		};
 
@@ -2836,7 +2838,9 @@ One notable difference between the old build and the new ESM build is that the f
 					extraPlugins: [ Bold, Italic, Underline, List ]
 				}
 			},
-			placeholder: 'Type the content here!',
+			root: {
+				placeholder: 'Type the content here!'
+			},
 			language: 'en'
 		};
 

@@ -5,8 +5,9 @@
 
 import { Editor } from '../../src/editor/editor.js';
 import { ElementApiMixin } from '../../src/editor/utils/elementapimixin.js';
+import { normalizeRootsConfig, normalizeSingleRootEditorConstructorParams } from '../../src/editor/utils/normalizerootsconfig.js';
 import { EditorUI, BoxedEditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
-import { ElementReplacer, getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { ElementReplacer } from '@ckeditor/ckeditor5-utils';
 import { isElement } from 'es-toolkit/compat';
 
 /**
@@ -19,29 +20,24 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( sourceElementOrData, config ) {
-		super( config );
+	constructor( sourceElementOrDataOrConfig, config ) {
+		const {
+			sourceElementOrData,
+			editorConfig
+		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-		}
+		super( editorConfig );
 
-		// Editor in paragraph-only mode
-		const isInline = config && config.useInlineRoot;
+		normalizeRootsConfig( sourceElementOrData, this.config, 'main', true );
 
-		if ( isInline ) {
-			this.model.schema.register( '$inlineRoot', {
-				isLimit: true,
-				isInline: true
-			} );
+		const sourceElement = this.config.get( 'attachTo' );
 
-			this.model.schema.extend( '$text', {
-				allowIn: '$inlineRoot'
-			} );
+		if ( isElement( sourceElement ) ) {
+			this.sourceElement = sourceElement;
 		}
 
 		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot( isInline ? '$inlineRoot' : '$root' );
+		this.model.document.createRoot();
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
@@ -78,15 +74,8 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 				editor.initPlugins()
 					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
 					// should be rendered after plugins are initialized.
-					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => {
-						if ( !isElement( sourceElementOrData ) && config.initialData ) {
-							// Documented in core/editor/editorconfig.jsdoc.
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						return editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );
-					} )
+					.then( () => editor.ui.init( editor.config.get( 'attachTo' ) || null ) )
+					.then( () => editor.data.init( editor.config.get( 'roots' ).main.initialData ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
@@ -161,8 +150,4 @@ export class ClassicTestEditorUI extends EditorUI {
 
 		this._view.destroy();
 	}
-}
-
-function getInitialData( sourceElementOrData ) {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }

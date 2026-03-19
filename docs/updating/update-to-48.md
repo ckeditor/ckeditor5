@@ -18,6 +18,99 @@ modified_at: 2026-03-03
 
 Released on XXXXXXXXX, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.0.0))
 
+### Root configuration migration and deprecated top-level options
+
+The root configuration has been normalized under `config.root` (single-root editors) and `config.roots` (multi-root editors).
+
+The following top-level options are **deprecated**:
+
+* `config.initialData`
+* `config.placeholder`
+* `config.label`
+
+Use **root-scoped options** instead:
+
+```js
+ClassicEditor.create( element, {
+	root: {
+		initialData: '<p>Hello world!</p>',
+		placeholder: 'Type here...',
+		label: 'Main content'
+	}
+} );
+```
+
+For **multi-root** setups, use:
+
+```js
+MultiRootEditor.create( sourceElements, {
+	roots: {
+		main: {
+			initialData: '<p>Main content</p>',
+			placeholder: 'Type here...',
+			label: 'Main content',
+			modelAttributes: { order: 10 },
+			lazyLoad: false
+		}
+	}
+} );
+```
+
+Additional migrations:
+
+* `config.rootsAttributes` -> `config.roots.<rootName>.modelAttributes`
+* `config.lazyRoots` -> `config.roots.<rootName>.lazyLoad`
+
+The `config.roots.<rootName>.lazyLoad` property is also deprecated and will be removed in future versions.
+
+If your integration reads configuration values directly, update access paths as well:
+
+* `config.get( 'initialData' )` -> `config.get( 'roots.main.initialData' )`
+* `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
+* `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
+
+For root attributes configuration, update shape:
+
+```js
+// ❌ Before:
+rootsAttributes: {
+	main: { order: 10 }
+}
+
+// ✅ After:
+roots: {
+	main: {
+		modelAttributes: { order: 10 }
+	}
+}
+```
+
+### CSS nesting output now follows native specificity more closely
+
+As part of the preparation for a planned migration to native CSS nesting at the beginning of 2027, we updated the generated CSS output to behave more like native CSS nesting. We are not switching to native CSS nesting yet, but some compiled selectors are now stronger than in earlier releases. We are making this change now to reduce the number of changes needed later.
+
+This mainly affects nested rules written under a list of selectors. In some cases, the final selector may now be stronger than before. Because of this, some custom CSS overrides that worked in earlier versions may no longer apply without changes.
+
+Most integrations should not be affected. However, if you override CKEditor&nbsp;5 styles with your own CSS, check whether any of your overrides stopped working after the update.
+
+If needed, fix your custom styles by making your override selector more specific or by loading your CSS later so it takes precedence.
+
+The following simplified example shows the kind of difference you may notice:
+
+```css
+/* Before */
+.ck.ck-button, a.ck.ck-button {
+	&.ck-button_with-text {}
+}
+
+/* After */
+:is(.ck.ck-button, a.ck.ck-button).ck-button_with-text {}
+```
+
+These selectors look similar, but the second one can have a stronger effect in the cascade, which may change which rule wins.
+
+If you do not override the editor styles, no action is required.
+
 ### Deprecation of the `@ckeditor/ckeditor5-theme-lark` package
 
 The `@ckeditor/ckeditor5-theme-lark` package has been deprecated. The styles from this package have been moved to respective feature packages. All generic styles that affect the editor's UI more broadly have been moved to the `@ckeditor/ckeditor5-ui` package.

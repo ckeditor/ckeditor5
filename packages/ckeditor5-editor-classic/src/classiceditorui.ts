@@ -172,10 +172,10 @@ export class ClassicEditorUI extends EditorUI {
 		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
 		let placeholderText;
-		const placeholder = editor.config.get( 'placeholder' );
+		const placeholder = editor.config.get( 'roots' )![ this.view.editable.name! ].placeholder;
 
 		if ( placeholder ) {
-			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ this.view.editable.name! ];
+			placeholderText = placeholder;
 		}
 
 		if ( !placeholderText && sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' ) {

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "47.6.0",
+  "version": "47.6.1",
   "description": "Miscellaneous utilities used by CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.45.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",

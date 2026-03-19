@@ -9,7 +9,9 @@ import { BalloonEditorExperimental } from './build-drag-drop-source.js';
 BalloonEditorExperimental.create(
 	document.querySelector( '#snippet-block-balloon-drag-drop' ),
 	{
-		placeholder: 'Drop the content here to test the feature.',
+		root: {
+			placeholder: 'Drop the content here to test the feature.'
+		},
 		cloudServices: CS_CONFIG
 	}
 )

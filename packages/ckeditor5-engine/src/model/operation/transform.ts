@@ -783,7 +783,22 @@ function handlePartialMarkerOperations( operations: Array<Operation> ) {
 				// `markerOps.get( op.name )` must exist because original marker operation is always before partial marker operations.
 				// If the original marker operation was changed to `NoOperation`, then the partial marker operations would be changed
 				// to `NoOperation` as well, so this is not a case.
-				markerOps.get( op.name )!.ranges.push( op.newRange );
+				const partialRanges = markerOps.get( op.name )!.ranges;
+
+				// `refRange` is the range coming from the original operation.
+				const refRange = partialRanges[ 0 ];
+
+				// Filter out ranges that are inside the reference range.
+				//
+				// We don't need to combine them, as the reference range already includes `op.newRange`. At the same time, the method
+				// `ModelRange._createFromRanges()` (which we use later on) prohibits passing intersecting ranges and works incorrectly when
+				// such array of ranges is passed.
+				//
+				// Note, that there cannot be a situation where these ranges intersect but are not contained.
+				//
+				if ( !refRange.containsRange( op.newRange, true ) ) {
+					partialRanges.push( op.newRange );
+				}
 			}
 
 			operations.splice( i, 1 );
