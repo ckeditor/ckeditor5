@@ -18,3 +18,22 @@ export function isInternalNode( node ) {
 export function packageDirName( fileName ) {
 	return fileName.replace( /\/src\/.*/, '' );
 }
+
+export function packageNameFromFileName( fileName ) {
+	if ( !fileName ) {
+		return null;
+	}
+
+	const packageDirMatch = fileName.match( /.+\/packages\/(.+?)\// );
+	const externalDirMatch = fileName.match( /.+\/external\/(.+?)\// );
+
+	if ( packageDirMatch ) {
+		return '@ckeditor/' + packageDirMatch[ 1 ];
+	}
+
+	if ( externalDirMatch ) {
+		return '@ckeditor/' + externalDirMatch[ 1 ];
+	}
+
+	return null;
+}
