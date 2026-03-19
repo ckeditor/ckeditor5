@@ -29,7 +29,8 @@ import { ClassicEditor, Indent, IndentBlock, BlockQuote } from 'ckeditor5';
 /* ... */
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // Plugins import.
 		toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // Toolbar configuration.
@@ -51,7 +52,8 @@ import { ClassicEditor } from 'ckeditor5';
 import { ExportPdf } from 'ckeditor5-premium-features';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ ExportPdf, /* ... */ ],
 		toolbar: [ 'exportPdf', '|', /* ... */ ],
@@ -87,7 +89,8 @@ When integrating an editor into your application, you can customize its features
 import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Font, Link, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		toolbar: [
 			'heading',
@@ -153,7 +156,8 @@ In the example below, the `Heading` plugin is removed:
 import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Link, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		removePlugins: [ 'Heading' ], // Remove a plugin from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' , 'link' ]
 	} )
@@ -170,7 +174,8 @@ You might want to delete the `Link` plugin also, as shown below:
 import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Link, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		removePlugins: [ 'Heading', 'Link' ], // Remove a few plugins from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
@@ -194,7 +199,8 @@ This is a good time to remind you that some plugins in CKEditor&nbsp;5 depend on
 import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Autolink, Link, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		removePlugins: [ 'Heading', 'Link', 'Autolink' ], // Remove a few plugins from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )

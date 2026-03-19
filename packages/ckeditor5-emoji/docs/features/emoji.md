@@ -35,7 +35,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Emoji, Mention } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Emoji, Mention, /* ... */ ],
 		toolbar: [ 'emoji', /* ... */ ],
@@ -67,7 +68,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				dropdownLimit: 5
@@ -81,7 +83,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				skinTone: 'medium'
@@ -99,7 +102,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				definitionsUrl: 'https://example.com/emoji-definitions.json'
@@ -113,7 +117,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				version: 15
@@ -127,7 +132,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				useCustomFont: true

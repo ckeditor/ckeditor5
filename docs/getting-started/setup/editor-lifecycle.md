@@ -35,7 +35,8 @@ Then you call {@link module:editor-classic/classiceditor~ClassicEditor#create `C
 import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 		toolbar: [ /* .. */ ],
@@ -76,7 +77,10 @@ Then call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#cre
 import { DecoupledEditor, Essentials } from 'ckeditor5';
 
 DecoupledEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		root: {
+			attachTo: document.querySelector( '#editor' ),
+		},
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 		toolbar: [ /* .. */ ],

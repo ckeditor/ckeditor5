@@ -103,7 +103,8 @@ Now, we can add the container that will hold our editor and introduce an initial
 			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: [
@@ -151,7 +152,8 @@ Putting everything together, the full integration code looks as follows (remembe
 			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: [

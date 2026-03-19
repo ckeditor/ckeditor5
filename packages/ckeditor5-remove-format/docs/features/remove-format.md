@@ -30,7 +30,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, RemoveFormat } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RemoveFormat, /* ... */ ],
 		toolbar: [ 'removeFormat', /* ... */ ]
@@ -72,7 +73,8 @@ Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/config
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [
 			RemoveFormat,

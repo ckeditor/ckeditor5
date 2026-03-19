@@ -42,40 +42,43 @@ import {
 
 import 'ckeditor5/ckeditor5.css';
 
-MultiRootEditor
-	.create(
-		// Define roots / editable areas:
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
+MultiRootEditor.create( {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
+	plugins: [
+		Essentials,
+		Heading,
+		Bold,
+		Italic,
+		Link,
+		Table,
+		MediaEmbed,
+		List,
+		Indent
+	],
+	toolbar: {
+		items: [
+			'undo', 'redo',
+			'|', 'heading',
+			'|', 'bold', 'italic',
+			'|', 'link', 'insertTable', 'mediaEmbed',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+		]
+	},
+	roots: {
+		header: {
+			element: document.querySelector( '#header' ),
 		},
-		// Editor configration:
-		{
-			licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
-			plugins: [
-				Essentials,
-				Heading,
-				Bold,
-				Italic,
-				Link,
-				Table,
-				MediaEmbed,
-				List,
-				Indent
-			],
-			toolbar: {
-				items: [
-					'undo', 'redo',
-					'|', 'heading',
-					'|', 'bold', 'italic',
-					'|', 'link', 'insertTable', 'mediaEmbed',
-					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-				]
-			}
+		content: {
+			element: document.querySelector( '#content' ),
+		},
+		leftSide: {
+			element: document.querySelector( '#left-side' ),
+		},
+		rightSide: {
+			element: document.querySelector( '#right-side' )
 		}
-	)
+	}
+} )
 	.then( editor => {
 		window.editor = editor;
 

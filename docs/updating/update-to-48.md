@@ -28,10 +28,14 @@ The following top-level options are **deprecated**:
 * `config.placeholder`
 * `config.label`
 
-Use **root-scoped options** instead:
+Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. Pass the DOM element using `attachTo`, `root.element`, or `roots.<name>.element` instead.
+
+Use **root-scoped options** instead. The editor initialization methods were updated in v48: instead of passing a DOM element or initial data as the first argument, you now pass the DOM element via `attachTo` / `root.element` (and `roots.<name>.element` for multi-root editors) inside the config.
 
 ```js
-ClassicEditor.create( element, {
+// Classic editor
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ),
 	root: {
 		initialData: '<p>Hello world!</p>',
 		placeholder: 'Type here...',
@@ -43,14 +47,58 @@ ClassicEditor.create( element, {
 For **multi-root** setups, use:
 
 ```js
-MultiRootEditor.create( sourceElements, {
+MultiRootEditor.create( {
 	roots: {
 		main: {
+			element: document.querySelector( '#main' ),
 			initialData: '<p>Main content</p>',
 			placeholder: 'Type here...',
 			label: 'Main content',
 			modelAttributes: { order: 10 },
 			lazyLoad: false
+		}
+	}
+} );
+```
+
+### Migration example
+
+For example, change:
+
+```js
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	licenseKey: '<YOUR_LICENSE_KEY>',
+	plugins: [ Essentials, Paragraph, Bold, Italic ],
+	toolbar: [ 'bold', 'italic', 'alignment' ]
+} );
+```
+
+to:
+
+```js
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ),
+	licenseKey: '<YOUR_LICENSE_KEY>',
+	plugins: [ Essentials, Paragraph, Bold, Italic ],
+	toolbar: [ 'bold', 'italic', 'alignment' ],
+	root: {
+		placeholder: 'Type here...'
+	}
+} );
+```
+
+In multi-root editors, move the DOM elements and root-specific properties into the `roots` object:
+
+```js
+MultiRootEditor.create( {
+	roots: {
+		header: {
+			element: document.querySelector( '#header' ),
+			initialData: '<h2>Header data</h2>'
+		},
+		content: {
+			element: document.querySelector( '#content' ),
+			initialData: '<p>Content data</p>'
 		}
 	}
 } );

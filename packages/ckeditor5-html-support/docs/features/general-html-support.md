@@ -61,7 +61,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, GeneralHtmlSupport } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ GeneralHtmlSupport, /* ... */ ],
 		htmlSupport: {
@@ -79,7 +80,8 @@ By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHt
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		htmlSupport: {
 			allow: [ /* HTML features to allow. */ ],
@@ -248,7 +250,8 @@ The `htmlIframeSandbox` option accepts `true` (the default), an array of allowed
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		htmlSupport: {
 			// Default. Enforces empty sandbox on all iframes.
 			htmlIframeSandbox: true,
@@ -316,7 +319,8 @@ class ExtendHTMLSupport extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Paragraph,

@@ -162,7 +162,10 @@ class FormattingOptions extends Plugin {
 }
 
 DecoupledEditor
-	.create( document.querySelector( '#editor-content' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor-content' ),
+		},
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Alignment,
