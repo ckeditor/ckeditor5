@@ -574,7 +574,6 @@ export class Module {
 	}
 
 	_findImportReference( importFrom, referenceName ) {
-		// Patch: Handle undefined importFrom gracefully to prevent crashes.
 		if ( !importFrom ) {
 			return [];
 		}
@@ -601,6 +600,8 @@ export class Module {
 			const importReferenceError = createExportResolutionError( context );
 
 			this.errorCollector.addError( importReferenceError );
+
+			return [];
 		}
 
 		return [ reference ];

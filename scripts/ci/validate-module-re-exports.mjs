@@ -156,10 +156,10 @@ function collectInternalReferences( item, packageName ) {
 	for ( const reference of item.references || [] ) {
 		addInternal( reference );
 
-		for ( const nestedReference of reference.references || [] ) {
+		for ( const nestedReference of reference?.references || [] ) {
 			addInternal( nestedReference );
 
-			for ( const nestedNestedReference of nestedReference.references || [] ) {
+			for ( const nestedNestedReference of nestedReference?.references || [] ) {
 				addInternal( nestedNestedReference );
 			}
 		}
