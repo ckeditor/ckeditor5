@@ -13,6 +13,7 @@ import { validateCommandExports } from './exports/policy/validate-command-export
 import { validatePluginExports } from './exports/policy/validate-plugin-exports.mjs';
 import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
+import { packageNameFromFileName } from './exports/utils/misc.mjs';
 import chalk from 'chalk';
 import { validateNaming } from './exports/policy/naming.mjs';
 
@@ -171,31 +172,12 @@ function collectInternalReferences( item, packageName ) {
 			return;
 		}
 
-		if ( getPackageName( reference.fileName ) !== packageName ) {
+		if ( packageNameFromFileName( reference.fileName ) !== packageName ) {
 			return;
 		}
 
 		internalReferences.add( reference );
 	}
-}
-
-function getPackageName( fileName ) {
-	if ( !fileName ) {
-		return null;
-	}
-
-	const packageDirMatch = fileName.match( /.+\/packages\/(.+?)\// );
-	const externalDirMatch = fileName.match( /.+\/external\/(.+?)\// );
-
-	if ( packageDirMatch ) {
-		return '@ckeditor/' + packageDirMatch[ 1 ];
-	}
-
-	if ( externalDirMatch ) {
-		return '@ckeditor/' + externalDirMatch[ 1 ];
-	}
-
-	return null;
 }
 
 function isUsedAcrossPackages( library ) {

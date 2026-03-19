@@ -11,7 +11,7 @@ import { Export } from './export.mjs';
 import { Import } from './import.mjs';
 import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
-import { isInternalNode } from './misc.mjs';
+import { isInternalNode, packageNameFromFileName } from './misc.mjs';
 import { createExportResolutionError } from './errorutils.mjs';
 import { globSync } from 'glob';
 import { CKEDITOR5_ROOT_PATH } from '../../../constants.mjs';
@@ -607,10 +607,13 @@ export class Module {
 	}
 
 	get packageName() {
-		const packageDirMatch = this.fileName.match( /.+\/packages\/(.+?)\// );
-		const externalDirMatch = this.fileName.match( /.+\/external\/(.+?)\// );
+		const packageName = packageNameFromFileName( this.fileName );
 
-		return '@ckeditor/' + ( packageDirMatch ? packageDirMatch[ 1 ] : externalDirMatch[ 1 ] );
+		if ( !packageName ) {
+			throw new Error( `Cannot determine package name for: ${ this.fileName }` );
+		}
+
+		return packageName;
 	}
 
 	get relativeFileName() {
