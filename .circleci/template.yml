@@ -339,7 +339,7 @@ workflows:
           filters:
             branches:
               only:
-                - release-v47
+                - /^release-v.*$/
       - cke5_trigger_uber_ci:
           requires:
             - cke5_tests_framework
