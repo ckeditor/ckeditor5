@@ -17,10 +17,7 @@ describe( 'collaboration', () => {
 
 	beforeEach( async () => {
 		const editorConfig = {
-			plugins: [ TableEditing, TableCellPropertiesEditing, Paragraph, TableSelection ],
-			experimentalFlags: {
-				tableCellTypeSupport: true
-			}
+			plugins: [ TableEditing, TableCellPropertiesEditing, Paragraph, TableSelection ]
 		};
 
 		[ john, kate ] = await Promise.all( [
@@ -56,8 +53,8 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '1', tableCellType: 'header-column' }
 					],
 					[ '10', '12' ]
 				], { headingRows: 1 } )
@@ -86,8 +83,8 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '1', tableCellType: 'header-column' }
 					],
 					[ '10', '12' ]
 				], { headingRows: 1 } )
@@ -116,12 +113,12 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '1', tableCellType: 'header-column' }
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
-						{ contents: '12', tableCellType: 'header' }
+						{ contents: '10', tableCellType: 'header-column' },
+						{ contents: '12', tableCellType: 'header-column' }
 					]
 				], { headingRows: 2 } )
 			);
@@ -152,10 +149,10 @@ describe( 'collaboration', () => {
 
 			expectClients(
 				modelTable( [
-					[ '00', '01' ],
-					[ { contents: '10', tableCellType: 'header' }, { contents: '12', tableCellType: 'header' } ],
+					[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+					[ { contents: '10', tableCellType: 'header-column' }, { contents: '12', tableCellType: 'header-column' } ],
 					[ '20', '22' ]
-				] )
+				], { headingRows: 2 } )
 			);
 		} );
 
@@ -181,8 +178,8 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '1', tableCellType: 'header-column' }
 					],
 					[ '10', '12' ]
 				], { headingRows: 1 } )
@@ -211,12 +208,12 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '1', tableCellType: 'header-column' }
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
-						{ contents: '12', tableCellType: 'header' }
+						{ contents: '10', tableCellType: 'header-column' },
+						{ contents: '12', tableCellType: 'header-column' }
 					]
 				], { headingRows: 2 } )
 			);
@@ -244,8 +241,8 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '01', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '01', tableCellType: 'header-column' }
 					],
 					[ '10', '12' ]
 				], { headingRows: 1 } )
@@ -274,11 +271,11 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '01', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-column' },
+						{ contents: '01', tableCellType: 'header-column' }
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
+						{ contents: '10', tableCellType: 'header-row' },
 						'12'
 					]
 				], { headingRows: 1, headingColumns: 1 } )
@@ -337,11 +334,11 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
+						{ contents: '00', tableCellType: 'header-row' },
 						'1'
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
+						{ contents: '10', tableCellType: 'header-row' },
 						'12'
 					]
 				], { headingColumns: 1 } )
@@ -370,11 +367,11 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
+						{ contents: '00', tableCellType: 'header-row' },
 						'1'
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
+						{ contents: '10', tableCellType: 'header-row' },
 						'12'
 					]
 				], { headingColumns: 1 } )
@@ -403,12 +400,12 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-row' },
+						{ contents: '1', tableCellType: 'header-row' }
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
-						{ contents: '12', tableCellType: 'header' }
+						{ contents: '10', tableCellType: 'header-row' },
+						{ contents: '12', tableCellType: 'header-row' }
 					]
 				], { headingColumns: 2 } )
 			);
@@ -445,10 +442,10 @@ describe( 'collaboration', () => {
 
 			expectClients(
 				modelTable( [
-					[ '00', { contents: '01', tableCellType: 'header' } ],
-					[ '10', { contents: '12', tableCellType: 'header' } ],
-					[ '20', { contents: '22', tableCellType: 'header' } ]
-				] )
+					[ { contents: '00', tableCellType: 'header-row' }, { contents: '01', tableCellType: 'header-row' } ],
+					[ { contents: '10', tableCellType: 'header-row' }, { contents: '12', tableCellType: 'header-row' } ],
+					[ { contents: '20', tableCellType: 'header-row' }, { contents: '22', tableCellType: 'header-row' } ]
+				], { headingColumns: 2 } )
 			);
 		} );
 
@@ -474,11 +471,11 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
+						{ contents: '00', tableCellType: 'header-row' },
 						'1'
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
+						{ contents: '10', tableCellType: 'header-row' },
 						'12'
 					]
 				], { headingColumns: 1 } )
@@ -507,12 +504,12 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
-						{ contents: '1', tableCellType: 'header' }
+						{ contents: '00', tableCellType: 'header-row' },
+						{ contents: '1', tableCellType: 'header-row' }
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
-						{ contents: '12', tableCellType: 'header' }
+						{ contents: '10', tableCellType: 'header-row' },
+						{ contents: '12', tableCellType: 'header-row' }
 					]
 				], { headingColumns: 2 } )
 			);
@@ -540,11 +537,11 @@ describe( 'collaboration', () => {
 			expectClients(
 				modelTable( [
 					[
-						{ contents: '00', tableCellType: 'header' },
+						{ contents: '00', tableCellType: 'header-row' },
 						'01'
 					],
 					[
-						{ contents: '10', tableCellType: 'header' },
+						{ contents: '10', tableCellType: 'header-row' },
 						'12'
 					]
 				], { headingColumns: 1 } )

@@ -9,7 +9,9 @@ import { ClassicEditorExperimental } from './build-drag-drop-source.js';
 ClassicEditorExperimental.create(
 	document.querySelector( '#snippet-block-drag-drop' ),
 	{
-		placeholder: 'Drop the content here to test the feature.',
+		root: {
+			placeholder: 'Drop the content here to test the feature.'
+		},
 		cloudServices: CS_CONFIG
 	}
 )

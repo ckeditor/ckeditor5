@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	IconBulletedList,
 	IconNumberedList,
@@ -21,7 +21,7 @@ import {
 	IconListStyleUpperLatin,
 	IconListStyleUpperRoman,
 	IconListStyleArabicIndic
-} from 'ckeditor5/src/icons.js';
+} from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
 	SplitButtonView,
@@ -29,9 +29,9 @@ import {
 	focusChildOnDropdownOpen,
 	MenuBarMenuView,
 	type DropdownView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
-import type { Locale } from 'ckeditor5/src/utils.js';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { ListPropertiesView } from './ui/listpropertiesview.js';
 

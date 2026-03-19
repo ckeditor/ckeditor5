@@ -71,7 +71,7 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
@@ -146,7 +146,7 @@ export class AppComponent {
 
 	public Editor = ClassicEditor;
 	public config = {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
 	}
@@ -452,7 +452,7 @@ Then, add it to the `angular.json` configuration file:
 
 #### Setting the placeholder
 
-To display the {@link features/editor-placeholder placeholder} in the main editable element, set the `placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
+To display the {@link features/editor-placeholder placeholder} in the main editable element, set the `root.placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
 
 ```angular-ts
 @Component( {
@@ -460,7 +460,9 @@ To display the {@link features/editor-placeholder placeholder} in the main edita
 } )
 export class MyComponent {
 	public config = {
-		placeholder: 'Type the content here!'
+		root: {
+			placeholder: 'Type the content here!'
+		}
 	}
 }
 ```

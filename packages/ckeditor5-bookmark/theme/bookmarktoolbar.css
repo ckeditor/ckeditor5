@@ -2,3 +2,26 @@
  * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
+
+
+.ck.ck-bookmark-balloon {
+	& .ck.ck-toolbar {
+		& > .ck-toolbar__items {
+			flex-wrap: nowrap;
+		}
+	}
+}
+
+.ck.ck-bookmark-toolbar__preview {
+	padding: 0 var(--ck-spacing-medium);
+	max-width: var(--ck-input-width);
+	min-width: 3em;
+	font-weight: normal;
+	text-overflow: ellipsis;
+	text-align: center;
+	overflow: hidden;
+
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: default;
+}

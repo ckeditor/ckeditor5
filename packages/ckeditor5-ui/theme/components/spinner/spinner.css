@@ -8,11 +8,23 @@
 }
 
 .ck.ck-spinner-container {
+	width: var(--ck-toolbar-spinner-size);
+	height: var(--ck-toolbar-spinner-size);
+	animation: 1.5s infinite ck-spinner-rotate linear;
 	display: block;
-	position: relative;
+
+	@media (prefers-reduced-motion: reduce) {
+		animation-duration: 3s;
+	}
+	position: relative
 }
 
 .ck.ck-spinner {
+	width: var(--ck-toolbar-spinner-size);
+	height: var(--ck-toolbar-spinner-size);
+	border-radius: 50%;
+	border: 2px solid var(--ck-color-text);
+	border-top-color: transparent;
 	position: absolute;
 	top: 50%;
 	left: 0;
@@ -20,4 +32,10 @@
 	margin: 0 auto;
 	transform: translateY(-50%);
 	z-index: 1;
+}
+
+@keyframes ck-spinner-rotate {
+	to {
+		transform: rotate(360deg)
+	}
 }

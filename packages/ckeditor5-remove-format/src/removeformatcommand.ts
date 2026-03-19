@@ -7,9 +7,9 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { ModelDocumentSelection, ModelItem, ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
-import { Command } from 'ckeditor5/src/core.js';
-import { first } from 'ckeditor5/src/utils.js';
+import type { ModelDocumentSelection, ModelItem, ModelRange, ModelWriter } from '@ckeditor/ckeditor5-engine';
+import { Command } from '@ckeditor/ckeditor5-core';
+import { first } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The remove format command.
@@ -83,9 +83,10 @@ export class RemoveFormatCommand extends Command {
 	 */
 	private _removeFormatting( attributeName: string, item: ModelItem, itemRange: ModelRange, writer: ModelWriter ) {
 		let customHandled = false;
+		const nonSelectionAttributeName = toNonSelectionAttribute( attributeName );
 
 		for ( const { isFormatting, removeFormatting } of this._customAttributesHandlers ) {
-			if ( isFormatting( attributeName, item ) ) {
+			if ( isFormatting( nonSelectionAttributeName, item ) ) {
 				removeFormatting( attributeName, itemRange, writer );
 				customHandled = true;
 			}
@@ -143,22 +144,31 @@ export class RemoveFormatCommand extends Command {
 	 * @returns The names of formatting attributes found in a given item.
 	 */
 	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection ) {
-		const schema = this.editor.model.schema;
+		const { schema } = this.editor.model;
 
 		for ( const [ attributeName ] of item.getAttributes() ) {
+			const nonSelectionAttributeName = toNonSelectionAttribute( attributeName );
+
 			for ( const { isFormatting } of this._customAttributesHandlers ) {
-				if ( isFormatting( attributeName, item ) ) {
+				if ( isFormatting( nonSelectionAttributeName, item ) ) {
 					yield attributeName;
 				}
 			}
 
-			const attributeProperties = schema.getAttributeProperties( attributeName );
+			const attributeProperties = schema.getAttributeProperties( nonSelectionAttributeName );
 
 			if ( attributeProperties && attributeProperties.isFormatting ) {
 				yield attributeName;
 			}
 		}
 	}
+}
+
+/**
+ * Helper function that converts a selection attribute name to a non-selection one. E.g. `selection:bold` to `bold`.
+ */
+function toNonSelectionAttribute( attributeName: string ) {
+	return attributeName.replace( /^selection:/, '' );
 }
 
 /**

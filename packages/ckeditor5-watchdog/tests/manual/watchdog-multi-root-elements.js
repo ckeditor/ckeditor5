@@ -67,7 +67,10 @@ const editorConfig = {
 			'mergeTableCells'
 		]
 	},
-	lazyRoots
+	roots: {
+		lazyFoo: { lazyLoad: true },
+		lazyBar: { lazyLoad: true }
+	}
 };
 
 const watchdog = createWatchdog( document.getElementById( 'editor-state' ) );

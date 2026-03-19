@@ -7,10 +7,10 @@
  * @module find-and-replace/findandreplace
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { FindAndReplaceUI, type FindResetedEvent } from './findandreplaceui.js';
 import { FindAndReplaceEditing } from './findandreplaceediting.js';
-import type { Marker } from 'ckeditor5/src/engine.js';
+import type { Marker } from '@ckeditor/ckeditor5-engine';
 import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview.js';
 
 export type FindResultType = {

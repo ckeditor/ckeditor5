@@ -34,6 +34,28 @@ import type { EngineConfig } from '@ckeditor/ckeditor5-engine';
  * ```
  */
 export interface EditorConfig extends EngineConfig {
+
+	/**
+	 * The DOM element that will be the source for the created editor.
+	 *
+	 * **Note:** This option is only available in the {@link module:editor-classic/classiceditor~ClassicEditor}.
+	 * Other editor types expect configuration for the root elements to be passed in the
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} configuration.
+	 *
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization
+	 * and the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element editor element} will replace the passed element
+	 * in the DOM (the original one will be hidden and the editor will be injected next to it).
+	 *
+	 * If the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`, the editor data will be set back to the original element once the editor is destroyed and when a form,
+	 * in which this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration
+	 * with native web forms.
+	 *
+	 * If the element is not provided, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 * It is available under the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.
+	 */
+	attachTo?: HTMLElement;
+
 	context?: Context;
 
 	/**
@@ -103,12 +125,18 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
 	 *
-	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
-	 * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
+	 * **Note:** If `config.initialData` is set together with `config.root.initialData` or `config.roots.<rootName>.initialData`,
+	 * an error will be thrown as those options exclude themselves.
 	 *
 	 * If `config.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
 	 * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
 	 * plugins can read and/or modify it during initialization.
+	 *
+	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
+	 * {@link module:core/editor/editorconfig~EditorConfig#root `root.initialData`} or
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.initialData`} instead.**
+	 *
+	 * @deprecated
 	 */
 	initialData?: string | Record<string, string>;
 
@@ -119,7 +147,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		// The UI of the editor as well as its content will be in German.
 	 * 		language: 'de'
 	 * 	} )
@@ -136,7 +165,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		language: {
 	 * 			// The UI will be in English.
 	 * 			ui: 'en',
@@ -175,7 +205,8 @@ export interface EditorConfig extends EngineConfig {
 	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 	 * import { translations } from 'ckeditor5/dist/translations/pl.js';
 	 *
-	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 * await ClassicEditor.create( {
+	 *   attachTo: document.querySelector( '#editor' ),
 	 *   plugins: [
 	 *     Essentials,
 	 *     Paragraph,
@@ -196,7 +227,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * import 'ckeditor5/dist/styles.css';
 	 *
-	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
+	 * await ClassicEditor.create( {
+	 *   attachTo: document.querySelector( '#editor' ),
 	 *   plugins: [
 	 *     Essentials,
 	 *     Paragraph,
@@ -225,7 +257,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			isVisible: true
 	 * 		}
@@ -237,7 +270,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * DecoupledEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		root: { element: document.querySelector( '#editor' ) },
 	 * 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	 * 	} )
 	 *  .then( editor => {
@@ -263,7 +297,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			// Removes "Bold" and "Block quote" buttons from their respective menus.
 	 * 			removeItems: [ 'menuBar:bold', 'menuBar:blockQuote' ]
@@ -276,7 +311,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			// Removes the entire basic styles group ("Bold", "Italic", "Underline", etc.) from the "Format" menu.
 	 * 			removeItems: [ 'basicStyles' ]
@@ -289,7 +325,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			// Removes the whole top-level "Insert" menu from the menu bar.
 	 * 			removeItems: [ 'insert' ]
@@ -330,7 +367,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -360,7 +398,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -383,7 +422,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -400,7 +440,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 *  ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 *  		addItems: [
 	 * 				{
@@ -434,7 +475,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		menuBar: {
 	 * 			items: [
 	 * 				{
@@ -537,6 +579,12 @@ export interface EditorConfig extends EngineConfig {
 	 * element passed to the `create()` method.
 	 *
 	 * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
+	 *
+	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
+	 * {@link module:core/editor/editorconfig~EditorConfig#root `root.placeholder`} or
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.placeholder`} instead.**
+	 *
+	 * @deprecated
 	 */
 	placeholder?: string | Record<string, string>;
 
@@ -735,7 +783,8 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		ui: { ... }
 	 * 	} )
 	 * 	.then( ... )
@@ -864,15 +913,251 @@ export interface EditorConfig extends EngineConfig {
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
+	 *
+	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
+	 * {@link module:core/editor/editorconfig~EditorConfig#root `root.label`} or
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.label`} instead.**
+	 *
+	 * @deprecated
 	 */
 	label?: string | Record<string, string>;
+
+	/**
+	 * The root configuration options for the default `main` root.
+	 *
+	 * This option is an alias for `config.roots.main`.
+	 */
+	root?: RootConfig;
+
+	/**
+	 * The root configuration options grouped by the root name.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		roots: {
+	 * 			main: {
+	 * 				initialData: '<p>Hello world!</p>',
+	 * 				placeholder: 'Type some text...',
+	 * 				label: 'Main content'
+	 * 			}
+	 * 		}
+	 * 	} );
+	 * ```
+	 */
+	roots?: Record<string, RootConfig>;
 }
 
 /**
- * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of
- * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
+ * Configuration for a an editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
+ * {@link module:core/editor/editorconfig~EditorConfig#roots `EditorConfig#roots.<rootName>`}.
+ *
+ * **Note**: If your editor implementation uses only a single root, you can use `config.root` to set the root configuration instead of
+ * `config.roots.main`.
+ */
+export interface RootConfig {
+
+	/**
+	 * The DOM element that will be the source for the created editor root (on which the editor root will be initialized).
+	 *
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization (but only when
+	 * {@link #initialData `initialData`} is not set).
+	 *
+	 * The editor data will be set back to the original element once the editor is destroyed only if the
+	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
+	 * option is set to `true`.
+	 *
+	 * If this config property is not set, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 */
+	element?: HTMLElement;
+
+	/**
+	 * The initial editor data to be used instead of the provided element's HTML content.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * By default, the editor is initialized with the content of the element on which this editor is initialized.
+	 * This configuration option lets you override this behavior and pass different initial data.
+	 * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
+	 *
+	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			initialData: '<p>Content for header part.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			initialData: '<p>Content for main part.</p>'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			initialData: '<p>Content for left-side box.</p>'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			initialData: '<p>Content for right-side box.</p>'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
+	 *
+	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
+	 * at the same time, root `initialData` is set, an error will be thrown as those two options exclude themselves.
+	 *
+	 * If `config.root.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
+	 * will be used to set `config.roots.main.initialData`. As a result, `config.roots.main.initialData` is always set
+	 * in the editor's config and plugins can read and/or modify it during initialization.
+	 */
+	initialData?: string;
+
+	/**
+	 * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
+	 * help users locate the editor in the application (form) and prompt them to input the content. Works similarly
+	 * to the native DOM
+	 * [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute)
+	 * used by inputs.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			placeholder: 'Type some text...'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			placeholder: 'Type header...'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			placeholder: 'Type content...'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			placeholder: 'Type left-side...'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			placeholder: 'Type right-side...'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 *
+	 * The placeholder text is displayed as a pseudo–element of an empty paragraph in the editor content.
+	 * The paragraph has the `.ck-placeholder` CSS class and the `data-placeholder` attribute.
+	 *
+	 * ```html
+	 * <p data-placeholder="Type some text..." class="ck-placeholder">
+	 * 	::before
+	 * </p>
+	 * ```
+	 *
+	 * **Note**: Placeholder text can also be set using the `placeholder` attribute if a `<textarea>` is passed to
+	 * the `create()` method, e.g. {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
+	 *
+	 * **Note**: This configuration has precedence over the value of the `placeholder` attribute of a `<textarea>`
+	 * element passed to the `create()` method.
+	 *
+	 * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
+	 */
+	placeholder?: string;
+
+	/**
+	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies
+	 * to tell apart multiple editor instances (editing areas) on the page. If not set, a default
+	 * "Rich Text Editor. Editing area [name of the area]" is used instead.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			label: 'My editor'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			label: 'Header label'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			label: 'Content label'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			label: 'Left side label'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			label: 'Right side label'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 */
+	label?: string;
+}
+
+/**
+ * The `config.initialData` option cannot be used together with `config.root.initialData` or
+ * `config.roots.<rootName>.initialData` passed in the {@link module:core/editor/editor~Editor.create `Editor.create()`} configuration.
  *
  * @error editor-create-initial-data
+ */
+
+/**
+ * The `config.initialData` option cannot be used together with the `config.root.initialData` or `config.roots.main.initialData`.
+ *
+ * @error editor-create-roots-initial-data
+ */
+
+/**
+ * The `config.attachTo` option is available only for the {@link module:editor-classic/classiceditor~ClassicEditor}.
+ *
+ * @error editor-create-attachto-ignored
  */
 
 /**
@@ -880,7 +1165,8 @@ export interface EditorConfig extends EngineConfig {
  *
  * ```ts
  * ClassicEditor
- * 	.create( document.querySelector( '#editor' ), {
+ * 	.create( {
+ * 		attachTo: document.querySelector( '#editor' ),
  * 		language: ... // The editor language configuration.
  * 	} )
  * 	.then( editor => {

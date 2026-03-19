@@ -7,8 +7,8 @@
  * @module media-embed/mediaembedtoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
 import { getSelectedMediaViewWidget } from './utils.js';
 

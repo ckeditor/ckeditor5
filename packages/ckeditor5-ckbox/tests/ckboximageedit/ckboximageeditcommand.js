@@ -4,20 +4,19 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import { Command } from 'ckeditor5/src/core.js';
+import { Command, PendingActions } from '@ckeditor/ckeditor5-core';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image, PictureEditing, ImageUploadEditing, ImageUploadProgress } from '@ckeditor/ckeditor5-image';
-import { PendingActions } from '@ckeditor/ckeditor5-core';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
-import { Notification } from 'ckeditor5/src/ui.js';
+import { Notification } from '@ckeditor/ckeditor5-ui';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import * as _ from 'es-toolkit/compat';
+import * as isEqualCompat from 'es-toolkit/compat';
 import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
@@ -633,7 +632,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should disable command for images being processed', async () => {
 				const clock = sinon.useFakeTimers();
 
-				sinon.stub( _, 'isEqual' ).returns( true );
+				sinon.stub( isEqualCompat, 'isEqual' ).returns( true );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,

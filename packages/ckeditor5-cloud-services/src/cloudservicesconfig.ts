@@ -17,7 +17,8 @@ export type TokenUrl = string | ( () => Promise<string> );
  *
  * ```ts
  * ClassicEditor
- * 	.create( document.querySelector( '#editor' ), {
+ * 	.create( {
+ * 		attachTo: document.querySelector( '#editor' ),
  * 		cloudServices: {
  * 			tokenUrl: 'https://example.com/cs-token-endpoint',
  * 			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
@@ -42,7 +43,8 @@ export interface CloudServicesConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		cloudServices: {
 	 * 			tokenUrl: 'https://example.com/cs-token-endpoint',
 	 * 			...
@@ -58,7 +60,8 @@ export interface CloudServicesConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		cloudServices: {
 	 * 			tokenUrl: () => new Promise( ( resolve, reject ) => {
 	 * 				const xhr = new XMLHttpRequest();
@@ -139,7 +142,8 @@ export interface CloudServicesConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		cloudServices: {
 	 * 			tokenUrl: 'https://example.com/cs-token-endpoint',
 	 * 			// Disable automatic token refresh.

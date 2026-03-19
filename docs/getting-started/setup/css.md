@@ -38,7 +38,7 @@ Some {@link features/index core editor features} bring additional CSS to control
 
 ## Customizing the editor's look
 
-CKEditor&nbsp;5 comes with a [predefined theme](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-theme-lark). But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, typography, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
+CKEditor&nbsp;5 comes with a predefined theme. But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, typography, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
 
 The example below shows how the customized variables affect the editor's appearance.
 
@@ -78,7 +78,7 @@ Here are some essential CSS variables for customizing the editor:
 | `--ck-color-button-default-hover-background`  | Background color when hovering over buttons.            |
 
 <info-box hint>
-	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to find more available variables.
+	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-ui/theme/globals) to find more available variables.
 </info-box>
 
 Knowing the variables, you can push the customization even further and create your own themes, as in this {@link examples/theme-customization dark theme example}.

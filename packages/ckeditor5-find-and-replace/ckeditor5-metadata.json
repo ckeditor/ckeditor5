@@ -3,14 +3,14 @@
 		{
 			"name": "Find and replace",
 			"className": "FindAndReplace",
-			"path": "src/findandreplace.js",
+			"path": "src/findandreplace.ts",
 			"description": "Implements the find and replace function in CKEditor 5.",
 			"docs": "features/find-and-replace.html",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "findAndReplace",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/find-replace.svg"
+					"iconName": "IconFindReplace"
 				}
 			]
 		}

@@ -79,19 +79,6 @@ To help test localized editors, the task accepts two optional configurations: `-
 
 You can read more about the {@link framework/contributing/testing-environment Testing environment}.
 
-## Building DLLs
-
-Some manual tests require DLL builds. To learn more about DLL builds, read the {@link getting-started/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
-
-```
-pnpm run dll:build
-```
-
-This task accepts the following arguments:
-
-* `--verbose` &ndash; Displays the full output of the scripts, including the webpack output. *Errors are displayed even if this argument is not used.*
-* `--dev` &ndash; Enables `development` mode in webpack and disables the code minimization which makes it easier to read the output.
-
 ## Generating documentation
 
 To build the documentation, you need to run the `docs` task:
@@ -224,15 +211,9 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 ## Generating content styles
 
-It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To do that, execute:
+Content styles let you customize the appearance of editor content presented to the readers.
 
-```
-pnpm docs:content-styles
-```
-
-The style sheet will be saved in the `build/content-styles` folder.
-
-To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
+For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css CSS setup} guide.
 
 ## Additional information for contributors
 

@@ -7,10 +7,10 @@
  * @module emoji/emojimention
  */
 
-import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { Typing } from 'ckeditor5/src/typing.js';
-import type { MentionFeed, MentionFeedObjectItem, MentionItemRenderer } from '@ckeditor/ckeditor5-mention';
+import { logWarning, type LocaleTranslate } from '@ckeditor/ckeditor5-utils';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Mention, type MentionFeed, type MentionFeedObjectItem, type MentionItemRenderer } from '@ckeditor/ckeditor5-mention';
 
 import { EmojiRepository } from './emojirepository.js';
 import { type EmojiPicker } from './emojipicker.js';
@@ -57,7 +57,7 @@ export class EmojiMention extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ EmojiRepository, Typing, 'Mention' ] as const;
+		return [ EmojiRepository, Typing, Mention ] as const;
 	}
 
 	/**

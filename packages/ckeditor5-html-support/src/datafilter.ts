@@ -7,7 +7,7 @@
  * @module html-support/datafilter
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	Matcher,
@@ -20,15 +20,15 @@ import {
 	type ModelDocumentSelectionChangeAttributeEvent,
 	type ModelElement,
 	type ModelItem
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	CKEditorError,
 	priorities,
 	isValidAttributeName
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
-import { Widget } from 'ckeditor5/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import {
 	viewToModelObjectConverter,

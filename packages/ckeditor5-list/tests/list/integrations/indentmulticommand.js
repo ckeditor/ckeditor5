@@ -12,7 +12,7 @@ import { IndentEditing, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Paragraph } from 'ckeditor5/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import {
 	_getModelData,
 	_setModelData
@@ -428,7 +428,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'no command should be executed when all selected items cannot be indented (start of a list)', () => {
+				it( 'list item level should not change if none of the selected blocks can be indented.', () => {
 					runTest( {
 						input: [
 							'* [A',
