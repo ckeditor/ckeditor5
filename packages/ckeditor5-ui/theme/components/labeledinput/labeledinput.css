@@ -4,6 +4,7 @@
  */
 
 :root {
+	/* Spacing */
 	--ck-labeled-input-status-gap: var(--ck-spacing-surface-item-gap-inline);
 }
 

@@ -4,40 +4,52 @@
  */
 
 :root {
+	/* Size */
 	/* 34px at 13px font-size */
-	--ck-switch-button-toggle-width: 2.6153846154em;
-	--ck-switch-button-toggle-border-radius: var(--ck-border-radius-control);
-	--ck-switch-button-toggle-inner-border-radius: calc(.5 * var(--ck-switch-button-toggle-border-radius));
-	--ck-switch-button-focus-ring: var(--ck-interactive-focus-ring);
-	--ck-switch-button-label-gap: calc(2 * var(--ck-spacing-control-meta-gap));
-	/* 14px at 13px font-size */
 	--ck-switch-button-toggle-inner-size: calc(1.0769230769em + 1px);
-	--ck-switch-button-toggle-border-width: var(--ck-border-width-control);
-	--ck-switch-button-toggle-border: var(--ck-switch-button-toggle-border-width) solid transparent;
+	--ck-switch-button-toggle-width: 2.6153846154em;
+
+	/* Spacing */
+	--ck-switch-button-label-gap: calc(2 * var(--ck-spacing-control-meta-gap));
 	--ck-switch-button-translation: calc(
 		var(--ck-switch-button-toggle-width) -
 		var(--ck-switch-button-toggle-inner-size) -
 		calc(2 * var(--ck-switch-button-toggle-border-width))
 	);
-	--ck-switch-button-inner-hover-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
-	--ck-switch-button-focus-outline-offset: 1px;
-	--ck-switch-button-focus-inner-ring-width: 1px;
-	--ck-switch-button-focus-outer-ring-width: 5px;
+
+	/* Radius */
+	--ck-switch-button-toggle-border-radius: var(--ck-border-radius-control);
+	--ck-switch-button-toggle-inner-border-radius: calc(.5 * var(--ck-switch-button-toggle-border-radius));
+
+	/* Border */
+	--ck-switch-button-toggle-border-width: var(--ck-border-width-control);
+	--ck-switch-button-toggle-border: var(--ck-switch-button-toggle-border-width) solid transparent;
+
+	/* Shadow */
 	--ck-switch-button-focus-box-shadow:
 		0 0 0 var(--ck-switch-button-focus-inner-ring-width) var(--ck-color-base-background),
 		0 0 0 var(--ck-switch-button-focus-outer-ring-width) var(--ck-color-interactive-focus-shadow);
-	--ck-switch-button-toggle-transition-duration: var(--ck-transition-duration-slower);
-	--ck-switch-button-toggle-transition-timing-function: var(--ck-transition-timing-function-surface);
+	--ck-switch-button-inner-hover-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
+
+	/* Motion */
 	--ck-switch-button-toggle-focus-transition-duration: var(--ck-transition-duration-control);
 	--ck-switch-button-toggle-focus-transition-timing-function: var(--ck-transition-timing-function-control);
+	--ck-switch-button-toggle-inner-transition: all var(--ck-switch-button-toggle-inner-transition-duration) var(--ck-switch-button-toggle-inner-transition-timing-function);
 	--ck-switch-button-toggle-inner-transition-duration: var(--ck-transition-duration-control-emphasized);
 	--ck-switch-button-toggle-inner-transition-timing-function: var(--ck-transition-timing-function-surface);
 	--ck-switch-button-toggle-transition:
 		background var(--ck-switch-button-toggle-transition-duration) var(--ck-switch-button-toggle-transition-timing-function),
 		box-shadow var(--ck-switch-button-toggle-focus-transition-duration) var(--ck-switch-button-toggle-focus-transition-timing-function),
 		outline var(--ck-switch-button-toggle-focus-transition-duration) var(--ck-switch-button-toggle-focus-transition-timing-function);
-	--ck-switch-button-toggle-inner-transition: all var(--ck-switch-button-toggle-inner-transition-duration) var(--ck-switch-button-toggle-inner-transition-timing-function);
+	--ck-switch-button-toggle-transition-duration: var(--ck-transition-duration-slower);
+	--ck-switch-button-toggle-transition-timing-function: var(--ck-transition-timing-function-surface);
 	--ck-switch-button-transition-reduced: var(--ck-transition-none);
+
+	/* State / meta */
+	--ck-switch-button-focus-outline-offset: 1px;
+	--ck-switch-button-focus-inner-ring-width: 1px;
+	--ck-switch-button-focus-outer-ring-width: 5px;
+	--ck-switch-button-focus-ring: var(--ck-interactive-focus-ring);
 }
 
 .ck.ck-button.ck-switchbutton {

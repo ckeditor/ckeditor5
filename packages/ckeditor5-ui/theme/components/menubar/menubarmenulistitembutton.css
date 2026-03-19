@@ -4,6 +4,7 @@
  */
 
 :root {
+	/* Spacing */
 	--ck-menu-bar-list-item-icon-gap: var(--ck-spacing-control-icon-gap);
 }
 

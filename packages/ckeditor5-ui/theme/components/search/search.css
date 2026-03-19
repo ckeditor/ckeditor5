@@ -5,15 +5,20 @@
 
 
 :root {
+	/* Spacing */
 	--ck-search-field-view-horizontal-spacing: calc(var(--ck-icon-size) + var(--ck-spacing-medium));
 	--ck-search-icon-offset-inline: var(--ck-spacing-control-icon-gap);
 	--ck-search-reset-offset-inline: var(--ck-spacing-control-icon-gap);
-	--ck-search-reset-opacity: .5;
-	--ck-search-reset-hover-opacity: 1;
+	--ck-search-results-info-gap: var(--ck-spacing-surface-section-gap-block);
 	--ck-search-results-info-padding-block: var(--ck-spacing-surface-section-gap-block);
 	--ck-search-results-info-padding-inline: var(--ck-spacing-control-meta-gap);
-	--ck-search-results-info-gap: var(--ck-spacing-surface-section-gap-block);
+
+	/* Typography */
 	--ck-search-results-title-font-weight: var(--ck-font-weight-ui-heading);
+
+	/* State / meta */
+	--ck-search-reset-hover-opacity: 1;
+	--ck-search-reset-opacity: .5;
 }
 
 .ck.ck-search {

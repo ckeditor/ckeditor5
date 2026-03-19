@@ -4,6 +4,7 @@
  */
 
 :root {
+	/* Typography */
 	--ck-highlighted-text-font-weight: var(--ck-font-weight-ui-inherit);
 }
 

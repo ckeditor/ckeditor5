@@ -5,29 +5,42 @@
 
 
 :root {
-	--ck-accessibility-help-dialog-max-width: 600px;
+	/* Size */
 	--ck-accessibility-help-dialog-max-height: 400px;
+	--ck-accessibility-help-dialog-max-width: 600px;
+	--ck-accessibility-help-kbd-min-width: 1.8em;
+
+	/* Spacing */
+	--ck-accessibility-help-code-padding: .4em;
+	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-region-edge-margin-block);
+	--ck-accessibility-help-dl-item-padding: .4em 0;
+	--ck-accessibility-help-kbd-adjacent-margin-inline-start: 2px;
+	--ck-accessibility-help-kbd-margin: 0 1px;
+	--ck-accessibility-help-section-margin: 1em 0;
+
+	/* Radius */
+	--ck-accessibility-help-code-border-radius: 2px;
+
+	/* Border */
+	--ck-accessibility-help-content-border: 1px solid transparent;
+	--ck-accessibility-help-divider-border: var(--ck-accessibility-help-divider-border-width) solid var(--ck-accessibility-help-dialog-border-color);
+	--ck-accessibility-help-divider-border-width: var(--ck-border-width-divider);
+
+	/* Shadow */
+	--ck-accessibility-help-content-focus-box-shadow: var(--ck-focus-outer-shadow), 0 0;
+	--ck-accessibility-help-kbd-box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
+
+	/* Color */
 	--ck-accessibility-help-dialog-border-color: hsl(220, 6%, 81%);
 	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
 	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
-	--ck-accessibility-help-dialog-content-padding: var(--ck-spacing-region-edge-margin-block);
-	--ck-accessibility-help-content-border: 1px solid transparent;
-	--ck-accessibility-help-content-focus-box-shadow: var(--ck-focus-outer-shadow), 0 0;
-	--ck-accessibility-help-h3-font-weight: var(--ck-font-weight-ui-heading);
-	--ck-accessibility-help-h3-font-size: 1.2em;
-	--ck-accessibility-help-h4-font-weight: var(--ck-font-weight-ui-heading);
-	--ck-accessibility-help-h4-font-size: 1em;
-	--ck-accessibility-help-section-margin: 1em 0;
-	--ck-accessibility-help-dl-item-padding: .4em 0;
-	--ck-accessibility-help-code-padding: .4em;
-	--ck-accessibility-help-code-border-radius: 2px;
+
+	/* Typography */
 	--ck-accessibility-help-code-font-size: .9em;
-	--ck-accessibility-help-kbd-min-width: 1.8em;
-	--ck-accessibility-help-kbd-box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
-	--ck-accessibility-help-kbd-margin: 0 1px;
-	--ck-accessibility-help-kbd-adjacent-margin-inline-start: 2px;
-	--ck-accessibility-help-divider-border-width: var(--ck-border-width-divider);
-	--ck-accessibility-help-divider-border: var(--ck-accessibility-help-divider-border-width) solid var(--ck-accessibility-help-dialog-border-color);
+	--ck-accessibility-help-h3-font-size: 1.2em;
+	--ck-accessibility-help-h3-font-weight: var(--ck-font-weight-ui-heading);
+	--ck-accessibility-help-h4-font-size: 1em;
+	--ck-accessibility-help-h4-font-weight: var(--ck-font-weight-ui-heading);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {

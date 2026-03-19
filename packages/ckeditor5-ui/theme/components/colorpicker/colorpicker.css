@@ -4,10 +4,11 @@
  */
 
 :root {
-	--ck-color-picker-row-margin-block-start: var(--ck-spacing-region-edge-margin-block);
-	--ck-color-picker-row-margin: var(--ck-color-picker-row-margin-block-start) 0 0;
+	/* Spacing */
 	--ck-color-picker-hash-padding-block-start: var(--ck-spacing-control-padding-block);
 	--ck-color-picker-hash-padding-inline-end: var(--ck-spacing-control-icon-gap);
+	--ck-color-picker-row-margin-block-start: var(--ck-spacing-region-edge-margin-block);
+	--ck-color-picker-row-margin: var(--ck-color-picker-row-margin-block-start) 0 0;
 }
 
 .color-picker-hex-input {

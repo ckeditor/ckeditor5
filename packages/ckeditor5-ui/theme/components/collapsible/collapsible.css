@@ -4,15 +4,26 @@
  */
 
 :root {
+	/* Size */
 	--ck-collapsible-arrow-size: calc(0.5 * var(--ck-icon-size));
+
+	/* Spacing */
 	--ck-collapsible-arrow-gap: var(--ck-spacing-control-icon-gap);
+	--ck-collapsible-children-padding-block-end: var(--ck-spacing-region-edge-margin-block);
 	--ck-collapsible-children-padding-block-start: var(--ck-spacing-surface-section-gap-block);
 	--ck-collapsible-children-padding-inline: var(--ck-spacing-control-meta-gap);
-	--ck-collapsible-children-padding-block-end: var(--ck-spacing-region-edge-margin-block);
-	--ck-collapsible-button-focus-background: transparent;
-	--ck-collapsible-button-active-background: transparent;
+
+	/* Border */
 	--ck-collapsible-button-active-border-color: transparent;
+
+	/* Shadow */
 	--ck-collapsible-button-active-box-shadow: none;
+
+	/* Color */
+	--ck-collapsible-button-active-background: transparent;
+	--ck-collapsible-button-focus-background: transparent;
+
+	/* Typography */
 	--ck-collapsible-button-font-weight: var(--ck-font-weight-ui-strong);
 }
 

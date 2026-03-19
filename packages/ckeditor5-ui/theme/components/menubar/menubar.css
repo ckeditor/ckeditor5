@@ -4,10 +4,13 @@
  */
 
 :root {
-	--ck-menu-bar-padding: var(--ck-spacing-surface-padding-inline);
+	/* Spacing */
 	--ck-menu-bar-gap: var(--ck-spacing-surface-item-gap-inline);
-	--ck-menu-bar-border-width: var(--ck-border-width-surface);
+	--ck-menu-bar-padding: var(--ck-spacing-surface-padding-inline);
+
+	/* Border */
 	--ck-menu-bar-border: var(--ck-menu-bar-border-width) solid var(--ck-color-toolbar-border);
+	--ck-menu-bar-border-width: var(--ck-border-width-surface);
 }
 
 .ck.ck-menu-bar {

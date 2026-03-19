@@ -4,33 +4,46 @@
  */
 
 :root {
-	--ck-input-width: 18em;
-	--ck-input-border-radius: var(--ck-border-radius-control);
+	/* Size */
 	--ck-input-min-height: var(--ck-size-control-min-height);
-	--ck-input-focus-ring: var(--ck-interactive-focus-ring);
-	--ck-input-focus-shadow: var(--ck-interactive-focus-shadow);
-	--ck-input-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
-	--ck-input-focus-error-shadow: var(--ck-interactive-focus-error-shadow);
-	--ck-input-focus-box-shadow: var(--ck-input-focus-shadow), 0 0;
-	--ck-input-focus-disabled-box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
-	--ck-input-focus-error-box-shadow: var(--ck-input-focus-error-shadow), 0 0;
+	--ck-input-width: 18em;
+
+	/* Spacing */
 	--ck-input-padding-block: var(--ck-spacing-control-padding-block-compact);
 	--ck-input-padding-inline: var(--ck-spacing-control-padding-inline-compact);
-	--ck-input-transition-duration: var(--ck-transition-duration-control-fast);
-	--ck-input-transition-timing-function: var(--ck-transition-timing-function-control);
-	--ck-input-transition: box-shadow var(--ck-input-transition-duration) var(--ck-input-transition-timing-function), border var(--ck-input-transition-duration) var(--ck-input-transition-timing-function);
-	--ck-input-transition-reduced: var(--ck-transition-none);
-	--ck-input-border-width: var(--ck-border-width-control);
-	--ck-input-border: var(--ck-input-border-width) solid var(--ck-color-input-border);
-	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-color-input-disabled-border);
-	--ck-input-error-animation-name: ck-input-shake;
-	--ck-input-error-animation-duration: var(--ck-animation-duration-feedback);
-	--ck-input-error-animation-timing-function: var(--ck-animation-timing-function-feedback);
-	--ck-input-error-animation-fill-mode: var(--ck-animation-fill-mode-feedback);
-	--ck-input-error-animation: var(--ck-input-error-animation-name) var(--ck-input-error-animation-duration) var(--ck-input-error-animation-timing-function) var(--ck-input-error-animation-fill-mode);
-	--ck-input-error-animation-reduced: var(--ck-animation-none);
 
-	/* Backward compatibility. */
+	/* Radius */
+	--ck-input-border-radius: var(--ck-border-radius-control);
+
+	/* Border */
+	--ck-input-border: var(--ck-input-border-width) solid var(--ck-color-input-border);
+	--ck-input-border-width: var(--ck-border-width-control);
+	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-color-input-disabled-border);
+
+	/* Shadow */
+	--ck-input-focus-box-shadow: var(--ck-input-focus-shadow), 0 0;
+	--ck-input-focus-disabled-box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
+	--ck-input-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
+	--ck-input-focus-error-box-shadow: var(--ck-input-focus-error-shadow), 0 0;
+	--ck-input-focus-error-shadow: var(--ck-interactive-focus-error-shadow);
+	--ck-input-focus-shadow: var(--ck-interactive-focus-shadow);
+
+	/* Motion */
+	--ck-input-error-animation: var(--ck-input-error-animation-name) var(--ck-input-error-animation-duration) var(--ck-input-error-animation-timing-function) var(--ck-input-error-animation-fill-mode);
+	--ck-input-error-animation-duration: var(--ck-animation-duration-feedback);
+	--ck-input-error-animation-fill-mode: var(--ck-animation-fill-mode-feedback);
+	--ck-input-error-animation-name: ck-input-shake;
+	--ck-input-error-animation-reduced: var(--ck-animation-none);
+	--ck-input-error-animation-timing-function: var(--ck-animation-timing-function-feedback);
+	--ck-input-transition: box-shadow var(--ck-input-transition-duration) var(--ck-input-transition-timing-function), border var(--ck-input-transition-duration) var(--ck-input-transition-timing-function);
+	--ck-input-transition-duration: var(--ck-transition-duration-control-fast);
+	--ck-input-transition-reduced: var(--ck-transition-none);
+	--ck-input-transition-timing-function: var(--ck-transition-timing-function-control);
+
+	/* State / meta */
+	--ck-input-focus-ring: var(--ck-interactive-focus-ring);
+
+	/* Compatibility */
 	--ck-input-text-width: var(--ck-input-width);
 }
 

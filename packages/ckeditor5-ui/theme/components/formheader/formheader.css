@@ -4,16 +4,23 @@
  */
 
 :root {
+	/* Size */
 	--ck-form-header-height: 3.384em;
+	--ck-form-header-label-font-size: 1.153em;
+
+	/* Spacing */
+	--ck-form-header-back-button-gap: var(--ck-spacing-surface-item-gap-inline);
+	--ck-form-header-icon-gap: var(--ck-spacing-control-icon-gap);
+	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
 	--ck-form-header-padding-inline: var(--ck-spacing-control-meta-gap);
 	--ck-form-header-padding-inline-compact: var(--ck-spacing-surface-padding-inline);
-	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
-	--ck-form-header-icon-gap: var(--ck-spacing-control-icon-gap);
-	--ck-form-header-back-button-gap: var(--ck-spacing-surface-item-gap-inline);
-	--ck-form-header-label-font-size: 1.153em;
-	--ck-form-header-label-font-weight: var(--ck-font-weight-ui-heading);
-	--ck-form-header-border-width: var(--ck-border-width-divider);
+
+	/* Border */
 	--ck-form-header-border: var(--ck-form-header-border-width) solid var(--ck-color-base-border);
+	--ck-form-header-border-width: var(--ck-border-width-divider);
+
+	/* Typography */
+	--ck-form-header-label-font-weight: var(--ck-font-weight-ui-heading);
 }
 
 .ck.ck-form__header {

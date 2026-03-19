@@ -4,19 +4,30 @@
  */
 
 :root {
-	--ck-editor-editable-blur-selection-color: hsl(0, 0%, 85%);
-	--ck-editor-frame-border-radius: var(--ck-border-radius-surface);
-	--ck-editor-frame-border-color: var(--ck-color-border-container);
-	--ck-editor-sticky-frame-border-radius: var(--ck-editor-frame-border-radius) var(--ck-editor-frame-border-radius) 0 0;
-	--ck-editor-editable-focus-ring: var(--ck-interactive-focus-ring);
-	--ck-editor-editable-focus-shadow: var(--ck-inner-shadow), 0 0;
-	--ck-editor-editable-padding-inline: var(--ck-spacing-region-padding-inline);
-	--ck-editor-editable-padding: 0 var(--ck-editor-editable-padding-inline);
+	/* Spacing */
 	--ck-editor-editable-edge-margin-block: var(--ck-spacing-region-edge-margin-block);
-	--ck-editor-frame-border-width: var(--ck-border-width-surface);
+	--ck-editor-editable-padding: 0 var(--ck-editor-editable-padding-inline);
+	--ck-editor-editable-padding-inline: var(--ck-spacing-region-padding-inline);
+
+	/* Radius */
+	--ck-editor-frame-border-radius: var(--ck-border-radius-surface);
+	--ck-editor-sticky-frame-border-radius: var(--ck-editor-frame-border-radius) var(--ck-editor-frame-border-radius) 0 0;
+
+	/* Border */
 	--ck-editor-frame-border: var(--ck-editor-frame-border-width) solid var(--ck-editor-frame-border-color);
-	--ck-editor-inline-editable-border-width: var(--ck-border-width-control);
+	--ck-editor-frame-border-color: var(--ck-color-border-container);
+	--ck-editor-frame-border-width: var(--ck-border-width-surface);
 	--ck-editor-inline-editable-border: var(--ck-editor-inline-editable-border-width) solid transparent;
+	--ck-editor-inline-editable-border-width: var(--ck-border-width-control);
+
+	/* Shadow */
+	--ck-editor-editable-focus-shadow: var(--ck-inner-shadow), 0 0;
+
+	/* Color */
+	--ck-editor-editable-blur-selection-color: hsl(0, 0%, 85%);
+
+	/* State / meta */
+	--ck-editor-editable-focus-ring: var(--ck-interactive-focus-ring);
 }
 
 .ck.ck-editor__top {

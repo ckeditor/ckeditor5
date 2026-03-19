@@ -4,16 +4,27 @@
  */
 
 :root {
-	--ck-balloon-border-width: var(--ck-border-width-surface);
-	--ck-balloon-arrow-offset: 2px;
+	/* Size */
 	--ck-balloon-arrow-height: 10px;
 	--ck-balloon-arrow-half-width: 8px;
+
+	/* Spacing */
+	--ck-balloon-arrow-offset: 2px;
+
+	/* Radius */
+	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
+
+	/* Border */
+	--ck-balloon-border-width: var(--ck-border-width-surface);
+
+	/* Shadow */
 	--ck-balloon-arrow-drop-shadow: 0 2px 2px var(--ck-color-shadow-drop);
+	--ck-balloon-panel-box-shadow: var(--ck-balloon-panel-shadow), 0 0;
+	--ck-balloon-panel-shadow: var(--ck-shadow-surface-floating);
+
+	/* State / meta */
 	/* Make sure the balloon arrow does not float over its children. */
 	--ck-balloon-panel-arrow-z-index: var(--ck-layer-balloon-arrow-back);
-	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
-	--ck-balloon-panel-shadow: var(--ck-shadow-surface-floating);
-	--ck-balloon-panel-box-shadow: var(--ck-balloon-panel-shadow), 0 0;
 }
 
 .ck.ck-balloon-panel {

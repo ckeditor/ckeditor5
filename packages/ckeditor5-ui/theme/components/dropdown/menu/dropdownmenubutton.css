@@ -5,17 +5,26 @@
 
 
 :root {
-	--ck-dropdown-menu-button-padding-block: var(--ck-spacing-control-padding-block);
-	--ck-dropdown-menu-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
-	--ck-dropdown-menu-button-label-icon-offset: calc(var(--ck-icon-size) - var(--ck-spacing-control-padding-inline-compact));
-	--ck-dropdown-menu-button-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
+	/* Spacing */
 	--ck-dropdown-menu-button-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-menu-button-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
 	--ck-dropdown-menu-button-arrow-nudge: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
+	--ck-dropdown-menu-button-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-menu-button-icon-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
+	--ck-dropdown-menu-button-label-icon-offset: calc(var(--ck-icon-size) - var(--ck-spacing-control-padding-inline-compact));
+	--ck-dropdown-menu-button-padding-block: var(--ck-spacing-control-padding-block);
+	--ck-dropdown-menu-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
+
+	/* Border */
 	--ck-dropdown-menu-button-focus-border-color: transparent;
+
+	/* Shadow */
 	--ck-dropdown-menu-button-focus-box-shadow: none;
+
+	/* Color */
 	--ck-dropdown-menu-button-focus-background: var(--ck-color-button-default-hover-background);
+
+	/* State / meta */
 	--ck-dropdown-menu-button-arrow-disabled-opacity: var(--ck-disabled-opacity);
 }
 

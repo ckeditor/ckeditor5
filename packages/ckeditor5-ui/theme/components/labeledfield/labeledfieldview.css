@@ -4,21 +4,30 @@
  */
 
 :root {
-	--ck-labeled-field-view-transition-duration: var(--ck-transition-duration-control-fast);
-	--ck-labeled-field-view-transition-timing-function: var(--ck-transition-timing-function-control-emphasized);
-	--ck-labeled-field-view-transition: var(--ck-labeled-field-view-transition-duration) var(--ck-labeled-field-view-transition-timing-function);
-	--ck-labeled-field-view-transition-reduced: var(--ck-transition-none);
-	--ck-labeled-field-status-gap: var(--ck-spacing-surface-item-gap-inline);
-	--ck-labeled-field-label-default-position-x: var(--ck-spacing-control-icon-gap);
-	--ck-labeled-field-label-floating-offset-x: var(--ck-labeled-field-label-default-position-x);
+	/* Size */
 	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-labeled-field-label-default-position-x);
-	--ck-labeled-field-label-dropdown-offset-inline: var(--ck-spacing-control-padding-inline);
+
+	/* Spacing */
+	--ck-labeled-field-label-default-position-x: var(--ck-spacing-control-icon-gap);
 	--ck-labeled-field-label-default-position-y: calc(0.6 * var(--ck-font-size-base));
-	--ck-labeled-field-label-padding-inline: calc(.5 * var(--ck-font-size-tiny));
-	--ck-labeled-field-label-padding: 0 var(--ck-labeled-field-label-padding-inline);
+	--ck-labeled-field-label-dropdown-offset-inline: var(--ck-spacing-control-padding-inline);
+	--ck-labeled-field-label-floating-offset-x: var(--ck-labeled-field-label-default-position-x);
 	--ck-labeled-field-label-floating-offset-y: -6px;
-	--ck-labeled-field-label-font-weight: var(--ck-font-weight-ui-muted);
+	--ck-labeled-field-label-padding: 0 var(--ck-labeled-field-label-padding-inline);
+	--ck-labeled-field-label-padding-inline: calc(.5 * var(--ck-font-size-tiny));
+	--ck-labeled-field-status-gap: var(--ck-spacing-surface-item-gap-inline);
+
+	/* Color */
 	--ck-labeled-field-label-background-color: var(--ck-color-base-background);
+
+	/* Typography */
+	--ck-labeled-field-label-font-weight: var(--ck-font-weight-ui-muted);
+
+	/* Motion */
+	--ck-labeled-field-view-transition: var(--ck-labeled-field-view-transition-duration) var(--ck-labeled-field-view-transition-timing-function);
+	--ck-labeled-field-view-transition-duration: var(--ck-transition-duration-control-fast);
+	--ck-labeled-field-view-transition-reduced: var(--ck-transition-none);
+	--ck-labeled-field-view-transition-timing-function: var(--ck-transition-timing-function-control-emphasized);
 }
 
 .ck.ck-labeled-field-view {

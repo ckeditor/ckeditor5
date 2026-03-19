@@ -5,14 +5,20 @@
 
 
 :root {
+	/* Size */
 	--ck-form-default-width: 340px;
-	--ck-form-padding-block-end: var(--ck-spacing-region-edge-margin-block);
+
+	/* Spacing */
 	--ck-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
-	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-region-edge-margin-block);
-	--ck-form-padding: 0 0 var(--ck-form-padding-block-end);
 	--ck-form-mobile-item-margin-shorthand: var(--ck-form-mobile-item-margin) var(--ck-form-mobile-item-margin) 0;
-	--ck-form-dropdown-border-width: var(--ck-border-width-control);
+	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-region-edge-margin-block);
+	--ck-form-padding-block-end: var(--ck-spacing-region-edge-margin-block);
+	--ck-form-padding: 0 0 var(--ck-form-padding-block-end);
+
+	/* Border */
 	--ck-form-dropdown-border: var(--ck-form-dropdown-border-width) solid var(--ck-color-base-border);
+	--ck-form-dropdown-border-width: var(--ck-border-width-control);
+
 }
 
 .ck.ck-form {

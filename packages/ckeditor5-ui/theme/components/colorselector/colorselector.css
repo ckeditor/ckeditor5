@@ -4,20 +4,29 @@
  */
 
 :root {
-	--ck-color-selector-picker-padding-block: calc(var(--ck-spacing-control-padding-inline) / 2);
-	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
-	--ck-color-selector-picker-icon-gap: var(--ck-spacing-control-padding-inline);
-	--ck-color-selector-hex-picker-padding: 8px;
+	/* Size */
 	--ck-color-selector-hex-picker-height: 100px;
 	--ck-color-selector-hex-picker-min-width: 180px;
 	--ck-color-selector-hex-picker-pointer-size: 15px;
+
+	/* Spacing */
 	--ck-color-selector-hex-picker-action-bar-padding: 0 var(--ck-color-selector-hex-picker-padding) var(--ck-color-selector-hex-picker-padding);
-	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-border-radius-surface-attached-top);
-	--ck-color-selector-grid-label-font-weight: var(--ck-font-weight-ui-inherit);
-	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+	--ck-color-selector-hex-picker-padding: 8px;
+	--ck-color-selector-picker-icon-gap: var(--ck-spacing-control-padding-inline);
+	--ck-color-selector-picker-padding-block: calc(var(--ck-spacing-control-padding-inline) / 2);
+	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
+
+	/* Radius */
 	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
-	--ck-color-selector-picker-divider-border-width: var(--ck-border-width-divider);
+	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-border-radius-surface-attached-top);
+	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+
+	/* Border */
 	--ck-color-selector-picker-divider-border: var(--ck-color-selector-picker-divider-border-width) solid var(--ck-color-base-border);
+	--ck-color-selector-picker-divider-border-width: var(--ck-border-width-divider);
+
+	/* Typography */
+	--ck-color-selector-grid-label-font-weight: var(--ck-font-weight-ui-inherit);
 }
 
 .ck.ck-color-selector {

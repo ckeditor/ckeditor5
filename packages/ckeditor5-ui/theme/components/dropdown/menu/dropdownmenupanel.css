@@ -5,21 +5,28 @@
 
 
 :root {
-	--ck-dropdown-menu-menu-panel-max-width: 75vw;
+	/* Size */
 	--ck-dropdown-menu-menu-panel-max-height: 314px;
-	--ck-dropdown-menu-menu-panel-shadow: var(--ck-shadow-surface-floating);
-	--ck-dropdown-menu-menu-panel-box-shadow: var(--ck-dropdown-menu-menu-panel-shadow), 0 0;
+	--ck-dropdown-menu-menu-panel-max-width: 75vw;
+
+	/* Radius */
 	--ck-dropdown-menu-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-menu-menu-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-menu-menu-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-menu-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
-	--ck-dropdown-menu-menu-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
 	--ck-dropdown-menu-menu-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-menu-menu-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
 	--ck-dropdown-menu-menu-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-menu-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-dropdown-menu-menu-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-menu-menu-panel-border-width: var(--ck-border-width-surface);
+	--ck-dropdown-menu-menu-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-menu-menu-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-menu-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-dropdown-menu-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
+
+	/* Border */
 	--ck-dropdown-menu-menu-panel-border: var(--ck-dropdown-menu-menu-panel-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-dropdown-menu-menu-panel-border-width: var(--ck-border-width-surface);
+
+	/* Shadow */
+	--ck-dropdown-menu-menu-panel-box-shadow: var(--ck-dropdown-menu-menu-panel-shadow), 0 0;
+	--ck-dropdown-menu-menu-panel-shadow: var(--ck-shadow-surface-floating);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {

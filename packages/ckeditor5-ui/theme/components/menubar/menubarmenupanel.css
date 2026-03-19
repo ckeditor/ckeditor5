@@ -4,27 +4,38 @@
  */
 
 :root {
+	/* Size */
 	--ck-menu-bar-menu-max-width: 75vw;
+
+	/* Spacing */
 	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
+
+	/* Radius */
 	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-menu-bar-panel-border-radius-position-es: var(--ck-border-radius-surface-cut-top-left);
-	--ck-menu-bar-panel-border-radius-position-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-menu-bar-panel-border-radius-position-ws: var(--ck-border-radius-surface-cut-top-right);
-	--ck-menu-bar-panel-border-radius-position-sw: var(--ck-border-radius-surface-cut-top-right);
 	--ck-menu-bar-panel-border-radius-position-en: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-menu-bar-panel-border-radius-position-es: var(--ck-border-radius-surface-cut-top-left);
 	--ck-menu-bar-panel-border-radius-position-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-menu-bar-panel-border-radius-position-wn: var(--ck-border-radius-surface-cut-bottom-right);
 	--ck-menu-bar-panel-border-radius-position-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-menu-bar-panel-shadow: var(--ck-shadow-surface-floating);
-	--ck-menu-bar-panel-box-shadow: var(--ck-menu-bar-panel-shadow), 0 0;
-	--ck-menu-bar-item-focus-ring: var(--ck-interactive-focus-ring);
-	--ck-menu-bar-item-focus-shadow: var(--ck-interactive-focus-shadow);
-	--ck-menu-bar-item-focus-box-shadow: var(--ck-menu-bar-item-focus-shadow), 0 0;
-	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
+	--ck-menu-bar-panel-border-radius-position-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-menu-bar-panel-border-radius-position-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-menu-bar-panel-border-radius-position-wn: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-menu-bar-panel-border-radius-position-ws: var(--ck-border-radius-surface-cut-top-right);
+
+	/* Border */
 	--ck-menu-bar-item-focus-reset-border-color: transparent;
-	--ck-menu-bar-item-focus-reset-box-shadow: none;
-	--ck-menu-bar-panel-border-width: var(--ck-border-width-surface);
 	--ck-menu-bar-panel-border: var(--ck-menu-bar-panel-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-menu-bar-panel-border-width: var(--ck-border-width-surface);
+
+	/* Shadow */
+	--ck-menu-bar-item-focus-box-shadow: var(--ck-menu-bar-item-focus-shadow), 0 0;
+	--ck-menu-bar-item-focus-reset-box-shadow: none;
+	--ck-menu-bar-item-focus-shadow: var(--ck-interactive-focus-shadow);
+	--ck-menu-bar-panel-box-shadow: var(--ck-menu-bar-panel-shadow), 0 0;
+	--ck-menu-bar-panel-shadow: var(--ck-shadow-surface-floating);
+
+	/* State / meta */
+	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
+	--ck-menu-bar-item-focus-ring: var(--ck-interactive-focus-ring);
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {

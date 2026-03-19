@@ -4,22 +4,33 @@
  */
 
 :root {
-	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
-	--ck-dialog-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
-	--ck-dialog-max-width: 100vw;
+	/* Size */
 	--ck-dialog-max-height: 90vh;
+	--ck-dialog-max-width: 100vw;
+
+	/* Radius */
 	--ck-dialog-border-radius: var(--ck-border-radius-surface);
-	--ck-dialog-shadow: var(--ck-dialog-drop-shadow);
-	--ck-dialog-box-shadow: var(--ck-dialog-shadow), 0 0;
-	--ck-color-dialog-background: var(--ck-color-surface-container);
-	--ck-dialog-border-color: var(--ck-color-border-container);
-	--ck-color-dialog-form-header-border: var(--ck-color-border-container);
-	--ck-dialog-border-width: var(--ck-border-width-surface);
+
+	/* Border */
 	--ck-dialog-border: var(--ck-dialog-border-width) solid var(--ck-dialog-border-color);
+	--ck-color-dialog-form-header-border: var(--ck-color-border-container);
+	--ck-dialog-border-color: var(--ck-color-border-container);
+	--ck-dialog-border-width: var(--ck-border-width-surface);
 	--ck-dialog-header-border: var(--ck-dialog-border-width) solid var(--ck-color-dialog-form-header-border);
+
+	/* Shadow */
+	--ck-dialog-box-shadow: var(--ck-dialog-shadow), 0 0;
+	--ck-dialog-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
+	--ck-dialog-shadow: var(--ck-dialog-drop-shadow);
+
+	/* Color */
+	--ck-color-dialog-background: var(--ck-color-surface-container);
+	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
+
+	/* Motion */
+	--ck-dialog-overlay-animation: var(--ck-dialog-overlay-animation-name) var(--ck-dialog-overlay-animation-duration);
 	--ck-dialog-overlay-animation-name: ck-dialog-fade-in;
 	--ck-dialog-overlay-animation-duration: var(--ck-animation-duration-surface-entrance);
-	--ck-dialog-overlay-animation: var(--ck-dialog-overlay-animation-name) var(--ck-dialog-overlay-animation-duration);
 	--ck-dialog-overlay-animation-none: var(--ck-animation-none);
 }
 

@@ -4,28 +4,43 @@
  */
 
 :root {
-	--ck-list-border-radius: var(--ck-border-radius-surface);
-	--ck-list-divider-color: var(--ck-color-divider);
-	--ck-list-padding-block: var(--ck-spacing-surface-padding-block);
+	/* Size */
+	--ck-list-item-min-width: 15em;
+
+	/* Spacing */
+	--ck-list-group-gap: var(--ck-spacing-surface-section-gap-block);
+	--ck-list-group-label-padding: var(--ck-list-group-gap) var(--ck-list-label-padding-inline) 0;
+	--ck-list-item-padding: var(--ck-list-item-padding-block) var(--ck-list-item-padding-inline);
 	--ck-list-item-padding-block: var(--ck-spacing-control-padding-block);
 	--ck-list-item-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
-	--ck-list-item-min-width: 15em;
-	--ck-list-item-padding: var(--ck-list-item-padding-block) var(--ck-list-item-padding-inline);
-	--ck-list-group-gap: var(--ck-spacing-surface-section-gap-block);
 	--ck-list-label-padding-inline: var(--ck-spacing-control-meta-gap);
-	--ck-list-separator-gap: var(--ck-spacing-surface-item-gap-inline);
 	--ck-list-padding: var(--ck-list-padding-block) 0;
-	--ck-list-group-label-padding: var(--ck-list-group-gap) var(--ck-list-label-padding-inline) 0;
+	--ck-list-padding-block: var(--ck-spacing-surface-padding-block);
+	--ck-list-separator-gap: var(--ck-spacing-surface-item-gap-inline);
 	--ck-list-separator-margin: var(--ck-list-separator-gap) 0;
-	--ck-list-focused-item-layer: var(--ck-layer-base);
+
+	/* Radius */
+	--ck-list-border-radius: var(--ck-border-radius-surface);
+
+	/* Border */
+	--ck-list-divider-border: var(--ck-list-divider-border-width) solid var(--ck-list-divider-color);
+	--ck-list-divider-border-width: var(--ck-border-width-divider);
+	--ck-list-item-on-focus-border-color: var(--ck-color-surface-control);
+
+	/* Shadow */
 	--ck-list-item-active-box-shadow: none;
 	--ck-list-item-on-active-box-shadow: none;
-	--ck-list-item-on-focus-border-color: var(--ck-color-surface-control);
+
+	/* Color */
+	--ck-list-divider-color: var(--ck-color-divider);
+
+	/* Typography */
+	--ck-list-group-label-font-weight: var(--ck-font-weight-ui-label);
+
+	/* State / meta */
+	--ck-list-focused-item-layer: var(--ck-layer-base);
 	--ck-list-switch-item-on-color: inherit;
 	--ck-list-switch-item-on-hover-color: inherit;
-	--ck-list-group-label-font-weight: var(--ck-font-weight-ui-label);
-	--ck-list-divider-border-width: var(--ck-border-width-divider);
-	--ck-list-divider-border: var(--ck-list-divider-border-width) solid var(--ck-list-divider-color);
 }
 
 .ck.ck-list {

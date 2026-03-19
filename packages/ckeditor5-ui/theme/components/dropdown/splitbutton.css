@@ -4,9 +4,12 @@
  */
 
 :root {
+	/* Radius */
+	--ck-splitbutton-border-radius: var(--ck-border-radius-control);
+
+	/* Color */
 	--ck-splitbutton-hover-background-color: hsl(0, 0%, 92%);
 	--ck-splitbutton-hover-border-color: hsl(0, 0%, 70%);
-	--ck-splitbutton-border-radius: var(--ck-border-radius-control);
 }
 
 .ck.ck-splitbutton {

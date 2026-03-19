@@ -4,15 +4,20 @@
  */
 
 :root {
+	/* Size */
 	--ck-toolbar-spinner-size: 18px;
-	--ck-spinner-border-width: var(--ck-border-width-emphasis);
+
+	/* Border */
 	--ck-spinner-border: var(--ck-spinner-border-width) solid var(--ck-color-text);
-	--ck-spinner-animation-name: ck-spinner-rotate;
-	--ck-spinner-animation-duration: var(--ck-animation-duration-progress);
-	--ck-spinner-animation-iteration-count: var(--ck-animation-iteration-count-infinite);
-	--ck-spinner-animation-timing-function: var(--ck-animation-timing-function-progress);
+	--ck-spinner-border-width: var(--ck-border-width-emphasis);
+
+	/* Motion */
 	--ck-spinner-animation: var(--ck-spinner-animation-duration) var(--ck-spinner-animation-iteration-count) var(--ck-spinner-animation-name) var(--ck-spinner-animation-timing-function);
+	--ck-spinner-animation-duration: var(--ck-animation-duration-progress);
 	--ck-spinner-animation-duration-reduced: 3s;
+	--ck-spinner-animation-iteration-count: var(--ck-animation-iteration-count-infinite);
+	--ck-spinner-animation-name: ck-spinner-rotate;
+	--ck-spinner-animation-timing-function: var(--ck-animation-timing-function-progress);
 }
 
 .ck.ck-spinner-container {

@@ -4,14 +4,19 @@
  */
 
 :root {
-	--ck-responsive-form-padding: var(--ck-spacing-region-edge-margin-block);
+	/* Spacing */
 	--ck-responsive-form-item-gap-inline: var(--ck-spacing-region-padding-inline);
+	--ck-responsive-form-mobile-button-margin: var(--ck-spacing-region-edge-margin-block);
+	--ck-responsive-form-mobile-button-padding: var(--ck-spacing-control-padding-inline);
 	--ck-responsive-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
 	--ck-responsive-form-mobile-item-margin-shorthand: var(--ck-responsive-form-mobile-item-margin) var(--ck-responsive-form-mobile-item-margin) 0;
-	--ck-responsive-form-mobile-button-padding: var(--ck-spacing-control-padding-inline);
-	--ck-responsive-form-mobile-button-margin: var(--ck-spacing-region-edge-margin-block);
-	--ck-responsive-form-divider-border-width: var(--ck-border-width-divider);
+	--ck-responsive-form-padding: var(--ck-spacing-region-edge-margin-block);
+
+	/* Border */
 	--ck-responsive-form-divider-border: var(--ck-responsive-form-divider-border-width) solid var(--ck-color-base-border);
+	--ck-responsive-form-divider-border-width: var(--ck-border-width-divider);
+
+	/* State / meta */
 	--ck-responsive-form-divider-offset: calc(-1 * var(--ck-responsive-form-divider-border-width));
 }
 

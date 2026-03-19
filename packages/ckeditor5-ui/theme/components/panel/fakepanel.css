@@ -5,13 +5,20 @@
 
 
 :root {
+	/* Spacing */
 	--ck-balloon-fake-panel-offset-horizontal: 6px;
 	--ck-balloon-fake-panel-offset-vertical: 6px;
+
+	/* Radius */
 	--ck-fake-panel-border-radius: var(--ck-border-radius-surface);
-	--ck-fake-panel-shadow: var(--ck-shadow-surface-floating);
-	--ck-fake-panel-box-shadow: var(--ck-fake-panel-shadow), 0 0;
-	--ck-fake-panel-border-width: var(--ck-border-width-surface);
+
+	/* Border */
 	--ck-fake-panel-border: var(--ck-fake-panel-border-width) solid var(--ck-color-panel-border);
+	--ck-fake-panel-border-width: var(--ck-border-width-surface);
+
+	/* Shadow */
+	--ck-fake-panel-box-shadow: var(--ck-fake-panel-shadow), 0 0;
+	--ck-fake-panel-shadow: var(--ck-shadow-surface-floating);
 }
 
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */

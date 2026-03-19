@@ -4,25 +4,40 @@
  */
 
 :root {
-	--ck-button-border-radius: var(--ck-border-radius-control);
+	/* Size */
 	--ck-button-min-size: var(--ck-size-control-min-height);
-	--ck-button-focus-ring: var(--ck-interactive-focus-ring);
-	--ck-button-focus-shadow: var(--ck-interactive-focus-shadow);
-	--ck-button-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
-	--ck-button-focus-box-shadow: var(--ck-button-focus-shadow), 0 0;
-	--ck-button-focus-disabled-box-shadow: var(--ck-button-focus-disabled-shadow), 0 0;
-	--ck-button-padding: var(--ck-spacing-control-padding-block);
-	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
+
+	/* Spacing */
 	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
 	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
+	--ck-button-padding: var(--ck-spacing-control-padding-block);
+	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
+
+	/* Radius */
+	--ck-button-border-radius: var(--ck-border-radius-control);
+
+	/* Border */
+	--ck-button-border: var(--ck-button-border-width) solid transparent;
+	--ck-button-border-width: var(--ck-border-width-control);
+
+	/* Shadow */
+	--ck-button-focus-box-shadow: var(--ck-button-focus-shadow), 0 0;
+	--ck-button-focus-disabled-box-shadow: var(--ck-button-focus-disabled-shadow), 0 0;
+	--ck-button-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
+	--ck-button-focus-shadow: var(--ck-interactive-focus-shadow);
+
+	/* Typography */
 	--ck-button-bold-font-weight: var(--ck-font-weight-ui-emphasis);
 	--ck-button-label-font-weight: var(--ck-font-weight-ui-inherit);
-	--ck-button-border-width: var(--ck-border-width-control);
-	--ck-button-border: var(--ck-button-border-width) solid transparent;
-	--ck-button-transition-duration: var(--ck-transition-duration-control);
-	--ck-button-transition-timing-function: var(--ck-transition-timing-function-control);
+
+	/* Motion */
 	--ck-button-transition: box-shadow var(--ck-button-transition-duration) var(--ck-button-transition-timing-function), border var(--ck-button-transition-duration) var(--ck-button-transition-timing-function);
+	--ck-button-transition-duration: var(--ck-transition-duration-control);
 	--ck-button-transition-reduced: var(--ck-transition-none);
+	--ck-button-transition-timing-function: var(--ck-transition-timing-function-control);
+
+	/* State / meta */
+	--ck-button-focus-ring: var(--ck-interactive-focus-ring);
 }
 
 .ck.ck-button,

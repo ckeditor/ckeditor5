@@ -4,10 +4,19 @@
  */
 
 :root {
-	--ck-dropdown-menu-list-item-icon-gap: var(--ck-spacing-control-padding-inline-compact);
+	/* Size */
 	--ck-dropdown-menu-list-item-spinner-size: 20px;
+
+	/* Spacing */
+	--ck-dropdown-menu-list-item-icon-gap: var(--ck-spacing-control-padding-inline-compact);
+
+	/* Border */
 	--ck-dropdown-menu-list-item-button-focus-border-color: transparent;
+
+	/* Shadow */
 	--ck-dropdown-menu-list-item-button-focus-box-shadow: none;
+
+	/* Color */
 	--ck-dropdown-menu-list-item-button-focus-background: var(--ck-color-button-default-hover-background);
 }
 

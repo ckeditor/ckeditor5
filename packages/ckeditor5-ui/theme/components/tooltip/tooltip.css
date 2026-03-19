@@ -5,20 +5,29 @@
 
 
 :root {
-	--ck-tooltip-text-padding: 4px;
-	--ck-tooltip-padding-inline: var(--ck-spacing-control-icon-gap);
-	--ck-tooltip-padding: 0 var(--ck-tooltip-padding-inline);
-	--ck-tooltip-text-padding-block-inline: var(--ck-tooltip-text-padding) 0;
+	/* Size */
 	--ck-tooltip-arrow-half-width: 4px;
 	--ck-tooltip-arrow-height: 4px;
-	--ck-tooltip-balloon-border-width: 0px;
-	--ck-tooltip-balloon-arrow-offset: 0px;
-	--ck-tooltip-panel-background-color: var(--ck-color-tooltip-background);
 	--ck-tooltip-max-width: 200px;
-	--ck-tooltip-text-font-size: .9em;
-	--ck-tooltip-text-line-height: 1.5;
+
+	/* Spacing */
+	--ck-tooltip-padding-inline: var(--ck-spacing-control-icon-gap);
+	--ck-tooltip-padding: 0 var(--ck-tooltip-padding-inline);
+	--ck-tooltip-text-padding: 4px;
+	--ck-tooltip-text-padding-block-inline: var(--ck-tooltip-text-padding) 0;
+
+	/* Border */
 	--ck-tooltip-balloon-arrow-border-width: 0 var(--ck-tooltip-arrow-half-width) var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width);
 	--ck-tooltip-balloon-arrow-border-width-up: var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width) 0 var(--ck-tooltip-arrow-half-width);
+	--ck-tooltip-balloon-arrow-offset: 0px;
+	--ck-tooltip-balloon-border-width: 0px;
+
+	/* Color */
+	--ck-tooltip-panel-background-color: var(--ck-color-tooltip-background);
+
+	/* Typography */
+	--ck-tooltip-text-font-size: .9em;
+	--ck-tooltip-text-line-height: 1.5;
 }
 
 .ck.ck-balloon-panel.ck-tooltip {

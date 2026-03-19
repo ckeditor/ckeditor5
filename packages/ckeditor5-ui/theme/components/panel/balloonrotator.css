@@ -4,13 +4,16 @@
  */
 
 :root {
-	--ck-balloon-rotator-padding-inline: var(--ck-spacing-surface-padding-inline);
-	--ck-balloon-rotator-padding: 0 var(--ck-balloon-rotator-padding-inline);
+	/* Spacing */
+	--ck-balloon-rotator-counter-gap-inline: var(--ck-spacing-control-padding-inline);
 	--ck-balloon-rotator-item-gap-inline: var(--ck-spacing-surface-item-gap-inline);
 	--ck-balloon-rotator-item-gap-block: var(--ck-spacing-surface-item-gap-block);
-	--ck-balloon-rotator-counter-gap-inline: var(--ck-spacing-control-padding-inline);
-	--ck-balloon-rotator-divider-border-width: var(--ck-border-width-divider);
+	--ck-balloon-rotator-padding-inline: var(--ck-spacing-surface-padding-inline);
+	--ck-balloon-rotator-padding: 0 var(--ck-balloon-rotator-padding-inline);
+
+	/* Border */
 	--ck-balloon-rotator-divider-border: var(--ck-balloon-rotator-divider-border-width) solid var(--ck-color-toolbar-border);
+	--ck-balloon-rotator-divider-border-width: var(--ck-border-width-divider);
 }
 
 .ck .ck-balloon-rotator__navigation {

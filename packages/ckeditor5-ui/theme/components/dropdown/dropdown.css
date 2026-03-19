@@ -4,27 +4,38 @@
  */
 
 :root {
+	/* Size */
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 	--ck-dropdown-button-label-width: 7em;
 	--ck-dropdown-max-width: 75vw;
-	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
-	--ck-dropdown-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
-	--ck-dropdown-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
-	--ck-dropdown-panel-box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
-	--ck-dropdown-button-focus-shadow: var(--ck-interactive-focus-shadow);
-	--ck-dropdown-button-focus-box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
-	--ck-dropdown-button-active-box-shadow: none;
-	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
+
+	/* Spacing */
 	--ck-dropdown-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
+	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-icon-button-padding-inline: var(--ck-spacing-control-padding-inline-compact);
-	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity);
-	--ck-dropdown-panel-border-width: var(--ck-border-width-surface);
+
+	/* Radius */
+	--ck-dropdown-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
+	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-dropdown-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-dropdown-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+
+	/* Border */
 	--ck-dropdown-panel-border: var(--ck-dropdown-panel-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-dropdown-panel-border-width: var(--ck-border-width-surface);
+
+	/* Shadow */
+	--ck-dropdown-button-active-box-shadow: none;
+	--ck-dropdown-button-focus-box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
+	--ck-dropdown-button-focus-shadow: var(--ck-interactive-focus-shadow);
+	--ck-dropdown-panel-box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
+	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
+
+	/* State / meta */
+	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity);
 }
 
 .ck.ck-dropdown {

@@ -5,11 +5,14 @@
 
 
 :root {
+	/* Size */
+	--ck-list-item-button-check-size: .9em;
+
+	/* Spacing */
+	--ck-list-item-button-check-icon-gap: var(--ck-spacing-control-padding-inline-compact);
 	--ck-list-item-button-padding-block: var(--ck-spacing-control-padding-block);
 	--ck-list-item-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
 	--ck-list-item-button-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
-	--ck-list-item-button-check-icon-gap: var(--ck-spacing-control-padding-inline-compact);
-	--ck-list-item-button-check-size: .9em;
 }
 
 .ck.ck-button.ck-list-item-button {

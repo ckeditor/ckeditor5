@@ -4,10 +4,11 @@
  */
 
 :root {
-	--ck-list-dropdown-panel-border-radius: var(--ck-dropdown-panel-border-radius);
-	--ck-list-dropdown-panel-attached-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
+	/* Radius */
 	--ck-list-dropdown-item-first-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) 0 0;
 	--ck-list-dropdown-item-last-border-radius: 0 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
+	--ck-list-dropdown-panel-attached-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
+	--ck-list-dropdown-panel-border-radius: var(--ck-dropdown-panel-border-radius);
 }
 
 .ck.ck-dropdown > .ck-dropdown__panel > .ck-list {

@@ -8,6 +8,7 @@
 }
 
 :root {
+	/* Size */
 	--ck-toolbar-dropdown-max-width: 60vw;
 }
 

@@ -4,21 +4,28 @@
  */
 
 :root {
-	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
-	--ck-toolbar-padding-inline: var(--ck-spacing-surface-padding-inline);
-	--ck-toolbar-item-gap-inline: var(--ck-spacing-surface-item-gap-inline);
-	--ck-toolbar-item-gap-block: var(--ck-spacing-surface-item-gap-block);
-	--ck-toolbar-separator-gap: var(--ck-spacing-surface-item-gap-block);
+	/* Size */
+	--ck-toolbar-nested-toolbar-dropdown-label-max-width: 7em;
+
+	/* Spacing */
 	--ck-toolbar-group-gap-inline: var(--ck-spacing-surface-item-gap-inline);
 	--ck-toolbar-grouped-dropdown-padding-inline-start: var(--ck-spacing-control-padding-inline-start-compact);
-	--ck-toolbar-nested-toolbar-dropdown-label-max-width: 7em;
+	--ck-toolbar-item-gap-block: var(--ck-spacing-surface-item-gap-block);
+	--ck-toolbar-item-gap-inline: var(--ck-spacing-surface-item-gap-inline);
+	--ck-toolbar-padding-inline: var(--ck-spacing-surface-padding-inline);
 	--ck-toolbar-padding: 0 var(--ck-toolbar-padding-inline);
+	--ck-toolbar-separator-gap: var(--ck-spacing-surface-item-gap-block);
+
+	/* Radius */
+	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
 	--ck-toolbar-compact-item-first-border-radius-rtl: var(--ck-border-radius-surface-cut-top-right);
-	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-first-border-radius-ltr: var(--ck-border-radius-surface-cut-top-left);
+	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-border-radius-surface-cut-top-right);
-	--ck-toolbar-border-width: var(--ck-border-width-surface);
+
+	/* Border */
 	--ck-toolbar-border: var(--ck-toolbar-border-width) solid var(--ck-color-toolbar-border);
+	--ck-toolbar-border-width: var(--ck-border-width-surface);
 }
 
 .ck.ck-toolbar {
