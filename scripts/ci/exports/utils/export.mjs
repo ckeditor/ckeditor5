@@ -17,6 +17,7 @@ export class Export {
 		lineNumber,
 		type,
 		internal,
+		explicitInternal = false,
 		importFrom
 	} ) {
 		this.name = name;
@@ -28,6 +29,7 @@ export class Export {
 
 		this.type = type;
 		this.internal = internal;
+		this.explicitInternal = explicitInternal;
 		this.importFrom = importFrom; // First string, then replaces with module while resolving.
 
 		this.references = null; // First string, then replaces with item declaration/import/export while resolving.
@@ -44,6 +46,7 @@ export class Export {
 					localName: item.localName,
 					exportKind: item.exportKind,
 					internal: item.internal,
+					explicitInternal: item.explicitInternal,
 
 					fileName: this.fileName,
 					lineNumber: this.lineNumber,
@@ -57,6 +60,8 @@ export class Export {
 	}
 
 	static create( { name, localName, exportKind, type, importFrom, node, fileName } ) {
+		const explicitInternal = isInternalNode( node );
+
 		return new Export( {
 			name,
 			localName,
@@ -64,7 +69,8 @@ export class Export {
 			fileName, // TODO fileName: node.loc.filename,
 			lineNumber: node.loc.start.line,
 			type: Export._getType( node, type ),
-			internal: isInternalNode( node ),
+			internal: explicitInternal,
+			explicitInternal,
 			importFrom
 		} );
 	}

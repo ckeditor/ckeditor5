@@ -41,10 +41,12 @@ async function main() {
 
 	const exportsToFix = getExportsToFix( library );
 	const declarationsWithMissingExports = getDeclarationsWithMissingExports( library );
+	const declarationsReferencingInternals = getDeclarationsReferencingInternals( library );
 	const commandExportErrors = validateCommandExports( library );
 	const pluginExportErrors = validatePluginExports( library );
 	const dataToLogUnwrapped = [
 		...declarationsWithMissingExports,
+		...declarationsReferencingInternals,
 		...exportsToFix,
 		...commandExportErrors,
 		...pluginExportErrors
@@ -121,6 +123,79 @@ function getDeclarationsWithMissingExports( library ) {
 			...mapper.mapItemsViolatingPolicies( pkg, module, declaration ),
 			'Action': 'Add export & re-export'
 		} ) );
+}
+
+function getDeclarationsReferencingInternals( library ) {
+	return library.packages.values()
+		.filter( isPrivatePackage )
+		.flatMap( getModules )
+		.flatMap( getDeclarations )
+		.filter( ( { module } ) => module.isPublicApi )
+		.filter( ( { declaration } ) => declaration.isPublicTree )
+		.filter( ( { declaration } ) => !declaration.internal )
+		.map( ( { pkg, module, declaration } ) => {
+			const internalReferences = collectInternalReferences( declaration, pkg.packageName );
+
+			if ( !internalReferences.length ) {
+				return null;
+			}
+
+			return {
+				...mapper.mapItemsViolatingPolicies( pkg, module, declaration ),
+				'Internal references': internalReferences.map( ref => ref.localName ).sort().join( ', ' ),
+				'Action': 'Do not reference @internal symbols from public declarations'
+			};
+		} )
+		.filter( Boolean );
+}
+
+function collectInternalReferences( item, packageName ) {
+	const internalReferences = new Set();
+
+	for ( const reference of item.references || [] ) {
+		addInternal( reference );
+
+		for ( const nestedReference of reference.references || [] ) {
+			addInternal( nestedReference );
+
+			for ( const nestedNestedReference of nestedReference.references || [] ) {
+				addInternal( nestedNestedReference );
+			}
+		}
+	}
+
+	return [ ...internalReferences ];
+
+	function addInternal( reference ) {
+		if ( !reference?.explicitInternal ) {
+			return;
+		}
+
+		if ( getPackageName( reference.fileName ) !== packageName ) {
+			return;
+		}
+
+		internalReferences.add( reference );
+	}
+}
+
+function getPackageName( fileName ) {
+	if ( !fileName ) {
+		return null;
+	}
+
+	const packageDirMatch = fileName.match( /.+\/packages\/(.+?)\// );
+	const externalDirMatch = fileName.match( /.+\/external\/(.+?)\// );
+
+	if ( packageDirMatch ) {
+		return '@ckeditor/' + packageDirMatch[ 1 ];
+	}
+
+	if ( externalDirMatch ) {
+		return '@ckeditor/' + externalDirMatch[ 1 ];
+	}
+
+	return null;
 }
 
 function isUsedAcrossPackages( library ) {
@@ -233,4 +308,8 @@ function removeExpectedExceptions( data ) {
 
 function allowsReexportInternals( pkg ) {
 	return pkg.isPublicPackage;
+}
+
+function isPrivatePackage( pkg ) {
+	return !pkg.isPublicPackage;
 }

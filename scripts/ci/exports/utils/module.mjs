@@ -337,6 +337,15 @@ export class Module {
 					} ) );
 				}
 
+				// For class.
+				//
+				// `static get requires()` leaks plugin dependencies into generated declaration files as
+				// `readonly [ typeof Foo, ... ]`. If `Foo` is marked as `@internal`, declaration emit with
+				// `stripInternal` removes `Foo` and breaks downstream type checking.
+				if ( path.isClassDeclaration() ) {
+					this._collectClassRequiresReferences( path, declaration, typeParameters );
+				}
+
 				// For interface.
 				if ( node.extends ) {
 					path.get( 'extends' ).forEach( item => item.traverse( {
@@ -378,6 +387,56 @@ export class Module {
 				else {
 					console.warn( '!!! reference is not an identifier', node.loc.start.line, node.loc.start.column );
 				}
+			}
+		} );
+	}
+
+	_collectClassRequiresReferences( classPath, declaration, typeParameters ) {
+		for ( const memberPath of classPath.get( 'body.body' ) ) {
+			if ( !memberPath.node.static || !isRequiresClassMember( memberPath.node ) ) {
+				continue;
+			}
+
+			if ( memberPath.isClassMethod() ) {
+				if ( memberPath.node.kind !== 'get' ) {
+					continue;
+				}
+
+				this._collectReferencedIdentifiers( {
+					path: memberPath.get( 'body' ),
+					declaration,
+					typeParameters,
+					localScope: memberPath.scope
+				} );
+			}
+
+			if ( memberPath.isClassProperty() && memberPath.get( 'value' ).node ) {
+				this._collectReferencedIdentifiers( {
+					path: memberPath.get( 'value' ),
+					declaration,
+					typeParameters,
+					localScope: memberPath.scope
+				} );
+			}
+		}
+	}
+
+	_collectReferencedIdentifiers( { path, declaration, typeParameters, localScope } ) {
+		path.traverse( {
+			Identifier: identifierPath => {
+				if ( !identifierPath.isReferencedIdentifier() ) {
+					return;
+				}
+
+				const identifierName = identifierPath.node.name;
+				const binding = identifierPath.scope.getBinding( identifierName );
+
+				// Ignore globals and names scoped inside the current class member.
+				if ( !binding || binding.scope === localScope ) {
+					return;
+				}
+
+				declaration.addReference( identifierName, typeParameters );
 			}
 		} );
 	}
@@ -680,4 +739,20 @@ export class Module {
 
 function normalizeModuleAlias( name ) {
 	return name.replace( /^ckeditor5(?:-collaboration)?\/src\/(.*)\.js$/, '@ckeditor/ckeditor5-$1' );
+}
+
+function isRequiresClassMember( classMemberNode ) {
+	if ( !classMemberNode.key ) {
+		return false;
+	}
+
+	if ( classMemberNode.key.type === 'Identifier' ) {
+		return classMemberNode.key.name === 'requires';
+	}
+
+	if ( classMemberNode.key.type === 'StringLiteral' ) {
+		return classMemberNode.key.value === 'requires';
+	}
+
+	return false;
 }
