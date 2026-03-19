@@ -398,8 +398,7 @@ export class HtmlEmbedEditing extends Plugin {
 
 			// Creating a contextual document fragment allows executing scripts when inserting into the preview element.
 			// See: #8326.
-			const domRange = domDocument.createRange();
-			const domDocumentFragment = domRange.createContextualFragment( sanitizedOutput.html );
+			const domDocumentFragment = createExecutableFragment( sanitizedOutput.html, domDocument );
 
 			domPreviewContent.appendChild( domDocumentFragment );
 
@@ -412,6 +411,43 @@ export class HtmlEmbedEditing extends Plugin {
 			return domPreviewContainer;
 		}
 	}
+}
+
+/**
+ * Creates a DocumentFragment from the provided HTML string, fixing the Chrome 147 regression.
+ * <script> tags are replaced with new instances to force their execution upon DOM insertion.
+ *
+ * See: https://github.com/ckeditor/ckeditor5/issues/19972
+ *
+ * @param html The HTML string to parse (e.g., sanitizedOutput.html).
+ * @param targetDocument The Document object context.
+ * @returns The processed DocumentFragment ready to be inserted into the DOM.
+ */
+export function createExecutableFragment( html: string, targetDocument: Document ): DocumentFragment {
+	const range: Range = targetDocument.createRange();
+	const fragment: DocumentFragment = range.createContextualFragment( html );
+
+	// Find all scripts within the fragment
+	const scripts: NodeListOf<HTMLScriptElement> = fragment.querySelectorAll( 'script' );
+
+	scripts.forEach( ( oldScript: HTMLScriptElement ) => {
+		const newScript: HTMLScriptElement = targetDocument.createElement( 'script' );
+
+		// Copy all attributes (e.g., src, type, async, nonce)
+		Array.from( oldScript.attributes ).forEach( ( attr: Attr ) => {
+			newScript.setAttribute( attr.name, attr.value );
+		} );
+
+		// Copy the content for inline scripts
+		if ( oldScript.textContent ) {
+			newScript.textContent = oldScript.textContent;
+		}
+
+		// Replace the "dead" script with the newly created "live" counterpart
+		oldScript.replaceWith( newScript );
+	} );
+
+	return fragment;
 }
 
 /**
