@@ -81,7 +81,7 @@ You can read more about the {@link framework/contributing/testing-environment Te
 
 ## Building DLLs
 
-Some manual tests require DLL builds. To learn more about DLL builds, read the {@link getting-started/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+Some manual tests require DLL builds. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
 
 ```
 pnpm run dll:build
@@ -232,7 +232,7 @@ pnpm docs:content-styles
 
 The style sheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
+To learn more, refer to the {@link getting-started/setup/css Content styles} guide.
 
 ## Additional information for contributors
 
