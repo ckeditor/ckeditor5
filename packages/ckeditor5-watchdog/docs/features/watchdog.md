@@ -73,9 +73,9 @@ For more control over the creation and destruction of editor instances, you can 
 const watchdog = new EditorWatchdog();
 
 // Define a callback that will create an editor instance and return it.
-watchdog.setCreator( ( elementOrData, editorConfig ) => {
+watchdog.setCreator( ( editorConfig ) => {
 	return ClassicEditor
-		.create( elementOrData, editorConfig )
+		.create( editorConfig )
 		.then( editor => {
 			// Do something with the new editor instance.
 			// ...
@@ -95,7 +95,7 @@ watchdog.setDestructor( editor => {
 } );
 
 // Create an editor instance and start watching it.
-watchdog.create( elementOrData, editorConfig );
+watchdog.create( editorConfig );
 ```
 
 <info-box>
@@ -174,8 +174,8 @@ await watchdog.create( {
 await watchdog.add( [ {
 	id: 'editor1',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
@@ -183,8 +183,8 @@ await watchdog.add( [ {
 }, {
 	id: 'editor2',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor-2' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
@@ -195,8 +195,8 @@ await watchdog.add( [ {
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
@@ -206,8 +206,8 @@ await watchdog.add( {
 await watchdog.add( {
 	id: 'editor2',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor-2' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
@@ -260,7 +260,6 @@ await watchdog.create( contextConfig );
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
-	sourceElementOrData: domElementOrEditorData
 	config: editorConfig,
 	creator: createEditor,
 	destructor: destroyEditor,
@@ -270,7 +269,6 @@ await watchdog.add( [
 	{
 		id: 'editor1',
 		type: 'editor',
-		sourceElementOrData: domElementOrEditorData
 		config: editorConfig,
 		creator: createEditor,
 		destructor: destroyEditor,
