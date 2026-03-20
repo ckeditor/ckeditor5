@@ -99,7 +99,10 @@ class FormattingOptions extends Plugin {
 }
 
 DecoupledEditor
-	.create( document.querySelector( '#editor-content' ), {
+	.create( {
+		element: {
+			root: document.querySelector( '#editor-content' )
+		},
 		plugins: [
 			Alignment,
 			Autoformat,

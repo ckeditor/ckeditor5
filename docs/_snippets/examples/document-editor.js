@@ -12,7 +12,10 @@ import {
 } from '@snippets/index.js';
 
 DecoupledEditor
-	.create( document.querySelector( '.document-editor__editable' ), {
+	.create( {
+		element: {
+			root: document.querySelector( '.document-editor__editable' )
+		},
 		extraPlugins: [
 			TableColumnResize
 		],

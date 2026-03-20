@@ -11,7 +11,10 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ), {
+	.create( {
+		element: {
+			root: document.querySelector( '#snippet-classic-editor' )
+		},
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
