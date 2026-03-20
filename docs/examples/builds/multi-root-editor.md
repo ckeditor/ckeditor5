@@ -208,24 +208,22 @@ Setting the data through `config.roots.<root name>.initialData`:
 ```js
 	MultiRootEditor.create(
 		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		{
 			roots: {
 				header: {
-					initialData: '<p>Content for header part.</p>'
+					initialData: '<p>Content for header part.</p>',
+					element: document.querySelector( '#header' )
 				},
 				content: {
-					initialData: '<p>Content for main part.</p>'
+					initialData: '<p>Content for main part.</p>',
+					element: document.querySelector( '#content' )
 				},
 				leftSide: {
-					initialData: '<p>Content for left-side box.</p>'
+					initialData: '<p>Content for left-side box.</p>',
+					element: document.querySelector( '#left-side' )
 				},
 				rightSide: {
-					initialData: '<p>Content for right-side box.</p>'
+					initialData: '<p>Content for right-side box.</p>',
+					element: document.querySelector( '#right-side' )
 				}
 			}
 		}
