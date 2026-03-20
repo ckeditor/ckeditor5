@@ -165,7 +165,7 @@ npm run build:dist
 	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
 </info-box>
 
-Creates a DLL-compatible package build which can be loaded into an editor using {@link getting-started/advanced/dll-builds DLL builds}.
+Creates a DLL-compatible package build which can be loaded into an editor setup that still uses DLL builds.
 
 Examples:
 
@@ -183,7 +183,7 @@ npm run dll:build -- --watch
 	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
 </info-box>
 
-Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link getting-started/advanced/dll-builds DLL builds}.
+Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with a CKEditor&nbsp;5 setup based on DLL builds.
 
 Examples:
 
@@ -259,7 +259,7 @@ To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/c
 
 ### Why are the predefined ESLint rules recommended
 
-To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link getting-started/advanced/dll-builds DLL guide} and {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
+To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, see a {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports detailed explanation} about these limitations.
 
 ## Translations
 
