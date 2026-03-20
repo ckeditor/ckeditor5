@@ -13,8 +13,8 @@ import {
 
 DecoupledEditor
 	.create( {
-		element: {
-			root: document.querySelector( '.document-editor__editable' )
+		root: {
+			element: document.querySelector( '.document-editor__editable' )
 		},
 		extraPlugins: [
 			TableColumnResize

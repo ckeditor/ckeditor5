@@ -12,9 +12,7 @@ import {
 
 ClassicEditor
 	.create( {
-		element: {
-			root: document.querySelector( '#snippet-classic-editor-short' )
-		},
+		attachTo: document.querySelector( '#snippet-classic-editor-short' ),
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

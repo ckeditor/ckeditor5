@@ -12,9 +12,7 @@ import {
 
 ClassicEditor
 	.create( {
-		element: {
-			root: document.querySelector( '#snippet-classic-editor' )
-		},
+		attachTo: document.querySelector( '#snippet-classic-editor' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
