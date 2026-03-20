@@ -53,6 +53,23 @@ describe( 'MentionCommand', () => {
 			_setModelData( model, '<x>fo[]o</x>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should return false if caret is inside a code block', () => {
+			model.schema.register( 'codeBlock', {
+				allowWhere: '$block',
+				allowChildren: '$text',
+				isBlock: true
+			} );
+
+			model.schema.addAttributeCheck( context => {
+				if ( context.endsWith( 'codeBlock $text' ) ) {
+					return false;
+				}
+			}, 'mention' );
+
+			_setModelData( model, '<codeBlock>fo[]o</codeBlock>' );
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {
