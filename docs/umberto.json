@@ -289,6 +289,9 @@
 		"framework/quick-start.html": "framework/index.html",
 		"getting-started/advanced/dll-builds.html": "getting-started/legacy/installation-methods/quick-start.html",
 		"getting-started/advanced/integrating-from-source-vite.html": "getting-started/legacy/installation-methods/quick-start.html",
+		"getting-started/legacy/advanced/alternative-setups/dll-builds.html": "updating/nim-migration/migration-to-new-installation-methods.html#deprecation-of-dlls",
+		"getting-started/legacy/installation-methods/predefined-builds.html": "updating/nim-migration/migration-to-new-installation-methods.html#deprecation-of-the-predefined-builds",
+		"getting-started/legacy/installation-methods/quick-start-other.html": "updating/nim-migration/migration-to-new-installation-methods.html",
 		"getting-started/installation/angular.html": "getting-started/installation/cloud/angular.html",
 		"getting-started/installation/dotnet.html": "getting-started/installation/cloud/dotnet.html",
 		"getting-started/installation/laravel.html": "getting-started/installation/cloud/laravel.html",
@@ -539,41 +542,6 @@
 					"id": "licensing",
 					"slug": "licensing",
 					"order": 50
-				},
-				{
-					"name": "Legacy installation methods",
-					"id": "legacy",
-					"slug": "legacy",
-					"order": 60,
-					"folded": true,
-					"categories": [
-						{
-							"name": "Basics",
-							"id": "installation-methods",
-							"slug": "installation-methods",
-							"order": 70
-						},
-						{
-							"name": "Advanced concepts",
-							"id": "advanced",
-							"slug": "advanced",
-							"order": 80,
-							"categories": [
-								{
-									"name": "Alternative setups",
-									"id": "alternative-setups",
-									"slug": "alternative-setups",
-									"order": 90
-								}
-							]
-						},
-						{
-							"name": "Integrations",
-							"id": "legacy-integrations",
-							"slug": "legacy-integrations",
-							"order": 90
-						}
-					]
 				}
 			]
 		},
