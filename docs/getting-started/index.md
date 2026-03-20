@@ -16,7 +16,7 @@ CKEditor&nbsp;5 is a flexible editing framework that provides every type of WYSI
 
 If your dive into using our WYSIWYG editor is only starting, find out how to kick off this adventure easily. You have a few methods to choose from:
 
-* [Using CKEditor&nbsp;5 Builder](#ckeditor-5-builder) for the smoothest setup with live preview and multiple integration options.
+* [Using CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/) for the smoothest setup with live preview and multiple integration options.
 * {@link getting-started/integrations/quick-start#installing-ckeditor-5-using-npm Using npm}, where you use a JavaScript package and build the editor with a bundler.
 * {@link getting-started/integrations-cdn/quick-start#installing-ckeditor-5-from-cdn Using CDN}, where you use our cloud-distributed CDN in a no-build setup.
 * {@link getting-started/integrations/quick-start#installing-ckeditor-5-from-a-zip-file Using a ZIP file}, where you download the ready-to-run files and copy them to your project.
@@ -57,7 +57,3 @@ If you are familiar with our previous, discontinued product and would like to sw
 Once you install your copy of CKEditor&nbsp;5, take some time to {@link getting-started/setup/configuration configure it} before first use. Set up data-saving methods, editor toolbars, and UI.
 
 You may also take the {@link tutorials/crash-course/editor step-by-step tutorial} that will guide you through the installation and configuration of the editor.
-
-## Legacy installation methods
-
-Before version 42.0.0, CKEditor&nbsp;5 used different installation methods. If, for whatever reason, you wish to use these older versions &ndash; while it is not advised &ndash; you can have a look at the {@link getting-started/legacy-getting-started/quick-start legacy installation guides}. Otherwise, please see the {@link updating/nim-migration/migration-to-new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide.
