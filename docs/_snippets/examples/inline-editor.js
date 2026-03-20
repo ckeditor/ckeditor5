@@ -14,8 +14,8 @@ const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor 
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
-		element: {
-			root: inlineElement
+		root: {
+			element: inlineElement
 		},
 		removePlugins: [
 			'CKBox'
