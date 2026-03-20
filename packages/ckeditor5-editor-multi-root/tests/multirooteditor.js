@@ -411,16 +411,50 @@ describe( 'MultiRootEditor', () => {
 				.catch( done );
 		} );
 
-		it( 'throws error when deprecated config.rootsAttributes is used', done => {
-			MultiRootEditor.create( editorData, {
+		it( 'normalizes legacy config.rootsAttributes to config.roots.<rootName>.modelAttributes', async () => {
+			editor = await MultiRootEditor.create( editorData, {
 				rootsAttributes: { foo: { order: 1 }, bar: { order: 2 } }
+			} );
+
+			const fooRoot = editor.model.document.getRoot( 'foo' );
+			const barRoot = editor.model.document.getRoot( 'bar' );
+
+			expect( fooRoot.getAttribute( 'order' ) ).to.equal( 1 );
+			expect( barRoot.getAttribute( 'order' ) ).to.equal( 2 );
+
+			await editor.destroy();
+		} );
+
+		it( 'throws error when legacy config.rootsAttributes references a non-existing root', done => {
+			MultiRootEditor.create( editorData, {
+				rootsAttributes: { foo: { order: 1 }, nonExisting: { order: 2 } }
 			} )
 				.then(
 					() => {
-						expect.fail( 'Multi-root editor should throw an error when deprecated rootsAttributes config is used.' );
+						expect.fail( 'Expected multi-root-editor-root-attributes-no-root to be thrown.' );
 					},
 					err => {
-						assertCKEditorError( err, 'multi-root-editor-root-deprecated-config-roots-attributes', null );
+						assertCKEditorError( err, 'multi-root-editor-root-attributes-no-root', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'throws error when legacy config.rootsAttributes conflicts with config.roots.<rootName>.modelAttributes', done => {
+			MultiRootEditor.create( editorData, {
+				rootsAttributes: { foo: { order: 1 } },
+				roots: {
+					foo: { modelAttributes: { order: 10 } },
+					bar: {}
+				}
+			} )
+				.then(
+					() => {
+						expect.fail( 'Expected multi-root-editor-root-attributes-conflict to be thrown.' );
+					},
+					err => {
+						assertCKEditorError( err, 'multi-root-editor-root-attributes-conflict', null );
 					}
 				)
 				.then( done )
