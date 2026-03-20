@@ -85,7 +85,7 @@ export function normalizeRootsConfig(
 			// No legacy initial data for the root, either.
 			if ( legacyInitialData[ rootName ] === undefined ) {
 				// Use source element data or data itself as a string.
-				// Fall back to `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
+				// Fall back to legacy sourceElement, `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
 				rootConfig.initialData = getInitialData(
 					sourceElementOrDataForRoot || rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
 				);

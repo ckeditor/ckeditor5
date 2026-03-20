@@ -114,7 +114,7 @@ describe( 'InlineEditor', () => {
 				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 			} );
 
-			it( 'if set, is not overwritten with DOM element data', () => {
+			it( 'if set, is not overwritten with DOM element data (legacy config.initialData)', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -123,7 +123,7 @@ describe( 'InlineEditor', () => {
 				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
 			} );
 
-			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+			it( 'it should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
@@ -157,7 +157,7 @@ describe( 'InlineEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
 
-			it( 'it should throw if config.initialData and config.root.initialData is set', () => {
+			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -170,7 +170,7 @@ describe( 'InlineEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
 
-			it( 'it should throw if config.initialData and config.roots.main.initialData is set', () => {
+			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -193,6 +193,42 @@ describe( 'InlineEditor', () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( sourceElement, { root: { element: existingElement } } );
 				} ).to.throw( CKEditorError, 'editor-create-roots-element-conflict' );
+			} );
+		} );
+
+		describe( 'config.root.placeholder', () => {
+			it( 'should normalize config.root.placeholder to config.roots.main.placeholder', () => {
+				const editor = new InlineEditor( '<p>Foo</p>', {
+					root: { placeholder: 'Type here...' }
+				} );
+
+				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+			} );
+
+			it( 'should normalize legacy config.placeholder to config.roots.main.placeholder (legacy)', () => {
+				const editor = new InlineEditor( '<p>Foo</p>', {
+					placeholder: 'Type here...'
+				} );
+
+				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+			} );
+		} );
+
+		describe( 'config.root.label', () => {
+			it( 'should normalize config.root.label to config.roots.main.label', () => {
+				const editor = new InlineEditor( '<p>Foo</p>', {
+					root: { label: 'Custom label' }
+				} );
+
+				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+			} );
+
+			it( 'should normalize legacy config.label to config.roots.main.label (legacy)', () => {
+				const editor = new InlineEditor( '<p>Foo</p>', {
+					label: 'Custom label'
+				} );
+
+				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
 			} );
 		} );
 
@@ -336,7 +372,7 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'initializes with config.initialData', () => {
+		it( 'initializes with legacy config.initialData', () => {
 			const editorElement = document.createElement( 'div' );
 			editorElement.innerHTML = '<p>Hello world!</p>';
 
@@ -353,7 +389,7 @@ describe( 'InlineEditor', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/8974
-		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+		it( 'initializes with empty content if legacy config.initialData is set to an empty string', () => {
 			const editorElement = document.createElement( 'div' );
 			editorElement.innerHTML = '<p>Hello world!</p>';
 
@@ -489,7 +525,7 @@ describe( 'InlineEditor', () => {
 				);
 			} );
 
-			it( 'should support the string format', async () => {
+			it( 'should support the legacy config.label string format', async () => {
 				await editor.destroy();
 
 				editor = await InlineEditor.create( editorElement, {
@@ -502,7 +538,7 @@ describe( 'InlineEditor', () => {
 				);
 			} );
 
-			it( 'should support object format', async () => {
+			it( 'should support the legacy config.label object format', async () => {
 				await editor.destroy();
 
 				editor = await InlineEditor.create( editorElement, {
@@ -534,7 +570,7 @@ describe( 'InlineEditor', () => {
 				expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
 			} );
 
-			it( 'should override the existing value from the source DOM element', async () => {
+			it( 'should override the existing value from the source DOM element (legacy config.label)', async () => {
 				await editor.destroy();
 
 				editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
@@ -576,6 +612,34 @@ describe( 'InlineEditor', () => {
 
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ), 'Override value' ).to.equal(
 					'Custom label'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should support root.label format', async () => {
+				await editor.destroy();
+
+				editor = await InlineEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					root: { label: 'Root label' }
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Root label'
+				);
+			} );
+
+			it( 'should support root.label in config-only constructor', async () => {
+				await editor.destroy();
+
+				editor = await InlineEditor.create( {
+					plugins: [ Paragraph, Bold ],
+					root: { initialData: '<p>Foo</p>', label: 'Root label' }
+				} );
+
+				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+					'Root label'
 				);
 
 				await editor.destroy();

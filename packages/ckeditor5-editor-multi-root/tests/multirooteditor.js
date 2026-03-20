@@ -129,7 +129,7 @@ describe( 'MultiRootEditor', () => {
 				expect( editor.config.get( 'initialData' ) ).to.deep.equal( { foo: '<p>Foo</p>', bar: '<p>Bar</p>' } );
 			} );
 
-			it( 'should throw if config.initialData is set and initial data is passed in constructor', () => {
+			it( 'should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new MultiRootEditor(
@@ -159,6 +159,70 @@ describe( 'MultiRootEditor', () => {
 						root: { initialData: '<p>abc</p>' }
 					} );
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+		} );
+
+		describe( 'config.roots.*.placeholder', () => {
+			it( 'should normalize config.roots.*.placeholder', () => {
+				const editor = new MultiRootEditor(
+					{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+					{
+						roots: {
+							foo: { placeholder: 'Type in foo...' },
+							bar: { placeholder: 'Type in bar...' }
+						}
+					}
+				);
+
+				expect( editor.config.get( 'roots' ).foo.placeholder ).to.equal( 'Type in foo...' );
+				expect( editor.config.get( 'roots' ).bar.placeholder ).to.equal( 'Type in bar...' );
+			} );
+
+			it( 'should normalize legacy config.placeholder object to config.roots.*.placeholder (legacy)', () => {
+				const editor = new MultiRootEditor(
+					{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+					{
+						placeholder: {
+							foo: 'Type in foo...',
+							bar: 'Type in bar...'
+						}
+					}
+				);
+
+				expect( editor.config.get( 'roots' ).foo.placeholder ).to.equal( 'Type in foo...' );
+				expect( editor.config.get( 'roots' ).bar.placeholder ).to.equal( 'Type in bar...' );
+			} );
+		} );
+
+		describe( 'config.roots.*.label', () => {
+			it( 'should normalize config.roots.*.label', () => {
+				const editor = new MultiRootEditor(
+					{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+					{
+						roots: {
+							foo: { label: 'Foo label' },
+							bar: { label: 'Bar label' }
+						}
+					}
+				);
+
+				expect( editor.config.get( 'roots' ).foo.label ).to.equal( 'Foo label' );
+				expect( editor.config.get( 'roots' ).bar.label ).to.equal( 'Bar label' );
+			} );
+
+			it( 'should normalize legacy config.label object to config.roots.*.label (legacy)', () => {
+				const editor = new MultiRootEditor(
+					{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+					{
+						label: {
+							foo: 'Foo label',
+							bar: 'Bar label'
+						}
+					}
+				);
+
+				expect( editor.config.get( 'roots' ).foo.label ).to.equal( 'Foo label' );
+				expect( editor.config.get( 'roots' ).bar.label ).to.equal( 'Bar label' );
 			} );
 		} );
 
@@ -261,7 +325,7 @@ describe( 'MultiRootEditor', () => {
 			test( () => editableElements );
 		} );
 
-		it( 'initializes with config.initialData', () => {
+		it( 'initializes with legacy config.initialData', () => {
 			return MultiRootEditor.create( {
 				foo: document.createElement( 'div' ),
 				bar: document.createElement( 'div' )
@@ -276,7 +340,7 @@ describe( 'MultiRootEditor', () => {
 			} );
 		} );
 
-		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+		it( 'initializes with empty content if legacy config.initialData is set to an empty string', () => {
 			return MultiRootEditor.create( {
 				foo: document.createElement( 'div' ),
 				bar: document.createElement( 'div' )
@@ -674,7 +738,7 @@ describe( 'MultiRootEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should support string format', async () => {
+			it( 'should support the legacy config.label string format', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: document.createElement( 'div' ),
 					bar: document.createElement( 'div' )
@@ -694,7 +758,7 @@ describe( 'MultiRootEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should support object format', async () => {
+			it( 'should support the legacy config.label object format', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: document.createElement( 'div' ),
 					bar: document.createElement( 'div' )
@@ -717,7 +781,7 @@ describe( 'MultiRootEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should support object format (mix default and custom label)', async () => {
+			it( 'should support the legacy config.label object format (mix default and custom label)', async () => {
 				const editor = await MultiRootEditor.create( {
 					foo: document.createElement( 'div' ),
 					bar: document.createElement( 'div' )
@@ -764,7 +828,7 @@ describe( 'MultiRootEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should override the existing value from the source DOM element', async () => {
+			it( 'should override the existing value from the source DOM element (legacy config.label)', async () => {
 				const fooElement = document.createElement( 'div' );
 				fooElement.setAttribute( 'aria-label', 'Foo pre-existing value' );
 
@@ -830,6 +894,49 @@ describe( 'MultiRootEditor', () => {
 
 				expect( editor.editing.view.getDomRoot( 'bar' ).getAttribute( 'aria-label' ) ).to.equal(
 					'Bar override'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should support roots.<rootName>.label format', async () => {
+				const editor = await MultiRootEditor.create( {
+					foo: 'Foo content',
+					bar: 'Bar content'
+				}, {
+					plugins: [ Paragraph, Bold ],
+					roots: {
+						foo: { label: 'Foo root label' },
+						bar: { label: 'Bar root label' }
+					}
+				} );
+
+				expect( editor.editing.view.getDomRoot( 'foo' ).getAttribute( 'aria-label' ) ).to.equal(
+					'Foo root label'
+				);
+
+				expect( editor.editing.view.getDomRoot( 'bar' ).getAttribute( 'aria-label' ) ).to.equal(
+					'Bar root label'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should support roots.<rootName>.label in config-only constructor', async () => {
+				const editor = await MultiRootEditor.create( {
+					roots: {
+						foo: { initialData: '<p>Foo</p>', label: 'Foo root label' },
+						bar: { initialData: '<p>Bar</p>', label: 'Bar root label' }
+					},
+					plugins: [ Paragraph, Bold ]
+				} );
+
+				expect( editor.editing.view.getDomRoot( 'foo' ).getAttribute( 'aria-label' ) ).to.equal(
+					'Foo root label'
+				);
+
+				expect( editor.editing.view.getDomRoot( 'bar' ).getAttribute( 'aria-label' ) ).to.equal(
+					'Bar root label'
 				);
 
 				await editor.destroy();
