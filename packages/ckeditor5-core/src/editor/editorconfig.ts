@@ -133,8 +133,9 @@ export interface EditorConfig extends EngineConfig {
 	 * plugins can read and/or modify it during initialization.
 	 *
 	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
-	 * {@link module:core/editor/editorconfig~EditorConfig#root `root.initialData`} or
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.initialData`} instead.**
+	 * {@link module:core/editor/editorconfig~EditorConfig#root `config.root.initialData`} instead.
+	 * For the {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}, use
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.initialData`}.**
 	 *
 	 * @deprecated
 	 */
@@ -581,8 +582,9 @@ export interface EditorConfig extends EngineConfig {
 	 * See the {@glink features/editor-placeholder "Editor placeholder"} guide for more information and live examples.
 	 *
 	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
-	 * {@link module:core/editor/editorconfig~EditorConfig#root `root.placeholder`} or
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.placeholder`} instead.**
+	 * {@link module:core/editor/editorconfig~EditorConfig#root `config.root.placeholder`} instead.
+	 * For the {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}, use
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.placeholder`}.**
 	 *
 	 * @deprecated
 	 */
@@ -875,14 +877,16 @@ export interface EditorConfig extends EngineConfig {
 	translations?: ArrayOrItem<Translations>;
 
 	/**
-	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies
-	 * to tell apart multiple editor instances (editing areas) on the page. If not set, a default
-	 * "Rich Text Editor. Editing area [name of the area]" is used instead.
+	 * Label which briefly describes the editing area. Used for the `aria-label` attribute set on the editor editing area,
+	 * helping assistive technologies to tell apart multiple editor instances (editing areas) on the page. If not set,
+	 * a default "Rich Text Editor. Editing area [name of the area]" is used instead.
+	 *
+	 * It can also be used by other features when referring to this editing area (e.g. AI features).
 	 *
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		label: 'My editor'
+	 * 		label: 'Article main content'
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -897,16 +901,16 @@ export interface EditorConfig extends EngineConfig {
 	 * 	{
 	 * 		header: document.querySelector( '#header' ),
 	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
+	 * 		sideQuote: document.querySelector( '#side-quote' ),
+	 * 		relatedLinks: document.querySelector( '#related-links' )
 	 * 	},
 	 * 	// Config:
 	 * 	{
 	 * 		label: {
-	 * 			header: 'Header label',
-	 * 			content: 'Content label',
-	 * 			leftSide: 'Left side label',
-	 * 			rightSide: 'Right side label'
+	 * 			header: 'Article header',
+	 * 			content: 'Article main content',
+	 * 			sideQuote: 'Side-quote',
+	 * 			relatedLinks: 'Related links'
 	 * 		}
 	 * 	}
 	 * )
@@ -915,46 +919,195 @@ export interface EditorConfig extends EngineConfig {
 	 * ```
 	 *
 	 * **This property has been deprecated and will be removed in the future versions of CKEditor. Please use
-	 * {@link module:core/editor/editorconfig~EditorConfig#root `root.label`} or
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `roots.<rootName>.label`} instead.**
+	 * {@link module:core/editor/editorconfig~EditorConfig#root `config.root.label`} instead.
+	 * For the {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}, use
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.label`}.**
 	 *
 	 * @deprecated
 	 */
 	label?: string | Record<string, string>;
 
 	/**
-	 * The root configuration options for the default `main` root.
+	 * The root configuration for the default `main` root. Use this option to configure the initial data,
+	 * placeholder, label, and source element for a single-root editor.
 	 *
-	 * This option is an alias for `config.roots.main`.
+	 * This is the recommended way to configure a single-root editor:
+	 *
+	 * ```ts
+	 * // Classic editor – uses `attachTo` for the source element.
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			initialData: '<p>Hello world!</p>',
+	 * 			placeholder: 'Type some text...'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * ```ts
+	 * // Inline editor – uses `root.element` for the source element.
+	 * InlineEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' ),
+	 * 			initialData: '<p>Hello world!</p>',
+	 * 			placeholder: 'Type some text...'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * ```ts
+	 * // Balloon editor – uses `root.element` for the source element.
+	 * BalloonEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' ),
+	 * 			placeholder: 'Type some text...'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * ```ts
+	 * // Decoupled editor – uses `root.element` for the source element.
+	 * // The toolbar and editable area must be manually added to the DOM.
+	 * DecoupledEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' ),
+	 * 			initialData: '<p>Hello world!</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		document.querySelector( '#toolbar' ).appendChild( editor.ui.view.toolbar.element );
+	 * 	} )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * Internally, this option is an alias for `config.roots.main`. If both `config.root` and `config.roots.main`
+	 * are set, an error will be thrown.
+	 *
+	 * For the {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}, use the
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} option instead to define
+	 * configuration for each root individually.
 	 */
 	root?: RootConfig;
 
 	/**
-	 * The root configuration options grouped by the root name.
+	 * The root configuration options grouped by the root name. This option is used primarily by the
+	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor} to define
+	 * configuration for each root individually.
+	 *
+	 * For a typical single-root editor, use the simpler {@link module:core/editor/editorconfig~EditorConfig#root `config.root`}
+	 * option instead.
 	 *
 	 * ```ts
-	 * ClassicEditor
-	 * 	.create( {
-	 * 		attachTo: document.querySelector( '#editor' ),
-	 * 		roots: {
-	 * 			main: {
-	 * 				initialData: '<p>Hello world!</p>',
-	 * 				placeholder: 'Type some text...',
-	 * 				label: 'Main content'
-	 * 			}
+	 * // Using existing DOM elements as source for each root.
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			placeholder: 'Type header...',
+	 * 			label: 'Article header'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			placeholder: 'Type content...',
+	 * 			label: 'Article main content'
 	 * 		}
-	 * 	} );
+	 * 	}
+	 * } )
+	 * .then( editor => {
+	 * 	document.querySelector( '#toolbar' ).appendChild( editor.ui.view.toolbar.element );
+	 * } )
+	 * .catch( ... );
+	 * ```
+	 *
+	 * ```ts
+	 * // Creating a detached editor with initial data for each root.
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			initialData: '<h2>Article title</h2>',
+	 * 			placeholder: 'Type header...',
+	 * 			label: 'Article header'
+	 * 		},
+	 * 		content: {
+	 * 			initialData: '<p>Article body...</p>',
+	 * 			placeholder: 'Type content...',
+	 * 			label: 'Article main content'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( editor => {
+	 * 	document.querySelector( '#toolbar' ).appendChild( editor.ui.view.toolbar.element );
+	 *
+	 * 	for ( const [ rootName, editable ] of editor.ui.getEditableElementsNames() ) {
+	 * 		document.querySelector( '#editables' ).appendChild( editor.ui.view.getEditable( rootName ).element );
+	 * 	}
+	 * } )
+	 * .catch( ... );
 	 * ```
 	 */
 	roots?: Record<string, RootConfig>;
 }
 
 /**
- * Configuration for a an editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
+ * Configuration for an editor root. It is used in {@link module:core/editor/editorconfig~EditorConfig#root `EditorConfig#root`} and
  * {@link module:core/editor/editorconfig~EditorConfig#roots `EditorConfig#roots.<rootName>`}.
  *
- * **Note**: If your editor implementation uses only a single root, you can use `config.root` to set the root configuration instead of
- * `config.roots.main`.
+ * For a typical single-root editor (Classic, Inline, Balloon, Decoupled), use
+ * {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} to set the root configuration.
+ * For the {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}, use
+ * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} to define configuration for each root.
+ *
+ * ```ts
+ * // Classic editor – the source element is set via `config.attachTo`.
+ * ClassicEditor.create( {
+ * 	attachTo: document.querySelector( '#editor' ),
+ * 	root: {
+ * 		initialData: '<p>Hello world!</p>',
+ * 		placeholder: 'Type some text...',
+ * 		label: 'Article main content'
+ * 	}
+ * } );
+ * ```
+ *
+ * ```ts
+ * // Inline editor – the source element is set via `root.element`.
+ * InlineEditor.create( {
+ * 	root: {
+ * 		element: document.querySelector( '#editor' ),
+ * 		initialData: '<p>Hello world!</p>',
+ * 		placeholder: 'Type some text...',
+ * 		label: 'Article main content'
+ * 	}
+ * } );
+ * ```
+ *
+ * ```ts
+ * // Multi-root editor – each root is configured separately via `config.roots`.
+ * MultiRootEditor.create( {
+ * 	roots: {
+ * 		header: {
+ * 			element: document.querySelector( '#header' ),
+ * 			placeholder: 'Type header...',
+ * 			label: 'Article header'
+ * 		},
+ * 		content: {
+ * 			element: document.querySelector( '#content' ),
+ * 			placeholder: 'Type content...',
+ * 			label: 'Article main content'
+ * 		}
+ * 	}
+ * } );
+ * ```
  */
 export interface RootConfig {
 
@@ -973,7 +1126,8 @@ export interface RootConfig {
 	element?: HTMLElement;
 
 	/**
-	 * The initial editor data to be used instead of the provided element's HTML content.
+	 * The initial editor data to be used instead of the HTML content of the
+	 * {@link module:core/editor/editorconfig~RootConfig#element source element}.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -987,7 +1141,7 @@ export interface RootConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * By default, the editor is initialized with the content of the element on which this editor is initialized.
+	 * By default, the editor is initialized with the content of the source element on which this editor root is initialized.
 	 * This configuration option lets you override this behavior and pass different initial data.
 	 * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
 	 *
@@ -1019,13 +1173,6 @@ export interface RootConfig {
 	 * ```
 	 *
 	 * See also {@link module:core/editor/editor~Editor.create Editor.create()} documentation for the editor implementation which you use.
-	 *
-	 * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
-	 * at the same time, root `initialData` is set, an error will be thrown as those two options exclude themselves.
-	 *
-	 * If `config.root.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
-	 * will be used to set `config.roots.main.initialData`. As a result, `config.roots.main.initialData` is always set
-	 * in the editor's config and plugins can read and/or modify it during initialization.
 	 */
 	initialData?: string;
 
@@ -1095,16 +1242,20 @@ export interface RootConfig {
 	placeholder?: string;
 
 	/**
-	 * Label text for the `aria-label` attribute set on editor editing area. Used by assistive technologies
+	 * Label which briefly describes this editing area.
+	 *
+	 * It is used for the `aria-label` attribute set on the editor editing area, helping assistive technologies
 	 * to tell apart multiple editor instances (editing areas) on the page. If not set, a default
 	 * "Rich Text Editor. Editing area [name of the area]" is used instead.
+	 *
+	 * It can also be used by other features when referring to this editing area (e.g. AI features).
 	 *
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( {
 	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		root: {
-	 * 			label: 'My editor'
+	 * 			label: 'Article main content'
 	 * 		}
 	 * 	} )
 	 * 	.then( ... )
@@ -1118,19 +1269,19 @@ export interface RootConfig {
 	 * 	roots: {
 	 * 		header: {
 	 * 			element: document.querySelector( '#header' ),
-	 * 			label: 'Header label'
+	 * 			label: 'Article header'
 	 * 		},
 	 * 		content: {
 	 * 			element: document.querySelector( '#content' ),
-	 * 			label: 'Content label'
+	 * 			label: 'Article main content'
 	 * 		},
-	 * 		leftSide: {
-	 * 			element: document.querySelector( '#left-side' ),
-	 * 			label: 'Left side label'
+	 * 		sideQuote: {
+	 * 			element: document.querySelector( '#side-quote' ),
+	 * 			label: 'Side-quote'
 	 * 		},
-	 * 		rightSide: {
-	 * 			element: document.querySelector( '#right-side' ),
-	 * 			label: 'Right side label'
+	 * 		relatedLinks: {
+	 * 			element: document.querySelector( '#related-links' ),
+	 * 			label: 'Related links'
 	 * 		}
 	 * 	}
 	 * } )
@@ -1150,8 +1301,11 @@ export interface RootConfig {
  */
 
 /**
- * The `config.initialData` option cannot be used together with `config.root.initialData` or
- * `config.roots.<rootName>.initialData` passed in the {@link module:core/editor/editor~Editor.create `Editor.create()`} configuration.
+ * The deprecated {@link module:core/editor/editorconfig~EditorConfig#initialData `config.initialData`} option cannot be used together
+ * with {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`} or
+ * {@link module:core/editor/editorconfig~RootConfig#initialData `config.roots.<rootName>.initialData`}.
+ * Use {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} or
+ * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} to set the initial data.
  *
  * @error editor-create-initial-data
  */
