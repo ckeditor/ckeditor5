@@ -26,8 +26,8 @@ There are two available types of watchdogs:
 
 ## Usage
 
-<info-box>
-	Note: A watchdog can be used only with an {@link getting-started/advanced/integrating-from-source-webpack editor built from source}.
+<info-box note>
+	A watchdog can be used only with an editor built from source.
 </info-box>
 
 ### Editor watchdog
