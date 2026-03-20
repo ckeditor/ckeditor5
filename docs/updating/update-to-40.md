@@ -349,7 +349,7 @@ We simplified the `srcset` model attribute that provides parameters for responsi
 
 #### Changes to content styles
 
-This release updated editor content styles. This means you need to update them in your editor implementation to avoid any discrepancies. Refer to the {@link getting-started/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
+This release updated editor content styles. This means you need to update them in your editor implementation to avoid any discrepancies. Refer to the {@link getting-started/setup/css Content styles} guide to learn how to generate the style sheet.
 
 ### Changes to the comments feature
 

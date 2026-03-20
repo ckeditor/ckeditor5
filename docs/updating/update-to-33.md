@@ -47,7 +47,7 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 
 ### Additional dependencies in CKEditor&nbsp;5 collaboration features
 
-The {@link getting-started/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
+Support for extending builds with extra plugins without rebuilding the bundle ("DLL builds") was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
 From now on, extra plugins will be required when you add the following CKEditor&nbsp;5 collaboration features to the editor:
 
@@ -141,7 +141,7 @@ From now on, extra plugins will be required when you add the following CKEditor&
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
 
-Starting with v33.0.0, all {@link module:engine/model/item~ModelItem items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and possible solutions, refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+Starting with v33.0.0, all {@link module:engine/model/item~ModelItem items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and possible solutions, refer to the {@link support/error-codes error codes documentation}.
 
 ### The `triggerBy` option in the downcast pipeline is now obsolete
 
