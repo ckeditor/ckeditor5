@@ -11,7 +11,8 @@ import {
 import { ReadOnlyEditor } from './read-only-build.js';
 
 ReadOnlyEditor
-	.create( document.querySelector( '#snippet-read-only' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-read-only' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

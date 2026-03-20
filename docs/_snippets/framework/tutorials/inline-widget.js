@@ -212,7 +212,8 @@ class PlaceholderEditing extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-inline-widget' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-inline-widget' ),
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 		toolbar: {
 			items: [

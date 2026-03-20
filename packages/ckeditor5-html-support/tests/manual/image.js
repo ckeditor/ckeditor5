@@ -11,7 +11,8 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			ArticlePluginSet,
 			LinkImage,

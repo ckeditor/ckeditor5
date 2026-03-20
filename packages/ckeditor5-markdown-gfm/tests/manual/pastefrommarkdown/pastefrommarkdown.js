@@ -24,7 +24,8 @@ import { PasteFromMarkdownExperimental } from '../../../src/pastefrommarkdownexp
 import { FontFamily } from '@ckeditor/ckeditor5-font';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			FontFamily,
 			PasteFromMarkdownExperimental,

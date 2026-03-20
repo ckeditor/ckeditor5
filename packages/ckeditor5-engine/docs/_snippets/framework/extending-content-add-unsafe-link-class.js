@@ -30,7 +30,8 @@ function AddClassToUnsafeLinks( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link-unsafe-classes' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-link-unsafe-classes' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ AddClassToUnsafeLinks ],
 		ui: {

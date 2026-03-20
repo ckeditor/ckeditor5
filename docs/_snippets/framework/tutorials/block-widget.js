@@ -357,7 +357,8 @@ function isSimpleBoxWidget( viewElement ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-block-widget' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-block-widget' ),
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, SimpleBox ],
 		toolbar: {
 			items: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]

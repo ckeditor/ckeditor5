@@ -184,7 +184,8 @@ function getTypeFromViewElement( viewElement ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor-custom-element-converter' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-custom-element-converter' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ InfoBox ],
 		image: {

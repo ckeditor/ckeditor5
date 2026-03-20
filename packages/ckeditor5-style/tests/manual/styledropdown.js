@@ -210,7 +210,8 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-full' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-full' ),
 		...config,
 		style: {
 			definitions: [
@@ -392,7 +393,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-just-inline' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-just-inline' ),
 		...config,
 		style: {
 			definitions: [
