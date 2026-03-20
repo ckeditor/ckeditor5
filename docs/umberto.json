@@ -89,7 +89,7 @@
 		"builds/guides/integration/basic-api.html": "getting-started/setup/editor-lifecycle.html",
 		"builds/guides/integration/configuration.html": "updating/nim-migration/migration-to-new-installation-methods.html",
 		"builds/guides/integration/content-styles.html": "getting-started/setup/css.html",
-		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
+		"builds/guides/integration/csp.html": "getting-started/setup/csp.html",
 		"builds/guides/integration/features-html-output-overview.html": "framework/architecture/plugins.html#plugins-and-html-output",
 		"builds/guides/integration/frameworks/angular.html": "getting-started/installation/cloud/angular.html",
 		"builds/guides/integration/frameworks/css.html": "getting-started/installation/css.html",
