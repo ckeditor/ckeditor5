@@ -50,7 +50,8 @@ class UIElementTestPlugin extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, UIElementTestPlugin ],
 		toolbar: [ 'undo', 'redo', 'bold', 'italic' ]
 	} )

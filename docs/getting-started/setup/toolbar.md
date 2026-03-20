@@ -35,7 +35,8 @@ The following example may give you a general idea:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
@@ -311,7 +312,10 @@ When using the Decoupled editor, you will need to insert the menu bar in a desir
 
 ```js
 DecoupledEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' ),
+		},
 		// ... Other configuration options ...
 		toolbar: [ 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ],
 	} )
@@ -363,7 +367,11 @@ To add this feature to your editor, add the `BlockToolbar` to your plugin list a
 ```js
 import { BlockToolbar, HeadingButtonsUI, ParagraphButtonUI } from 'ckeditor5';
 
-BalloonEditor.create( document.querySelector( '#editor' ), {
+BalloonEditor.create( {
+	root: {
+		element: document.querySelector( '#editor' ),
+		placeholder: 'Type here...'
+	},
 	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
 	blockToolbar: [

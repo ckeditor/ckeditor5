@@ -10,7 +10,8 @@ import { TableProperties } from '../../src/tableproperties.js';
 import { TableCellProperties } from '../../src/tablecellproperties.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, TableProperties, TableCellProperties ],
 		language: {

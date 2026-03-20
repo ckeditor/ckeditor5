@@ -10,7 +10,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph ],
 		toolbar: [ 'undo', 'redo' ]
 	} )

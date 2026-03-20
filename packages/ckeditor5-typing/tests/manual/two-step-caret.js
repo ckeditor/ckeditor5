@@ -11,7 +11,8 @@ import { Underline, Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { TwoStepCaretMovement } from '../../src/twostepcaretmovement.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor-ltr' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-ltr' ),
 		plugins: [ Essentials, Paragraph, Underline, Bold, Italic, TwoStepCaretMovement ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
 	} )
@@ -26,7 +27,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-rtl' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-rtl' ),
 		language: {
 			content: 'he'
 		},

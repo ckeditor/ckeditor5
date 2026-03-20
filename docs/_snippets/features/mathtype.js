@@ -23,7 +23,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#mathtype-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#mathtype-editor' ),
 		plugins: [
 			ArticlePluginSet,
 			CKBox,

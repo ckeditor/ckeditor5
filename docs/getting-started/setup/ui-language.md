@@ -62,7 +62,8 @@ import coreTranslations from 'ckeditor5/translations/pl.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			Essentials,
@@ -107,14 +108,15 @@ Load translation scripts alongside editor scripts to use the editor with a langu
 		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 	</head>
 	<body>
-		<div id="editor"></div>    
+		<div id="editor"></div>
 
 		<script>
 			const { ClassicEditor, Essentials, Paragraph, Bold, Italic } = CKEDITOR;
 			const { TableOfContents } = CKEDITOR_PREMIUM_FEATURES;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [
 						Essentials,
@@ -143,7 +145,8 @@ Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.l
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other con figuration options ...
 		language: {
 			// The UI will be English.

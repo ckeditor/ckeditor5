@@ -16,7 +16,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-wproofreader' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-wproofreader' ),
 		plugins: [
 			ArticlePluginSet,
 			IndentBlock,

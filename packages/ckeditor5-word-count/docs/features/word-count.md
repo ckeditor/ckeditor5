@@ -39,7 +39,8 @@ You can use the code below to set up the WYSIWYG editor with the word and charac
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// Configuration details.
 	} )
 	.then( editor => {
@@ -59,7 +60,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, WordCount } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ WordCount, /* ... */ ],
 		wordCount: {
@@ -106,7 +108,8 @@ You can execute your custom callback every time content statistics change by def
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		wordCount: {
 			onUpdate: stats => {
@@ -135,7 +138,10 @@ const circleCircumference = Math.floor( 2 * Math.PI * progressCircle.getAttribut
 const sendButton = document.querySelector( '.demo-update__send' );
 
 BalloonEditor
-	.create( document.querySelector( '#demo-update__editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#demo-update__editor' )
+		},
 		// Editor configuration.
 		wordCount: {
 			onUpdate: stats => {

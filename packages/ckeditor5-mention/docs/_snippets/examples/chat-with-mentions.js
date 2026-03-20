@@ -7,7 +7,8 @@ import { Underline, Strikethrough, Mention } from 'ckeditor5';
 import { CS_CONFIG, ClassicEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '.chat__editor' ), {
+	.create( {
+		attachTo: document.querySelector( '.chat__editor' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ Mention, MentionLinks, Underline, Strikethrough ],
 		toolbar: {

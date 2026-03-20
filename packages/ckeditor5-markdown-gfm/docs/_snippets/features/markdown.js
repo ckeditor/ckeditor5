@@ -28,7 +28,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-markdown' ),
 		plugins: [
 			ArticlePluginSet, SourceEditingEnhanced, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
 			CloudServices, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine

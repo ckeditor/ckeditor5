@@ -51,7 +51,8 @@ function HandleFontSizeValue( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-arbitrary-attribute-values' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-arbitrary-attribute-values' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ HandleFontSizeValue ],
 		toolbar: {

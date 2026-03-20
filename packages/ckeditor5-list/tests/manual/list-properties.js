@@ -69,7 +69,8 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-a' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-a' ),
 		...config,
 		list: {
 			properties: {
@@ -87,7 +88,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-b' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-b' ),
 		...config,
 		list: {
 			properties: {
@@ -105,7 +107,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-c' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-c' ),
 		...config,
 		list: {
 			properties: {
@@ -125,7 +128,8 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-d' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-d' ),
 		...config,
 		list: {
 			properties: {
@@ -143,7 +147,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-e' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-e' ),
 		...config,
 		list: {
 			properties: {
@@ -161,7 +166,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-f' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-f' ),
 		...config,
 		list: {
 			properties: {
@@ -181,7 +187,8 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-g' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-g' ),
 		...config,
 		list: {
 			properties: {
@@ -201,7 +208,8 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-h' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-h' ),
 		...config,
 		list: {
 			properties: {
@@ -221,7 +229,8 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-i' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-i' ),
 		...config,
 		menuBar: {
 			isVisible: true

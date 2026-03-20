@@ -80,7 +80,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-ghs' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-ghs' ),
 		...configWithoutPlugins,
 		plugins: [
 			...plugins,

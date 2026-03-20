@@ -11,7 +11,10 @@ import {
 } from '@snippets/index.js';
 
 BalloonEditor
-	.create( document.querySelector( '#snippet-balloon-editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#snippet-balloon-editor' )
+		},
 		removePlugins: [
 			'CKBox'
 		],

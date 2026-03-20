@@ -52,7 +52,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Bookmark } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bookmark, /* ... */ ],
 		toolbar: [ 'bookmark', /* ... */ ]
@@ -80,7 +81,8 @@ You can disable the automatic conversion by setting the {@link module:bookmark/b
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		bookmark: {
 			enableNonEmptyAnchorConversion: false
@@ -104,7 +106,8 @@ By default, the bookmark toolbar is configured as follows:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		bookmark: {
 			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
 		}
@@ -145,7 +148,8 @@ Once registered, the component can be used in the toolbar configuration:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ MyCustomPlugin, /* ... */ ],
 		bookmark: {
 			toolbar: [ 'myCustomBookmarkInfo', '|', 'editBookmark', 'removeBookmark' ]

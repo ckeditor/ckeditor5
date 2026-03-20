@@ -10,7 +10,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-managing-ckeditor-logo-position' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-managing-ckeditor-logo-position' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

@@ -35,7 +35,8 @@ ClassicEditor.builtinPlugins.push(
 	CKBoxImageEdit );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-horizontal-line' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-horizontal-line' ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

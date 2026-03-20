@@ -426,7 +426,8 @@ Enable the `MyCustomUploadAdapterPlugin` in the editor by using the {@link modul
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ MyCustomUploadAdapterPlugin, Essentials, Paragraph, Image, ImageUpload, /* ... */ ],
 		// More configuration options.
 		// ...
@@ -549,7 +550,8 @@ function MyCustomUploadAdapterPlugin( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ MyCustomUploadAdapterPlugin, Essentials, Paragraph, Image, ImageUpload, /* ... */ ],
 
 		// More configuration options.

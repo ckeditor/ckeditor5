@@ -38,7 +38,8 @@ Assuming that you have implemented some form of the `saveData()` function that s
 import { ClassicEditor, Autosave } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Autosave, /* ... */ ],
 
@@ -68,7 +69,8 @@ One second is the default waiting time before the next save action if nothing ha
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		autosave: {
 			waitingTime: 5000, // in ms
@@ -85,7 +87,8 @@ The demo example at the beginning of this guide shows a simple integration of th
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		autosave: {
 			save( editor ) {

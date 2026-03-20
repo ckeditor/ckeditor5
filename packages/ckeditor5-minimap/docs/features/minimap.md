@@ -33,7 +33,10 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { DecoupledEditor, Minimap } from 'ckeditor5';
 
 DecoupledEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Minimap, /* ... */ ],
 		minimap: {
@@ -57,7 +60,10 @@ The container element is essential for the minimap to render. You should pass th
 
 ```js
 DecoupledEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
 		// ... Other configuration options ...
 		minimap: {
 			container: document.querySelector( '.minimap-container' )
@@ -161,7 +167,10 @@ Finally, the JavaScript to run the editor (learn how to [install](#installation)
 
 ```js
 DecoupledEditor
-	.create( document.querySelector( '#editor-content' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor-content' )
+		},
 		// ... Other configuration options ...
 		minimap: {
 			container: document.querySelector( '.minimap-container' ),

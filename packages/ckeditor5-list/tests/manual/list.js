@@ -13,7 +13,8 @@ import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { LegacyList } from '../../src/legacylist.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Heading, Paragraph, Undo, LegacyList, Clipboard ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )

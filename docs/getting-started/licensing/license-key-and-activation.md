@@ -125,7 +125,7 @@ This key grants access to your subscription features. It does not consume editor
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.
 * **Editor loads**: It does not consume editor loads, regardless of the plan type.
-  
+
 <info-box important>
 	While the development key is meant as a means to extensive testing, please remember that testing outside local environments in the Cloud set up requires the production key and consumes editor loads. If you intend to use top-level domain, you need a production license key or [contact us](https://ckeditor.com/contact/) to get a self-hosted plan without usage metering.
 </info-box>
@@ -159,7 +159,9 @@ You need to add the license key to your CKEditor&nbsp;5 configuration. It is eno
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+
 		// Provide the licence key.
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 

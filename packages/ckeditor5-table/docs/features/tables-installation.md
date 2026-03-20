@@ -16,7 +16,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
@@ -35,7 +36,8 @@ Easily control your tables employing a dedicated toolbar.
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
@@ -51,7 +53,8 @@ To make every inserted table have `n` number of rows and columns as table header
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		table: {
 			defaultHeadings: { rows: 1, columns: 1 }
@@ -71,7 +74,8 @@ To enable table footers, set the optional table configuration property `enableFo
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		table: {
 			enableFooters: true
@@ -103,7 +107,8 @@ function DisallowNestingTables( editor ) {
 // Pass it via config.extraPlugins or config.plugins:
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		extraPlugins: [ DisallowNestingTables ],
 	} )

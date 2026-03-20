@@ -30,7 +30,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, SelectAll } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SelectAll, /* ... */ ],
 		toolbar: [ 'selectAll', /* ... */ ],

@@ -17,7 +17,8 @@ import { LegacyList } from '../../src/legacylist.js';
 import { LegacyTodoList } from '../../src/legacytodolist.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, LegacyList, LegacyTodoList, Clipboard ],
 		language: 'ar',
 		toolbar: [

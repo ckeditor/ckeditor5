@@ -11,7 +11,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Undo, Heading, Paragraph ],
 		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )

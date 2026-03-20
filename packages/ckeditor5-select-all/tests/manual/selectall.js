@@ -12,7 +12,8 @@ import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { Table } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic, Heading, Image, ImageCaption, Table ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'insertTable', '|', 'selectAll' ]
 	} )

@@ -20,7 +20,8 @@ const styleAsPlainText = document.querySelector( '#table-properties-styles' ).in
 document.querySelector( '#table-properties-styles-preview' ).innerText = styleAsPlainText;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableProperties, TableCellProperties ],
 		toolbar: [

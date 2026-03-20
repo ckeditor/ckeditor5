@@ -115,7 +115,8 @@ Here is how to configure the link toolbar:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		link: {
 			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'linkProperties', 'unlink' ]
 		}
@@ -136,7 +137,8 @@ For bookmark features, you can configure the toolbar like this:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		bookmark: {
 			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
 		}
@@ -174,7 +176,8 @@ Once registered, the component can be used in the toolbar configuration:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		link: {
 			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
 		}

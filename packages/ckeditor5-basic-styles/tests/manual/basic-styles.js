@@ -15,7 +15,8 @@ import { Subscript } from '../../src/subscript.js';
 import { Superscript } from '../../src/superscript.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, Underline, Code, Subscript, Superscript ],
 		toolbar: [ 'bold', 'italic', 'strikethrough', 'underline', 'code', 'undo', 'redo', 'subscript', 'superscript' ],
 		menuBar: { isVisible: true }
