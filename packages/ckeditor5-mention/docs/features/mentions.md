@@ -45,6 +45,10 @@ ClassicEditor
 ```
 </code-switcher>
 
+## Unsupported contexts
+
+The mention autocompletion is automatically disabled inside {@link features/code-blocks code blocks}. Typing a mention marker (such as `@`) inside a code block will not trigger the autocomplete panel. This also applies to features built on top of mentions, such as {@link features/slash-commands slash commands} and {@link features/emoji emoji} autocompletion.
+
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mentionconfig~MentionFeed `feed`} and a {@link module:mention/mentionconfig~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
