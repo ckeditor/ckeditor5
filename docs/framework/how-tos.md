@@ -38,7 +38,7 @@ plugins: [
 ]
 ```
 
-Learn more about {@link updating/nim-migration/custom-plugins building CKEditor 5 using webpack}.
+Learn more about {@link updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
 
 ### How to add an attribute to the editor editable in DOM?
 
