@@ -69,12 +69,23 @@ export function normalizeRootsConfig(
 		const rootConfig = rootsConfig[ rootName ] || Object.create( null );
 		const sourceElementOrDataForRoot = sourceElementIsPlainObject ? sourceElementsOrData[ rootName ] : sourceElementsOrData;
 
+		// Assign `sourceElement` to root config if it's an element.
+		if ( !separateAttachTo && isElement( sourceElementOrDataForRoot ) ) {
+			if ( rootConfig.element ) {
+				// Documented in core/editor/editorconfig.ts.
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-create-roots-element-conflict', null );
+			}
+
+			rootConfig.element = sourceElementOrDataForRoot;
+		}
+
 		// No dedicated initial data for the root.
 		if ( rootConfig.initialData === undefined ) {
 			// No legacy initial data for the root, either.
 			if ( legacyInitialData[ rootName ] === undefined ) {
 				// Use source element data or data itself as a string.
-				// Fall back to `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
+				// Fall back to legacy sourceElement, `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
 				rootConfig.initialData = getInitialData(
 					sourceElementOrDataForRoot || rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
 				);
@@ -103,11 +114,6 @@ export function normalizeRootsConfig(
 			throw new CKEditorError( 'editor-create-roots-initial-data' );
 		}
 
-		// Assign `sourceElement` to root config if it's an element.
-		if ( !separateAttachTo && isElement( sourceElementOrDataForRoot ) ) {
-			rootConfig.element = sourceElementOrDataForRoot;
-		}
-
 		// Handle legacy `config.placeholder` and `config.label` for the root.
 		rootConfig.placeholder ??= getLegacyPlainConfigValue( config, 'placeholder', rootName );
 		rootConfig.label ??= getLegacyPlainConfigValue( config, 'label', rootName );
@@ -117,7 +123,13 @@ export function normalizeRootsConfig(
 
 	// The ClassicEditor has a special separate config option `attachTo`.
 	// It is used as a source of editor data and attachment element, but not the root element.
-	if ( separateAttachTo && config.get( 'attachTo' ) === undefined && isElement( sourceElementsOrData ) ) {
+	if ( separateAttachTo && isElement( sourceElementsOrData ) ) {
+		if ( config.get( 'attachTo' ) ) {
+			// Documented in core/editor/editorconfig.ts.
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+			throw new CKEditorError( 'editor-create-attachto-conflict', null );
+		}
+
 		config.set( 'attachTo', sourceElementsOrData );
 	}
 

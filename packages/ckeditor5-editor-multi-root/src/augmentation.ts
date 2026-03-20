@@ -22,7 +22,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * HTML). In roots attributes, for each root, you can store arbitrary key-value pairs with attributes connected with that root.
 		 * Use it to store any custom data that is specific to your integration or custom features.
 		 *
-		 * Currently, roots attributes are not used only by any official plugins. This is a mechanism that is prepared for custom features
+		 * Currently, roots attributes are not used by any official plugins. This is a mechanism that is prepared for custom features
 		 * and non-standard integrations. If you do not provide any custom feature that would use root attributes, you do not need to
 		 * handle (save and load) this property.
 		 *
@@ -91,8 +91,12 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * Flag for the root that exist in the document but is not initially loaded by the editor.
 		 *
-		 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following
-		 * known limitations:**
+		 * **This property has been deprecated and will be removed in the future versions of CKEditor.**
+		 *
+		 * **Note: This configuration option is supported only by the
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
+		 *
+		 * **Important! Lazy roots loading is an experimental feature. Be advised of the following known limitations:**
 		 *
 		 * * **Real-time collaboration integrations that use
 		 * [uploaded editor bundles](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) are not supported. Using
@@ -109,11 +113,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		 *
 		 * This is useful for handling big documents that contain hundreds of roots, or contain very large roots, which may have
 		 * impact editor performance if loaded all at once.
-		 *
-		 * **Note: This configuration option is supported only by the
-		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
-		 *
-		 * **Note: This property has been deprecated and will be removed in the future versions of CKEditor.**
 		 *
 		 * @deprecated
 		 */

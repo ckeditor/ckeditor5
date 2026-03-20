@@ -24,7 +24,8 @@ import {
 	decodeLicenseKey,
 	isFeatureBlockedByLicenseKey,
 	type CollectionAddEvent,
-	type DecoratedMethodEvent
+	type DecoratedMethodEvent,
+	type Config
 } from '@ckeditor/ckeditor5-utils';
 
 import { MultiRootEditorUI } from './multirooteditorui.js';
@@ -117,6 +118,7 @@ export class MultiRootEditor extends Editor {
 		super( editorConfig );
 
 		normalizeRootsConfig( sourceElementsOrData, this.config, false );
+		normalizeRootsAttributesConfig( this.config );
 
 		if ( isElement( this.config.get( 'attachTo' ) ) ) {
 			// Documented in core/editor/editorconfig.ts.
@@ -131,16 +133,6 @@ export class MultiRootEditor extends Editor {
 			 * @error multi-root-editor-root-deprecated-config-lazy-roots
 			 */
 			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-lazy-roots', null );
-		}
-
-		if ( this.config.get( 'rootsAttributes' ) ) {
-			/**
-			 * Using deprecated `config.rootsAttributes` configuration option.
-			 * Use `config.roots.<rootName>.modelAttributes` instead.
-			 *
-			 * @error multi-root-editor-root-deprecated-config-roots-attributes
-			 */
-			throw new CKEditorError( 'multi-root-editor-root-deprecated-config-roots-attributes', null );
 		}
 
 		// From this point use only normalized `roots.<rootName>.element`, etc.
@@ -1242,6 +1234,44 @@ function extractRootsConfigField<K extends keyof RootConfig>(
 			.map( ( [ rootName, config ] ) => [ rootName, config[ key ] ] )
 			.filter( ( [ , value ] ) => value !== undefined )
 	);
+}
+
+/**
+ * Normalize legacy `config.rootsAttributes` config option to `config.roots.<rootName>.modelAttributes`.
+ */
+function normalizeRootsAttributesConfig( config: Config<EditorConfig> ): void {
+	if ( config.get( 'rootsAttributes' ) ) {
+		const rootsAttributes = config.get( 'rootsAttributes' )!;
+		const rootsConfig = config.get( 'roots' )!;
+
+		for ( const [ rootName, attributes ] of Object.entries( rootsAttributes ) ) {
+			const rootConfig = rootsConfig[ rootName ];
+
+			if ( !rootConfig ) {
+				/**
+				 * Trying to set attributes on a non-existing root.
+				 *
+				 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
+				 * editor roots.
+				 *
+				 * @error multi-root-editor-root-attributes-no-root
+				 */
+				throw new CKEditorError( 'multi-root-editor-root-attributes-no-root', null );
+			}
+
+			if ( Object.keys( rootConfig.modelAttributes || {} ).length ) {
+				/**
+				 * Trying to set attributes using deprecated `config.rootsAttributes` on a root that has already
+				 * defined attributes using `config.roots.<rootName>.modelAttributes`.
+				 *
+				 * @error multi-root-editor-root-attributes-conflict
+				 */
+				throw new CKEditorError( 'multi-root-editor-root-attributes-conflict', null );
+			}
+
+			config.set( `roots.${ rootName }.modelAttributes`, attributes );
+		}
+	}
 }
 
 function isElement( value: any ): value is Element {

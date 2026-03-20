@@ -440,6 +440,46 @@ describe( 'normalizeRootsConfig()', () => {
 			expect( roots.foo.element ).to.equal( fooEl );
 			expect( roots.bar.element ).to.equal( barEl );
 		} );
+
+		it( 'should throw when source element conflicts with rootConfig.element', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>source</p>';
+
+			const existingElement = document.createElement( 'div' );
+			existingElement.innerHTML = '<p>existing</p>';
+
+			config.set( 'roots', { main: { element: existingElement } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( sourceElement, config );
+			}, /^editor-create-roots-element-conflict/ );
+		} );
+
+		it( 'should throw when source element conflicts with rootConfig.element for multi-root', () => {
+			const fooEl = document.createElement( 'div' );
+			fooEl.innerHTML = '<p>source</p>';
+
+			const existingEl = document.createElement( 'div' );
+			existingEl.innerHTML = '<p>existing</p>';
+
+			config.set( 'roots', { foo: { element: existingEl } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( { foo: fooEl }, config, false );
+			}, /^editor-create-roots-element-conflict/ );
+		} );
+
+		it( 'should throw when config.attachTo is already set and source is an element with separateAttachTo', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>source</p>';
+
+			const existingAttachTo = document.createElement( 'div' );
+			config.set( 'attachTo', existingAttachTo );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( sourceElement, config, 'main', true );
+			}, /^editor-create-attachto-conflict/ );
+		} );
 	} );
 
 	describe( 'normalizeSingleRootEditorConstructorParams()', () => {
