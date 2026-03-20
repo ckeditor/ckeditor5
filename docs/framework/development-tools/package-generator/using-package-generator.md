@@ -40,7 +40,8 @@ Available modifiers for the command are:
 
 ## Choosing the method
 
-Currently, a package can be generated in one of two modes of supported installation methods for CKEditor&nbsp;5 :
+Currently, a package can be generated in one of two modes of supported installation methods for CKEditor&nbsp;5:
+
 * The package will only support the current installation methods if the value for the `--installation-methods` flag is set to `current`. This approach makes it easier to create CKEditor&nbsp;5 plugin at the cost of not supporting the old installation methods.
 * The package generator creates bundles for both the current installation methods and legacy installation methods if the value for the `--installation-methods` flag is set to `current-and-legacy`.
 
@@ -62,6 +63,7 @@ npm run start
 Now the plugin can be seen within the example editor.
 
 You can check out what is available inside your package depending on the language you used:
+
 * {@link framework/development-tools/package-generator/javascript-package JavaScript}
 * {@link framework/development-tools/package-generator/typescript-package TypeScript}
 
