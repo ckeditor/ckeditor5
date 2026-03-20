@@ -179,7 +179,7 @@ await watchdog.add( [ {
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 }, {
 	id: 'editor2',
 	type: 'editor',
@@ -188,7 +188,7 @@ await watchdog.add( [ {
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 } ] );
 
 // Or:
@@ -200,7 +200,7 @@ await watchdog.add( {
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 } );
 
 await watchdog.add( {
@@ -211,7 +211,7 @@ await watchdog.add( {
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 } );
 ```
 </code-switcher>

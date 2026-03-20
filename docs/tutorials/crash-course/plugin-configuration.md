@@ -16,7 +16,8 @@ As we learned at the beginning of this tutorial, the editor accepts a configurat
 In this tutorial, we will add a single option to the `highlight` plugin to configure its keyboard shortcut. This configuration will be included in an optional `highlight` key:
 
 ```js
-const editor = await ClassicEditor.create( element, {
+const editor = await ClassicEditor.create( {
+	attachTo: element,
 	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	// Other options are omitted for readability - do not remove them.
 	highlight: {
@@ -85,7 +86,8 @@ Let's test our changes. In the browser, select some of the text in the editor an
 Then, open the `src/main.js` file and update the editor's configuration to change the highlight keyboard shortcut to <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>9</kbd>:
 
 ```js
-const editor = await ClassicEditor.create( element, {
+const editor = await ClassicEditor.create( {
+	attachTo: element,
 	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	// Other options are omitted for readability - do not remove them.
 	highlight: {
