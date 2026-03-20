@@ -395,6 +395,21 @@ describe( 'MultiRootEditor', () => {
 				.catch( done );
 		} );
 
+		it( 'throws error when source element conflicts with config.roots.<rootName>.element', () => {
+			const fooEl = document.createElement( 'div' );
+			fooEl.innerHTML = '<p>Foo</p>';
+
+			const existingEl = document.createElement( 'div' );
+
+			expect( () => {
+				// eslint-disable-next-line no-new
+				new MultiRootEditor(
+					{ foo: fooEl },
+					{ roots: { foo: { element: existingEl } } }
+				);
+			} ).to.throw( CKEditorError, 'editor-create-roots-element-conflict' );
+		} );
+
 		it( 'throws error when deprecated config.lazyRoots is used', done => {
 			MultiRootEditor.create( editorData, {
 				lazyRoots: [ 'baz' ]

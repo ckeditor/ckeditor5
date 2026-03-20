@@ -182,6 +182,18 @@ describe( 'InlineEditor', () => {
 					} );
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
+
+			it( 'it should throw if source element and config.root.element are both set', () => {
+				const sourceElement = document.createElement( 'div' );
+				sourceElement.innerHTML = '<p>Foo</p>';
+
+				const existingElement = document.createElement( 'div' );
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new InlineEditor( sourceElement, { root: { element: existingElement } } );
+				} ).to.throw( CKEditorError, 'editor-create-roots-element-conflict' );
+			} );
 		} );
 
 		describe( 'config-only constructor', () => {

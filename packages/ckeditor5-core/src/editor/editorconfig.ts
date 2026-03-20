@@ -1141,6 +1141,14 @@ export interface RootConfig {
 	label?: string;
 }
 
+// TODO make below error descriptions more verbose and actionable
+/**
+ * The `sourceElementOrData`, the first parameter of {@link module:core/editor/editor~Editor.create `Editor.create()`}
+ * cannot be used together with `config.root.element` or `config.roots.<rootName>.element` passed in the configuration.
+ *
+ * @error editor-create-roots-element-conflict
+ */
+
 /**
  * The `config.initialData` option cannot be used together with `config.root.initialData` or
  * `config.roots.<rootName>.initialData` passed in the {@link module:core/editor/editor~Editor.create `Editor.create()`} configuration.
@@ -1158,6 +1166,13 @@ export interface RootConfig {
  * The `config.attachTo` option is available only for the {@link module:editor-classic/classiceditor~ClassicEditor}.
  *
  * @error editor-create-attachto-ignored
+ */
+
+/**
+ * The `sourceElementOrData`, the first parameter of {@link module:core/editor/editor~Editor.create `Editor.create()`}
+ * cannot be used together with `config.attachTo` passed in the configuration.
+ *
+ * @error editor-create-attachto-conflict
  */
 
 /**

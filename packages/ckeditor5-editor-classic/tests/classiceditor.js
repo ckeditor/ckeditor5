@@ -230,6 +230,18 @@ describe( 'ClassicEditor', () => {
 					} );
 				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
 			} );
+
+			it( 'it should throw if source element and config.attachTo are both set', () => {
+				const sourceElement = document.createElement( 'div' );
+				sourceElement.innerHTML = '<p>Foo</p>';
+
+				const attachToElement = document.createElement( 'div' );
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( sourceElement, { attachTo: attachToElement } );
+				} ).to.throw( CKEditorError, 'editor-create-attachto-conflict' );
+			} );
 		} );
 
 		describe( 'config-only constructor', () => {
