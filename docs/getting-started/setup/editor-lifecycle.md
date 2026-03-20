@@ -79,7 +79,7 @@ import { DecoupledEditor, Essentials } from 'ckeditor5';
 DecoupledEditor
 	.create( {
 		root: {
-			attachTo: document.querySelector( '#editor' ),
+			element: document.querySelector( '#editor' ),
 		},
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
