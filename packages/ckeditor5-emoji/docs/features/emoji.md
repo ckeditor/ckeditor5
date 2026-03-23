@@ -68,8 +68,9 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
+
 			// ... Other configuration options ...
 			emoji: {
 				dropdownLimit: 5
@@ -83,8 +84,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				skinTone: 'medium'
@@ -102,8 +103,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				definitionsUrl: 'https://example.com/emoji-definitions.json'
@@ -117,8 +118,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				version: 15
@@ -132,8 +133,8 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			// ... Other configuration options ...
 			emoji: {
 				useCustomFont: true
