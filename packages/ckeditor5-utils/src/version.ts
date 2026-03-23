@@ -127,7 +127,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <summary>(Legacy) Default imports and `src` imports</summary>
 	 *
 	 * If you use the legacy customized installation
-	 * method, you should only import { code } from the `@ckeditor/ckeditor5-<NAME>` packages. While you can import { code } from
+	 * method, you should only import code from the `@ckeditor/ckeditor5-<NAME>` packages. While you can import code from
 	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
 	 * methods more difficult.
 	 *
