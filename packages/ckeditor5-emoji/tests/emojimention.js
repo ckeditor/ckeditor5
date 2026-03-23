@@ -7,6 +7,7 @@ import { Typing } from '@ckeditor/ckeditor5-typing';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -884,6 +885,41 @@ describe( 'EmojiMention', () => {
 
 			await editor.destroy();
 			editorElement.remove();
+		} );
+	} );
+
+	describe( 'code block integration', () => {
+		it( 'should not activate emoji autocomplete inside a code block', async () => {
+			await editor.destroy();
+
+			const editorElement2 = document.createElement( 'div' );
+			document.body.appendChild( editorElement2 );
+
+			const codeBlockEditor = await ClassicTestEditor.create( editorElement2, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention, CodeBlock ]
+			} );
+
+			mockEmojiRepositoryValues( codeBlockEditor );
+
+			const mentionCommand = codeBlockEditor.commands.get( 'mention' );
+
+			_setModelData( codeBlockEditor.model, '<codeBlock language="plaintext">foo []</codeBlock>' );
+
+			codeBlockEditor.model.change( writer => {
+				writer.insertText( ':ro', codeBlockEditor.model.document.selection.getFirstPosition() );
+			} );
+
+			expect( mentionCommand.isEnabled ).to.be.false;
+
+			await codeBlockEditor.destroy();
+			editorElement2.remove();
+
+			// Recreate the default editor so afterEach() can destroy it.
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
+			} );
+
+			mockEmojiRepositoryValues( editor );
 		} );
 	} );
 
