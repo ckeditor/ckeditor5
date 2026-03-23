@@ -78,31 +78,26 @@ If your editor implementation uses multiple roots, configure placeholders using 
 
 ```js
 MultiRootEditor
-	.create(
-	// Roots for the editor:
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		// Config:
-		{
-			roots: {
-				header: {
-					placeholder: 'Type header...'
-				},
-				content: {
-					placeholder: 'Type content...'
-				},
-				leftSide: {
-					placeholder: 'Type left-side...'
-				},
-				rightSide: {
-					placeholder: 'Type right-side...'
-				}
+	.create( {
+		roots: {
+			header: {
+				placeholder: 'Type header...',
+				element: document.querySelector( '#header' )
+			},
+			content: {
+				placeholder: 'Type content...',
+				element: document.querySelector( '#content' )
+			},
+			leftSide: {
+				placeholder: 'Type left-side...',
+				element: document.querySelector( '#left-side' )
+			},
+			rightSide: {
+				placeholder: 'Type right-side...',
+				element: document.querySelector( '#right-side' )
 			}
-		} )
+		}
+	} )
 	.then( editor => {
 		console.log( editor );
 	} )
