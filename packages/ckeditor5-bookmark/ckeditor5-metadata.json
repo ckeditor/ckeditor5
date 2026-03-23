@@ -5,12 +5,12 @@
 			"className": "Bookmark",
 			"description": "Allows to insert a bookmark into the content to provide fast access to important sections.",
 			"docs": "features/bookmarks.html",
-			"path": "src/bookmark.js",
+			"path": "src/bookmark.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "bookmark",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bookmark.svg"
+					"iconName": "IconBookmark"
 				}
 			],
 			"htmlOutput": [

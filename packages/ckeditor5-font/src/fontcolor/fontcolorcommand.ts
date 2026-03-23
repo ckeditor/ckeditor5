@@ -7,7 +7,7 @@
  * @module font/fontcolor/fontcolorcommand
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 import { FontCommand } from '../fontcommand.js';
 import { FONT_COLOR } from '../utils.js';
 

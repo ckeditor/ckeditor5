@@ -135,14 +135,14 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
-		describe( 'config.initialData', () => {
+		describe( 'config.roots.main.initialData', () => {
 			it( 'if not set, is set using DOM element data', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
 				const editor = new ClassicEditor( editorElement );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -153,7 +153,7 @@ describe( 'ClassicEditor', () => {
 			it( 'if not set, is set using data passed in constructor', async () => {
 				const editor = new ClassicEditor( '<p>Foo</p>' );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -165,7 +165,7 @@ describe( 'ClassicEditor', () => {
 
 				const editor = new ClassicEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -176,6 +176,123 @@ describe( 'ClassicEditor', () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root and config.roots.main is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( editorElement, {
+						root: { initialData: '<p>abc</p>' },
+						roots: { main: { initialData: '<p>Bar</p>' } }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+
+			it( 'it should throw if config.initialData and config.root.initialData is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( editorElement, {
+						initialData: '<p>abc</p>',
+						root: { initialData: '<p>abc</p>' }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+
+			it( 'it should throw if config.initialData and config.roots.main.initialData is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( editorElement, {
+						initialData: '<p>abc</p>',
+						roots: { main: { initialData: '<p>abc</p>' } }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+		} );
+
+		describe( 'config-only constructor', () => {
+			it( 'should create editor with config.root.initialData', async () => {
+				const editor = new ClassicEditor( {
+					root: {
+						initialData: '<p>Foo</p>'
+					}
+				} );
+
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should create editor with config.attachTo and use data from it', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Bar</p>';
+
+				const editor = new ClassicEditor( {
+					attachTo: el
+				} );
+
+				expect( editor.sourceElement ).to.equal( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should create editor with config.attachTo and use root.initialData', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Bar</p>';
+
+				const editor = new ClassicEditor( {
+					attachTo: el,
+					root: {
+						initialData: '<p>Foo</p>'
+					}
+				} );
+
+				expect( editor.sourceElement ).to.equal( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should log warning when config.root.element is set', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Foo</p>';
+
+				const editor = new ClassicEditor( {
+					root: {
+						element: el
+					}
+				} );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-conflict' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
 			} );
 		} );
 	} );
@@ -278,6 +395,63 @@ describe( 'ClassicEditor', () => {
 					expect( newEditor.sourceElement ).to.be.undefined;
 
 					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'creates editor from config-only', () => {
+			return ClassicEditor
+				.create( {
+					root: { initialData: '<p>Hello world!</p>' },
+					plugins: [ Paragraph ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'creates editor from config-only with attachTo and initialData', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>Bar</p>';
+			document.body.appendChild( el );
+
+			return ClassicEditor
+				.create( {
+					attachTo: el,
+					root: { initialData: '<p>Hello world!</p>' },
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.equal( el );
+
+					return newEditor.destroy();
+				} )
+				.then( () => {
+					el.remove();
+				} );
+		} );
+
+		it( 'creates editor from config-only with attachTo', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>Hello world!</p>';
+			document.body.appendChild( el );
+
+			return ClassicEditor
+				.create( {
+					attachTo: el,
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.equal( el );
+
+					return newEditor.destroy();
+				} )
+				.then( () => {
+					el.remove();
 				} );
 		} );
 

@@ -5,7 +5,7 @@
 			"className": "Autosave",
 			"description": "Allows you to automatically save the data (e.g. send it to the server) when needed, for example, when the user changed the content.",
 			"docs": "features/autosave.html",
-			"path": "src/autosave.js"
+			"path": "src/autosave.ts"
 		}
 	]
 }

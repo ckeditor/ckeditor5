@@ -27,6 +27,9 @@ import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen';
 // For simplicity this is not blocked right now by the license key. We can do that later.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code,
 			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
@@ -74,7 +77,6 @@ ClassicEditor
 				'imageStyle:inline', 'imageStyle:breakText', 'imageStyle:wrapText'
 			]
 		},
-		placeholder: 'Type the content here!',
 		mention: {
 			feeds: [
 				{

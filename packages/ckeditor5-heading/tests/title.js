@@ -37,7 +37,7 @@ describe( 'Title', () => {
 	} );
 
 	it( 'should requires Paragraph plugin', () => {
-		expect( Title.requires ).to.have.members( [ 'Paragraph' ] );
+		expect( Title.requires ).to.have.members( [ Paragraph ] );
 	} );
 
 	it( 'should have plugin name property', () => {
@@ -722,7 +722,9 @@ describe( 'Title', () => {
 					title: {
 						placeholder: 'foo'
 					},
-					placeholder: 'bar'
+					root: {
+						placeholder: 'bar'
+					}
 				} ).then( _editor => {
 					editor = _editor;
 					model = editor.model;

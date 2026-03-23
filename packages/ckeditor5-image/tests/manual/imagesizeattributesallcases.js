@@ -312,7 +312,7 @@ async function initEditors() {
 
 		const domElement = document.querySelector( `#${ editorObj.id }` );
 
-		const editor = await ClassicEditor.create( domElement, { ...editorObj.config, initialData: editorObj.data } );
+		const editor = await ClassicEditor.create( domElement, { ...editorObj.config, root: { initialData: editorObj.data } } );
 
 		window[ editorObj.id ] = editor;
 

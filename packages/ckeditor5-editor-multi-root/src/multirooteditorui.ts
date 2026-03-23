@@ -9,15 +9,15 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
-import { enableViewPlaceholder } from 'ckeditor5/src/engine.js';
+import { enableViewPlaceholder } from '@ckeditor/ckeditor5-engine';
 
 import { type MultiRootEditorUIView } from './multirooteditoruiview.js';
 
@@ -203,11 +203,7 @@ export class MultiRootEditorUI extends EditorUI {
 	 */
 	private _initPlaceholder( editable: InlineEditableUIView, placeholder?: string ): void {
 		if ( !placeholder ) {
-			const configPlaceholder = this.editor.config.get( 'placeholder' );
-
-			if ( configPlaceholder ) {
-				placeholder = typeof configPlaceholder === 'string' ? configPlaceholder : configPlaceholder[ editable.name! ];
-			}
+			placeholder = this.editor.config.get( 'roots' )![ editable.name! ]?.placeholder;
 		}
 
 		const editingView = this.editor.editing.view;

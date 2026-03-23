@@ -44,16 +44,19 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			// Create initial data object containing data from all roots.
-			const initialData = {};
+		// Populate missing initial data for roots from source elements while preserving
+		// any root configuration passed by the integration (for example placeholders).
+		const roots = this.config.get( 'roots' ) || {};
 
-			for ( const rootName of Object.keys( sourceElements ) ) {
-				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
+		for ( const rootName of Object.keys( sourceElements ) ) {
+			roots[ rootName ] = roots[ rootName ] || {};
+
+			if ( roots[ rootName ].initialData === undefined ) {
+				roots[ rootName ].initialData = getDataFromElement( sourceElements[ rootName ] );
 			}
-
-			this.config.set( 'initialData', initialData );
 		}
+
+		this.config.set( 'roots', roots );
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
@@ -104,7 +107,9 @@ class MultirootEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
+					.then( () => editor.data.init( Object.fromEntries(
+						Object.entries( editor.config.get( 'roots' ) ).map( ( [ rootName, rootConfig ] ) => [ rootName, rootConfig.initialData ?? '' ] )
+					) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
@@ -275,7 +280,7 @@ class MultirootEditorUI extends EditorUI {
 			const editingRoot = editingView.document.getRoot( editable.name );
 			const sourceElement = this.getEditableElement( editable.name );
 
-			const placeholderText = editor.config.get( 'placeholder' )[ editable.name ] ||
+			const placeholderText = editor.config.get( 'roots' )[ editable.name ]?.placeholder ||
 				sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
 
 			if ( placeholderText ) {
@@ -441,11 +446,19 @@ MultirootEditor
 				'mergeTableCells'
 			]
 		},
-		placeholder: {
-			header: 'Header text goes here',
-			content: 'Type content here',
-			footerleft: 'Left footer content',
-			footerright: 'Right footer content'
+		roots: {
+			header: {
+				placeholder: 'Header text goes here'
+			},
+			content: {
+				placeholder: 'Type content here'
+			},
+			footerleft: {
+				placeholder: 'Left footer content'
+			},
+			footerright: {
+				placeholder: 'Right footer content'
+			}
 		},
 	} )
 	.then( newEditor => {

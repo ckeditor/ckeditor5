@@ -9,14 +9,14 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
-import { enableViewPlaceholder } from 'ckeditor5/src/engine.js';
+import { enableViewPlaceholder } from '@ckeditor/ckeditor5-engine';
 
 import { type BalloonEditorUIView } from './ballooneditoruiview.js';
 
@@ -113,14 +113,10 @@ export class BalloonEditorUI extends EditorUI {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editingRoot = editingView.document.getRoot()!;
-		const placeholder = editor.config.get( 'placeholder' );
+		const placeholder = editor.config.get( 'roots' )![ editingRoot.rootName ].placeholder;
 
 		if ( placeholder ) {
-			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
-
-			if ( placeholderText ) {
-				editingRoot.placeholder = placeholderText;
-			}
+			editingRoot.placeholder = placeholder;
 		}
 
 		enableViewPlaceholder( {

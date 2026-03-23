@@ -5,12 +5,12 @@
 			"className": "FontBackgroundColor",
 			"description": "Introduces font background color support with a configurable color palette panel.",
 			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
-			"path": "src/fontbackgroundcolor.js",
+			"path": "src/fontbackgroundcolor.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
 					"name": "fontBackgroundColor",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-background.svg"
+					"iconName": "IconFontBackground"
 				}
 			],
 			"htmlOutput": [
@@ -25,12 +25,12 @@
 			"className": "FontColor",
 			"description": "Introduces font color support with a configurable color palette panel.",
 			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
-			"path": "src/fontcolor.js",
+			"path": "src/fontcolor.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
 					"name": "fontColor",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-color.svg"
+					"iconName": "IconFontColor"
 				}
 			],
 			"htmlOutput": [
@@ -45,12 +45,12 @@
 			"className": "FontSize",
 			"description": "Introduces font size support.",
 			"docs": "features/font.html#configuring-the-font-size-feature",
-			"path": "src/fontsize.js",
+			"path": "src/fontsize.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
 					"name": "fontSize",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-size.svg"
+					"iconName": "IconFontSize"
 				}
 			],
 			"htmlOutput": [
@@ -84,12 +84,12 @@
 			"className": "FontFamily",
 			"description": "Introduces font family support.",
 			"docs": "features/font.html#configuring-the-font-family-feature",
-			"path": "src/fontfamily.js",
+			"path": "src/fontfamily.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
 					"name": "fontFamily",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/font-family.svg"
+					"iconName": "IconFontFamily"
 				}
 			],
 			"htmlOutput": [

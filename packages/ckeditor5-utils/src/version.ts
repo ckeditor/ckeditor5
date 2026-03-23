@@ -148,7 +148,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <details>
 	 * <summary>(Legacy) DLL builds</summary>
 	 *
-	 * If you are using legacy DLL builds,
+	 * If you are using the {@glink updating/nim-migration/dll-builds legacy DLL builds},
 	 * you should not import any non-DLL modules.
 	 *
 	 * Examples of valid and invalid import paths:

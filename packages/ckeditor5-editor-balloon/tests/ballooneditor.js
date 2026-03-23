@@ -102,14 +102,14 @@ describe( 'BalloonEditor', () => {
 				.catch( done );
 		} );
 
-		describe( 'config.initialData', () => {
+		describe( 'config.roots.main.initialData', () => {
 			it( 'if not set, is set using DOM element data', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
 				const editor = new BalloonEditor( editorElement );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -118,7 +118,7 @@ describe( 'BalloonEditor', () => {
 			it( 'if not set, is set using data passed in constructor', async () => {
 				const editor = new BalloonEditor( '<p>Foo</p>' );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -130,7 +130,7 @@ describe( 'BalloonEditor', () => {
 
 				const editor = new BalloonEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
-				expect( editor.config.get( 'initialData' ) ).to.equal( '<p>Bar</p>' );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -141,6 +141,136 @@ describe( 'BalloonEditor', () => {
 					// eslint-disable-next-line no-new
 					new BalloonEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
 				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+			} );
+
+			it( 'it should throw if config.root and config.roots.main is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( editorElement, {
+						root: { initialData: '<p>abc</p>' },
+						roots: { main: { initialData: '<p>Bar</p>' } }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+
+			it( 'it should throw if config.initialData and config.root.initialData is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( editorElement, {
+						initialData: '<p>abc</p>',
+						root: { initialData: '<p>abc</p>' }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+
+			it( 'it should throw if config.initialData and config.roots.main.initialData is set', () => {
+				const editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( editorElement, {
+						initialData: '<p>abc</p>',
+						roots: { main: { initialData: '<p>abc</p>' } }
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+			} );
+		} );
+
+		describe( 'config-only constructor', () => {
+			it( 'should create editor with config.root.initialData', async () => {
+				const editor = new BalloonEditor( {
+					root: {
+						initialData: '<p>Foo</p>'
+					}
+				} );
+
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should create editor with config.root.element', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Bar</p>';
+
+				const editor = new BalloonEditor( {
+					root: {
+						element: el
+					}
+				} );
+
+				expect( editor.sourceElement ).to.equal( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should create editor with config.root.element and initialData', async () => {
+				const el = document.createElement( 'div' );
+				el.innerHTML = '<p>Foo</p>';
+
+				const editor = new BalloonEditor( {
+					root: {
+						element: el,
+						initialData: '<p>Bar</p>'
+					}
+				} );
+
+				expect( editor.sourceElement ).to.equal( el );
+				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should log warning when config.attachTo is set', async () => {
+				const el = document.createElement( 'div' );
+
+				const editor = new BalloonEditor( {
+					attachTo: el,
+					root: {
+						initialData: '<p>Foo</p>'
+					}
+				} );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
+
+				editor.fire( 'ready' );
+				await editor.destroy();
+			} );
+
+			it( 'should throw when config.root.element is a textarea', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( {
+						root: {
+							element: document.createElement( 'textarea' )
+						}
+					} );
+				} ).to.throw( CKEditorError, 'editor-wrong-element' );
 			} );
 		} );
 	} );
@@ -286,6 +416,62 @@ describe( 'BalloonEditor', () => {
 				)
 				.then( done )
 				.catch( done );
+		} );
+
+		it( 'creates editor from config-only', () => {
+			return BalloonEditor
+				.create( {
+					root: { initialData: '<p>Hello world!</p>' },
+					plugins: [ Paragraph ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'creates editor from config-only with root.element', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>Hello world!</p>';
+			document.body.appendChild( el );
+
+			return BalloonEditor
+				.create( {
+					root: { element: el },
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.equal( el );
+
+					return newEditor.destroy();
+				} )
+				.then( () => {
+					el.remove();
+				} );
+		} );
+
+		it( 'creates editor from config-only with root.element and initialData', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>Foo</p>';
+			document.body.appendChild( el );
+
+			return BalloonEditor
+				.create( {
+					root: { element: el, initialData: '<p>Hello world!</p>' },
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p>Hello world!</p>' );
+					expect( newEditor.sourceElement ).to.equal( el );
+
+					return newEditor.destroy();
+				} )
+				.then( () => {
+					el.remove();
+				} );
 		} );
 
 		describe( 'configurable editor label (aria-label)', () => {

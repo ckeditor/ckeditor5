@@ -43,7 +43,11 @@ For example, if you are using the classic editor type with the bold, italic, and
 	Note the `/dist/index.js` part of the import paths. This is important to ensure that the editor functions are imported from the correct files.
 </info-box>
 
-To find the correct package names, see the {@link updating/nim-migration/custom-plugins#update-imports-to-the-ckeditor5-package migration guide}. Alternatively, if you are using an IDE with TypeScript support, you can use the `Go to Definition` feature to find the package names.
+To find the correct package names, go to the {@link framework/architecture/plugins#plugins-and-html-output plugins and HTML output} guide, find the plugin name and get the file path shown under the package name.
+
+{@img assets/img/legacy-import-1.png Screenshot of package name in the path.}
+
+Alternatively, if you are using an IDE with TypeScript support, you can use the `Go to Definition` feature to find the package names.
 
 ### Styles
 
@@ -56,11 +60,11 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 Such imports are neat because they are easily readable and easy to follow. However, these style sheets contain all the styles for all the plugins and features. If you want to reduce the build size, you can import only the core styles alongside the styles for used plugins.
 
-First, import the core styles. They are all needed for the editor to work properly:
+First, import the core styles. They are all needed for the editor to work properly, and the order of the imports matters, so make sure to import them in the following order:
 
 ```js
 // Import the core styles.
-import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
+import '@ckeditor/ckeditor5-ui/dist/index.css';
 import '@ckeditor/ckeditor5-clipboard/dist/index.css';
 import '@ckeditor/ckeditor5-core/dist/index.css';
 import '@ckeditor/ckeditor5-engine/dist/index.css';
@@ -68,7 +72,6 @@ import '@ckeditor/ckeditor5-enter/dist/index.css';
 import '@ckeditor/ckeditor5-paragraph/dist/index.css';
 import '@ckeditor/ckeditor5-select-all/dist/index.css';
 import '@ckeditor/ckeditor5-typing/dist/index.css';
-import '@ckeditor/ckeditor5-ui/dist/index.css';
 import '@ckeditor/ckeditor5-undo/dist/index.css';
 import '@ckeditor/ckeditor5-upload/dist/index.css';
 import '@ckeditor/ckeditor5-utils/dist/index.css';
@@ -310,7 +313,6 @@ import tableTranslations from '@ckeditor/ckeditor5-table/dist/translations/pl.js
 import caseChangeTranslations from '@ckeditor/ckeditor5-case-change/dist/translations/pl.js';
 import slashCommandTranslations from '@ckeditor/ckeditor5-slash-command/dist/translations/pl.js';
 
-import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
 import '@ckeditor/ckeditor5-clipboard/dist/index.css';
 import '@ckeditor/ckeditor5-core/dist/index.css';
 import '@ckeditor/ckeditor5-engine/dist/index.css';

@@ -120,7 +120,7 @@ export class ViewRawElement extends ViewElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ViewRawElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewRawElement.prototype.is = function( this: ViewRawElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rawElement' || type === 'view:rawElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -133,7 +133,7 @@ ViewRawElement.prototype.is = function( type: string, name?: string ): boolean {
 			type === 'element' || type === 'view:element'
 		);
 	}
-};
+} as any;
 
 /**
  * Returns `null` because block filler is not needed for raw elements.

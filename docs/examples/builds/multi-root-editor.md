@@ -201,7 +201,7 @@ Setting the data using `editor.setData()`:
 	} );
 ```
 
-Setting the data through `config.initialData`:
+Setting the data through `config.roots.<root name>.initialData`:
 ```js
 	MultiRootEditor.create(
 		{
@@ -211,11 +211,19 @@ Setting the data through `config.initialData`:
 			rightSide: document.querySelector( '#right-side' )
 		},
 		{
-			initialData: {
-				header: '<p>Content for header part.</p>',
-				content: '<p>Content for main part.</p>',
-				leftSide: '<p>Content for left-side box.</p>',
-				rightSide: '<p>Content for right-side box.</p>'
+			roots: {
+				header: {
+					initialData: '<p>Content for header part.</p>'
+				},
+				content: {
+					initialData: '<p>Content for main part.</p>'
+				},
+				leftSide: {
+					initialData: '<p>Content for left-side box.</p>'
+				},
+				rightSide: {
+					initialData: '<p>Content for right-side box.</p>'
+				}
 			}
 		}
 	);

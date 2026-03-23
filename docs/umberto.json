@@ -19,7 +19,7 @@
 	],
 	"sitemap": {
 		"hostname": "https://ckeditor5.github.io/docs/nightly/",
-		"excluded":  [
+		"excluded": [
 			"snippets/examples/bootstrap-ui.html"
 		]
 	},
@@ -76,6 +76,7 @@
 		"api/module_table_table-TABLE.html": "api/table.html",
 		"api/module_ui_labeledview_labeledview-LabeledView.html": "api/module_ui_labeledfield_labeledfieldview-LabeledFieldView.html",
 		"api/plugins.html": "framework/tutorials/crash-course/plugins.html",
+		"api/theme-lark.html": "framework/deep-dive/ui/theme-customization.html",
 		"api/video.html": "api/media-embed.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/custom-builds.html": "updating/nim-migration/customized-builds.html",
@@ -404,17 +405,33 @@
 		"updating/migration-from-ckeditor-4.html#configuration-options-compatibility-table": "updating/ckeditor4/ckeditor4-configuration-compatibility.html",
 		"updating/migration-from-ckeditor-4.html#migration-from-ckeditor-4-faq": "updating/ckeditor4/ckeditor4-troubleshooting.html",
 		"updating/migration-from-ckeditor-4.html#plugins-compatibility-table": "updating/ckeditor4/ckeditor4-plugin-compatibility.html",
-		"updating/migration-to-25.html": "updating/guides/update-to-25.html",
-		"updating/migration-to-26.html": "updating/guides/update-to-26.html",
-		"updating/migration-to-27.html": "updating/guides/update-to-27.html",
-		"updating/migration-to-28.html": "updating/guides/update-to-28.html",
-		"updating/migration-to-29.html": "updating/guides/update-to-29.html",
-		"updating/migration-to-30.html": "updating/guides/update-to-30.html",
-		"updating/migration-to-31.html": "updating/guides/update-to-31.html",
-		"updating/migration-to-32.html": "updating/guides/update-to-32.html",
-		"updating/migration-to-33.html": "updating/guides/update-to-33.html",
-		"updating/migration-to-34.html": "updating/guides/update-to-34.html",
-		"updating/migration-to-35.html": "updating/guides/update-to-35.html",
+		"updating/guides/update-to-25": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-26": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-27": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-28": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-29": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-30": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-31": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-32": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-33": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-34": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-35": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-36": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-37": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-38": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-39": "updating/guides/updating-from-older-versions.html",
+		"updating/guides/update-to-40": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-25.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-26.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-27.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-28.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-29.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-30.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-31.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-32.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-33.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-34.html": "updating/guides/updating-from-older-versions.html",
+		"updating/migration-to-35.html": "updating/guides/updating-from-older-versions.html",
 		"updating/migration-to-cdn/vanilla-js.html": "updating/migration/vanilla-js.html",
 		"updating/release-process.html": "updating/versioning-policy.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html"
@@ -424,8 +441,9 @@
 		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"hooks": {
-		"beforeHexo":[
-			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
+		"beforeHexo": [
+			"../scripts/docs/fetch-ckeditor5-lts-version.mjs",
+			"../scripts/docs/inject-ckbox-version.mjs"
 		]
 	},
 	"docsearch": {
@@ -558,7 +576,7 @@
 					"badges": [
 						"premium"
 					],
-					"categories":[
+					"categories": [
 						{
 							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",
@@ -888,8 +906,5 @@
 			"navigationIncludeIndex": true,
 			"slug": "support"
 		}
-	],
-	"variables": {
-		"CKBOX_VERSION": "2.9.2"
-	}
+	]
 }

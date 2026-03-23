@@ -10,7 +10,8 @@ import {
 	isColorStyleValue,
 	isLengthStyleValue,
 	isLineStyleValue,
-	isPercentageStyleValue
+	isPercentageStyleValue,
+	isURLStyleValue
 } from '../../../src/view/styles/utils.js';
 
 describe( 'Styles utils', () => {
@@ -145,6 +146,12 @@ describe( 'Styles utils', () => {
 				[ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
 				isLineStyleValue
 			);
+		} );
+	} );
+
+	describe( 'isURLStyleValue()', () => {
+		it( 'returns true for url() value', () => {
+			testValues( [ 'url("example.com")', 'url(\'example.com\')', 'url(example.com)' ], isURLStyleValue );
 		} );
 	} );
 

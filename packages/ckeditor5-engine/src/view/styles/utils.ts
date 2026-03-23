@@ -111,6 +111,15 @@ export function isPercentageStyleValue( string: string ): boolean {
 	return PERCENTAGE_VALUE_REGEXP.test( string );
 }
 
+const sizeValues = [ 'auto', 'cover', 'contain' ];
+
+/**
+ * Checks if a string is a valid CSS `background-size` value token.
+ */
+export function isSizeStyleValue( value: string ): boolean {
+	return sizeValues.includes( value ) || isLengthStyleValue( value ) || isPercentageStyleValue( value );
+}
+
 const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-repeat' ];
 
 /**
@@ -136,6 +145,24 @@ const attachmentValues = [ 'fixed', 'scroll', 'local' ];
  */
 export function isAttachmentStyleValue( string: string ): boolean {
 	return attachmentValues.includes( string );
+}
+
+const originValues = [ 'border-box', 'padding-box', 'content-box' ];
+
+/**
+ * Checks if string contains [background origin](https://developer.mozilla.org/en-US/docs/Web/CSS/background-origin) CSS value.
+ */
+export function isOriginStyleValue( string: string ): boolean {
+	return originValues.includes( string );
+}
+
+const clipValues = [ 'border-box', 'padding-box', 'content-box', 'text' ];
+
+/**
+ * Checks if string contains [background clip](https://developer.mozilla.org/en-US/docs/Web/CSS/background-clip) CSS value.
+ */
+export function isClipStyleValue( string: string ): boolean {
+	return clipValues.includes( string );
 }
 
 const urlRegExp = /^url\(/;

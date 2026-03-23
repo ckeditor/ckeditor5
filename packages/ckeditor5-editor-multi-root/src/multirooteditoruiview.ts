@@ -7,9 +7,9 @@
  * @module editor-multi-root/multirooteditoruiview
  */
 
-import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from 'ckeditor5/src/ui.js';
-import type { Locale } from 'ckeditor5/src/utils.js';
-import type { EditingView } from 'ckeditor5/src/engine.js';
+import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { EditingView } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The multi-root editor UI view. It is a virtual view providing an inline
@@ -84,7 +84,7 @@ export class MultiRootEditorUIView extends EditorUIView {
 
 		// Create `InlineEditableUIView` instance for each editable.
 		for ( const editableName of editableNames ) {
-			const editableElement = options.editableElements ? options.editableElements[ editableName ] : undefined;
+			const editableElement = options.editableElements?.[ editableName ];
 			let { label } = options;
 
 			if ( typeof label === 'object' ) {

@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@2.3.1
+  browser-tools: circleci/browser-tools@2.4.0
   codecov: codecov/codecov@5.4.3
 
 # List of parameters are automatically inherited from `config.yml`.
@@ -101,14 +101,11 @@ jobs:
       - bootstrap_repository_command
       - install_newest_emoji
       - run:
-          name: Prepare DLL builds in CKEditor 5
-          command: pnpm run dll:build
-      - run:
           name: Verify CKEditor 5 manual tests
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
             bash scripts/check-manual-tests.sh -r ckeditor5-root
-  
+
   cke5_memory_leak_test:
     docker:
       - image: cimg/node:24.11.0-browsers
@@ -124,7 +121,7 @@ jobs:
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
             pnpm run test:memory
-  
+
   cke5_validators:
     docker:
       - image: cimg/node:24.11.0
@@ -164,10 +161,6 @@ jobs:
           when: always
           name: Execute Stylelint
           command: pnpm run stylelint
-      - run:
-          when: always
-          name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
-          command: pnpm run check-theme-lark-imports
       - run:
           when: always
           name: Check if all packages are exported in the "ckeditor5" package

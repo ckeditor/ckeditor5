@@ -18,7 +18,7 @@ Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSour
 
 The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):
 
-* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc and Copyright OpenJS Foundation and other contributors.
 * Regular expression for URL validation - Copyright (c) 2010-2018 Diego Perini.
 
 Trademarks

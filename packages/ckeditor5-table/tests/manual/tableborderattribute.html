@@ -1,0 +1,138 @@
+<div class="grid">
+	<div>
+		<div id="editor-table-border-attribute">
+			<table border="10">
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+
+			<table border="10" style="border: 2px solid red;">
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+
+			<table border="10" style="border-left: 2px solid red;">
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+
+			<table border="10" style="border-left: 2px solid red;border-right: 2px solid red;">
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+			<p></p>
+
+			<table border="0" style="border-left: 2px solid red;">
+				<caption>
+					border="0"
+				</caption>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+
+			<table border="0">
+				<caption>
+					border="0"
+				</caption>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+				<tr>
+					<td>foo</td>
+					<td>bar</td>
+					<td>baz</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div>
+		<h2>Source data</h2>
+
+		<div id="cloned-source"></div>
+	</div>
+	<div>
+		<h2>Source data wrapped with<code>.ck-content</code> class</h2>
+
+		<div id="cloned-source2" class="ck-content"></div>
+	</div>
+</div>
+
+<style>
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 20px;
+	}
+</style>

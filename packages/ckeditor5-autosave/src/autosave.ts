@@ -14,13 +14,13 @@ import {
 	type PendingAction,
 	type EditorDestroyEvent,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
-import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils.js';
+import { DomEmitterMixin, type DomEmitter } from '@ckeditor/ckeditor5-utils';
 
-import type { ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 
-import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
+import { debounce } from 'es-toolkit/compat';
 
 /**
  * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)
@@ -32,7 +32,8 @@ import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
  *
  * ```ts
  * ClassicEditor
- * 	.create( document.querySelector( '#editor' ), {
+ * 	.create( {
+ * 		attachTo: document.querySelector( '#editor' ),
  * 		plugins: [ ArticlePluginSet, Autosave ],
  * 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
  * 		image: {
@@ -79,7 +80,7 @@ export class Autosave extends Plugin {
 	 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
-	private _debouncedSave: DebouncedFunc<( () => Promise<void> )>;
+	private _debouncedSave: ReturnType<typeof debounce<() => void>>;
 
 	/**
 	 * The last saved document version.
@@ -367,7 +368,8 @@ export interface AutosaveAdapter {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
+ * 		attachTo: editorElement,
  * 		autosave: {
  * 			save( editor: Editor ) {
  * 				// The saveData() function must return a promise
@@ -393,7 +395,8 @@ export interface AutosaveConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		autosave: {
 	 * 			save( editor: Editor ) {
 	 * 				return saveData( editor.getData() );
@@ -412,7 +415,8 @@ export interface AutosaveConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		autosave: {
 	 * 			save( editor: Editor ) {
 	 * 				return saveData( editor.getData() );
