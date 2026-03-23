@@ -317,12 +317,12 @@ msgstr "Antraštės langelis"
 
 msgctxt "Label for the set/unset table footer row button."
 msgid "Footer row"
-msgstr ""
+msgstr "Puslapinės poraštės eilutė"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a column header."
 msgid "Column header"
-msgstr ""
+msgstr "Stulpelio antraštė"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a row header."
 msgid "Row header"
-msgstr ""
+msgstr "Eilutės antraštė"
