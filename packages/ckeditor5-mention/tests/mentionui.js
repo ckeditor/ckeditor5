@@ -779,6 +779,53 @@ describe( 'MentionUI', () => {
 				codeBlockEditorElement.remove();
 			} );
 
+			it( 'should not show panel when feed response arrives after mention command was disabled', async () => {
+				let feedResolve;
+
+				const codeBlockEditorElement = document.createElement( 'div' );
+				document.body.appendChild( codeBlockEditorElement );
+
+				const codeBlockEditor = await ClassicTestEditor.create( codeBlockEditorElement, {
+					plugins: [ Paragraph, CodeBlock, MentionEditing, MentionUI ],
+					mention: {
+						feeds: [ {
+							marker: '@',
+							feed: () => new Promise( resolve => {
+								feedResolve = resolve;
+							} )
+						} ]
+					}
+				} );
+
+				const codeBlockModel = codeBlockEditor.model;
+				const codeBlockPanelView = codeBlockEditor.plugins.get( ContextualBalloon ).view;
+				const mentionCommand = codeBlockEditor.commands.get( 'mention' );
+
+				_setModelData( codeBlockModel, '<paragraph>foo []</paragraph>' );
+
+				// Type '@' in the paragraph — triggers an async feed request.
+				codeBlockModel.change( writer => {
+					writer.insertText( '@', codeBlockModel.document.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				// Disable the mention command while the feed is still pending.
+				mentionCommand.forceDisabled( 'test' );
+
+				// Resolve the feed — the command is disabled, so the panel should not appear.
+				feedResolve( [ '@Barney', '@Lily' ] );
+
+				await waitForDebounce();
+
+				expect( codeBlockPanelView.isVisible ).to.be.false;
+
+				mentionCommand.clearForceDisabled( 'test' );
+
+				await codeBlockEditor.destroy();
+				codeBlockEditorElement.remove();
+			} );
+
 			it( 'should show panel for matched marker at the beginning of paragraph', () => {
 				_setModelData( model, '<paragraph>[] foo</paragraph>' );
 
