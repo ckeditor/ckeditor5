@@ -135,46 +135,6 @@ Examples:
 npm run build
 ```
 
-<<<<<<< HEAD
-### `dll:build` (*)
-
-<info-box warning>
-	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
-</info-box>
-
-Creates a DLL-compatible package build which can be loaded into an editor setup that still uses DLL builds.
-
-Examples:
-
-```bash
-# Build the DLL file that is ready to publish.
-npm run dll:build
-
-# Build the DLL file and listen to changes in its sources.
-npm run dll:build -- --watch
-```
-
-### `dll:serve` (*)
-
-<info-box warning>
-	This script is not available if the plugin was generated with the `current` value of the `--installation-methods` flag.
-</info-box>
-
-Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with a CKEditor&nbsp;5 setup based on DLL builds.
-
-Examples:
-
-```bash
-# Starts the HTTP server and opens the browser.
-npm run dll:serve
-```
-
-<info-box hint>
-    You can run `npm run dll:build -- --watch` and `npm run dll:serve` in two separate command terminals. That way, after you save your changes and reload the page, the content will update.
-</info-box>
-
-=======
->>>>>>> release
 ### `translations:synchronize`
 
 Synchronizes translation messages (arguments of the `t()` function) by performing the following steps:
