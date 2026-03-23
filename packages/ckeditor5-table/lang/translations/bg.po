@@ -325,4 +325,4 @@ msgstr "Заглавка на колона"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a row header."
 msgid "Row header"
-msgstr "Заглавика на ред"
+msgstr "Заглавка на ред"
