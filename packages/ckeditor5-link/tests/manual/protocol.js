@@ -18,7 +18,8 @@ createEditorWithDefaultProtocol( '#editor3', 'mailto:' );
 
 function createEditorWithDefaultProtocol( editor, defaultProtocol ) {
 	return ClassicEditor
-		.create( document.querySelector( editor ), {
+		.create( {
+			attachTo: document.querySelector( editor ),
 			plugins: [ Link, Typing, Paragraph, Undo, Enter, Superscript ],
 			toolbar: [ 'link', 'undo', 'redo' ],
 			link: {

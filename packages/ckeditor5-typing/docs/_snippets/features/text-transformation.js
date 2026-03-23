@@ -11,7 +11,8 @@ import {
 import { TextTransformationEditor } from './build-text-transformation-source.js';
 
 TextTransformationEditor
-	.create( document.querySelector( '#snippet-text-transformation' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-text-transformation' ),
 		cloudServices: CS_CONFIG,
 		root: {
 			placeholder: 'Type here...'

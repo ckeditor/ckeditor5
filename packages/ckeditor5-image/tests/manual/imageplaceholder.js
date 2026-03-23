@@ -8,7 +8,8 @@ import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageUploadEditing } from '../../src/imageupload/imageuploadediting.js';
 import { ImageUploadProgress } from '../../src/imageupload/imageuploadprogress.js';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ),
 	plugins: [ ImageBlockEditing, ImageUploadEditing, ImageUploadProgress ]
 } )
 	.then( editor => {

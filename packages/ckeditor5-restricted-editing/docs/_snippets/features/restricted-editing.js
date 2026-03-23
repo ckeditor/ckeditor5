@@ -137,7 +137,10 @@ async function reloadEditor( config ) {
 		await window.editor.destroy();
 	}
 
-	window.editor = await ClassicEditor.create( document.querySelector( '#restricted-editing-editor' ), config );
+	window.editor = await ClassicEditor.create( {
+		...config,
+		attachTo: document.querySelector( '#restricted-editing-editor' )
+	} );
 
 	attachTourBalloon( {
 		target: findToolbarItem(

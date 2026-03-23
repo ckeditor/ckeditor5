@@ -123,7 +123,10 @@ BalloonEditor.defaultConfig = {
 BalloonEditor.builtinPlugins.push( Title );
 
 BalloonEditor
-	.create( document.querySelector( '#snippet-title' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#snippet-title' )
+		},
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

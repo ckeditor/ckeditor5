@@ -17,7 +17,8 @@ import {
 import { ListEditor } from './lists-source.js';
 
 ListEditor
-	.create( document.querySelector( '#snippet-lists-marker-formatting' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-lists-marker-formatting' ),
 		extraPlugins: [ ListProperties, FontSize, FontFamily, FontColor ],
 		toolbar: {
 			items: [

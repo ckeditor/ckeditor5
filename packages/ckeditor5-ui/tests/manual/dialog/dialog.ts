@@ -251,7 +251,12 @@ class MinimalisticDialogs extends Plugin {
 }
 
 function initEditor( editorName, editorClass, direction = 'ltr', customCallback? ) {
-	editorClass.create( document.querySelector( '#' + editorName ) as HTMLElement, {
+	const element = document.querySelector( '#' + editorName ) as HTMLElement;
+
+	editorClass.create( {
+		...editorClass === ClassicEditor ?
+			{ attachTo: element } :
+			{ root: { element } },
 		plugins: [
 			Essentials,
 			Autoformat,

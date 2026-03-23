@@ -15,7 +15,10 @@ const config = {
 };
 
 // Editor for the external insert.
-ClassicEditor.create( document.querySelector( '#editor-insert' ), config )
+ClassicEditor.create( {
+	...config,
+	attachTo: document.querySelector( '#editor-insert' )
+} )
 	.then( editor => {
 		const element = document.querySelector( '#button-insert' );
 
@@ -27,7 +30,10 @@ ClassicEditor.create( document.querySelector( '#editor-insert' ), config )
 	.catch( err => console.error( err.stack ) );
 
 // Editor for the external delete.
-ClassicEditor.create( document.querySelector( '#editor-delete' ), config )
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor-delete' ),
+	...config
+} )
 	.then( editor => {
 		const element = document.querySelector( '#button-delete' );
 

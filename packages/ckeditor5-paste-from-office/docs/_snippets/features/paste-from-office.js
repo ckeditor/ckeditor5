@@ -12,7 +12,8 @@ import {
 import { PasteFromOfficeEditor } from './build-paste-from-office-source.js';
 
 PasteFromOfficeEditor
-	.create( document.querySelector( '#snippet-paste-from-office' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-paste-from-office' ),
 		extraPlugins: [ ListProperties ],
 		toolbar: {
 			items: [

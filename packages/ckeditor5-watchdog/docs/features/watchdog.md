@@ -48,7 +48,8 @@ import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } fr
 const watchdog = new EditorWatchdog( ClassicEditor );
 
 // Create a new editor instance.
-watchdog.create( document.querySelector( '#editor' ), {
+watchdog.create( {
+	attachTo: document.querySelector( '#editor' ),
 	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	plugins: [ Essentials, Paragraph, Bold, Italic ],
 	toolbar: [ 'bold', 'italic', 'alignment' ]

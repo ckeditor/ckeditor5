@@ -12,7 +12,8 @@ createEditor( '#editor-rtl', 'ar', 'ar' );
 
 function createEditor( selector, language, uiLanguageCode ) {
 	ClassicEditor
-		.create( document.querySelector( selector ), {
+		.create( {
+			attachTo: document.querySelector( selector ),
 			plugins: [ ArticlePluginSet ],
 			toolbar: [
 				'heading',

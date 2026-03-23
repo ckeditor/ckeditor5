@@ -23,7 +23,11 @@ sendButton.addEventListener( 'click', () => {
 } );
 
 BalloonEditor
-	.create( document.querySelector( '#demo-update__editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#demo-update__editor' ),
+			placeholder: 'Text of the post'
+		},
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
@@ -43,9 +47,6 @@ BalloonEditor
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		root: {
-			placeholder: 'Text of the post'
 		},
 		image: {
 			toolbar: [

@@ -13,7 +13,8 @@ import {
 import { SourceEditingEditor } from './source-editing-imports.js';
 
 SourceEditingEditor
-	.create( document.querySelector( '#editor-markdown' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-markdown' ),
 		extraPlugins: [ Markdown ],
 		toolbar: {
 			items: [
