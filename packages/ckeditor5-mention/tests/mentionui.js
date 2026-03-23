@@ -11,6 +11,8 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { ContextualBalloon } from '@ckeditor/ckeditor5-ui';
 
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+
 import { MentionUI, createRegExp } from '../src/mentionui.js';
 import { MentionEditing } from '../src/mentionediting.js';
 import { MentionsView } from '../src/ui/mentionsview.js';
@@ -696,6 +698,33 @@ describe( 'MentionUI', () => {
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( mentionsView.items ).to.have.length( 5 );
 					} );
+			} );
+
+			it( 'should not show panel for matched marker inside a code block', async () => {
+				const codeBlockEditorElement = document.createElement( 'div' );
+				document.body.appendChild( codeBlockEditorElement );
+
+				const codeBlockEditor = await ClassicTestEditor.create( codeBlockEditorElement, {
+					plugins: [ Paragraph, CodeBlock, MentionEditing, MentionUI ],
+					mention: staticConfig
+				} );
+
+				const codeBlockModel = codeBlockEditor.model;
+				const codeBlockPanelView = codeBlockEditor.plugins.get( ContextualBalloon ).view;
+
+				_setModelData( codeBlockModel, '<codeBlock language="plaintext">foo []</codeBlock>' );
+
+				codeBlockModel.change( writer => {
+					writer.insertText( '@Ba', codeBlockModel.document.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				expect( codeBlockPanelView.isVisible ).to.be.false;
+				expect( codeBlockModel.markers.has( 'mention' ) ).to.be.false;
+
+				await codeBlockEditor.destroy();
+				codeBlockEditorElement.remove();
 			} );
 
 			it( 'should show panel for matched marker at the beginning of paragraph', () => {

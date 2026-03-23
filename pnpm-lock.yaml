@@ -1340,6 +1340,9 @@ importers:
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
+      '@ckeditor/ckeditor5-code-block':
+        specifier: workspace:*
+        version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -2591,6 +2594,9 @@ importers:
       '@ckeditor/ckeditor5-cloud-services':
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
+      '@ckeditor/ckeditor5-code-block':
+        specifier: workspace:*
+        version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
