@@ -715,7 +715,7 @@ describe( 'MentionUI', () => {
 				_setModelData( codeBlockModel, '<codeBlock language="plaintext">foo []</codeBlock>' );
 
 				codeBlockModel.change( writer => {
-					writer.insertText( '@Ka', codeBlockModel.document.selection.getFirstPosition() );
+					writer.insertText( '@Ba', codeBlockModel.document.selection.getFirstPosition() );
 				} );
 
 				await waitForDebounce();
