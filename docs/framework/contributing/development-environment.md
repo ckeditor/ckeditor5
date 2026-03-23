@@ -213,17 +213,13 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 Content styles let you customize the appearance of editor content presented to the readers.
 
-<<<<<<< HEAD
 ```bash
 pnpm docs:content-styles
 ```
 
 The style sheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link getting-started/setup/css Content styles} guide.
-=======
 For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css CSS setup} guide.
->>>>>>> release
 
 ## Additional information for contributors
 
