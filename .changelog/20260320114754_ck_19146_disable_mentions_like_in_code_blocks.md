@@ -2,6 +2,8 @@
 type: Fix
 scope:
   - ckeditor5-mention
+  - ckeditor5-code-block
+  - ckeditor5-emoji
 closes:
   - https://github.com/ckeditor/ckeditor5/issues/19146
 ---
