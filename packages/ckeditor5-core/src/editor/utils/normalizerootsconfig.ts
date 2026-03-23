@@ -12,6 +12,7 @@ import type { EditorConfig, RootConfig } from '../editorconfig.js';
 import {
 	CKEditorError,
 	getDataFromElement,
+	logWarning,
 	type Config
 } from '@ckeditor/ckeditor5-utils';
 
@@ -39,10 +40,43 @@ export function normalizeRootsConfig(
 	const rootsConfig: Record<string, RootConfig> = config.get( 'roots' ) || Object.create( null );
 
 	// Avoid mixing `config.root` and `config.roots.main`.
-	if ( mainRootConfig && ( !defaultRootName || defaultRootName in rootsConfig ) ) {
-		// Documented in core/editor/editorconfig.ts.
-		// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-		throw new CKEditorError( 'editor-create-roots-initial-data' );
+	if ( mainRootConfig ) {
+		if ( !defaultRootName ) {
+			/**
+			 * The {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} option is designed
+			 * for single-root editors and cannot be used with the
+			 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}.
+			 *
+			 * To configure a multi-root editor, define each root individually using
+			 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`}:
+			 *
+			 * ```ts
+			 * MultiRootEditor.create( {
+			 * 	roots: {
+			 * 		header: { initialData: '<p>Header</p>' },
+			 * 		content: { initialData: '<p>Content</p>' }
+			 * 	}
+			 * } );
+			 * ```
+			 *
+			 * @error editor-create-multi-root-with-main
+			 */
+			throw new CKEditorError( 'editor-create-multi-root-with-main', null );
+		}
+		else if ( defaultRootName in rootsConfig ) {
+			/**
+			 * Both {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} and
+			 * `config.roots.main` are set, but they both configure the same default editing root,
+			 * which creates an ambiguity. Use one or the other:
+			 *
+			 * * {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} for a single-root editor.
+			 * * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} when defining
+			 * multiple roots.
+			 *
+			 * @error editor-create-roots-with-main
+			 */
+			throw new CKEditorError( 'editor-create-roots-with-main', null );
+		}
 	}
 
 	// Move `config.root` to `config.roots.main`.
@@ -72,12 +106,37 @@ export function normalizeRootsConfig(
 		// Assign `sourceElement` to root config if it's an element.
 		if ( !separateAttachTo && isElement( sourceElementOrDataForRoot ) ) {
 			if ( rootConfig.element ) {
-				// Documented in core/editor/editorconfig.ts.
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-create-roots-element-conflict', null );
+				/**
+				 * The root element is specified both as the first argument of the editor `create()` method
+				 * (e.g. {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} or
+				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`})
+				 * and in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}
+				 * (or `config.roots.<rootName>.element` for the
+				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}).
+				 *
+				 * Passing the element as the first argument is deprecated. Remove it and use
+				 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}
+				 * (or `config.roots.<rootName>.element` for the multi-root editor) instead.
+				 *
+				 * @error editor-create-root-element-overspecified
+				 */
+				throw new CKEditorError( 'editor-create-root-element-overspecified', null );
 			}
 
 			rootConfig.element = sourceElementOrDataForRoot;
+		}
+
+		if ( separateAttachTo && isElement( rootConfig.element ) ) {
+			/**
+			 * The {@link module:editor-classic/classiceditor~ClassicEditor} ignores
+			 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`} because
+			 * the classic editor replaces the DOM element with its own UI rather than editing inline within it.
+			 * Use {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`}
+			 * to specify the DOM element the editor should replace.
+			 *
+			 * @error editor-create-root-element-not-supported
+			 */
+			logWarning( 'editor-create-root-element-not-supported' );
 		}
 
 		// No dedicated initial data for the root.
@@ -92,9 +151,19 @@ export function normalizeRootsConfig(
 			}
 			// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
 			else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
-				// Documented in core/editor/editorconfig.ts.
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-create-initial-data', null );
+				/**
+				 * The initial data is specified both as the first argument of the editor `create()` method
+				 * (e.g. {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} or
+				 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`})
+				 * and in the deprecated {@link module:core/editor/editorconfig~EditorConfig#initialData `config.initialData`}.
+				 *
+				 * Passing initial data as the first argument is deprecated. Remove it and use
+				 * {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}
+				 * (or `config.roots.<rootName>.initialData` for the multi-root editor) instead.
+				 *
+				 * @error editor-create-initial-data-overspecified
+				 */
+				throw new CKEditorError( 'editor-create-initial-data-overspecified', null );
 			}
 			// Use legacy `config.initialData`.
 			else {
@@ -103,15 +172,36 @@ export function normalizeRootsConfig(
 		}
 		// If both `rootConfig.initialData` is set and initial data is passed as the constructor parameter, then throw.
 		else if ( sourceElementOrDataForRoot && !isElement( sourceElementOrDataForRoot ) ) {
-			// Documented in core/editor/editorconfig.ts.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
+			/**
+			 * The initial data is specified both as the first argument of the editor `create()` method
+			 * (e.g. {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} or
+			 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`})
+			 * and in {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}
+			 * (or `config.roots.<rootName>.initialData` for the multi-root editor).
+			 *
+			 * Passing initial data as the first argument is deprecated. Remove it and use
+			 * {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}
+			 * (or `config.roots.<rootName>.initialData` for the multi-root editor) instead.
+			 *
+			 * @error editor-create-root-initial-data-overspecified
+			 */
+			throw new CKEditorError( 'editor-create-root-initial-data-overspecified', null );
 		}
 		// If both `rootConfig.initialData` and legacy initial data are set, then throw.
 		else if ( legacyInitialData[ rootName ] !== undefined ) {
-			// Documented in core/editor/editorconfig.ts.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-roots-initial-data' );
+			/**
+			 * The initial data is specified both in
+			 * {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}
+			 * (or `config.roots.<rootName>.initialData` for the multi-root editor) and in the deprecated
+			 * {@link module:core/editor/editorconfig~EditorConfig#initialData `config.initialData`}.
+			 *
+			 * The `config.initialData` option is deprecated. Remove it and use
+			 * {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}
+			 * (or `config.roots.<rootName>.initialData` for the multi-root editor) instead.
+			 *
+			 * @error editor-create-legacy-initial-data-overspecified
+			 */
+			throw new CKEditorError( 'editor-create-legacy-initial-data-overspecified', null );
 		}
 
 		// Handle legacy `config.placeholder` and `config.label` for the root.
@@ -125,12 +215,32 @@ export function normalizeRootsConfig(
 	// It is used as a source of editor data and attachment element, but not the root element.
 	if ( separateAttachTo && isElement( sourceElementsOrData ) ) {
 		if ( config.get( 'attachTo' ) ) {
-			// Documented in core/editor/editorconfig.ts.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-attachto-conflict', null );
+			/**
+			 * The element to attach the editor to is specified both as the first argument of
+			 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+			 * and in {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`}.
+			 *
+			 * Passing the element as the first argument is deprecated. Remove it and use
+			 * {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`} instead.
+			 *
+			 * @error editor-create-attachto-overspecified
+			 */
+			throw new CKEditorError( 'editor-create-attachto-overspecified', null );
 		}
 
 		config.set( 'attachTo', sourceElementsOrData );
+	}
+
+	// The `config.attachTo` is only supported by the ClassicEditor.
+	if ( !separateAttachTo && config.get( 'attachTo' ) ) {
+		/**
+		 * The {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`} option is only
+		 * available for the {@link module:editor-classic/classiceditor~ClassicEditor}. It will be ignored
+		 * by other editor types.
+		 *
+		 * @error editor-create-attachto-ignored
+		 */
+		logWarning( 'editor-create-attachto-ignored' );
 	}
 
 	config.set( 'roots', rootsConfig );

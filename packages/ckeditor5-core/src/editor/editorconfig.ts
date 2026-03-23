@@ -1292,43 +1292,6 @@ export interface RootConfig {
 	label?: string;
 }
 
-// TODO make below error descriptions more verbose and actionable
-/**
- * The `sourceElementOrData`, the first parameter of {@link module:core/editor/editor~Editor.create `Editor.create()`}
- * cannot be used together with `config.root.element` or `config.roots.<rootName>.element` passed in the configuration.
- *
- * @error editor-create-roots-element-conflict
- */
-
-/**
- * The deprecated {@link module:core/editor/editorconfig~EditorConfig#initialData `config.initialData`} option cannot be used together
- * with {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`} or
- * {@link module:core/editor/editorconfig~RootConfig#initialData `config.roots.<rootName>.initialData`}.
- * Use {@link module:core/editor/editorconfig~EditorConfig#root `config.root`} or
- * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} to set the initial data.
- *
- * @error editor-create-initial-data
- */
-
-/**
- * The `config.initialData` option cannot be used together with the `config.root.initialData` or `config.roots.main.initialData`.
- *
- * @error editor-create-roots-initial-data
- */
-
-/**
- * The `config.attachTo` option is available only for the {@link module:editor-classic/classiceditor~ClassicEditor}.
- *
- * @error editor-create-attachto-ignored
- */
-
-/**
- * The `sourceElementOrData`, the first parameter of {@link module:core/editor/editor~Editor.create `Editor.create()`}
- * cannot be used together with `config.attachTo` passed in the configuration.
- *
- * @error editor-create-attachto-conflict
- */
-
 /**
  * The configuration of the editor language.
  *

@@ -175,21 +175,21 @@ describe( 'ClassicEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
@@ -202,7 +202,7 @@ describe( 'ClassicEditor', () => {
 						root: { initialData: '<p>abc</p>' },
 						roots: { main: { initialData: '<p>Bar</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
@@ -215,7 +215,7 @@ describe( 'ClassicEditor', () => {
 						initialData: '<p>abc</p>',
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
@@ -228,7 +228,7 @@ describe( 'ClassicEditor', () => {
 						initialData: '<p>abc</p>',
 						roots: { main: { initialData: '<p>abc</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if source element and config.attachTo are both set', () => {
@@ -240,7 +240,7 @@ describe( 'ClassicEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( sourceElement, { attachTo: attachToElement } );
-				} ).to.throw( CKEditorError, 'editor-create-attachto-conflict' );
+				} ).to.throw( CKEditorError, 'editor-create-attachto-overspecified' );
 			} );
 		} );
 
@@ -337,7 +337,7 @@ describe( 'ClassicEditor', () => {
 					}
 				} );
 
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-conflict' );
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();

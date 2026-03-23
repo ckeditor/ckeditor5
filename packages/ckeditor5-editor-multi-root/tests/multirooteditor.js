@@ -136,7 +136,7 @@ describe( 'MultiRootEditor', () => {
 						{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
 						{ initialData: { foo: '<p>Foo</p>', bar: '<p>Bar</p>' } }
 					);
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.<name>.initialData is set and initial data is passed in constructor', () => {
@@ -146,7 +146,7 @@ describe( 'MultiRootEditor', () => {
 						{ foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
 						{ roots: { foo: { initialData: '<p>Bar</p>' }, bar: { initialData: '<p>Abc</p>' } } }
 					);
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root is set', () => {
@@ -158,7 +158,7 @@ describe( 'MultiRootEditor', () => {
 					new MultiRootEditor( editorElement, {
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-multi-root-with-main' );
 			} );
 		} );
 
@@ -471,7 +471,7 @@ describe( 'MultiRootEditor', () => {
 					{ foo: fooEl },
 					{ roots: { foo: { element: existingEl } } }
 				);
-			} ).to.throw( CKEditorError, 'editor-create-roots-element-conflict' );
+			} ).to.throw( CKEditorError, 'editor-create-root-element-overspecified' );
 		} );
 
 		it( 'throws error when deprecated config.lazyRoots is used', done => {

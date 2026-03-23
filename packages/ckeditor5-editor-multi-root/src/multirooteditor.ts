@@ -120,11 +120,6 @@ export class MultiRootEditor extends Editor {
 		normalizeRootsConfig( sourceElementsOrData, this.config, false );
 		normalizeRootsAttributesConfig( this.config );
 
-		if ( isElement( this.config.get( 'attachTo' ) ) ) {
-			// Documented in core/editor/editorconfig.ts.
-			logWarning( 'editor-create-attachto-ignored' );
-		}
-
 		if ( this.config.get( 'lazyRoots' ) ) {
 			/**
 			 * Using deprecated `config.lazyRoots` configuration option.
@@ -1251,8 +1246,7 @@ function normalizeRootsAttributesConfig( config: Config<EditorConfig> ): void {
 				/**
 				 * Trying to set attributes on a non-existing root.
 				 *
-				 * Roots specified in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} do not match initial
-				 * editor roots.
+				 * Roots specified in `config.rootsAttributes` do not match initial editor roots.
 				 *
 				 * @error multi-root-editor-root-attributes-no-root
 				 */

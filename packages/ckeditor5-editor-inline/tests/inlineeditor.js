@@ -127,21 +127,21 @@ describe( 'InlineEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
@@ -154,7 +154,7 @@ describe( 'InlineEditor', () => {
 						root: { initialData: '<p>abc</p>' },
 						roots: { main: { initialData: '<p>Bar</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
@@ -167,7 +167,7 @@ describe( 'InlineEditor', () => {
 						initialData: '<p>abc</p>',
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
@@ -180,7 +180,7 @@ describe( 'InlineEditor', () => {
 						initialData: '<p>abc</p>',
 						roots: { main: { initialData: '<p>abc</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if source element and config.root.element are both set', () => {
@@ -192,7 +192,7 @@ describe( 'InlineEditor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new InlineEditor( sourceElement, { root: { element: existingElement } } );
-				} ).to.throw( CKEditorError, 'editor-create-roots-element-conflict' );
+				} ).to.throw( CKEditorError, 'editor-create-root-element-overspecified' );
 			} );
 		} );
 
