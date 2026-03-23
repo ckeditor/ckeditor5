@@ -8,6 +8,7 @@
  */
 
 import { ModelConsumable } from './modelconsumable.js';
+import { compareMarkersForDowncast } from './comparemarkers.js';
 import { ModelRange } from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
@@ -201,7 +202,10 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		}
 
 		// After the view is updated, convert markers which have changed.
-		for ( const change of differ.getMarkersToAdd() ) {
+		for ( const change of [ ...differ.getMarkersToAdd() ].sort( ( a, b ) => compareMarkersForDowncast(
+			[ a.name, a.range ],
+			[ b.name, b.range ]
+		) ) ) {
 			this._convertMarkerAdd( change.name, change.range, conversionApi );
 		}
 
@@ -230,7 +234,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 		this._convertInsert( range, conversionApi );
 
-		for ( const [ name, range ] of markers ) {
+		for ( const [ name, range ] of [ ...markers ].sort( compareMarkersForDowncast ) ) {
 			this._convertMarkerAdd( name, range, conversionApi );
 		}
 

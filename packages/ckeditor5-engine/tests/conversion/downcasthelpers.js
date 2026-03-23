@@ -4162,6 +4162,65 @@ describe( 'DowncastHelpers', () => {
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 
+			it( 'should keep adjacent marker boundaries in model order when markers are added together', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</p></div>'
+				);
+			} );
+
+			it( 'should keep adjacent marker boundaries in model order when the second marker is added later', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</p></div>'
+				);
+			} );
+
 			it( 'should not convert if consumable was consumed', () => {
 				sinon.spy( controller.downcastDispatcher, 'fire' );
 

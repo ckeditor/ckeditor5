@@ -18,6 +18,7 @@ import { Mapper } from '../conversion/mapper.js';
 
 import { DowncastDispatcher, type DowncastInsertEvent } from '../conversion/downcastdispatcher.js';
 import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers.js';
+import { compareMarkersForDowncast } from '../conversion/comparemarkers.js';
 
 import {
 	UpcastDispatcher,
@@ -681,33 +682,7 @@ function _getMarkersRelativeToElement( element: ModelElement ): Map<string, Mode
 	// reverse DOM order, and intersecting ranges are in something approximating
 	// reverse DOM order (since reverse DOM order doesn't have a precise meaning
 	// when working with intersecting ranges).
-	result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
-		if ( r1.end.compareWith( r2.start ) !== 'after' ) {
-			// m1.end <= m2.start -- m1 is entirely <= m2
-			return 1;
-		} else if ( r1.start.compareWith( r2.end ) !== 'before' ) {
-			// m1.start >= m2.end -- m1 is entirely >= m2
-			return -1;
-		} else {
-			// they overlap, so use their start positions as the primary sort key and
-			// end positions as the secondary sort key
-			switch ( r1.start.compareWith( r2.start ) ) {
-				case 'before':
-					return 1;
-				case 'after':
-					return -1;
-				default:
-					switch ( r1.end.compareWith( r2.end ) ) {
-						case 'before':
-							return 1;
-						case 'after':
-							return -1;
-						default:
-							return n2.localeCompare( n1 );
-					}
-			}
-		}
-	} );
+	result.sort( compareMarkersForDowncast );
 
 	return new Map( result );
 }

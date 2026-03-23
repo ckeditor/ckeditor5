@@ -1295,6 +1295,12 @@ export function insertStructure( elementCreator: DowncastStructureCreatorFunctio
  * @returns Insert element event converter.
  */
 export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFunction ) {
+	// Marker UI boundaries use an internal custom property so the editing downcast can
+	// detect already-rendered closing boundaries at a shared model position. This is
+	// needed when a second adjacent marker is added later and its opening boundary must
+	// be inserted after the first marker's closing boundary.
+	const markerBoundaryType = Symbol( 'markerBoundaryType' );
+
 	return (
 		evt: EventInfo,
 		data: {
@@ -1335,15 +1341,38 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 		const mapper = conversionApi.mapper;
 		const viewWriter = conversionApi.writer;
 
-		// Add "opening" element.
-		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
-		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
+		viewWriter.setCustomProperty( markerBoundaryType, 'opening', viewStartElement );
+		viewWriter.setCustomProperty( markerBoundaryType, 'closing', viewEndElement );
 
 		// Add "closing" element only if range is not collapsed.
 		if ( !markerRange.isCollapsed ) {
 			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
 			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
 		}
+
+		// Add "opening" element after the closing one to keep the proper boundary order
+		// when adjacent markers share a position in the view.
+		let viewStartPosition = mapper.toViewPosition( markerRange.start );
+
+		while ( viewStartPosition.parent.is( '$text' ) && viewStartPosition.isAtEnd ) {
+			viewStartPosition = viewWriter.createPositionAfter( viewStartPosition.parent );
+		}
+
+		// If there are already closing marker boundaries at the same mapped position, place the
+		// opening boundary after them so closing boundaries remain first.
+		while ( true ) {
+			const nodeAfter = viewStartPosition.nodeAfter;
+
+			if ( !nodeAfter || !nodeAfter.is( 'uiElement' ) || nodeAfter.getCustomProperty( markerBoundaryType ) !== 'closing' ) {
+				break;
+			}
+
+			const nextViewPosition = viewWriter.createPositionAfter( nodeAfter );
+			viewStartPosition = nextViewPosition;
+		}
+
+		viewWriter.insert( viewStartPosition, viewStartElement );
+		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
 
 		evt.stop();
 	};
