@@ -890,12 +890,10 @@ describe( 'EmojiMention', () => {
 
 	describe( 'code block integration', () => {
 		it( 'should not activate emoji autocomplete inside a code block', async () => {
-			await editor.destroy();
+			const codeBlockEditorElement = document.createElement( 'div' );
+			document.body.appendChild( codeBlockEditorElement );
 
-			const editorElement2 = document.createElement( 'div' );
-			document.body.appendChild( editorElement2 );
-
-			const codeBlockEditor = await ClassicTestEditor.create( editorElement2, {
+			const codeBlockEditor = await ClassicTestEditor.create( codeBlockEditorElement, {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention, CodeBlock ]
 			} );
 
@@ -905,31 +903,22 @@ describe( 'EmojiMention', () => {
 
 			_setModelData( codeBlockEditor.model, '<codeBlock language="plaintext">foo []</codeBlock>' );
 
-			codeBlockEditor.model.change( writer => {
-				writer.insertText( ':ro', codeBlockEditor.model.document.selection.getFirstPosition() );
-			} );
+			simulateTyping( ':ro', codeBlockEditor );
 
 			expect( mentionCommand.isEnabled ).to.be.false;
 
 			await codeBlockEditor.destroy();
-			editorElement2.remove();
-
-			// Recreate the default editor so afterEach() can destroy it.
-			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
-			} );
-
-			mockEmojiRepositoryValues( editor );
+			codeBlockEditorElement.remove();
 		} );
 	} );
 
-	function simulateTyping( text ) {
-		const selection = editor.model.document.selection;
+	function simulateTyping( text, targetEditor = editor ) {
+		const selection = targetEditor.model.document.selection;
 		const startPosition = selection.getFirstRange().start;
 
 		// While typing, every character is an atomic change.
 		text.split( '' ).forEach( character => {
-			editor.execute( 'input', {
+			targetEditor.execute( 'input', {
 				text: character
 			} );
 		} );

@@ -701,29 +701,30 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel for matched marker inside a code block', async () => {
-				await editor.destroy();
+				const codeBlockEditorElement = document.createElement( 'div' );
+				document.body.appendChild( codeBlockEditorElement );
 
-				editor = await ClassicTestEditor.create( editorElement, {
+				const codeBlockEditor = await ClassicTestEditor.create( codeBlockEditorElement, {
 					plugins: [ Paragraph, CodeBlock, MentionEditing, MentionUI ],
 					mention: staticConfig
 				} );
 
-				model = editor.model;
-				doc = model.document;
-				mentionUI = editor.plugins.get( MentionUI );
-				panelView = editor.plugins.get( ContextualBalloon ).view;
-				mentionsView = mentionUI._mentionsView;
+				const codeBlockModel = codeBlockEditor.model;
+				const codeBlockPanelView = codeBlockEditor.plugins.get( ContextualBalloon ).view;
 
-				_setModelData( model, '<codeBlock language="plaintext">foo []</codeBlock>' );
+				_setModelData( codeBlockModel, '<codeBlock language="plaintext">foo []</codeBlock>' );
 
-				model.change( writer => {
-					writer.insertText( '@Ka', doc.selection.getFirstPosition() );
+				codeBlockModel.change( writer => {
+					writer.insertText( '@Ka', codeBlockModel.document.selection.getFirstPosition() );
 				} );
 
 				await waitForDebounce();
 
-				expect( panelView.isVisible ).to.be.false;
-				expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+				expect( codeBlockPanelView.isVisible ).to.be.false;
+				expect( codeBlockModel.markers.has( 'mention' ) ).to.be.false;
+
+				await codeBlockEditor.destroy();
+				codeBlockEditorElement.remove();
 			} );
 
 			it( 'should show panel for matched marker at the beginning of paragraph', () => {
