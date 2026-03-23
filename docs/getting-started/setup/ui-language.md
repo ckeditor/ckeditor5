@@ -115,8 +115,8 @@ Load translation scripts alongside editor scripts to use the editor with a langu
 			const { TableOfContents } = CKEDITOR_PREMIUM_FEATURES;
 
 			ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [
 						Essentials,
