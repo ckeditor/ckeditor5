@@ -505,14 +505,15 @@ class MultiRootEditorIntegration extends Plugin {
 	}
 }
 
-const editorData: Record<string, HTMLElement> = {
-	intro: document.querySelector( '#editor-intro' )!,
-	content: document.querySelector( '#editor-content' )!,
-	outro: document.querySelector( '#editor-outro' )!
+const roots: Record<string, any> = {
+	intro: { element: document.querySelector( '#editor-intro' )! },
+	content: { element: document.querySelector( '#editor-content' )! },
+	outro: { element: document.querySelector( '#editor-outro' )! }
 };
 
 MultiRootEditor
-	.create( editorData, {
+	.create( {
+		roots,
 		plugins: [ Essentials,
 			Autoformat,
 			BlockQuote,

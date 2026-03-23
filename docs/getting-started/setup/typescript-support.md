@@ -39,7 +39,7 @@ import { ClassicEditor } from 'ckeditor5'
 const editorPlaceholder = document.querySelector( '#editor' ) as HTMLElement;
 
 ClassicEditor
-	.create( editorPlaceholder ).catch( error => {
+	.create( { attachTo: editorPlaceholder } ).catch( error => {
 		console.error( error );
 	} );
 ```

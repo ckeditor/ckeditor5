@@ -11,24 +11,24 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
-const editorData = {
-	intro: document.querySelector( '#editor-intro' ),
-	content: document.querySelector( '#editor-content' ),
-	outro: document.querySelector( '#editor-outro' )
-};
 let editor;
 
 function initEditor() {
 	MultiRootEditor
-		.create( editorData, {
+		.create( {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 			roots: {
 				intro: {
-					placeholder: 'Type intro...'
+					placeholder: 'Type intro...',
+					element: document.querySelector( '#editor-intro' )
 				},
 				outro: {
-					placeholder: 'Type outro...'
+					placeholder: 'Type outro...',
+					element: document.querySelector( '#editor-outro' )
+				},
+				content: {
+					element: document.querySelector( '#editor-content' )
 				}
 			}
 		} )

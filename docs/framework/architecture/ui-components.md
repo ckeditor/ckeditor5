@@ -223,7 +223,9 @@ A tooltip needs the {@link module:ui/tooltipmanager~TooltipManager `TooltipManag
 
 ```js
 ClassicEditor
-	.create( document.getElementById( 'ui-editor' ), {
+	.create( {
+		attachTo: document.getElementById( 'ui-editor' ),
+
 		// Editor configuration.
 		//
 	} )
