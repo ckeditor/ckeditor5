@@ -55,6 +55,7 @@ An overview of the project's directory structure:
 ```
 
 Guides for developing some of the files:
+
 * [.editorconfig](https://editorconfig.org/)
 * [.gitattributes](https://git-scm.com/docs/gitattributes)
 * [.gitignore](https://git-scm.com/docs/gitignore)

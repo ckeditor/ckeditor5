@@ -39,19 +39,19 @@ It accepts the following arguments:
 
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
 
-```
+```bash
 pnpm run test -c --files=core
 ```
 
 Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
 
-```
+```bash
 pnpm run test -cw --files=engine/view/,typing
 ```
 
 Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
 
-```
+```bash
 pnpm run test -w --files=basic-styles/bold*
 ```
 
@@ -98,7 +98,6 @@ Negations work as well.
 ```js
 expect( selection ).to.not.have.attribute( 'linkHref' );
 ```
-
 
 ## Running manual tests
 
@@ -194,7 +193,7 @@ To verify that all manual tests can be **opened** without any errors (the crawle
 
 To check manual tests, start the server (`pnpm manual --files=XYZ`), and then run the crawler:
 
-```
+```bash
 pnpm run manual:verify
 ```
 
@@ -214,25 +213,25 @@ The command accepts the following arguments:
 
 Run all memory leak tests:
 
-```
+```bash
 pnpm run test:memory
 ```
 
 Test only the classic and inline editors:
 
-```
+```bash
 pnpm run test:memory --editor ClassicEditor --editor InlineEditor
 ```
 
 Use a custom HTML file from `scripts/memory/assets`:
 
-```
+```bash
 pnpm run test:memory --html my-test.html
 ```
 
 Reuse existing assets:
 
-```
+```bash
 pnpm run test:memory --no-build
 ```
 
