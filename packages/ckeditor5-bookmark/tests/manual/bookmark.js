@@ -54,7 +54,10 @@ const config = {
 const { plugins, ...configWithoutPlugins } = config;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		...config
+	} )
 	.then( editor => {
 		window.editor = editor;
 		CKEditorInspector.attach( { editor } );
@@ -64,13 +67,13 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-wrapped-anchors-not-allowed' ),
-		{
-			...config,
-			bookmark: {
-				enableNonEmptyAnchorConversion: false
-			}
-		} )
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor-wrapped-anchors-not-allowed' ),
+		bookmark: {
+			enableNonEmptyAnchorConversion: false
+		}
+	} )
 	.then( editor => {
 		window.editor_wrapped_anchors_not_allowed = editor;
 		CKEditorInspector.attach( { editor_wrapped_anchors_not_allowed: editor } );
@@ -107,27 +110,27 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-ghs-wrapped-anchors-not-allowed' ),
-		{
-			...configWithoutPlugins,
-			plugins: [
-				...plugins,
-				GeneralHtmlSupport
-			],
-			bookmark: {
-				enableNonEmptyAnchorConversion: false
-			},
-			htmlSupport: {
-				allow: [
-					{
-						name: /^.*$/,
-						styles: true,
-						attributes: true,
-						classes: true
-					}
-				]
-			}
-		} )
+	.create( {
+		...configWithoutPlugins,
+		attachTo: document.querySelector( '#editor-with-ghs-wrapped-anchors-not-allowed' ),
+		plugins: [
+			...plugins,
+			GeneralHtmlSupport
+		],
+		bookmark: {
+			enableNonEmptyAnchorConversion: false
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
+		}
+	} )
 	.then( editor => {
 		window.editor_ghs_wrapped_anchors_not_allowed = editor;
 		CKEditorInspector.attach( { editor_ghs_wrapped_anchors_not_allowed: editor } );
@@ -137,11 +140,11 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-rtl' ),
-		{
-			...config,
-			language: 'ar'
-		} )
+	.create( {
+		...config,
+		language: 'ar',
+		attachTo: document.querySelector( '#editor-rtl' )
+	} )
 	.then( editor => {
 		window.editor_rtl = editor;
 		CKEditorInspector.attach( { editor_rtl: editor } );

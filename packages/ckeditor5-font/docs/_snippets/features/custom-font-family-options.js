@@ -11,7 +11,8 @@ import {
 import { FontEditor } from './build-font-source.js';
 
 FontEditor
-	.create( document.querySelector( '#snippet-custom-font-family-options' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-custom-font-family-options' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

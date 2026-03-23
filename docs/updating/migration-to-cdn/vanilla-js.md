@@ -112,7 +112,9 @@ Next, update your JavaScript file to use the `loadCKEditorCloud` function from t
 import { ClassicEditor } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector('#editor') )
+	.create( {
+		attachTo: document.querySelector('#editor')
+	} )
 	.catch( error => {
 		console.error(error);
 	} );

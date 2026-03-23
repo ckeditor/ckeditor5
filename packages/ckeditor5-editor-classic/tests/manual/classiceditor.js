@@ -16,10 +16,13 @@ let editor, editable, observer;
 
 function initEditor() {
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
-			menuBar: { isVisible: true }
+			menuBar: { isVisible: true },
+			root: {
+				element: document.querySelector( '#editor' )
+			}
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );

@@ -11,7 +11,8 @@ import {
 import { ToolbarEditor } from './build-toolbar-source.js';
 
 ToolbarEditor
-	.create( document.querySelector( '#snippet-block-toolbar' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-block-toolbar' ),
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

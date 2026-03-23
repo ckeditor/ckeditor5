@@ -179,7 +179,10 @@ const config = {
 };
 
 CKEditor5.editorClassic.ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		...config
+	} )
 	.then( editor => {
 			window.editor = editor;
 	} );
@@ -289,7 +292,10 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		...config
+	} )
 	.then( editor => {
 			window.editor = editor;
 	} );

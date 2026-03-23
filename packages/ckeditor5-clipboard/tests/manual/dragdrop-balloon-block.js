@@ -25,7 +25,10 @@ import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 BalloonEditor
-	.create( document.querySelector( '#editor-balloon' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor-balloon' )
+		},
 		plugins: [
 			Essentials, List, Paragraph, Heading, BlockQuote, Bold, Italic, Code,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption, HorizontalLine,
