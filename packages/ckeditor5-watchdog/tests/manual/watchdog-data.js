@@ -67,7 +67,10 @@ function createWatchdog( editorElement, stateElement, name ) {
 	watchdog.setCreator( config => {
 		return ClassicEditor.create( {
 			...config,
-			attachTo: editorElement
+			attachTo: editorElement,
+			root: {
+				initialData: editorElement.innerHTML
+			}
 		} ).then( editor => {
 			console.log( `${ name } editor created (from creator).` );
 
@@ -85,7 +88,7 @@ function createWatchdog( editorElement, stateElement, name ) {
 		return editor.destroy();
 	} );
 
-	watchdog.create( editorElement.innerHTML, editorConfig );
+	watchdog.create( editorConfig );
 
 	watchdog.on( 'error', () => {
 		console.log( `${ name } editor crashed!` );

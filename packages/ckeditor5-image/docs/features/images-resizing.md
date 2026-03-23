@@ -261,7 +261,8 @@ However, there are cases where you may prefer pixel values. You can thus configu
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( {
+		attachTo: editorElement,
 		image: {
 			resizeUnit: 'px',
 			resizeOptions: [

@@ -229,7 +229,8 @@ You can control the text inserted into the editor when creating a mention via th
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( {
+		attachTo: editorElement,
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
