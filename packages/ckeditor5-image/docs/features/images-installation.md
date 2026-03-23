@@ -155,7 +155,8 @@ If you wish to modify this behavior, the `type` setting in the editor configurat
 
 ```js
 ClassicEditor
-	.create( element, {
+	.create( {
+		attachTo: element,
 		image: {
 			insert: {
 				type: 'auto'

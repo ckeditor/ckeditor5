@@ -64,8 +64,11 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 function createWatchdog( editorElement, stateElement, name ) {
 	const watchdog = new EditorWatchdog( ClassicEditor );
 
-	watchdog.setCreator( ( elementsOrData, config ) => {
-		return ClassicEditor.create( elementsOrData, config ).then( editor => {
+	watchdog.setCreator( config => {
+		return ClassicEditor.create( {
+			...config,
+			attachTo: editorElement
+		} ).then( editor => {
 			console.log( `${ name } editor created (from creator).` );
 
 			editorElement.innerHTML = '';

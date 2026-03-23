@@ -71,36 +71,39 @@ async function reloadEditor() {
 
 	// Create new editors.
 	const promises = [
-		ClassicEditor.create( elements.emojiBoth, getEditorConfig( { extraPlugins: [ Emoji, Mention ] } ) )
+		ClassicEditor.create( {
+			...getEditorConfig( { extraPlugins: [ Emoji, Mention ] } ),
+			attachTo: elements.emojiBoth
+		} )
 			.catch( err => {
 				console.error( err.stack );
 			} ),
 
 		ClassicEditor
-			.create(
-				elements.emojiMention,
-				getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } )
-			)
+			.create( {
+				...getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } ),
+				attachTo: elements.emojiMention
+			} )
 			.catch( err => {
 				console.error( err.stack );
 			} ),
 
 		ClassicEditor
-			.create(
-				elements.emojiPicker,
-				getEditorConfig( { extraPlugins: [ EmojiPicker ] } )
-			)
+			.create( {
+				...getEditorConfig( { extraPlugins: [ EmojiPicker ] } ),
+				attachTo: elements.emojiPicker
+			} )
 			.catch( err => {
 				console.error( err.stack );
 			} ),
 
 		BalloonEditor
-			.create(
-				elements.emojiPickerBalloonEditor,
-				getEditorConfig( {
+			.create( {
+				...getEditorConfig( {
 					extraPlugins: [ EmojiPicker, BalloonToolbar, Mention ]
-				} )
-			)
+				} ),
+				attachTo: elements.emojiPickerBalloonEditor
+			} )
 			.catch( err => {
 				console.error( err.stack );
 			} )
