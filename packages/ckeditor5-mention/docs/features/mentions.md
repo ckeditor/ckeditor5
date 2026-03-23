@@ -49,7 +49,7 @@ ClassicEditor
 
 The mention autocompletion is automatically disabled inside {@link features/code-blocks code blocks}. Typing a mention marker (such as `@`) inside a code block will not trigger the autocomplete panel. This also applies to features built on top of mentions, such as {@link features/slash-commands slash commands} and {@link features/emoji emoji} autocompletion.
 
-If you need to re-enable mentions inside code blocks, you can override this restriction using the {@link module:engine/model/schema~ModelSchema#event:checkAttribute `Schema#checkAttribute`} event:
+If you want to disable this behavior and allow mention autocompletion inside code blocks, you can override it using the {@link module:engine/model/schema~ModelSchema#event:checkAttribute `Schema#checkAttribute`} event:
 
 ```js
 editor.model.schema.on( 'checkAttribute', ( evt, args ) => {
