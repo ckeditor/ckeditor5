@@ -317,7 +317,7 @@ msgstr "表头单元格"
 
 msgctxt "Label for the set/unset table footer row button."
 msgid "Footer row"
-msgstr "脚注行"
+msgstr "页脚行"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a column header."
 msgid "Column header"
