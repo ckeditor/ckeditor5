@@ -170,3 +170,103 @@ If you use only the default user colors, no changes are required. However, if yo
 		colorsCount: 10
 	}
 	```
+
+### Alignment of AI features configuration options
+
+The AI part of the configuration have been reworked to present consistent options along all the features.
+
+#### AI Chat Shortcuts
+
+In the {@link features/ckeditor-ai-chat#chat-shortcuts Chat&nbsp;Shortcuts} feature, the `check` property in the shortcut definition, see {@link module:ai/aichat/aichat~AIChatConfig#shortcuts `config.ai.chat.shortcuts`} configuration, has been renamed to `commandId`.
+
+If you have any shortcuts defined, the `check` property needs to be updated as shown below.
+
+Before:
+
+```js
+{
+	id: 'check-correctness',
+	label: 'Proofread this document',
+	type: 'review',
+	check: 'correctness'
+}
+```
+
+After:
+
+```js
+{
+	id: 'check-correctness',
+	label: 'Proofread this document',
+	type: 'review',
+	commandId: 'correctness'
+}
+```
+
+#### AI Quick Actions
+
+In the {@link features/ckeditor-ai-actions Quick&nbsp;Actions} feature, the `type` value for {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} have been changed from uppercase to lowercase. Instead of using `CHAT` or `ACTION`, `chat` and `action` needs to be used as value now.
+
+Additionally, the `label` property have been introduced in place of `displayedPrompt` property in {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} configuration. The `displayedProperty` is now required only for commands with type `'chat'`.
+
+If you are using `extraCommands` with any command with type `'action'`, it now should have `label` property instead of `displayedPrompt` one.
+
+Before:
+
+```js
+{
+  id: 'add-quote-from-famous-person',
+  displayedPrompt: 'Add a quote from a famous person',
+  prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
+  type: 'action'
+}
+```
+
+After:
+
+```js
+{
+  id: 'add-quote-from-famous-person',
+  label: 'Add a quote from a famous person',
+  prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
+  type: 'action'
+}
+```
+
+If you are using any `extraCommands` with type `'chat'`, it requires both `label` and `displayedPrompt` properties.
+
+Before:
+
+```js
+{
+	id: 'summarize-in-bullet-points',
+	displayedPrompt: 'Summarize in 5 bullet points',
+	prompt: 'Summarize the selected text in 5 bullet points.',
+	type: 'chat'
+}
+```
+
+After:
+
+```js
+{
+	id: 'summarize-in-bullet-points',
+	label: 'Summarize',
+	displayedPrompt: 'Summarize in 5 bullet points',
+	prompt: 'Summarize the selected text in 5 bullet points.',
+	type: 'chat'
+}
+```
+
+#### Use of `string` values instead of `enums`
+
+The use of TypeScript `enums` as part of the public CKEditor 5 AI API has been removed. To simplify usage, _union of strings_ is now used instead.
+
+If you have used any of `AIContextItemType`, `AIContextTextResourceType`, `AIChatShortcutType` enums, it should be replaced with the specific string value. Please, refer to docs of {@link module:ai/aicore/model/aicontext~AIContextItemType `AIContextItemType`}, {@link module:ai/aicore/model/aicontext~AIContextTextResourceType `AIContextTextResourceType`} and {@link module:ai/aichatshortcuts/aichatshortcuts~AIChatShortcutType `AIChatShortcutType`}.
+Additionally, `AIChatShortcutTypeValue` have been removed as `AIChatShortcutType` fulfills its function now.
+
+### Removal of `enum` as Uploadcare source type
+
+The use of TypeScript `enums` as part of the public CKEditor 5 Uploadcare API has been removed. To simplify usage, _union of strings_ is now used instead.
+
+If you have used `UploadcareSource` enum, it should be replaced with the specific string value. You can see available value in the {@link module:uploadcare/uploadcareconfig~UploadcareSource `UploadcareSource`} documentation. If you have used `UploadcareSourceValue` type, `UploadcareSource` should be now used instead.
