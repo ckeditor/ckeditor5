@@ -78,6 +78,7 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], afterC
 				} :
 				{
 					root: {
+						...config.root,
 						element
 					}
 				}
