@@ -31,8 +31,8 @@ ClassicEditor.create( {
 
 // Editor for the external delete.
 ClassicEditor.create( {
-	attachTo: document.querySelector( '#editor-delete' ),
-	...config
+	...config,
+	attachTo: document.querySelector( '#editor-delete' )
 } )
 	.then( editor => {
 		const element = document.querySelector( '#button-delete' );

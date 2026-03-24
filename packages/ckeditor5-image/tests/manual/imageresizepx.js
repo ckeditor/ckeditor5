@@ -47,8 +47,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#fancy-editor' ),
-		...commonConfig
+		...commonConfig,
+		attachTo: document.querySelector( '#fancy-editor' )
 	} )
 	.then( editor => {
 		window.fancyEditor = editor;
@@ -59,8 +59,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-other-units' ),
-		...commonConfig
+		...commonConfig,
+		attachTo: document.querySelector( '#editor-other-units' )
 	} )
 	.then( editor => {
 		window.editorOtherUnits = editor;
