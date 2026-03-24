@@ -205,7 +205,7 @@ After:
 
 #### AI Quick Actions
 
-In the {@link features/ckeditor-ai-actions Quick&nbsp;Actions} feature, the `type` value for {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} has been changed from uppercase to lowercase. Instead of using `CHAT` or `ACTION`, use `chat` and `action` now.
+In the {@link features/ckeditor-ai-actions Quick&nbsp;Actions} feature, the `type` value for {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} has been changed from uppercase to lowercase. Instead of using `'CHAT'` or `'ACTION'`, use `'chat'` and `'action'` now.
 
 Additionally, the `label` property has been introduced in place of the `displayedPrompt` property in the {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} configuration. The `displayedPrompt` is now required only for commands with type `'chat'`.
 
