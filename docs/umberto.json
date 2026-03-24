@@ -410,6 +410,7 @@
 		"tutorials/crash-course/view.html": "framework/tutorials/crash-course/view.html",
 		"tutorials/creating-simple-plugin-timestamp.html": "framework/tutorials/creating-simple-plugin-timestamp.html",
 		"tutorials/index.html": "framework/tutorials/crash-course/editor.html",
+		"tutorials/supporting-multiple-versions.html": "updating/nim-migration/custom-plugins.html",
 		"tutorials/widgets/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
 		"tutorials/widgets/implementing-a-block-widget.html": "framework/tutorials/widgets/implementing-a-block-widget.html",
 		"tutorials/widgets/implementing-an-inline-widget.html": "framework/tutorials/widgets/implementing-an-inline-widget.html",
