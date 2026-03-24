@@ -55,7 +55,8 @@ import 'ckeditor5/ckeditor5.css';
 
 $( document ).ready( () => {
 	ClassicEditor
-		.create( $( '#editor' )[ 0 ], {
+		.create( {
+			attachTo: $( '#editor' )[ 0 ],
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 			toolbar: [
@@ -108,7 +109,8 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 $( document ).ready( () => {
 	ClassicEditor
-		.create( $( '#editor' )[ 0 ], {
+		.create( {
+			attachTo: $( '#editor' )[ 0 ],
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [

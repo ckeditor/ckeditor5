@@ -421,7 +421,7 @@ Then, add it to the `angular.json` configuration file:
 
 #### Setting the placeholder
 
-To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
+To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `root.placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
 
 ```angular-ts
 @Component( {
@@ -433,7 +433,9 @@ export class MyComponent {
 	private _setupEditor( cloud ) {
 		// ...
 		this.config = {
-			placeholder: 'Type the content here!'
+			root: {
+				placeholder: 'Type the content here!'
+			}
 		}
 	}
 
