@@ -17,12 +17,10 @@ let editor, editable, observer;
 function initEditor() {
 	ClassicEditor
 		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
-			menuBar: { isVisible: true },
-			root: {
-				element: document.querySelector( '#editor' )
-			}
+			menuBar: { isVisible: true }
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );

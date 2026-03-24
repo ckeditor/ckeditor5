@@ -27,7 +27,9 @@ ClassicEditor
 BalloonEditor
 	.create( {
 		...config,
-		attachTo: document.querySelector( '#editor-balloon' )
+		root: {
+			element: document.querySelector( '#editor-balloon' )
+		}
 	} )
 	.then( editor => {
 		window.balloonEditor = editor;

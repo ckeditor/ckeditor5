@@ -102,7 +102,9 @@ async function reloadEditor() {
 				...getEditorConfig( {
 					extraPlugins: [ EmojiPicker, BalloonToolbar, Mention ]
 				} ),
-				attachTo: elements.emojiPickerBalloonEditor
+				root: {
+					element: elements.emojiPickerBalloonEditor
+				}
 			} )
 			.catch( err => {
 				console.error( err.stack );

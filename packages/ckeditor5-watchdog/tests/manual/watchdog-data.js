@@ -67,7 +67,6 @@ function createWatchdog( editorElement, stateElement, name ) {
 	watchdog.setCreator( config => {
 		return ClassicEditor.create( {
 			...config,
-			attachTo: editorElement,
 			root: {
 				initialData: editorElement.innerHTML
 			}
