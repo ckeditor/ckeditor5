@@ -173,13 +173,13 @@ If you use only the default user colors, no changes are required. However, if yo
 
 ### Alignment of AI features configuration options
 
-The AI part of the configuration have been reworked to present consistent options along all the features.
+The AI part of the configuration has been reworked to provide consistent options across all the features.
 
 #### AI Chat Shortcuts
 
-In the {@link features/ckeditor-ai-chat#chat-shortcuts Chat&nbsp;Shortcuts} feature, the `check` property in the shortcut definition, see {@link module:ai/aichat/aichat~AIChatConfig#shortcuts `config.ai.chat.shortcuts`} configuration, has been renamed to `commandId`.
+In the {@link features/ckeditor-ai-chat#chat-shortcuts Chat&nbsp;Shortcuts} feature, the `check` property in the shortcut definition (see {@link module:ai/aichat/aichat~AIChatConfig#shortcuts `config.ai.chat.shortcuts`} configuration) has been renamed to `commandId`.
 
-If you have any shortcuts defined, the `check` property needs to be updated as shown below.
+If you have any shortcuts defined, update the `check` property as shown below.
 
 Before:
 
@@ -205,11 +205,11 @@ After:
 
 #### AI Quick Actions
 
-In the {@link features/ckeditor-ai-actions Quick&nbsp;Actions} feature, the `type` value for {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} have been changed from uppercase to lowercase. Instead of using `CHAT` or `ACTION`, `chat` and `action` needs to be used as value now.
+In the {@link features/ckeditor-ai-actions Quick&nbsp;Actions} feature, the `type` value for {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} has been changed from uppercase to lowercase. Instead of using `CHAT` or `ACTION`, use `chat` and `action` now.
 
-Additionally, the `label` property have been introduced in place of `displayedPrompt` property in {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} configuration. The `displayedProperty` is now required only for commands with type `'chat'`.
+Additionally, the `label` property has been introduced in place of the `displayedPrompt` property in the {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} configuration. The `displayedPrompt` is now required only for commands with type `'chat'`.
 
-If you are using `extraCommands` with any command with type `'action'`, it now should have `label` property instead of `displayedPrompt` one.
+If you are using `extraCommands` with any command of type `'action'`, it should now have the `label` property instead of `displayedPrompt`.
 
 Before:
 
@@ -262,11 +262,11 @@ After:
 
 The use of TypeScript `enums` as part of the public CKEditor 5 AI API has been removed. To simplify usage, _union of strings_ is now used instead.
 
-If you have used any of `AIContextItemType`, `AIContextTextResourceType`, `AIChatShortcutType` enums, it should be replaced with the specific string value. Please, refer to docs of {@link module:ai/aicore/model/aicontext~AIContextItemType `AIContextItemType`}, {@link module:ai/aicore/model/aicontext~AIContextTextResourceType `AIContextTextResourceType`} and {@link module:ai/aichatshortcuts/aichatshortcuts~AIChatShortcutType `AIChatShortcutType`}.
-Additionally, `AIChatShortcutTypeValue` have been removed as `AIChatShortcutType` fulfills its function now.
+If you have used any of the `AIContextItemType`, `AIContextTextResourceType`, or `AIChatShortcutType` enums, replace them with the corresponding string values. Please refer to the documentation of {@link module:ai/aicore/model/aicontext~AIContextItemType `AIContextItemType`}, {@link module:ai/aicore/model/aicontext~AIContextTextResourceType `AIContextTextResourceType`}, and {@link module:ai/aichatshortcuts/aichatshortcuts~AIChatShortcutType `AIChatShortcutType`}.
+Additionally, `AIChatShortcutTypeValue` has been removed as `AIChatShortcutType` now serves the same purpose.
 
 ### Removal of `enum` as Uploadcare source type
 
 The use of TypeScript `enums` as part of the public CKEditor 5 Uploadcare API has been removed. To simplify usage, _union of strings_ is now used instead.
 
-If you have used `UploadcareSource` enum, it should be replaced with the specific string value. You can see available value in the {@link module:uploadcare/uploadcareconfig~UploadcareSource `UploadcareSource`} documentation. If you have used `UploadcareSourceValue` type, `UploadcareSource` should be now used instead.
+If you have used the `UploadcareSource` enum, replace it with the corresponding string value. You can see available values in the {@link module:uploadcare/uploadcareconfig~UploadcareSource `UploadcareSource`} documentation. If you have used the `UploadcareSourceValue` type, use `UploadcareSource` instead.
