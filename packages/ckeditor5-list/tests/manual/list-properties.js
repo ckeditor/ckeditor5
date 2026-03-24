@@ -70,8 +70,8 @@ const config = {
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-a' ),
 		...config,
+		attachTo: document.querySelector( '#editor-a' ),
 		list: {
 			properties: {
 				styles: true,
@@ -89,8 +89,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-b' ),
 		...config,
+		attachTo: document.querySelector( '#editor-b' ),
 		list: {
 			properties: {
 				styles: true,
@@ -108,8 +108,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-c' ),
 		...config,
+		attachTo: document.querySelector( '#editor-c' ),
 		list: {
 			properties: {
 				styles: true,
@@ -129,8 +129,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-d' ),
 		...config,
+		attachTo: document.querySelector( '#editor-d' ),
 		list: {
 			properties: {
 				styles: false,
@@ -148,8 +148,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-e' ),
 		...config,
+		attachTo: document.querySelector( '#editor-e' ),
 		list: {
 			properties: {
 				styles: false,
@@ -167,8 +167,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-f' ),
 		...config,
+		attachTo: document.querySelector( '#editor-f' ),
 		list: {
 			properties: {
 				styles: false,
@@ -188,8 +188,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-g' ),
 		...config,
+		attachTo: document.querySelector( '#editor-g' ),
 		list: {
 			properties: {
 				styles: true,
@@ -209,8 +209,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-h' ),
 		...config,
+		attachTo: document.querySelector( '#editor-h' ),
 		list: {
 			properties: {
 				styles: false,
@@ -230,8 +230,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-i' ),
 		...config,
+		attachTo: document.querySelector( '#editor-i' ),
 		menuBar: {
 			isVisible: true
 		},
