@@ -32,6 +32,8 @@ Additionally, the `sourceElementOrData` parameter (previously passed as the firs
 
 Use **root-scoped options** instead. The editor initialization methods were updated in v48: instead of passing a DOM element or initial data as the first argument, you now pass the DOM element via `attachTo` / `root.element` (and `roots.<name>.element` for multi-root editors) inside the config.
 
+For `ClassicEditor`, always pass the source element through `attachTo`. Passing a DOM element in `root.element` is not supported in this editor type and triggers a warning.
+
 ```js
 // Classic editor
 ClassicEditor.create( {
