@@ -14,8 +14,8 @@ const config = {
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-classic' ),
-		...config
+		...config,
+		attachTo: document.querySelector( '#editor-classic' )
 	} )
 	.then( editor => {
 		window.classicEditor = editor;
@@ -26,8 +26,8 @@ ClassicEditor
 
 BalloonEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-balloon' ),
-		...config
+		...config,
+		attachTo: document.querySelector( '#editor-balloon' )
 	} )
 	.then( editor => {
 		window.balloonEditor = editor;

@@ -55,8 +55,8 @@ const { plugins, ...configWithoutPlugins } = config;
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
-		...config
+		...config,
+		attachTo: document.querySelector( '#editor' )
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -84,8 +84,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-with-ghs' ),
 		...configWithoutPlugins,
+		attachTo: document.querySelector( '#editor-with-ghs' ),
 		plugins: [
 			...plugins,
 			GeneralHtmlSupport

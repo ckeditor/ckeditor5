@@ -211,8 +211,8 @@ const config = {
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-full' ),
 		...config,
+		attachTo: document.querySelector( '#editor-full' ),
 		style: {
 			definitions: [
 				{
@@ -394,8 +394,8 @@ ClassicEditor
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor-just-inline' ),
 		...config,
+		attachTo: document.querySelector( '#editor-just-inline' ),
 		style: {
 			definitions: [
 				{
