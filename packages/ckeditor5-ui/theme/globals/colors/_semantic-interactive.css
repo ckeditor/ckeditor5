@@ -15,7 +15,7 @@
 	--ck-color-interactive-active-surface: hsl(0, 0%, 94.1%);
 	--ck-color-interactive-selected-surface: hsl(212, 100%, 97.1%);
 	--ck-color-interactive-selected-surface-hover: hsl(211.7, 100%, 92.9%);
-	--ck-color-interactive-selected-content: hsl(218.1, 100%, 58%);
+	--ck-color-interactive-selected-text: hsl(218.1, 100%, 58%);
 
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
 	--ck-color-interactive-primary-surface-hover: hsl(104, 53.2%, 40.2%);

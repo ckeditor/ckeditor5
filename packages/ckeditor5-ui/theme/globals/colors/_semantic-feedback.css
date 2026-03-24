@@ -5,5 +5,7 @@
 
 :root {
 	--ck-color-feedback-error: var(--ck-color-base-error);
+	--ck-color-feedback-success: hsl(120, 100%, 27%);
+	--ck-color-feedback-warning: hsl(15, 100%, 43%);
 	--ck-color-feedback-highlight: hsl(60, 100%, 50%);
 }

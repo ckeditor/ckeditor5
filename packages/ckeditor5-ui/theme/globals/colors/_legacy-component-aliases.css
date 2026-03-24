@@ -14,17 +14,19 @@
 	--ck-color-button-on-background: var(--ck-color-interactive-selected-surface);
 	--ck-color-button-on-hover-background: var(--ck-color-interactive-selected-surface-hover);
 	--ck-color-button-on-active-background: var(--ck-color-interactive-selected-surface-hover);
+	/* Intentionally hardcoded: no matching semantic disabled surface exists yet. */
 	--ck-color-button-on-disabled-background: hsl(211, 15%, 95%);
-	--ck-color-button-on-color: var(--ck-color-interactive-selected-content);
+	--ck-color-button-on-color: var(--ck-color-interactive-selected-text);
 
 	--ck-color-button-action-background: var(--ck-color-interactive-primary-surface);
 	--ck-color-button-action-hover-background: var(--ck-color-interactive-primary-surface-hover);
 	--ck-color-button-action-active-background: var(--ck-color-interactive-primary-surface-hover);
+	/* Intentionally hardcoded: a faded variant of the action color with no semantic equivalent yet. */
 	--ck-color-button-action-disabled-background: hsl(104, 44%, 58%);
 	--ck-color-button-action-text: var(--ck-color-interactive-primary-text);
 
-	--ck-color-button-save: hsl(120, 100%, 27%);
-	--ck-color-button-cancel: hsl(15, 100%, 43%);
+	--ck-color-button-save: var(--ck-color-feedback-success);
+	--ck-color-button-cancel: var(--ck-color-feedback-warning);
 
 	--ck-color-switch-button-off-background: hsl(0, 0%, 57.6%);
 	--ck-color-switch-button-off-hover-background: hsl(0, 0%, 49%);

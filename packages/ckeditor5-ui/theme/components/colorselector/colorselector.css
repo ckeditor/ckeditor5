@@ -17,9 +17,9 @@
 	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
 
 	/* Radius */
-	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius-surface) var(--ck-border-radius-surface);
 	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-border-radius-surface-attached-top);
-	--ck-color-selector-saturation-border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+	--ck-color-selector-saturation-border-radius: var(--ck-border-radius-surface) var(--ck-border-radius-surface) 0 0;
 
 	/* Border */
 	--ck-color-selector-picker-divider-border: var(--ck-color-selector-picker-divider-border-width) solid var(--ck-color-base-border);

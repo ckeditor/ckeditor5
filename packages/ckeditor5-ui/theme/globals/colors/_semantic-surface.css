@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* Surface color tokens. Shadow-related surface tokens are in ../_semantic-surface.css. */
 :root {
 	--ck-color-surface-canvas: var(--ck-color-base-background);
 	--ck-color-surface-control: var(--ck-color-surface-canvas);

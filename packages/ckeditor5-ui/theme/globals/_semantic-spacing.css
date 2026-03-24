@@ -24,6 +24,7 @@
 	/*
 	 * Naming note: `region` is a provisional term for UI container spacing.
 	 * The namespace may be refined in a future iteration.
+	 * TODO(#19910): Revisit `region` naming.
 	 */
 	--ck-spacing-region-padding-inline: var(--ck-spacing-standard);
 	--ck-spacing-region-padding-inline-wide: var(--ck-spacing-large);
