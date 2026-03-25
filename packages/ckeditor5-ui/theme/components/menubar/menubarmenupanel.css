@@ -12,14 +12,14 @@
 
 	/* Radius */
 	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-menu-bar-panel-border-radius-position-en: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-menu-bar-panel-border-radius-position-es: var(--ck-border-radius-surface-cut-top-left);
-	--ck-menu-bar-panel-border-radius-position-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-menu-bar-panel-border-radius-position-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-menu-bar-panel-border-radius-position-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-menu-bar-panel-border-radius-position-sw: var(--ck-border-radius-surface-cut-top-right);
-	--ck-menu-bar-panel-border-radius-position-wn: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-menu-bar-panel-border-radius-position-ws: var(--ck-border-radius-surface-cut-top-right);
+	--ck-menu-bar-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-menu-bar-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
+	--ck-menu-bar-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-menu-bar-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-menu-bar-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-menu-bar-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-menu-bar-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-menu-bar-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
 
 	/* Border */
 	--ck-menu-bar-item-focus-reset-border-color: transparent;
@@ -54,22 +54,22 @@
 	/* Corner border radius consistent with the button. */
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_se {
-		border-radius: var(--ck-menu-bar-panel-border-radius-position-es);
+		border-radius: var(--ck-menu-bar-panel-border-radius-es);
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_sw {
-		border-radius: var(--ck-menu-bar-panel-border-radius-position-ws);
+		border-radius: var(--ck-menu-bar-panel-border-radius-ws);
 	}
 
 	&.ck-menu-bar__menu__panel_position_en,
 	&.ck-menu-bar__menu__panel_position_ne {
-		border-radius: var(--ck-menu-bar-panel-border-radius-position-en);
+		border-radius: var(--ck-menu-bar-panel-border-radius-en);
 	}
 
 	&.ck-menu-bar__menu__panel_position_wn,
 	&.ck-menu-bar__menu__panel_position_nw {
-		border-radius: var(--ck-menu-bar-panel-border-radius-position-wn);
+		border-radius: var(--ck-menu-bar-panel-border-radius-wn);
 	}
 
 	&:focus {

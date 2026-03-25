@@ -6,40 +6,40 @@
 
 :root {
 	/* Size */
-	--ck-dropdown-menu-menu-panel-max-height: 314px;
-	--ck-dropdown-menu-menu-panel-max-width: 75vw;
+	--ck-dropdown-menu-panel-max-height: 314px;
+	--ck-dropdown-menu-panel-max-width: 75vw;
 
 	/* Radius */
-	--ck-dropdown-menu-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-menu-menu-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-menu-menu-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-menu-menu-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-menu-menu-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-menu-menu-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-menu-menu-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
-	--ck-dropdown-menu-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-menu-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
+	--ck-dropdown-menu-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-menu-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-menu-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
+	--ck-dropdown-menu-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-dropdown-menu-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
+	--ck-dropdown-menu-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
+	--ck-dropdown-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
 
 	/* Border */
-	--ck-dropdown-menu-menu-panel-border: var(--ck-dropdown-menu-menu-panel-border-width) solid var(--ck-color-dropdown-panel-border);
-	--ck-dropdown-menu-menu-panel-border-width: var(--ck-border-width-surface);
+	--ck-dropdown-menu-panel-border: var(--ck-dropdown-menu-panel-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-dropdown-menu-panel-border-width: var(--ck-border-width-surface);
 
 	/* Shadow */
-	--ck-dropdown-menu-menu-panel-box-shadow: var(--ck-dropdown-menu-menu-panel-shadow), 0 0;
-	--ck-dropdown-menu-menu-panel-shadow: var(--ck-shadow-surface-floating);
+	--ck-dropdown-menu-panel-box-shadow: var(--ck-dropdown-menu-panel-shadow), 0 0;
+	--ck-dropdown-menu-panel-shadow: var(--ck-shadow-surface-floating);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
-	border-radius: var(--ck-dropdown-menu-menu-panel-border-radius);
-	box-shadow: var(--ck-dropdown-menu-menu-panel-box-shadow);
+	border-radius: var(--ck-dropdown-menu-panel-border-radius);
+	box-shadow: var(--ck-dropdown-menu-panel-box-shadow);
 
 	background: var(--ck-color-dropdown-panel-background);
-	border: var(--ck-dropdown-menu-menu-panel-border);
+	border: var(--ck-dropdown-menu-panel-border);
 	bottom: 0;
 	height: fit-content;
-	max-width: var(--ck-dropdown-menu-menu-panel-max-width);
+	max-width: var(--ck-dropdown-menu-panel-max-width);
 	position: absolute;
-	max-height: var(--ck-dropdown-menu-menu-panel-max-height); /* With the default settings, this is equal to 10 menu items. */
+	max-height: var(--ck-dropdown-menu-panel-max-height); /* With the default settings, this is equal to 10 menu items. */
 	overflow-y: auto;
 
 	/* Reset balloon styling */
@@ -51,22 +51,22 @@
 	/* Corner border radius consistent with the button. */
 	&.ck-balloon-panel_es,
 	&.ck-balloon-panel_se {
-		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-es);
+		border-radius: var(--ck-dropdown-menu-panel-border-radius-es);
 	}
 
 	&.ck-balloon-panel_ws,
 	&.ck-balloon-panel_sw {
-		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-ws);
+		border-radius: var(--ck-dropdown-menu-panel-border-radius-ws);
 	}
 
 	&.ck-balloon-panel_en,
 	&.ck-balloon-panel_ne {
-		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-en);
+		border-radius: var(--ck-dropdown-menu-panel-border-radius-en);
 	}
 
 	&.ck-balloon-panel_wn,
 	&.ck-balloon-panel_nw {
-		border-radius: var(--ck-dropdown-menu-menu-panel-border-radius-wn);
+		border-radius: var(--ck-dropdown-menu-panel-border-radius-wn);
 	}
 
 	&:focus {

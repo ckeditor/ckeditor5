@@ -8,8 +8,8 @@
 	--ck-splitbutton-border-radius: var(--ck-border-radius-control);
 
 	/* Color */
-	--ck-splitbutton-hover-background-color: hsl(0, 0%, 92%);
-	--ck-splitbutton-hover-border-color: hsl(0, 0%, 70%);
+	--ck-splitbutton-hover-background-color: var(--ck-color-interactive-hover-surface);
+	--ck-splitbutton-hover-border-color: var(--ck-color-border-control);
 }
 
 .ck.ck-splitbutton {
