@@ -204,7 +204,7 @@ Use `dist/browser/index.umd.js` when your page uses the UMD files from the ZIP p
 
 ## Use the output with CDN or cloud setups
 
-Start from the {@link getting-started/integrations-cdn/quick-start CDN quick start} guide, then host your generated browser files yourself. CKEditor&nbsp;5 can come from the CDN, while your plugin still comes from your own server.
+Start from the {@link getting-started/integrations-cdn/quick-start CDN quick start} guide, then host your generated browser files yourself. CKEditor&nbsp;5 can come from the CDN, while your plugin still comes from your server.
 
 ### Recommended: import maps
 
@@ -284,4 +284,4 @@ Start from the {@link getting-started/integrations-cdn/quick-start CDN quick sta
 | npm and a bundler                               | `dist/index.js` and `dist/index.css`                                                     |
 | ZIP files and import maps                       | `dist/browser/index.es.js` and `dist/browser/index.css`                                  |
 | ZIP files and plain `<script>` tags             | `dist/browser/index.umd.js` and `dist/browser/index.css`                                 |
-| CKEditor Cloud CDN plus your own static hosting | `dist/browser/index.es.js` or `dist/browser/index.umd.js`, plus `dist/browser/index.css` |
+| CKEditor Cloud CDN plus your static hosting     | `dist/browser/index.es.js` or `dist/browser/index.umd.js`, plus `dist/browser/index.css` |
