@@ -75,14 +75,14 @@ dist/
 
 Each file has a different job:
 
-| File | Use it for |
-| --- | --- |
-| `dist/index.js` | The npm package entry. It is ESM and keeps `ckeditor5` as an external dependency. |
-| `dist/index.css` | The CSS file for npm consumers. Import it separately in the consuming app. |
-| `dist/*.d.ts` | TypeScript declarations generated from `src/`. They are published together with the npm build. |
-| `dist/browser/index.es.js` | The browser ESM build for `type="module"` and import-map setups. It still expects `ckeditor5` to be provided separately. |
+| File                        | Use it for                                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dist/index.js`             | The npm package entry. It is ESM and keeps `ckeditor5` as an external dependency.                                                                   |
+| `dist/index.css`            | The CSS file for npm consumers. Import it separately in the consuming app.                                                                          |
+| `dist/*.d.ts`               | TypeScript declarations generated from `src/`. They are published together with the npm build.                                                      |
+| `dist/browser/index.es.js`  | The browser ESM build for `type="module"` and import-map setups. It still expects `ckeditor5` to be provided separately.                            |
 | `dist/browser/index.umd.js` | The browser UMD build for plain `<script>` setups. It expects `CKEDITOR` to exist and exposes your package on the global name chosen for the build. |
-| `dist/browser/index.css` | The CSS file for ZIP and CDN-style browser integrations. |
+| `dist/browser/index.css`    | The CSS file for ZIP and CDN-style browser integrations.                                                                                            |
 
 `package.json` is already configured so that publishing the package ships `dist/` and `ckeditor5-metadata.json`.
 
@@ -279,9 +279,9 @@ Start from the {@link getting-started/integrations-cdn/quick-start CDN quick sta
 
 ## Choose the right output quickly
 
-| If your project uses... | Use these generated files |
-| --- | --- |
-| npm and a bundler | `dist/index.js` and `dist/index.css` |
-| ZIP files and import maps | `dist/browser/index.es.js` and `dist/browser/index.css` |
-| ZIP files and plain `<script>` tags | `dist/browser/index.umd.js` and `dist/browser/index.css` |
+| If your project uses...                         | Use these generated files                                                                |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| npm and a bundler                               | `dist/index.js` and `dist/index.css`                                                     |
+| ZIP files and import maps                       | `dist/browser/index.es.js` and `dist/browser/index.css`                                  |
+| ZIP files and plain `<script>` tags             | `dist/browser/index.umd.js` and `dist/browser/index.css`                                 |
 | CKEditor Cloud CDN plus your own static hosting | `dist/browser/index.es.js` or `dist/browser/index.umd.js`, plus `dist/browser/index.css` |
