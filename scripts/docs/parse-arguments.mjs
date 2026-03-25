@@ -7,73 +7,110 @@ import { parseArgs, styleText } from 'node:util';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
 import { IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 
+const OPTIONS_CONFIG = {
+	help: {
+		type: 'boolean',
+		short: 'h',
+		default: false,
+		description: 'Print this help page.'
+	},
+	'skip-api': {
+		type: 'boolean',
+		default: false,
+		description: 'Skip preparing API pages.'
+	},
+	'skip-snippets': {
+		type: 'boolean',
+		default: false,
+		description: 'Skip generating snippets.'
+	},
+	'skip-validation': {
+		type: 'boolean',
+		default: IS_ISOLATED_REPOSITORY,
+		description: 'Skip validating URLs in the generated documentation.'
+	},
+	'skip-guides': {
+		type: 'boolean',
+		default: false,
+		description: 'Skip processing guides.'
+	},
+	'skip-ckeditor5': {
+		type: 'boolean',
+		default: false,
+		description: 'Skip preparing CKEditor 5 assets (import map sources).'
+	},
+	'skip-commercial': {
+		type: 'boolean',
+		default: false,
+		description: 'Skip preparing the CKEditor 5 commercial assets (import map sources).'
+	},
+	'skip-obfuscation': {
+		type: 'boolean',
+		default: false,
+		description: 'Skip code obfuscation when building assets.'
+	},
+	dev: {
+		type: 'boolean',
+		default: false,
+		description: 'Build on the dev environment (skip code optimizations and obfuscation).'
+	},
+	production: {
+		type: 'boolean',
+		default: false,
+		description: 'Build on the production environment (all files will be minified).'
+	},
+	strict: {
+		type: 'boolean',
+		default: false,
+		description: 'Treat warnings as errors during API docs build.'
+	},
+	watch: {
+		type: 'boolean',
+		default: false,
+		description: 'Watch source files for changes.'
+	},
+	verbose: {
+		type: 'boolean',
+		default: false,
+		description: 'Print additional logs.'
+	},
+	snippets: {
+		type: 'string',
+		default: '',
+		description: 'Snippet names to process, comma-separated (empty = all).'
+	},
+	guides: {
+		type: 'string',
+		default: '',
+		description: 'Guide names to build, comma-separated. Accepts glob patterns (empty = all).'
+	}
+};
+
 /**
  * @param {Array<string>} args An array containing modifiers for the executed command.
  * @return {DocumentationOptions}
  */
 export default function parseArguments( args ) {
-	const { values } = parseArgs( {
-		args,
-		strict: true,
-		options: {
-			'skip-api': {
-				type: 'boolean',
-				default: false
-			},
-			'skip-snippets': {
-				type: 'boolean',
-				default: false
-			},
-			'skip-validation': {
-				type: 'boolean',
-				default: IS_ISOLATED_REPOSITORY
-			},
-			'skip-guides': {
-				type: 'boolean',
-				default: false
-			},
-			'skip-ckeditor5': {
-				type: 'boolean',
-				default: false
-			},
-			'skip-commercial': {
-				type: 'boolean',
-				default: false
-			},
-			'skip-obfuscation': {
-				type: 'boolean',
-				default: false
-			},
-			dev: {
-				type: 'boolean',
-				default: false
-			},
-			production: {
-				type: 'boolean',
-				default: false
-			},
-			strict: {
-				type: 'boolean',
-				default: false
-			},
-			watch: {
-				type: 'boolean',
-				default: false
-			},
-			verbose: {
-				type: 'boolean',
-				default: false
-			},
-			snippets: {
-				type: 'string',
-				default: ''
-			},
-			guides: {
-				type: 'string',
-				default: ''
-			}
-		}
-	} );
+	let values;
+
+	try {
+		const parsedArgs = parseArgs( {
+			args,
+			strict: true,
+			options: OPTIONS_CONFIG
+		} );
+
+		values = parsedArgs.values;
+	} catch ( err ) {
+		console.error( `${ err.message }\n` );
+		console.error( 'Run "pnpm run docs --help" to see all available options.' );
+		process.exit( 1 );
+	}
+
+	if ( values.help ) {
+		printHelp();
+		process.exit( 0 );
+	}
 
 	if ( values.dev && values.production ) {
 		throw new Error( 'The --dev and --production flags are mutually exclusive.' );
@@ -103,6 +140,25 @@ export default function parseArguments( args ) {
 	] );
 
 	return values;
+}
+
+/**
+ * Prints a help page describing all available options.
+ */
+function printHelp() {
+	console.log( '\nUsage: pnpm run docs [options]\n' );
+	console.log( 'Build CKEditor 5 documentation.\n' );
+	console.log( 'Options:\n' );
+
+	for ( const [ name, config ] of Object.entries( OPTIONS_CONFIG ) ) {
+		const shortFlag = config.short ? `-${ config.short }, ` : '    ';
+		const typeHint = config.type === 'string' ? ' <value>' : '';
+		const flag = `${ shortFlag }--${ name }${ typeHint }`;
+
+		console.log( `  ${ flag.padEnd( 36 ) }${ config.description }` );
+	}
+
+	console.log( '' );
 }
 
 /**
