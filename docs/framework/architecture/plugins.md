@@ -39,7 +39,7 @@ A good understanding of the {@link framework/index CKEditor&nbsp;5 Framework} is
 
 A great way to enhance your editor with additional features is by using plugins created by the community. Such plugins are available as npm packages, so a quick [search on the "ckeditor5" keyword in npm](https://www.npmjs.com/search?q=ckeditor5) should work as a starting point.
 
-Once you have plugins you want to include, {@link getting-started/setup/typescript-support#adding-an-unofficial-javascript-plugin learn how to install them}.
+Once you have plugins you want to include, read the {@link getting-started/setup/configuration Configuring CKEditor&nbsp;5 features} guide.
 
 ## Plugins and HTML output
 
@@ -85,4 +85,3 @@ The data used to generate the following tables comes from the package metadata. 
 </style>
 
 {@exec ../scripts/docs/features-html-output/build-features-html-output.cjs}
-

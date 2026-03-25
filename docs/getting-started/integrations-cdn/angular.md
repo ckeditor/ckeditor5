@@ -611,7 +611,7 @@ export class AppComponent {
 ## Supported Angular versions
 
 <info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/typescript-support TypeScript support}.
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5.
 </info-box>
 
 Because of the breaking changes in the Angular library output format, the `@ckeditor/ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
