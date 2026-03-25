@@ -312,7 +312,6 @@
 		"getting-started/legacy/legacy-integrations/react.html": "getting-started/installation/cloud/react/react-default-cdn.html",
 		"getting-started/legacy/legacy-integrations/vuejs-v2.html": "getting-started/installation/cloud/vuejs-v2.html",
 		"getting-started/legacy/legacy-integrations/vuejs-v3.html": "getting-started/installation/cloud/vuejs-v3.html",
-		"getting-started/legacy/working-with-typescript.html": "getting-started/setup/typescript-support.html",
 		"getting-started/installation/angular.html": "getting-started/installation/cloud/angular.html",
 		"getting-started/installation/dotnet.html": "getting-started/installation/cloud/dotnet.html",
 		"getting-started/installation/laravel.html": "getting-started/installation/cloud/laravel.html",
