@@ -202,11 +202,11 @@ Once imported, you can use it within your application:
 			const { ClassicEditor, LinkEditing, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } = CKEDITOR;
 
 			ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
-					plugins: [ LinkEditing, Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
-					toolbar: ['imageUpload', 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
+					plugins: [ LinkEditing, Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit /* ... */ ],
+					toolbar: [ 'imageUpload', 'ckbox', 'ckboxImageEdit' /* ... */ ], // Depending on your preference.
 					ckbox: {
 						// Configuration.
 					}
