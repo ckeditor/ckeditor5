@@ -91,6 +91,20 @@ ClassicEditor.create( {
 } );
 ```
 
+For non-classic single-root editors (for example `InlineEditor`, `BalloonEditor`, or `DecoupledEditor`), pass the element through `root.element`:
+
+```js
+InlineEditor.create( {
+	root: {
+		element: document.querySelector( '#editor' ),
+		placeholder: 'Type here...'
+	},
+	licenseKey: '<YOUR_LICENSE_KEY>',
+	plugins: [ Essentials, Paragraph, Bold, Italic ],
+	toolbar: [ 'bold', 'italic', 'alignment' ]
+} );
+```
+
 In multi-root editors, move the DOM elements and root-specific properties into the `roots` object:
 
 ```js
