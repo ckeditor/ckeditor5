@@ -38,12 +38,12 @@ npx ckeditor5-package-generator
 
 This guide uses the following example names:
 
-| Example value | What it represents |
-| --- | --- |
-| `ckeditor5-callout` | The package name entered in the generator. |
-| `ckeditor5-callout` | An example package name and generated directory name. |
-| `Callout` | The default plugin class name for `ckeditor5-callout`. |
-| `CKCallout` | The suggested UMD global name for `ckeditor5-callout`. |
+| Example value       | What it represents                                     |
+| ------------------- | ------------------------------------------------------ |
+| `ckeditor5-callout` | The package name entered in the generator.             |
+| `ckeditor5-callout` | An example package name and generated directory name.  |
+| `Callout`           | The default plugin class name for `ckeditor5-callout`. |
+| `CKCallout`         | The suggested UMD global name for `ckeditor5-callout`. |
 
 Your actual names depend on the package name and on the values you confirm or pass for `--plugin-name` and `--global-name`.
 
@@ -58,13 +58,13 @@ The generator creates a new directory named after the package without the scope 
 
 ### Useful options
 
-| Option | What it changes |
-| --- | --- |
-| `--lang js` or `--lang ts` | Pre-fills the programming language. If omitted, the generator asks interactively. |
-| `--plugin-name <name>` | Pre-fills the plugin class name. |
-| `--global-name <name>` | Pre-fills the UMD global name used by `dist/browser/index.umd.js`. If omitted, the generator still asks for it and suggests a name based on package name, such as `CKCallout` for `ckeditor5-callout`. |
-| `--package-manager <name>` | Pre-fills the package manager choice, for example `npm`, `pnpm`, or `yarn`. |
-| `--verbose` | Prints additional progress logs. |
+| Option                     | What it changes                                                                                                                                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--lang js` or `--lang ts` | Pre-fills the programming language. If omitted, the generator asks interactively.                                                                                                                      |
+| `--plugin-name <name>`     | Pre-fills the plugin class name.                                                                                                                                                                       |
+| `--global-name <name>`     | Pre-fills the UMD global name used by `dist/browser/index.umd.js`. If omitted, the generator still asks for it and suggests a name based on package name, such as `CKCallout` for `ckeditor5-callout`. |
+| `--package-manager <name>` | Pre-fills the package manager choice, for example `npm`, `pnpm`, or `yarn`.                                                                                                                            |
+| `--verbose`                | Prints additional progress logs.                                                                                                                                                                       |
 
 ## Start developing the package
 
@@ -79,16 +79,16 @@ The exact command prefix depends on the package manager you selected. The genera
 
 The most common scripts are:
 
-| Command | What it does |
-| --- | --- |
-| `npm run start` | Starts the Vite sample app with live reload. |
-| `npm run test` | Runs the unit tests with Vitest. |
-| `npm run test:debug` | Runs Vitest in Node inspector mode. |
-| `npm run lint` | Runs ESLint on the package sources. |
-| `npm run stylelint` | Runs Stylelint on `theme/**/*.css`. |
-| `npm run build` | Creates the npm and browser builds in `dist/`. |
+| Command                            | What it does                                                |
+| ---------------------------------- | ----------------------------------------------------------- |
+| `npm run start`                    | Starts the Vite sample app with live reload.                |
+| `npm run test`                     | Runs the unit tests with Vitest.                            |
+| `npm run test:debug`               | Runs Vitest in Node inspector mode.                         |
+| `npm run lint`                     | Runs ESLint on the package sources.                         |
+| `npm run stylelint`                | Runs Stylelint on `theme/**/*.css`.                         |
+| `npm run build`                    | Creates the npm and browser builds in `dist/`.              |
 | `npm run translations:synchronize` | Updates translation files from the current source messages. |
-| `npm run translations:validate` | Checks translation metadata without changing files. |
+| `npm run translations:validate`    | Checks translation metadata without changing files.         |
 
 When you start editing the generated package, the usual places to work in are:
 
