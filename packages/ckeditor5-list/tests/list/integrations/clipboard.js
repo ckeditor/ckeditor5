@@ -455,11 +455,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/19994
 		it( 'should not apply list attributes to an inline object even if schema allows all attributes on it', () => {
-			model.schema.addAttributeCheck( context => {
-				if ( context.endsWith( '$text' ) ) {
-					return true;
-				}
-			} );
+			model.schema.addAttributeCheck( () => true );
 
 			_setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
