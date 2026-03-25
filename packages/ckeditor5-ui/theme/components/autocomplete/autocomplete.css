@@ -56,7 +56,7 @@
 			top: 100%;
 			bottom: auto;
 		}
-		z-index: var(--ck-z-panel)
+		z-index: var(--ck-z-overlay)
 	}
 	position: relative
 }

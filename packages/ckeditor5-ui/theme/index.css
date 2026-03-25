@@ -25,6 +25,7 @@
 @import "./globals/_semantic-motion.css";
 @import "./globals/_poweredby.css";
 @import "./globals/_evaluationbadge.css";
+@import "./globals/_legacy-foundation-aliases.css";
 
 @import "./components/responsive-form/responsiveform.css";
 @import "./components/form/form.css";

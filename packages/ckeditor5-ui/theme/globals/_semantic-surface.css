@@ -7,5 +7,5 @@
 	/* Color surface roles are defined in ./colors/_semantic-surface.css. */
 
 	/* Generic floating surface shadows. */
-	--ck-shadow-surface-floating: var(--ck-drop-shadow);
+	--ck-shadow-surface-floating: var(--ck-shadow-md);
 }

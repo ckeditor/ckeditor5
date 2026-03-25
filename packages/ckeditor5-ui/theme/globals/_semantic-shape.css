@@ -10,10 +10,10 @@
 	--ck-border-width-emphasis: var(--ck-border-width-thick);
 
 	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
-	--ck-border-radius-control: var(--ck-border-radius);
+	--ck-border-radius-control: var(--ck-radius-base);
 
 	/* Semantic radii for elevated surfaces (dropdowns, panels, dialogs, toolbars). */
-	--ck-border-radius-surface: var(--ck-border-radius);
+	--ck-border-radius-surface: var(--ck-radius-base);
 
 	/* Radius for attached surfaces where one edge touches trigger/control. */
 	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);

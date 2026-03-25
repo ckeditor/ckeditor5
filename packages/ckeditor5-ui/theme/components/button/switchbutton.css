@@ -41,7 +41,7 @@
 		background var(--ck-switch-button-toggle-transition-duration) var(--ck-switch-button-toggle-transition-timing-function),
 		box-shadow var(--ck-switch-button-toggle-focus-transition-duration) var(--ck-switch-button-toggle-focus-transition-timing-function),
 		outline var(--ck-switch-button-toggle-focus-transition-duration) var(--ck-switch-button-toggle-focus-transition-timing-function);
-	--ck-switch-button-toggle-transition-duration: var(--ck-transition-duration-slower);
+	--ck-switch-button-toggle-transition-duration: var(--ck-duration-slower);
 	--ck-switch-button-toggle-transition-timing-function: var(--ck-transition-timing-function-surface);
 	--ck-switch-button-transition-reduced: var(--ck-transition-none);
 
@@ -120,7 +120,7 @@
 	}
 
 	&.ck-disabled .ck-button__toggle {
-		opacity: var(--ck-disabled-opacity);
+		opacity: var(--ck-opacity-disabled);
 	}
 
 	/* Overriding default .ck-button:focus styles + an outline around the toogle */

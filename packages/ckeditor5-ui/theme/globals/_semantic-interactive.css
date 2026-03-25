@@ -6,7 +6,7 @@
 :root {
 	/* Generic focus visuals for interactive controls and actions. */
 	--ck-interactive-focus-ring: var(--ck-focus-ring);
-	--ck-interactive-focus-shadow: var(--ck-focus-outer-shadow);
-	--ck-interactive-focus-disabled-shadow: var(--ck-focus-disabled-outer-shadow);
-	--ck-interactive-focus-error-shadow: var(--ck-focus-error-outer-shadow);
+	--ck-interactive-focus-shadow: var(--ck-focus-shadow);
+	--ck-interactive-focus-disabled-shadow: var(--ck-focus-shadow-disabled);
+	--ck-interactive-focus-error-shadow: var(--ck-focus-shadow-error);
 }

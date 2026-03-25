@@ -30,7 +30,7 @@
 		}
 
 		&.ck-disabled > .ck-button__label {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-opacity-disabled);
 		}
 
 		[dir="ltr"] & {
@@ -76,7 +76,7 @@
 
 	& > .ck-menu-bar__menu__button > .ck-menu-bar__menu__button__arrow {
 		pointer-events: none;
-		z-index: var(--ck-z-default);
+		z-index: var(--ck-z-base);
 	}
 
 	/*
@@ -113,7 +113,7 @@
 		}
 
 		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-opacity-disabled);
 		}
 	}
 }

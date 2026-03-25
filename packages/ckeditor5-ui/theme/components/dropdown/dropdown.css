@@ -35,7 +35,7 @@
 	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
 
 	/* State / meta */
-	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity);
+	--ck-dropdown-button-label-disabled-opacity: var(--ck-opacity-disabled);
 }
 
 .ck.ck-dropdown {
@@ -69,7 +69,7 @@
 	}
 
 	&.ck-disabled .ck-dropdown__arrow {
-		opacity: var(--ck-disabled-opacity);
+		opacity: var(--ck-opacity-disabled);
 	}
 
 	& .ck-button.ck-dropdown__button {

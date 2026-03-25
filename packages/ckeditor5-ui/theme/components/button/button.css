@@ -38,6 +38,7 @@
 
 	/* State / meta */
 	--ck-button-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-button-opacity-disabled: var(--ck-opacity-disabled)
 }
 
 .ck.ck-button,
@@ -158,12 +159,12 @@ a.ck.ck-button {
 		}
 
 		& .ck-button__icon {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-button-opacity-disabled);
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
 		& .ck-button__label {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-button-opacity-disabled);
 		}
 
 		& .ck-button__keystroke {

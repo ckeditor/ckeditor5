@@ -25,7 +25,7 @@
 	--ck-dropdown-menu-button-focus-background: var(--ck-color-button-default-hover-background);
 
 	/* State / meta */
-	--ck-dropdown-menu-button-arrow-disabled-opacity: var(--ck-disabled-opacity);
+	--ck-dropdown-menu-button-arrow-disabled-opacity: var(--ck-opacity-disabled);
 }
 
 .ck.ck-button.ck-dropdown-menu-list__nested-menu__button {
@@ -49,7 +49,7 @@
 	}
 
 	&.ck-disabled > .ck-button__label {
-		opacity: var(--ck-disabled-opacity);
+		opacity: var(--ck-opacity-disabled);
 	}
 
 	/* Spacing in buttons that miss the icon. */
@@ -60,7 +60,7 @@
 	& > .ck-dropdown-menu-list__nested-menu__button__arrow {
 		width: var(--ck-dropdown-arrow-size);
 		pointer-events: none;
-		z-index: var(--ck-z-default);
+		z-index: var(--ck-z-base);
 
 		[dir="ltr"] & {
 			transform: rotate(-90deg);

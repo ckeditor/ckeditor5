@@ -5,7 +5,7 @@
 
 :root {
 	/* Size */
-	--ck-block-toolbar-button-size: var(--ck-font-size-normal);
+	--ck-block-toolbar-button-size: var(--ck-font-size-md);
 
 	/* Color */
 	/* Fallback to `--ck-color-block-toolbar-button` for backward compatibility. */
@@ -17,5 +17,5 @@
 	/* Fallback to `--ck-block-toolbar-size` for backward compatibility. */
 	font-size: var(--ck-block-toolbar-size, var(--ck-block-toolbar-button-size));
 	position: absolute;
-	z-index: var(--ck-z-default);
+	z-index: var(--ck-z-base);
 }

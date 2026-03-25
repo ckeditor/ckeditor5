@@ -9,7 +9,7 @@
 }
 
 .ck.ck-labeled-input .ck-labeled-input__status {
-	font-size: var(--ck-font-size-small);
+	font-size: var(--ck-font-size-sm);
 	margin-top: var(--ck-labeled-input-status-gap);
 
 	/* Let the info wrap to the next line to avoid stretching the layout horizontally.

@@ -47,7 +47,7 @@
 	bottom: 0;
 	height: fit-content;
 
-	z-index: var(--ck-z-panel);
+	z-index: var(--ck-z-overlay);
 	max-width: var(--ck-menu-bar-menu-max-width);
 	position: absolute;
 

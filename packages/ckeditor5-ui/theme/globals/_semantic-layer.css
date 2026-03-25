@@ -4,14 +4,14 @@
  */
 
 :root {
-	--ck-layer-base: var(--ck-z-default);
+	--ck-layer-base: var(--ck-z-base);
 	--ck-layer-control-raised: calc(var(--ck-layer-base) + 1);
 
-	--ck-layer-panel: var(--ck-z-panel);
+	--ck-layer-panel: var(--ck-z-overlay);
 	--ck-layer-panel-above: calc(var(--ck-layer-panel) + 1);
 	--ck-layer-panel-below: calc(var(--ck-layer-panel) - 1);
 
-	--ck-layer-dialog: var(--ck-z-dialog);
+	--ck-layer-dialog: var(--ck-z-modal);
 	--ck-layer-tooltip: calc(var(--ck-layer-dialog) + 100);
 
 	--ck-layer-balloon-arrow-back: calc(var(--ck-layer-base) - 3);

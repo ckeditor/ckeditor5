@@ -6,13 +6,13 @@
 :root {
 	--ck-font-size-base: 13px;
 	--ck-line-height-base: 1.84615;
-	--ck-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+	--ck-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
 
-	--ck-font-size-tiny: 0.7em;
-	--ck-font-size-small: 0.75em;
-	--ck-font-size-normal: 1em;
-	--ck-font-size-big: 1.4em;
-	--ck-font-size-large: 1.8em;
+	--ck-font-size-xs: 0.7em;
+	--ck-font-size-sm: 0.75em;
+	--ck-font-size-md: 1em;
+	--ck-font-size-lg: 1.4em;
+	--ck-font-size-xl: 1.8em;
 
 	--ck-font-weight-normal: 400;
 	--ck-font-weight-medium: 500;

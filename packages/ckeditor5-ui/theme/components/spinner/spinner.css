@@ -15,7 +15,7 @@
 	--ck-spinner-animation: var(--ck-spinner-animation-duration) var(--ck-spinner-animation-iteration-count) var(--ck-spinner-animation-name) var(--ck-spinner-animation-timing-function);
 	--ck-spinner-animation-duration: var(--ck-animation-duration-progress);
 	--ck-spinner-animation-duration-reduced: 3s;
-	--ck-spinner-animation-iteration-count: var(--ck-animation-iteration-count-infinite);
+	--ck-spinner-animation-iteration-count: var(--ck-animation-repeat-infinite);
 	--ck-spinner-animation-name: ck-spinner-rotate;
 	--ck-spinner-animation-timing-function: var(--ck-animation-timing-function-progress);
 }

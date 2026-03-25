@@ -4,21 +4,21 @@
  */
 
 :root {
-	--ck-transition-duration-control-fast: var(--ck-transition-duration-fast);
-	--ck-transition-duration-control: var(--ck-transition-duration-base);
-	--ck-transition-duration-control-emphasized: var(--ck-transition-duration-slow);
-	--ck-transition-duration-surface: var(--ck-transition-duration-slower);
+	--ck-transition-duration-control-fast: var(--ck-duration-fast);
+	--ck-transition-duration-control: var(--ck-duration-base);
+	--ck-transition-duration-control-emphasized: var(--ck-duration-slow);
+	--ck-transition-duration-surface: var(--ck-duration-slower);
 
-	--ck-transition-timing-function-control: var(--ck-transition-timing-function-interactive);
-	--ck-transition-timing-function-control-emphasized: var(--ck-transition-timing-function-emphasized);
-	--ck-transition-timing-function-surface: var(--ck-transition-timing-function-standard);
+	--ck-transition-timing-function-control: var(--ck-ease-interactive);
+	--ck-transition-timing-function-control-emphasized: var(--ck-ease-emphasized);
+	--ck-transition-timing-function-surface: var(--ck-ease-standard);
 
 	--ck-animation-duration-feedback: var(--ck-animation-duration-slow);
 	--ck-animation-duration-surface-entrance: var(--ck-animation-duration-slow);
 	--ck-animation-duration-progress: var(--ck-animation-duration-emphasis);
 	--ck-animation-duration-progress-reduced: var(--ck-animation-duration-reduced);
 
-	--ck-animation-timing-function-feedback: var(--ck-animation-timing-function-standard);
-	--ck-animation-timing-function-progress: var(--ck-animation-timing-function-linear);
-	--ck-animation-fill-mode-feedback: var(--ck-animation-fill-mode-both);
+	--ck-animation-timing-function-feedback: var(--ck-animation-ease-standard);
+	--ck-animation-timing-function-progress: var(--ck-animation-ease-linear);
+	--ck-animation-fill-mode-feedback: var(--ck-animation-fill-both);
 }

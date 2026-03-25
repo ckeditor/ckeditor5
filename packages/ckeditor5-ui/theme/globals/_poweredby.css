@@ -15,7 +15,7 @@
 	--ck-powered-by-label-padding-inline-start: 2px;
 	--ck-powered-by-label-margin-inline-end: 4px;
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
-	--ck-powered-by-border-radius: var(--ck-border-radius);
+	--ck-powered-by-border-radius: var(--ck-radius-base);
 	--ck-powered-by-background: hsl(0, 0%, 100%);
 	--ck-powered-by-border-color: var(--ck-color-focus-border);
 
@@ -31,7 +31,7 @@
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
-	z-index: calc( var(--ck-z-panel) - 1 );
+	z-index: calc( var(--ck-z-overlay) - 1 );
 
 	& .ck.ck-powered-by {
 		line-height: var(--ck-powered-by-line-height);

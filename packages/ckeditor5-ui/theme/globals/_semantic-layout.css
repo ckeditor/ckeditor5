@@ -6,5 +6,5 @@
 :root {
 	/* Semantic sizing for shared cross-component layout constraints.
 	 * This layer will expand as more components adopt the token system. */
-	--ck-size-control-min-height: var(--ck-ui-component-min-height);
+	--ck-size-control-min-height: var(--ck-size-min-height);
 }

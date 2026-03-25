@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Backward-compatible aliases for legacy foundation token names.
+ * These map old names to new names so that external themes and integrations
+ * continue to work without changes.
+ */
+:root {
+	/* Spacing */
+	--ck-spacing-extra-tiny: var(--ck-spacing-2xs);
+	--ck-spacing-tiny: var(--ck-spacing-xs);
+	--ck-spacing-small: var(--ck-spacing-sm);
+	--ck-spacing-medium-small: var(--ck-spacing-ms);
+	--ck-spacing-medium: var(--ck-spacing-md);
+	--ck-spacing-standard: var(--ck-spacing-base);
+	--ck-spacing-large: var(--ck-spacing-lg);
+	--ck-spacing-extra-large: var(--ck-spacing-xl);
+
+	/* Font size */
+	--ck-font-size-tiny: var(--ck-font-size-xs);
+	--ck-font-size-small: var(--ck-font-size-sm);
+	--ck-font-size-normal: var(--ck-font-size-md);
+	--ck-font-size-big: var(--ck-font-size-lg);
+	--ck-font-size-large: var(--ck-font-size-xl);
+
+	/* Font */
+	--ck-font-face: var(--ck-font-family);
+
+	/* Radius */
+	--ck-border-radius: var(--ck-radius-base);
+	--ck-rounded-corners-radius: var(--ck-radius-rounded);
+
+	/* Shadow */
+	--ck-drop-shadow: var(--ck-shadow-md);
+	--ck-drop-shadow-active: var(--ck-shadow-lg);
+	--ck-inner-shadow: var(--ck-inset-shadow-sm);
+
+	/* Z-index */
+	--ck-z-default: var(--ck-z-base);
+	--ck-z-panel: var(--ck-z-overlay);
+	--ck-z-dialog: var(--ck-z-modal);
+
+	/* Focus */
+	--ck-focus-outer-shadow-geometry: var(--ck-focus-shadow-geometry);
+	--ck-focus-outer-shadow: var(--ck-focus-shadow);
+	--ck-focus-disabled-outer-shadow: var(--ck-focus-shadow-disabled);
+	--ck-focus-error-outer-shadow: var(--ck-focus-shadow-error);
+
+	/* Disabled */
+	--ck-disabled-opacity: var(--ck-opacity-disabled);
+
+	/* UI Size */
+	--ck-ui-component-min-height: var(--ck-size-control-min-height);
+}
