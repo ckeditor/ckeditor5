@@ -21,18 +21,18 @@ This guide uses `<packageName>` as the npm package placeholder. `Callout` and `C
 
 The generated package has a small, predictable structure:
 
-| Path | Purpose |
-| --- | --- |
-| `src/` | Plugin source files and the package entry point. |
-| `sample/` | The local sample app loaded by `npm run start`. |
-| `tests/` | Unit tests run by Vitest. |
-| `theme/` | Icons and CSS used by your plugin. |
-| `lang/` | Translation context and generated `*.po` files. |
-| `scripts/` | Helper scripts, including translation synchronization. |
-| `dist/` | Files created by `npm run build`. |
-| `ckeditor5-metadata.json` | Plugin metadata used by CKEditor&nbsp;5 tools. |
-| `vite.config.[js|ts]` | Build and test configuration. |
-| `src/augmentation.ts`, `typings/`, `tsconfig*.json` | TypeScript-only typing support. |
+| Path                                                | Purpose                                                |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| `src/`                                              | Plugin source files and the package entry point.       |
+| `sample/`                                           | The local sample app loaded by `npm run start`.        |
+| `tests/`                                            | Unit tests run by Vitest.                              |
+| `theme/`                                            | Icons and CSS used by your plugin.                     |
+| `lang/`                                             | Translation context and generated `*.po` files.        |
+| `scripts/`                                          | Helper scripts, including translation synchronization. |
+| `dist/`                                             | Files created by `npm run build`.                      |
+| `ckeditor5-metadata.json`                           | Plugin metadata used by CKEditor&nbsp;5 tools.         |
+| `vite.config.[js\|ts]`                              | Build and test configuration.                          |
+| `src/augmentation.ts`, `typings/`, `tsconfig*.json` | TypeScript-only typing support.                        |
 
 ## TypeScript augmentation
 
