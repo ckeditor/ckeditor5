@@ -170,3 +170,103 @@ If you use only the default user colors, no changes are required. However, if yo
 		colorsCount: 10
 	}
 	```
+
+### Alignment of AI features configuration options
+
+The AI part of the configuration has been reworked to provide consistent options across all the features.
+
+#### AI Chat Shortcuts
+
+In the {@link features/ckeditor-ai-chat#chat-shortcuts Chat&nbsp;Shortcuts} feature, the `check` property in the shortcut definition (see {@link module:ai/aichat/aichat~AIChatConfig#shortcuts `config.ai.chat.shortcuts`} configuration) has been renamed to `commandId`.
+
+If you have any shortcuts defined, update the `check` property as shown below.
+
+Before:
+
+```js
+{
+	id: 'check-correctness',
+	label: 'Proofread this document',
+	type: 'review',
+	check: 'correctness'
+}
+```
+
+After:
+
+```js
+{
+	id: 'check-correctness',
+	label: 'Proofread this document',
+	type: 'review',
+	commandId: 'correctness'
+}
+```
+
+#### AI Quick Actions
+
+In the {@link features/ckeditor-ai-actions Quick&nbsp;Actions} feature, the `type` value for {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} has been changed from uppercase to lowercase. Instead of using `'CHAT'` or `'ACTION'`, use `'chat'` and `'action'` now.
+
+Additionally, the `label` property has been introduced in place of the `displayedPrompt` property in the {@link module:ai/aiquickactions/aiquickactions~AIQuickActionsConfig#extraCommands `config.ai.quickActions.extraCommands`} configuration. The `displayedPrompt` is now required only for commands with type `'chat'`.
+
+If you are using `extraCommands` with any command of type `'action'`, it should now have the `label` property instead of `displayedPrompt`.
+
+Before:
+
+```js
+{
+	id: 'add-quote-from-famous-person',
+	displayedPrompt: 'Add a quote from a famous person',
+	prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
+	type: 'action'
+}
+```
+
+After:
+
+```js
+{
+	id: 'add-quote-from-famous-person',
+	label: 'Add a quote from a famous person',
+	prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
+	type: 'action'
+}
+```
+
+If you are using any `extraCommands` with type `'chat'`, it requires both `label` and `displayedPrompt` properties.
+
+Before:
+
+```js
+{
+	id: 'summarize-in-bullet-points',
+	displayedPrompt: 'Summarize in 5 bullet points',
+	prompt: 'Summarize the selected text in 5 bullet points.',
+	type: 'chat'
+}
+```
+
+After:
+
+```js
+{
+	id: 'summarize-in-bullet-points',
+	label: 'Summarize',
+	displayedPrompt: 'Summarize in 5 bullet points',
+	prompt: 'Summarize the selected text in 5 bullet points.',
+	type: 'chat'
+}
+```
+
+#### Use of `string` values instead of `enums`
+
+The use of TypeScript `enums` as part of the public CKEditor 5 AI API has been removed. To simplify usage, _union of strings_ is now used instead.
+
+If you have used any of the `AIContextItemType`, `AIContextTextResourceType`, or `AIChatShortcutType` enums, replace them with the corresponding string values. Please refer to the documentation of {@link module:ai/aicore/model/aicontext~AIContextItemType `AIContextItemType`}, {@link module:ai/aicore/model/aicontext~AIContextTextResourceType `AIContextTextResourceType`}, and {@link module:ai/aichatshortcuts/aichatshortcuts~AIChatShortcutType `AIChatShortcutType`}.
+Additionally, `AIChatShortcutTypeValue` has been removed as `AIChatShortcutType` now serves the same purpose.
+
+### Removal of `enum` as Uploadcare source type
+
+The use of TypeScript `enums` as part of the public CKEditor 5 Uploadcare API has been removed. To simplify usage, _union of strings_ is now used instead.
+
+If you have used the `UploadcareSource` enum, replace it with the corresponding string value. You can see available values in the {@link module:uploadcare/uploadcareconfig~UploadcareSource `UploadcareSource`} documentation. If you have used the `UploadcareSourceValue` type, use `UploadcareSource` instead.
