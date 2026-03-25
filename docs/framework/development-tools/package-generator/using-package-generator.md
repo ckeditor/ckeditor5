@@ -58,13 +58,13 @@ The generator creates a new directory named after the package without the scope 
 
 ### Useful options
 
-| Option                     | What it changes                                                                                                                                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--lang js` or `--lang ts` | Pre-fills the programming language. If omitted, the generator asks interactively.                                                                                                                      |
-| `--plugin-name <name>`     | Pre-fills the plugin class name.                                                                                                                                                                       |
-| `--global-name <name>`     | Pre-fills the UMD global name used by `dist/browser/index.umd.js`. If omitted, the generator still asks for it and suggests a name based on package name, such as `CKCallout` for `ckeditor5-callout`. |
-| `--package-manager <name>` | Pre-fills the package manager choice, for example `npm`, `pnpm`, or `yarn`.                                                                                                                            |
-| `--verbose`                | Prints additional progress logs.                                                                                                                                                                       |
+| Option                                | What it changes                                                                                                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--lang js` or `--lang ts`            | Pre-fills the programming language. If omitted, the generator asks interactively.                                                                                                                      |
+| `--plugin-name <name>`                | Pre-fills the plugin class name.                                                                                                                                                                       |
+| `--global-name <name>`                | Pre-fills the UMD global name used by `dist/browser/index.umd.js`. If omitted, the generator still asks for it and suggests a name based on package name, such as `CKCallout` for `ckeditor5-callout`. |
+| `--package-manager <npm\|yarn\|pnpm>` | Pre-fills the package manager choice. If omitted, the generator asks for it when multiple package managers are available; otherwise it uses `npm`.                                                     |
+| `--verbose`                           | Prints additional progress logs.                                                                                                                                                                       |
 
 ## Start developing the package
 
