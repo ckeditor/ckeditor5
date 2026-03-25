@@ -215,10 +215,10 @@ Before:
 
 ```js
 {
-  id: 'add-quote-from-famous-person',
-  displayedPrompt: 'Add a quote from a famous person',
-  prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
-  type: 'action'
+	id: 'add-quote-from-famous-person',
+	displayedPrompt: 'Add a quote from a famous person',
+	prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
+	type: 'action'
 }
 ```
 
@@ -226,10 +226,10 @@ After:
 
 ```js
 {
-  id: 'add-quote-from-famous-person',
-  label: 'Add a quote from a famous person',
-  prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
-  type: 'action'
+	id: 'add-quote-from-famous-person',
+	label: 'Add a quote from a famous person',
+	prompt: 'Add a quote from a known person, which would make sense in the context of the selected text.',
+	type: 'action'
 }
 ```
 
