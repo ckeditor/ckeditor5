@@ -8,9 +8,25 @@
 	--ck-color-base-background: hsl(0, 0%, 100%);
 	--ck-color-base-border: hsl(220, 6%, 81%);
 	--ck-color-base-action: hsl(104, 50.2%, 42.5%);
+	--ck-color-base-action-hover: hsl(104, 53.2%, 40.2%);
 	--ck-color-base-focus: hsl(209, 92%, 70%);
 	--ck-color-base-text: hsl(0, 0%, 20%);
+	--ck-color-base-text-light: hsl(0, 0%, 46%);
 	--ck-color-base-active: hsl(218.1, 100%, 58%);
 	--ck-color-base-active-focus: hsl(218.2, 100%, 52.5%);
+	--ck-color-base-hover: hsl(0, 0%, 94.1%);
+	--ck-color-base-selected: hsl(212, 100%, 97.1%);
+	--ck-color-base-selected-hover: hsl(211.7, 100%, 92.9%);
 	--ck-color-base-error: hsl(15, 100%, 43%);
+	--ck-color-base-warning: hsl(15, 100%, 43%);
+	--ck-color-base-success: hsl(120, 100%, 27%);
+	--ck-color-base-highlight: hsl(60, 100%, 50%);
+
+	--ck-color-base-focus-shadow: hsl(212.4, 89.3%, 89%);
+	--ck-color-base-focus-shadow-faded: hsla(209, 90%, 72%, .3);
+	--ck-color-base-error-shadow: hsla(9, 100%, 56%, .3);
+
+	--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.15);
+	--ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.2);
+	--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
 }

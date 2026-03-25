@@ -13,8 +13,4 @@
 	--ck-color-border-control: var(--ck-color-base-border);
 	--ck-color-border-container: var(--ck-color-base-border);
 	--ck-color-divider: var(--ck-color-base-border);
-
-	--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.15);
-	--ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.2);
-	--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
 }

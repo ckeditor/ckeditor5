@@ -5,8 +5,8 @@
 
 :root {
 	--ck-color-text-primary: var(--ck-color-base-text);
-	--ck-color-text-secondary: hsl(0, 0%, 46%);
-	--ck-color-text-disabled: hsl(0, 0%, 46%);
+	--ck-color-text-secondary: var(--ck-color-base-text-light);
+	--ck-color-text-disabled: var(--ck-color-text-secondary);
 	--ck-color-text-inverse: var(--ck-color-base-background);
 	--ck-color-text-error: var(--ck-color-feedback-error);
 

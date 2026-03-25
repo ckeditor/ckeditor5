@@ -7,18 +7,18 @@
 	--ck-color-interactive-focus-border-coordinates: 218, 81.8%, 56.9%;
 	/* Fallback to `--ck-color-focus-border-coordinates` for backward compatibility. */
 	--ck-color-interactive-focus-border: hsl(var(--ck-color-focus-border-coordinates, var(--ck-color-interactive-focus-border-coordinates)));
-	--ck-color-interactive-focus-shadow: hsl(212.4, 89.3%, 89%);
-	--ck-color-interactive-focus-disabled-shadow: hsla(209, 90%, 72%, .3);
-	--ck-color-interactive-focus-error-shadow: hsla(9, 100%, 56%, .3);
+	--ck-color-interactive-focus-shadow: var(--ck-color-base-focus-shadow);
+	--ck-color-interactive-focus-disabled-shadow: var(--ck-color-base-focus-shadow-faded);
+	--ck-color-interactive-focus-error-shadow: var(--ck-color-base-error-shadow);
 
-	--ck-color-interactive-hover-surface: hsl(0, 0%, 94.1%);
-	--ck-color-interactive-active-surface: hsl(0, 0%, 94.1%);
-	--ck-color-interactive-selected-surface: hsl(212, 100%, 97.1%);
-	--ck-color-interactive-selected-surface-hover: hsl(211.7, 100%, 92.9%);
-	--ck-color-interactive-selected-text: hsl(218.1, 100%, 58%);
+	--ck-color-interactive-hover-surface: var(--ck-color-base-hover);
+	--ck-color-interactive-active-surface: var(--ck-color-base-hover);
+	--ck-color-interactive-selected-surface: var(--ck-color-base-selected);
+	--ck-color-interactive-selected-surface-hover: var(--ck-color-base-selected-hover);
+	--ck-color-interactive-selected-text: var(--ck-color-base-active);
 
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
-	--ck-color-interactive-primary-surface-hover: hsl(104, 53.2%, 40.2%);
+	--ck-color-interactive-primary-surface-hover: var(--ck-color-base-action-hover);
 	--ck-color-interactive-primary-text: var(--ck-color-text-inverse);
 
 	/* Backward compatibility aliases. */
