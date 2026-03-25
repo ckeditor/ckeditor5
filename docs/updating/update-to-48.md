@@ -28,11 +28,13 @@ The following top-level options are **deprecated**:
 * `config.placeholder`
 * `config.label`
 
-Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. Pass the DOM element using `attachTo`, `root.element`, or `roots.<name>.element` instead.
+Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. Pass the DOM element in the configuration using the property required by the editor type: `attachTo` for `ClassicEditor`, `root.element` for single-root non-classic editors, and `roots.<name>.element` for `MultiRootEditor`.
 
-Use **root-scoped options** instead. The editor initialization methods were updated in v48: instead of passing a DOM element or initial data as the first argument, you now pass the DOM element via `attachTo` / `root.element` (and `roots.<name>.element` for multi-root editors) inside the config.
+Use **root-scoped options** instead. The editor initialization methods were updated in v48: instead of passing a DOM element or initial data as the first argument, you now pass the DOM element in the config object using the editor-type-specific key.
 
 For `ClassicEditor`, always pass the source element through `attachTo`. Passing a DOM element in `root.element` is not supported in this editor type and triggers a warning.
+
+This is because `ClassicEditor` does not use the provided element as an editable root. Instead, the element passed in `attachTo` is replaced with the entire editor UI, and the editable element is created internally inside that UI. In other editor types, `root.element` (single-root) and `roots.<name>.element` (multi-root) are used directly as editable areas.
 
 ```js
 // Classic editor
