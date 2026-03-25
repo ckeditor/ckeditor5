@@ -428,6 +428,86 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/19994
+		it( 'should not apply list attributes to text nodes even if schema allows all attributes on $text', () => {
+			model.schema.addAttributeCheck( context => {
+				if ( context.endsWith( '$text' ) ) {
+					return true;
+				}
+			} );
+
+			_setModelData( model,
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
+			);
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'X' ) );
+			} );
+
+			expect( _getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/19994
+		it( 'should not apply list attributes to an inline object even if schema allows all attributes on it', () => {
+			model.schema.addAttributeCheck( context => {
+				if ( context.endsWith( '$text' ) ) {
+					return true;
+				}
+			} );
+
+			_setModelData( model,
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
+			);
+
+			model.change( writer => {
+				model.insertContent( writer.createElement( 'imageInline', { src: '' } ) );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">' +
+					'B<imageInline src=""></imageInline>' +
+				'</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/19994
+		it( 'should not apply list attributes to text and inline nodes when schema allows all attributes', () => {
+			model.schema.addAttributeCheck( () => true );
+
+			_setModelData( model,
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
+			);
+
+			model.change( writer => {
+				const fragment = writer.createDocumentFragment();
+
+				writer.appendText( 'X', fragment );
+				writer.append( writer.createElement( 'imageInline', { src: '' } ), fragment );
+
+				model.insertContent( fragment );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">' +
+					'BX<imageInline src=""></imageInline>' +
+				'</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+		} );
+
 		it( 'should fix indents of pasted list items', () => {
 			_setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
