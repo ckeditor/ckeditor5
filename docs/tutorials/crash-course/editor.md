@@ -173,9 +173,11 @@ The editor and its contents should disappear. **This method returns a promise, s
 If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
 First, clone the repository the same way as before. But do not install all the dependencies. Instead, run:
-```
+
+```bash
 npm install vite
 ```
+
 After that, open the `index.html` file and add the following tags:
 
 ```html
