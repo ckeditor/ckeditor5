@@ -245,7 +245,7 @@ export function normalizeRootsConfig(
 		 *
 		 * @error editor-create-attachto-ignored
 		 */
-		throw new CKEditorError( 'editor-create-attachto-ignored' );
+		throw new CKEditorError( 'editor-create-attachto-ignored', null );
 	}
 
 	config.set( 'roots', rootsConfig );
