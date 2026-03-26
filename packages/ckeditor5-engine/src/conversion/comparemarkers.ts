@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-// REVIEW: Let's call this file `comparemarkers.ts` (adjust module name and imports)
 /**
  * @module engine/conversion/comparemarkers
  */
