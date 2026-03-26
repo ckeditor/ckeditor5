@@ -3,6 +3,50 @@ Changelog
 
 ## [48.0.0](https://github.com/ckeditor/ckeditor5/compare/v47.6.1...v48.0.0) (March 26, 2026)
 
+We are happy to announce the release of CKEditor 5 v48.0.0.
+
+### Release highlights
+
+This major release improves CKEditor AI and tables, completes the sunset of old installation methods, changes the default `Export to PDF` converter API version, and introduces a unified structure for root-related configuration.
+
+#### ⭐ CKEditor AI improvements
+
+The styling of suggestion previews in [AI Chat](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-chat.html), [AI Review](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-review.html), [AI Quick Actions](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-actions.html), and [AI Translate](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-translate.html) now more closely matches the content in the editing area, providing a more consistent visual experience. Initialization has also been optimized by caching model requests, reducing redundant network calls.
+
+Colors used across the AI package are now available through a shared CSS variable palette, making AI components easier to customize. A new [programmatic API guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-programmatic.html) also describes how to interact with AI features from code.
+
+#### Table improvements
+
+The editor now recognizes legacy HTML table attributes during upcasting, preserving styling from older HTML content and improving compatibility with CKEditor 4.
+
+* The `<table border="N">` attribute is now converted to `tableBorderWidth`.
+* The `<table cellpadding="N">` attribute is now converted to `tableCellPadding`.
+
+Several default table behaviors have also been updated:
+
+* Conversion of `border="0"` to borderless tables is now enabled by default.
+* Table alignment is now output as CSS classes by default. Using inline styles is still possible with the `useInlineStyles` option.
+* Support for the `scope` attribute in table header cells is now enabled by default.
+* Added support for table footers, thanks to a community contribution from [@star-szr](https://github.com/star-szr).
+
+#### ⚠️ Old installation methods sunset
+
+With this release, we have completed the sunset of old installation methods.
+
+If your project still relies on old installation methods, migrate to the [new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html) to continue updating to this and later versions of CKEditor 5. If migrating in the near term is not feasible, you can extend support for legacy installation methods with [CKEditor 5 Long Term Support (LTS)](https://ckeditor.com/ckeditor-5-lts/).
+
+#### ⚠️ Export to PDF default version change
+
+The `Export to PDF` feature now uses version `2` of the converter API by default, which may produce slightly different output than version `1`. If needed, update the converter configuration to match the [new default API](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#default-configuration) or keep version `1` by setting the `version` property in the `exportPdf` configuration object.
+
+See the [feature documentation](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#configuration) for configuration details for both converter API versions.
+
+#### Unified root configuration structure
+
+Editor configuration options related to roots, such as `initialData`, `placeholder`, and `label`, are now grouped under `config.root` for single-root editors and `config.roots` for multi-root editors. This provides a more consistent structure for configuring editor roots.
+
+The previous top-level configuration options remain functional but are now deprecated. See the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-48.html#root-configuration-migration-and-deprecated-top-level-options) for migration details.
+
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai), [uploadcare](https://www.npmjs.com/package/@ckeditor/ckeditor5-uploadcare)**: Simplified AI and Uploadcare configuration structures by replacing enums with plain string values. Refer to the official updating guide for [AI](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-48.html#use-of-string-values-instead-of-enums) and [Uploadcare](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-48.html#removal-of-enum-as-uploadcare-source-type).
@@ -29,31 +73,27 @@ Changelog
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon), [editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic), [editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled), [editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline), [editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: The editor config `config.initialData` is no longer updated by the editor on startup. The new config property See [#19885](https://github.com/ckeditor/ckeditor5/issues/19885).
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon), [editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic), [editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled), [editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline), [editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: The editor no longer updates `config.initialData` during startup. Use `config.roots.main.initialData` for single-root editors and `config.roots.<rootName>.initialData` for multi-root editors. See [#19885](https://github.com/ckeditor/ckeditor5/issues/19885).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Moved the public API from `AIChat` to `AIChatController`. This affects integrations that use the `AIChat` API.
 
-  is `config.roots.main.initialData` for a single-root editor, and `config.roots.<rootName>.initialData` for a multi-root editor.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Moved public API from `AIChat` to `AIChatController`. This may affect you if you used `AIChat` API.
+  The following methods were moved from `AIChat` to `AIChatController`: `addSelectionToChatContext()`, `startConversation()`, `sendMessage()`, `removeSelectionFromChatContext()`, `focusPromptInput()`, `registerToolDataCallback()`.
 
-  Following methods were moved from `AIChat` to `AIChatController`: `addSelectionToChatContext()`, `startConversation()`, `sendMessage()`, `removeSelectionFromChatContext()`, `focusPromptInput()`, `registerToolDataCallback()`.
-
-  Additionally, `AIChatInteractionAPI` type was renamed to `AIChatFeedAPI` to better reflect the space this API manages.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#addSelectionToChatContext()` does not return `Promise` anymore, its returned type is `void` now.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The styling of the suggestion previews made by the AI features (AI Chat, AI Review, AI Translate) has been aligned with the styling of the content in the editing area. Because of this, it is recommended for integrators to verify the visual styling of the suggestions after updating to this version, especially if any customization were applied. For more information on editor content styling, please refer to the [official guide
-
-  ](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/css.html#general-content-styling).
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI features now use the same font family as the rest of the editor UI (`--ck-font-face` CSS custom property). As a result, the following CSS custom properties have been removed from the code base:
+  Additionally, `AIChatInteractionAPI` was renamed to `AIChatFeedAPI`.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#addSelectionToChatContext()` now returns `void` instead of `Promise`.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Suggestion previews in AI features now follow the styling of the content in the editing area more closely. If you customized their appearance, verify the styling after updating. For more information on editor content styling, refer to the [official guide](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/css.html#general-content-styling).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI features now use the editor UI font family defined by `--ck-font-face`. As a result, the following CSS custom properties no longer affect the UI:
 
   * `--ck-ai-balloon-font-family`,
   * `--ck-ai-chat-font-family`,
   * `--ck-ai-web-source-tooltip-font-family`,
   * `--ck-ai-review-font-family`
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The buttons in the AI component are now styled using generic CSS classes:
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Buttons in AI components now use generic CSS classes:
 
   * `ck-ai-button-primary`;
   * `ck-ai-button-secondary`;
   * `ck-ai-button-tertiary`.
 
-  Because of that, some CSS variables are no longer in use:
+  As a result, the following CSS variables no longer affect the UI:
 
   * `--ck-ai-border-color-button`
   * `--ck-ai-chat-feed-item-color-actions-button-hover`
@@ -74,53 +114,48 @@ Changelog
 
   Changing their values no longer affects the UI.
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: The default word breaking behavior in the content area has been updated to prevent unwanted breaks in tables. If you customized the `--ck-content-word-break` CSS variable in your integration, migrate to the new `--ck-content-overflow-wrap` variable to retain the same effect. See [#19986](https://github.com/ckeditor/ckeditor5/issues/19986).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Deep schema verification during `model.insertContent()` is now enabled by default. It's no longer behind an experimental flag. See [#19217](https://github.com/ckeditor/ckeditor5/issues/19217).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Deep schema verification during `model.insertContent()` is now enabled by default. It is no longer behind an experimental flag. See [#19217](https://github.com/ckeditor/ckeditor5/issues/19217).
 
   Previously, this behavior required opting in via `config.experimentalFlags.modelInsertContentDeepSchemaVerification: true`. Now it is always active, ensuring that all elements and attributes in inserted content follow the schema - including deeply nested structures.
 
   If needed, you can temporarily opt out by setting `config.experimentalFlags.modelInsertContentDeepSchemaVerification: false`. Note that this option is **deprecated** and will be removed in a future release.
-* **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: Export PDF no longer uses version `1` of the converter API by default. The default version is now `2`, so it may produce a little different PDF output. Options passed to the converter must be updated to match the new API. The version can be overridden by setting the `version` property in the `exportPdf` configuration object.
+* **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: `Export to PDF` now uses version `2` of the converter API by default. This may produce slightly different output, so update any converter options to match the new API. To keep version `1`, set the `version` property in the `exportPdf` configuration object.
 * **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: The `ImportWordEditing#getToken()` method is now asynchronous and returns a promise.
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The upcasting of table heading rows has been modified to correct the incorrect marking and movement of table rows as header rows when preceding rows are not header rows. It's no longer behind an experimental flag and is enabled by default. See [#19431](https://github.com/ckeditor/ckeditor5/issues/19431).
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: New block-level left and right alignment options has been added. The editor now automatically recognizes equivalent inline margin styles and converts them to the new alignment types. See [#3225](https://github.com/ckeditor/ckeditor5/issues/3225).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The improved handling of table heading rows is now enabled by default. Rows are no longer incorrectly marked or moved as header rows when earlier rows are not header rows. See [#19431](https://github.com/ckeditor/ckeditor5/issues/19431).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added new block-level left and right alignment options. The editor also recognizes equivalent inline margin styles and converts them to these alignment types. See [#3225](https://github.com/ckeditor/ckeditor5/issues/3225).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `shallow` option used with `TableUtils#setHeadingRows` and `TableUtils#setHeadingColumns` has been renamed to `updateCellType`. See [#19431](https://github.com/ckeditor/ckeditor5/issues/19431).
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added support for importing HTML tables with the `border="0"` attribute. Tables with this attribute are automatically converted to borderless tables in the editor by applying `border-style: none` to both table and table cell elements. Closes [#19038](https://github.com/ckeditor/ckeditor5/issues/19038).
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Tables with the legacy `border="0"` HTML attribute are now normalized on upcast — the attribute is converted to an explicit `0px` border width. See [#19038](https://github.com/ckeditor/ckeditor5/issues/19038).
-
-  If you had `config.experimentalFlags.upcastTableBorderZeroAttributes` set in your configuration, remove it — the flag is no longer recognized.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Methods `TrackChangesEditing#registerBlockAttribute()` and `registerInlineAttribute()` have been moved to `SuggestionConversion` plugin in `ckeditor5-collaboration-core` package.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added support for importing HTML tables with the legacy `border="0"` attribute as borderless tables. Closes [#19038](https://github.com/ckeditor/ckeditor5/issues/19038).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The experimental handling of the legacy `border="0"` HTML attribute is now enabled by default. If you had `config.experimentalFlags.upcastTableBorderZeroAttributes` in your configuration, remove it because the flag is no longer recognized. See [#19038](https://github.com/ckeditor/ckeditor5/issues/19038).
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Moved `TrackChangesEditing#registerBlockAttribute()` and `TrackChangesEditing#registerInlineAttribute()` to the `SuggestionConversion` plugin in the `ckeditor5-collaboration-core` package.
 
   The purpose and behavior of these methods remains the same.
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Some suggestion markers DOM element mistakenly had `data-suggestion-id` attribute instead of `data-suggestion`.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Suggestion marker DOM elements now use the `data-suggestion` attribute consistently.
 
-  This may affect you if you manipulated DOM based on the attribute key name or provided CSS rules for DOM elements with such attribute key name.
+  This may affect custom code or CSS that relies on `data-suggestion-id`.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The scope of the `.ck-reset_all-excluded` class has been expanded to also include the container wearing that class (e.g. to limit inheritance of font properties).
 
   Because of this, elements of the CKEditor user interface excluded from the CSS reset by the usage of the `.ck-reset_all-excluded` class may be prone to unexpected styling. Please make sure to verify the visual styling of such UI elements after updating to this version.
-* Update to TypeScript `5.5.4`.
-* Update to TypeScript `5.5.4`.
+* Updated to TypeScript `5.5.4`.
 
 ### Features
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChatController` plugin now fires `replyCreated` and `interactionCreated` events when a new `AIReply` or `AIChatInteraction` is created.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added new `ai.chat.context.alwaysAddSelection` configuration option. If set, the document selection will be automatically added to the AI Chat context. By default, this option is turned off.
-* **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: Export PDF no longer uses version `1` of the converter API by default. The default version is now `2`, but it can be overridden by setting the `version` property in the `exportPdf` configuration object.
-* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Added ability to configure footnotes list styles dropdown items. After passing the `listStyles` array in the configuration, it'll be possible to choose which list styles will be available in the dropdown.
-* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Added support for the `arabic-indic` list style in footnotes. It's not shown in the dropdown by default, but it can be added to the list of available styles using the `listStyles` configuration option.
-* **[remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format)**: The remove format feature will now clear inherited formatting from empty paragraphs and other block elements. Closes [#19851](https://github.com/ckeditor/ckeditor5/issues/19851).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added the `ai.chat.context.alwaysAddSelection` configuration option. When enabled, the document selection is added to the AI Chat context automatically. This option is disabled by default.
+* **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: `Export to PDF` now uses version `2` of the converter API by default. To keep version `1`, set the `version` property in the `exportPdf` configuration object.
+* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Added support for configuring the items available in the footnotes list styles dropdown. Pass the `listStyles` array in the configuration to choose which list styles are shown.
+* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Added support for the `arabic-indic` list style in footnotes. It is not shown in the dropdown by default, but it can be added to the list of available styles using the `listStyles` configuration option.
+* **[remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format)**: The remove format feature now clears inherited formatting from empty paragraphs and other block elements. Closes [#19851](https://github.com/ckeditor/ckeditor5/issues/19851).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced support for changing table cell types between `data` and `header`. Closes [#16730](https://github.com/ckeditor/ckeditor5/issues/16730).
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduce `scope` attribute support for table header cells to ensure correct semantic markup and improve screen reader accessibility, with automatic assignment and manual controls. Closes [#3175](https://github.com/ckeditor/ckeditor5/issues/3175).
-
-  This feature is enabled by default and can be disabled by setting the `config.table.tableCellProperties.scopedHeaders` configuration option to `false`.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced support for the `scope` attribute in table header cells to improve semantic markup and screen reader accessibility. This feature is enabled by default and can be disabled by setting `config.table.tableCellProperties.scopedHeaders` to `false`. Closes [#3175](https://github.com/ckeditor/ckeditor5/issues/3175).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Added support for table footers. You can now specify the number of footer rows in a table. The table row context menu has been updated with a new `Footer row` toggle to control this setting. Closes [#12952](https://github.com/ckeditor/ckeditor5/issues/12952).
 
-  This feature is disabled by default and can be enabled by setting the `table.enableFooters` configuration to `true`.
+  This feature is disabled by default and can be enabled by setting `config.table.enableFooters` to `true`.
 
   Thanks to [@star-szr](https://github.com/star-szr).
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Preserve table borders from legacy HTML content. Closes [#19633](https://github.com/ckeditor/ckeditor5/issues/19633).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Preserved table borders from legacy HTML content. Closes [#19633](https://github.com/ckeditor/ckeditor5/issues/19633).
 
   When loading HTML content that uses the deprecated `border` attribute on tables, the editor now keeps the original border width instead of ignoring it.
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Preserve table cell padding from legacy HTML content. Closes [#19634](https://github.com/ckeditor/ckeditor5/issues/19634).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Preserved table cell padding from legacy HTML content. Closes [#19634](https://github.com/ckeditor/ckeditor5/issues/19634).
 
   When loading HTML content that uses the deprecated `cellpadding` attribute on tables, the editor now keeps the original cell padding instead of ignoring it.
 
@@ -130,22 +165,22 @@ Changelog
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Reset the "Show changes" button state after the balloon for an AI Quick Action is displayed.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed the incorrect order of user messages and AI agent responses in the AI Chat feed when loading a conversation from history.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed an error thrown when the user stopped an ongoing AI Chat interaction and the remaining replies were not flushed to the UI.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `Annotations` (especially `InlineAnnotations`) should use `Rect.getDomElementRects()` for attaching to a DOM element to make sure they don't overflow when the element scrolls away in its parent.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed inline annotations so they stay attached to the target element when it scrolls inside its parent container.
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Fixed excessive word breaking in tables rendered in the content area. Words will now only break when they genuinely overflow their container, preventing awkward splits in narrow table columns. Closes [#19986](https://github.com/ckeditor/ckeditor5/issues/19986).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Removed unnecessary public exports: `autoParagraphEmptyRoots`, `isParagraphable`, `wrapInParagraph`.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Removed the unintended public exports `autoParagraphEmptyRoots`, `isParagraphable`, and `wrapInParagraph`.
 
-  These utilities were only provided as internal exports (prefixed with `_`), which indicates they are not part of the public API. Removing the duplicate public exports cleans up the API and reduces the risk of relying on implementation details.
+  These utilities were not part of the supported public API.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Gradients in background styles are no longer ignored and are properly normalized. Closes [#19787](https://github.com/ckeditor/ckeditor5/issues/19787).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: No longer lose background layers when normalizing the `background` CSS shorthand. Multi-layer backgrounds (e.g. stacked gradients) are now properly parsed and serialized. See [#19787](https://github.com/ckeditor/ckeditor5/issues/19787).
-* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Fix incorrect name of `listStyles` config option in footnotes configuration type. It's now correctly named `defaultListStyle` instead of `defaultStyle`.
-* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Improve initialization time of the `ImportWordEditing` plugin. The token retrieval is now performed in the background, so it does not block the editor initialization.
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Removed unnecessary public export: `ensureSafeUrl`.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed background normalization so it no longer drops layers from the `background` CSS shorthand. Multi-layer backgrounds are now parsed and serialized correctly. See [#19787](https://github.com/ckeditor/ckeditor5/issues/19787).
+* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Fixed the footnotes configuration typings to use `defaultListStyle` instead of `defaultStyle`.
+* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Improved the initialization time of the `ImportWordEditing` plugin. Token retrieval now runs in the background, so it does not block editor startup.
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Removed the unintended public export `ensureSafeUrl`.
 
-  This utility was only provided as an internal export (prefixed with `_`), which indicates it is not part of the public API. Removing the duplicate public export cleans up the API and reduces the risk of relying on implementation details.
+  This utility was not part of the supported public API.
 * **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: Fixed the inconsistent font family in collaboration user markers.
 * **[show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks)**: Fixed the `Show blocks` feature so block labels render in all editor types when the `dir` attribute is present either on the editable element itself or on its ancestor wrapper. Closes [#19866](https://github.com/ckeditor/ckeditor5/issues/19866).
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Some suggestion markers DOM element mistakenly had `data-suggestion-id` attribute instead of `data-suggestion`.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Update CSS reset rules to broaden the scope of `.ck-reset_all-excluded` class to the container wearing that class. Closes [#19967](https://github.com/ckeditor/ckeditor5/issues/19967).
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed suggestion marker DOM elements that used `data-suggestion-id` instead of `data-suggestion`.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Updated the CSS reset rules so `.ck-reset_all-excluded` also applies to the container that uses this class. Closes [#19967](https://github.com/ckeditor/ckeditor5/issues/19967).
 
   This change reduces the impact of the CKEditor's `.ck-reset_all` class in DOM elements that are explicitly excluded from the reset by the `.ck-reset_all-excluded` class.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Disabling a menu bar menu now also closes it if it was open, preventing an open panel from remaining in a non-interactive state. Closes [#18214](https://github.com/ckeditor/ckeditor5/issues/18214).
@@ -182,35 +217,31 @@ Changelog
   * `ckeditor5-typing`: `Delete`, `Input`.
 
   Additionally, package metadata and dependencies were updated to match the new constructor-based requirements.
-* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon), [editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic), [editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled), [editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline), [editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root), [watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)**: Changed the configuration structure related to roots' data. Closes [#19885](https://github.com/ckeditor/ckeditor5/issues/19885).
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon), [editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic), [editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled), [editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline), [editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root), [watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)**: Reorganized root-related editor configuration under `config.root` for single-root editors and `config.roots` for multi-root editors. Closes [#19885](https://github.com/ckeditor/ckeditor5/issues/19885).
 
-  The `config.initialData`, `config.placeholder`, and `config.label` options from the editor configuration have been deprecated
-  and replaced with the `config.root.initialData`, `config.root.placeholder`, `config.root.label` options.
-  For multi-root editor the `config.roots` option has been introduced. The above options should be now defined for each root
-  separately through `config.roots.<rootName>.initialData`, `config.roots.<rootName>.placeholder`, and `config.roots.<rootName>.label`
-  options.
+  The `config.initialData`, `config.placeholder`, and `config.label` options are deprecated in favor of `config.root.initialData`, `config.root.placeholder`, and `config.root.label`.
+  In multi-root editors, define these options per root using `config.roots.<rootName>.initialData`, `config.roots.<rootName>.placeholder`, and `config.roots.<rootName>.label`.
 * **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office), [table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced new table block alignments, `blockLeft` and `blockRight`, allowing tables to be aligned to the left or right without text wrapping. The table properties balloon now includes two new buttons to easily apply these alignments. Closes [#3225](https://github.com/ckeditor/ckeditor5/issues/3225), [#6174](https://github.com/ckeditor/ckeditor5/issues/6174), [#8412](https://github.com/ckeditor/ckeditor5/issues/8412), [#8752](https://github.com/ckeditor/ckeditor5/issues/8752), [#9982](https://github.com/ckeditor/ckeditor5/issues/9982), [#10867](https://github.com/ckeditor/ckeditor5/issues/10867), [#14921](https://github.com/ckeditor/ckeditor5/issues/14921), [#17932](https://github.com/ckeditor/ckeditor5/issues/17932), [#19337](https://github.com/ckeditor/ckeditor5/issues/19337).
 
   Added additional spacing between a table and the surrounding text when wrapping is enabled. This prevents issues such as list markers overlapping with the table when placed next to each other.
 
   Added support for pasting to and from MS Word for all table alignment types: `left`, `right`, `center`, `blockLeft`, and `blockRight`.
-* **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core), [track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Methods `TrackChangesEditing#registerBlockAttribute()` and `registerInlineAttribute()` have been moved to `SuggestionConversion` plugin in `ckeditor5-collaboration-core` package.
+* **[collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core), [track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Moved `TrackChangesEditing#registerBlockAttribute()` and `TrackChangesEditing#registerInlineAttribute()` to the `SuggestionConversion` plugin in the `ckeditor5-collaboration-core` package.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChatController` is now a public class. Moved public API from `AIChat` to `AIChatController` to avoid duplication.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Decrease the line height in the AI Chat prompt input field to match feed messages.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#addSelectionToChatContext()` does not return `Promise` anymore, its returned type is `void` now.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The styling of the suggestion previews made by the AI features (AI Chat, AI Review, AI Translate) has been unified to reflect the styling of the content in the editing area as closely as possible.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Decreased the line height in the AI Chat prompt input field to match feed messages.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#addSelectionToChatContext()` now returns `void` instead of `Promise`.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Suggestion previews in AI features now follow the styling of the content in the editing area more closely.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Optimized AI features initialization by caching model requests, reducing redundant network calls and improving load performance.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Improved handling of agent responses in the Markdown format.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Marked selected AI programmatic APIs as experimental. These APIs are production-ready but may change in minor releases without the standard deprecation policy.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Extracted all colors used in the `ckeditor5-ai` package to a common base palette. See `aicolor.css` file for the list of colors.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added a shared CSS variable palette for colors used across the `ckeditor5-ai` package.
 
-  They are now available as CSS variables and reused throught the whole package. It allows to easily change the visuals of the AI component.
+  This makes AI components easier to customize.
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Fixed an issue where the CKBox dialog was not visible in fullscreen mode. Closes [#19290](https://github.com/ckeditor/ckeditor5/issues/19290).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Model#hasContent()` can now check `ModelSelection` and `ModelDocumentSelection` instances. See [#19847](https://github.com/ckeditor/ckeditor5/issues/19847).
-* **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Enhance `MarkdownGfmMdToHtml` to support custom plugins and export default plugin chain used by the Markdown parser.
+* **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Enhanced `MarkdownGfmMdToHtml` to support custom plugins and to export the default plugin chain used by the Markdown parser.
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Introduced `Rect.getDomElementRects()` method that conveniently retrieves all `Rects` of a DOM element while preserving their source for further processing (e.g. `Rect#getVisible()`).
-* Update `es-toolkit` to `v1.45.1`.
-* Updated translations.
+* Updated `es-toolkit` to `v1.45.1`.
 * Updated translations.
 
 ### Released packages
