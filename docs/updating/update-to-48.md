@@ -65,7 +65,7 @@ MultiRootEditor.create( {
 } );
 ```
 
-### Migration example
+#### Migration example
 
 For example, change:
 
@@ -150,6 +150,38 @@ roots: {
 	}
 }
 ```
+
+### Export to PDF v2 is now the default
+
+Starting with v48, Export to PDF uses version 2 of the HTML to PDF converter API by default. Version 1 is deprecated and available only for backward compatibility.
+
+```js
+// Before (legacy V1 setup)
+exportPdf: {
+	version: 1,
+	converterUrl: 'https://pdf-converter.cke-cs.com/v1/convert',
+	converterOptions: {
+		format: 'A4',
+		margin_top: '20mm'
+	}
+}
+
+// Now (v48 default)
+exportPdf: {
+	// No `version` needed (V2 is default).
+	converterUrl: 'https://pdf-converter.cke-cs.com/v2/convert/html-pdf',
+	converterOptions: {
+		document: {
+			size: 'A4',
+			margins: { top: '20mm' }
+		}
+	}
+}
+```
+
+This snippet highlights only selected changes. The V1 to V2 migration includes additional differences in available options and payload structure.
+
+If your integration still relies on V1 configuration, migrate to V2. For migration steps and option mapping, see the [migration guide from V1 to V2](https://pdf-converter.cke-cs.com/v2/convert/docs#section/Export-to-PDF-(v2)/Migration-guide-from-v1-to-v2) and the {@link features/export-pdf Export to PDF feature guide}.
 
 ### CSS nesting output now follows native specificity more closely
 
