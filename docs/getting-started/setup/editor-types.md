@@ -26,7 +26,6 @@ import { ClassicEditor, Bold, Italic, Link } from 'ckeditor5'; // Imports.
 
 ClassicEditor // Editor type declaration.
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, Italic, Link ], // Plugins import.
 		toolbar: [ 'bold', 'italic', 'link' ], // Toolbar configuration.

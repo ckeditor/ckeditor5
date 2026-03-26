@@ -38,7 +38,6 @@ import { Bold, ClassicEditor, Clipboard } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Clipboard, Bold, /* ... */ ]
 	} )

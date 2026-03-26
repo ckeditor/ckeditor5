@@ -73,7 +73,6 @@ import { ClassicEditor, Bold, Code, Italic, Strikethrough, Subscript, Superscrip
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline ],
 		toolbar: {

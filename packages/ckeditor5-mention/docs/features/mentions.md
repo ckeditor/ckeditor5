@@ -34,7 +34,6 @@ import { ClassicEditor, Mention } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Mention, /* ... */ ],
 		mention: {
@@ -55,7 +54,6 @@ The code snippet below was used to configure the demo above. It defines the list
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -97,7 +95,6 @@ The callback receives the query text which should be used to filter item suggest
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -163,7 +160,6 @@ This callback takes a feed item (it contains at least the `name` property) and m
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -205,7 +201,6 @@ The number of items displayed in the autocomplete list can be customized by defi
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		mention: {
 			// Define the custom number of visible mentions.
@@ -230,7 +225,6 @@ You can control the text inserted into the editor when creating a mention via th
 ```js
 ClassicEditor
 	.create( {
-		attachTo: editorElement,
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -283,7 +277,6 @@ By default, attribute elements that are next to each other and have the same val
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [ Mention, MentionCustomization, /* ... */ ], // Add the custom mention plugin function.
 		mention: {

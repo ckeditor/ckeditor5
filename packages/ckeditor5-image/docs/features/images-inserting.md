@@ -32,7 +32,6 @@ import { ClassicEditor, Image, ImageInsert } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageInsert, /* ... */  ],
 		toolbar: [ 'insertImage', /* ... */  ]
@@ -61,7 +60,6 @@ The {@link module:image/autoimage~AutoImage} plugin recognizes image links in th
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [ /* ... */ , Image, AutoImage ]
 	} )

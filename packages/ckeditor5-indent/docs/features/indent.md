@@ -26,7 +26,6 @@ import { ClassicEditor, Indent, IndentBlock } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Indent, IndentBlock, /* ... */ ],
 		toolbar: [ 'outdent', 'indent', /* ... */ ]
@@ -56,7 +55,6 @@ You can change that value to, for example, `1em`:
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		indentBlock: {
 			offset: 1,
@@ -76,7 +74,6 @@ Here is how you can configure the block indentation feature to set indentation b
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		indentBlock: {
 			classes: [
