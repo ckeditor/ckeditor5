@@ -22,7 +22,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * HTML). In roots attributes, for each root, you can store arbitrary key-value pairs with attributes connected with that root.
 		 * Use it to store any custom data that is specific to your integration or custom features.
 		 *
-		 * Currently, roots attributes are not used by any official plugins. This is a mechanism that is prepared for custom features
+		 * Currently, any official plugins do not use root attributes. This is a mechanism that is prepared for custom features
 		 * and non-standard integrations. If you do not provide any custom feature that would use root attributes, you do not need to
 		 * handle (save and load) this property.
 		 *
