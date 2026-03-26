@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-03-03
+modified_at: 2026-03-23
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -330,6 +330,210 @@ The use of TypeScript `enums` as part of the public CKEditor 5 AI API has been r
 
 If you have used any of the `AIContextItemType`, `AIContextTextResourceType`, or `AIChatShortcutType` enums, replace them with the corresponding string values. Please refer to the documentation of {@link module:ai/aicore/model/aicontext~AIContextItemType `AIContextItemType`}, {@link module:ai/aicore/model/aicontext~AIContextTextResourceType `AIContextTextResourceType`}, and {@link module:ai/aichatshortcuts/aichatshortcuts~AIChatShortcutType `AIChatShortcutType`}.
 Additionally, `AIChatShortcutTypeValue` has been removed as `AIChatShortcutType` now serves the same purpose.
+
+### AI feature UI: button CSS classes and color variables
+
+AI toolbars, panels, and related UI were refactored: controls now share button classes, and colors are driven from a single palette plus feature-level `--ck-color-ai-*` tokens. If you override AI styles in your integration, use the tables below to update custom CSS.
+
+#### Default AI color palette
+
+The package ships a root palette. Feature styles reference these values directly or through semantic `--ck-color-ai-*` aliases. Override the palette for broad theming; use feature tokens when you need a narrower change.
+
+Palette entries use **relative color** syntax (`hsla(from var(--ck-color-ai-…) …)`), so changing a main color like `--ck-color-ai-accent-700` automatically adjusts the relative colors.
+
+```css
+:root {
+	/* Alpha values */
+	--ck-color-ai-alpha-1: 0.1;
+	--ck-color-ai-alpha-2: 0.2;
+	--ck-color-ai-alpha-3: 0.3;
+	--ck-color-ai-alpha-4: 0.4;
+	--ck-color-ai-alpha-5: 0.5;
+	--ck-color-ai-alpha-6: 0.6;
+	--ck-color-ai-alpha-7: 0.7;
+	--ck-color-ai-alpha-8: 0.8;
+	--ck-color-ai-alpha-9: 0.9;
+
+	/* Neutrals */
+	--ck-color-ai-black: hsl(0, 0%, 0%);
+	--ck-color-ai-gray-900: hsl(0, 0%, 20%);
+	--ck-color-ai-gray-900-a5: hsla(from var(--ck-color-ai-gray-900) h s l / var(--ck-color-ai-alpha-5));
+	--ck-color-ai-gray-600: hsl(0, 0%, 44%);
+	--ck-color-ai-gray-600-a5: hsla(from var(--ck-color-ai-gray-600) h s l / var(--ck-color-ai-alpha-5));
+	--ck-color-ai-gray-300: hsl(216, 5%, 81%);
+	--ck-color-ai-gray-100: hsl(0, 0%, 94%);
+	--ck-color-ai-gray-50: hsl(0, 0%, 96%);
+	--ck-color-ai-gray-25: hsl(0, 0%, 98%);
+	--ck-color-ai-white: hsl(0, 0%, 100%);
+	--ck-color-ai-white-50: hsla(from var(--ck-color-ai-white) h s l / var(--ck-color-ai-alpha-5));
+
+	/* Accent (purple / violet); higher step = darker */
+	--ck-color-ai-accent-700: hsl(263, 59%, 52%);
+	--ck-color-ai-accent-700-a1: hsla(from var(--ck-color-ai-accent-700) h s l / var(--ck-color-ai-alpha-1));
+	--ck-color-ai-accent-700-a2: hsla(from var(--ck-color-ai-accent-700) h s l / var(--ck-color-ai-alpha-2));
+	--ck-color-ai-accent-700-a3: hsla(from var(--ck-color-ai-accent-700) h s l / var(--ck-color-ai-alpha-3));
+	--ck-color-ai-accent-700-a5: hsla(from var(--ck-color-ai-accent-700) h s l / var(--ck-color-ai-alpha-5));
+	--ck-color-ai-accent-800: hsl(263, 59%, 40%);
+	--ck-color-ai-accent-800-a8: hsla(from var(--ck-color-ai-accent-800) h s l / var(--ck-color-ai-alpha-8));
+	--ck-color-ai-accent-400: hsl(262, 64%, 78%);
+	--ck-color-ai-accent-400-a5: hsla(from var(--ck-color-ai-accent-400) h s l / var(--ck-color-ai-alpha-5));
+	--ck-color-ai-accent-100: hsl(261, 100%, 93%);
+	--ck-color-ai-accent-50: hsl(262, 100%, 96%);
+
+	/* Shadows */
+	--ck-color-ai-shadow: hsla(from var(--ck-color-ai-black) h s l / var(--ck-color-ai-alpha-1));
+
+	/* Insertion (green) / suggestion markers */
+	--ck-color-ai-insertion-border: hsla(128, 71%, 40%, 0.35);
+	--ck-color-ai-insertion-background: hsla(128, 71%, 65%, 0.35);
+	--ck-color-ai-insertion-border-active: hsla(128, 71%, 25%, 0.5);
+	--ck-color-ai-insertion-background-active: hsla(128, 71%, 50%, 0.5);
+
+	/* Deletion (red) / suggestion markers */
+	--ck-color-ai-deletion-border: hsla(345, 71%, 40%, 0.35);
+	--ck-color-ai-deletion-background: hsla(345, 71%, 65%, 0.35);
+	--ck-color-ai-deletion-stroke: hsla(345, 71%, 20%, 0.5);
+	--ck-color-ai-deletion-border-active: hsla(345, 71%, 25%, 0.5);
+	--ck-color-ai-deletion-bg-active: hsla(345, 71%, 50%, 0.5);
+
+	/* Inactive suggestion */
+	--ck-color-ai-inactive-insertion-border: hsla(128, 1%, 73%, 0.35);
+	--ck-color-ai-inactive-insertion-background: hsla(128, 6%, 93%, 0.35);
+	--ck-color-ai-inactive-deletion-border: hsla(345, 1%, 74%, 0.35);
+	--ck-color-ai-inactive-deletion-background: hsla(345, 11%, 95%, 0.35);
+	--ck-color-ai-inactive-deletion-stroke: hsla(0, 1%, 62%, 0.35);
+
+	/* Notification */
+	--ck-color-ai-error-background: hsl(15, 100%, 97%);
+	--ck-color-ai-error-border: hsl(14, 100%, 68%);
+	--ck-color-ai-warning-background: hsl(37, 100%, 96.5%);
+	--ck-color-ai-warning-border: hsl(36, 100%, 68%);
+
+	/* Prompt animation */
+	--ck-color-ai-prompt-glow: hsl(55, 100%, 95%);
+}
+```
+
+#### Shared AI button classes
+
+Primary, secondary, and tertiary actions use the same classes everywhere:
+
+* `ck-ai-button-primary`
+* `ck-ai-button-secondary`
+* `ck-ai-button-tertiary`
+
+Several older variables only fed one-off button styling; those hooks are **superseded** by the classes and theme rules in `aibutton.css`. See the table below.
+
+#### CSS custom property migration
+
+The **Change type** column uses:
+
+* **Superseded** &ndash; no replacement variable; use the shared button classes and bundled `aibutton.css` rules instead.
+* **Renamed** &ndash; override the new `--ck-color-ai-*` (or underlying palette) token.
+* **Restructured** &ndash; the property now composes palette variables; prefer the listed replacements (composite variables such as `--ck-ai-skeleton-item-background` or `--ck-ai-spinner-background` still exist if you override the entire value).
+
+| Old | Change type | New |
+| --- | --- | --- |
+| `--ck-ai-border-color-button` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-actions-button-hover` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-show-changes-toggle-active-background` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-background` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-color` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-show-changes-toggle-on-background` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-show-changes-toggle-on-color` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-item-color-text` | Superseded | &mdash; |
+| `--ck-ai-chat-feed-loader-icon-color` | Superseded | &mdash; |
+| `--ck-ai-chat-suggestion-border-hover-color` | Superseded | &mdash; |
+| `--ck-ai-header-border-color-button` | Superseded | &mdash; |
+| `--ck-ai-header-color-text` | Superseded | &mdash; |
+| `--ck-ai-loader-icon-color` | Superseded | &mdash; |
+| `--ck-ai-loader-icon-dot-color` | Superseded | &mdash; |
+| `--ck-ai-review-check-list-model-dropdown-active-color` | Superseded | &mdash; |
+| `--ck-ai-review-check-list-model-dropdown-hover-background-color` | Superseded | &mdash; |
+| `--ck-ai-actions-balloon-disclaimer-text-color` | Renamed | `--ck-color-ai-actions-balloon-disclaimer-text` |
+| `--ck-ai-background-color-action-button` | Renamed | `--ck-color-ai-chat-primary-button-background` |
+| `--ck-ai-border-color-main` | Renamed | `--ck-color-ai-chat-border-main` |
+| `--ck-ai-button-primary-active-background-color` | Renamed | `--ck-color-ai-button-primary-background-active` |
+| `--ck-ai-button-primary-background-color` | Renamed | `--ck-color-ai-button-primary-background` |
+| `--ck-ai-button-primary-color` | Renamed | `--ck-color-ai-button-primary-text` |
+| `--ck-ai-button-primary-disabled-background-color` | Renamed | `--ck-color-ai-button-primary-background-disabled` |
+| `--ck-ai-button-primary-disabled-color` | Renamed | `--ck-color-ai-button-primary-text-disabled` |
+| `--ck-ai-button-primary-hover-background-color` | Renamed | `--ck-color-ai-button-primary-background-hover` |
+| `--ck-ai-button-secondary-active-background-color` | Renamed | `--ck-color-ai-button-secondary-background-active` |
+| `--ck-ai-button-secondary-background-color` | Renamed | `--ck-color-ai-button-secondary-background` |
+| `--ck-ai-button-secondary-border-color` | Renamed | `--ck-color-ai-button-secondary-border` |
+| `--ck-ai-button-secondary-color` | Renamed | `--ck-color-ai-button-secondary-text` |
+| `--ck-ai-button-secondary-disabled-background-color` | Renamed | `--ck-color-ai-button-secondary-background-disabled` |
+| `--ck-ai-button-secondary-disabled-border-color` | Renamed | `--ck-color-ai-button-secondary-border-disabled` |
+| `--ck-ai-button-secondary-disabled-color` | Renamed | `--ck-color-ai-button-secondary-text-disabled` |
+| `--ck-ai-button-secondary-hover-background-color` | Renamed | `--ck-color-ai-button-secondary-background-hover` |
+| `--ck-ai-button-tertiary-active-background-color` | Renamed | `--ck-color-ai-button-tertiary-background-active` |
+| `--ck-ai-button-tertiary-active-color` | Renamed | `--ck-color-ai-button-tertiary-text-active` |
+| `--ck-ai-button-tertiary-background-color` | Renamed | `--ck-color-ai-button-tertiary-background` |
+| `--ck-ai-button-tertiary-color` | Renamed | `--ck-color-ai-button-tertiary-text` |
+| `--ck-ai-button-tertiary-disabled-background-color` | Renamed | `--ck-color-ai-button-tertiary-background-disabled` |
+| `--ck-ai-button-tertiary-disabled-color` | Renamed | `--ck-color-ai-button-tertiary-text-disabled` |
+| `--ck-ai-button-tertiary-hover-active-background-color` | Renamed | `--ck-color-ai-button-tertiary-background-hover-active` |
+| `--ck-ai-button-tertiary-hover-active-color` | Renamed | `--ck-color-ai-button-tertiary-text-hover-active` |
+| `--ck-ai-button-tertiary-hover-background-color` | Renamed | `--ck-color-ai-button-tertiary-background-hover` |
+| `--ck-ai-button-tertiary-hover-color` | Renamed | `--ck-color-ai-button-tertiary-text-hover` |
+| `--ck-ai-chat-button-active-background-color` | Renamed | `--ck-color-ai-chat-button-active-background` |
+| `--ck-ai-chat-button-active-color` | Renamed | `--ck-color-ai-chat-button-active` |
+| `--ck-ai-chat-button-hover-color` | Renamed | `--ck-color-ai-chat-button-hover` |
+| `--ck-ai-chat-color-icon` | Renamed | `--ck-color-ai-chat-icon` |
+| `--ck-ai-chat-color-text` | Renamed | `--ck-color-ai-chat-text` |
+| `--ck-ai-chat-controls-loader-color` | Renamed | `--ck-color-ai-chat-controls-loader` |
+| `--ck-ai-chat-controls-loader-icon-color` | Renamed | `--ck-color-ai-chat-controls-loader-icon` |
+| `--ck-ai-chat-controls-loader-icon-dot-active-color` | Renamed | `--ck-color-ai-chat-controls-loader-icon-dot-active` |
+| `--ck-ai-chat-controls-loader-icon-dot-color` | Renamed | `--ck-color-ai-chat-controls-loader-icon-dot` |
+| `--ck-ai-chat-feed-interaction-header-capabilities-color-text` | Renamed | `--ck-color-ai-chat-feed-interaction-header-capabilities-text` |
+| `--ck-ai-chat-feed-item-color-background` | Renamed | `--ck-color-ai-chat-feed-item-background` |
+| `--ck-ai-chat-feed-item-color-background-secondary` | Renamed | `--ck-color-ai-chat-feed-item-background-secondary` |
+| `--ck-ai-chat-flash-color` | Renamed | `--ck-color-ai-chat-flash` |
+| `--ck-ai-chat-flash-color-text` | Renamed | `--ck-color-ai-chat-flash-text` |
+| `--ck-ai-chat-suggestion-icon-default-color` | Renamed | `--ck-color-ai-chat-suggestion-icon-default` |
+| `--ck-ai-chat-user-context-background` | Renamed | `--ck-color-ai-chat-user-context-background` |
+| `--ck-ai-disclaimer-background-color` | Renamed | `--ck-color-ai-disclaimer-background` |
+| `--ck-ai-disclaimer-border-color` | Renamed | `--ck-color-ai-disclaimer-border` |
+| `--ck-ai-disclaimer-text-color` | Renamed | `--ck-color-ai-disclaimer-text` |
+| `--ck-ai-font-color-action-button` | Renamed | `--ck-color-ai-chat-primary-button-text` |
+| `--ck-ai-header-color-icon` | Renamed | `--ck-color-ai-header-icon` |
+| `--ck-ai-notification-color-text` | Renamed | `--ck-color-ai-notification-text` |
+| `--ck-ai-notification-error-color-background` | Renamed | `--ck-color-ai-notification-error-background` |
+| `--ck-ai-notification-error-color-border` | Renamed | `--ck-color-ai-notification-error-border` |
+| `--ck-ai-notification-warning-color-background` | Renamed | `--ck-color-ai-notification-warning-background` |
+| `--ck-ai-notification-warning-color-border` | Renamed | `--ck-color-ai-notification-warning-border` |
+| `--ck-ai-quick-actions-button-background-color` | Renamed | `--ck-color-ai-quick-actions-button-background` |
+| `--ck-ai-quick-actions-button-color` | Renamed | `--ck-color-ai-quick-actions-button` |
+| `--ck-ai-quick-actions-list-item-group-row-color` | Renamed | `--ck-color-ai-quick-actions-list-item-group-row` |
+| `--ck-ai-review-border-color-button` | Renamed | `--ck-color-ai-review-border-button` |
+| `--ck-ai-review-check-list-item-active-border-color` | Renamed | `--ck-color-ai-review-check-list-item-active-border` |
+| `--ck-ai-review-check-list-item-description-color` | Renamed | `--ck-color-ai-review-check-list-item-description` |
+| `--ck-ai-review-check-list-item-hover-border-color` | Renamed | `--ck-color-ai-review-check-list-item-hover-border` |
+| `--ck-ai-review-check-list-item-title-color` | Renamed | `--ck-color-ai-review-check-list-item-title` |
+| `--ck-ai-review-check-list-item-title-icon-color` | Renamed | `--ck-color-ai-review-check-list-item-title-icon` |
+| `--ck-ai-review-color-icon` | Renamed | `--ck-color-ai-review-icon` |
+| `--ck-ai-review-color-text` | Renamed | `--ck-color-ai-review-text` |
+| `--ck-ai-suggestion-inactive-color-background` | Renamed | `--ck-color-ai-suggestion-inactive-background` |
+| `--ck-ai-suggestion-inactive-color-border` | Renamed | `--ck-color-ai-suggestion-inactive-border` |
+| `--ck-ai-suggestion-marker-deletion-background-color` | Renamed | `--ck-color-ai-suggestion-marker-deletion-background` |
+| `--ck-ai-suggestion-marker-deletion-background-color-active` | Renamed | `--ck-color-ai-suggestion-marker-deletion-background-active` |
+| `--ck-ai-suggestion-marker-deletion-border-color` | Renamed | `--ck-color-ai-suggestion-marker-deletion-border` |
+| `--ck-ai-suggestion-marker-deletion-border-color-active` | Renamed | `--ck-color-ai-suggestion-marker-deletion-border-active` |
+| `--ck-ai-suggestion-marker-deletion-stroke-color` | Renamed | `--ck-color-ai-suggestion-marker-deletion-stroke` |
+| `--ck-ai-suggestion-marker-insertion-background-color` | Renamed | `--ck-color-ai-suggestion-marker-insertion-background` |
+| `--ck-ai-suggestion-marker-insertion-background-color-active` | Renamed | `--ck-color-ai-suggestion-marker-insertion-background-active` |
+| `--ck-ai-suggestion-marker-insertion-border-color` | Renamed | `--ck-color-ai-suggestion-marker-insertion-border` |
+| `--ck-ai-suggestion-marker-insertion-border-color-active` | Renamed | `--ck-color-ai-suggestion-marker-insertion-border-active` |
+| `--ck-ai-web-source-tooltip-title-color` | Renamed | `--ck-color-ai-chat-web-source-tooltip-title` |
+| `--ck-ai-web-source-tooltip-url-color` | Renamed | `--ck-color-ai-chat-web-source-tooltip-url` |
+| `--ck-ai-chat-shortcuts-prompt-input-animation-border` | Restructured | `--ck-color-ai-chat-shortcuts-prompt-animation-border` |
+| `--ck-ai-chat-shortcuts-prompt-input-animation-box-shadow` | Restructured | `--ck-color-ai-chat-shortcuts-prompt-animation-glow-ring` |
+| `--ck-ai-skeleton-item-background` | Restructured | `--ck-color-ai-core-skeleton-gradient-edge`, `--ck-color-ai-core-skeleton-gradient-mid` |
+| `--ck-ai-spinner-background` | Restructured | `--ck-color-ai-core-spinner-gradient-start`, `--ck-color-ai-core-spinner-gradient-end` |
+| `--ck-ai-spinner-mask` | Restructured | `--ck-color-ai-core-spinner-mask-edge` |
+
+For **Restructured** rows, prefer tuning the listed `--ck-color-ai-*` variables (or the root palette above) so derived UI stays coherent.
 
 ### Removal of `enum` as Uploadcare source type
 
