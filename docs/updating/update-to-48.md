@@ -320,6 +320,36 @@ After:
 }
 ```
 
+#### AI UI styling variables no longer affecting the UI
+
+AI UI styling has been aligned with the editor-wide styling system, and selected AI-specific CSS variables no longer affect the UI.
+
+The AI UI now uses the font family defined by `--ck-font-face`. Because of this, the following variables **no longer change AI UI font styling**:
+
+* `--ck-ai-balloon-font-family`
+* `--ck-ai-chat-font-family`
+* `--ck-ai-web-source-tooltip-font-family`
+* `--ck-ai-review-font-family`
+
+Additionally, AI buttons now use generic classes (`ck-ai-button-primary`, `ck-ai-button-secondary`, and `ck-ai-button-tertiary`), so the variables below **no longer affect the UI**:
+
+* `--ck-ai-border-color-button`
+* `--ck-ai-chat-feed-item-color-actions-button-hover`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-active-background`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-background`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-color`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-on-background`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-on-color`
+* `--ck-ai-chat-feed-item-color-text`
+* `--ck-ai-chat-feed-loader-icon-color`
+* `--ck-ai-chat-suggestion-border-hover-color`
+* `--ck-ai-header-border-color-button`
+* `--ck-ai-header-color-text`
+* `--ck-ai-loader-icon-color`
+* `--ck-ai-loader-icon-dot-color`
+* `--ck-ai-review-check-list-model-dropdown-active-color`
+* `--ck-ai-review-check-list-model-dropdown-hover-background-color`
+
 #### Use of `string` values instead of `enums`
 
 The use of TypeScript `enums` as part of the public CKEditor 5 AI API has been removed. To simplify usage, _union of strings_ is now used instead.
