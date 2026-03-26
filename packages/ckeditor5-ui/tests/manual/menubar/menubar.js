@@ -115,7 +115,8 @@ createEditor( '#editor-custom-config', 'en', {
 
 function createEditor( selector, uiLanguageCode, extraConfig ) {
 	ClassicEditor
-		.create( document.querySelector( selector ), {
+		.create( {
+			attachTo: document.querySelector( selector ),
 			plugins: [ ArticlePluginSet ],
 			toolbar: [
 				'heading',

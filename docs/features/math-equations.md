@@ -69,7 +69,8 @@ import { ClassicEditor } from 'ckeditor5';
 import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
@@ -121,7 +122,8 @@ const MathTypeExports = window['@wiris/mathtype-ckeditor5'];
 const MathType = MathTypeExports.default;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
@@ -151,15 +153,16 @@ To install the Java service, follow the steps below:
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#example' ), {
-				// ... Other configuration options ...
-				// MathType parameters.
-				mathTypeParameters : {
-					serviceProviderProperties : {
-						URI : '/pluginwiris_engine/app/configurationjs',
-						server : 'java'
-					}
+		.create( {
+			attachTo: document.querySelector( '#example' ),
+			// ... Other configuration options ...
+			// MathType parameters.
+			mathTypeParameters : {
+				serviceProviderProperties : {
+					URI : '/pluginwiris_engine/app/configurationjs',
+					server : 'java'
 				}
+			}
 		})
 		.then( /* ... */ )
 		.catch( /* ... */ );
@@ -175,15 +178,16 @@ To install the PHP service, follow the steps below:
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#example' ), {
-				// ... Other configuration options ...
-				// MathType parameters.
-				mathTypeParameters : {
-					serviceProviderProperties : {
-						URI : 'http://localhost/php-services/integration',
-						server : 'php'
-					}
+		.create( {
+			attachTo: document.querySelector( '#example' ),
+			// ... Other configuration options ...
+			// MathType parameters.
+			mathTypeParameters : {
+				serviceProviderProperties : {
+					URI : 'http://localhost/php-services/integration',
+					server : 'php'
 				}
+			}
 		})
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -200,15 +204,16 @@ To install the .NET service, follow the steps below:
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#example' ), {
-				// ... Other configuration options ...
-				// MathType parameters.
-				mathTypeParameters : {
-					serviceProviderProperties : {
-						URI : 'http://localhost/aspx-services/integration',
-						server : 'aspx'
-					}
+		.create( {
+			attachTo: document.querySelector( '#example' ),
+			// ... Other configuration options ...
+			// MathType parameters.
+			mathTypeParameters : {
+				serviceProviderProperties : {
+					URI : 'http://localhost/aspx-services/integration',
+					server : 'aspx'
 				}
+			}
 		})
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -230,15 +235,16 @@ To install the Ruby on Rails service, follow the steps below:
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#example' ), {
-				// ... Other configuration options ...
-				// MathType parameters.
-				mathTypeParameters : {
-					serviceProviderProperties : {
-						URI : '/wirispluginengine/integrationn',
-						server : 'ruby'
-					}
+		.create( {
+			attachTo: document.querySelector( '#example' ),
+			// ... Other configuration options ...
+			// MathType parameters.
+			mathTypeParameters : {
+				serviceProviderProperties : {
+					URI : '/wirispluginengine/integrationn',
+					server : 'ruby'
 				}
+			}
 		})
 	.then( /* ... */ )
 	.catch( /* ... */ );

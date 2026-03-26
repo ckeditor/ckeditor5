@@ -13,7 +13,8 @@ import {
 import { HighlightEditor } from './build-highlight-source.js';
 
 HighlightEditor
-	.create( document.querySelector( '#snippet-highlight' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-highlight' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

@@ -14,7 +14,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-lists-basic' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-lists-basic' ),
 		extraPlugins: [ ImageResize, ListProperties ],
 		toolbar: {
 			items: [

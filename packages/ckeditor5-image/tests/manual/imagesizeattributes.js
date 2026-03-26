@@ -17,6 +17,7 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const commonConfig = {
+	attachTo: document.querySelector( '#editor-width-height-attributes' ),
 	plugins: [
 		ArticlePluginSet,
 		ImageResize,
@@ -42,7 +43,7 @@ const commonConfig = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-width-height-attributes' ), commonConfig )
+	.create( commonConfig )
 	.then( editor => {
 		window.editor = editor;
 	} )

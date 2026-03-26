@@ -36,7 +36,8 @@ import {
 } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '.chat__editor' ), {
+	.create( {
+		attachTo: document.querySelector( '.chat__editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		extraPlugins: [ Essentials, Paragraph, Mention, MentionLinks, Bold, Italic, Underline, Strikethrough, Link ],
 		toolbar: {

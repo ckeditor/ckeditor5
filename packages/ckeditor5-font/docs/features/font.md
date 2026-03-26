@@ -41,7 +41,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Font } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Font, /* ... */ ],
 		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
@@ -65,7 +66,8 @@ You can also add just one or a selected few of the font features to your plugin 
 import { ClassicEditor, FontFamily } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ FontFamily, /* ... */ ],
 		toolbar: [ 'fontFamily', /* ... */ ]
 	} )
@@ -84,7 +86,8 @@ For example, the following editor supports two font families besides the default
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontFamily: {
 			options: [
@@ -109,7 +112,8 @@ By default, all `font-family` values that are not specified in the `config.fontF
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontFamily: {
 			options: [
@@ -174,7 +178,8 @@ An example of an editor that supports two font sizes:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontSize: {
 			options: [
@@ -207,7 +212,8 @@ Here is an example of the WYSIWYG editor that supports numerical font sizes. Not
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontSize: {
 			options: [
@@ -236,7 +242,8 @@ By default, all `font-size` values that are not specified in the `config.fontSiz
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontSize: {
 			options: [
@@ -274,7 +281,8 @@ It is possible to configure which colors are available in the color dropdown. Us
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontColor: {
 			colors: [
@@ -345,7 +353,8 @@ Usually, you will want to use this option when changing the number of [available
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontColor: {
 			colors: [
@@ -379,7 +388,8 @@ By default, the number of displayed document colors is limited to one row, but y
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontColor: {
 			// Display 6 columns in the color grid.
@@ -416,7 +426,8 @@ To turn off the color picker entirely for the given feature, set the {@link modu
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		fontColor: {
 			colorPicker: {

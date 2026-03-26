@@ -30,7 +30,8 @@ However, if you cannot alter the HTML or you load the data asynchronously using 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ],
@@ -60,7 +61,8 @@ For that, you need to store the reference to the `editor` because there is no gl
 let editor;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ]
@@ -125,7 +127,8 @@ This approach is **only available in the Classic editor**, and only if the edito
 		} = CKEDITOR;
 
 		ClassicEditor
-			.create( document.querySelector( '#editor' ), {
+			.create( {
+				attachTo: document.querySelector( '#editor' ),
 				licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				plugins: [ Essentials, Paragraph, Bold, Italic ],
 				toolbar: [ 'bold', 'italic' ]
@@ -184,7 +187,8 @@ If the source element is not `<textarea>`, CKEditor 5 clears its content after t
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ...
 		updateSourceElementOnDestroy: true
 	} );
@@ -214,7 +218,8 @@ import { ClassicEditor, PendingActions } from 'ckeditor5';
 let isDirty = false;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			PendingActions,
 

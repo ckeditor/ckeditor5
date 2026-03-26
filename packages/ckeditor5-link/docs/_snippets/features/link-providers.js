@@ -15,7 +15,8 @@ import {
 import { SocialLinksPlugin } from './build-link-source.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link-providers' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-link-providers' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [
 			AutoLink,

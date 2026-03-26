@@ -103,7 +103,8 @@ const COLOR_PALETTE = [
 ];
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-layout' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-layout' ),
 		extraPlugins: [
 			TableLayout,
 			TableProperties,

@@ -23,7 +23,8 @@ import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks
 
 async function createEditor( element, resizeUnit ) {
 	const editor = await ClassicEditor
-		.create( element, {
+		.create( {
+			attachTo: element,
 			plugins: [
 				ArticlePluginSet, EasyImage, CloudServices, ImageUpload, ImageResize
 			],

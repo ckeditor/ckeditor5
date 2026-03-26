@@ -13,7 +13,8 @@ document.querySelector( '.container-outer:not( .container-outer--large )' ).scro
 document.querySelector( '.container-outer:not( .container-outer--large )' ).scrollLeft = 460;
 
 ClassicEditor
-	.create( document.querySelector( '#editor-stick' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-stick' ),
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
@@ -54,7 +55,8 @@ ClassicEditor
 
 // Editor with scroll
 ClassicEditor
-	.create( document.querySelector( '#editor-with-scroll' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-scroll' ),
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
@@ -92,7 +94,8 @@ ClassicEditor
 
 // Editor "out of the box"
 ClassicEditor
-	.create( document.querySelector( '#editor-out-of-the-box' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-out-of-the-box' ),
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},

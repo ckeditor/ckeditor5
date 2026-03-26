@@ -53,7 +53,8 @@ class Timestamp extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		// Add the Timestamp plugin to config.plugins array.
 		plugins: [
@@ -75,7 +76,7 @@ Once we create a new instance of `ButtonView`, we will be able to customize it b
 We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, to be able to add it into the {@link getting-started/setup/toolbar toolbar} array.
 
 ```js
-import { 
+import {
 	// Other imports
 	ButtonView
 } from 'ckeditor5';
@@ -102,7 +103,8 @@ class Timestamp extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp

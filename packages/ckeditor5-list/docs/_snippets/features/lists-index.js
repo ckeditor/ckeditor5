@@ -12,7 +12,8 @@ import {
 import { ListEditor } from './lists-source.js';
 
 ListEditor
-	.create( document.querySelector( '#snippet-lists-index' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-lists-index' ),
 		extraPlugins: [ ListProperties ],
 		toolbar: {
 			items: [

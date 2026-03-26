@@ -90,7 +90,8 @@ import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 import '@webspellchecker/wproofreader-ckeditor5/index.css';
 
 ClassicEditor
-	.create( editorElement, {
+	.create( {
+		attachTo: editorElement,
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ WProofreader, /* ...], */ ]
 		toolbar: [ 'wproofreader', /* ... */ ]
@@ -112,7 +113,8 @@ Add the following configuration to your editor:
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( {
+		attachTo: editorElement,
 		// ... Other configuration options ...
 		wproofreader: {
 			serviceId: 'your-service-ID',
@@ -131,7 +133,8 @@ You will need to add the following configuration to your editor:
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( {
+		attachTo: editorElement,
 		// ... Other configuration options ...
 		wproofreader: {
 			serviceProtocol: 'https',

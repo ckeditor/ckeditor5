@@ -7,7 +7,11 @@ import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspe
 import { MiniInspectorEditor } from '@snippets/mini-inspector.js';
 
 MiniInspectorEditor
-	.create( document.querySelector( '#mini-inspector-bold' ) )
+	.create( {
+		root: {
+			element: document.querySelector( '#mini-inspector-bold' )
+		}
+	} )
 	.then( editor => {
 		window.editor = editor;
 

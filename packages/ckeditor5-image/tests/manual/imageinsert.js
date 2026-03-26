@@ -12,7 +12,8 @@ import { ImageInsert } from '../../src/imageinsert.js';
 import { AutoImage } from '../../src/autoimage.js';
 
 async function createEditor( elementId, imageType ) {
-	const editor = await ClassicEditor.create( document.querySelector( '#' + elementId ), {
+	const editor = await ClassicEditor.create( {
+		attachTo: document.querySelector( '#' + elementId ),
 		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
 		toolbar: [
 			'heading',

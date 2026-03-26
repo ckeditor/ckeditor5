@@ -12,6 +12,7 @@ window.editors = {};
 
 function createEditor( selector, poweredByConfig ) {
 	const config = {
+		attachTo: document.querySelector( selector ),
 		plugins: [ ArticlePluginSet, ImageResize, SourceEditing ],
 		toolbar: [
 			'sourceEditing',
@@ -50,7 +51,7 @@ function createEditor( selector, poweredByConfig ) {
 	}
 
 	ClassicEditor
-		.create( document.querySelector( selector ), config )
+		.create( config )
 		.then( editor => {
 			window.editors[ selector ] = editor;
 

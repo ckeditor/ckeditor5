@@ -39,7 +39,7 @@ import { ClassicEditor } from 'ckeditor5'
 const editorPlaceholder = document.querySelector( '#editor' ) as HTMLElement;
 
 ClassicEditor
-	.create( editorPlaceholder ).catch( error => {
+	.create( { attachTo: editorPlaceholder } ).catch( error => {
 		console.error( error );
 	} );
 ```
@@ -167,7 +167,8 @@ class Timestamp extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ) as HTMLElement, {
+	.create( {
+		attachTo: document.querySelector( '#editor' ) as HTMLElement,
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp' ],

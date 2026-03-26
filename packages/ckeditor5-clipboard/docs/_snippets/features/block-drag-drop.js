@@ -6,15 +6,13 @@
 import { CS_CONFIG } from '@snippets/index.js';
 import { ClassicEditorExperimental } from './build-drag-drop-source.js';
 
-ClassicEditorExperimental.create(
-	document.querySelector( '#snippet-block-drag-drop' ),
-	{
-		root: {
-			placeholder: 'Drop the content here to test the feature.'
-		},
-		cloudServices: CS_CONFIG
-	}
-)
+ClassicEditorExperimental.create( {
+	attachTo: document.querySelector( '#snippet-block-drag-drop' ),
+	root: {
+		placeholder: 'Drop the content here to test the feature.'
+	},
+	cloudServices: CS_CONFIG
+} )
 	.then( editor => {
 		window.editorExperimental = editor;
 	} )

@@ -28,7 +28,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, CodeBlock } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ CodeBlock, /* ... */ ],
 		toolbar: [ 'codeBlock', /* ... */ ]
@@ -53,7 +54,8 @@ It is possible to configure which languages are available to the users. You can 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
@@ -72,7 +74,8 @@ By default, the CSS class of the `<code>` element in the data and editing is gen
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		codeBlock: {
 			languages: [

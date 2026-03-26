@@ -68,7 +68,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ CKFinder, CKFinderUploadAdapter, /* ... */ ],
 		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
@@ -90,7 +91,8 @@ ClassicEditor
 const { ClassicEditor, CKFinder: CKFinderPlugin, CKFinderUploadAdapter } = CKEDITOR;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ CKFinderPlugin, CKFinderUploadAdapter, /* ... */ ],
 		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
@@ -114,7 +116,8 @@ Assuming that you [installed the CKFinder PHP server-side connector](https://cke
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
@@ -148,7 +151,8 @@ Then:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		ckfinder: {
 			// Upload the images to the server using the CKFinder QuickUpload command.
@@ -174,7 +178,8 @@ By default, the file manager opens as a modal. To open it in a new pop-up window
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		ckfinder: {
 			// Open the file manager in the pop-up window.

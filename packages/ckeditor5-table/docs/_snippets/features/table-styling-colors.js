@@ -97,7 +97,8 @@ const customColorPalette = [
 ];
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-styling-colors' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-styling-colors' ),
 		extraPlugins: [
 			TableProperties,
 			TableCellProperties

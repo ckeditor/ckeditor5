@@ -14,7 +14,8 @@ import {
 import { TableEditor } from './build-table-source.js';
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-styling' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-styling' ),
 		extraPlugins: [
 			TableProperties,
 			TableCellProperties

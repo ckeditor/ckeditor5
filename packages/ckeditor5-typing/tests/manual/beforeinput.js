@@ -36,7 +36,8 @@ for ( const input of document.querySelectorAll( 'input[name=logEvents]' ) ) {
 import './beforeinput-contenteditable.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Autoformat,

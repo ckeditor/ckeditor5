@@ -199,7 +199,8 @@ class ExternalDataWidgetEditing extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-external-data-widget' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-external-data-widget' ),
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'undo', 'redo', '|', 'external', '|', 'heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList' ]
 	} )

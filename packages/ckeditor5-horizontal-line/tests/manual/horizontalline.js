@@ -12,7 +12,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import { HorizontalLine } from '../../src/horizontalline.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, HorizontalLine ],
 		toolbar: [

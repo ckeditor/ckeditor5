@@ -16,7 +16,8 @@ let editor, editable, observer;
 
 function initEditor() {
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 			menuBar: { isVisible: true }

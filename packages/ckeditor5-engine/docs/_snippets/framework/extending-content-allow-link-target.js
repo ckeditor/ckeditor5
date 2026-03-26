@@ -34,7 +34,8 @@ function AllowLinkTarget( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link-target' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-link-target' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ AllowLinkTarget ],
 		ui: {

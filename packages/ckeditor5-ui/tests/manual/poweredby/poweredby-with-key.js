@@ -13,7 +13,8 @@ window.editors = {};
 
 function createEditor( selector ) {
 	ClassicEditor
-		.create( document.querySelector( selector ), {
+		.create( {
+			attachTo: document.querySelector( selector ),
 			plugins: [ ArticlePluginSet, ImageResize ],
 			toolbar: [
 				'heading',
