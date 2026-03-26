@@ -362,3 +362,13 @@ Additionally, `AIChatShortcutTypeValue` has been removed as `AIChatShortcutType`
 The use of TypeScript `enums` as part of the public CKEditor 5 Uploadcare API has been removed. To simplify usage, _union of strings_ is now used instead.
 
 If you have used the `UploadcareSource` enum, replace it with the corresponding string value. You can see available values in the {@link module:uploadcare/uploadcareconfig~UploadcareSource `UploadcareSource`} documentation. If you have used the `UploadcareSourceValue` type, use `UploadcareSource` instead.
+
+### Package generator modernization and simpler project output
+
+We used the sunsetting of old installation methods as an opportunity to significantly modernize `ckeditor5-package-generator` in its new major `v6` release and simplify the projects it creates.
+
+The generated package setup moved from webpack to Vite 8 and Vitest (powered by Rolldown), which improves developer experience and performance.
+
+The updated generator output is also easier to work with day to day, both when developing your package and when preparing it for publishing. We recommend migrating existing custom package projects to the new generator output to align with the current CKEditor&nbsp;5 tooling direction.
+
+For migration details and updated usage instructions, see the {@link framework/development-tools/package-generator/using-package-generator Package generator guide}.
