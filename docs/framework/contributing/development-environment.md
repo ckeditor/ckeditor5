@@ -89,34 +89,7 @@ pnpm run docs
 
 The documentation will be available in `build/docs/`.
 
-This task accepts the following arguments (run `pnpm run docs --help` to see all available options):
-
-* `--help` (`-h`) &ndash; Prints a help page describing all available options.
-* `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
-* `--skip-snippets` &ndash; Skips building live snippets.
-* `--skip-validation` &ndash; Skips the final link validation.
-* `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allows navigating over the partially built documentation.
-* `--skip-ckeditor5` &ndash; Skips preparing CKEditor&nbsp;5 assets (import map sources).
-* `--skip-commercial` &ndash; Skips preparing the CKEditor&nbsp;5 commercial assets (import map sources).
-* `--skip-obfuscation` &ndash; Skips code obfuscation when building assets.
-* `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:
-
-	```
-	--guides=image         // matches roughly "*image*"
-	--guides="features/*"  // matches roughly "*features/*"
-	--guides=features/image
-	```
-
-* `--snippets=snippet-name` &ndash; Comma-separated list of snippet names to process. When not provided, all snippets are processed.
-* `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
-* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor&nbsp;5 development.
-* `--dev` &ndash; Builds on the dev environment. Skips code optimizations and obfuscation. Mutually exclusive with `--production`.
-* `--strict` &ndash; Treats warnings as errors during API docs build.
-* `--verbose` &ndash; Prints out more information.
-
-```
-pnpm run docs --skip-api
-```
+This task accepts various flags for skipping certain steps, filtering guides or snippets, and more. Run `pnpm run docs -h` to see all available options and examples.
 
 After building documentation, you can quickly start an HTTP server to serve them:
 
