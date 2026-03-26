@@ -28,13 +28,9 @@ The following top-level options are **deprecated**:
 * `config.placeholder`
 * `config.label`
 
-Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. Pass the DOM element in the configuration using the property required by the editor type: `attachTo` for `ClassicEditor`, `root.element` for single-root non-classic editors, and `roots.<name>.element` for `MultiRootEditor`.
+Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. In v48, pass the DOM element in the configuration object using the editor-type-specific key: `attachTo` for `ClassicEditor`, `root.element` for single-root non-classic editors, and `roots.<name>.element` for `MultiRootEditor`.
 
-Use **root-scoped options** instead. The editor initialization methods were updated in v48: instead of passing a DOM element or initial data as the first argument, you now pass the DOM element in the config object using the editor-type-specific key.
-
-For `ClassicEditor`, always pass the source element through `attachTo`. Passing a DOM element in `root.element` is not supported in this editor type and triggers a warning.
-
-This is because `ClassicEditor` does not use the provided element as an editable root. Instead, the element passed in `attachTo` is replaced with the entire editor UI, and the editable element is created internally inside that UI. In other editor types, `root.element` (single-root) and `roots.<name>.element` (multi-root) are used directly as editable areas.
+For `ClassicEditor`, use `attachTo` only. Passing a DOM element to `root.element` is not supported and triggers a warning, because classic replaces the `attachTo` element with the full editor UI and creates the editable internally. Other editor types use `root.element` or `roots.<name>.element` directly as editable areas.
 
 #### Migration examples
 
@@ -44,60 +40,69 @@ For `ClassicEditor`:
 
 ```js-diff
 - ClassicEditor.create( document.querySelector( '#editor' ), {
+- 	initialData: '<p>Hello world!</p>',
+- 	placeholder: 'Type here...',
+- 	label: 'Main content',
+- } );
 + ClassicEditor.create( {
 + 	attachTo: document.querySelector( '#editor' ),
- 	licenseKey: '<YOUR_LICENSE_KEY>',
- 	plugins: [ Essentials, Paragraph, Bold, Italic ],
- 	toolbar: [ 'bold', 'italic', 'alignment' ],
--	initialData: '<p>Hello world!</p>',
--	placeholder: 'Type here...',
--	label: 'Main content',
 + 	root: {
 + 		initialData: '<p>Hello world!</p>',
 + 		placeholder: 'Type here...',
 + 		label: 'Main content'
 + 	}
- } );
++ } );
 ```
 
 For non-classic single-root editors (for example `InlineEditor`, `BalloonEditor`, or `DecoupledEditor`), pass the DOM element through `root.element`:
 
-```js
-InlineEditor.create( {
-	root: {
-		element: document.querySelector( '#editor' ),
-		placeholder: 'Type here...'
-	},
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	plugins: [ Essentials, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic', 'alignment' ]
-} );
+```js-diff
+- InlineEditor.create( document.querySelector( '#editor' ), {
+- 	initialData: '<p>Hello world!</p>',
+- 	placeholder: 'Type here...'
+- } );
++ InlineEditor.create( {
++ 	root: {
++ 		element: document.querySelector( '#editor' ),
++ 		initialData: '<p>Hello world!</p>',
++ 		placeholder: 'Type here...'
++ 	},
++ } );
 ```
 
 In multi-root editors, move source elements and root-specific properties into the `roots` object:
 
-```js
-MultiRootEditor.create( {
-	roots: {
-		header: {
-			element: document.querySelector( '#header' ),
-			initialData: '<h2>Header data</h2>',
-			placeholder: 'Header',
-			label: 'Document header',
-			modelAttributes: { order: 10 }
-		},
-		content: {
-			element: document.querySelector( '#content' ),
-			initialData: '<p>Content data</p>',
-			placeholder: 'Type here...',
-			label: 'Main content',
-			lazyLoad: false
-		}
-	}
-} );
+```js-diff
+- MultiRootEditor.create( {
+- 	header: document.querySelector( '#header' ),
+- 	content: document.querySelector( '#content' )
+- }, {
+- 	initialData: {
+- 		header: '<h2>Header data</h2>',
+- 		content: '<p>Content data</p>'
+- 	},
+- 	placeholder: {
+- 		header: 'Header',
+- 		content: 'Type here...'
+- 	}
+- } );
++ MultiRootEditor.create( {
++ 	roots: {
++ 		header: {
++ 			element: document.querySelector( '#header' ),
++ 			initialData: '<h2>Header data</h2>',
++ 			placeholder: 'Header'
++ 		},
++ 		content: {
++ 			element: document.querySelector( '#content' ),
++ 			initialData: '<p>Content data</p>',
++ 			placeholder: 'Type here...'
++ 		}
++ 	}
++ } );
 ```
 
-Additional migrations:
+Besides editor initialization changes, update related root configuration paths as well:
 
 * `config.rootsAttributes` -> `config.roots.<rootName>.modelAttributes`
 * `config.lazyRoots` -> `config.roots.<rootName>.lazyLoad`
