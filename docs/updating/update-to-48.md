@@ -42,7 +42,7 @@ For `ClassicEditor`:
 - ClassicEditor.create( document.querySelector( '#editor' ), {
 - 	initialData: '<p>Hello world!</p>',
 - 	placeholder: 'Type here...',
-- 	label: 'Main content',
+- 	label: 'Main content'
 - } );
 + ClassicEditor.create( {
 + 	attachTo: document.querySelector( '#editor' ),
@@ -107,9 +107,7 @@ Besides editor initialization changes, update related root configuration paths a
 * `config.rootsAttributes` -> `config.roots.<rootName>.modelAttributes`
 * `config.lazyRoots` -> `config.roots.<rootName>.lazyLoad`
 
-<info-box warning>
-	The `lazyLoad` property is also deprecated and will be removed in future versions.
-</info-box>
+The `lazyLoad` property is also **deprecated** and will be removed in future versions.
 
 If your integration reads configuration values directly, update access paths as well:
 
