@@ -325,7 +325,8 @@ describe( 'Mention feature - integration', () => {
 
 					editor.execute( 'delete' );
 
-					expect( panelView.isVisible ).to.be.false;
+					expect( panelView.isVisible ).to.be.true;
+					expect( balloon.visibleView === mentionsView ).to.be.false;
 				} );
 		} );
 	} );
