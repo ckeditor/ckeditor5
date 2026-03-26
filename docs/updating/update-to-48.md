@@ -28,106 +28,86 @@ The following top-level options are **deprecated**:
 * `config.placeholder`
 * `config.label`
 
-Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. Pass the DOM element in the configuration using the property required by the editor type: `attachTo` for `ClassicEditor`, `root.element` for single-root non-classic editors, and `roots.<name>.element` for `MultiRootEditor`.
+Additionally, the `sourceElementOrData` parameter (previously passed as the first argument to `Editor.create()`, `Watchdog.create()`, etc.) is deprecated. In v48, pass the DOM element in the configuration object using the editor-type-specific key: `attachTo` for `ClassicEditor`, `root.element` for single-root non-classic editors, and `roots.<name>.element` for `MultiRootEditor`.
 
-Use **root-scoped options** instead. The editor initialization methods were updated in v48: instead of passing a DOM element or initial data as the first argument, you now pass the DOM element in the config object using the editor-type-specific key.
+For `ClassicEditor`, use `attachTo` only. Passing a DOM element to `root.element` is not supported and triggers a warning, because classic replaces the `attachTo` element with the full editor UI and creates the editable internally. Other editor types use `root.element` or `roots.<name>.element` directly as editable areas.
 
-For `ClassicEditor`, always pass the source element through `attachTo`. Passing a DOM element in `root.element` is not supported in this editor type and triggers a warning.
+#### Migration examples
 
-This is because `ClassicEditor` does not use the provided element as an editable root. Instead, the element passed in `attachTo` is replaced with the entire editor UI, and the editable element is created internally inside that UI. In other editor types, `root.element` (single-root) and `roots.<name>.element` (multi-root) are used directly as editable areas.
+The examples below show how to migrate initialization for each editor type.
 
-```js
-// Classic editor
-ClassicEditor.create( {
-	attachTo: document.querySelector( '#editor' ),
-	root: {
-		initialData: '<p>Hello world!</p>',
-		placeholder: 'Type here...',
-		label: 'Main content'
-	}
-} );
+For `ClassicEditor`:
+
+```js-diff
+- ClassicEditor.create( document.querySelector( '#editor' ), {
+- 	initialData: '<p>Hello world!</p>',
+- 	placeholder: 'Type here...',
+- 	label: 'Main content'
+- } );
++ ClassicEditor.create( {
++ 	attachTo: document.querySelector( '#editor' ),
++ 	root: {
++ 		initialData: '<p>Hello world!</p>',
++ 		placeholder: 'Type here...',
++ 		label: 'Main content'
++ 	}
++ } );
 ```
 
-For **multi-root** setups, use:
+For non-classic single-root editors (for example `InlineEditor`, `BalloonEditor`, or `DecoupledEditor`), pass the DOM element through `root.element`:
 
-```js
-MultiRootEditor.create( {
-	roots: {
-		main: {
-			element: document.querySelector( '#main' ),
-			initialData: '<p>Main content</p>',
-			placeholder: 'Type here...',
-			label: 'Main content',
-			modelAttributes: { order: 10 },
-			lazyLoad: false
-		}
-	}
-} );
+```js-diff
+- InlineEditor.create( document.querySelector( '#editor' ), {
+- 	initialData: '<p>Hello world!</p>',
+- 	placeholder: 'Type here...'
+- } );
++ InlineEditor.create( {
++ 	root: {
++ 		element: document.querySelector( '#editor' ),
++ 		initialData: '<p>Hello world!</p>',
++ 		placeholder: 'Type here...'
++ 	},
++ } );
 ```
 
-### Migration example
+In multi-root editors, move source elements and root-specific properties into the `roots` object:
 
-For example, change:
-
-```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	plugins: [ Essentials, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic', 'alignment' ]
-} );
+```js-diff
+- MultiRootEditor.create( {
+- 	header: document.querySelector( '#header' ),
+- 	content: document.querySelector( '#content' )
+- }, {
+- 	initialData: {
+- 		header: '<h2>Header data</h2>',
+- 		content: '<p>Content data</p>'
+- 	},
+- 	placeholder: {
+- 		header: 'Header',
+- 		content: 'Type here...'
+- 	}
+- } );
++ MultiRootEditor.create( {
++ 	roots: {
++ 		header: {
++ 			element: document.querySelector( '#header' ),
++ 			initialData: '<h2>Header data</h2>',
++ 			placeholder: 'Header'
++ 		},
++ 		content: {
++ 			element: document.querySelector( '#content' ),
++ 			initialData: '<p>Content data</p>',
++ 			placeholder: 'Type here...'
++ 		}
++ 	}
++ } );
 ```
 
-to:
-
-```js
-ClassicEditor.create( {
-	attachTo: document.querySelector( '#editor' ),
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	plugins: [ Essentials, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic', 'alignment' ],
-	root: {
-		placeholder: 'Type here...'
-	}
-} );
-```
-
-For non-classic single-root editors (for example `InlineEditor`, `BalloonEditor`, or `DecoupledEditor`), pass the element through `root.element`:
-
-```js
-InlineEditor.create( {
-	root: {
-		element: document.querySelector( '#editor' ),
-		placeholder: 'Type here...'
-	},
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	plugins: [ Essentials, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic', 'alignment' ]
-} );
-```
-
-In multi-root editors, move the DOM elements and root-specific properties into the `roots` object:
-
-```js
-MultiRootEditor.create( {
-	roots: {
-		header: {
-			element: document.querySelector( '#header' ),
-			initialData: '<h2>Header data</h2>'
-		},
-		content: {
-			element: document.querySelector( '#content' ),
-			initialData: '<p>Content data</p>'
-		}
-	}
-} );
-```
-
-Additional migrations:
+Besides editor initialization changes, update related root configuration paths as well:
 
 * `config.rootsAttributes` -> `config.roots.<rootName>.modelAttributes`
 * `config.lazyRoots` -> `config.roots.<rootName>.lazyLoad`
 
-The `config.roots.<rootName>.lazyLoad` property is also deprecated and will be removed in future versions.
+The `lazyLoad` property is also **deprecated** and will be removed in future versions.
 
 If your integration reads configuration values directly, update access paths as well:
 
@@ -135,21 +115,37 @@ If your integration reads configuration values directly, update access paths as 
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
 
-For root attributes configuration, update shape:
+### Export to PDF v2 is now the default
+
+Starting with v48, Export to PDF uses version 2 of the HTML to PDF converter API by default. Version 1 is deprecated and available only for backward compatibility.
 
 ```js
-// ❌ Before:
-rootsAttributes: {
-	main: { order: 10 }
+// Before (legacy V1 setup)
+exportPdf: {
+	version: 1,
+	converterUrl: 'https://pdf-converter.cke-cs.com/v1/convert',
+	converterOptions: {
+		format: 'A4',
+		margin_top: '20mm'
+	}
 }
 
-// ✅ After:
-roots: {
-	main: {
-		modelAttributes: { order: 10 }
+// Now (v48 default)
+exportPdf: {
+	// No `version` needed (V2 is default).
+	converterUrl: 'https://pdf-converter.cke-cs.com/v2/convert/html-pdf',
+	converterOptions: {
+		document: {
+			size: 'A4',
+			margins: { top: '20mm' }
+		}
 	}
 }
 ```
+
+This snippet highlights only selected changes. The V1 to V2 migration includes additional differences in available options and payload structure.
+
+If your integration still relies on V1 configuration, migrate to V2. For migration steps and option mapping, see the [migration guide from V1 to V2](https://pdf-converter.cke-cs.com/v2/convert/docs#section/Export-to-PDF-(v2)/Migration-guide-from-v1-to-v2) and the {@link features/export-pdf Export to PDF feature guide}.
 
 ### CSS nesting output now follows native specificity more closely
 
@@ -323,6 +319,36 @@ After:
 	type: 'chat'
 }
 ```
+
+#### AI UI styling variables no longer affecting the UI
+
+AI UI styling has been aligned with the editor-wide styling system, and selected AI-specific CSS variables no longer affect the UI.
+
+The AI UI now uses the font family defined by `--ck-font-face`. Because of this, the following variables **no longer change AI UI font styling**:
+
+* `--ck-ai-balloon-font-family`
+* `--ck-ai-chat-font-family`
+* `--ck-ai-web-source-tooltip-font-family`
+* `--ck-ai-review-font-family`
+
+Additionally, AI buttons now use generic classes (`ck-ai-button-primary`, `ck-ai-button-secondary`, and `ck-ai-button-tertiary`), so the variables below **no longer affect the UI**:
+
+* `--ck-ai-border-color-button`
+* `--ck-ai-chat-feed-item-color-actions-button-hover`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-active-background`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-background`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-color`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-on-background`
+* `--ck-ai-chat-feed-item-color-show-changes-toggle-on-color`
+* `--ck-ai-chat-feed-item-color-text`
+* `--ck-ai-chat-feed-loader-icon-color`
+* `--ck-ai-chat-suggestion-border-hover-color`
+* `--ck-ai-header-border-color-button`
+* `--ck-ai-header-color-text`
+* `--ck-ai-loader-icon-color`
+* `--ck-ai-loader-icon-dot-color`
+* `--ck-ai-review-check-list-model-dropdown-active-color`
+* `--ck-ai-review-check-list-model-dropdown-hover-background-color`
 
 #### Use of `string` values instead of `enums`
 
