@@ -9,6 +9,7 @@
 	--ck-list-item-button-check-size: .9em;
 
 	/* Spacing */
+	--ck-list-item-button-border-radius: 0;
 	--ck-list-item-button-check-icon-gap: var(--ck-spacing-control-padding-inline-compact);
 	--ck-list-item-button-padding-block: var(--ck-spacing-control-padding-block);
 	--ck-list-item-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
@@ -54,7 +55,7 @@
 .ck.ck-list-item-button {
 	min-height: unset;
 	width: 100%;
-	border-radius: 0;
+	border-radius: var(--ck-list-item-button-border-radius);
 
 	[dir="ltr"] & {
 		text-align: left;

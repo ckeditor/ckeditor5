@@ -38,6 +38,7 @@
 
 	/* State / meta */
 	--ck-button-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
 	--ck-button-opacity-disabled: var(--ck-opacity-disabled)
 }
 
@@ -101,7 +102,7 @@ a.ck.ck-button {
 	&:active,
 	&:focus {
 		outline: none;
-		border: var(--ck-button-focus-ring);
+		border-color: var(--ck-button-focus-border-color);
 		box-shadow: var(--ck-button-focus-box-shadow);
 	}
 

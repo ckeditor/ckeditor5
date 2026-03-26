@@ -28,4 +28,11 @@
 	 * A visual style of focused element's border or outline.
 	 */
 	--ck-focus-ring: 1px solid var(--ck-color-focus-border);
+
+	/**
+	 * The border color applied to focused elements.
+	 * Use this instead of --ck-focus-ring when the component has a customizable border-width,
+	 * to avoid overriding the width on focus.
+	 */
+	--ck-focus-border-color: var(--ck-color-focus-border);
 }

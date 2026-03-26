@@ -42,6 +42,7 @@
 
 	/* State / meta */
 	--ck-input-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-input-focus-border-color: var(--ck-interactive-focus-border-color);
 
 	/* Compatibility */
 	--ck-input-text-width: var(--ck-input-width);
@@ -66,7 +67,7 @@
 
 	&:focus {
 		outline: none;
-		border: var(--ck-input-focus-ring);
+		border-color: var(--ck-input-focus-border-color);
 		box-shadow: var(--ck-input-focus-box-shadow);
 	}
 

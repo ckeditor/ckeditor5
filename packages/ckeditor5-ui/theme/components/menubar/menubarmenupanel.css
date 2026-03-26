@@ -36,6 +36,7 @@
 	/* State / meta */
 	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
 	--ck-menu-bar-item-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-menu-bar-item-focus-border-color: var(--ck-interactive-focus-border-color);
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
@@ -141,7 +142,7 @@
 			z-index: var(--ck-menu-bar-item-focus-layer);
 
 			outline: none;
-			border: var(--ck-menu-bar-item-focus-ring);
+			border-color: var(--ck-menu-bar-item-focus-border-color);
 			box-shadow: var(--ck-menu-bar-item-focus-box-shadow);
 		}
 	}

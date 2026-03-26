@@ -54,7 +54,7 @@
 
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
+		border-color: var(--ck-focus-border-color);
 		box-shadow: var(--ck-accessibility-help-region-focus-box-shadow);
 	}
 

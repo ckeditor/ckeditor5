@@ -28,6 +28,7 @@
 
 	/* State / meta */
 	--ck-editor-editable-focus-ring: var(--ck-interactive-focus-ring);
+	--ck-editor-editable-focus-border-color: var(--ck-interactive-focus-border-color);
 }
 
 .ck.ck-editor__top {
@@ -59,7 +60,7 @@
 
 	&.ck-focused {
 		outline: none;
-		border: var(--ck-editor-editable-focus-ring);
+		border-color: var(--ck-editor-editable-focus-border-color);
 		box-shadow: var(--ck-editor-editable-focus-shadow);
 	}
 }
