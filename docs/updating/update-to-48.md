@@ -195,6 +195,58 @@ However, if you followed the {@link getting-started/setup/optimizing-build-size 
 	 import '@ckeditor/ckeditor5-ui/dist/index.css';
 	 ```
 
+### Mention feature now persists `uid` as `data-uid` in the data output
+
+The mention feature now outputs a `data-uid` attribute on mention elements in the editor output. This ensures that the same HTML always produces the same editor internal data model.
+
+If you use the default mention converters, no changes are required.
+
+If you defined **custom downcast converters** for mentions (as described in the {@link features/mentions#customizing-the-output customizing the output} guide), update them to include `data-uid` in the output and omit it during clipboard operations:
+
+```js
+// ❌ Before:
+editor.conversion.for( 'downcast' ).attributeToElement( {
+	model: 'mention',
+	view: ( modelAttributeValue, { writer } ) => {
+		if ( !modelAttributeValue ) {
+			return;
+		}
+
+		return writer.createAttributeElement( 'a', {
+			class: 'mention',
+			'data-mention': modelAttributeValue.id,
+			'href': modelAttributeValue.link
+		}, {
+			priority: 20,
+			id: modelAttributeValue.uid
+		} );
+	},
+	converterPriority: 'high'
+} );
+
+// ✅ After:
+editor.conversion.for( 'downcast' ).attributeToElement( {
+	model: 'mention',
+	view: ( modelAttributeValue, { writer, options } ) => {
+		if ( !modelAttributeValue ) {
+			return;
+		}
+
+		return writer.createAttributeElement( 'a', {
+			class: 'mention',
+			'data-mention': modelAttributeValue.id,
+			'href': modelAttributeValue.link,
+			// Omit `data-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+			...( !options.isClipboardPipeline && { 'data-uid': modelAttributeValue.uid } )
+		}, {
+			priority: 20,
+			id: modelAttributeValue.uid
+		} );
+	},
+	converterPriority: 'high'
+} );
+```
+
 ### Collaboration user colors now use CSS-variable-based styling
 
 The collaboration user coloring implementation has been refactored to use runtime CSS variables instead of using a mixin.

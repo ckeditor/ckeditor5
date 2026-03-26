@@ -153,7 +153,7 @@ function MentionLinks( editor ) {
 	// element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -171,11 +171,11 @@ function MentionLinks( editor ) {
 			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
-				href
+				href,
+				// Omit `data-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-uid': modelAttributeValue.uid } )
 			}, {
-				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
 				id: modelAttributeValue.uid
 			} );
 		},
