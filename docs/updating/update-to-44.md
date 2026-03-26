@@ -116,8 +116,7 @@ Version 44.0.0 introduced a change in the license configuration. The `config.lic
 
 ```js
 ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL'.
 
 		// ... Other configuration options ...
