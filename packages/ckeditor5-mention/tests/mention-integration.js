@@ -253,7 +253,9 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			clipboard.fire( 'inputTransformation', {
-				content: _parseView( '<blockquote><p>xxx<span class="mention" data-mention="@John" data-uid="u1">@Joh</span></p></blockquote>' )
+				content: _parseView(
+					'<blockquote><p>xxx<span class="mention" data-mention="@John" data-uid="u1">@Joh</span></p></blockquote>'
+				)
 			} );
 
 			const expectedData = '<p>foo</p>' +

@@ -565,7 +565,9 @@ describe( 'MentionEditing', () => {
 			} );
 
 			editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
-			editor.setData( '<blockquote><p>foo <span class="mention" data-mention="@John" data-uid="u1">@John</span> bar</p></blockquote>' );
+			editor.setData(
+				'<blockquote><p>foo <span class="mention" data-mention="@John" data-uid="u1">@John</span> bar</p></blockquote>'
+			);
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 ).getChild( 0 );
