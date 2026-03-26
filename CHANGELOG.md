@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [48.0.0](https://github.com/ckeditor/ckeditor5/compare/v47.6.1...v48.0.0) (March 26, 2026)
+## [48.0.0](https://github.com/ckeditor/ckeditor5/compare/v47.6.1...v48.0.0) (March 31, 2026)
 
 We are happy to announce the release of CKEditor 5 v48.0.0.
 
