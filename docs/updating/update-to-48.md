@@ -36,62 +36,31 @@ For `ClassicEditor`, always pass the source element through `attachTo`. Passing 
 
 This is because `ClassicEditor` does not use the provided element as an editable root. Instead, the element passed in `attachTo` is replaced with the entire editor UI, and the editable element is created internally inside that UI. In other editor types, `root.element` (single-root) and `roots.<name>.element` (multi-root) are used directly as editable areas.
 
-```js
-// Classic editor
-ClassicEditor.create( {
-	attachTo: document.querySelector( '#editor' ),
-	root: {
-		initialData: '<p>Hello world!</p>',
-		placeholder: 'Type here...',
-		label: 'Main content'
-	}
-} );
+#### Migration examples
+
+The examples below show how to migrate initialization for each editor type.
+
+For `ClassicEditor`:
+
+```js-diff
+- ClassicEditor.create( document.querySelector( '#editor' ), {
++ ClassicEditor.create( {
++ 	attachTo: document.querySelector( '#editor' ),
+ 	licenseKey: '<YOUR_LICENSE_KEY>',
+ 	plugins: [ Essentials, Paragraph, Bold, Italic ],
+ 	toolbar: [ 'bold', 'italic', 'alignment' ],
+-	initialData: '<p>Hello world!</p>',
+-	placeholder: 'Type here...',
+-	label: 'Main content',
++ 	root: {
++ 		initialData: '<p>Hello world!</p>',
++ 		placeholder: 'Type here...',
++ 		label: 'Main content'
++ 	}
+ } );
 ```
 
-For **multi-root** setups, use:
-
-```js
-MultiRootEditor.create( {
-	roots: {
-		main: {
-			element: document.querySelector( '#main' ),
-			initialData: '<p>Main content</p>',
-			placeholder: 'Type here...',
-			label: 'Main content',
-			modelAttributes: { order: 10 },
-			lazyLoad: false
-		}
-	}
-} );
-```
-
-#### Migration example
-
-For example, change:
-
-```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	plugins: [ Essentials, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic', 'alignment' ]
-} );
-```
-
-to:
-
-```js
-ClassicEditor.create( {
-	attachTo: document.querySelector( '#editor' ),
-	licenseKey: '<YOUR_LICENSE_KEY>',
-	plugins: [ Essentials, Paragraph, Bold, Italic ],
-	toolbar: [ 'bold', 'italic', 'alignment' ],
-	root: {
-		placeholder: 'Type here...'
-	}
-} );
-```
-
-For non-classic single-root editors (for example `InlineEditor`, `BalloonEditor`, or `DecoupledEditor`), pass the element through `root.element`:
+For non-classic single-root editors (for example `InlineEditor`, `BalloonEditor`, or `DecoupledEditor`), pass the DOM element through `root.element`:
 
 ```js
 InlineEditor.create( {
@@ -105,18 +74,24 @@ InlineEditor.create( {
 } );
 ```
 
-In multi-root editors, move the DOM elements and root-specific properties into the `roots` object:
+In multi-root editors, move source elements and root-specific properties into the `roots` object:
 
 ```js
 MultiRootEditor.create( {
 	roots: {
 		header: {
 			element: document.querySelector( '#header' ),
-			initialData: '<h2>Header data</h2>'
+			initialData: '<h2>Header data</h2>',
+			placeholder: 'Header',
+			label: 'Document header',
+			modelAttributes: { order: 10 }
 		},
 		content: {
 			element: document.querySelector( '#content' ),
-			initialData: '<p>Content data</p>'
+			initialData: '<p>Content data</p>',
+			placeholder: 'Type here...',
+			label: 'Main content',
+			lazyLoad: false
 		}
 	}
 } );
@@ -127,29 +102,15 @@ Additional migrations:
 * `config.rootsAttributes` -> `config.roots.<rootName>.modelAttributes`
 * `config.lazyRoots` -> `config.roots.<rootName>.lazyLoad`
 
-The `config.roots.<rootName>.lazyLoad` property is also deprecated and will be removed in future versions.
+<info-box warning>
+	The `lazyLoad` property is also deprecated and will be removed in future versions.
+</info-box>
 
 If your integration reads configuration values directly, update access paths as well:
 
 * `config.get( 'initialData' )` -> `config.get( 'roots.main.initialData' )`
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
-
-For root attributes configuration, update shape:
-
-```js
-// ❌ Before:
-rootsAttributes: {
-	main: { order: 10 }
-}
-
-// ✅ After:
-roots: {
-	main: {
-		modelAttributes: { order: 10 }
-	}
-}
-```
 
 ### Export to PDF v2 is now the default
 
