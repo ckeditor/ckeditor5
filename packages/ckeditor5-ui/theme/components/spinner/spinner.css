@@ -35,7 +35,7 @@
 .ck.ck-spinner {
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
-	border-radius: 50%;
+	border-radius: var(--ck-radius-full);
 	border: var(--ck-spinner-border);
 	border-top-color: transparent;
 	position: absolute;

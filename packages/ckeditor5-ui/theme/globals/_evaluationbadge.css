@@ -14,6 +14,7 @@
 	--ck-evaluation-badge-padding-horizontal: 4px;
 	--ck-evaluation-badge-label-padding-inline: 2px;
 	--ck-evaluation-badge-label-padding: 0 var(--ck-evaluation-badge-label-padding-inline);
+	--ck-evaluation-badge-label-font-weight: var(--ck-font-weight-bold);
 	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
 	--ck-evaluation-badge-border-radius: var(--ck-radius-base);
 	--ck-evaluation-badge-background: hsl(0, 0%, 100%);
@@ -37,7 +38,7 @@
 			padding: var(--ck-evaluation-badge-label-padding);
 			font-size: var(--ck-evaluation-badge-font-size);
 			letter-spacing: var(--ck-evaluation-badge-letter-spacing);
-			font-weight: bold;
+			font-weight: var(--ck-evaluation-badge-label-font-weight);
 			line-height: normal;
 			text-transform: uppercase;
 			color: var(--ck-evaluation-badge-text-color);

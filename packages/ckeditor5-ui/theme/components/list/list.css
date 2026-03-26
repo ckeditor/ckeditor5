@@ -35,6 +35,7 @@
 	--ck-list-divider-color: var(--ck-color-divider);
 
 	/* Typography */
+	--ck-list-group-label-font-size: 11px;
 	--ck-list-group-label-font-weight: var(--ck-font-weight-ui-label);
 
 	/* State / meta */
@@ -150,7 +151,7 @@
 	}
 
 	& > .ck-label {
-		font-size: 11px;
+		font-size: var(--ck-list-group-label-font-size);
 		font-weight: var(--ck-list-group-label-font-weight);
 		padding: var(--ck-list-group-label-padding);
 	}

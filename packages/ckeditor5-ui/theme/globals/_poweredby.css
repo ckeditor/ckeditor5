@@ -14,6 +14,7 @@
 	--ck-powered-by-padding-horizontal: 4px;
 	--ck-powered-by-label-padding-inline-start: 2px;
 	--ck-powered-by-label-margin-inline-end: 4px;
+	--ck-powered-by-label-font-weight: var(--ck-font-weight-bold);
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
 	--ck-powered-by-border-radius: var(--ck-radius-base);
 	--ck-powered-by-background: hsl(0, 0%, 100%);
@@ -51,7 +52,7 @@
 			letter-spacing: var(--ck-powered-by-letter-spacing);
 			padding-left: var(--ck-powered-by-label-padding-inline-start);
 			text-transform: uppercase;
-			font-weight: bold;
+			font-weight: var(--ck-powered-by-label-font-weight);
 			margin-right: var(--ck-powered-by-label-margin-inline-end);
 			cursor: pointer;
 			line-height: normal;

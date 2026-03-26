@@ -9,6 +9,7 @@
 	* Default border-radius value.
 	*/
 	--ck-radius-base: 2px;
+	--ck-radius-full: 50%;
 
 	/**
 	* `.ck-rounded-corners` is an opt-in switch class used on the UI root.
