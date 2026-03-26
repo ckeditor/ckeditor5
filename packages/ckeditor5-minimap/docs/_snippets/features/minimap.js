@@ -117,7 +117,12 @@ const config = {
 
 patchMinimapView();
 DecoupledEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		...config,
+		root: {
+			element: document.querySelector( '#editor' )
+		}
+	} )
 	.then( editor => {
 		window.editor = editor;
 

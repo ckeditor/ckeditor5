@@ -10,7 +10,8 @@ import { FontBackgroundColor } from '../../../../src/fontbackgroundcolor.js';
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,

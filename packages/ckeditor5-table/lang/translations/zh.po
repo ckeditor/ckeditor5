@@ -317,12 +317,12 @@ msgstr "標頭儲存格"
 
 msgctxt "Label for the set/unset table footer row button."
 msgid "Footer row"
-msgstr ""
+msgstr "頁尾列"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a column header."
 msgid "Column header"
-msgstr ""
+msgstr "欄標頭"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a row header."
 msgid "Row header"
-msgstr ""
+msgstr "列標頭"

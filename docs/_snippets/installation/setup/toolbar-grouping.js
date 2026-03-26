@@ -11,7 +11,8 @@ import {
 import { ToolbarEditor } from './build-toolbar-source.js';
 
 ToolbarEditor
-	.create( document.querySelector( '#toolbar-grouping' ), {
+	.create( {
+		attachTo: document.querySelector( '#toolbar-grouping' ),
 		toolbar: {
 			items: [
 				'undo', 'redo',

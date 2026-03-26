@@ -11,7 +11,8 @@ import {
 import { MentionEditor } from './build-mention-source.js';
 
 MentionEditor
-	.create( document.querySelector( '#snippet-mention-customization' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-mention-customization' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ MentionCustomization ],
 		toolbar: {

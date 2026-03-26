@@ -18,7 +18,8 @@ const clonedSource = sourceElement.cloneNode( true );
 document.querySelector( '#cloned-source' ).append( ...clonedSource.childNodes );
 
 ClassicEditor
-	.create( sourceElement, {
+	.create( {
+		attachTo: sourceElement,
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Alignment, Indent, IndentBlock, TableCaption, TableProperties, TableCellProperties ],
 		toolbar: [

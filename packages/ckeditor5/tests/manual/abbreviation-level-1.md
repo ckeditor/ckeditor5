@@ -42,7 +42,8 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
@@ -155,7 +156,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import Abbreviation from './abbreviation/abbreviation'; // ADDED
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
 			Abbreviation														// ADDED
@@ -367,7 +369,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import Abbreviation from './simplebox/abbreviation';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation
 		],
@@ -517,7 +520,8 @@ class Abbreviation extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-abbreviation-plugin' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-abbreviation-plugin' ),
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Abbreviation ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'abbreviation' ]
 	} )

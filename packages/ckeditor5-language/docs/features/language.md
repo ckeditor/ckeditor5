@@ -34,7 +34,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextPartLanguage, /* ... */ ],
 		toolbar: [ 'textPartLanguage', /* ... */ ]
@@ -55,7 +56,8 @@ The example below shows the configuration used for the [demo](#demo) above:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		language: {
 			textPartLanguage: [

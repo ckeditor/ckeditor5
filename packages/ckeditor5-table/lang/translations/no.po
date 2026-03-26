@@ -317,12 +317,12 @@ msgstr "Overskriftscelle"
 
 msgctxt "Label for the set/unset table footer row button."
 msgid "Footer row"
-msgstr ""
+msgstr "Bunnrad"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a column header."
 msgid "Column header"
-msgstr ""
+msgstr "Kolonneoverskrift"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a row header."
 msgid "Row header"
-msgstr ""
+msgstr "Radoverskrift"

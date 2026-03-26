@@ -10,7 +10,8 @@ import {
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
 
-ClassicEditor.create( document.querySelector( '#snippet-link-decorators' ), {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#snippet-link-decorators' ),
 	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [

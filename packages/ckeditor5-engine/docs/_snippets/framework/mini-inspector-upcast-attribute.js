@@ -27,9 +27,12 @@ function Image( editor ) {
 	} );
 }
 
-MiniInspectorEditor.create( document.querySelector( '#mini-inspector-upcast-attribute' ), {
+MiniInspectorEditor.create( {
 	plugins: [ Essentials, Image ],
-	toolbar: []
+	toolbar: [],
+	root: {
+		element: document.querySelector( '#mini-inspector-upcast-attribute' )
+	}
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(

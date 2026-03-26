@@ -13,7 +13,8 @@ import {
 import { CodeBlockEditor } from './build-code-block-source.js';
 
 CodeBlockEditor
-	.create( document.querySelector( '#snippet-highlight' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-highlight' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

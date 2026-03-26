@@ -94,7 +94,8 @@ function AddRenderCount( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, Items, AddRenderCount ],
 		toolbar: [
 			'heading',

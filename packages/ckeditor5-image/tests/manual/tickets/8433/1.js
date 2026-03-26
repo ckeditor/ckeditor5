@@ -12,7 +12,8 @@ import { ImageResize } from '../../../../src/imageresize.js';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, HtmlEmbed, ImageInsert, ImageResize ],
 		toolbar: [ 'insertImage', '|', 'htmlEmbed' ],

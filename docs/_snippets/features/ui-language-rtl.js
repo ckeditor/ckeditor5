@@ -13,7 +13,8 @@ import { UiLanguageEditor } from './build-ui-language-source.js';
 import translations from 'ckeditor5/translations/ar.js';
 
 UiLanguageEditor
-	.create( document.querySelector( '#snippet-ui-language-rtl' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-ui-language-rtl' ),
 		language: 'ar',
 		translations,
 		cloudServices: CS_CONFIG,

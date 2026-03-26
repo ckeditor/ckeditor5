@@ -426,11 +426,6 @@ You can initialize the editor with the code below:
 ```js
 MultirootEditor
 	.create( {
-		header: document.querySelector( '#header' ),
-		content: document.querySelector( '#content' ),
-		footerleft: document.querySelector( '#footer-left' ),
-		footerright: document.querySelector( '#footer-right' )
-	}, {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
 			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
@@ -448,15 +443,19 @@ MultirootEditor
 		},
 		roots: {
 			header: {
+				element: document.querySelector( '#header' ),
 				placeholder: 'Header text goes here'
 			},
 			content: {
+				element: document.querySelector( '#content' ),
 				placeholder: 'Type content here'
 			},
 			footerleft: {
+				element: document.querySelector( '#footer-left' ),
 				placeholder: 'Left footer content'
 			},
 			footerright: {
+				element: document.querySelector( '#footer-right' ),
 				placeholder: 'Right footer content'
 			}
 		},

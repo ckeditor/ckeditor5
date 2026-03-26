@@ -37,7 +37,8 @@ class Timestamp extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-timestamp-plugin' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-timestamp-plugin' ),
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

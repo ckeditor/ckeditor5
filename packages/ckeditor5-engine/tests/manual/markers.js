@@ -20,7 +20,8 @@ let model = null;
 let _uid = 1;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )

@@ -7,7 +7,7 @@
 
 &lt;p>Then use the following code to run the editor:&lt;/p>
 &lt;pre>&lt;code class="language-javascript">ClassicEditor
-	.create( document.querySelector( '#editor' ) )
+	.create( { attachTo: document.querySelector( '#editor' ) } )
 	.catch( error => {
 		console.error( error );
 	} );&lt;/code>&lt;/pre>

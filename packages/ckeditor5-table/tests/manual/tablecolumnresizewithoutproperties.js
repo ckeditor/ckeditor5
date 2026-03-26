@@ -14,6 +14,7 @@ import { TableCaption } from '../../src/tablecaption.js';
 import { TableColumnResize } from '../../src/tablecolumnresize.js';
 
 const editorConfig = {
+	attachTo: document.querySelector( '#editor' ),
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
 		ArticlePluginSet,
@@ -42,7 +43,7 @@ const editorConfig = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), editorConfig )
+	.create( editorConfig )
 	.then( editor => {
 		window.editor = editor;
 	} )

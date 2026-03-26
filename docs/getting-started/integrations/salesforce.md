@@ -139,7 +139,8 @@ Now, we can add the container that will hold our editor and introduce an initial
 			} = CKEDITOR;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
@@ -181,7 +182,8 @@ Putting everything together, the full integration code looks as follows (remembe
 			} = CKEDITOR;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [

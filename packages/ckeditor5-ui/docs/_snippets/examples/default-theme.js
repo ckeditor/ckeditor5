@@ -166,7 +166,8 @@ class DarkModeToggleCommand extends Command {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-classic-editor' ),
 		plugins: [
 			ArticlePluginSet,
 			PictureEditing,

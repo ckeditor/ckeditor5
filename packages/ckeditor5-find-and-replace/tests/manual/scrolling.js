@@ -14,7 +14,8 @@ import { FontColor } from '@ckeditor/ckeditor5-font';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, FindAndReplace, Highlight, ArticlePluginSet, FontColor ],
 		toolbar: [ 'heading', 'undo', 'redo', 'highlight', 'bold', 'fontColor', 'findAndReplace' ]
 	} )

@@ -70,7 +70,8 @@ const {
 const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 		toolbar: [

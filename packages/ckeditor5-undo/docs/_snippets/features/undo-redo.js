@@ -20,7 +20,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#undo-redo' ), {
+	.create( {
+		attachTo: document.querySelector( '#undo-redo' ),
 		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageInsert, CKBoxImageEdit, ImageUpload, CloudServices ],
 		cloudServices: CS_CONFIG,
 		toolbar: {

@@ -13,7 +13,8 @@ import {
 import { TextAlignmentEditor } from './build-text-alignment-source.js';
 
 TextAlignmentEditor
-	.create( document.querySelector( '#snippet-text-alignment' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-text-alignment' ),
 		toolbar: {
 			items: [
 				'undo', 'redo',

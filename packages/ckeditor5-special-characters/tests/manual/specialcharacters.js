@@ -15,7 +15,8 @@ import { SpecialCharacters } from '../../src/specialcharacters.js';
 import { SpecialCharactersEssentials } from '../../src/specialcharactersessentials.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		cloudServices: CS_CONFIG,
 		plugins: [
 			ArticlePluginSet,

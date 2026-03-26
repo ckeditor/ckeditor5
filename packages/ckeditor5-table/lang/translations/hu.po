@@ -317,12 +317,12 @@ msgstr "Fejléccella"
 
 msgctxt "Label for the set/unset table footer row button."
 msgid "Footer row"
-msgstr ""
+msgstr "Lábléc sor"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a column header."
 msgid "Column header"
-msgstr ""
+msgstr "Oszlopfejléc"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a row header."
 msgid "Row header"
-msgstr ""
+msgstr "Sorfejléc"

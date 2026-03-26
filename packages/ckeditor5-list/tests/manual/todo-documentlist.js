@@ -29,7 +29,8 @@ import { List } from '../../src/list.js';
 import { TodoList } from '../../src/todolist.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Autoformat,

@@ -317,12 +317,12 @@ msgstr "Galvenes šūna"
 
 msgctxt "Label for the set/unset table footer row button."
 msgid "Footer row"
-msgstr ""
+msgstr "Kājenes rinda"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a column header."
 msgid "Column header"
-msgstr ""
+msgstr "Kolonnas galvene"
 
 msgctxt "The label for the dropdown option for a header table cell that represents a row header."
 msgid "Row header"
-msgstr ""
+msgstr "Rindas galvene"

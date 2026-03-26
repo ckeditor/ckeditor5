@@ -13,7 +13,8 @@ import {
 import { RemoveFormatEditor } from './build-remove-format-source.js';
 
 RemoveFormatEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

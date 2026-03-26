@@ -24,7 +24,8 @@ import {
 } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 		toolbar: [ 'insertImage', /* ... */ ],
@@ -43,7 +44,8 @@ The Image feature comes with the unified image insert dropdown component {@icon 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		toolbar: [ 'insertImage', /* ... */ ]
 	} )
@@ -63,7 +65,8 @@ If you need to limit the methods included in the dropdown (apart from not instal
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		image: {
 			insert: {
@@ -84,7 +87,8 @@ You also need to configure the desired contextual image toolbar items. Notice th
 ```js
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		image: {
 			toolbar: [
@@ -151,7 +155,8 @@ If you wish to modify this behavior, the `type` setting in the editor configurat
 
 ```js
 ClassicEditor
-	.create( element, {
+	.create( {
+		attachTo: element,
 		image: {
 			insert: {
 				type: 'auto'

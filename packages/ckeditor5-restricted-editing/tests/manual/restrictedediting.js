@@ -120,5 +120,8 @@ async function reloadEditor( config ) {
 		await window.editor.destroy();
 	}
 
-	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+	window.editor = await ClassicEditor.create( {
+		...config,
+		attachTo: document.querySelector( '#editor' )
+	} );
 }

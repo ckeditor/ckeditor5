@@ -14,7 +14,8 @@ import { Link } from '@ckeditor/ckeditor5-link';
 import { LegacyList } from '../../src/legacylist.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Heading, Paragraph, Undo, LegacyList, Clipboard, Link ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )

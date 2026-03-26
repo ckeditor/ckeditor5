@@ -72,7 +72,8 @@ function MyPlugin(editor) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			MyPlugin,
 			// Other plugins.

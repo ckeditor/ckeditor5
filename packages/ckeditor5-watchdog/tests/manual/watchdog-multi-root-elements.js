@@ -69,7 +69,9 @@ const editorConfig = {
 	},
 	roots: {
 		lazyFoo: { lazyLoad: true },
-		lazyBar: { lazyLoad: true }
+		lazyBar: { lazyLoad: true },
+		header: { element: document.querySelector( '#header' ) },
+		content: { element: document.querySelector( '#content' ) }
 	}
 };
 
@@ -106,8 +108,8 @@ document.getElementById( 'load-root' ).addEventListener( 'click', () => {
 function createWatchdog( stateElement ) {
 	const watchdog = new EditorWatchdog( MultiRootEditor );
 
-	watchdog.setCreator( ( elementsOrData, config ) => {
-		return MultiRootEditor.create( elementsOrData, config ).then( editor => {
+	watchdog.setCreator( config => {
+		return MultiRootEditor.create( config ).then( editor => {
 			window.editor = editor;
 
 			const toolbarContainer = document.querySelector( '#toolbar' );
@@ -118,13 +120,7 @@ function createWatchdog( stateElement ) {
 		} );
 	} );
 
-	watchdog.create(
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' )
-		},
-		editorConfig
-	);
+	watchdog.create( editorConfig );
 
 	watchdog.on( 'error', () => {
 		console.log( 'Editor crashed!' );

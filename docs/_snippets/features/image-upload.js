@@ -12,7 +12,8 @@ import {
 import { ImageUploadEditor } from './build-image-upload-source.js';
 
 ImageUploadEditor
-	.create( document.querySelector( '#snippet-image-upload' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-upload' ),
 		toolbar: {
 			items: [
 				'undo', 'redo',

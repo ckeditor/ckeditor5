@@ -32,7 +32,8 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, SourceEditing } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SourceEditing, /* ... */ ],
 		toolbar: [ 'sourceEditing', /* ... */ ]
@@ -49,7 +50,8 @@ To utilize the Markdown source editing mode just add the {@link features/markdow
 import { ClassicEditor, SourceEditing, Markdown } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SourceEditing, Markdown, /* ... */ ],
 		toolbar: [ 'sourceEditing', /* ... */ ]

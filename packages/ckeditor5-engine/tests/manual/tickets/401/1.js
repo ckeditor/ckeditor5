@@ -10,7 +10,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
-	.create( document.getElementById( 'editor' ), {
+	.create( {
+		attachTo: document.getElementById( 'editor' ),
 		plugins: [ Enter, Typing, Paragraph, Bold ],
 		toolbar: [ 'bold' ]
 	} )

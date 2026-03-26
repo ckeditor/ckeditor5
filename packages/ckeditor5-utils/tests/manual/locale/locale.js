@@ -29,8 +29,9 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language' ), Object.assign( {}, config, {
-		language: 'en'
+	.create( Object.assign( {}, config, {
+		language: 'en',
+		attachTo: document.querySelector( '#editor-language' )
 	} ) )
 	.then( newEditor => {
 		window.editorLanguage = newEditor;
@@ -42,8 +43,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language-rtl' ), Object.assign( {}, config, {
-		language: 'ar'
+	.create( Object.assign( {}, config, {
+		language: 'ar',
+		attachTo: document.querySelector( '#editor-language-rtl' )
 	} ) )
 	.then( newEditor => {
 		window.editorLanguageRTL = newEditor;
@@ -55,7 +57,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language-rtl-content' ), Object.assign( {}, config, {
+	.create( Object.assign( {}, config, {
+		attachTo: document.querySelector( '#editor-language-rtl-content' ),
 		language: {
 			content: 'ar'
 		}
@@ -70,7 +73,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-language-rtl-ui' ), Object.assign( {}, config, {
+	.create( Object.assign( {}, config, {
+		attachTo: document.querySelector( '#editor-language-rtl-ui' ),
 		language: {
 			ui: 'ar',
 			content: 'en'
