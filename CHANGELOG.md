@@ -189,36 +189,6 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 
 ### Other changes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai), [export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf), [export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word), [import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word), [list-multi-level](https://www.npmjs.com/package/@ckeditor/ckeditor5-list-multi-level), [merge-fields](https://www.npmjs.com/package/@ckeditor/ckeditor5-merge-fields), [paste-from-office-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office-enhanced), [real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration), [revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history), [slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command), [track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes), [uploadcare](https://www.npmjs.com/package/@ckeditor/ckeditor5-uploadcare)**: Replaced string-based soft requirements with plugin constructors in selected commercial packages to improve developer experience and align plugin dependency handling across repositories. See [ckeditor/ckeditor5#17779](https://github.com/ckeditor/ckeditor5/issues/17779). Closes [ckeditor/ckeditor5#19747](https://github.com/ckeditor/ckeditor5/issues/19747).
-
-  The following dependencies no longer rely on soft requirements:
-
-  * `ckeditor5-ai`: `CloudServices`.
-  * `ckeditor5-export-pdf`: `CloudServices`.
-  * `ckeditor5-export-word`: `CloudServices`.
-  * `ckeditor5-import-word`: `CloudServices`.
-  * `ckeditor5-list-multi-level`: `ListEditing`.
-  * `ckeditor5-merge-fields`: `ImageUtils`, `ImageEditing`, `Mention`.
-  * `ckeditor5-paste-from-office-enhanced`: `PasteFromOffice`.
-  * `ckeditor5-real-time-collaboration`: `Comments`, `CommentsRepository`, `CloudServices`, `RevisionHistory`, `TrackChanges`, `TrackChangesEditing`.
-  * `ckeditor5-revision-history`: `Users`.
-  * `ckeditor5-slash-command`: `Mention`.
-  * `ckeditor5-track-changes`: `Comments`, `CommentsRepository`, `Annotations`, `EditorAnnotations`.
-  * `ckeditor5-uploadcare`: `PictureEditing`, `ImageUploadEditing`, `ImageUploadProgress`, `ImageEditing`, `ImageUtils`.
-* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox), [ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder), [easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image), [emoji](https://www.npmjs.com/package/@ckeditor/ckeditor5-emoji), [heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading), [link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link), [style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style), [typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Replaced string-based soft requirements with plugin constructors in selected packages to improve developer experience now that DLL builds are being dropped. See [#17779](https://github.com/ckeditor/ckeditor5/issues/17779). Closes [#19747](https://github.com/ckeditor/ckeditor5/issues/19747).
-
-  The following dependencies no longer rely on soft requirements:
-
-  * `ckeditor5-ckbox`: `LinkEditing`, `PictureEditing`, `ImageUtils`, `ImageEditing`, `ImageUploadEditing`, `ImageUploadProgress`, `CloudServices`.
-  * `ckeditor5-ckfinder`: `Link`, `LinkEditing`, `CKFinderUploadAdapter`.
-  * `ckeditor5-easy-image`: `CloudServices`, `ImageUpload`.
-  * `ckeditor5-emoji`: `Mention`.
-  * `ckeditor5-heading`: `Paragraph`.
-  * `ckeditor5-link`: `ImageEditing`, `ImageUtils`, `ImageBlockEditing`.
-  * `ckeditor5-style`: `GeneralHtmlSupport`.
-  * `ckeditor5-typing`: `Delete`, `Input`.
-
-  Additionally, package metadata and dependencies were updated to match the new constructor-based requirements.
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon), [editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic), [editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled), [editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline), [editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root), [watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)**: Reorganized root-related editor configuration under `config.root` for single-root editors and `config.roots` for multi-root editors. Closes [#19885](https://github.com/ckeditor/ckeditor5/issues/19885).
 
   The `config.initialData`, `config.placeholder`, and `config.label` options are deprecated in favor of `config.root.initialData`, `config.root.placeholder`, and `config.root.label`.
@@ -243,6 +213,30 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Model#hasContent()` can now check `ModelSelection` and `ModelDocumentSelection` instances. See [#19847](https://github.com/ckeditor/ckeditor5/issues/19847).
 * **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Enhanced `MarkdownGfmMdToHtml` to support custom plugins and to export the default plugin chain used by the Markdown parser.
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Introduced `Rect.getDomElementRects()` method that conveniently retrieves all `Rects` of a DOM element while preserving their source for further processing (e.g. `Rect#getVisible()`).
+* Replaced string-based soft requirements with plugin constructors across selected packages to improve developer experience and align plugin dependency handling across repositories. This update also adjusts package metadata and dependencies to match the new constructor-based requirements. See [#17779](https://github.com/ckeditor/ckeditor5/issues/17779). Closes [#19747](https://github.com/ckeditor/ckeditor5/issues/19747).
+
+  The following dependencies no longer rely on soft requirements:
+
+  * `ckeditor5-ai`: `CloudServices`.
+  * `ckeditor5-ckbox`: `LinkEditing`, `PictureEditing`, `ImageUtils`, `ImageEditing`, `ImageUploadEditing`, `ImageUploadProgress`, `CloudServices`.
+  * `ckeditor5-ckfinder`: `Link`, `LinkEditing`, `CKFinderUploadAdapter`.
+  * `ckeditor5-easy-image`: `CloudServices`, `ImageUpload`.
+  * `ckeditor5-emoji`: `Mention`.
+  * `ckeditor5-export-pdf`: `CloudServices`.
+  * `ckeditor5-export-word`: `CloudServices`.
+  * `ckeditor5-heading`: `Paragraph`.
+  * `ckeditor5-import-word`: `CloudServices`.
+  * `ckeditor5-link`: `ImageEditing`, `ImageUtils`, `ImageBlockEditing`.
+  * `ckeditor5-list-multi-level`: `ListEditing`.
+  * `ckeditor5-merge-fields`: `ImageUtils`, `ImageEditing`, `Mention`.
+  * `ckeditor5-paste-from-office-enhanced`: `PasteFromOffice`.
+  * `ckeditor5-real-time-collaboration`: `Comments`, `CommentsRepository`, `CloudServices`, `RevisionHistory`, `TrackChanges`, `TrackChangesEditing`.
+  * `ckeditor5-revision-history`: `Users`.
+  * `ckeditor5-slash-command`: `Mention`.
+  * `ckeditor5-style`: `GeneralHtmlSupport`.
+  * `ckeditor5-track-changes`: `Comments`, `CommentsRepository`, `Annotations`, `EditorAnnotations`.
+  * `ckeditor5-typing`: `Delete`, `Input`.
+  * `ckeditor5-uploadcare`: `PictureEditing`, `ImageUploadEditing`, `ImageUploadProgress`, `ImageEditing`, `ImageUtils`.
 * Updated `es-toolkit` to `v1.45.1`.
 * Updated translations.
 
