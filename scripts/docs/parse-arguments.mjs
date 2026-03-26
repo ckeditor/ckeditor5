@@ -209,10 +209,10 @@ function printOptionGroup( { name, options, hint } ) {
 
 	console.log( '' );
 
-	for ( const [ name, config ] of Object.entries( options ) ) {
+	for ( const [ optionName, config ] of Object.entries( options ) ) {
 		const shortFlag = config.short ? `-${ config.short }, ` : '    ';
 		const typeHint = config.type === 'string' ? ' <value>' : '';
-		const flag = `${ shortFlag }--${ name }${ typeHint }`;
+		const flag = `${ shortFlag }--${ optionName }${ typeHint }`;
 
 		console.log( `  ${ styleText( 'cyan', flag.padEnd( 36 ) ) }${ config.description }` );
 
