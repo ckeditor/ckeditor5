@@ -484,18 +484,14 @@ describe( 'normalizeRootsConfig()', () => {
 			stub.restore();
 		} );
 
-		it( 'should warn when config.attachTo is set without separateAttachTo', () => {
+		it( 'should throw when config.attachTo is set without separateAttachTo', () => {
 			const el = document.createElement( 'div' );
 
 			config.set( 'attachTo', el );
 
-			const stub = sinon.stub( console, 'warn' );
-
-			normalizeRootsConfig( '<p>foo</p>', config );
-
-			sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
-
-			stub.restore();
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '<p>foo</p>', config );
+			}, /^editor-create-attachto-ignored/ );
 		} );
 
 		it( 'should throw when config.attachTo is already set and source is an element with separateAttachTo', () => {

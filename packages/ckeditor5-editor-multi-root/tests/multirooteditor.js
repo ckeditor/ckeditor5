@@ -277,18 +277,18 @@ describe( 'MultiRootEditor', () => {
 				expect( editor.config.get( 'roots' ).bar.initialData ).to.equal( '<p>Bar</p>' );
 			} );
 
-			it( 'should log warning when config.attachTo is set', () => {
+			it( 'should throw when config.attachTo is set', () => {
 				const el = document.createElement( 'div' );
 
-				// eslint-disable-next-line no-new
-				new MultiRootEditor( {
-					attachTo: el,
-					roots: {
-						foo: { initialData: '' }
-					}
-				} );
-
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new MultiRootEditor( {
+						attachTo: el,
+						roots: {
+							foo: { initialData: '' }
+						}
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-attachto-ignored' );
 			} );
 
 			it( 'should throw when config.roots.*.element is a textarea', () => {

@@ -294,20 +294,18 @@ describe( 'BalloonEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should log warning when config.attachTo is set', async () => {
+			it( 'should throw when config.attachTo is set', () => {
 				const el = document.createElement( 'div' );
 
-				const editor = new BalloonEditor( {
-					attachTo: el,
-					root: {
-						initialData: '<p>Foo</p>'
-					}
-				} );
-
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
-
-				editor.fire( 'ready' );
-				await editor.destroy();
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new BalloonEditor( {
+						attachTo: el,
+						root: {
+							initialData: '<p>Foo</p>'
+						}
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-attachto-ignored' );
 			} );
 
 			it( 'should throw when config.root.element is a textarea', () => {

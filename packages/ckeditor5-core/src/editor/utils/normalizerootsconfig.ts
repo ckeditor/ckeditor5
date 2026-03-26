@@ -235,12 +235,17 @@ export function normalizeRootsConfig(
 	if ( !separateAttachTo && config.get( 'attachTo' ) ) {
 		/**
 		 * The {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`} option is only
-		 * available for the {@link module:editor-classic/classiceditor~ClassicEditor}. It will be ignored
-		 * by other editor types.
+		 * available for the {@link module:editor-classic/classiceditor~ClassicEditor} because it replaces the
+		 * given DOM element with its own UI. Other editor types (e.g. inline, balloon, decoupled) render inside
+		 * the root element directly, so `config.attachTo` is not applicable.
+		 *
+		 * Remove the `attachTo` option from the editor configuration and use
+		 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}
+		 * (or `config.roots.<rootName>.element` for the multi-root editor) to specify the DOM element instead.
 		 *
 		 * @error editor-create-attachto-ignored
 		 */
-		logWarning( 'editor-create-attachto-ignored' );
+		throw new CKEditorError( 'editor-create-attachto-ignored' );
 	}
 
 	config.set( 'roots', rootsConfig );
