@@ -1048,7 +1048,7 @@ export interface EditorConfig extends EngineConfig {
 	 * .then( editor => {
 	 * 	document.querySelector( '#toolbar' ).appendChild( editor.ui.view.toolbar.element );
 	 *
-	 * 	for ( const [ rootName, editable ] of editor.ui.getEditableElementsNames() ) {
+	 * 	for ( const rootName of editor.ui.getEditableElementsNames() ) {
 	 * 		document.querySelector( '#editables' ).appendChild( editor.ui.view.getEditable( rootName ).element );
 	 * 	}
 	 * } )
