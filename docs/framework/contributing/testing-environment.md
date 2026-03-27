@@ -24,7 +24,7 @@ Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engin
 
 To run the automated tests, use the `pnpm run test [<args>...]` command.
 
-It accepts the following arguments:
+It accepts the following arguments (you can also run with `--help` to see all available options):
 
 * `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
@@ -108,7 +108,7 @@ To start the manual tests server, use the `pnpm run manual` task. After calling 
 	You can read more about the DLL builds in a {@link getting-started/advanced/dll-builds dedicated guide}.
 </info-box>
 
-The `pnpm run manual` task accepts the following options:
+The `pnpm run manual` task accepts the following options (you can also run with `--help` to see all available options):
 
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
 * `--language="pl"` &ndash; The main language built into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link getting-started/setup/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
