@@ -21,6 +21,8 @@
 	--ck-tooltip-arrow-border-width-up: var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width) 0 var(--ck-tooltip-arrow-half-width);
 	--ck-tooltip-arrow-offset: 0px;
 	--ck-tooltip-border-width: 0px;
+	--ck-tooltip-border-color: transparent;
+	--ck-tooltip-border: var(--ck-tooltip-border-width) solid var(--ck-tooltip-border-color);
 
 	/* Color */
 	--ck-tooltip-background-color: var(--ck-color-surface-inverse);
@@ -38,6 +40,8 @@
 	--ck-balloon-arrow-height: var(--ck-tooltip-arrow-height);
 	--ck-balloon-arrow-border-width: var(--ck-tooltip-arrow-border-width);
 	--ck-balloon-arrow-border-width-up: var(--ck-tooltip-arrow-border-width-up);
+	--ck-balloon-panel-border: var(--ck-tooltip-border);
+	--ck-balloon-border-color: var(--ck-tooltip-border-color);
 	--ck-panel-background-color: var(--ck-tooltip-background-color);
 
 	padding: var(--ck-tooltip-padding);
