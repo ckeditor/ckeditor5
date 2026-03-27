@@ -30,7 +30,6 @@ import { ClassicEditor, Indent, IndentBlock, BlockQuote } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Indent, IndentBlock, BlockQuote, /* ... */ ], // Plugins import.
 		toolbar: [ 'outdent', 'indent', 'blockquote', /* ... */ ] // Toolbar configuration.
@@ -53,7 +52,6 @@ import { ExportPdf } from 'ckeditor5-premium-features';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ ExportPdf, /* ... */ ],
 		toolbar: [ 'exportPdf', '|', /* ... */ ],
@@ -94,7 +92,6 @@ import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Font, Link, List } fr
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		toolbar: [
 			'heading',
@@ -161,7 +158,6 @@ import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Link, List } from 'ck
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		removePlugins: [ 'Heading' ], // Remove a plugin from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' , 'link' ]
 	} )
@@ -179,7 +175,6 @@ import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Link, List } from 'ck
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		removePlugins: [ 'Heading', 'Link' ], // Remove a few plugins from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
@@ -204,7 +199,6 @@ import { ClassicEditor, Heading, BlockQuote, Bold, Italic, Autolink, Link, List 
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		removePlugins: [ 'Heading', 'Link', 'Autolink' ], // Remove a few plugins from the setup.
 		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )

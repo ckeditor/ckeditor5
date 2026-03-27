@@ -38,7 +38,6 @@ import { ClassicEditor, MediaEmbed } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MediaEmbed, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ]
@@ -177,7 +176,6 @@ For instance, to leave only the previewable providers, configure this feature as
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		mediaEmbed: {
 			removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
@@ -194,7 +192,6 @@ To override the default providers, use {@link module:media-embed/mediaembedconfi
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		mediaEmbed: {
 			providers: [

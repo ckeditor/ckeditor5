@@ -62,7 +62,6 @@ let editor;
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ /* ... */ ],
 		toolbar: [ /* ... */ ]
@@ -188,7 +187,6 @@ If the source element is not `<textarea>`, CKEditor 5 clears its content after t
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ...
 		updateSourceElementOnDestroy: true
 	} );

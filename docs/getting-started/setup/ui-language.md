@@ -146,8 +146,7 @@ Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.l
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
-		// ... Other con figuration options ...
+		// ... Other configuration options ...
 		language: {
 			// The UI will be English.
 			ui: 'en',

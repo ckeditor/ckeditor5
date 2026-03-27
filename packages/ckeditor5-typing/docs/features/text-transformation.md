@@ -69,7 +69,6 @@ import { ClassicEditor, TextTransformation } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TextTransformation, /* ... */ ],
 		typing: {
@@ -98,7 +97,6 @@ For instance, to use the transformations from the "quotes" and "typography" grou
 ```js
 ClassicEditor
 	.create( {
-		attachTo: editorElement,
 		// ... Other configuration options ...
 		typing: {
 			transformations: {
@@ -124,7 +122,6 @@ Another example, removing some transformations and adding some extra ones:
 ```js
 ClassicEditor
 	.create( {
-		attachTo: editorElement,
 		// ... Other configuration options ...
 		typing: {
 			transformations: {

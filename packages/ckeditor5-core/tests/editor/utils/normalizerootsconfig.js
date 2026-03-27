@@ -72,7 +72,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			expectToThrowCKEditorError( () => {
 				normalizeRootsConfig( '', config );
-			}, /^editor-create-roots-initial-data/ );
+			}, /^editor-create-roots-with-main/ );
 		} );
 
 		it( 'should throw when both source data string and config.initialData are set', () => {
@@ -80,7 +80,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			expectToThrowCKEditorError( () => {
 				normalizeRootsConfig( '<p>source</p>', config );
-			}, /^editor-create-initial-data/ );
+			}, /^editor-create-initial-data-overspecified/ );
 		} );
 
 		it( 'should throw when both rootConfig.initialData and source data string are set', () => {
@@ -88,7 +88,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			expectToThrowCKEditorError( () => {
 				normalizeRootsConfig( '<p>source</p>', config );
-			}, /^editor-create-initial-data/ );
+			}, /^editor-create-root-initial-data-overspecified/ );
 		} );
 
 		it( 'should throw when both rootConfig.initialData and legacy config.initialData are set', () => {
@@ -97,7 +97,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			expectToThrowCKEditorError( () => {
 				normalizeRootsConfig( document.createElement( 'div' ), config );
-			}, /^editor-create-roots-initial-data/ );
+			}, /^editor-create-legacy-initial-data-overspecified/ );
 		} );
 	} );
 
@@ -184,7 +184,7 @@ describe( 'normalizeRootsConfig()', () => {
 				normalizeRootsConfig( {
 					header: '<p>from source</p>'
 				}, config, false );
-			}, /^editor-create-initial-data/ );
+			}, /^editor-create-root-initial-data-overspecified/ );
 		} );
 
 		it( 'should use legacy config.initialData as object', () => {
@@ -243,7 +243,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			expectToThrowCKEditorError( () => {
 				normalizeRootsConfig( {}, config, false );
-			}, /^editor-create-roots-initial-data/ );
+			}, /^editor-create-multi-root-with-main/ );
 		} );
 	} );
 
@@ -439,6 +439,71 @@ describe( 'normalizeRootsConfig()', () => {
 
 			expect( roots.foo.element ).to.equal( fooEl );
 			expect( roots.bar.element ).to.equal( barEl );
+		} );
+
+		it( 'should throw when source element conflicts with rootConfig.element', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>source</p>';
+
+			const existingElement = document.createElement( 'div' );
+			existingElement.innerHTML = '<p>existing</p>';
+
+			config.set( 'roots', { main: { element: existingElement } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( sourceElement, config );
+			}, /^editor-create-root-element-overspecified/ );
+		} );
+
+		it( 'should throw when source element conflicts with rootConfig.element for multi-root', () => {
+			const fooEl = document.createElement( 'div' );
+			fooEl.innerHTML = '<p>source</p>';
+
+			const existingEl = document.createElement( 'div' );
+			existingEl.innerHTML = '<p>existing</p>';
+
+			config.set( 'roots', { foo: { element: existingEl } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( { foo: fooEl }, config, false );
+			}, /^editor-create-root-element-overspecified/ );
+		} );
+
+		it( 'should warn when config.root.element is set with separateAttachTo', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>data</p>';
+
+			config.set( 'roots', { main: { element: el } } );
+
+			const stub = sinon.stub( console, 'warn' );
+
+			normalizeRootsConfig( '', config, 'main', true );
+
+			sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
+
+			stub.restore();
+		} );
+
+		it( 'should throw when config.attachTo is set without separateAttachTo', () => {
+			const el = document.createElement( 'div' );
+
+			config.set( 'attachTo', el );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '<p>foo</p>', config );
+			}, /^editor-create-attachto-ignored/ );
+		} );
+
+		it( 'should throw when config.attachTo is already set and source is an element with separateAttachTo', () => {
+			const sourceElement = document.createElement( 'div' );
+			sourceElement.innerHTML = '<p>source</p>';
+
+			const existingAttachTo = document.createElement( 'div' );
+			config.set( 'attachTo', existingAttachTo );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( sourceElement, config, 'main', true );
+			}, /^editor-create-attachto-overspecified/ );
 		} );
 	} );
 

@@ -48,7 +48,6 @@ import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from 'ck
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
 		image: {
@@ -167,7 +166,6 @@ import { ClassicEditor, Image, ImageResizeButtons, ImageResizeEditing, ImageTool
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, /* ... */ ],
 		image: {
 			resizeOptions: [
@@ -262,7 +260,6 @@ However, there are cases where you may prefer pixel values. You can thus configu
 ```js
 ClassicEditor
 	.create( {
-		attachTo: editorElement,
 		image: {
 			resizeUnit: 'px',
 			resizeOptions: [
@@ -334,7 +331,6 @@ import { ClassicEditor, Image, ImageResize } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [ Image, ImageResize, /* ... */ ]
 	} )

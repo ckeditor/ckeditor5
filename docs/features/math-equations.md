@@ -70,7 +70,6 @@ import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
@@ -123,7 +122,6 @@ const MathType = MathTypeExports.default;
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ MathType, /* ... */ ],
 		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
@@ -154,7 +152,6 @@ To install the Java service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( {
-			attachTo: document.querySelector( '#example' ),
 			// ... Other configuration options ...
 			// MathType parameters.
 			mathTypeParameters : {
@@ -179,7 +176,6 @@ To install the PHP service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( {
-			attachTo: document.querySelector( '#example' ),
 			// ... Other configuration options ...
 			// MathType parameters.
 			mathTypeParameters : {
@@ -205,7 +201,6 @@ To install the .NET service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( {
-			attachTo: document.querySelector( '#example' ),
 			// ... Other configuration options ...
 			// MathType parameters.
 			mathTypeParameters : {
@@ -236,7 +231,6 @@ To install the Ruby on Rails service, follow the steps below:
 	```js
 	ClassicEditor
 		.create( {
-			attachTo: document.querySelector( '#example' ),
 			// ... Other configuration options ...
 			// MathType parameters.
 			mathTypeParameters : {

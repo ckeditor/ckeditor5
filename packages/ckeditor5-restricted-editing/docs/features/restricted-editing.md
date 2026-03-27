@@ -74,7 +74,6 @@ import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditingException:auto', /* ... */ ]
@@ -98,7 +97,6 @@ import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RestrictedEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditing', /* ... */ ]
@@ -115,7 +113,6 @@ You can configure which features should be available in the inline editing field
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other confituration options ...
 		restrictedEditing: {
 			allowedCommands: [ 'bold' ]

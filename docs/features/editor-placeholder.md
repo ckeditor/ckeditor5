@@ -36,7 +36,6 @@ import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 	} )
@@ -60,7 +59,6 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#root `editor
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		root: {
 			placeholder: 'Type the content here!'

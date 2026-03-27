@@ -34,7 +34,6 @@ import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'c
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
 		toolbar: [ 'specialCharacters', /* ... */ ],
@@ -70,7 +69,6 @@ function SpecialCharactersEmoji( editor ) {
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
@@ -113,7 +111,6 @@ function SpecialCharactersExtended( editor ) {
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
@@ -152,7 +149,6 @@ import { ClassicEditor, SpecialCharacters, SpecialCharactersCurrency, SpecialCha
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
@@ -176,7 +172,6 @@ The categories order can be customized using the {@link module:special-character
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		// ... Other configuration options ...
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
 		specialCharacters: {

@@ -99,7 +99,6 @@ import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
@@ -121,7 +120,6 @@ import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout /* ... */ ],
 		table: {
@@ -145,7 +143,6 @@ import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout /* ... */ ],
 		table: {
@@ -179,7 +176,6 @@ import { ClassicEditor, Table, TableLayout, TableProperties, TableToolbar } from
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, TableProperties, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
@@ -206,7 +202,6 @@ import { ClassicEditor, Table, TableLayout, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
@@ -229,7 +224,6 @@ import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ]

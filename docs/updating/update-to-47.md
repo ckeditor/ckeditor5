@@ -298,8 +298,7 @@ We are introducing an experimental {@link module:table/tablecellproperties/table
 
 ```js-diff
  ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+ 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Essentials,
 			Paragraph,
@@ -338,8 +337,7 @@ To use the new dataset, download the [Emoji `json` database from the CKEditor&nb
 
 ```js
 ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+	.create( document.querySelector( '#editor' ), {
 		// ... Other configuration options ...
 		emoji: {
 			definitionsUrl: 'https://example.com/emoji-definitions.json'
@@ -407,8 +405,7 @@ To address this, we are introducing **experimental flags** and **experimental pl
 
 ```js
 ClassicEditor
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
+	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Table,
 			TablePropertiesEditing,

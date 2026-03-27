@@ -40,7 +40,6 @@ import { ClassicEditor, BlockQuote } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ BlockQuote, /* ... */ ],
 		toolbar: [ 'blockQuote', /* ... */ ]
@@ -71,7 +70,6 @@ function DisallowNestingBlockQuotes( editor ) {
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		extraPlugins: [ DisallowNestingBlockQuotes ],
 
 		// The rest of the configuration.

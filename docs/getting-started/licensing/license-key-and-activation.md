@@ -160,8 +160,6 @@ You need to add the license key to your CKEditor&nbsp;5 configuration. It is eno
 ```js
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
-
 		// Provide the licence key.
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 

@@ -42,7 +42,6 @@ import '@ckeditor/ckeditor5-mermaid/dist/index.css';
 
 ClassicEditor
 	.create( {
-		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Mermaid, /* ... */ ],
 		toolbar: [ 'mermaid', /* ... */ ]
