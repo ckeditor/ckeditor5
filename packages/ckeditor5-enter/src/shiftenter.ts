@@ -44,6 +44,7 @@ export class ShiftEnter extends Plugin {
 		// Configure the schema.
 		schema.register( 'softBreak', {
 			allowWhere: '$text',
+			allowAttributesOf: '$text',
 			isInline: true
 		} );
 

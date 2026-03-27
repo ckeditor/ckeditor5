@@ -98,12 +98,7 @@ function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDoc
 	const isContainedWithinOneElement = ( startElement == endElement );
 
 	if ( isSelectionEmpty ) {
-		const attributesToCopy = getCopyOnEnterAttributes( model.schema, selection.getAttributes() );
-
-		insertBreak( model, writer, range.end );
-
-		writer.removeSelectionAttribute( selection.getAttributeKeys() );
-		writer.setSelectionAttribute( attributesToCopy );
+		insertBreak( model, writer, range.end, selection );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 
@@ -113,7 +108,7 @@ function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDoc
 		//
 		// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x<br>^x</h>
 		if ( isContainedWithinOneElement ) {
-			insertBreak( model, writer, selection.focus! );
+			insertBreak( model, writer, selection.focus!, selection );
 		}
 		// Selection over multiple elements.
 		//
@@ -134,8 +129,18 @@ function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDoc
 	}
 }
 
-function insertBreak( model: Model, writer: ModelWriter, position: ModelPosition ): void {
+function insertBreak(
+	model: Model,
+	writer: ModelWriter,
+	position: ModelPosition,
+	selection: ModelDocumentSelection
+): void {
 	const breakLineElement = writer.createElement( 'softBreak' );
+	const attributesToCopy = Array.from( getCopyOnEnterAttributes( model.schema, selection.getAttributes() ) );
+
+	// Store copy-on-enter attributes on the soft break itself so the selection placed next to it
+	// can inherit them through the standard left/right gravity lookup.
+	writer.setAttributes( Object.fromEntries( attributesToCopy ), breakLineElement );
 
 	model.insertContent( breakLineElement, position );
 	writer.setSelection( breakLineElement, 'after' );

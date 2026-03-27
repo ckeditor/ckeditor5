@@ -110,7 +110,7 @@ describe( 'ShiftEnterCommand', () => {
 				test(
 					'allowed attributes are copied',
 					'<p><$text foo="true">test[]</$text></p>',
-					'<p><$text foo="true">test</$text><softBreak></softBreak><$text foo="true">[]</$text></p>'
+					'<p><$text foo="true">test</$text><softBreak foo="true"></softBreak><$text foo="true">[]</$text></p>'
 				);
 
 				test(
@@ -122,7 +122,7 @@ describe( 'ShiftEnterCommand', () => {
 				test(
 					'only allowed attributes are copied from mix set',
 					'<p><$text bar="true" foo="true">test[]</$text></p>',
-					'<p><$text bar="true" foo="true">test</$text><softBreak></softBreak><$text foo="true">[]</$text></p>'
+					'<p><$text bar="true" foo="true">test</$text><softBreak foo="true"></softBreak><$text foo="true">[]</$text></p>'
 				);
 			} );
 		} );

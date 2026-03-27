@@ -1413,6 +1413,7 @@ describe( 'DocumentSelection', () => {
 
 				model.schema.register( 'softBreak', {
 					allowWhere: '$text',
+					allowAttributesOf: '$text',
 					isInline: true
 				} );
 
@@ -1429,9 +1430,9 @@ describe( 'DocumentSelection', () => {
 				expect( selection.hasAttribute( 'foo' ) ).to.equal( false );
 			} );
 
-			it( 'should inherit attributes from a node before a softBreak when copyOnEnter is enabled', () => {
+			it( 'should inherit attributes from a softBreak carrying copied attributes', () => {
 				model.schema.setAttributeProperties( 'bold', { copyOnEnter: true } );
-				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak></softBreak>[]</p>' );
+				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak bold="true"></softBreak>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
@@ -1447,9 +1448,9 @@ describe( 'DocumentSelection', () => {
 				selection._restoreGravity( overrideGravityUid );
 			} );
 
-			it( 'should inherit attributes from a node after a softBreak when copyOnEnter is enabled (override gravity)', () => {
+			it( 'should inherit attributes from a softBreak carrying copied attributes with override gravity', () => {
 				model.schema.setAttributeProperties( 'bold', { copyOnEnter: true } );
-				_setModelData( model, '<p>[]<softBreak></softBreak><$text bold="true">Foo Bar.</$text></p>' );
+				_setModelData( model, '<p>[]<softBreak bold="true"></softBreak><$text bold="true">Foo Bar.</$text></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 

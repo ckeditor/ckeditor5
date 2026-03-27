@@ -63,7 +63,7 @@ describe( 'ShiftEnter integration', () => {
 		_setModelData( model,
 			'<paragraph>' +
 				'<$text linkHref="foo" bold="true">Bolded link</$text>' +
-				'<softBreak></softBreak>' +
+				'<softBreak bold="true"></softBreak>' +
 				'F[]' +
 			'</paragraph>'
 		);

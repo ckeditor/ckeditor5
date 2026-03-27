@@ -1255,18 +1255,11 @@ function getTextAttributes(
 		return startNode.getAttributes();
 	}
 
-	let crossedSoftBreak = false;
-
 	for ( let node: ModelNode | null = startNode; node; node = getNextNode( node ) ) {
-		if ( node.is( 'element', 'softBreak' ) ) {
-			crossedSoftBreak = true;
-			continue;
-		}
-
 		const attrs = getTextAttributesFromSingleNode( node );
 
 		if ( attrs ) {
-			return crossedSoftBreak ? collectCopyOnEnterAttributes( attrs ) : attrs;
+			return attrs;
 		}
 	}
 
@@ -1283,6 +1276,18 @@ function getTextAttributes(
 	function getTextAttributesFromSingleNode( node: ModelNode ) {
 		if ( node instanceof ModelText ) {
 			return node.getAttributes();
+		}
+
+		if ( node.is( 'element', 'softBreak' ) ) {
+			const attributes: Array<[ string, unknown ]> = [];
+
+			for ( const [ key, value ] of node.getAttributes() ) {
+				if ( schema.checkAttribute( '$text', key ) ) {
+					attributes.push( [ key, value ] );
+				}
+			}
+
+			return attributes;
 		}
 
 		if ( !schema.isInline( node ) ) {
@@ -1306,14 +1311,6 @@ function getTextAttributes(
 		}
 
 		return attributes;
-	}
-
-	function* collectCopyOnEnterAttributes( attrs: Iterable<[string, unknown]> ): Iterable<[string, unknown]> {
-		for ( const [ key, value ] of attrs ) {
-			if ( schema.getAttributeProperties( key ).copyOnEnter ) {
-				yield [ key, value ];
-			}
-		}
 	}
 }
 
