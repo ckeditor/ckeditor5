@@ -38,7 +38,7 @@
 	--ck-balloon-arrow-height: var(--ck-tooltip-arrow-height);
 	--ck-balloon-arrow-border-width: var(--ck-tooltip-arrow-border-width);
 	--ck-balloon-arrow-border-width-up: var(--ck-tooltip-arrow-border-width-up);
-	--ck-color-panel-background: var(--ck-tooltip-background-color);
+	--ck-panel-background-color: var(--ck-tooltip-background-color);
 
 	padding: var(--ck-tooltip-padding);
 
