@@ -49,12 +49,16 @@ ReadOnlyEditor
 			fileName: 'export-pdf-demo.pdf',
 			appID: 'cke5-docs',
 			converterOptions: {
-				format: 'A4',
-				margin_top: '15mm',
-				margin_bottom: '15mm',
-				margin_right: '15mm',
-				margin_left: '15mm',
-				page_orientation: 'portrait'
+				document: {
+					size: 'A4',
+					orientation: 'portrait',
+					margins: {
+						top: '15mm',
+						bottom: '15mm',
+						right: '15mm',
+						left: '15mm'
+					}
+				}
 			},
 			tokenUrl: false
 		},
