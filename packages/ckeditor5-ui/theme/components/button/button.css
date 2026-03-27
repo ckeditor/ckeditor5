@@ -11,6 +11,7 @@
 	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
 	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
 	--ck-button-padding: var(--ck-spacing-control-padding-block);
+	--ck-button-padding-block: var(--ck-spacing-control-padding-block);
 	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
 
 	/* Radius */
@@ -194,7 +195,7 @@ a.ck.ck-button {
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-button-padding) var(--ck-button-padding-inline);
+		padding: var(--ck-button-padding-block) var(--ck-button-padding-inline);
 
 		& .ck-button__icon {
 			[dir="ltr"] & {
