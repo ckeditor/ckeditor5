@@ -115,6 +115,39 @@ If your integration reads configuration values directly, update access paths as 
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
 
+### Table experimental features are now default
+
+In CKEditor 5 v47, we introduced experimental flags for extended table block alignment, improved table border normalization, and table cell type support. Starting with v48, these features are fully stable and enabled by default.
+
+You no longer need to use the `experimentalFlags.useExtendedTableBlockAlignment`, `experimentalFlags.upcastTableBorderZeroAttributes`, and `experimentalFlags.tableCellTypeSupport` configuration options.
+
+Additionally, if you were using the experimental UI plugins (`TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental`), you should remove them and revert to using the standard `TableProperties` and `TableCellProperties` plugins.
+
+```js-diff
+ ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [
+			Table,
+-			TablePropertiesEditing,
+-			TablePropertiesUIExperimental,
+-			TableCellPropertiesEditing,
+-			TableCellPropertiesUIExperimental,
++			TableProperties,
++			TableCellProperties,
+			// Other plugins.
+			// ...
+		],
+-		experimentalFlags: {
+-			useExtendedTableBlockAlignment: true,
+-			upcastTableBorderZeroAttributes: true,
+-			tableCellTypeSupport: true
+-		}
+ 	} )
+ 	.then( /* ... */ )
+ 	.catch( /* ... */ );
+```
+
 ### Export to PDF v2 is now the default
 
 Starting with v48, Export to PDF uses version 2 of the HTML to PDF converter API by default. Version 1 is deprecated and available only for backward compatibility.
