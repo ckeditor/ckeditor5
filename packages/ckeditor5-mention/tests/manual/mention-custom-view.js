@@ -39,7 +39,7 @@ class CustomMentionAttributeView extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'mention',
-			view: ( modelAttributeValue, { writer } ) => {
+			view: ( modelAttributeValue, { writer, options } ) => {
 				if ( !modelAttributeValue ) {
 					return;
 				}
@@ -47,9 +47,13 @@ class CustomMentionAttributeView extends Plugin {
 				return writer.createAttributeElement( 'a', {
 					class: 'mention',
 					'data-mention': modelAttributeValue.id,
-					'href': modelAttributeValue.link
+					'href': modelAttributeValue.link,
+					// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+					...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 				}, {
+					// Make mention attribute to be wrapped by other attribute elements.
 					priority: 20,
+					// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 					id: modelAttributeValue.uid
 				} );
 			},

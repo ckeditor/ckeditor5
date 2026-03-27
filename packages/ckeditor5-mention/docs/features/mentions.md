@@ -276,7 +276,7 @@ The converters must be defined with a `'high'` priority to be executed before th
 
 To control how the mention element is wrapped by other attribute elements (like bold, italic, etc) set its {@link module:engine/view/attributeelement~ViewAttributeElement#priority}. To replicate default plugin behavior and make mention to be wrapped by other elements set priority to `20`.
 
-By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this, the model attribute value object exposes a unique ID of each inserted mention to the model as `uid`. To prevent merging subsequent mentions, set it as {@link module:engine/view/attributeelement~ViewAttributeElement#id}.
+By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this, the model attribute value object exposes a unique ID of each inserted mention to the model as `uid`. To prevent merging subsequent mentions, set it as {@link module:engine/view/attributeelement~ViewAttributeElement#id}. The `uid` is persisted in the data output as the `data-mention-uid` attribute to guarantee that the same HTML always produces the same model. During clipboard (copy/cut) output, `data-mention-uid` is omitted so that pasted mentions receive fresh unique IDs.
 
 **Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:utils/priorities~PrioritiesType#highest `'highest'` priority} controls this behavior. We do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
@@ -328,7 +328,7 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -338,11 +338,13 @@ function MentionCustomization( editor ) {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
-				'href': modelAttributeValue.link
+				'href': modelAttributeValue.link,
+				// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},
@@ -424,7 +426,7 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -434,11 +436,13 @@ function MentionCustomization( editor ) {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
-				'href': modelAttributeValue.link
+				'href': modelAttributeValue.link,
+				// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},
