@@ -16,21 +16,15 @@ import { getPositionStyleShorthandNormalizer, getBoxSidesStyleValueReducer } fro
  * ```ts
  * editor.data.addStyleProcessorRules( addMarginStylesRules );
  * ```
- *
- * The normalized value is stored as:
- *
- * ```ts
- * const styles = {
- * 	margin: {
- * 		top,
- * 		right,
- * 		bottom,
- * 		left
- * 	}
- * };
- * ```
  */
 export function addMarginStylesRules( stylesProcessor: StylesProcessor ): void {
+	// Normalized data format:
+	// {
+	// 	top: '1px',
+	// 	right: '2px',
+	// 	bottom: '3px',
+	// 	left: '4px'
+	// }
 	stylesProcessor.setNormalizer( 'margin', getPositionStyleShorthandNormalizer( 'margin' ) );
 
 	stylesProcessor.setNormalizer( 'margin-top', value => ( { path: 'margin.top', value } ) );

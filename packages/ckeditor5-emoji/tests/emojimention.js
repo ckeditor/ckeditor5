@@ -7,6 +7,7 @@ import { Typing } from '@ckeditor/ckeditor5-typing';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -89,7 +90,7 @@ describe( 'EmojiMention', () => {
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, Typing, 'Mention' ] );
+		expect( EmojiMention.requires ).to.deep.equal( [ EmojiRepository, Typing, Mention ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
@@ -887,13 +888,37 @@ describe( 'EmojiMention', () => {
 		} );
 	} );
 
-	function simulateTyping( text ) {
-		const selection = editor.model.document.selection;
+	describe( 'code block integration', () => {
+		it( 'should not activate emoji autocomplete inside a code block', async () => {
+			const codeBlockEditorElement = document.createElement( 'div' );
+			document.body.appendChild( codeBlockEditorElement );
+
+			const codeBlockEditor = await ClassicTestEditor.create( codeBlockEditorElement, {
+				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention, CodeBlock ]
+			} );
+
+			mockEmojiRepositoryValues( codeBlockEditor );
+
+			const mentionCommand = codeBlockEditor.commands.get( 'mention' );
+
+			_setModelData( codeBlockEditor.model, '<codeBlock language="plaintext">foo []</codeBlock>' );
+
+			simulateTyping( ':ro', codeBlockEditor );
+
+			expect( mentionCommand.isEnabled ).to.be.false;
+
+			await codeBlockEditor.destroy();
+			codeBlockEditorElement.remove();
+		} );
+	} );
+
+	function simulateTyping( text, targetEditor = editor ) {
+		const selection = targetEditor.model.document.selection;
 		const startPosition = selection.getFirstRange().start;
 
 		// While typing, every character is an atomic change.
 		text.split( '' ).forEach( character => {
-			editor.execute( 'input', {
+			targetEditor.execute( 'input', {
 				text: character
 			} );
 		} );

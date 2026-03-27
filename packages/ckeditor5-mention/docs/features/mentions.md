@@ -45,6 +45,24 @@ ClassicEditor
 ```
 </code-switcher>
 
+## Unsupported contexts
+
+The mention autocompletion is automatically disabled inside {@link features/code-blocks code blocks}. Typing a mention marker (such as `@`) inside a code block will not trigger the autocomplete panel. This also applies to features built on top of mentions, such as {@link features/slash-commands slash commands} and {@link features/emoji emoji} autocompletion.
+
+If you want to disable this behavior and allow mention autocompletion inside code blocks, you can override it using the {@link module:engine/model/schema~ModelSchema#event:checkAttribute `Schema#checkAttribute`} event:
+
+```js
+editor.model.schema.on( 'checkAttribute', ( evt, args ) => {
+	const context = args[ 0 ];
+	const attributeName = args[ 1 ];
+
+	if ( attributeName === 'mention' && context.endsWith( 'codeBlock $text' ) ) {
+		evt.stop();
+		evt.return = true;
+	}
+}, { priority: 'high' } );
+```
+
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mentionconfig~MentionFeed `feed`} and a {@link module:mention/mentionconfig~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
@@ -498,7 +516,7 @@ function customItemRenderer( item ) {
 
 #### Using CSS variables
 
-The mention feature uses the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [Lark theme style sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-mention/mention.css). Thanks to that, mention styles can be {@link framework/theme-customization easily customized}:
+The mention feature uses the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [default theme style sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-mention/theme/mention.css). Thanks to that, mention styles can be {@link framework/theme-customization easily customized}:
 
 ```css
 :root {

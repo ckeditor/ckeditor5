@@ -1367,6 +1367,56 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
+
+		it( 'should return true if passed selection has any meaningful content (text node in range)', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const selection = new ModelSelection( range );
+
+			expect( model.hasContent( selection ) ).to.be.true;
+		} );
+
+		it( 'should return true if passed selection has any meaningful content (content element)', () => {
+			// [<div><content></content></div>]
+			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
+			const selection = new ModelSelection( range );
+
+			expect( model.hasContent( selection ) ).to.be.true;
+		} );
+
+		it( 'should return true if at least one range in selection has any meaningful content', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const collapsedRange = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
+			const selection = new ModelSelection( [
+				collapsedRange,
+				range
+			] );
+
+			expect( model.hasContent( selection ) ).to.be.true;
+		} );
+
+		it( 'should return false if selection has only collapsed ranges', () => {
+			const selection = new ModelSelection( [
+				new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 1 ) ),
+				new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) )
+			] );
+
+			expect( model.hasContent( selection ) ).to.be.false;
+		} );
+
+		it( 'should return false if selection has only elements that are not objects', () => {
+			const selection = new ModelSelection( [
+				new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) ),
+				new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 4 ) )
+			] );
+
+			expect( model.hasContent( selection ) ).to.be.false;
+		} );
+
+		it( 'should return false if selection has no ranges', () => {
+			const selection = new ModelSelection( [] );
+
+			expect( model.hasContent( selection ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'canEditAt()', () => {

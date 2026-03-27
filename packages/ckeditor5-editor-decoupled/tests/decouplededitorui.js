@@ -17,6 +17,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { normalizeRootsConfig } from '@ckeditor/ckeditor5-core';
 
 describe( 'DecoupledEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -87,42 +88,29 @@ describe( 'DecoupledEditorUI', () => {
 				return VirtualDecoupledTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
+						root: { placeholder: 'placeholder-text' }
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+
+		describe( 'placeholder - legacy config', () => {
+			it( 'sets placeholder from editor.config.placeholder - string', () => {
+				return VirtualDecoupledTestEditor
+					.create( 'foo', {
+						extraPlugins: [ Paragraph ],
 						placeholder: 'placeholder-text'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
-
-						return newEditor.destroy();
-					} );
-			} );
-
-			it( 'sets placeholder from editor.config.placeholder - object', () => {
-				return VirtualDecoupledTestEditor
-					.create( 'foo', {
-						extraPlugins: [ Paragraph ],
-						placeholder: { main: 'placeholder-text' }
-					} )
-					.then( newEditor => {
-						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
-
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
-
-						return newEditor.destroy();
-					} );
-			} );
-
-			it( 'sets placeholder from editor.config.placeholder - object (invalid root name)', () => {
-				return VirtualDecoupledTestEditor
-					.create( 'foo', {
-						extraPlugins: [ Paragraph ],
-						placeholder: { 'root-name-that-not-exists': 'placeholder-text' }
-					} )
-					.then( newEditor => {
-						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
-
-						expect( firstChild.hasAttribute( 'data-placeholder' ) ).to.equal( false );
 
 						return newEditor.destroy();
 					} );
@@ -425,6 +413,8 @@ function pressEsc( editor ) {
 class VirtualDecoupledTestEditor extends VirtualTestEditor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
+
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;

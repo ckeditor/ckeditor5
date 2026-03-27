@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2026-02-11
+modified_at: 2026-03-04
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -13,6 +13,104 @@ modified_at: 2026-02-11
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v47.6.0
+
+Released on 4 March, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.6.0))
+
+### New `htmlSupport.htmlIframeSandbox` configuration option in General HTML Support
+
+This release introduces a potential breaking change related to `iframe` handling in the editing view.
+
+By default, iframe sandboxing is now enabled. The `htmlSupport.htmlIframeSandbox` configuration option responsible for this behavior defaults to `true`, which means an empty `sandbox=""` attribute is automatically added to all iframes rendered in the editing view.
+
+Previously, iframes were not sandboxed by default and had full access to the surrounding page context. With this change, iframes are now restricted unless explicitly configured otherwise.
+
+If you want to preserve the previous behavior (unsandboxed iframes with full access), you must explicitly disable this feature by setting the configuration option to `false`.
+
+Besides `true` or `false`, the `htmlSupport.htmlIframeSandbox` configuration option accepts an array of strings. For example, if you want to allow only specific features, set it to `allow-scripts`. In this scenario, we will ensure that `allow-scripts` is the only value in the sandbox attribute. If the iframe already has other sandbox values, they will be removed; if it has no sandbox attribute, we will add `sandbox="allow-scripts"`.
+
+<info-box caution>
+	This change may affect iframe-based integrations that rely on script execution, navigation, or access to parent context.
+</info-box>
+
+### Changes to the `srcdoc` attribute in the editing view
+
+The `srcdoc` attribute is no longer rendered in the editing view.
+
+Unlike iframe sandboxing, this change is permanent and cannot be disabled via configuration. Any iframe content provided through `srcdoc` will be ignored in the editing view going forward.
+
+### New ordered list styles
+
+We have introduced a new ordered list style: the `arabic-indic` numerals. To use them, you need to explicitly activate the style in the {@link features/lists#enabling-specific-enumerators feature configuration}.
+
+The same style is also available in the {@link features/footnotes#the-footnotesproperties-contextual-balloon footnotes} feature for numbering footnote markers.
+
+### Visual block indentation for lists
+
+The block indentation feature now supports applying visual indentation to list containers and list items. When the `Indent`, `IndentBlock`, and `List` plugins are all loaded, you can indent top-level lists using the toolbar buttons or keyboard shortcuts. The editor also recognizes `margin-left` styles on `<ol>`, `<ul>`, and `<li>` elements during data loading. See the {@link features/indent#indenting-lists Indenting lists} documentation for details.
+
+### Mirror margins in Export to PDF V2
+
+The {@link features/export-pdf export to PDF} feature now supports {@link features/export-pdf#mirror-margins mirror margins} for book-like layouts. When enabled, left and right margins are treated as inner and outer margins that swap between odd and even pages, making it easy to prepare documents for double-sided printing or binding.
+
+### Preserving the `<figure>` wrapper for content tables
+
+When using content tables together with layout tables, the `<figure>` element is stripped from tables in both cases by default. This version introduces a new flag {@link module:table/tableconfig~TableLayoutConfig#member-stripFigureFromContentTable `stripFigureFromContentTable`} which allows to change the behavior and preserve the `<figure>` element.
+
+<info-box warning>
+In next release, the default value of the flag will be set to `false`, resulting in `<figure>` being preserved for content tables by default.
+</info-box>
+
+### CKEditor&nbsp;AI On-premises
+
+{@link features/ckeditor-ai-overview CKEditor AI} is now available as an **on-premises deployment**, giving you full control over the AI service by running it on your infrastructure. The on-premises version supports everything the cloud option offers, plus:
+
+* **Custom AI models and providers** &ndash; use your models from OpenAI, Google Cloud, Microsoft Azure, or self-hosted solutions.
+* **MCP (Model Context Protocol) support** &ndash; extend the AI with custom external tools by connecting MCP servers, enabling use cases like searching internal knowledge bases or querying company databases directly from the AI chat.
+
+Learn more about {@link features/ckeditor-ai-deployment deployment options} and {@link features/ckeditor-ai-mcp MCP support}.
+
+### Custom AI Review checks
+
+The {@link features/ckeditor-ai-review AI Review} feature now supports **custom review commands** defined by integrators. Until now, the review was limited to built-in commands like proofreading, clarity, readability, and tone adjustment. With this release, you can create review commands tailored to your editorial guidelines, brand voice, or domain-specific quality standards.
+
+Custom commands are registered via `config.ai.review.extraCommands` and made visible in the UI through `config.ai.review.availableCommands`. The same option lets you reorder, filter, or shorten the list of built-in commands to match your needs. See the {@link features/ckeditor-ai-review AI Review documentation} for details.
+
+### AI Chat Shortcuts
+
+We are introducing **AI Chat Shortcuts**, a new opt-in plugin that displays configurable shortcut buttons in the {@link features/ckeditor-ai-chat AI Chat} panel before the first message is sent. Shortcuts provide clear, actionable entry points that guide users toward the most useful AI capabilities &ndash; from launching a predefined prompt to starting a specific review or translation flow to navigating directly to the Review or Translate tab.
+
+Integrators define shortcuts with a name, icon, and an action. Each shortcut can also configure which AI capabilities (model, web search, reasoning) are active for the prompt. Learn more in the {@link features/ckeditor-ai-chat#chat-shortcuts AI Chat Shortcuts documentation}.
+
+### Upgrade `@aws-sdk/client-bedrock-runtime` to the latest version
+
+We upgraded `@aws-sdk/client-bedrock-runtime` to the latest version to address a recently disclosed security vulnerability in the `fast-xml-parser` dependency. This update is marked as a minor breaking change due to the use of dynamic imports in one of the underlying packages, which may impact certain build environments.
+
+<info-box warning>
+	The action is required only if you use the legacy CKEditor AI Assistant with a dedicated editor bundle.
+</info-box>
+
+If you use `webpack` to build an editor bundle, configure it to bundle dynamic imports eagerly:
+
+```js
+module: {
+	parser: {
+		javascript: {
+			dynamicImportMode: 'eager'
+		}
+	}
+}
+```
+
+If you do not use CKEditor AI with a dedicated bundle, no action is required.
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified the default greeting message shown when starting a new AI Chat conversation. To restore the previous message content, set `config.ai.chat.welcomeMessage` to the following:
+
+  "Hi, I'm your AI assistant. Think of me as your writing buddy, reviewer, or research partner. I can suggest changes to your document, help generate ideas, offer feedback, discuss attached files, and much more!"
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Updated `@aws-sdk/client-bedrock-runtime` to version `3.994.0`. This update introduced dynamic imports in a dependency, which may affect some build environments.
 
 ## Update to CKEditor&nbsp;5 v47.5.0
 
@@ -29,13 +127,14 @@ The DOM structure of the {@link features/ckeditor-ai-chat CKEditor&nbsp;AI Chat}
 Please make sure to update your integrations to use the new DOM structure.
 
 Notable changes:
+
 * "Apply all" and "Suggest all" buttons are now separate buttons instead of a dropdown.
 * The toolbar with bulk "Apply" and "Suggest" ("Apply all" and "Suggest all") buttons belongs to the `.ck-ai-suggestion__body` element (previously in `.ck-ai-chat__feed__item`).
 * The `.ck-ai-suggestion__body__content-part__content` has been replaced by `.ck-content.ck-ai-suggestion-streamable-content`.
 
 **Old DOM structure**
 
-```
+```plain
 div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 ├── div.ck-ai-suggestion__container.ck-rounded-corners
 │   ├── div.ck-ai-suggestion__header
@@ -61,7 +160,7 @@ div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 
 **New DOM structure**
 
-```
+```plain
 div.ck-ai-chat__feed__item.ck-ai-chat__feed__ai-suggestion
 └── div.ck-ai-suggestion__container.ck-rounded-corners
     ├── div.ck-ai-suggestion__header
@@ -92,7 +191,7 @@ Please make sure to update your integrations to use the new DOM structure.
 
 **Old DOM structure**
 
-```
+```plain
 div.ck-dialog.ai-balloon.ai-balloon-rotator
 ├── div.ck-form__header
 │   ├── button.ck-button.ck-off (Previous suggestion button)
@@ -120,7 +219,7 @@ div.ck-dialog.ai-balloon.ai-balloon-rotator
 
 **New DOM structure**
 
-```
+```plain
 div.ck-dialog.ck-ai-balloon.ck-ai-chat-balloon
 ├── div.ck-form__header
 │   ├── button.ck-button.ck-off (Previous suggestion button)
@@ -150,7 +249,7 @@ We improved how multiple changes proposed by the {@link features/ckeditor-ai-cha
 
 ### Export to PDF v2
 
-The {@link features/export-pdf export to PDF} feature now supports version 2 of the HTML to PDF converter API, bringing several {@link features/export-pdf#new-features-in-v2 powerful enhancements} to document generation.
+The {@link features/export-pdf export to PDF} feature now supports version 2 of the HTML to PDF converter API, bringing several {@link features/export-pdf#html-to-pdf-converter-features powerful enhancements} to document generation.
 
 Advanced header and footer configurations allow for different content on first, odd, and even pages, with support for images. Page sizes can now be set using predefined formats or custom width and height values. The new converter API also enables editing of PDF metadata fields such as title, subject, and author.
 
@@ -195,7 +294,7 @@ This is a minor update focused on improving content editing workflows and data c
 
 ### Experimental table cell type support
 
-We are introducing an experimental {@link module:table/tablecellproperties/commands/tablecelltypecommand~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
+We are introducing an experimental {@link module:table/tablecellproperties/tablecellpropertiesutils~TableCellType `tableCellTypeSupport`} flag that enables changing table cell types between data and header cells (`th`). This feature provides more flexibility when working with complex table structures. To enable this functionality, you need to set `experimentalFlags.tableCellTypeSupport` to `true`. You can then use `TableCellPropertiesEditing` and `TableCellPropertiesUIExperimental` to manage the feature.
 
 ```js-diff
  ClassicEditor
@@ -424,7 +523,7 @@ If you need long-term stability, [contact sales](https://ckeditor.com/contact-sa
 
 ### Updated content navigation with <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
 
-Starting with {@link updating/update-to-41#updated-keyboard-navigation version 41.3.0}, we have disabled the default browser <kbd>tab</kbd> behavior for cycling nested editable elements inside the editor. We decided back then that the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) keystroke should navigate to the next focusable field or element outside the editor so the users can quickly navigate fields or links on the page.
+Starting with version **v41.3.0**, we have disabled the default browser <kbd>tab</kbd> behavior for cycling nested editable elements inside the editor. Read more about it in the `#updated-keyboard-navigation` section of `Update to 41.x` in {@link updating/updating-from-older-versions updating from older versions guide}. We decided back then that the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) keystroke should navigate to the next focusable field or element outside the editor so the users can quickly navigate fields or links on the page.
 
 There was one exception to this <kbd>Tab</kbd> behavior, however. When a user selected a widget, the <kbd>Tab</kbd> key would move the selection to the first nested editable, such as the caption of an image. Pressing the <kbd>Esc</kbd> key while inside a nested editable will move the selection to the closest ancestor widget, for example, moving from an image caption to selecting the whole image widget.
 

@@ -7,7 +7,7 @@
  * @module fullscreen/fullscreencommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
@@ -38,7 +38,7 @@ export class FullscreenCommand extends Command {
 	 * // See the details of how to implement a custom handler in the `FullscreenAbstractEditorHandler` class API docs.
 	 * class CustomEditorHandler extends FullscreenAbstractEditorHandler {}
 	 *
-	 * CustomEditorClass.create( document.querySelector( '#editor' ), {} )
+	 * CustomEditorClass.create()
 	 * 	.then( ( editor ) => {
 	 * 		editor.commands.get( 'toggleFullscreen' ).fullscreenHandler = new CustomEditorHandler( editor );
 	 * 	} );

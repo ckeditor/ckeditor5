@@ -422,7 +422,8 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *   use the 'GPL' license key instead.
 				 *
 				 * ```js
-				 * ClassicEditor.create( document.querySelector( '#editor' ), {
+				 * ClassicEditor.create( {
+				 * 	attachTo: document.querySelector( '#editor' ),
 				 * 	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				 * 	// ... Other configuration options ...
 				 * } ) ;
@@ -564,10 +565,9 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				}
 			}
 
-			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
-				const licenseType: 'evaluation' | 'trial' = licensePayload.licenseType;
+			if ( licensePayload.licenseType === 'evaluation' ) {
 				const timerId = setTimeout( () => {
-					blockEditor( `${ licenseType }Limit` );
+					blockEditor( 'evaluationLimit' );
 				}, 600000 );
 
 				editor.on( 'destroy', () => {

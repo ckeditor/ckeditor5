@@ -16,19 +16,13 @@ import {
 	isFocusable,
 	isViewWithFocusCycler,
 	type FocusableView
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	type Locale
-} from 'ckeditor5/src/utils.js';
-import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
-
-// See: https://github.com/ckeditor/ckeditor5/issues/8833
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
+} from '@ckeditor/ckeditor5-utils';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../theme/emojipickerform.css';
 

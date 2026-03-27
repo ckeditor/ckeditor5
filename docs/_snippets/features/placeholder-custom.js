@@ -34,7 +34,9 @@ PlaceholderEditor
 				top: getViewportTopOffsetConfig()
 			}
 		},
-		placeholder: 'Type some content here!'
+		root: {
+			placeholder: 'Type some content here!'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

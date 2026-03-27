@@ -245,7 +245,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<figure class="image foo" style="color:red;" id="test" data-foo="bar">' +
 				'<img class="bar" style="border-left:2px solid blue;" src="/assets/sample.png" alt="122">' +
-				'<figcaption style="background-color:yellow;">abc</figcaption>' +
+				'<figcaption style="background:yellow;">abc</figcaption>' +
 			'</figure>'
 		);
 
@@ -286,13 +286,13 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		);
 
 		expect( editor.getData(), 'initial data' ).to.equal(
-			'<figure class="table foo" ' +
-				'style="background-color:blue;color:red;float:right;width:60%;" ' +
+			'<figure class="table table-style-align-right foo" ' +
+				'style="background:blue;color:red;width:60%;" ' +
 				'id="test" data-foo="bar"' +
 			'>' +
 				'<table class="ck-table-resized" style="color:pink;">' +
 					'<colgroup>' +
-						'<col style="background-color:green;width:30%;">' +
+						'<col style="background:green;width:30%;">' +
 						'<col style="width:70%;">' +
 					'</colgroup>' +
 					'<tbody>' +
@@ -302,7 +302,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 						'</tr>' +
 					'</tbody>' +
 				'</table>' +
-				'<figcaption style="background-color:yellow;">abc</figcaption>' +
+				'<figcaption style="background:yellow;">abc</figcaption>' +
 			'</figure>'
 		);
 
@@ -326,108 +326,6 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 				'<figcaption>abc</figcaption>' +
 			'</figure>'
 		);
-	} );
-
-	// [experimental] Make a regular test (remove this describe) in v48.
-	describe( 'removing styles and classes', () => {
-		let editor, element;
-
-		beforeEach( async () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [
-					GeneralHtmlSupport, RemoveFormat, SelectAll,
-					Paragraph, Heading, Image, ImageCaption,
-					Table, TableProperties, TableCellProperties, TableColumnResize, TableCaption,
-					PageBreak, CodeBlock, BlockQuote, List, ListProperties
-				],
-				htmlSupport: {
-					allow: [
-						{
-							name: /^.*$/,
-							styles: true,
-							attributes: true,
-							classes: true
-						}
-					]
-				},
-				experimentalFlags: {
-					useExtendedTableBlockAlignment: true
-				}
-			} );
-
-			model = editor.model;
-			editingView = editor.editing.view;
-		} );
-
-		afterEach( async () => {
-			element.remove();
-
-			await editor.destroy();
-		} );
-
-		it( 'should remove styles and classes from table [experimental]', () => {
-			editor.setData(
-				'<figure class="table foo" id="test" data-foo="bar" style="color: red;float:right;background: blue;width:60%;">' +
-					'<table style="color:pink;">' +
-						'<colgroup>' +
-							'<col style="width: 30%; background:green;">' +
-							'<col style="width: 70%">' +
-						'</colgroup>' +
-						'<tr>' +
-							'<td style="color:yellow;">foo</td>' +
-							'<td style="color:black;">bar</td>' +
-						'</tr>' +
-					'</table>' +
-					'<figcaption style="background: yellow;">abc</figcaption>' +
-				'</figure>'
-			);
-
-			expect( editor.getData(), 'initial data' ).to.equal(
-				'<figure class="table foo" ' +
-					'style="background-color:blue;color:red;float:right;' +
-					'margin-left:var(--ck-content-table-style-spacing, 1.5em);width:60%;" ' +
-					'id="test" data-foo="bar"' +
-				'>' +
-					'<table class="ck-table-resized" style="color:pink;">' +
-						'<colgroup>' +
-							'<col style="background-color:green;width:30%;">' +
-							'<col style="width:70%;">' +
-						'</colgroup>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td style="color:yellow;">foo</td>' +
-								'<td style="color:black;">bar</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption style="background-color:yellow;">abc</figcaption>' +
-				'</figure>'
-			);
-
-			editor.execute( 'selectAll' );
-			editor.execute( 'removeFormat' );
-
-			expect( editor.getData(), 'data pipeline' ).to.equal(
-				'<figure class="table" id="test" data-foo="bar">' +
-					'<table class="ck-table-resized">' +
-						'<colgroup>' +
-							'<col style="width:50%;">' +
-							'<col style="width:50%;">' +
-						'</colgroup>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>foo</td>' +
-								'<td>bar</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption>abc</figcaption>' +
-				'</figure>'
-			);
-		} );
 	} );
 
 	it( 'should remove styles and classes from page-break', () => {
@@ -488,7 +386,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<p>a</p>' +
-			'<blockquote class="abc" style="background-color:blue;" data-foo="bar"><p>foo</p><p>bar</p></blockquote>' +
+			'<blockquote class="abc" style="background:blue;" data-foo="bar"><p>foo</p><p>bar</p></blockquote>' +
 			'<p>b</p>'
 		);
 
@@ -517,8 +415,8 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		);
 
 		expect( editor.getData(), 'initial data' ).to.equal(
-			'<ol class="abc" style="background-color:red;" id="test" data-foo="bar">' +
-				'<li class="123" style="background-color:yellow;" id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
+			'<ol class="abc" style="background:red;" id="test" data-foo="bar">' +
+				'<li class="123" style="background:yellow;" id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
 			'</ol>'
 		);
 
@@ -548,8 +446,8 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<p>a</p>' +
-			'<div class="abc" style="background-color:red;" id="test" data-foo="bar">' +
-				'<p class="123" style="background-color:yellow;" id="test1" data-bar="foo">foo</p>' +
+			'<div class="abc" style="background:red;" id="test" data-foo="bar">' +
+				'<p class="123" style="background:yellow;" id="test1" data-bar="foo">foo</p>' +
 			'</div>' +
 			'<p>b</p>'
 		);

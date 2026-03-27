@@ -17,6 +17,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { normalizeRootsConfig } from '@ckeditor/ckeditor5-core';
 
 describe( 'BalloonEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -82,6 +83,23 @@ describe( 'BalloonEditorUI', () => {
 		} );
 
 		describe( 'placeholder', () => {
+			it( 'sets placeholder from editor.config.root.placeholder - string', () => {
+				return VirtualBalloonTestEditor
+					.create( 'foo', {
+						extraPlugins: [ BalloonToolbar, Paragraph ],
+						root: { placeholder: 'placeholder-text' }
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+
+		describe( 'placeholder - legacy config', () => {
 			it( 'sets placeholder from editor.config.placeholder - string', () => {
 				return VirtualBalloonTestEditor
 					.create( 'foo', {
@@ -92,36 +110,6 @@ describe( 'BalloonEditorUI', () => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
-
-						return newEditor.destroy();
-					} );
-			} );
-
-			it( 'sets placeholder from editor.config.placeholder - object', () => {
-				return VirtualBalloonTestEditor
-					.create( 'foo', {
-						extraPlugins: [ BalloonToolbar, Paragraph ],
-						placeholder: { main: 'placeholder-text' }
-					} )
-					.then( newEditor => {
-						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
-
-						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
-
-						return newEditor.destroy();
-					} );
-			} );
-
-			it( 'sets placeholder from editor.config.placeholder - object (invalid root name)', () => {
-				return VirtualBalloonTestEditor
-					.create( 'foo', {
-						extraPlugins: [ BalloonToolbar, Paragraph ],
-						placeholder: { 'root-name-that-not-exists': 'placeholder-text' }
-					} )
-					.then( newEditor => {
-						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
-
-						expect( firstChild.hasAttribute( 'data-placeholder' ) ).to.equal( false );
 
 						return newEditor.destroy();
 					} );
@@ -357,6 +345,8 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 class VirtualBalloonTestEditor extends VirtualTestEditor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
+
+		normalizeRootsConfig( sourceElementOrData, this.config );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;

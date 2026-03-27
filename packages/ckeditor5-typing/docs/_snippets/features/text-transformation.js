@@ -13,7 +13,9 @@ import { TextTransformationEditor } from './build-text-transformation-source.js'
 TextTransformationEditor
 	.create( document.querySelector( '#snippet-text-transformation' ), {
 		cloudServices: CS_CONFIG,
-		placeholder: 'Type here...',
+		root: {
+			placeholder: 'Type here...'
+		},
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

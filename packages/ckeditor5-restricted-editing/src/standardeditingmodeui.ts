@@ -7,14 +7,14 @@
  * @module restricted-editing/standardeditingmodeui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconContentUnlock } from 'ckeditor5/src/icons.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconContentUnlock } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
 	MenuBarMenuListItemButtonView,
 	createDropdown,
 	addToolbarToDropdown
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 /**
  * The standard editing mode UI feature.

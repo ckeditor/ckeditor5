@@ -1570,6 +1570,292 @@ describe( 'EditorWatchdog', () => {
 		} );
 	} );
 
+	describe( 'config-based editor creator', () => {
+		it( 'should create a single-root editor using the default Editor class', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			await watchdog.create( {
+				root: { initialData: '<p>foo</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should create a single-root editor using a custom creator', async () => {
+			const watchdog = new EditorWatchdog();
+
+			watchdog.setCreator( ( elementOrData, config ) => {
+				if ( !elementOrData ) {
+					return ClassicTestEditor.create( config );
+				}
+
+				return ClassicTestEditor.create( elementOrData, config );
+			} );
+
+			await watchdog.create( {
+				root: { initialData: '<p>foo</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should properly restart a single-root editor after crash', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				root: { initialData: '<p>foo</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should properly restart a single-root editor and keep root attributes', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				root: { initialData: '<p>foo</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			const root = watchdog.editor.model.document.getRoot();
+
+			watchdog.editor.model.change( writer => {
+				writer.setAttribute( 'test', 1, root );
+			} );
+
+			expect( root.getAttribute( 'test' ) ).to.equal( 1 );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.model.document.getRoot().getAttribute( 'test' ) ).to.equal( 1 );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should create a multi-root editor using config-based creator', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			await watchdog.create( {
+				roots: {
+					header: { initialData: '<p>Foo</p>' },
+					content: { initialData: '<p>Bar</p>' }
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should properly restart a multi-root editor after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelAttributes: { order: 1 }
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelAttributes: { order: 2 }
+					}
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should properly handle added and removed roots in a multi-root editor after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+			const clock = sinon.useFakeTimers();
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelAttributes: { order: 1 }
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelAttributes: { order: 2 }
+					}
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			watchdog.editor.detachRoot( 'content' );
+			watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+
+			// Wait for throttled save.
+			clock.tick( 6000 );
+			clock.restore();
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				new: '<p>New</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				new: { order: 3 }
+			} );
+
+			await watchdog.destroy();
+		} );
+	} );
+
+	describe( '_detectConfigBasedCreator()', () => {
+		it( 'should detect legacy signature when first arg is an object with string values (multi-root)', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			await watchdog.create( { foo: '<p>Foo</p>' }, { plugins: [ Paragraph ] } );
+
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should detect legacy signature when first arg is an object with DOM element values (multi-root)', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			await watchdog.create( { foo: element }, {
+				initialData: { foo: '<p>Foo</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		// Covers: multi-root legacy detection when config is not passed as the second argument.
+		// This ensures the `values.every()` branch in `_detectConfigBasedCreator()` is reached.
+		it( 'should detect legacy signature when first arg is an object with string values and no config', async () => {
+			class CustomMultiRootEditor extends MultiRootEditor {}
+			CustomMultiRootEditor.builtinPlugins = [ Paragraph ];
+
+			const watchdog = new EditorWatchdog( CustomMultiRootEditor );
+
+			await watchdog.create( { foo: '<p>Foo</p>' } );
+
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+
+			await watchdog.destroy();
+		} );
+	} );
+
+	describe( 'config-based multi-root detection from legacy initialData', () => {
+		// Covers: `legacyInitialData && typeof legacyInitialData === 'object'` true branch in `create()`.
+		it( 'should detect multi-root from config.initialData as object', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			await watchdog.create( {
+				initialData: { foo: '<p>Foo</p>', bar: '<p>Bar</p>' },
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p>' );
+
+			await watchdog.destroy();
+		} );
+	} );
+
+	describe( 'create() with no config', () => {
+		// Covers: `config || {}` fallback in `create()` when config is undefined.
+		it( 'should handle create() call without config for legacy signature', async () => {
+			class CustomEditor extends ClassicTestEditor {}
+			CustomEditor.builtinPlugins = [ Paragraph ];
+
+			const watchdog = new EditorWatchdog( CustomEditor );
+
+			await watchdog.create( '<p>foo</p>' );
+
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
+		} );
+	} );
+
 	describe( 'multi-root editor', () => {
 		let element2, watchdog, originalErrorHandler, restartSpy;
 
@@ -1602,15 +1888,20 @@ describe( 'EditorWatchdog', () => {
 					content: '<p>Bar</p>'
 				}, {
 					plugins: [ Paragraph ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							modelAttributes: { order: 1 }
 						},
 						content: {
-							order: 2
+							modelAttributes: { order: 2 }
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1640,6 +1931,7 @@ describe( 'EditorWatchdog', () => {
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
 
+				// Wait for throttled save.
 				clock.tick( 6000 );
 				clock.restore();
 
@@ -1732,15 +2024,24 @@ describe( 'EditorWatchdog', () => {
 						content: '<p>Bar</p>'
 					},
 					plugins: [ Paragraph, MultiRootEditorIntegration ],
-					rootsAttributes: {
+					roots: {
 						header: {
-							order: 1
+							modelAttributes: {
+								order: 1
+							}
 						},
 						content: {
-							order: 2
+							modelAttributes: {
+								order: 2
+							}
+						},
+						lazyOne: {
+							lazyLoad: true
+						},
+						lazyTwo: {
+							lazyLoad: true
 						}
-					},
-					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+					}
 				} );
 
 				watchdog.on( 'restart', restartSpy );
@@ -1812,6 +2113,89 @@ describe( 'EditorWatchdog', () => {
 					lazyTwo: { order: 5 }
 				} );
 			} );
+		} );
+
+		it( 'should recover original legacy placeholders after restart', async () => {
+			await watchdog.create( {}, {
+				plugins: [ Paragraph ],
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelAttributes: { order: 1 }
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelAttributes: { order: 2 }
+					}
+				},
+				placeholder: {
+					header: 'Type in header',
+					content: 'Type in content'
+				}
+			} );
+
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			const editables = watchdog.editor.ui.view.editables;
+
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in header' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in content' );
+		} );
+
+		it( 'should recover original legacy placeholder after restart', async () => {
+			await watchdog.create( {}, {
+				plugins: [ Paragraph ],
+				roots: {
+					header: {
+						initialData: '<p>Foo</p>',
+						modelAttributes: { order: 1 }
+					},
+					content: {
+						initialData: '<p>Bar</p>',
+						modelAttributes: { order: 2 }
+					}
+				},
+				placeholder: 'Type in some content'
+			} );
+
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				header: '<p>Foo</p>',
+				content: '<p>Bar</p>'
+			} );
+
+			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				header: { order: 1 },
+				content: { order: 2 }
+			} );
+
+			const editables = watchdog.editor.ui.view.editables;
+
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
 		} );
 	} );
 } );

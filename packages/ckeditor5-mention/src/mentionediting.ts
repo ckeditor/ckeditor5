@@ -7,7 +7,7 @@
  * @module mention/mentionediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import type {
 	ModelElement,
 	ModelText,
@@ -20,8 +20,8 @@ import type {
 	ModelSchema,
 	DowncastAttributeEvent,
 	ModelItem
-} from 'ckeditor5/src/engine.js';
-import { uid } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { uid } from '@ckeditor/ckeditor5-utils';
 
 import { MentionCommand } from './mentioncommand.js';
 import type { MentionAttribute } from './mention.js';
@@ -58,6 +58,15 @@ export class MentionEditing extends Plugin {
 
 		// Allow the mention attribute on all text nodes.
 		model.schema.extend( '$text', { allowAttributes: 'mention' } );
+
+		// Disallow the mention attribute on text nodes inside code blocks.
+		// This prevents mention-based features (slash commands, emoji autocomplete)
+		// from triggering inside code blocks.
+		model.schema.addAttributeCheck( context => {
+			if ( context.endsWith( 'codeBlock $text' ) ) {
+				return false;
+			}
+		}, 'mention' );
 
 		// Upcast conversion.
 		editor.conversion.for( 'upcast' ).elementToAttribute( {

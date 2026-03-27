@@ -7,7 +7,7 @@
  * @module editor-classic/classiceditorui
  */
 
-import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
+import type { Editor, ElementApi } from '@ckeditor/ckeditor5-core';
 import {
 	EditorUI,
 	DialogView,
@@ -16,12 +16,12 @@ import {
 	type Dialog,
 	type EditorUIReadyEvent,
 	type ContextualBalloonGetPositionOptionsEvent
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 import {
 	enableViewPlaceholder,
 	type ViewScrollToTheSelectionEvent
-} from 'ckeditor5/src/engine.js';
-import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { ElementReplacer, Rect, type EventInfo } from '@ckeditor/ckeditor5-utils';
 import { type ClassicEditorUIView } from './classiceditoruiview.js';
 
 /**
@@ -172,10 +172,10 @@ export class ClassicEditorUI extends EditorUI {
 		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
 		let placeholderText;
-		const placeholder = editor.config.get( 'placeholder' );
+		const placeholder = editor.config.get( 'roots' )![ this.view.editable.name! ].placeholder;
 
 		if ( placeholder ) {
-			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ this.view.editable.name! ];
+			placeholderText = placeholder;
 		}
 
 		if ( !placeholderText && sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' ) {

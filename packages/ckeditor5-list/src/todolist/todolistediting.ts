@@ -20,7 +20,7 @@ import {
 	type ModelSelectionChangeRangeEvent,
 	type ModelDocumentFragment,
 	type ModelElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	getCode,
@@ -28,9 +28,9 @@ import {
 	getLocalizedArrowKeyCodeDirection,
 	type GetCallback,
 	type Locale
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { getAllListItemBlocks, isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
 import {

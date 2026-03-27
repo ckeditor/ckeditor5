@@ -7,16 +7,16 @@
  * @module link/linkimageui
  */
 
-import { ButtonView } from 'ckeditor5/src/ui.js';
-import { Plugin } from 'ckeditor5/src/core.js';
-import { IconLink } from 'ckeditor5/src/icons.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconLink } from '@ckeditor/ckeditor5-icons';
 import type {
 	ModelDocumentSelection,
 	ModelSelection,
 	ViewDocumentClickEvent
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
-import type { ImageUtils } from '@ckeditor/ckeditor5-image';
+import { ImageBlockEditing, type ImageUtils } from '@ckeditor/ckeditor5-image';
 
 import { LinkUI } from './linkui.js';
 import { LinkEditing } from './linkediting.js';
@@ -35,7 +35,7 @@ export class LinkImageUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ LinkEditing, LinkUI, 'ImageBlockEditing' ] as const;
+		return [ LinkEditing, LinkUI, ImageBlockEditing ] as const;
 	}
 
 	/**

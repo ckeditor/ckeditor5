@@ -7,8 +7,8 @@
  * @module table/tableselection
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { type EventInfo, first } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { type EventInfo, first } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	ModelElement,
@@ -17,12 +17,12 @@ import type {
 	ViewDowncastWriter,
 	ViewElement,
 	ModelDeleteContentEvent
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import type {
 	ViewDocumentInsertTextEvent,
 	InsertTextEventData
-} from 'ckeditor5/src/typing.js';
+} from '@ckeditor/ckeditor5-typing';
 
 import { TableWalker } from './tablewalker.js';
 import { TableUtils } from './tableutils.js';

@@ -28,19 +28,6 @@ export interface EngineConfig {
  * Each key in the `experimentalFlags` object represents a unique experimental feature identifier.
  * Setting the flag’s value to true activates the feature, while false (or absence of the key) keeps it disabled.
  *
- * Example
- *
- * ```ts
- * EditorClass
- * 	.create( {
- * 		experimentalFlags: {
- * 			modelInsertContentDeepSchemaVerification: true
- * 		}
- * 	} )
- * 	.then( ... )
- * 	.catch( ... );
- * ```
- *
  * **Notes:**
  * * Use with caution: Experimental features are not guaranteed to be stable and may change or be removed in future releases.
  * * No compatibility guarantees: Their APIs, behavior, and configuration may change without notice.
@@ -50,12 +37,16 @@ export interface EngineConfig {
 export interface ExperimentalFlagsConfig {
 
 	/**
-	 * When enabled, the editor performs deep schema verification during
+	 * Controls deep schema verification during
 	 * {@link module:engine/model/model~Model#insertContent `model.insertContent()`} operations.
 	 * This ensures that all elements and attributes in the inserted content fully conform to the schema — not just
 	 * at the top level — which helps identify structural inconsistencies early.
 	 *
-	 * This feature may impact performance on large inserts.
+	 * This feature is **enabled by default**. Set to `false` only if you need to temporarily opt out.
+	 * This flag is deprecated and will be removed in a future release.
+	 *
+	 * @deprecated This flag is deprecated. Deep schema verification is now enabled by default.
+	 * Set to `false` only as a temporary workaround. The flag will be removed in a future release.
 	 */
 	modelInsertContentDeepSchemaVerification?: boolean;
 }

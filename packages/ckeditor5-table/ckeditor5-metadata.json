@@ -5,36 +5,36 @@
 			"className": "Table",
 			"description": "Adds table creation and editing tools that help content authors bring tabular data into their documents.",
 			"docs": "features/tables/tables.html",
-			"path": "src/table.js",
+			"path": "src/table.ts",
 			"uiComponents": [
 				{
 					"type": "SplitButton",
 					"name": "insertTable",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table.svg"
+					"iconName": "IconTable"
 				},
 				{
 					"type": "Button",
 					"name": "tableColumn",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-column.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableColumn"
 				},
 				{
 					"type": "Button",
 					"name": "tableRow",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-row.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableRow"
 				},
 				{
 					"type": "Button",
 					"name": "mergeTableCells",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-merge-cell.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableMergeCell"
 				}
 			],
 			"htmlOutput": [
@@ -47,6 +47,7 @@
 						"table",
 						"thead",
 						"tbody",
+						"tfoot",
 						"tr"
 					]
 				},
@@ -76,10 +77,10 @@
 				{
 					"type": "Button",
 					"name": "tableCellProperties",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableCellProperties"
 				}
 			],
 			"htmlOutput": [
@@ -115,10 +116,10 @@
 				{
 					"type": "Button",
 					"name": "tableProperties",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableProperties"
 				}
 			],
 			"htmlOutput": [
@@ -127,7 +128,16 @@
 					"styles": [
 						"float",
 						"height",
-						"width"
+						"width",
+						"margin-left",
+						"margin-right"
+					],
+					"classes": [
+						"table-style-align-left",
+						"table-style-align-center",
+						"table-style-align-right",
+						"table-style-block-align-left",
+						"table-style-block-align-right"
 					]
 				},
 				{
@@ -154,20 +164,23 @@
 				{
 					"type": "Button",
 					"name": "insertTableLayout",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg"
+					"iconName": "IconTableLayout"
 				},
 				{
 					"type": "Button",
 					"name": "tableType",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
-					]
+					],
+					"iconName": "IconTableProperties"
 				}
 			],
 			"htmlOutput": [
 				{
-					"classes": [ "layout-table", "content-table" ]
+					"classes": [
+						"layout-table",
+						"content-table"
+					]
 				}
 			]
 		},
@@ -175,8 +188,8 @@
 			"name": "Table toolbar",
 			"className": "TableToolbar",
 			"description": "Creates configurable toolbars for both the table feature and table content. They show up when the table widget or the content inside a table cell are selected.",
-			"docs": "features/tables/tables.html#toolbars",
-			"path": "src/tabletoolbar.js",
+			"docs": "features/tables/tables-installation.html#toolbars",
+			"path": "src/tabletoolbar.ts",
 			"requires": [
 				"Table"
 			],
@@ -190,7 +203,7 @@
 			"className": "TableCaption",
 			"description": "Adds support for table captions, which inform the reader about the content of the table. Using captions is also beneficial from the accessibility point of view.",
 			"docs": "features/tables/tables-caption.html",
-			"path": "src/tablecaption.js",
+			"path": "src/tablecaption.ts",
 			"requires": [
 				"Table"
 			],
@@ -206,7 +219,7 @@
 			"className": "TableColumnResize",
 			"description": "Adds support for table column resize, which allows to set the width of each column in a table using a resize handle.",
 			"docs": "features/tables/tables-resize.html",
-			"path": "src/tablecolumnresize.js",
+			"path": "src/tablecolumnresize.ts",
 			"requires": [
 				"Table"
 			],
@@ -225,7 +238,7 @@
 			"className": "PlainTableOutput",
 			"description": "This plugin strips the `<figure>` tag which surrounds tables, and moves attributes to the `<table>` in the data downcast.",
 			"docs": "features/tables/layout-tables.html",
-			"path": "src/plaintableoutput.js",
+			"path": "src/plaintableoutput.ts",
 			"htmlOutput": [
 				{
 					"elements": [

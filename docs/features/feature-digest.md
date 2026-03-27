@@ -637,7 +637,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 			To make every inserted table have n number of rows and columns as table headers by default, set an optional table configuration property defaultHeadings.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/tables#default-table-headers}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/tables-installation#default-table-headers}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -1184,6 +1184,20 @@ By integrating AI writing assistance directly into the editing experience, CKEdi
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-chat}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-chat-shortcuts'>
+			AI Chat Shortcuts <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			Customizable one-click actions that appear at the start of a new AI Chat conversation. They let users trigger common prompts, reviews, or translations instantly, streamlining repetitive queries and encouraging best practices.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-chat#chat-shortcuts}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>

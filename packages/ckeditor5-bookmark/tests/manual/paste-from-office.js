@@ -39,7 +39,9 @@ const config = {
 	menuBar: {
 		isVisible: true
 	},
-	placeholder: 'Paste sme content from MS Word or Excel here...',
+	root: {
+		placeholder: 'Paste some content from MS Word or Excel here...'
+	},
 	image: {
 		toolbar: [
 			'imageStyle:inline',

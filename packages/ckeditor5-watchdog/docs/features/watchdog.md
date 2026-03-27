@@ -26,8 +26,14 @@ There are two available types of watchdogs:
 
 ## Usage
 
-<info-box>
-	Note: A watchdog can be used only with an {@link getting-started/advanced/integrating-from-source-webpack editor built from source}.
+<info-box important>
+	Note: Watchdog requires access to the editor creation process.
+
+	You can use watchdog only in setups where the editor instance is created programmatically (for example, via `Editor.create()` or a custom creator callback).
+
+	Prebuilt editors and framework integrations are supported as long as a creator function is provided or the integration exposes watchdog configuration.
+
+	Watchdog cannot be used with editors initialized declaratively or via global scripts where the creation process is not under application control.
 </info-box>
 
 ### Editor watchdog

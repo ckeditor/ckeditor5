@@ -39,6 +39,9 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		plugins: [
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
@@ -108,7 +111,6 @@ ClassicEditor
 				'resizeImage'
 			]
 		},
-		placeholder: 'Type the content here!',
 		mention: {
 			feeds: [
 				{

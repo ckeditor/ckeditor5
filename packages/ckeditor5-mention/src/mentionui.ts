@@ -10,19 +10,19 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core.js';
+} from '@ckeditor/ckeditor5-core';
 
 import type {
 	ViewDocumentKeyDownEvent,
 	Marker,
 	ModelPosition
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler
-} from 'ckeditor5/src/ui.js';
+} from '@ckeditor/ckeditor5-ui';
 
 import {
 	CKEditorError,
@@ -32,9 +32,9 @@ import {
 	keyCodes,
 	logWarning,
 	type DomOptimalPositionOptions
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-utils';
 
-import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
+import { TextWatcher, type TextWatcherMatchedEvent } from '@ckeditor/ckeditor5-typing';
 
 import { debounce } from 'es-toolkit/compat';
 
@@ -437,6 +437,16 @@ export class MentionUI extends Plugin {
 
 		// If the marker is not in the document happens when the selection had changed and the 'mention' marker was removed.
 		if ( !checkIfStillInCompletionMode( this.editor ) ) {
+			return;
+		}
+
+		// Do not show the mention UI if the mention command is disabled
+		// (e.g. the cursor was moved into a code block after the feed was requested).
+		const mentionCommand = this.editor.commands.get( 'mention' )!;
+
+		if ( !mentionCommand.isEnabled ) {
+			this._hideUIAndRemoveMarker();
+
 			return;
 		}
 
