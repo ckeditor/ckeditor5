@@ -115,6 +115,34 @@ If your integration reads configuration values directly, update access paths as 
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
 
+#### New `MultiRootEditor#addRoot()` and `#createEditable()` signatures (dynamic root management)
+
+The legacy signatures of `MultiRootEditor#addRoot()` and `MultiRootEditor#createEditable()` are deprecated and will be removed in a future release. They are replaced with new signatures that align with the way the editor root configuration is specified in `config.roots`.
+
+For `addRoot()`, the `data` and `attributes` options have been renamed to `initialData` and `modelAttributes`, and the new signature also accepts `placeholder` and `label`:
+
+```js-diff
+ editor.addRoot( 'myRoot', {
+-	data: '<p>Initial root data.</p>',
+-	attributes: { order: 1 },
++	initialData: '<p>Initial root data.</p>',
++	modelAttributes: { order: 1 },
++	placeholder: 'Type here...',
++	label: 'My root',
+ 	isUndoable: true
+ } );
+```
+
+For `createEditable()`, pass an options object instead of positional `placeholder` and `label` arguments:
+
+```js-diff
+- const domElement = editor.createEditable( root, 'Type here...', 'My root' );
++ const domElement = editor.createEditable( root, {
++	placeholder: 'Type here...',
++	label: 'My root'
++ } );
+```
+
 ### Table experimental features are now default
 
 In CKEditor 5 v47, we introduced experimental flags for extended table block alignment, improved table border normalization, and table cell type support. Starting with v48, these features are fully stable and enabled by default.
