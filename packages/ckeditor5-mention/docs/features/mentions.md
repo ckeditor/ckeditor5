@@ -344,6 +344,7 @@ function MentionCustomization( editor ) {
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},
@@ -441,6 +442,7 @@ function MentionCustomization( editor ) {
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},
