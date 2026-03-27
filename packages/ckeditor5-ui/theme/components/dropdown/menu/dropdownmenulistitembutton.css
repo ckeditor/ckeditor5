@@ -17,7 +17,7 @@
 	--ck-dropdown-menu-list-item-button-focus-box-shadow: none;
 
 	/* Color */
-	--ck-dropdown-menu-list-item-button-focus-background: var(--ck-color-button-default-hover-background);
+	--ck-dropdown-menu-list-item-button-focus-background: var(--ck-button-default-hover-background-color);
 }
 
 .ck-button.ck-dropdown-menu-list__nested-menu__item__button {

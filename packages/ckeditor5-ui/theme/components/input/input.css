@@ -15,10 +15,19 @@
 	/* Radius */
 	--ck-input-border-radius: var(--ck-border-radius-control);
 
+	/* Color */
+	--ck-input-background-color: var(--ck-color-surface-control);
+	--ck-input-border-color: var(--ck-color-border-control);
+	--ck-input-error-border-color: var(--ck-color-feedback-error);
+	--ck-input-text-color: var(--ck-color-text-primary);
+	--ck-input-disabled-background-color: hsl(0, 0%, 95%);
+	--ck-input-disabled-border-color: var(--ck-color-border-control);
+	--ck-input-disabled-text-color: var(--ck-color-text-disabled);
+
 	/* Border */
-	--ck-input-border: var(--ck-input-border-width) solid var(--ck-color-input-border);
+	--ck-input-border: var(--ck-input-border-width) solid var(--ck-input-border-color);
 	--ck-input-border-width: var(--ck-border-width-control);
-	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-color-input-disabled-border);
+	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-input-disabled-border-color);
 
 	/* Shadow */
 	--ck-input-focus-box-shadow: var(--ck-input-focus-shadow), 0 0;
@@ -50,7 +59,7 @@
 
 .ck.ck-input {
 	border-radius: var(--ck-input-border-radius);
-	background: var(--ck-color-input-background);
+	background: var(--ck-input-background-color);
 	border: var(--ck-input-border);
 	padding: var(--ck-input-padding-block) var(--ck-input-padding-inline);
 	min-width: var(--ck-input-width);
@@ -73,8 +82,8 @@
 
 	&[readonly] {
 		border: var(--ck-input-disabled-border);
-		background: var(--ck-color-input-disabled-background);
-		color: var(--ck-color-input-disabled-text);
+		background: var(--ck-input-disabled-background-color);
+		color: var(--ck-input-disabled-text-color);
 
 		&:focus {
 			/* The read-only input should have a slightly less visible shadow when focused. */
@@ -83,7 +92,7 @@
 	}
 
 	&.ck-error {
-		border-color: var(--ck-color-input-error-border);
+		border-color: var(--ck-input-error-border-color);
 		animation: var(--ck-input-error-animation);
 
 		@media (prefers-reduced-motion: reduce) {

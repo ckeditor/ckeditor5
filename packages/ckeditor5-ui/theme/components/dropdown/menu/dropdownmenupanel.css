@@ -21,7 +21,7 @@
 	--ck-dropdown-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
 
 	/* Border */
-	--ck-dropdown-menu-panel-border: var(--ck-dropdown-menu-panel-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-dropdown-menu-panel-border: var(--ck-dropdown-menu-panel-border-width) solid var(--ck-dropdown-panel-border-color);
 	--ck-dropdown-menu-panel-border-width: var(--ck-border-width-surface);
 
 	/* Shadow */
@@ -33,7 +33,7 @@
 	border-radius: var(--ck-dropdown-menu-panel-border-radius);
 	box-shadow: var(--ck-dropdown-menu-panel-box-shadow);
 
-	background: var(--ck-color-dropdown-panel-background);
+	background: var(--ck-dropdown-panel-background-color);
 	border: var(--ck-dropdown-menu-panel-border);
 	bottom: 0;
 	height: fit-content;

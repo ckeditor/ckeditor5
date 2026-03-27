@@ -23,7 +23,8 @@
 	--ck-tooltip-border-width: 0px;
 
 	/* Color */
-	--ck-tooltip-background-color: var(--ck-color-tooltip-background);
+	--ck-tooltip-background-color: var(--ck-color-surface-inverse);
+	--ck-tooltip-text-color: var(--ck-color-text-inverse);
 
 	/* Typography */
 	--ck-tooltip-text-font-size: .9em;
@@ -51,7 +52,7 @@
 	& .ck-tooltip__text {
 		font-size: var(--ck-tooltip-text-font-size);
 		line-height: var(--ck-tooltip-text-line-height);
-		color: var(--ck-color-tooltip-text);
+		color: var(--ck-tooltip-text-color);
 	}
 
 	&.ck-tooltip_multi-line .ck-tooltip__text {

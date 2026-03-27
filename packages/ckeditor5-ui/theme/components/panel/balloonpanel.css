@@ -22,6 +22,10 @@
 	--ck-balloon-panel-box-shadow: var(--ck-balloon-panel-shadow), 0 0;
 	--ck-balloon-panel-shadow: var(--ck-shadow-surface-floating);
 
+	/* Color */
+	--ck-panel-background-color: var(--ck-color-surface-container);
+	--ck-panel-border-color: var(--ck-color-border-container);
+
 	/* State / meta */
 	/* Make sure the balloon arrow does not float over its children. */
 	--ck-balloon-panel-arrow-z-index: var(--ck-layer-balloon-arrow-back);
@@ -33,8 +37,8 @@
 
 	min-height: 15px;
 
-	background: var(--ck-color-panel-background);
-	border: var(--ck-balloon-border-width) solid var(--ck-color-panel-border);
+	background: var(--ck-panel-background-color);
+	border: var(--ck-balloon-border-width) solid var(--ck-panel-border-color);
 	display: none;
 	position: absolute;
 
@@ -66,13 +70,13 @@
 		}
 
 		&::before {
-			border-color: transparent transparent var(--ck-color-panel-border) transparent;
+			border-color: transparent transparent var(--ck-panel-border-color) transparent;
 			margin-top: calc( -1 * var(--ck-balloon-border-width) );
 			z-index: var(--ck-balloon-panel-arrow-z-index);
 		}
 
 		&::after {
-			border-color: transparent transparent var(--ck-color-panel-background) transparent;
+			border-color: transparent transparent var(--ck-panel-background-color) transparent;
 			margin-top: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 			z-index: var(--ck-layer-balloon-arrow-front);
 		}
@@ -85,14 +89,14 @@
 		}
 
 		&::before {
-			border-color: var(--ck-color-panel-border) transparent transparent;
+			border-color: var(--ck-panel-border-color) transparent transparent;
 			filter: drop-shadow(var(--ck-balloon-arrow-drop-shadow));
 			margin-bottom: calc( -1 * var(--ck-balloon-border-width) );
 			z-index: var(--ck-balloon-panel-arrow-z-index);
 		}
 
 		&::after {
-			border-color: var(--ck-color-panel-background) transparent transparent transparent;
+			border-color: var(--ck-panel-background-color) transparent transparent transparent;
 			margin-bottom: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 			z-index: var(--ck-layer-balloon-arrow-front);
 		}
@@ -105,12 +109,12 @@
 		}
 
 		&::before {
-			border-color: transparent transparent transparent var(--ck-color-panel-border);
+			border-color: transparent transparent transparent var(--ck-panel-border-color);
 			margin-right: calc( -1 * var(--ck-balloon-border-width) );
 		}
 
 		&::after {
-			border-color: transparent transparent transparent var(--ck-color-panel-background);
+			border-color: transparent transparent transparent var(--ck-panel-background-color);
 			margin-right: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 		}
 	}
@@ -122,12 +126,12 @@
 		}
 
 		&::before {
-			border-color: transparent var(--ck-color-panel-border) transparent transparent;
+			border-color: transparent var(--ck-panel-border-color) transparent transparent;
 			margin-left: calc( -1 * var(--ck-balloon-border-width) );
 		}
 
 		&::after {
-			border-color: transparent var(--ck-color-panel-background) transparent transparent;
+			border-color: transparent var(--ck-panel-background-color) transparent transparent;
 			margin-left: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );
 		}
 	}

@@ -33,6 +33,11 @@
 	--ck-list-item-on-active-box-shadow: none;
 
 	/* Color */
+	--ck-list-background-color: var(--ck-color-surface-control);
+	--ck-list-button-hover-background-color: var(--ck-button-default-hover-background-color);
+	--ck-list-button-on-background-color: var(--ck-button-on-text-color);
+	--ck-list-button-on-focus-background-color: var(--ck-button-on-text-color);
+	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
 	--ck-list-divider-color: var(--ck-color-divider);
 
 	/* Typography */
@@ -48,7 +53,7 @@
 .ck.ck-list {
 	border-radius: var(--ck-list-border-radius);
 	list-style-type: none;
-	background: var(--ck-color-list-background);
+	background: var(--ck-list-background-color);
 
 	/* A spacing at the beginning and end of the list */
 	padding: var(--ck-list-padding);
@@ -103,15 +108,15 @@
 		}
 
 		&.ck-on {
-			background: var(--ck-color-list-button-on-background);
-			color: var(--ck-color-list-button-on-text);
+			background: var(--ck-list-button-on-background-color);
+			color: var(--ck-list-button-on-text-color);
 
 			&:active {
 				box-shadow: var(--ck-list-item-on-active-box-shadow);
 			}
 
 			&:hover:not(.ck-disabled) {
-				background: var(--ck-color-list-button-on-background-focus);
+				background: var(--ck-list-button-on-focus-background-color);
 			}
 
 			&:focus:not(.ck-disabled) {
@@ -120,7 +125,7 @@
 		}
 
 		&:hover:not(.ck-disabled) {
-			background: var(--ck-color-list-button-hover-background);
+			background: var(--ck-list-button-hover-background-color);
 		}
 	}
 
@@ -128,11 +133,11 @@
 	of conveying its state (like the switcher) */
 	& > .ck-button.ck-switchbutton {
 		&.ck-on {
-			background: var(--ck-color-list-background);
+			background: var(--ck-list-background-color);
 			color: var(--ck-list-switch-item-on-color);
 
 			&:hover:not(.ck-disabled) {
-				background: var(--ck-color-list-button-hover-background);
+				background: var(--ck-list-button-hover-background-color);
 				color: var(--ck-list-switch-item-on-hover-color);
 			}
 		}

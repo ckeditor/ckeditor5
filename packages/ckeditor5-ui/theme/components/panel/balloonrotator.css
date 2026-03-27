@@ -12,12 +12,12 @@
 	--ck-balloon-rotator-padding: 0 var(--ck-balloon-rotator-padding-inline);
 
 	/* Border */
-	--ck-balloon-rotator-divider-border: var(--ck-balloon-rotator-divider-border-width) solid var(--ck-color-toolbar-border);
+	--ck-balloon-rotator-divider-border: var(--ck-balloon-rotator-divider-border-width) solid var(--ck-toolbar-border-color);
 	--ck-balloon-rotator-divider-border-width: var(--ck-border-width-divider);
 }
 
 .ck .ck-balloon-rotator__navigation {
-	background: var(--ck-color-toolbar-background);
+	background: var(--ck-toolbar-background-color);
 	border-bottom: var(--ck-balloon-rotator-divider-border);
 	padding: var(--ck-balloon-rotator-padding);
 	display: flex;

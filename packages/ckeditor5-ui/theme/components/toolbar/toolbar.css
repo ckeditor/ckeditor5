@@ -23,14 +23,18 @@
 	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-border-radius-surface-cut-top-right);
 
+	/* Color */
+	--ck-toolbar-background-color: var(--ck-color-surface-container);
+	--ck-toolbar-border-color: var(--ck-color-border-container);
+
 	/* Border */
-	--ck-toolbar-border: var(--ck-toolbar-border-width) solid var(--ck-color-toolbar-border);
+	--ck-toolbar-border: var(--ck-toolbar-border-width) solid var(--ck-toolbar-border-color);
 	--ck-toolbar-border-width: var(--ck-border-width-surface);
 }
 
 .ck.ck-toolbar {
 	border-radius: var(--ck-toolbar-border-radius);
-	background: var(--ck-color-toolbar-background);
+	background: var(--ck-toolbar-background-color);
 	padding: var(--ck-toolbar-padding);
 	border: var(--ck-toolbar-border);
 	-webkit-user-select: none;
@@ -44,7 +48,7 @@
 		height: var(--ck-icon-size);
 		width: 1px;
 		min-width: 1px;
-		background: var(--ck-color-toolbar-border);
+		background: var(--ck-toolbar-border-color);
 
 		/*
 		 * These margins make the separators look better in balloon toolbars (when aligned with the "tip").

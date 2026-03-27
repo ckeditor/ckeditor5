@@ -103,12 +103,12 @@
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-color-panel-background);
+		border-bottom-color: var(--ck-panel-background-color);
 	}
 }
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-color-panel-background);
+		border-top-color: var(--ck-panel-background-color);
 	}
 }

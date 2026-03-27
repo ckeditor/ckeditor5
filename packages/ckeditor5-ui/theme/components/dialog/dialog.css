@@ -17,7 +17,7 @@
 	--ck-dialog-border-color: var(--ck-color-border-container);
 	--ck-dialog-border-width: var(--ck-border-width-surface);
 	--ck-dialog-header-border: var(--ck-dialog-border-width) solid var(--ck-dialog-header-border-color);
-	--ck-dialog-header-border-color: var(--ck-color-dialog-form-header-border);
+	--ck-dialog-header-border-color: var(--ck-custom-border, var(--ck-color-border-container));
 
 	/* Shadow */
 	--ck-dialog-box-shadow: var(--ck-dialog-shadow), 0 0;
@@ -25,7 +25,7 @@
 	--ck-dialog-shadow: var(--ck-dialog-drop-shadow);
 
 	/* Color */
-	--ck-dialog-background-color: var(--ck-color-dialog-background);
+	--ck-dialog-background-color: var(--ck-custom-background, var(--ck-color-surface-container));
 	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
 
 	/* Motion */

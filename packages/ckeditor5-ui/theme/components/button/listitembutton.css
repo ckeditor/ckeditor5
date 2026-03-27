@@ -21,7 +21,7 @@
 
 	&,
 	&.ck-on {
-		background: var(--ck-color-list-background);
+		background: var(--ck-list-background-color);
 		color: var(--ck-color-text);
 	}
 
@@ -44,7 +44,7 @@
 	&.ck-button.ck-on:hover,
 	&.ck-on:not(.ck-list-item-button_toggleable),
 	&.ck-on:hover {
-		background: var(--ck-color-list-button-hover-background);
+		background: var(--ck-list-button-hover-background-color);
 
 		&:not(.ck-disabled) {
 			color: var(--ck-color-text);

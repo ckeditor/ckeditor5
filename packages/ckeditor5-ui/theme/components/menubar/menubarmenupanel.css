@@ -23,7 +23,7 @@
 
 	/* Border */
 	--ck-menu-bar-item-focus-reset-border-color: transparent;
-	--ck-menu-bar-panel-border: var(--ck-menu-bar-panel-border-width) solid var(--ck-color-dropdown-panel-border);
+	--ck-menu-bar-panel-border: var(--ck-menu-bar-panel-border-width) solid var(--ck-dropdown-panel-border-color);
 	--ck-menu-bar-panel-border-width: var(--ck-border-width-surface);
 
 	/* Shadow */
@@ -43,7 +43,7 @@
 	border-radius: var(--ck-menu-bar-panel-border-radius);
 	box-shadow: var(--ck-menu-bar-panel-box-shadow);
 
-	background: var(--ck-color-dropdown-panel-background);
+	background: var(--ck-dropdown-panel-background-color);
 	border: var(--ck-menu-bar-panel-border);
 	bottom: 0;
 	height: fit-content;

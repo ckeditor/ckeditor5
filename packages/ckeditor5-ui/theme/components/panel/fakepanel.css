@@ -13,7 +13,7 @@
 	--ck-fake-panel-border-radius: var(--ck-border-radius-surface);
 
 	/* Border */
-	--ck-fake-panel-border: var(--ck-fake-panel-border-width) solid var(--ck-color-panel-border);
+	--ck-fake-panel-border: var(--ck-fake-panel-border-width) solid var(--ck-panel-border-color);
 	--ck-fake-panel-border-width: var(--ck-border-width-surface);
 
 	/* Shadow */
@@ -28,7 +28,7 @@
 
 	min-height: 15px;
 
-	background: var(--ck-color-panel-background);
+	background: var(--ck-panel-background-color);
 	border: var(--ck-fake-panel-border);
 	border-radius: var(--ck-fake-panel-border-radius);
 

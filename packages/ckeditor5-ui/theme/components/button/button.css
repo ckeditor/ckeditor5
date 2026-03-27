@@ -26,6 +26,26 @@
 	--ck-button-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
 	--ck-button-focus-shadow: var(--ck-interactive-focus-shadow);
 
+	/* Color */
+	--ck-button-default-background-color: transparent;
+	--ck-button-default-hover-background-color: var(--ck-color-interactive-hover-surface);
+	--ck-button-default-active-background-color: var(--ck-color-interactive-active-surface);
+	--ck-button-default-disabled-background-color: transparent;
+	--ck-button-on-background-color: var(--ck-color-interactive-selected-surface);
+	--ck-button-on-hover-background-color: var(--ck-color-interactive-selected-surface-hover);
+	--ck-button-on-active-background-color: var(--ck-color-interactive-selected-surface-hover);
+	/* Intentionally hardcoded: no matching semantic disabled surface exists yet. */
+	--ck-button-on-disabled-background-color: hsl(211, 15%, 95%);
+	--ck-button-on-text-color: var(--ck-color-interactive-selected-text);
+	--ck-button-action-background-color: var(--ck-color-interactive-primary-surface);
+	--ck-button-action-hover-background-color: var(--ck-color-interactive-primary-surface-hover);
+	--ck-button-action-active-background-color: var(--ck-color-interactive-primary-surface-hover);
+	/* Intentionally hardcoded: a faded variant of the action color with no semantic equivalent yet. */
+	--ck-button-action-disabled-background-color: hsl(104, 44%, 58%);
+	--ck-button-action-text-color: var(--ck-color-interactive-primary-text);
+	--ck-button-save-color: var(--ck-color-feedback-success);
+	--ck-button-cancel-color: var(--ck-color-feedback-warning);
+
 	/* Typography */
 	--ck-button-bold-font-weight: var(--ck-font-weight-ui-emphasis);
 	--ck-button-label-font-weight: var(--ck-font-weight-ui-inherit);
@@ -44,10 +64,10 @@
 
 .ck.ck-button,
 a.ck.ck-button {
-	--ck-button-background: var(--ck-color-button-default-background);
-	--ck-button-hover-background: var(--ck-color-button-default-hover-background);
-	--ck-button-active-background: var(--ck-color-button-default-active-background);
-	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background);
+	--ck-button-background: var(--ck-button-default-background-color);
+	--ck-button-hover-background: var(--ck-button-default-hover-background-color);
+	--ck-button-active-background: var(--ck-button-default-active-background-color);
+	--ck-button-disabled-background: var(--ck-button-default-disabled-background-color);
 
 	background: var(--ck-button-background);
 
@@ -199,20 +219,20 @@ a.ck.ck-button {
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
-		--ck-button-background: var(--ck-color-button-on-background);
-		--ck-button-hover-background: var(--ck-color-button-on-hover-background);
-		--ck-button-active-background: var(--ck-color-button-on-active-background);
-		--ck-button-disabled-background: var(--ck-color-button-on-disabled-background);
+		--ck-button-background: var(--ck-button-on-background-color);
+		--ck-button-hover-background: var(--ck-button-on-hover-background-color);
+		--ck-button-active-background: var(--ck-button-on-active-background-color);
+		--ck-button-disabled-background: var(--ck-button-on-disabled-background-color);
 
-		color: var(--ck-color-button-on-color);
+		color: var(--ck-button-on-text-color);
 	}
 
 	&.ck-button-save {
-		color: var(--ck-color-button-save);
+		color: var(--ck-button-save-color);
 	}
 
 	&.ck-button-cancel {
-		color: var(--ck-color-button-cancel);
+		color: var(--ck-button-cancel-color);
 	}
 
 	/* stylelint-disable no-descending-specificity */
@@ -235,12 +255,12 @@ a.ck.ck-button {
 
 .ck.ck-button-action,
 a.ck.ck-button-action {
-	--ck-button-background: var(--ck-color-button-action-background);
-	--ck-button-hover-background: var(--ck-color-button-action-hover-background);
-	--ck-button-active-background: var(--ck-color-button-action-active-background);
-	--ck-button-disabled-background: var(--ck-color-button-action-disabled-background);
+	--ck-button-background: var(--ck-button-action-background-color);
+	--ck-button-hover-background: var(--ck-button-action-hover-background-color);
+	--ck-button-active-background: var(--ck-button-action-active-background-color);
+	--ck-button-disabled-background: var(--ck-button-action-disabled-background-color);
 
-	color: var(--ck-color-button-action-text);
+	color: var(--ck-button-action-text-color);
 }
 
 .ck.ck-button-bold,
