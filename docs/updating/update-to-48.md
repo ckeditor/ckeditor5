@@ -422,13 +422,13 @@ Primary, secondary, and tertiary actions use the same classes everywhere:
 * `ck-ai-button-secondary`
 * `ck-ai-button-tertiary`
 
-Several older variables only fed one-off button styling; those hooks are **superseded** by the classes and theme rules in `aibutton.css`. See the table below.
+Several older variables only fed one-off button styling; those hooks are **superseded** by the classes and theme rules. See the details below.
 
 #### CSS custom property migration
 
 The **Change type** column uses:
 
-* **Superseded** &ndash; no replacement variable; use the shared button classes and bundled `aibutton.css` rules instead.
+* **Superseded** &ndash; no replacement variable; the shared button classes are used instead.
 * **Renamed** &ndash; override the new `--ck-color-ai-*` (or underlying palette) token.
 * **Restructured** &ndash; the property now composes palette variables; prefer the listed replacements (composite variables such as `--ck-ai-skeleton-item-background` or `--ck-ai-spinner-background` still exist if you override the entire value).
 
