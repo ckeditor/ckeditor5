@@ -333,7 +333,7 @@ Additionally, `AIChatShortcutTypeValue` has been removed as `AIChatShortcutType`
 
 ### AI feature UI: button CSS classes and color variables
 
-AI toolbars, panels, and related UI were refactored: controls now share button classes, and colors are driven from a single palette plus feature-level `--ck-color-ai-*` tokens. If you override AI styles in your integration, use the tables below to update custom CSS.
+AI toolbars, panels, and related UI were refactored: controls now share button classes, and colors are driven from a single palette plus feature-level `--ck-color-ai-*` tokens. If you override AI styles in your integration, use the information below to update custom CSS.
 
 #### Default AI color palette
 
