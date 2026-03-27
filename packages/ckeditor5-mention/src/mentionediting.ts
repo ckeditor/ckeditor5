@@ -118,7 +118,7 @@ export function _toMentionAttribute(
 		return;
 	}
 
-	const dataUid = viewElementOrMention.getAttribute( 'data-uid' ) as string;
+	const dataUid = viewElementOrMention.getAttribute( 'data-mention-uid' ) as string;
 
 	const baseMentionData = {
 		id: dataMention,
@@ -167,8 +167,8 @@ function createViewMentionElement(
 	return writer.createAttributeElement( 'span', {
 		class: 'mention',
 		'data-mention': mention.id,
-		// Omit `data-uid` in clipboard (copy/cut) to prevent UIDs duplication.
-		...( !options.isClipboardPipeline && { 'data-uid': mention.uid } )
+		// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+		...( !options.isClipboardPipeline && { 'data-mention-uid': mention.uid } )
 	}, {
 		id: mention.uid,
 		priority: 20

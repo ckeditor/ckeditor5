@@ -48,9 +48,10 @@ class CustomMentionAttributeView extends Plugin {
 					class: 'mention',
 					'data-mention': modelAttributeValue.id,
 					'href': modelAttributeValue.link,
-					// Omit `data-uid` in clipboard (copy/cut) to prevent UIDs duplication.
-					...( !options.isClipboardPipeline && { 'data-uid': modelAttributeValue.uid } )
+					// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+					...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 				}, {
+					// Make mention attribute to be wrapped by other attribute elements.
 					priority: 20,
 					id: modelAttributeValue.uid
 				} );
