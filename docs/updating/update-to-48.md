@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-03-23
+modified_at: 2026-03-30
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -16,7 +16,17 @@ modified_at: 2026-03-23
 
 ## Update to CKEditor&nbsp;5 v48.0.0
 
-Released on XXXXXXXXX, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.0.0))
+Released on 31 March, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.0.0))
+
+### Sunset of old installation methods (OIM)
+
+Starting with v48.0.0, the old installation methods are officially sunset. The related setup guides were removed from regular documentation sections. The legacy setup guides remain available in the CKEditor&nbsp;5 LTS documentation for users who stay on the LTS line. The migration documentation remains available in the "Updating" category:
+
+* {@link updating/nim-migration/migration-to-new-installation-methods Migration to new installation methods overview}
+* {@link updating/nim-migration/predefined-builds Migrating from predefined builds}
+* {@link updating/nim-migration/customized-builds Migrating from customized builds}
+* {@link updating/nim-migration/dll-builds Migrating from DLL builds}
+* {@link updating/nim-migration/online-builder Migrating from legacy Online Builder}
 
 ### Root configuration migration and deprecated top-level options
 
@@ -115,7 +125,7 @@ If your integration reads configuration values directly, update access paths as 
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
 
-#### New `MultiRootEditor#addRoot()` and `#createEditable()` signatures (dynamic root management)
+#### Dynamic root management
 
 The legacy signatures of `MultiRootEditor#addRoot()` and `MultiRootEditor#createEditable()` are deprecated and will be removed in a future release. They are replaced with new signatures that align with the way the editor root configuration is specified in `config.roots`.
 
