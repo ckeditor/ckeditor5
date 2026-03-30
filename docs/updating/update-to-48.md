@@ -18,6 +18,16 @@ modified_at: 2026-03-23
 
 Released on XXXXXXXXX, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.0.0))
 
+### Sunset of old installation methods (OIM)
+
+Starting with v48.0.0, the old installation methods are officially sunset. The related setup guides were removed from regular documentation sections. The legacy setup guides remain available in the CKEditor&nbsp;5 LTS documentation for users who stay on the LTS line. The migration documentation remains available in the "Updating" category:
+
+* {@link updating/nim-migration/migration-to-new-installation-methods Migration to new installation methods overview}
+* {@link updating/nim-migration/predefined-builds Migrating from predefined builds}
+* {@link updating/nim-migration/customized-builds Migrating from customized builds}
+* {@link updating/nim-migration/dll-builds Migrating from DLL builds}
+* {@link updating/nim-migration/online-builder Migrating from legacy Online Builder}
+
 ### Root configuration migration and deprecated top-level options
 
 The root configuration has been normalized under `config.root` (single-root editors) and `config.roots` (multi-root editors).
