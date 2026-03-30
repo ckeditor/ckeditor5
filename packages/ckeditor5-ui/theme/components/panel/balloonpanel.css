@@ -29,6 +29,7 @@
 	--ck-panel-border-color: var(--ck-color-border-container);
 
 	/* State / meta */
+	--ck-balloon-panel-arrow-display: block;
 	/* Make sure the balloon arrow does not float over its children. */
 	--ck-balloon-panel-arrow-z-index: var(--ck-layer-balloon-arrow-back);
 }
@@ -49,6 +50,7 @@
 	&.ck-balloon-panel_with-arrow {
 		&::before,
 		&::after {
+			display: var(--ck-balloon-panel-arrow-display);
 			width: 0;
 			height: 0;
 			border-style: solid;

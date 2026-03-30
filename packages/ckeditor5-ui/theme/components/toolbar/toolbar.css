@@ -22,6 +22,7 @@
 	--ck-toolbar-compact-item-first-border-radius-ltr: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
 	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-border-radius-surface-cut-top-right);
+	--ck-toolbar-vertical-button-border-radius: 0;
 
 	/* Color */
 	--ck-toolbar-background-color: var(--ck-color-surface-container);
@@ -111,7 +112,7 @@
 			margin: 0;
 
 			/* Items in a vertical toolbar span the entire width so rounded corners are pointless. */
-			border-radius: 0;
+			border-radius: var(--ck-toolbar-vertical-button-border-radius);
 		}
 	}
 

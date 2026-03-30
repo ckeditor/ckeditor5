@@ -14,6 +14,7 @@
 	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
 	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
 	--ck-dropdown-icon-button-padding-inline: var(--ck-spacing-control-padding-inline-compact);
+	--ck-dropdown-panel-padding: 0;
 
 	/* Radius */
 	--ck-dropdown-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
@@ -196,6 +197,7 @@
 .ck.ck-dropdown__panel {
 	border-radius: var(--ck-dropdown-panel-border-radius);
 	box-shadow: var(--ck-dropdown-panel-box-shadow);
+	padding: var(--ck-dropdown-panel-padding);
 
 	background: var(--ck-dropdown-panel-background-color);
 	border: var(--ck-dropdown-panel-border);

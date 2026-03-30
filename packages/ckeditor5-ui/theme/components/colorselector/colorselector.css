@@ -12,6 +12,7 @@
 	/* Spacing */
 	--ck-color-selector-hex-picker-action-bar-padding: 0 var(--ck-color-selector-hex-picker-padding) var(--ck-color-selector-hex-picker-padding);
 	--ck-color-selector-hex-picker-padding: 8px;
+	--ck-color-selector-padding: 0;
 	--ck-color-selector-picker-icon-gap: var(--ck-spacing-control-padding-inline);
 	--ck-color-selector-picker-padding-block: calc(var(--ck-spacing-control-padding-inline) / 2);
 	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
@@ -30,6 +31,8 @@
 }
 
 .ck.ck-color-selector {
+	padding: var(--ck-color-selector-padding);
+
 	/* View fragment with color grids. */
 	& .ck-color-grids-fragment {
 		& .ck-button.ck-color-selector__remove-color,

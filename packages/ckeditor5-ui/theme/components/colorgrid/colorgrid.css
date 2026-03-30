@@ -14,7 +14,11 @@
 	--ck-color-grid-high-contrast-tile-padding: 0 var(--ck-color-grid-high-contrast-tile-padding-inline);
 	--ck-color-grid-label-padding-inline: var(--ck-spacing-control-padding-inline);
 	--ck-color-grid-label-padding: 0 var(--ck-color-grid-label-padding-inline);
+	--ck-color-grid-margin: 0;
 	--ck-color-grid-padding: 8px;
+
+	/* Radius */
+	--ck-color-grid-tile-border-radius: 0;
 
 	/* Border */
 	--ck-color-grid-tile-state-border: 0;
@@ -32,6 +36,7 @@
 	--ck-color-grid-check-icon-color: hsl(212, 81%, 46%);
 
 	/* Motion */
+	--ck-color-grid-tile-hover-transform: none;
 	--ck-color-grid-tile-transition: box-shadow var(--ck-color-grid-tile-transition-duration) var(--ck-color-grid-tile-transition-timing-function);
 	--ck-color-grid-tile-transition-duration: var(--ck-transition-duration-control);
 	--ck-color-grid-tile-transition-reduced: var(--ck-transition-none);
@@ -44,11 +49,13 @@
 
 .ck.ck-color-grid {
 	grid-gap: var(--ck-color-grid-gap);
+	margin: var(--ck-color-grid-margin);
 	padding: var(--ck-color-grid-padding);
 	display: grid;
 }
 
 .ck.ck-color-grid__tile {
+	border-radius: var(--ck-color-grid-tile-border-radius);
 	transition: var(--ck-color-grid-tile-transition);
 
 	@media (forced-colors: none) {
@@ -76,6 +83,7 @@
 
 		&:hover:not( .ck-disabled ) {
 			box-shadow: var(--ck-color-grid-tile-hover-box-shadow);
+			transform: var(--ck-color-grid-tile-hover-transform);
 		}
 
 		&:focus:not( .ck-disabled ) {

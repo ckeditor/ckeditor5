@@ -13,6 +13,7 @@
 	--ck-menu-bar-button-padding-inline: var(--ck-spacing-control-icon-gap);
 
 	/* Radius */
+	--ck-menu-bar-button-border-radius: 0;
 	--ck-menu-bar-top-level-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
 }
 
@@ -86,7 +87,7 @@
 	 */
 	/* stylelint-disable-next-line no-descending-specificity */
 	&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {
-		border-radius: 0;
+		border-radius: var(--ck-menu-bar-button-border-radius);
 
 		& > .ck-menu-bar__menu__button__arrow {
 			width: var(--ck-dropdown-arrow-size);

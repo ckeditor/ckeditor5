@@ -6,6 +6,9 @@
 :root {
 	/* Spacing */
 	--ck-menu-bar-list-item-icon-gap: var(--ck-spacing-control-icon-gap);
+
+	/* Radius */
+	--ck-menu-bar-list-item-button-border-radius: 0;
 }
 
 .ck.ck-menu-bar__menu {
@@ -13,7 +16,7 @@
 	 * List item buttons.
 	 */
 	& .ck-button.ck-menu-bar__menu__item__button {
-		border-radius: 0;
+		border-radius: var(--ck-menu-bar-list-item-button-border-radius);
 
 		& > .ck-spinner-container,
 		& > .ck-spinner-container .ck-spinner {
