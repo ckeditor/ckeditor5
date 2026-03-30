@@ -56,7 +56,8 @@
 			top: 100%;
 			bottom: auto;
 		}
-		z-index: var(--ck-z-overlay)
+		/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+		z-index: var(--ck-z-panel, var(--ck-z-overlay))
 	}
 	position: relative
 }

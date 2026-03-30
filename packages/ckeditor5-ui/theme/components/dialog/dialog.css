@@ -38,7 +38,8 @@
 .ck.ck-dialog-overlay {
 	animation: var(--ck-dialog-overlay-animation);
 	background: var(--ck-dialog-overlay-background-color);
-	z-index: var(--ck-z-modal);
+	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
+	z-index: var(--ck-z-dialog, var(--ck-z-modal));
 	user-select: none;
 	overscroll-behavior: none;
 

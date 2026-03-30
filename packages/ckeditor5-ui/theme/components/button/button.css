@@ -60,7 +60,8 @@
 	/* State / meta */
 	--ck-button-focus-ring: var(--ck-interactive-focus-ring);
 	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
-	--ck-button-opacity-disabled: var(--ck-opacity-disabled)
+	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled))
 }
 
 .ck.ck-button,

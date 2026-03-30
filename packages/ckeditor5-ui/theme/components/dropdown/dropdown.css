@@ -39,7 +39,8 @@
 	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
 
 	/* State / meta */
-	--ck-dropdown-button-label-disabled-opacity: var(--ck-opacity-disabled);
+	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 }
 
 .ck.ck-dropdown {
@@ -73,7 +74,8 @@
 	}
 
 	&.ck-disabled .ck-dropdown__arrow {
-		opacity: var(--ck-opacity-disabled);
+		/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 
 	& .ck-button.ck-dropdown__button {

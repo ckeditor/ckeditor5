@@ -28,5 +28,6 @@
 }
 
 .ck-rounded-corners {
-	--ck-radius-rounded: var(--ck-radius-base);
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-radius-rounded: var(--ck-border-radius, var(--ck-radius-base));
 }

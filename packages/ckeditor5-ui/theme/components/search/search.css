@@ -6,7 +6,8 @@
 
 :root {
 	/* Spacing */
-	--ck-search-field-view-horizontal-spacing: calc(var(--ck-icon-size) + var(--ck-spacing-md));
+	/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+	--ck-search-field-view-horizontal-spacing: calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md)));
 	--ck-search-icon-offset-inline: var(--ck-spacing-control-icon-gap);
 	--ck-search-reset-offset-inline: var(--ck-spacing-control-icon-gap);
 	--ck-search-results-info-gap: var(--ck-spacing-surface-section-gap-block);

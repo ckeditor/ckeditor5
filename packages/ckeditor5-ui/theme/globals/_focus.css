@@ -12,17 +12,20 @@
 	/**
 	 * A visual style of focused element's shadow.
 	 */
-	--ck-focus-shadow: var(--ck-focus-shadow-geometry) var(--ck-color-focus-outer-shadow);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow-geometry if overridden. */
+	--ck-focus-shadow: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-outer-shadow);
 
 	/**
 	 * A visual style of focused element's shadow (when disabled).
 	 */
-	--ck-focus-shadow-disabled: var(--ck-focus-shadow-geometry) var(--ck-color-focus-disabled-shadow);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow-geometry if overridden. */
+	--ck-focus-shadow-disabled: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-disabled-shadow);
 
 	/**
 	 * A visual style of focused element's shadow (when has errors).
 	 */
-	--ck-focus-shadow-error: var(--ck-focus-shadow-geometry) var(--ck-color-focus-error-shadow);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow-geometry if overridden. */
+	--ck-focus-shadow-error: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-error-shadow);
 
 	/**
 	 * A visual style of focused element's border or outline.

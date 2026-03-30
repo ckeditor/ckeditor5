@@ -16,7 +16,8 @@
 	--ck-evaluation-badge-label-padding: 0 var(--ck-evaluation-badge-label-padding-inline);
 	--ck-evaluation-badge-label-font-weight: var(--ck-font-weight-bold);
 	--ck-evaluation-badge-text-color: hsl(0, 0%, 31%);
-	--ck-evaluation-badge-border-radius: var(--ck-radius-base);
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-evaluation-badge-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-evaluation-badge-background: hsl(0, 0%, 100%);
 	--ck-evaluation-badge-border-color: var(--ck-color-focus-border);
 }
@@ -27,7 +28,8 @@
 	box-shadow: none;
 	background: var(--ck-evaluation-badge-background);
 	min-height: unset;
-	z-index: calc( var(--ck-z-overlay) - 1 );
+	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+	z-index: calc( var(--ck-z-panel, var(--ck-z-overlay)) - 1 );
 
 	& .ck.ck-evaluation-badge {
 		line-height: var(--ck-evaluation-badge-line-height);

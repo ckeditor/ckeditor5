@@ -128,7 +128,8 @@
 	}
 
 	&.ck-disabled .ck-button__toggle {
-		opacity: var(--ck-opacity-disabled);
+		/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 
 	/* Overriding default .ck-button:focus styles + an outline around the toogle */

@@ -7,7 +7,10 @@
 	/* Generic focus visuals for interactive controls and actions. */
 	--ck-interactive-focus-ring: var(--ck-focus-ring);
 	--ck-interactive-focus-border-color: var(--ck-focus-border-color);
-	--ck-interactive-focus-shadow: var(--ck-focus-shadow);
-	--ck-interactive-focus-disabled-shadow: var(--ck-focus-shadow-disabled);
-	--ck-interactive-focus-error-shadow: var(--ck-focus-shadow-error);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
+	--ck-interactive-focus-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow));
+	/* Backward compatibility: falls back to legacy --ck-focus-disabled-outer-shadow if overridden. */
+	--ck-interactive-focus-disabled-shadow: var(--ck-focus-disabled-outer-shadow, var(--ck-focus-shadow-disabled));
+	/* Backward compatibility: falls back to legacy --ck-focus-error-outer-shadow if overridden. */
+	--ck-interactive-focus-error-shadow: var(--ck-focus-error-outer-shadow, var(--ck-focus-shadow-error));
 }

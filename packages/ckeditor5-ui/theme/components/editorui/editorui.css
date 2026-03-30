@@ -21,7 +21,8 @@
 	--ck-editor-inline-editable-border-width: var(--ck-border-width-control);
 
 	/* Shadow */
-	--ck-editor-editable-focus-shadow: var(--ck-inset-shadow-sm), 0 0;
+	/* Backward compatibility: falls back to legacy --ck-inner-shadow if overridden. */
+	--ck-editor-editable-focus-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 
 	/* Color */
 	--ck-editor-editable-blur-selection-color: hsl(0, 0%, 85%);
