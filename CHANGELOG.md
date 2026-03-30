@@ -5,6 +5,9 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v48.0.0.
 
+> [!NOTE]
+> CKEditor 5 v47 remains the LTS release. If you are an LTS customer, stay on this version. The next v47.x release will be published for LTS customers only.
+
 ### Release highlights
 
 This major release improves CKEditor AI and tables, completes the sunset of old installation methods, changes the default `Export to PDF` converter API version, and introduces a unified structure for root-related configuration.
