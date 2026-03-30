@@ -40,7 +40,7 @@ The easiest way to start using CKEditor&nbsp;5 with all the features you need is
 
 ### TypeScript support
 
-CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native type definitions. Check out our dedicated guide to read more about [TypeScript support](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/typescript-support.html).
+CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, official packages provide native type definitions.
 
 ### CKEditor 5 advanced installation
 

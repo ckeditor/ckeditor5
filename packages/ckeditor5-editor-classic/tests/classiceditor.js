@@ -159,7 +159,7 @@ describe( 'ClassicEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'if set, is not overwritten with DOM element data', async () => {
+			it( 'if set, is not overwritten with DOM element data (legacy config.initialData)', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -171,25 +171,25 @@ describe( 'ClassicEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+			it( 'it should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
@@ -202,10 +202,10 @@ describe( 'ClassicEditor', () => {
 						root: { initialData: '<p>abc</p>' },
 						roots: { main: { initialData: '<p>Bar</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
-			it( 'it should throw if config.initialData and config.root.initialData is set', () => {
+			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -215,10 +215,10 @@ describe( 'ClassicEditor', () => {
 						initialData: '<p>abc</p>',
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.initialData and config.roots.main.initialData is set', () => {
+			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -228,7 +228,55 @@ describe( 'ClassicEditor', () => {
 						initialData: '<p>abc</p>',
 						roots: { main: { initialData: '<p>abc</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
+			} );
+
+			it( 'it should throw if source element and config.attachTo are both set', () => {
+				const sourceElement = document.createElement( 'div' );
+				sourceElement.innerHTML = '<p>Foo</p>';
+
+				const attachToElement = document.createElement( 'div' );
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new ClassicEditor( sourceElement, { attachTo: attachToElement } );
+				} ).to.throw( CKEditorError, 'editor-create-attachto-overspecified' );
+			} );
+		} );
+
+		describe( 'config.root.placeholder', () => {
+			it( 'should normalize config.root.placeholder to config.roots.main.placeholder', () => {
+				const editor = new ClassicEditor( '<p>Foo</p>', {
+					root: { placeholder: 'Type here...' }
+				} );
+
+				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+			} );
+
+			it( 'should normalize legacy config.placeholder to config.roots.main.placeholder (legacy)', () => {
+				const editor = new ClassicEditor( '<p>Foo</p>', {
+					placeholder: 'Type here...'
+				} );
+
+				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+			} );
+		} );
+
+		describe( 'config.root.label', () => {
+			it( 'should normalize config.root.label to config.roots.main.label', () => {
+				const editor = new ClassicEditor( '<p>Foo</p>', {
+					root: { label: 'Custom label' }
+				} );
+
+				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+			} );
+
+			it( 'should normalize legacy config.label to config.roots.main.label (legacy)', () => {
+				const editor = new ClassicEditor( '<p>Foo</p>', {
+					label: 'Custom label'
+				} );
+
+				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
 			} );
 		} );
 
@@ -289,7 +337,7 @@ describe( 'ClassicEditor', () => {
 					}
 				} );
 
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-conflict' );
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
@@ -363,7 +411,7 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
-		it( 'initializes with config.initialData', () => {
+		it( 'initializes with legacy config.initialData', () => {
 			return ClassicEditor.create( editorElement, {
 				initialData: '<p>Hello world!</p>',
 				plugins: [ Paragraph ]
@@ -375,7 +423,7 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/8974
-		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+		it( 'initializes with empty content if legacy config.initialData is set to an empty string', () => {
 			return ClassicEditor.create( editorElement, {
 				initialData: '',
 				plugins: [ Paragraph ]
@@ -471,7 +519,7 @@ describe( 'ClassicEditor', () => {
 					);
 				} );
 
-				it( 'should support the string format', async () => {
+				it( 'should support the legacy config.label string format', async () => {
 					await editor.destroy();
 
 					editor = await ClassicEditor.create( editorElement, {
@@ -484,7 +532,7 @@ describe( 'ClassicEditor', () => {
 					);
 				} );
 
-				it( 'should support object format', async () => {
+				it( 'should support the legacy config.label object format', async () => {
 					await editor.destroy();
 
 					editor = await ClassicEditor.create( editorElement, {
@@ -526,6 +574,32 @@ describe( 'ClassicEditor', () => {
 					);
 
 					await editor.destroy();
+				} );
+
+				it( 'should support root.label format', async () => {
+					await editor.destroy();
+
+					editor = await ClassicEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						root: { label: 'Root label' }
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Root label'
+					);
+				} );
+
+				it( 'should support root.label in config-only constructor', async () => {
+					await editor.destroy();
+
+					editor = await ClassicEditor.create( {
+						plugins: [ Paragraph, Bold ],
+						root: { initialData: '<p>Foo</p>', label: 'Root label' }
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Root label'
+					);
 				} );
 			} );
 		} );

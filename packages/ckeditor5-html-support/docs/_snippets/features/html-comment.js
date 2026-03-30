@@ -13,7 +13,8 @@ import {
 import { GHSEditor } from './general-html-support-source.js';
 
 GHSEditor
-	.create( document.querySelector( '#snippet-html-comment' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-html-comment' ),
 		extraPlugins: [ HtmlComment ],
 		image: {
 			toolbar: [

@@ -9,7 +9,8 @@ import { CodeBlock } from '../../src/codeblock.js';
 import { Code } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		language: 'ar',
 		plugins: [ Code, CodeBlock, ArticlePluginSet ],

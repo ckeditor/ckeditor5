@@ -44,21 +44,23 @@ import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckedit
 import 'ckeditor5/ckeditor5.css';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 		toolbar: [
 			'undo', 'redo', '|', 'bold', 'italic', '|',
 			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-		]
+		],
+		root: {
+			placeholder: 'Type here...'
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
 Import the selected {@link getting-started/setup/editor-types editor type} and plugins. Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable.
-
-The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
 ```html
 <div id="editor">
@@ -131,22 +133,24 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Paragraph, Font, FormatPainter ],
 		toolbar: [
 			'undo', 'redo', '|', 'bold', 'italic', '|',
 			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
 			'formatPainter'
-		]
+		],
+		root: {
+			placeholder: 'Type here...'
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
 Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable. Please note that to use premium features, you need to activate them with a proper license key. See the [Obtaining a license key](#obtaining-a-premium-features-license-key) section.
-
-The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
 ```html
 <div id="editor">

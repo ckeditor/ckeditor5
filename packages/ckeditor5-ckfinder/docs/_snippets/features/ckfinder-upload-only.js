@@ -11,7 +11,8 @@ import {
 import { CKFinderEditor } from './build-ckfinder-source.js';
 
 CKFinderEditor
-	.create( document.querySelector( '#snippet-ckfinder-upload-only' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-ckfinder-upload-only' ),
 		removePlugins: [
 			'CKBox'
 		],

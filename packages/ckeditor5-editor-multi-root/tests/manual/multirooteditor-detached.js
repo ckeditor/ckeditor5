@@ -11,16 +11,23 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
-const editorData = {
-	intro: '<p><strong>Exciting</strong> intro text to an article.</p>',
-	content: '<h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p>',
-	outro: '<p>Closing text.</p>'
+const roots = {
+	intro: {
+		initialData: '<p><strong>Exciting</strong> intro text to an article.</p>'
+	},
+	content: {
+		initialData: '<h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p>'
+	},
+	outro: {
+		initialData: '<p>Closing text.</p>'
+	}
 };
 let editor;
 
 function initEditor() {
 	MultiRootEditor
-		.create( editorData, {
+		.create( {
+			roots,
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )

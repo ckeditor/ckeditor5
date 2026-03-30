@@ -9,7 +9,8 @@ import { ArticlePluginSet } from '../_utils/articlepluginset.js';
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {

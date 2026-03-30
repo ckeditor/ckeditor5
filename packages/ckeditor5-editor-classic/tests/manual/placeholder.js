@@ -15,7 +15,8 @@ window.editors = {};
 
 function initEditor( element, placeholder ) {
 	ClassicEditor
-		.create( element, {
+		.create( {
+			attachTo: element,
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 			placeholder

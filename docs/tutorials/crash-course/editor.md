@@ -46,7 +46,8 @@ import 'ckeditor5/ckeditor5.css';
 const element = document.querySelector( '#app' );
 
 // Instantiate the editor using the `create` method.
-const editor = await ClassicEditor.create( element, {
+const editor = await ClassicEditor.create( {
+	attachTo: element,
 	licenseKey: 'GPL' // Or '<YOUR_LICENSE_KEY>'.
 } );
 ```
@@ -64,7 +65,8 @@ The editor itself does not do much - it is just an empty shell at this stage. Wh
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.
-const editor = await ClassicEditor.create( element, {
+const editor = await ClassicEditor.create( {
+	attachTo: element,
 	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
@@ -80,7 +82,8 @@ When the page refreshes, you should see the "Hello world!" text in the editor an
 The `Essentials` plugin adds the `Undo` and `Redo` operations. Let's add them to the editor's toolbar.
 
 ```js
-const editor = await ClassicEditor.create( element, {
+const editor = await ClassicEditor.create( {
+	attachTo: element,
 	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,
@@ -170,9 +173,11 @@ The editor and its contents should disappear. **This method returns a promise, s
 If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
 First, clone the repository the same way as before. But do not install all the dependencies. Instead, run:
-```
+
+```bash
 npm install vite
 ```
+
 After that, open the `index.html` file and add the following tags:
 
 ```html

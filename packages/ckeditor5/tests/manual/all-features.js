@@ -38,7 +38,8 @@ import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		root: {
 			placeholder: 'Type the content here!'
 		},

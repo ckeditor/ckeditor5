@@ -18,7 +18,10 @@ function initEditor() {
 	let editor;
 
 	DecoupledEditor
-		.create( editorData, {
+		.create( {
+			root: {
+				initialData: editorData
+			},
 			plugins: [ ArticlePluginSet ],
 			toolbar: {
 				items: [

@@ -17,7 +17,10 @@ function initEditors() {
 
 	function init( selector ) {
 		BalloonEditor
-			.create( document.querySelector( selector ), {
+			.create( {
+				root: {
+					element: document.querySelector( selector )
+				},
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 				image: {

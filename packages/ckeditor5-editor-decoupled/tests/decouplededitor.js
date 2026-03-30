@@ -122,7 +122,7 @@ describe( 'DecoupledEditor', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should support the string format', async () => {
+				it( 'should support the legacy config.label string format', async () => {
 					const editor = await DecoupledEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
 						label: 'Custom label'
@@ -135,7 +135,7 @@ describe( 'DecoupledEditor', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should support object format', async () => {
+				it( 'should support the legacy config.label object format', async () => {
 					const editor = await DecoupledEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
 						label: {
@@ -165,7 +165,7 @@ describe( 'DecoupledEditor', () => {
 					expect( editorElement.getAttribute( 'aria-label' ), 'Restore value' ).to.equal( 'Pre-existing value' );
 				} );
 
-				it( 'should override the existing value from the source DOM element', async () => {
+				it( 'should override the existing value from the source DOM element (legacy config.label)', async () => {
 					editorElement.setAttribute( 'aria-label', 'Pre-existing value' );
 					const editor = await DecoupledEditor.create( editorElement, {
 						plugins: [ Paragraph, Bold ],
@@ -205,6 +205,32 @@ describe( 'DecoupledEditor', () => {
 
 					await editor.destroy();
 				} );
+
+				it( 'should support root.label format', async () => {
+					const editor = await DecoupledEditor.create( editorElement, {
+						plugins: [ Paragraph, Bold ],
+						root: { label: 'Root label' }
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Root label'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should support root.label in config-only constructor', async () => {
+					const editor = await DecoupledEditor.create( {
+						plugins: [ Paragraph, Bold ],
+						root: { initialData: '<p>Foo</p>', label: 'Root label' }
+					} );
+
+					expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(
+						'Root label'
+					);
+
+					await editor.destroy();
+				} );
 			} );
 		} );
 
@@ -230,7 +256,7 @@ describe( 'DecoupledEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'if set, is not overwritten with DOM element data', async () => {
+			it( 'if set, is not overwritten with DOM element data (legacy config.initialData)', async () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -242,25 +268,25 @@ describe( 'DecoupledEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'it should throw if config.initialData is set and initial data is passed in constructor', () => {
+			it( 'it should throw if legacy config.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { initialData: '<p>Bar</p>' } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { root: { initialData: '<p>Bar</p>' } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.roots.main.initialData is set and initial data is passed in constructor', () => {
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new DecoupledEditor( '<p>Foo</p>', { roots: { main: { initialData: '<p>Bar</p>' } } } );
-				} ).to.throw( CKEditorError, 'editor-create-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-root-initial-data-overspecified' );
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
@@ -273,10 +299,10 @@ describe( 'DecoupledEditor', () => {
 						root: { initialData: '<p>abc</p>' },
 						roots: { main: { initialData: '<p>Bar</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-roots-with-main' );
 			} );
 
-			it( 'it should throw if config.initialData and config.root.initialData is set', () => {
+			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -286,10 +312,10 @@ describe( 'DecoupledEditor', () => {
 						initialData: '<p>abc</p>',
 						root: { initialData: '<p>abc</p>' }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
 			} );
 
-			it( 'it should throw if config.initialData and config.roots.main.initialData is set', () => {
+			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
 				const editorElement = document.createElement( 'div' );
 				editorElement.innerHTML = '<p>Foo</p>';
 
@@ -299,7 +325,55 @@ describe( 'DecoupledEditor', () => {
 						initialData: '<p>abc</p>',
 						roots: { main: { initialData: '<p>abc</p>' } }
 					} );
-				} ).to.throw( CKEditorError, 'editor-create-roots-initial-data' );
+				} ).to.throw( CKEditorError, 'editor-create-legacy-initial-data-overspecified' );
+			} );
+
+			it( 'it should throw if source element and config.root.element are both set', () => {
+				const sourceElement = document.createElement( 'div' );
+				sourceElement.innerHTML = '<p>Foo</p>';
+
+				const existingElement = document.createElement( 'div' );
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( sourceElement, { root: { element: existingElement } } );
+				} ).to.throw( CKEditorError, 'editor-create-root-element-overspecified' );
+			} );
+		} );
+
+		describe( 'config.root.placeholder', () => {
+			it( 'should normalize config.root.placeholder to config.roots.main.placeholder', () => {
+				const editor = new DecoupledEditor( '<p>Foo</p>', {
+					root: { placeholder: 'Type here...' }
+				} );
+
+				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+			} );
+
+			it( 'should normalize legacy config.placeholder to config.roots.main.placeholder (legacy)', () => {
+				const editor = new DecoupledEditor( '<p>Foo</p>', {
+					placeholder: 'Type here...'
+				} );
+
+				expect( editor.config.get( 'roots.main.placeholder' ) ).to.equal( 'Type here...' );
+			} );
+		} );
+
+		describe( 'config.root.label', () => {
+			it( 'should normalize config.root.label to config.roots.main.label', () => {
+				const editor = new DecoupledEditor( '<p>Foo</p>', {
+					root: { label: 'Custom label' }
+				} );
+
+				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
+			} );
+
+			it( 'should normalize legacy config.label to config.roots.main.label (legacy)', () => {
+				const editor = new DecoupledEditor( '<p>Foo</p>', {
+					label: 'Custom label'
+				} );
+
+				expect( editor.config.get( 'roots.main.label' ) ).to.equal( 'Custom label' );
 			} );
 		} );
 
@@ -352,20 +426,18 @@ describe( 'DecoupledEditor', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should log warning when config.attachTo is set', async () => {
+			it( 'should throw when config.attachTo is set', () => {
 				const el = document.createElement( 'div' );
 
-				const editor = new DecoupledEditor( {
-					attachTo: el,
-					root: {
-						initialData: '<p>Foo</p>'
-					}
-				} );
-
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-attachto-ignored' );
-
-				editor.fire( 'ready' );
-				await editor.destroy();
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new DecoupledEditor( {
+						attachTo: el,
+						root: {
+							initialData: '<p>Foo</p>'
+						}
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-attachto-ignored' );
 			} );
 
 			it( 'should throw when config.root.element is a textarea', () => {
@@ -432,7 +504,7 @@ describe( 'DecoupledEditor', () => {
 			test( () => editableElement );
 		} );
 
-		it( 'initializes with config.initialData', () => {
+		it( 'initializes with legacy config.initialData', () => {
 			return DecoupledEditor.create( document.createElement( 'div' ), {
 				initialData: '<p>Hello world!</p>',
 				plugins: [ Paragraph ]
@@ -444,7 +516,7 @@ describe( 'DecoupledEditor', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/8974
-		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+		it( 'initializes with empty content if legacy config.initialData is set to an empty string', () => {
 			return DecoupledEditor.create( document.createElement( 'div' ), {
 				initialData: '',
 				plugins: [ Paragraph ]

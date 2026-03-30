@@ -13,7 +13,8 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Link, Bold, Italic, Typing, Paragraph, Undo, Enter, TestPlugin ],
 		toolbar: [ 'link', 'bold', 'italic', '|', 'undo', 'redo', '|', 'scrollToSelection', 'showBalloon' ],
 		ui: { viewportOffset: { top: 120 } }

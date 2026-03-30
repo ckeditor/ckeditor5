@@ -17,7 +17,8 @@ import rightIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/right.svg
 import sideIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/side.svg';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-image-semantical-style-custom' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-semantical-style-custom' ),
 		removePlugins: [ 'ImageResize' ],
 		ui: {
 			viewportOffset: {

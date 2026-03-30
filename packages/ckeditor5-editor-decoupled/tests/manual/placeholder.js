@@ -15,7 +15,10 @@ window.editors = {};
 
 function initEditor( element, placeholder ) {
 	DecoupledEditor
-		.create( element, {
+		.create( {
+			root: {
+				element
+			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 			placeholder

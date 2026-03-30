@@ -18,7 +18,8 @@ ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing
 	CKBox, CKBoxImageEdit, ImageInsert, PictureEditing );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-show-blocks' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-show-blocks' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

@@ -26,7 +26,8 @@ import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen';
 
 // For simplicity this is not blocked right now by the license key. We can do that later.
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		root: {
 			placeholder: 'Type the content here!'
 		},

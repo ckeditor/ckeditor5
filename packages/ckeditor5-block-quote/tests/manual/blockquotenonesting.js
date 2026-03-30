@@ -15,7 +15,8 @@ function DisallowNestingBlockQuotes( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, DisallowNestingBlockQuotes ],
 		toolbar: [

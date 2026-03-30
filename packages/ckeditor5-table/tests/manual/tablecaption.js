@@ -14,7 +14,8 @@ import { TableCellProperties } from '../../src/tablecellproperties.js';
 import { TableCaption } from '../../src/tablecaption.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties, TableCaption

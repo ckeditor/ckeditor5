@@ -98,7 +98,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
@@ -119,7 +119,7 @@ By default, external tables are loaded using internal heuristics. This can be co
 import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout /* ... */ ],
 		table: {
@@ -142,7 +142,7 @@ By default, the `<figure>` wrapper is preserved on content tables. To strip the 
 import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout /* ... */ ],
 		table: {
@@ -175,7 +175,7 @@ When the {@link module:table/tableproperties~TableProperties} plugin is availabl
 import { ClassicEditor, Table, TableLayout, TableProperties, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, TableProperties, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
@@ -201,7 +201,7 @@ If the `TableProperties` plugin is not available, you can use the dedicated `tab
 import { ClassicEditor, Table, TableLayout, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
@@ -223,7 +223,7 @@ You can configure the main editor toolbar to use the content and layout tables s
 import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ]

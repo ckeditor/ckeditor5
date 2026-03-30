@@ -193,7 +193,8 @@ import commercialTranslations from 'ckeditor5-premium-features/translations/pl.j
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ),
 	plugins: [
 		Essentials,
 		CKFinderUploadAdapter,
@@ -348,7 +349,8 @@ import '@ckeditor/ckeditor5-mention/dist/index.css';
 import '@ckeditor/ckeditor5-case-change/dist/index.css';
 import '@ckeditor/ckeditor5-slash-command/dist/index.css';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ),
 	plugins: [
 		Essentials,
 		CKFinderUploadAdapter,

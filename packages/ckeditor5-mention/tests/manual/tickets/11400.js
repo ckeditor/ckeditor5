@@ -12,7 +12,8 @@ import { Font } from '@ckeditor/ckeditor5-font';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-mention-customization' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-mention-customization' ),
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, Mention, Underline, Font ],
 		toolbar: {
