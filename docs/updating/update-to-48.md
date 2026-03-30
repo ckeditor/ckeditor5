@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-03-23
+modified_at: 2026-03-30
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -16,7 +16,7 @@ modified_at: 2026-03-23
 
 ## Update to CKEditor&nbsp;5 v48.0.0
 
-Released on XXXXXXXXX, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.0.0))
+Released on 31 March, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.0.0))
 
 ### Sunset of old installation methods (OIM)
 
