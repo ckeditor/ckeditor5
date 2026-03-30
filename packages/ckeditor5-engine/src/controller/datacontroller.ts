@@ -18,7 +18,6 @@ import { Mapper } from '../conversion/mapper.js';
 
 import { DowncastDispatcher, type DowncastInsertEvent } from '../conversion/downcastdispatcher.js';
 import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers.js';
-import { compareMarkersForDowncast } from '../conversion/comparemarkers.js';
 
 import {
 	UpcastDispatcher,
@@ -669,20 +668,6 @@ function _getMarkersRelativeToElement( element: ModelElement ): Map<string, Mode
 			}
 		}
 	}
-
-	// Sort the markers in a stable fashion to ensure that the order in which they are
-	// added to the model's marker collection does not affect how they are
-	// downcast. One particular use case that we are targeting here, is one where
-	// two markers are adjacent but not overlapping, such as an insertion/deletion
-	// suggestion pair representing the replacement of a range of text. In this
-	// case, putting the markers in DOM order causes the first marker's end to be
-	// serialized right after the second marker's start, while putting the markers
-	// in reverse DOM order causes it to be right before the second marker's
-	// start. So, we sort these in a way that ensures non-intersecting ranges are in
-	// reverse DOM order, and intersecting ranges are in something approximating
-	// reverse DOM order (since reverse DOM order doesn't have a precise meaning
-	// when working with intersecting ranges).
-	result.sort( compareMarkersForDowncast );
 
 	return new Map( result );
 }
