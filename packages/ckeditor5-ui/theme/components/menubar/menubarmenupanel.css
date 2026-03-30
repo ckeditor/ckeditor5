@@ -11,15 +11,17 @@
 	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
 
 	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-menu-bar-panel-uniform-border-radius: initial;
 	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-menu-bar-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-menu-bar-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
-	--ck-menu-bar-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-menu-bar-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-menu-bar-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-menu-bar-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
-	--ck-menu-bar-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-menu-bar-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
+	--ck-menu-bar-panel-border-radius-en: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
+	--ck-menu-bar-panel-border-radius-es: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-menu-bar-panel-border-radius-ne: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
+	--ck-menu-bar-panel-border-radius-nw: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
+	--ck-menu-bar-panel-border-radius-se: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-menu-bar-panel-border-radius-sw: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
+	--ck-menu-bar-panel-border-radius-wn: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
+	--ck-menu-bar-panel-border-radius-ws: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 
 	/* Border */
 	--ck-menu-bar-item-focus-reset-border-color: transparent;

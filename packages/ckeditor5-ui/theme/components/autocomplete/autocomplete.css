@@ -13,9 +13,11 @@
 	--ck-autocomplete-results-margin-s: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
 
 	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-autocomplete-results-uniform-border-radius: initial;
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-autocomplete-results-border-radius-n: var(--ck-border-radius-surface-attached-bottom);
-	--ck-autocomplete-results-border-radius-s: var(--ck-border-radius-surface-attached-top);
+	--ck-autocomplete-results-border-radius-n: var(--ck-autocomplete-results-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
+	--ck-autocomplete-results-border-radius-s: var(--ck-autocomplete-results-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 	/* Border */
 	--ck-autocomplete-results-border: var(--ck-autocomplete-results-border-width) solid var(--ck-dropdown-panel-border-color);

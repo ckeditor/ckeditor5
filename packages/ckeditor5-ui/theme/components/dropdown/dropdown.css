@@ -17,12 +17,14 @@
 	--ck-dropdown-panel-padding: 0;
 
 	/* Radius */
-	--ck-dropdown-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-dropdown-panel-uniform-border-radius: initial;
+	--ck-dropdown-button-border-radius-on: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
 	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-panel-border-radius-ne: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
+	--ck-dropdown-panel-border-radius-nw: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
+	--ck-dropdown-panel-border-radius-se: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-dropdown-panel-border-radius-sw: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 
 	/* Color */
 	--ck-dropdown-panel-background-color: var(--ck-color-surface-container);

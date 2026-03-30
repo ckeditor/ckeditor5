@@ -18,8 +18,10 @@
 	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
 
 	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-color-selector-uniform-border-radius: initial;
 	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius-surface) var(--ck-border-radius-surface);
-	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-border-radius-surface-attached-top);
+	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 	--ck-color-selector-saturation-border-radius: var(--ck-border-radius-surface) var(--ck-border-radius-surface) 0 0;
 
 	/* Border */

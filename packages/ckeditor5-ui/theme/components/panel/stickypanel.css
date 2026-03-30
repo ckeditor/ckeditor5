@@ -7,7 +7,9 @@
 .ck.ck-sticky-panel {
 	--ck-sticky-panel-shadow: var(--ck-shadow-surface-floating);
 	--ck-sticky-panel-box-shadow: var(--ck-sticky-panel-shadow), 0 0;
-	--ck-sticky-panel-border-radius-sticky: var(--ck-border-radius-surface-attached-top);
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-sticky-panel-uniform-border-radius: initial;
+	--ck-sticky-panel-border-radius-sticky: var(--ck-sticky-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 	--ck-sticky-panel-border-width: var(--ck-border-width-surface);
 	--ck-sticky-panel-border-width-sticky: 0 var(--ck-sticky-panel-border-width) var(--ck-sticky-panel-border-width);
 

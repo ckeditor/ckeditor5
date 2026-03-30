@@ -14,7 +14,7 @@
 
 	/* Radius */
 	--ck-menu-bar-button-border-radius: 0;
-	--ck-menu-bar-top-level-button-border-radius-on: var(--ck-border-radius-surface-attached-bottom);
+	--ck-menu-bar-top-level-button-border-radius-on: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
 }
 
 .ck.ck-menu-bar__menu {

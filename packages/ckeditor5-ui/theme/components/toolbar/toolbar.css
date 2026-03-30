@@ -17,11 +17,13 @@
 	--ck-toolbar-separator-gap: var(--ck-spacing-surface-item-gap-block);
 
 	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-toolbar-compact-uniform-border-radius: initial;
 	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
-	--ck-toolbar-compact-item-first-border-radius-rtl: var(--ck-border-radius-surface-cut-top-right);
-	--ck-toolbar-compact-item-first-border-radius-ltr: var(--ck-border-radius-surface-cut-top-left);
-	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-border-radius-surface-cut-top-left);
-	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-border-radius-surface-cut-top-right);
+	--ck-toolbar-compact-item-first-border-radius-rtl: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
+	--ck-toolbar-compact-item-first-border-radius-ltr: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-toolbar-compact-item-last-border-radius-rtl: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-toolbar-compact-item-last-border-radius-ltr: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 	--ck-toolbar-vertical-button-border-radius: 0;
 
 	/* Color */

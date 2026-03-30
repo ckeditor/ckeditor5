@@ -5,9 +5,11 @@
 
 :root {
 	/* Radius */
-	--ck-list-dropdown-first-item-button-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) 0 0;
-	--ck-list-dropdown-last-item-button-border-radius: 0 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
-	--ck-list-dropdown-panel-attached-border-radius: 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius);
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-list-dropdown-uniform-border-radius: initial;
+	--ck-list-dropdown-first-item-button-border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 var(--ck-list-dropdown-panel-border-radius) 0 0);
+	--ck-list-dropdown-last-item-button-border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius));
+	--ck-list-dropdown-panel-attached-border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius));
 	--ck-list-dropdown-panel-border-radius: var(--ck-dropdown-panel-border-radius);
 }
 

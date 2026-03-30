@@ -10,15 +10,17 @@
 	--ck-dropdown-menu-panel-max-width: 75vw;
 
 	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-dropdown-menu-panel-uniform-border-radius: initial;
 	--ck-dropdown-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-menu-panel-border-radius-en: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-menu-panel-border-radius-es: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-menu-panel-border-radius-ne: var(--ck-border-radius-surface-cut-bottom-left);
-	--ck-dropdown-menu-panel-border-radius-nw: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-menu-panel-border-radius-se: var(--ck-border-radius-surface-cut-top-left);
-	--ck-dropdown-menu-panel-border-radius-sw: var(--ck-border-radius-surface-cut-top-right);
-	--ck-dropdown-menu-panel-border-radius-wn: var(--ck-border-radius-surface-cut-bottom-right);
-	--ck-dropdown-menu-panel-border-radius-ws: var(--ck-border-radius-surface-cut-top-right);
+	--ck-dropdown-menu-panel-border-radius-en: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
+	--ck-dropdown-menu-panel-border-radius-es: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-dropdown-menu-panel-border-radius-ne: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
+	--ck-dropdown-menu-panel-border-radius-nw: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
+	--ck-dropdown-menu-panel-border-radius-se: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
+	--ck-dropdown-menu-panel-border-radius-sw: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
+	--ck-dropdown-menu-panel-border-radius-wn: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
+	--ck-dropdown-menu-panel-border-radius-ws: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 
 	/* Border */
 	--ck-dropdown-menu-panel-border: var(--ck-dropdown-menu-panel-border-width) solid var(--ck-dropdown-panel-border-color);
