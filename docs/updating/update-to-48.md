@@ -125,7 +125,7 @@ If your integration reads configuration values directly, update access paths as 
 * `config.get( 'placeholder' )` -> `config.get( 'roots.main.placeholder' )`
 * `config.get( 'label' )` -> `config.get( 'roots.main.label' )`
 
-#### New `MultiRootEditor#addRoot()` and `#createEditable()` signatures (dynamic root management)
+#### Dynamic root management
 
 The legacy signatures of `MultiRootEditor#addRoot()` and `MultiRootEditor#createEditable()` are deprecated and will be removed in a future release. They are replaced with new signatures that align with the way the editor root configuration is specified in `config.roots`.
 
