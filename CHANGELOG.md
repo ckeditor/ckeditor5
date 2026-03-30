@@ -11,7 +11,7 @@ This major release improves CKEditor AI and tables, completes the sunset of old 
 
 #### Old installation methods sunset
 
-With this release, we've officially completed the transition to our modern installation methods — a milestone we're excited to reach! 🎉
+With this release, we have officially completed the transition to our modern installation methods — a milestone we are excited to reach! 🎉
 
 First [introduced in CKEditor 5 v42.0.0 in June 2024](https://ckeditor.com/blog/ckeditor-42-0-0-release-highlights/), these new methods were designed to simplify the developer workflow, reduce configuration overhead, and unlock faster, more consistent updates. With the old methods now fully retired, we can focus all our energy on delivering new features, improving performance, and moving the platform forward.
 
@@ -41,7 +41,7 @@ Several default table behaviors have also been updated:
 
 #### Export to PDF default version change
 
-The Export to PDF feature now defaults to version 2 of the converter API, so you'll enjoy a range of [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#new-features-in-v2) right out of the box — including advanced header and footer configurations, flexible page sizing, PDF metadata editing, owner password protection, and digital signature support. 
+The Export to PDF feature now defaults to version 2 of the converter API, so you will enjoy a range of [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#new-features-in-v2) right out of the box — including advanced header and footer configurations, flexible page sizing, PDF metadata editing, owner password protection, and digital signature support.
 
 Since the new version may produce slightly different output than version 1, we recommend reviewing the new [default configuration](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#default-configuration).
 
@@ -469,7 +469,7 @@ Integrators define shortcuts with a name, icon, and an action. Each shortcut can
 
 #### List indentation improvements
 
-We're streamlining and standardizing the way list indentation is handled. With improved UX, it's now possible to indent whole lists and also individual list items with consistent styling and no custom implementation required.
+We are streamlining and standardizing the way list indentation is handled. With improved UX, it is now possible to indent whole lists and also individual list items with consistent styling and no custom implementation required.
 
 This improvement is compatible with Paste from Office, Export to Word, Export to PDF, and Track Changes plugins. It also provides RTL support.
 
@@ -737,7 +737,7 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed an issue where messages loaded from chat history could be incorrectly duplicated in a conversation.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIQuickActionsUI` now requires `AIConnector` to prevent authentication bugs when run standalone.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed an issue where inline annotations were not displayed correctly when the editor was initialized in a hidden container.
-* **[email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)**: Table block alignment now behaves as expected in Microsoft Outlook, preventing text from wrapping around the table when it shouldn't.
+* **[email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)**: Table block alignment now behaves as expected in Microsoft Outlook, preventing text from wrapping around the table when it should not.
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: An inline content (`<img>`) should not be stripped out of `<div>` inside of `<dd>` tag. Closes [#19709](https://github.com/ckeditor/ckeditor5/issues/19709).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Resizing the last column of a layout table no longer increases the column size more than expected. Closes [#19644](https://github.com/ckeditor/ckeditor5/issues/19644).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Fixed parsing units of deprecated table width attribute. Closes [#19665](https://github.com/ckeditor/ckeditor5/issues/19665).
