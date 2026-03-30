@@ -83,44 +83,6 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core), [editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon), [editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic), [editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled), [editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline), [editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: The editor no longer updates `config.initialData` during startup. Use `config.roots.main.initialData` for single-root editors and `config.roots.<rootName>.initialData` for multi-root editors. See [#19885](https://github.com/ckeditor/ckeditor5/issues/19885).
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Moved the public API from `AIChat` to `AIChatController`. This affects integrations that use the `AIChat` API.
-
-  The following methods were moved from `AIChat` to `AIChatController`: `addSelectionToChatContext()`, `startConversation()`, `sendMessage()`, `removeSelectionFromChatContext()`, `focusPromptInput()`, `registerToolDataCallback()`.
-
-  Additionally, `AIChatInteractionAPI` was renamed to `AIChatFeedAPI`.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: `AIChat#addSelectionToChatContext()` now returns `void` instead of `Promise`.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Suggestion previews in AI features now follow the styling of the content in the editing area more closely. If you customized their appearance, verify the styling after updating. For more information on editor content styling, refer to the [official guide](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/css.html#general-content-styling).
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI features now use the editor UI font family defined by `--ck-font-face`. As a result, the following CSS custom properties no longer affect the UI:
-
-  * `--ck-ai-balloon-font-family`,
-  * `--ck-ai-chat-font-family`,
-  * `--ck-ai-web-source-tooltip-font-family`,
-  * `--ck-ai-review-font-family`
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Buttons in AI components now use generic CSS classes:
-
-  * `ck-ai-button-primary`;
-  * `ck-ai-button-secondary`;
-  * `ck-ai-button-tertiary`.
-
-  As a result, the following CSS variables no longer affect the UI:
-
-  * `--ck-ai-border-color-button`
-  * `--ck-ai-chat-feed-item-color-actions-button-hover`
-  * `--ck-ai-chat-feed-item-color-show-changes-toggle-active-background`
-  * `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-background`
-  * `--ck-ai-chat-feed-item-color-show-changes-toggle-hover-color`
-  * `--ck-ai-chat-feed-item-color-show-changes-toggle-on-background`
-  * `--ck-ai-chat-feed-item-color-show-changes-toggle-on-color`
-  * `--ck-ai-chat-feed-item-color-text`
-  * `--ck-ai-chat-feed-loader-icon-color`
-  * `--ck-ai-chat-suggestion-border-hover-color`
-  * `--ck-ai-header-border-color-button`
-  * `--ck-ai-header-color-text`
-  * `--ck-ai-loader-icon-color`
-  * `--ck-ai-loader-icon-dot-color`
-  * `--ck-ai-review-check-list-model-dropdown-active-color`
-  * `--ck-ai-review-check-list-model-dropdown-hover-background-color`
-
-  Changing their values no longer affects the UI.
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: The default word breaking behavior in the content area has been updated to prevent unwanted breaks in tables. If you customized the `--ck-content-word-break` CSS variable in your integration, migrate to the new `--ck-content-overflow-wrap` variable to retain the same effect. See [#19986](https://github.com/ckeditor/ckeditor5/issues/19986).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Deep schema verification during `model.insertContent()` is now enabled by default. It is no longer behind an experimental flag. See [#19217](https://github.com/ckeditor/ckeditor5/issues/19217).
 
