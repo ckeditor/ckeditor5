@@ -1335,19 +1335,19 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 		const mapper = conversionApi.mapper;
 		const viewWriter = conversionApi.writer;
 
-		viewWriter.setCustomProperty( 'markerBoundaryType', 'opening', viewStartElement );
-		viewWriter.setCustomProperty( 'markerBoundaryType', 'closing', viewEndElement );
+		viewWriter.setCustomProperty( 'markerBoundaryType', 'start', viewStartElement );
+		viewWriter.setCustomProperty( 'markerBoundaryType', 'end', viewEndElement );
 
-		// Add "closing" element only if range is not collapsed.
+		// Add "end" element only if range is not collapsed.
 		if ( !markerRange.isCollapsed ) {
 			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
 			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
 		}
 
-		// Jump over closing UI elements to find a proper position for "opening" element.
-		// It should be after all marker closing UI elements as markers conversion should be triggered in reverse DOM order.
+		// Jump over end UI elements to find a proper position for "start" element.
+		// It should be after all marker "end" UI elements as markers conversion should be triggered in reverse DOM order.
 		const startViewPosition = mapper.toViewPosition( markerRange.start ).getLastMatchingPosition( ( { item } ) =>
-			item.is( 'uiElement' ) && item.getCustomProperty( 'markerBoundaryType' ) === 'closing'
+			item.is( 'uiElement' ) && item.getCustomProperty( 'markerBoundaryType' ) === 'end'
 		);
 
 		viewWriter.insert( startViewPosition, viewStartElement );
