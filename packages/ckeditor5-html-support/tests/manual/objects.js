@@ -68,7 +68,8 @@ class ExtendHTMLSupport extends Plugin {
 // occasionally throwing on network issues due to the content inside the editor.
 document.getElementById( 'init-editor' ).addEventListener( 'click', () => {
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			plugins: [
 				BlockQuote,
 				Bold,

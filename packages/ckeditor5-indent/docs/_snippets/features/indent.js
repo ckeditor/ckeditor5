@@ -13,7 +13,8 @@ import {
 import { IndentEditor } from './build-indent-source.js';
 
 IndentEditor
-	.create( document.querySelector( '#snippet-indent' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-indent' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

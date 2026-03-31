@@ -72,7 +72,7 @@ function MyPlugin(editor) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		plugins: [
 			MyPlugin,
 			// Other plugins.

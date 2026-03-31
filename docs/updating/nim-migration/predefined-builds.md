@@ -831,7 +831,10 @@ One notable difference between the old build and the new ESM build is that the f
 	```html
 	<script>
 	ClassicEditor
-		.create( document.querySelector( '#editor' ) )
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
+			// ... other config
+		} )
 		.catch( error => {
 				console.error( error );
 		} );
@@ -1873,7 +1876,9 @@ One notable difference between the old build and the new ESM build is that the f
 	```html
 	<script>
 	ClassicEditor
-		.create( document.querySelector( '#editor' ) )
+		.create( {
+			attachTo: document.querySelector( '#editor' )
+		} )
 		.catch( error => {
 				console.error( error );
 		} );

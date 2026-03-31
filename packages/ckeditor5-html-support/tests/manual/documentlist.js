@@ -14,7 +14,8 @@ import { Indent } from '@ckeditor/ckeditor5-indent';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Bold,
 			ListProperties,

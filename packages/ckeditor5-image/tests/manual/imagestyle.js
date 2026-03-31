@@ -37,7 +37,8 @@ const PLUGINS_CONFIG = [
 startEditors();
 
 async function startEditors() {
-	window.editorSemantic = await ClassicEditor.create( document.querySelector( '#editor-semantic' ), {
+	window.editorSemantic = await ClassicEditor.create( {
+		attachTo: document.querySelector( '#editor-semantic' ),
 		cloudServices: CS_CONFIG,
 		plugins: PLUGINS_CONFIG,
 		toolbar: TOOLBAR_CONFIG,
@@ -53,7 +54,8 @@ async function startEditors() {
 		}
 	} );
 
-	window.editorFormatting = await ClassicEditor.create( document.querySelector( '#editor-formatting' ), {
+	window.editorFormatting = await ClassicEditor.create( {
+		attachTo: document.querySelector( '#editor-formatting' ),
 		cloudServices: CS_CONFIG,
 		plugins: PLUGINS_CONFIG,
 		toolbar: TOOLBAR_CONFIG,
@@ -69,7 +71,8 @@ async function startEditors() {
 		}
 	} );
 
-	window.editorWithDropdown = await ClassicEditor.create( document.querySelector( '#editor-with-dropdown' ), {
+	window.editorWithDropdown = await ClassicEditor.create( {
+		attachTo: document.querySelector( '#editor-with-dropdown' ),
 		cloudServices: CS_CONFIG,
 		plugins: PLUGINS_CONFIG,
 		toolbar: TOOLBAR_CONFIG,

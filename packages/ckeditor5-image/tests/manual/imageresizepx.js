@@ -34,7 +34,10 @@ const commonConfig = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), commonConfig )
+	.create( {
+		...commonConfig,
+		attachTo: document.querySelector( '#editor' )
+	} )
 	.then( editor => {
 		window.editor = editor;
 	} )
@@ -43,7 +46,10 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#fancy-editor' ), commonConfig )
+	.create( {
+		...commonConfig,
+		attachTo: document.querySelector( '#fancy-editor' )
+	} )
 	.then( editor => {
 		window.fancyEditor = editor;
 	} )
@@ -52,7 +58,10 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-other-units' ), commonConfig )
+	.create( {
+		...commonConfig,
+		attachTo: document.querySelector( '#editor-other-units' )
+	} )
 	.then( editor => {
 		window.editorOtherUnits = editor;
 	} )

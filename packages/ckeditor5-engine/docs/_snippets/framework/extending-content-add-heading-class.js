@@ -20,7 +20,8 @@ function AddClassToAllHeading1( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-heading-class' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-heading-class' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ AddClassToAllHeading1 ],
 		ui: {

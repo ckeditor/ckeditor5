@@ -10,7 +10,8 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 	} )

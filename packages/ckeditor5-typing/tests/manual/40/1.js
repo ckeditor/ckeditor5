@@ -9,7 +9,8 @@ import { Typing } from '../../../src/typing.js';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Heading ],
 		toolbar: [ 'heading' ]
 	} )

@@ -16,7 +16,8 @@ import { LegacyTodoList } from '../../src/legacytodolist.js';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Bold,

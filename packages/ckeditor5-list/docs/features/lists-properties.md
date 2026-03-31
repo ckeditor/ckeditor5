@@ -96,7 +96,7 @@ This feature is enabled by default. To disable it, use the following configurati
 import { ClassicEditor, List, Bold } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, Bold, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', 'bold', /* ... */ ]

@@ -65,7 +65,8 @@ class PluginWithModal extends Plugin {
 	}
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ) as HTMLElement, {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ) as HTMLElement,
 	extraPlugins: [ Essentials, Heading, Bold, Italic, PluginWithModal ],
 	toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'modal' ]
 } ).then( editor => {

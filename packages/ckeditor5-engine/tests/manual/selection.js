@@ -60,7 +60,8 @@ class SelectionTest extends Plugin {
 }
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, SelectionTest, Undo, Widget ],
 		toolbar: [ 'undo', 'redo' ]
 	} )

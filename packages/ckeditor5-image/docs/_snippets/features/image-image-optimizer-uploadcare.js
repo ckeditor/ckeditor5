@@ -7,7 +7,8 @@ import { getViewportTopOffsetConfig } from '@snippets/index.js';
 import { ImageOptimizerEditor } from './build-image-optimizer-source.js';
 
 ImageOptimizerEditor
-	.create( document.querySelector( '#image-optimizer-uploadcare' ), {
+	.create( {
+		attachTo: document.querySelector( '#image-optimizer-uploadcare' ),
 		removePlugins: [ 'CKBox', 'CKBoxImageEdit', 'LinkImage' ],
 		toolbar: {
 			items: [

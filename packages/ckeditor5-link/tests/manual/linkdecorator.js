@@ -14,7 +14,8 @@ import '@ckeditor/ckeditor5-ui/theme/components/list/list.css';
 window.editors = {};
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
@@ -69,7 +70,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor2' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor2' ),
 		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
@@ -104,7 +106,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor3' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor3' ),
 		plugins: [ ArticlePluginSet, LinkImage, Bold, Italic, Underline ],
 		toolbar: [
 			'link',

@@ -11,7 +11,8 @@ import {
 import { UiLanguageEditor } from './build-ui-language-source.js';
 
 UiLanguageEditor
-	.create( document.querySelector( '#snippet-ui-language-content' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-ui-language-content' ),
 		language: {
 			content: 'ar'
 		},

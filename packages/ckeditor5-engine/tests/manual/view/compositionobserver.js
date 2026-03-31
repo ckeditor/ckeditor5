@@ -8,7 +8,8 @@ import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Typing, Paragraph ]
 	} )
 	.then( editor => {

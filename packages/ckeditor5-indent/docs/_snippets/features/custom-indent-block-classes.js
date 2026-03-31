@@ -11,7 +11,8 @@ import {
 import { IndentEditor } from './build-indent-source.js';
 
 IndentEditor
-	.create( document.querySelector( '#snippet-indent-block-classes' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-indent-block-classes' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

@@ -19,9 +19,12 @@ function CustomHeading( editor ) {
 	} );
 }
 
-MiniInspectorEditor.create( document.querySelector( '#mini-inspector-heading' ), {
+MiniInspectorEditor.create( {
 	plugins: [ Essentials, CustomHeading ],
-	toolbar: []
+	toolbar: [],
+	root: {
+		element: document.querySelector( '#mini-inspector-heading' )
+	}
 } )
 	.then( editor => {
 		window.editor = editor;

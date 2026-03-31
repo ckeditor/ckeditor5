@@ -64,8 +64,13 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 function createWatchdog( editorElement, stateElement, name ) {
 	const watchdog = new EditorWatchdog( ClassicEditor );
 
-	watchdog.setCreator( ( elementsOrData, config ) => {
-		return ClassicEditor.create( elementsOrData, config ).then( editor => {
+	watchdog.setCreator( config => {
+		return ClassicEditor.create( {
+			...config,
+			root: {
+				initialData: editorElement.innerHTML
+			}
+		} ).then( editor => {
 			console.log( `${ name } editor created (from creator).` );
 
 			editorElement.innerHTML = '';
@@ -82,7 +87,7 @@ function createWatchdog( editorElement, stateElement, name ) {
 		return editor.destroy();
 	} );
 
-	watchdog.create( editorElement.innerHTML, editorConfig );
+	watchdog.create( editorConfig );
 
 	watchdog.on( 'error', () => {
 		console.log( `${ name } editor crashed!` );

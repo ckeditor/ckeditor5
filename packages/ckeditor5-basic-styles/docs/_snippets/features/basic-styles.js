@@ -11,7 +11,8 @@ import {
 import { BasicStylesEditor } from './build-basic-styles-source.js';
 
 BasicStylesEditor
-	.create( document.querySelector( '#snippet-basic-styles' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-basic-styles' ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

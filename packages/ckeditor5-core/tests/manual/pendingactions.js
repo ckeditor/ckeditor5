@@ -9,7 +9,8 @@ import { ArticlePluginSet } from '../_utils/articlepluginset.js';
 import { PendingActions } from '../../src/pendingactions.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, PendingActions ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {

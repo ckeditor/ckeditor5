@@ -95,7 +95,8 @@ Here is the complete integration code combining jQuery and CKEditor&nbsp;5:
 			} = CKEDITOR;
 
 			ClassicEditor
-				.create( $( '#editor' )[ 0 ], {
+				.create( {
+					attachTo: $( '#editor' )[ 0 ],
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
@@ -174,7 +175,8 @@ Here is the complete integration with premium features:
 			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 			ClassicEditor
-				.create( $( '#editor' )[ 0 ], {
+				.create( {
+					attachTo: $( '#editor' )[ 0 ],
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: [

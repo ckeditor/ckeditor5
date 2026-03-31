@@ -11,7 +11,8 @@ import {
 import { CodeBlockEditor } from './build-code-block-source.js';
 
 CodeBlockEditor
-	.create( document.querySelector( '#snippet-custom-languages' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-custom-languages' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

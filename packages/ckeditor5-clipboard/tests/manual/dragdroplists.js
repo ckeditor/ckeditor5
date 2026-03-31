@@ -36,7 +36,8 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor-classic-lists' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-classic-lists' ),
 		plugins: [
 			Essentials, Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
 			List, Paragraph, Table, TableToolbar, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,

@@ -97,7 +97,8 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 		// Capture value before async initialization.
 		let initialData = value;
 
-		editorInstance = await ClassicEditor.create( editorContainer, {
+		editorInstance = await ClassicEditor.create( {
+			attachTo: editorContainer,
 			licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [

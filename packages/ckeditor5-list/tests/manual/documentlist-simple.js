@@ -20,7 +20,8 @@ import { List } from '../../src/list.js';
 import { TodoList } from '../../src/todolist.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Enter, Typing, Heading, Paragraph, Undo, List, TodoList, Indent, Clipboard, Alignment, SourceEditing,
 			GeneralHtmlSupport, Autoformat

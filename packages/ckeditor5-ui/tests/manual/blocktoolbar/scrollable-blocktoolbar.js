@@ -22,7 +22,10 @@ createBlockButtonEditor( '#editor-scrollable' ).then( editor => {
 
 function createBlockButtonEditor( element ) {
 	return BalloonEditor
-		.create( document.querySelector( element ), {
+		.create( {
+			root: {
+				element: document.querySelector( element )
+			},
 			plugins: [
 				Essentials, List, Paragraph, Heading, Image, ImageCaption,
 				HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, CodeBlock

@@ -139,10 +139,6 @@ msgctxt "The label for the group of toolbars that allows configuring the text al
 msgid "Table cell text alignment"
 msgstr "Alinierea textului celulei tabelei"
 
-msgctxt "The label for the toolbar that allows configuring the alignment of a table."
-msgid "Alignment"
-msgstr "Aliniere"
-
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
 msgstr "Toolbar aliniere text orizontală"
@@ -218,18 +214,6 @@ msgstr "Alinează textul celulei la mijloc"
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
 msgstr "Alinează textul celulei jos"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
-msgid "Align table to the left"
-msgstr "Alinează tabela la stânga"
-
-msgctxt "The label used by assistive technologies describing a button that centers the table."
-msgid "Center table"
-msgstr "Tabelă centrată"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
-msgid "Align table to the right"
-msgstr "Alinează tabela la dreapta"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
@@ -330,3 +314,15 @@ msgstr "Celulă de date"
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
 msgstr "Celulă antet"
+
+msgctxt "Label for the set/unset table footer row button."
+msgid "Footer row"
+msgstr "Rând de subsol"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a column header."
+msgid "Column header"
+msgstr "Antet de coloană"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a row header."
+msgid "Row header"
+msgstr "Rând de antet"
