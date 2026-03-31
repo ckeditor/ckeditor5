@@ -1278,24 +1278,25 @@ function getTextAttributes(
 			return node.getAttributes();
 		}
 
-		if ( node.is( 'element', 'softBreak' ) ) {
-			const attributes: Array<[ string, unknown ]> = [];
-
-			for ( const [ key, value ] of node.getAttributes() ) {
-				if ( schema.checkAttribute( '$text', key ) ) {
-					attributes.push( [ key, value ] );
-				}
-			}
-
-			return attributes;
-		}
-
 		if ( !schema.isInline( node ) ) {
 			return null;
 		}
 
 		if ( !schema.isObject( node ) ) {
-			return [];
+			const attributes: Array<[ string, unknown ]> = [];
+
+			// Inline non-object elements create a "soft" attribute boundary and can optionally carry over
+			// text attributes marked as copyOnEnter.
+			for ( const [ key, value ] of node.getAttributes() ) {
+				if (
+					schema.checkAttribute( '$text', key ) &&
+					schema.getAttributeProperties( key ).copyOnEnter
+				) {
+					attributes.push( [ key, value ] );
+				}
+			}
+
+			return attributes;
 		}
 
 		const attributes: Array<[string, unknown]> = [];
