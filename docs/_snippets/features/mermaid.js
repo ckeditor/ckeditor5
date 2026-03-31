@@ -9,9 +9,9 @@ import {
 	ClassicEditor,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
-import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';
+import { Mermaid } from '@ckeditor/ckeditor5-mermaid';
 
-import '@ckeditor/ckeditor5-mermaid/dist/index.css';
+import '@ckeditor/ckeditor5-mermaid/index.css';
 
 ClassicEditor
 	.create( {
