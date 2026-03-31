@@ -124,6 +124,61 @@ describe( 'ShiftEnterCommand', () => {
 					'<p><$text bar="true" foo="true">test[]</$text></p>',
 					'<p><$text bar="true" foo="true">test</$text><softBreak foo="true"></softBreak><$text foo="true">[]</$text></p>'
 				);
+
+				it( 'removes stale attributes from the last softBreak when the following text no longer has them', () => {
+					_setModelData(
+						model,
+						'<p><$text foo="true">foo</$text><softBreak foo="true"></softBreak><$text foo="true">bar[]</$text></p>'
+					);
+
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.removeAttribute( 'foo', paragraph.getChild( 0 ) );
+						writer.removeAttribute( 'foo', paragraph.getChild( 2 ) );
+					} );
+
+					expect( _getModelData( model ) ).to.equal( '<p>foo<softBreak></softBreak>bar[]</p>' );
+				} );
+
+				it( 'keeps attributes on a softBreak followed by another softBreak', () => {
+					_setModelData(
+						model,
+						'<p><$text foo="true">foo</$text>' +
+						'<softBreak foo="true"></softBreak><softBreak foo="true"></softBreak>' +
+						'<$text foo="true">bar[]</$text></p>'
+					);
+
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.removeAttribute( 'foo', paragraph.getChild( 0 ) );
+						writer.removeAttribute( 'foo', paragraph.getChild( 3 ) );
+					} );
+
+					expect( _getModelData( model ) ).to.equal(
+						'<p>foo<softBreak foo="true"></softBreak><softBreak></softBreak>bar[]</p>'
+					);
+				} );
+
+				it( 'keeps softBreak attributes when there is no following text node', () => {
+					_setModelData(
+						model,
+						'<p><$text foo="true">foo[]</$text></p><p>bar</p>'
+					);
+
+					editor.execute( 'shiftEnter' );
+
+					const firstParagraph = doc.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.removeAttribute( 'foo', firstParagraph.getChild( 0 ) );
+					} );
+
+					expect( _getModelData( model ) ).to.equal(
+						'<p>foo<softBreak foo="true"></softBreak><$text foo="true">[]</$text></p><p>bar</p>'
+					);
+				} );
 			} );
 		} );
 

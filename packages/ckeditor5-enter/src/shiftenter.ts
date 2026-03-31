@@ -11,6 +11,12 @@ import { ShiftEnterCommand } from './shiftentercommand.js';
 import { EnterObserver, type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
+import type {
+	ModelElement,
+	ModelNode,
+	ModelWriter
+} from '@ckeditor/ckeditor5-engine';
+
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
  *
@@ -64,6 +70,7 @@ export class ShiftEnter extends Plugin {
 		view.addObserver( EnterObserver );
 
 		editor.commands.add( 'shiftEnter', new ShiftEnterCommand( editor ) );
+		editor.model.document.registerPostFixer( writer => removeStaleSoftBreakAttributes( writer ) );
 
 		this.listenTo<ViewDocumentEnterEvent>( viewDocument, 'enter', ( evt, data ) => {
 			// When not in composition, we handle the action, so prevent the default one.
@@ -91,4 +98,48 @@ export class ShiftEnter extends Plugin {
 			]
 		} );
 	}
+}
+
+function removeStaleSoftBreakAttributes( writer: ModelWriter ): boolean {
+	const parentsToCheck = new Set<ModelElement>();
+
+	for ( const change of writer.model.document.differ.getChanges() ) {
+		if ( change.type == 'insert' || change.type == 'remove' ) {
+			if ( change.position.parent.is( 'element' ) ) {
+				parentsToCheck.add( change.position.parent );
+			}
+		} else if ( change.type == 'attribute' ) {
+			if ( change.range.start.parent.is( 'element' ) ) {
+				parentsToCheck.add( change.range.start.parent );
+			}
+		}
+	}
+
+	for ( const parent of parentsToCheck ) {
+		for ( const child of parent.getChildren() ) {
+			if ( !child.is( 'element', 'softBreak' ) ) {
+				continue;
+			}
+
+			const nextSibling = child.nextSibling;
+
+			if ( !nextSibling || nextSibling.is( 'element' ) ) {
+				continue;
+			}
+
+			for ( const [ key, value ] of child.getAttributes() ) {
+				if ( !hasSameAttribute( nextSibling, key, value ) ) {
+					writer.removeAttribute( key, child );
+
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+function hasSameAttribute( node: ModelNode | null, key: string, value: unknown ): boolean {
+	return node?.getAttribute( key ) === value;
 }
