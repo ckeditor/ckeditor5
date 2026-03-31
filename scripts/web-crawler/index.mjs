@@ -6,6 +6,8 @@
  */
 
 import minimist from 'minimist';
+import fs from 'node:fs';
+import path from 'node:path';
 import { DEFAULT_CONCURRENCY, DEFAULT_TIMEOUT, runCrawler, toArray, isUrlValid } from '@ckeditor/ckeditor5-dev-web-crawler';
 
 const options = parseArguments( process.argv.slice( 2 ) );
@@ -68,7 +70,7 @@ function parseArguments( args ) {
 	], config );
 
 	const defaultOptionsForManual = minimist( [
-		'-u', `http://localhost:${ process.env.MANUAL_TEST_PORT || '8125' }/`,
+		'-u', `http://localhost:${ parsedOptions.port || process.env.MANUAL_TEST_PORT || getPortFromFile() || '8125' }/`,
 		'-d', 1
 	], config );
 
@@ -99,4 +101,14 @@ function parseArguments( args ) {
 		silent: options.silent,
 		ignoreHTTPSErrors: true
 	};
+}
+
+function getPortFromFile() {
+	const portFilePath = path.join( process.cwd(), 'build', '.manual-tests', '.port' );
+
+	try {
+		return fs.readFileSync( portFilePath, 'utf-8' ).trim();
+	} catch {
+		return null;
+	}
 }
