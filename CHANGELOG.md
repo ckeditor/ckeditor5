@@ -35,7 +35,9 @@ We are introducing table alignment, giving users and integrators much more contr
 
 [Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output. A configuration option lets teams migrating from CKEditor 4 switch to the previous default behaviour.
 
-We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (<th>) and data (<td>) in the Cell Properties panel. This makes it easy to place headers anywhere in a table for improved semantics and accessibility.
+We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (`<th>`) and data (`<td>`) in the Cell Properties panel. 
+
+Additionally header cells can be associated with related row or column with the [`scope` attribute](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-scope) using the “Row header” or “Column header” options. These options help screen readers understand the table structure.
 
 The editor now recognizes legacy HTML table attributes during upcasting, preserving styling from older HTML content and improving compatibility with CKEditor 4.
 
