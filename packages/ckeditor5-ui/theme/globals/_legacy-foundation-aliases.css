@@ -53,5 +53,5 @@
 	--ck-disabled-opacity: var(--ck-opacity-disabled);
 
 	/* UI Size */
-	--ck-ui-component-min-height: var(--ck-size-control-min-height);
+	--ck-ui-component-min-height: var(--ck-size-min-height);
 }
