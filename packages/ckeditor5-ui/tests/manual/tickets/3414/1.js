@@ -7,10 +7,13 @@ import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 BalloonEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'bold', 'link' ]
+		toolbar: [ 'bold', 'link' ],
+		root: {
+			element: document.querySelector( '#editor' )
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

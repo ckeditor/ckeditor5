@@ -25,7 +25,8 @@ ClassicEditor.builtinPlugins.push(
 	CKBoxImageEdit );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-page-break' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-page-break' ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

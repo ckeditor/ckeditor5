@@ -70,7 +70,18 @@ function createEditor( EditorConstructor, containerId, extraPlugins = [], afterC
 	}
 
 	EditorConstructor
-		.create( document.querySelector( containerId ), config )
+		.create( {
+			...config,
+			...EditorConstructor === ClassicEditor ?
+				{
+					attachTo: document.querySelector( containerId )
+				} :
+				{
+					root: {
+						element: document.querySelector( containerId )
+					}
+				}
+		} )
 		.then( editor => {
 			window.editors[ containerId ] = editor;
 

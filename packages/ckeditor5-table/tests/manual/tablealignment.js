@@ -14,7 +14,8 @@ import { TableCellProperties } from '../../src/tablecellproperties.js';
 const sourceElement = document.querySelector( '#editor-table-alignment' );
 
 ClassicEditor
-	.create( sourceElement, {
+	.create( {
+		attachTo: sourceElement,
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,

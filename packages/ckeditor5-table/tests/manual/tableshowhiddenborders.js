@@ -29,7 +29,10 @@ const config = {
 };
 
 ClassicEditor
-	.create( sourceElementWithHiddenBorders, config )
+	.create( {
+		...config,
+		attachTo: sourceElementWithHiddenBorders
+	} )
 	.then( editor => {
 		window.editors[ 'editor-with-hidden-borders' ] = editor;
 		CKEditorInspector.attach( 'editor-with-hidden-borders', editor );
@@ -39,15 +42,14 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( sourceElementWithoutHiddenBorders,
-		{
-			...config,
-			table: {
-				...config.table,
-				showHiddenBorders: false
-			}
+	.create( {
+		...config,
+		attachTo: sourceElementWithoutHiddenBorders,
+		table: {
+			...config.table,
+			showHiddenBorders: false
 		}
-	)
+	} )
 	.then( editor => {
 		window.editors[ 'editor-without-hidden-borders' ] = editor;
 		CKEditorInspector.attach( 'editor-without-hidden-borders', editor );

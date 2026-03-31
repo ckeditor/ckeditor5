@@ -11,7 +11,8 @@ import {
 import { ImageEditor } from './build-image-source.js';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-semantical-image-style-default' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-semantical-image-style-default' ),
 		removePlugins: [ 'imageCaption' ],
 		ui: {
 			viewportOffset: {

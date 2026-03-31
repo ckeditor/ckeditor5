@@ -43,7 +43,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
@@ -67,7 +67,7 @@ To enable selected sub-features of the {@link features/lists-properties list pro
 import { ClassicEditor, List, ListProperties } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		plugins: [ List, ListProperties, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {

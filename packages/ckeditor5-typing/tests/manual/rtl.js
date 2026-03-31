@@ -83,7 +83,10 @@ window.setInterval( function() {
 }, 3000 );
 
 ClassicEditor
-	.create( document.querySelector( '#editor1' ), config )
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor1' )
+	} )
 	.then( editor => {
 		window.editor1 = editor;
 
@@ -96,7 +99,10 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor2' ), config )
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor2' )
+	} )
 	.then( editor => {
 		window.editor2 = editor;
 	} )

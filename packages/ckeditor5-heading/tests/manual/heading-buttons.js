@@ -12,7 +12,8 @@ import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Undo, Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ],
 		toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', '|', 'undo', 'redo' ],
 		heading: {

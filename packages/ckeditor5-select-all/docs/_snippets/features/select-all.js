@@ -16,7 +16,8 @@ import {
 ClassicEditor.builtinPlugins.push( Underline, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

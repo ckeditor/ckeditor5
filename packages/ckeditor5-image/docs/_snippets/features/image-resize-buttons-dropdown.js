@@ -11,7 +11,8 @@ import {
 import { ImageEditor } from './build-image-source.js';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-image-resize-buttons-dropdown' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-resize-buttons-dropdown' ),
 		removePlugins: [ 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			items: [

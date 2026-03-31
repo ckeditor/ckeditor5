@@ -13,7 +13,8 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Heading, Image, Undo, Clipboard ],
 		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )

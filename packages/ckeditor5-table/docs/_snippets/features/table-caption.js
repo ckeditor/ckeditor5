@@ -14,7 +14,8 @@ import {
 import { TableEditor } from './build-table-source.js';
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-caption' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-caption' ),
 		extraPlugins: [
 			TableCaption,
 			Superscript

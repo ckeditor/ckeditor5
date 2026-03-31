@@ -92,7 +92,7 @@ CKBox works natively with CKEditor&nbsp;5. Implementation is straightforward, sa
 		<tr>
 			<td>Image Editing</td>
 			<td>
-				Provides an intuitive image editor for basic operations such as cropping, resizing, and rotating. Basic editing capabilities (crop, resize, rotate, flip) are available directly from the image contextual toolbar for CKBox-served images. 
+				Provides an intuitive image editor for basic operations such as cropping, resizing, and rotating. Basic editing capabilities (crop, resize, rotate, flip) are available directly from the image contextual toolbar for CKBox-served images.
 			</td>
 		</tr>
 		<tr>
@@ -202,10 +202,10 @@ Once imported, you can use it within your application:
 			const { ClassicEditor, LinkEditing, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } = CKEDITOR;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
 					licenseKey: '<YOUR_LICENSE_KEY>',
-					plugins: [ LinkEditing, Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
-					toolbar: ['imageUpload', 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
+					plugins: [ LinkEditing, Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit /* ... */ ],
+					toolbar: [ 'imageUpload', 'ckbox', 'ckboxImageEdit' /* ... */ ], // Depending on your preference.
 					ckbox: {
 						// Configuration.
 					}
@@ -242,7 +242,7 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckbox/dist/styles/ckbox.css';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ LinkEditing, Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
 		toolbar: [ 'imageUpload', 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
@@ -265,7 +265,7 @@ By default, the CKBox feature maps the uploaded image type to the category confi
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			defaultUploadCategories: {
@@ -297,7 +297,7 @@ If the user is assigned to more than one workspace, by default all the files upl
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			tokenUrl: 'https://your.token.url',
@@ -317,7 +317,7 @@ After choosing an asset from the CKBox dialog, it is inserted into the editor co
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			ignoreDataId: true
@@ -333,7 +333,7 @@ By default, the CKBox dialog takes the current language from the editor. If you 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			language: 'es'
@@ -356,7 +356,7 @@ The CKBox feature requires the token endpoint URL configured in the {@link modul
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			tokenUrl: 'https://example.com/cs-token-endpoint'
@@ -372,7 +372,7 @@ Using the CKBox cloud service, you should configure the base URL of the API serv
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			serviceOrigin: 'https://api.ckbox.io'
@@ -396,7 +396,7 @@ If you want to allow CKBox to edit external images, not hosted by the file manag
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		ckbox: {
 			allowExternalImagesEditing: [ 'origin', /^cksource.com/ ]

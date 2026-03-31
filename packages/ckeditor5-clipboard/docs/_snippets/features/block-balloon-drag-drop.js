@@ -6,15 +6,13 @@
 import { CS_CONFIG } from '@snippets/index.js';
 import { BalloonEditorExperimental } from './build-drag-drop-source.js';
 
-BalloonEditorExperimental.create(
-	document.querySelector( '#snippet-block-balloon-drag-drop' ),
-	{
-		root: {
-			placeholder: 'Drop the content here to test the feature.'
-		},
-		cloudServices: CS_CONFIG
-	}
-)
+BalloonEditorExperimental.create( {
+	root: {
+		placeholder: 'Drop the content here to test the feature.',
+		element: document.querySelector( '#snippet-block-balloon-drag-drop' )
+	},
+	cloudServices: CS_CONFIG
+} )
 	.then( editor => {
 		window.editorExperimentalBalloon = editor;
 	} )

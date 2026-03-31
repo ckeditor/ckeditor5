@@ -7,7 +7,8 @@ import { Underline, Strikethrough, Mention } from 'ckeditor5';
 import { CS_CONFIG, ClassicEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '.chat__editor' ), {
+	.create( {
+		attachTo: document.querySelector( '.chat__editor' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ Mention, MentionLinks, Underline, Strikethrough ],
 		toolbar: {
@@ -152,7 +153,7 @@ function MentionLinks( editor ) {
 	// element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -170,11 +171,13 @@ function MentionLinks( editor ) {
 			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
-				href
+				href,
+				// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},

@@ -24,7 +24,8 @@ import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Autoformat,

@@ -10,7 +10,8 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			GeneralHtmlSupport,

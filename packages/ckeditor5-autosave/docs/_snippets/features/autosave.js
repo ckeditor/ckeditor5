@@ -17,7 +17,8 @@ document.querySelector( '#snippet-autosave-lag' ).addEventListener( 'change', ev
 } );
 
 AutosaveEditor
-	.create( document.querySelector( '#snippet-autosave' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-autosave' ),
 		cloudServices: CS_CONFIG,
 		image: {
 			toolbar: [

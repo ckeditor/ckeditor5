@@ -25,7 +25,10 @@ Document editor can be created using the existing data container in the DOM. It 
 ```js
 import { DecoupledEditor } from 'ckeditor5';
 
-DecoupledEditor.create( document.querySelector( '.document-editor__editable' ), {
+DecoupledEditor.create( {
+	root: {
+		element: document.querySelector( '.document-editor__editable' )
+	},
 	cloudServices: {
 		// A configuration of CKEditor Cloud Services.
 		// ...

@@ -14,7 +14,8 @@ import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';
 import '@ckeditor/ckeditor5-mermaid/dist/index.css';
 
 ClassicEditor
-	.create( document.querySelector( '#mermaid' ), {
+	.create( {
+		attachTo: document.querySelector( '#mermaid' ),
 		plugins: ClassicEditor.builtinPlugins.concat( [
 			PictureEditing,
 			ImageResize,

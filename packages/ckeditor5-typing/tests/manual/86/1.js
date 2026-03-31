@@ -13,7 +13,8 @@ window.setInterval( function() {
 }, 3000 );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph ],
 		toolbar: [ 'undo', 'redo' ]
 	} )

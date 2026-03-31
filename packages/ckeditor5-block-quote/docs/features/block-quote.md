@@ -39,7 +39,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, BlockQuote } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ BlockQuote, /* ... */ ],
 		toolbar: [ 'blockQuote', /* ... */ ]
@@ -69,7 +69,7 @@ function DisallowNestingBlockQuotes( editor ) {
 // Pass it via config.extraPlugins or config.plugins:
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		extraPlugins: [ DisallowNestingBlockQuotes ],
 
 		// The rest of the configuration.

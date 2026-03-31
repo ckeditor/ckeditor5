@@ -109,7 +109,8 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
@@ -229,7 +230,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import Abbreviation from './simplebox/abbreviation'; // ADDED
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
 			Abbreviation                                                          // ADDED

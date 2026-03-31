@@ -165,7 +165,8 @@ function getText( viewElement ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			ArticlePluginSet, Code, RemoveFormat, CodeBlock, EasyImage, ImageResize, LinkImage,
 			AutoImage, AutoLink, TextTransformation, Alignment, PasteFromOffice, PageBreak,

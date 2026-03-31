@@ -39,7 +39,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, AutoLink, Link } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Link, AutoLink, /* ... */ ],
 		toolbar: [ 'link', /* ... */ ],
@@ -67,7 +67,7 @@ By default, the link toolbar is configured as follows:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		link: {
 			toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
 		}
@@ -108,7 +108,7 @@ Once registered, the component can be used in the toolbar configuration:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		plugins: [ MyCustomPlugin, /* ... */ ],
 		link: {
 			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
@@ -145,7 +145,7 @@ The following code runs this editor. Learn more about the [configuration](#confi
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			// Automatically add target="_blank" and rel="noopener noreferrer" to all external links.
@@ -183,7 +183,7 @@ A common use case for (automatic) link decorators is adding the `target="_blank"
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			addTargetToExternalLinks: true
@@ -199,7 +199,7 @@ Internally, this configuration corresponds to an [automatic decorator](#adding-a
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			decorators: {
@@ -224,7 +224,7 @@ If you want to leave the decision whether a link should open in a new tab to the
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			decorators: {
@@ -255,7 +255,7 @@ See a basic configuration example:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			defaultProtocol: 'http://'
@@ -281,7 +281,7 @@ See a configuration example:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			// You can use `s?` suffix like below to allow both `http` and `https` protocols at the same time.
@@ -306,7 +306,7 @@ For instance, to create an automatic decorator that adds the `download="file.pdf
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			decorators: {
@@ -338,7 +338,7 @@ Manual decorators add a toggle to the link UI, allowing the user to enable or di
 
 ``` js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		link: {
 			decorators: {
 				highlighted: {
@@ -366,7 +366,7 @@ To configure a "Downloadable" switch button in the link editing balloon that add
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		link: {
 			decorators: {

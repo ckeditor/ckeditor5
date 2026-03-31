@@ -11,7 +11,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-classic-editor' ),
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

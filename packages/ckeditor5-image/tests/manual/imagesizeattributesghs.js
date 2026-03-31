@@ -17,6 +17,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const commonConfig = {
+	attachTo: document.querySelector( '#editor-ghs-with-width-height-attributes' ),
 	plugins: [
 		ArticlePluginSet,
 		ImageResize,
@@ -63,7 +64,7 @@ const commonConfig = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-ghs-with-width-height-attributes' ), commonConfig )
+	.create( commonConfig )
 	.then( editor => {
 		window.editor = editor;
 	} )

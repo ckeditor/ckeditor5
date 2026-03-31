@@ -11,7 +11,8 @@ import {
 import { ToolbarEditor } from './build-toolbar-source.js';
 
 ToolbarEditor
-	.create( document.querySelector( '#toolbar-nested-icon' ), {
+	.create( {
+		attachTo: document.querySelector( '#toolbar-nested-icon' ),
 		toolbar: [
 			'undo', 'redo', '|',
 			{

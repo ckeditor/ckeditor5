@@ -91,9 +91,12 @@ function Structure( editor ) {
 	} );
 }
 
-MiniInspectorEditor.create( document.querySelector( '#mini-inspector-structure' ), {
+MiniInspectorEditor.create( {
 	plugins: [ Essentials, Paragraph, Structure ],
-	toolbar: []
+	toolbar: [],
+	root: {
+		element: document.querySelector( '#mini-inspector-structure' )
+	}
 } )
 	.then( editor => {
 		window.editor = editor;

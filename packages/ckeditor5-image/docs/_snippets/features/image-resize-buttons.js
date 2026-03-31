@@ -11,7 +11,8 @@ import {
 import { ImageEditor } from './build-image-source.js';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-image-resize-buttons' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-resize-buttons' ),
 		removePlugins: [ 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			items: [

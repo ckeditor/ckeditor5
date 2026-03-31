@@ -9,5 +9,7 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {} )
+	.create( {
+		attachTo: document.querySelector( '#editor' )
+	} )
 	.catch( e => console.error( e ) );

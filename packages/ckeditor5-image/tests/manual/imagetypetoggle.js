@@ -25,7 +25,8 @@ import { ImageCaption } from '../../src/imagecaption.js';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Autoformat,

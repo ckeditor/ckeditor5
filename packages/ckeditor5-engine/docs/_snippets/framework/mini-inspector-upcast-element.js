@@ -21,9 +21,12 @@ function Example( editor ) {
 	} );
 }
 
-MiniInspectorEditor.create( document.querySelector( '#mini-inspector-upcast-element' ), {
+MiniInspectorEditor.create( {
 	plugins: [ Essentials, Example ],
-	toolbar: []
+	toolbar: [],
+	root: {
+		element: document.querySelector( '#mini-inspector-upcast-element' )
+	}
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(

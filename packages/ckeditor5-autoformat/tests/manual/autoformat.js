@@ -17,7 +17,8 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Enter,
 			Typing,

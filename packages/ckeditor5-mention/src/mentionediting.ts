@@ -103,7 +103,7 @@ export function _addMentionAttributes(
 	baseMentionData: { id: string; _text: string },
 	data?: Record<string, unknown>
 ): MentionAttribute {
-	return Object.assign( { uid: uid() }, baseMentionData, data || {} );
+	return Object.assign( { uid: uid().slice( 0, 8 ) }, baseMentionData, data || {} );
 }
 
 /**
@@ -127,12 +127,14 @@ export function _toMentionAttribute(
 		return;
 	}
 
+	const dataUid = viewElementOrMention.getAttribute( 'data-mention-uid' ) as string;
+
 	const baseMentionData = {
 		id: dataMention,
 		_text: textNode.data
 	};
 
-	return _addMentionAttributes( baseMentionData, data );
+	return _addMentionAttributes( baseMentionData, dataUid ? { uid: dataUid, ...data } : data );
 }
 
 /**
@@ -163,22 +165,23 @@ function preventPartialMentionDowncast( dispatcher: DowncastDispatcher ) {
 /**
  * Creates a mention element from the mention data.
  */
-function createViewMentionElement( mention: MentionAttribute, { writer }: DowncastConversionApi ): ViewAttributeElement | undefined {
+function createViewMentionElement(
+	mention: MentionAttribute,
+	{ writer, options }: DowncastConversionApi
+): ViewAttributeElement | undefined {
 	if ( !mention ) {
 		return;
 	}
 
-	const attributes = {
+	return writer.createAttributeElement( 'span', {
 		class: 'mention',
-		'data-mention': mention.id
-	};
-
-	const options = {
+		'data-mention': mention.id,
+		// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+		...( !options.isClipboardPipeline && { 'data-mention-uid': mention.uid } )
+	}, {
 		id: mention.uid,
 		priority: 20
-	};
-
-	return writer.createAttributeElement( 'span', attributes, options );
+	} );
 }
 
 /**

@@ -13,7 +13,8 @@ import { global } from '@ckeditor/ckeditor5-utils';
 import { enableViewPlaceholder } from '../../src/view/placeholder.js';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading ],
 		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )

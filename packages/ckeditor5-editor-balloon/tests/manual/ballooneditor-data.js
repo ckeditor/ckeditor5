@@ -12,9 +12,12 @@ let counter = 1;
 
 function initEditor() {
 	BalloonEditor
-		.create( `<h2>Editor ${ counter }</h2><p>This is an editor instance.</p>`, {
+		.create( {
 			plugins: [ ArticlePluginSet ],
-			toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+			toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+			root: {
+				initialData: `<h2>Editor ${ counter }</h2><p>This is an editor instance.</p>`
+			}
 		} )
 		.then( editor => {
 			counter += 1;
