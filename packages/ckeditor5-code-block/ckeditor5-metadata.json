@@ -5,12 +5,12 @@
 			"className": "CodeBlock",
 			"description": "Allows for inserting and editing of blocks of pre–formatted code with the programming language assigned.",
 			"docs": "features/code-blocks.html",
-			"path": "src/codeblock.js",
+			"path": "src/codeblock.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "codeBlock",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/code-block.svg"
+					"iconName": "IconCodeBlock"
 				}
 			],
 			"htmlOutput": [

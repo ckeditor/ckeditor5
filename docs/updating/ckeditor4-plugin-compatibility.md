@@ -377,7 +377,7 @@ The following table presents plugins available in CKEditor 4 and their equivalen
 			<p style="margin-left:0px;"><a href="https://ckeditor.com/cke4/addon/floatingspace">floatingspace</a></p>
 			</td>
 			<td>
-			<p style="margin-left:0px;"><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#inline-editor">Inline editor</a></p>
+			<p style="margin-left:0px;"><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#inline-editor">Inline editor</a></p>
 			</td>
 		</tr>
 		<tr>
@@ -425,7 +425,7 @@ The following table presents plugins available in CKEditor 4 and their equivalen
 			<p style="margin-left:0px;"><a href="https://ckeditor.com/cke4/addon/htmlwriter">htmlwriter</a></p>
 			</td>
 			<td>
-				<p style="margin-left:0px;">A custom HTML writer can be implemented using the <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_htmlwriter-DataProcessorHtmlWriter.html>HtmlWriter</a> interface</p>
+				<p style="margin-left:0px;">A custom HTML writer can be implemented using the <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_htmlwriter-DataProcessorHtmlWriter.html">HtmlWriter</a> interface</p>
 			</td>
 		</tr>
 		<tr>

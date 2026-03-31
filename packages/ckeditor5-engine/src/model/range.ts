@@ -1028,4 +1028,4 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 // Proper overload would interfere with that.
 ModelRange.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'model:range';
-};
+} as any;

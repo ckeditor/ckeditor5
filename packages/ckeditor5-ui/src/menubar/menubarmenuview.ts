@@ -150,6 +150,7 @@ export class MenuBarMenuView extends View implements FocusableView {
 
 		MenuBarMenuBehaviors.closeOnEscKey( this );
 
+		this._closeOnDisabled();
 		this._repositionPanelOnOpen();
 	}
 
@@ -190,6 +191,17 @@ export class MenuBarMenuView extends View implements FocusableView {
 		this.keystrokes.set( 'arrowleft', ( data, cancel ) => {
 			this.fire( 'arrowleft' );
 			cancel();
+		} );
+	}
+
+	/**
+	 * Closes the menu whenever it gets disabled to avoid leaving an open panel in a non-interactive state.
+	 */
+	private _closeOnDisabled(): void {
+		this.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', ( evt, name, isEnabled ) => {
+			if ( !isEnabled ) {
+				this.isOpen = false;
+			}
 		} );
 	}
 

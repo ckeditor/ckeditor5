@@ -10,7 +10,7 @@
 export default async function buildPackageUsingRollupCallback( packagePath ) {
 	const { tools } = await import( '@ckeditor/ckeditor5-dev-utils' );
 
-	return tools.shExec( 'pnpm run build:dist', {
+	return tools.shExec( 'pnpm run build', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true

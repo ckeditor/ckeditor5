@@ -394,7 +394,7 @@ export class ModelElement extends ModelNode {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ModelElement.prototype.is = function( type: string, name?: string ): boolean {
+ModelElement.prototype.is = function( this: ModelElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'element' || type === 'model:element' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -402,7 +402,7 @@ ModelElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 
 	return name === this.name && ( type === 'element' || type === 'model:element' );
-};
+} as any;
 
 /**
  * Converts strings to Text and non-iterables to arrays.

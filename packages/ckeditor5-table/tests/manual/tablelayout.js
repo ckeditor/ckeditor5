@@ -28,6 +28,7 @@ import { TableCaption } from '../../src/tablecaption.js';
 import { TableLayout } from '../../src/tablelayout.js';
 
 const config = {
+	attachTo: document.querySelector( '#editor' ),
 	plugins: [
 		Autoformat,
 		BlockQuote,
@@ -85,7 +86,7 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( config )
 	.then( editor => {
 		window.editor = editor;
 	} )

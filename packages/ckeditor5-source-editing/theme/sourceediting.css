@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_focus.css";
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
-
 .ck-source-editing-area {
 	position: relative;
 	overflow: hidden;
@@ -37,16 +33,14 @@
 	outline: none;
 	overflow: hidden;
 	box-sizing: border-box;
-
 	border-color: var(--ck-color-base-border);
-
-	@mixin ck-rounded-corners {
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-	}
+	border-radius: var(--ck-rounded-corners-radius);
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 
 	&:not([readonly]):focus {
-		@mixin ck-focus-ring;
-		@mixin ck-box-shadow var(--ck-inner-shadow);
+		outline: none;
+		border: var(--ck-focus-ring);
+		box-shadow: var(--ck-inner-shadow), 0 0;
 	}
 }

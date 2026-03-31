@@ -3,8 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+.ck-button.ck-dropdown-menu-list__nested-menu__item__button {
+	border-radius: 0;
+
+	& > .ck-spinner-container,
+	& > .ck-spinner-container .ck-spinner {
+		/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */
+		--ck-toolbar-spinner-size: 20px;
+	}
+
+	& > .ck-spinner-container {
+		/* These margins are the same as for .ck-icon. */
+		margin-left: calc(-1 * var(--ck-spacing-small));
+		margin-right: var(--ck-spacing-small);
+	}
+
+	/*
+	 * Hovered items automatically get focused. Default focus styles look odd
+	 * while moving across a huge list of items so let's get rid of them
+	 */
+	&:focus {
+		border-color: transparent;
+		box-shadow: none;
+
+		&:not(.ck-on) {
+			background: var(--ck-color-button-default-hover-background);
+		}
+	}
+}

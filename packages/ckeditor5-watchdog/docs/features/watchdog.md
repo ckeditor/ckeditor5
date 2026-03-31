@@ -26,8 +26,14 @@ There are two available types of watchdogs:
 
 ## Usage
 
-<info-box>
-	Note: A watchdog can be used only with an {@link getting-started/advanced/integrating-from-source-webpack editor built from source}.
+<info-box important>
+	Watchdog requires access to the editor creation process.
+
+	You can use watchdog only in setups where the editor instance is created programmatically (for example, via `Editor.create()` or a custom creator callback).
+
+	Prebuilt editors and framework integrations are supported as long as a creator function is provided or the integration exposes watchdog configuration.
+
+	Watchdog cannot be used with editors initialized declaratively or via global scripts where the creation process is not under application control.
 </info-box>
 
 ### Editor watchdog
@@ -42,7 +48,8 @@ import { ClassicEditor, Bold, EditorWatchdog, Essentials, Italic, Paragraph } fr
 const watchdog = new EditorWatchdog( ClassicEditor );
 
 // Create a new editor instance.
-watchdog.create( document.querySelector( '#editor' ), {
+watchdog.create( {
+	attachTo: document.querySelector( '#editor' ),
 	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 	plugins: [ Essentials, Paragraph, Bold, Italic ],
 	toolbar: [ 'bold', 'italic', 'alignment' ]
@@ -67,9 +74,9 @@ For more control over the creation and destruction of editor instances, you can 
 const watchdog = new EditorWatchdog();
 
 // Define a callback that will create an editor instance and return it.
-watchdog.setCreator( ( elementOrData, editorConfig ) => {
+watchdog.setCreator( ( editorConfig ) => {
 	return ClassicEditor
-		.create( elementOrData, editorConfig )
+		.create( editorConfig )
 		.then( editor => {
 			// Do something with the new editor instance.
 			// ...
@@ -89,7 +96,7 @@ watchdog.setDestructor( editor => {
 } );
 
 // Create an editor instance and start watching it.
-watchdog.create( elementOrData, editorConfig );
+watchdog.create( editorConfig );
 ```
 
 <info-box>
@@ -168,44 +175,44 @@ await watchdog.create( {
 await watchdog.add( [ {
 	id: 'editor1',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 }, {
 	id: 'editor2',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor-2' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 } ] );
 
 // Or:
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 } );
 
 await watchdog.add( {
 	id: 'editor2',
 	type: 'editor',
-	sourceElementOrData: document.querySelector( '#editor' ),
 	config: {
+		attachTo: document.querySelector( '#editor-2' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic ],
 		toolbar: [ 'bold', 'italic', 'alignment' ]
 	},
-	creator: ( element, config ) => ClassicEditor.create( element, config )
+	creator: ( config ) => ClassicEditor.create( config )
 } );
 ```
 </code-switcher>
@@ -254,7 +261,6 @@ await watchdog.create( contextConfig );
 await watchdog.add( {
 	id: 'editor1',
 	type: 'editor',
-	sourceElementOrData: domElementOrEditorData
 	config: editorConfig,
 	creator: createEditor,
 	destructor: destroyEditor,
@@ -264,7 +270,6 @@ await watchdog.add( [
 	{
 		id: 'editor1',
 		type: 'editor',
-		sourceElementOrData: domElementOrEditorData
 		config: editorConfig,
 		creator: createEditor,
 		destructor: destroyEditor,

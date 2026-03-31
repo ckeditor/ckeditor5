@@ -73,7 +73,7 @@ To initialize the editor in the standard editing mode, add the {@link module:res
 import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditingException:auto', /* ... */ ]
@@ -96,7 +96,7 @@ To initialize the editor in the restricted editing mode, add the {@link module:r
 import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RestrictedEditingMode, /* ... */ ],
 		toolbar: [ 'restrictedEditing', /* ... */ ]
@@ -112,7 +112,7 @@ You can configure which features should be available in the inline editing field
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other confituration options ...
 		restrictedEditing: {
 			allowedCommands: [ 'bold' ]
@@ -146,7 +146,7 @@ class MyPlugin extends Plugin {
 
 ### Configuring the toolbar
 
-When configuring the toolbar item for inserting restricted editing fields in standard mode, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`. There is also the `restrictedEditingException:auto` button that switches between an inline and block depending on the selection. 
+When configuring the toolbar item for inserting restricted editing fields in standard mode, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`. There is also the `restrictedEditingException:auto` button that switches between an inline and block depending on the selection.
 
 Example toolbar configuration may look like the one below:
 
@@ -167,7 +167,7 @@ Example toolbar configuration may look like the one below. Please note that what
 ```js
 toolbar: {
 	items: [
-		'restrictedEditing', '|', 
+		'restrictedEditing', '|',
 		'heading', '|', 'bold', 'italic', `link`, '|',
 		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent', '|',
 		'insertImage', 'insertTable', '|',

@@ -34,7 +34,7 @@ When working with simple content or in small editing areas, you might not need t
 import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
@@ -60,7 +60,7 @@ To prevent this behavior, enable the {@link module:list/list/adjacentlistssuppor
 import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, AdjacentListsSupport, /* ... */ ]
 	} )
@@ -69,7 +69,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-This feature only works for pasted contents or on data load, it {@link updating/update-to-41#changes-to-list-merging does not support entering adjacent lists via the editor UI}. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
+This feature only works for pasted contents or on data load, it does not support entering adjacent lists via the editor UI. Find more about it in the `#changes-to-list-merging` section of `Update to 41.x` guide in the {@link updating/updating-from-older-versions updating from older versions}  guide. If you are interested in this functionality, refer to [this issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/14478).
 
 ## Indenting lists
 

@@ -4,7 +4,7 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import { Command } from 'ckeditor5/src/core.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -57,6 +57,30 @@ describe( 'ShowBlocksCommand', () => {
 			editor.execute( 'showBlocks' );
 
 			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).to.be.true;
+		} );
+
+		it( 'should set block label styles on the root when executed for the first time', () => {
+			editor.execute( 'showBlocks' );
+
+			const root = editor.editing.view.document.roots.get( 'main' );
+			const paragraphLabelLtr = root.getStyle( '--ck-show-blocks-label-p-ltr' );
+			const headingLabelRtl = root.getStyle( '--ck-show-blocks-label-h2-rtl' );
+
+			expect( paragraphLabelLtr ).to.contain( 'data:image/svg+xml;utf8' );
+			expect( paragraphLabelLtr ).to.contain( '>P</text></svg>' );
+			expect( headingLabelRtl ).to.contain( '>H2</text></svg>' );
+		} );
+
+		it( 'should not overwrite existing block label styles', () => {
+			const root = editor.editing.view.document.roots.get( 'main' );
+
+			editor.editing.view.change( writer => {
+				writer.setStyle( '--ck-show-blocks-label-address-ltr', 'preset-address-label', root );
+			} );
+
+			editor.execute( 'showBlocks' );
+
+			expect( root.getStyle( '--ck-show-blocks-label-address-ltr' ) ).to.equal( 'preset-address-label' );
 		} );
 
 		it( 'should remove "ck-show-blocks" class on the root when executed for the second time', () => {
@@ -119,6 +143,17 @@ describe( 'ShowBlocksCommand', () => {
 
 				for ( const root of multirootEditor.editing.view.document.roots ) {
 					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.true;
+				}
+			} );
+
+			it( 'should apply block label styles to all roots', () => {
+				multirootEditor.execute( 'showBlocks' );
+
+				for ( const root of multirootEditor.editing.view.document.roots ) {
+					expect(
+						root.getStyle( '--ck-show-blocks-label-blockquote-ltr' ),
+						`Label style was not set properly on ${ root.rootName } root`
+					).to.contain( '>BLOCKQUOTE</text></svg>' );
 				}
 			} );
 

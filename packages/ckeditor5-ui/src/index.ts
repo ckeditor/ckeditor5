@@ -7,7 +7,7 @@
  * @module ui
  */
 
-// This import must be at the top to ensure that `globals.css` is imported first
+// This import must be at the top to ensure that `index.css` is imported first
 export { View, type UIViewRenderEvent } from './view.js';
 
 export {

@@ -14,7 +14,8 @@ import { CKBox } from '../../src/ckbox.js';
 import { CKBoxImageEdit } from '../../src/ckboximageedit.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			ArticlePluginSet, PictureEditing, ImageUpload, LinkImageEditing,
 			ImageInsert, CloudServices, CKBox, LinkImage, CKBoxImageEdit, Autosave

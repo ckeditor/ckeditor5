@@ -16,7 +16,8 @@ function initEditor() {
 	let editor;
 
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			plugins: [ ArticlePluginSet ],
 			toolbar: {
 				items: [

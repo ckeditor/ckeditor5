@@ -35,7 +35,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-styles' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-styles' ),
 		plugins: [
 			ArticlePluginSet, CloudServices, CKBox, CKBoxImageEdit,
 			PictureEditing, Image, ImageCaption, ImageInsert, ImageResize, ImageStyle, ImageToolbar, ImageUpload,

@@ -7,7 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { formatHtml } from 'ckeditor5/src/utils.js';
+import { formatHtml } from '@ckeditor/ckeditor5-utils';
 import { Table } from '../../src/table.js';
 import { TableToolbar } from '../../src/tabletoolbar.js';
 import { TableSelection } from '../../src/tableselection.js';
@@ -18,7 +18,8 @@ import { TableCaption } from '../../src/tablecaption.js';
 import { PlainTableOutput } from '../../src/plaintableoutput.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			ArticlePluginSet,
 			Table,

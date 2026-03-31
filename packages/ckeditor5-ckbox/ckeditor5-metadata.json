@@ -5,7 +5,7 @@
 			"className": "CKBox",
 			"description": "Allows inserting images as well as links to files into the rich-text editor content.",
 			"docs": "features/file-management/ckbox.html",
-			"path": "src/ckbox.js",
+			"path": "src/ckbox.ts",
 			"requires": [
 				"CloudServices",
 				"Link",
@@ -20,7 +20,7 @@
 				{
 					"name": "ckbox",
 					"type": "Button",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/browse-files.svg"
+					"iconName": "IconBrowseFiles"
 				}
 			],
 			"htmlOutput": [
@@ -42,7 +42,7 @@
 			"className": "CKBoxImageEdit",
 			"description": "Allows editing images.",
 			"docs": "features/file-management/ckbox.html",
-			"path": "src/ckboximageedit.js",
+			"path": "src/ckboximageedit.ts",
 			"requires": [
 				"CKBox"
 			],
@@ -50,7 +50,7 @@
 				{
 					"name": "ckboxImageEdit",
 					"type": "Button",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg"
+					"iconName": "IconCkboxImageEdit"
 				}
 			]
 		}

@@ -12,7 +12,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-upload' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-upload' ),
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

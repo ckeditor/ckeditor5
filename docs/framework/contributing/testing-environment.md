@@ -39,19 +39,19 @@ It accepts the following arguments (you can also run with `--help` to see all av
 
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
 
-```
+```bash
 pnpm run test -c --files=core
 ```
 
 Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
 
-```
+```bash
 pnpm run test -cw --files=engine/view/,typing
 ```
 
 Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
 
-```
+```bash
 pnpm run test -w --files=basic-styles/bold*
 ```
 
@@ -99,14 +99,9 @@ Negations work as well.
 expect( selection ).to.not.have.attribute( 'linkHref' );
 ```
 
-
 ## Running manual tests
 
-To start the manual tests server, use the `pnpm run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
-
-<info-box hint>
-	You can read more about the DLL builds in a {@link getting-started/advanced/dll-builds dedicated guide}.
-</info-box>
+To start the manual tests server, use the `pnpm run manual` task.
 
 The `pnpm run manual` task accepts the following options (you can also run with `--help` to see all available options):
 
@@ -116,7 +111,6 @@ The `pnpm run manual` task accepts the following options (you can also run with 
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
 * `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
-* `--dll` &ndash; An optional flag that allows creating the DLL builds automatically without asking the user for confirmation. If `true` (meaning that the `--dll` flag is provided), DLL builds are created automatically if they are required by test files. You can negate the logic to never create DLL builds and not ask the user by providing the `--no-dll` flag. Defaults to `null`, so the user will be asked for confirmation.
 * `--disable-watch` &ndash; It is enabled by default when there are no `--files` specified. This is due to high RAM memory usage when running watchers on all files. Disabling watch mode causes the files to no longer be rebuilt automatically when changed.
 
 It starts the server available at [http://localhost:8125](http://localhost:8125).
@@ -165,7 +159,8 @@ An example JavaScript file:
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph ]
 	} )
@@ -199,7 +194,7 @@ To verify that all manual tests can be **opened** without any errors (the crawle
 
 To check manual tests, start the server (`pnpm manual --files=XYZ`), and then run the crawler:
 
-```
+```bash
 pnpm run manual:verify
 ```
 
@@ -219,25 +214,25 @@ The command accepts the following arguments:
 
 Run all memory leak tests:
 
-```
+```bash
 pnpm run test:memory
 ```
 
 Test only the classic and inline editors:
 
-```
+```bash
 pnpm run test:memory --editor ClassicEditor --editor InlineEditor
 ```
 
 Use a custom HTML file from `scripts/memory/assets`:
 
-```
+```bash
 pnpm run test:memory --html my-test.html
 ```
 
 Reuse existing assets:
 
-```
+```bash
 pnpm run test:memory --no-build
 ```
 

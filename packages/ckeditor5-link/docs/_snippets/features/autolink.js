@@ -12,7 +12,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-autolink' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-autolink' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [
 			AutoLink

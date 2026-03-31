@@ -10,7 +10,8 @@ import { ArticlePluginSet } from '../_utils/articlepluginset.js';
 document.getElementById( 'form' ).submit = () => {};
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]

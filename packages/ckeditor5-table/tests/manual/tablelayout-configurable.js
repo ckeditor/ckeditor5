@@ -502,7 +502,10 @@ const config = {
 	initialData: initialHTML
 };
 
-let editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+let editor = await ClassicEditor.create( {
+	...config,
+	attachTo: document.querySelector( '#editor' )
+} );
 
 window.editor = editor;
 
@@ -532,7 +535,11 @@ tableTypeSelect.addEventListener( 'change', async () => {
 		...configTableTypes[ tableTypeSelect.value ]
 	};
 
-	editor = await ClassicEditor.create( document.querySelector( '#editor' ), newConfig );
+	editor = await ClassicEditor.create( {
+		...newConfig,
+		attachTo: document.querySelector( '#editor' )
+	} );
+
 	window.editor = editor;
 } );
 

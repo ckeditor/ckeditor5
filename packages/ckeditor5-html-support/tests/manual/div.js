@@ -13,7 +13,8 @@ import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Bold,
 			Essentials,

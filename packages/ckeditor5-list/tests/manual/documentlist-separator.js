@@ -31,7 +31,8 @@ import { ListProperties } from '../../src/listproperties.js';
 import { AdjacentListsSupport } from '../../src/list/adjacentlistssupport.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		...( {
 			plugins: [
 				Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
@@ -55,7 +56,9 @@ ClassicEditor
 				'undo', 'redo'
 			],
 			cloudServices: CS_CONFIG,
-			placeholder: 'Type the content here!',
+			root: {
+				placeholder: 'Type the content here!'
+			},
 			htmlEmbed: {
 				showPreviews: true,
 				sanitizeHtml: html => ( { html, hasChange: false } )

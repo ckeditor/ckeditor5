@@ -35,7 +35,7 @@ Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.
 import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 	} )
@@ -50,7 +50,7 @@ ClassicEditor
 
 ### Using the editor configuration
 
-You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder `editor.config.placeholder`} configuration option:
+You can use the {@link module:core/editor/editorconfig~EditorConfig#root `editor.config.root.placeholder`} configuration option:
 
 * when no element was passed into `Editor.create()` method,
 * when the element passed into `Editor.create()` was not a `<textarea>` (for instance, a `<div>` element),
@@ -58,9 +58,11 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
-		placeholder: 'Type the content here!'
+		root: {
+			placeholder: 'Type the content here!'
+		}
 	} )
 	.then( editor => {
 		console.log( editor );
@@ -70,27 +72,30 @@ ClassicEditor
 	} );
 ```
 
-If your editor implementation uses multiple roots, you should pass an object with keys corresponding to the editor roots names and values equal to the placeholder that should be set in each root:
+If your editor implementation uses multiple roots, configure placeholders using `roots.<rootName>.placeholder`:
 
 ```js
 MultiRootEditor
-	.create(
-	// Roots for the editor:
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		// Config:
-		{
-			placeholder: {
-				header: 'Type header...',
-				content: 'Type content...',
-				leftSide: 'Type left-side...',
-				rightSide: 'Type right-side...'
+	.create( {
+		roots: {
+			header: {
+				placeholder: 'Type header...',
+				element: document.querySelector( '#header' )
+			},
+			content: {
+				placeholder: 'Type content...',
+				element: document.querySelector( '#content' )
+			},
+			leftSide: {
+				placeholder: 'Type left-side...',
+				element: document.querySelector( '#left-side' )
+			},
+			rightSide: {
+				placeholder: 'Type right-side...',
+				element: document.querySelector( '#right-side' )
 			}
-		} )
+		}
+	} )
 	.then( editor => {
 		console.log( editor );
 	} )

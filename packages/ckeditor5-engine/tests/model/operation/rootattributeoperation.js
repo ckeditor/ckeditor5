@@ -93,6 +93,23 @@ describe( 'RootAttributeOperation', () => {
 		expect( root.getAttribute( 'isNew' ) ).to.be.true;
 	} );
 
+	it( 'should change attribute when old value is a deep-equal object (different reference)', () => {
+		root._setAttribute( 'data', { foo: [ 1, 2 ] } );
+
+		model.applyOperation(
+			new RootAttributeOperation(
+				root,
+				'data',
+				{ foo: [ 1, 2 ] },
+				{ foo: [ 3, 4 ] },
+				doc.version
+			)
+		);
+
+		expect( doc.version ).to.equal( 1 );
+		expect( root.getAttribute( 'data' ) ).to.deep.equal( { foo: [ 3, 4 ] } );
+	} );
+
 	it( 'should remove attribute from the root element', () => {
 		root._setAttribute( 'x', true );
 
@@ -233,6 +250,50 @@ describe( 'RootAttributeOperation', () => {
 					'foo',
 					true,
 					null,
+					doc.version
+				);
+
+				op._validate();
+			}, /rootattribute-operation-wrong-old-value/, model );
+		} );
+
+		it( 'should not throw when old value is a deep-equal object (different reference)', () => {
+			root._setAttribute( 'foo', { bar: 'baz', nested: { x: 1 } } );
+
+			const op = new RootAttributeOperation(
+				root,
+				'foo',
+				{ bar: 'baz', nested: { x: 1 } },
+				'newValue',
+				doc.version
+			);
+
+			expect( () => op._validate() ).to.not.throw();
+		} );
+
+		it( 'should not throw when old value is a deep-equal array (different reference)', () => {
+			root._setAttribute( 'foo', [ 1, { a: 2 }, [ 3 ] ] );
+
+			const op = new RootAttributeOperation(
+				root,
+				'foo',
+				[ 1, { a: 2 }, [ 3 ] ],
+				null,
+				doc.version
+			);
+
+			expect( () => op._validate() ).to.not.throw();
+		} );
+
+		it( 'should throw when old value is an object that is not deep-equal to current value', () => {
+			root._setAttribute( 'foo', { bar: 'baz' } );
+
+			expectToThrowCKEditorError( () => {
+				const op = new RootAttributeOperation(
+					root,
+					'foo',
+					{ bar: 'different' },
+					'newValue',
 					doc.version
 				);
 

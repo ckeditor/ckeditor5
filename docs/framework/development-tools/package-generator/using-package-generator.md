@@ -1,70 +1,118 @@
 ---
 menu-title: Using package generator
-meta-title: Using the package generator | CKEditor 5 Framework Documentation
-meta-description: Learn how to easily create a new CKEditor 5 package using the package generator, including setup, configuration, and customization steps.
+meta-title: Create a CKEditor 5 package with package generator | CKEditor 5 Framework Documentation
+meta-description: Learn how to scaffold a Vite-based CKEditor 5 package, answer the generator prompts, and start building your plugin.
 category: package-generator
 order: 41
-modified_at: 2024-06-27
+modified_at: 2026-03-24
 ---
 
-# Using the package generator
+# Create a CKEditor 5 package with package generator
 
-The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers. It creates a working package with the development environment that allows writing new custom plugins for CKEditor&nbsp;5.
+The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) scaffolds a Vite-based package for custom CKEditor&nbsp;5 plugins. It gives you a starter plugin, a sample editor, tests, linting, translation tooling, and build scripts for npm and direct browser usage.
 
-## Quick start
+<info-box important>
+	This guide describes the current Vite-based templates. If you are updating a package created with the older webpack-based generator, follow the {@link updating/nim-migration/custom-plugins Migrating custom plugins} guide instead.
+</info-box>
 
-To create a new package without installing the tool, simply execute the following command:
+## What the generator gives you
+
+JavaScript and TypeScript packages share the same development flow. Right after generation, you get:
+
+* A starter plugin in `src/`.
+* A local sample app in `sample/`, powered by Vite.
+* Unit tests in `tests/`, powered by Vitest.
+* Theme files in `theme/` for icons and CSS.
+* Translation helpers in `lang/` and `scripts/`.
+* Build scripts that create an npm package build and browser-ready files in `dist/`.
+
+The TypeScript template also adds `src/augmentation.ts`, `tsconfig.json`, `tsconfig.build.json`, `typings/`, and generated declaration files.
+
+## Generate a package
+
+You can run the generator without any arguments. If you do not pass some values on the command line, the CLI asks for them interactively:
 
 ```bash
-npx ckeditor5-package-generator <packageName> [--use-npm] [--use-pnpm] [--use-yarn] [--installation-methods <current|current-and-legacy>] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
+npx ckeditor5-package-generator
 ```
 
-The `<packageName>` argument is required and must obey these rules:
+This guide uses the following example names:
 
-* The provided name must match the schema: `@scope/ckeditor5-*`, where [@scope](https://docs.npmjs.com/about-scopes) is the owner of the package.
-* The package name must start with the `ckeditor5-` prefix.
-* Allowed characters are numbers (`0-9`), lowercase letters (`a-z`) and symbols: `-` `.` `_`.
+| Example value       | What it represents                                     |
+| ------------------- | ------------------------------------------------------ |
+| `ckeditor5-callout` | The package name entered in the generator.             |
+| `ckeditor5-callout` | An example package name and generated directory name.  |
+| `Callout`           | The default plugin class name for `ckeditor5-callout`. |
+| `CKCallout`         | The suggested UMD global name for `ckeditor5-callout`. |
 
-As a result of executing the command, a new directory with a package in it will be created. The directory's name will be equal to the specified package name without the `@scope` part, and it will contain an example plugin and the development environment.
+Your actual names depend on the package name and on the values you confirm or pass for `--plugin-name` and `--global-name`.
 
-Available modifiers for the command are:
+The package name can use either of these formats:
 
-* `--use-npm` &ndash; use `npm` to install dependencies in the newly created package.
-* `--use-pnpm` &ndash; use `pnpm` to install dependencies in the newly created package.
-* `--use-yarn` &ndash; use `yarn` to install dependencies in the newly created package.
-* `--global-name` &ndash; define a global name of the package to be used in the UMD build.
-* `--plugin-name` &ndash; define the plugin name to be different from the package name.
-* `--lang` &ndash; (values: `js` | `ts`) choose whether the created package should use JavaScript or TypeScript. If omitted, the script will ask the user to choose manually.
-* `--verbose` &ndash; (alias: `-v`) print additional logs about the current executed task.
-* `--installation-methods` &ndash; (values: `current` | `current-and-legacy`) choose which installation methods of CKEditor 5 do you want to support? If omitted, the script will ask the user to choose manually.
+* `@<scope>/ckeditor5-<name>`
+* `ckeditor5-<name>`
 
-## Choosing the method
+Allowed characters are numbers (`0-9`), lowercase letters (`a-z`), and symbols: `-` `.` `_`.
 
-Currently, a package can be generated in one of two modes of supported installation methods for CKEditor&nbsp;5 :
-* The package will only support the current installation methods if the value for the `--installation-methods` flag is set to `current`. This approach makes it easier to create CKEditor&nbsp;5 plugin at the cost of not supporting the old installation methods.
-* The package generator creates bundles for both the current installation methods and {@link getting-started/legacy-getting-started/quick-start legacy installation methods} if the value for the `--installation-methods` flag is set to `current-and-legacy`.
+The generator creates a new directory named after the package without the scope part. For example, both `ckeditor5-callout` and `@scope/ckeditor5-callout` create the `ckeditor5-callout/` directory.
 
-## Using the package
+### Useful options
 
-After successfully creating a directory with the new package, enter it by executing the following command:
+| Option                                | What it changes                                                                                                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--lang js` or `--lang ts`            | Pre-fills the programming language. If omitted, the generator asks interactively.                                                                                                                      |
+| `--plugin-name <name>`                | Pre-fills the plugin class name.                                                                                                                                                                       |
+| `--global-name <name>`                | Pre-fills the UMD global name used by `dist/browser/index.umd.js`. If omitted, the generator still asks for it and suggests a name based on package name, such as `CKCallout` for `ckeditor5-callout`. |
+| `--package-manager <npm\|yarn\|pnpm>` | Pre-fills the package manager choice. If omitted, the generator asks for it when multiple package managers are available; otherwise it uses `npm`.                                                     |
+| `--verbose`                           | Prints additional progress logs.                                                                                                                                                                       |
 
-```bash
-# Assuming that your package was created with `ckeditor5-foo` as its name.
-cd ckeditor5-foo
-```
+## Start developing the package
 
-Then, run the test environment for the plugin by executing the following command:
+Enter the generated directory and start the sample app:
 
 ```bash
+cd ckeditor5-callout
 npm run start
 ```
 
-Now the plugin can be seen within the example editor.
+The exact command prefix depends on the package manager you selected. The generated scripts are the same regardless of whether you run them with `npm`, `pnpm`, or `yarn`.
 
-You can check out what is available inside your package depending on the language you used:
-* {@link framework/development-tools/package-generator/javascript-package JavaScript}
-* {@link framework/development-tools/package-generator/typescript-package TypeScript}
+The most common scripts are:
 
-## Migration
+| Command                            | What it does                                                |
+| ---------------------------------- | ----------------------------------------------------------- |
+| `npm run start`                    | Starts the Vite sample app with live reload.                |
+| `npm run test`                     | Runs the unit tests with Vitest.                            |
+| `npm run test:debug`               | Runs Vitest in Node inspector mode.                         |
+| `npm run lint`                     | Runs ESLint on the package sources.                         |
+| `npm run stylelint`                | Runs Stylelint on `theme/**/*.css`.                         |
+| `npm run build`                    | Creates the npm and browser builds in `dist/`.              |
+| `npm run translations:synchronize` | Updates translation files from the current source messages. |
+| `npm run translations:validate`    | Checks translation metadata without changing files.         |
 
-If you have used the [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) (version `1.1.0` or lower) to generate and develop your own plugins for CKEditor&nbsp;5 and now you want to migrate to the newest installations methods used by CKEditor&nbsp;5 please visit the {@link updating/nim-migration/migration-to-new-installation-methods Migrating CKEditor&nbsp;5 to new installation methods} guide. You will find an instruction there that will guide you step by step through all things that need to be changed.
+When you start editing the generated package, the usual places to work in are:
+
+* `src/` for the plugin code and public exports.
+* `sample/index.[js|ts]` for the local editor setup used during development.
+* `tests/` for unit tests.
+* `theme/` for icons and CSS.
+* `ckeditor5-metadata.json` for plugin metadata used by CKEditor&nbsp;5 tooling.
+
+<info-box tip>
+	Keep `.js` extensions in relative imports, even in TypeScript files. The generated template uses that pattern on purpose so the emitted ESM files stay valid.
+</info-box>
+
+## Build and integrate the package
+
+Run `npm run build` when you want to publish the package or load it directly in the browser. The generator creates two kinds of output:
+
+* An npm-oriented ESM build in `dist/`.
+* A browser-oriented ESM and UMD build in `dist/browser/`.
+
+See the {@link framework/development-tools/package-generator/build-output-and-integration Build output and integration} guide to learn what each file is for and how to use it with the {@link getting-started/integrations/quick-start npm or ZIP quick start} guide or the {@link getting-started/integrations-cdn/quick-start CDN quick start} guide.
+
+## Next steps
+
+* Follow the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial to build a real plugin on top of the generated template.
+* Read the {@link framework/deep-dive/localization localization} guide before adding translations.
+* Use the {@link framework/development-tools/package-generator/build-output-and-integration Build output and integration} guide when you are ready to publish or embed the package.

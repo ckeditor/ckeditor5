@@ -13,17 +13,18 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
-const editorData = {
-	intro: document.querySelector( '#editor-intro' ),
-	content: document.querySelector( '#editor-content' ),
-	outro: document.querySelector( '#editor-outro' )
+const roots = {
+	intro: { element: document.querySelector( '#editor-intro' ) },
+	content: { element: document.querySelector( '#editor-content' ) },
+	outro: { element: document.querySelector( '#editor-outro' ) }
 };
 
 let editor;
 
 function initEditor() {
 	MultiRootEditor
-		.create( editorData, {
+		.create( {
+			roots,
 			plugins: [
 				Paragraph, Heading, Bold, Italic,
 				Image, ImageInsert, AutoImage, LinkImage,

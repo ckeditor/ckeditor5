@@ -33,11 +33,12 @@
 
 import fs from 'node:fs';
 import upath from 'upath';
+import { CKEDITOR5_PACKAGES_PATH } from './constants.mjs';
 
-const path = upath.join( process.cwd(), 'src', 'index.d.ts' );
+const path = upath.join( CKEDITOR5_PACKAGES_PATH, 'ckeditor5-icons', 'dist', 'index.d.ts' );
 const content = fs.readFileSync( path, 'utf8' );
 
-const updatedContent = content.replaceAll(
+const updatedContent = content.replace(
 	/^export { default as (.*) } from '(.*)';$/gm,
 	'export const $1: string;'
 );

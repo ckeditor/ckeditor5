@@ -11,7 +11,8 @@ import {
 import { FontEditor } from './build-font-source.js';
 
 FontEditor
-	.create( document.querySelector( '#snippet-custom-font-size-named-options' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-custom-font-size-named-options' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

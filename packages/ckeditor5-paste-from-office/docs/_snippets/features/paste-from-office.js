@@ -12,7 +12,8 @@ import {
 import { PasteFromOfficeEditor } from './build-paste-from-office-source.js';
 
 PasteFromOfficeEditor
-	.create( document.querySelector( '#snippet-paste-from-office' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-paste-from-office' ),
 		extraPlugins: [ ListProperties ],
 		toolbar: {
 			items: [
@@ -80,7 +81,9 @@ PasteFromOfficeEditor
 				reversed: false
 			}
 		},
-		placeholder: 'Paste the content here to test the feature.',
+		root: {
+			placeholder: 'Paste the content here to test the feature.'
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {

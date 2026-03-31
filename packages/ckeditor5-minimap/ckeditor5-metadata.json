@@ -5,7 +5,7 @@
 			"className": "Minimap",
 			"description": "Renders a minimap that helps users navigate the editor content.",
 			"docs": "features/minimap.html",
-			"path": "src/minimap.js"
+			"path": "src/minimap.ts"
 		}
 	]
 }

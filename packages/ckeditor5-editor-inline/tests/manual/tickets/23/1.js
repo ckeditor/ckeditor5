@@ -12,7 +12,10 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 InlineEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 		toolbar: {
 			items: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],

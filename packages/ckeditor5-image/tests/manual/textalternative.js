@@ -14,7 +14,8 @@ import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { ImageToolbar } from '../../src/imagetoolbar.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Heading, Image, Undo, Clipboard, ImageToolbar ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', '|', 'imageTextAlternative' ],
 		image: {

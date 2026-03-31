@@ -16,7 +16,7 @@ import { FindAndReplace } from '../../src/findandreplace.js';
 import { FindAndReplaceFormView } from '../../src/ui/findandreplaceformview.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;

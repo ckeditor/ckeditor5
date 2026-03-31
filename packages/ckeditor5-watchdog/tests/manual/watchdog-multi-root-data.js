@@ -79,7 +79,23 @@ const editorConfig = {
 			'mergeTableCells'
 		]
 	},
-	lazyRoots
+	roots: {
+		lazyFoo: { lazyLoad: true },
+		lazyBar: { lazyLoad: true },
+		header: {
+			initialData: '<h2>Gone traveling</h2><h3>Monthly travel news and inspiration</h3>'
+		},
+		content: {
+			initialData: '<h3>Destination of the Month</h3>' +
+				'<h4>Valletta</h4>' +
+				'<p>' +
+					'The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> ' +
+					'is the top destination this summer. It’s home to cutting-edge contemporary architecture, baroque masterpieces, ' +
+					'delicious local cuisine, and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take ' +
+					'a tour through locations familiar to you from Game of Thrones, Gladiator, Troy, and many more.' +
+				'</p>'
+		}
+	}
 };
 
 const watchdog = createWatchdog( document.getElementById( 'editor-state' ) );
@@ -115,8 +131,8 @@ document.getElementById( 'load-root' ).addEventListener( 'click', () => {
 function createWatchdog( stateElement ) {
 	const watchdog = new EditorWatchdog( MultiRootEditor );
 
-	watchdog.setCreator( ( elementsOrData, config ) => {
-		return MultiRootEditor.create( elementsOrData, config ).then( editor => {
+	watchdog.setCreator( config => {
+		return MultiRootEditor.create( config ).then( editor => {
 			window.editor = editor;
 
 			document.querySelector( '#toolbar' ).appendChild( editor.ui.view.toolbar.element );
@@ -140,20 +156,7 @@ function createWatchdog( stateElement ) {
 		return editor.destroy();
 	} );
 
-	watchdog.create(
-		{
-			header: '<h2>Gone traveling</h2><h3>Monthly travel news and inspiration</h3>',
-			content: '<h3>Destination of the Month</h3>' +
-				'<h4>Valletta</h4>' +
-				'<p>' +
-					'The capital city of <a href="https://en.wikipedia.org/wiki/Malta" target="_blank" rel="external">Malta</a> ' +
-					'is the top destination this summer. It’s home to cutting-edge contemporary architecture, baroque masterpieces, ' +
-					'delicious local cuisine, and at least 8 months of sun. It’s also a top destination for filmmakers, so you can take ' +
-					'a tour through locations familiar to you from Game of Thrones, Gladiator, Troy, and many more.' +
-				'</p>'
-		},
-		editorConfig
-	);
+	watchdog.create( editorConfig );
 
 	watchdog.on( 'error', () => {
 		console.log( 'Editor crashed!' );

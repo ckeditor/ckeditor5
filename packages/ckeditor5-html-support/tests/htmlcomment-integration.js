@@ -1109,7 +1109,10 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, TableEditing, TableCaption ]
+					plugins: [ HtmlComment, Essentials, Paragraph, TableEditing, TableCaption ],
+					table: {
+						enableFooters: true
+					}
 				} );
 		}
 
@@ -1313,12 +1316,14 @@ describe( 'HtmlComment integration', () => {
 								'<td>table cell</td>' +
 								'<!-- c10 -->' +
 							'</tr>' +
+						'</tbody>' +
+						'<tfoot>' +
 							'<tr>' +
 								'<!-- c14 -->' +
 								'<td>table cell</td>' +
 								'<!-- c15 -->' +
 							'</tr>' +
-						'</tbody>' +
+						'</tfoot>' +
 					'</table>' +
 					'<!-- c17 -->' +
 					'<!-- c16 -->' +

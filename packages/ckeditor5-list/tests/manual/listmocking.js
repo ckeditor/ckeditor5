@@ -23,7 +23,8 @@ import { modelList, stringifyList } from '../list/_utils/utils.js';
 import { List } from '../../src/list.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, List, Indent, Widget, Table, TableToolbar ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'insertTable', '|', 'undo', 'redo' ],
 		table: {

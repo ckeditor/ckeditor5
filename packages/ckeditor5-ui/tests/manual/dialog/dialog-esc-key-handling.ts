@@ -111,7 +111,8 @@ class DialogWithEscapeableChildren extends Plugin {
 	}
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ) as HTMLElement, {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ) as HTMLElement,
 	plugins: [
 		Essentials,
 		Autoformat,

@@ -7,10 +7,10 @@
  * @module word-count/wordcount
  */
 
-import { type ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { Template, View } from 'ckeditor5/src/ui.js';
-import { env } from 'ckeditor5/src/utils.js';
+import { type ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Template, View } from '@ckeditor/ckeditor5-ui';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 import { modelElementToPlainText } from './utils.js';
 import type { WordCountConfig } from './wordcountconfig.js';

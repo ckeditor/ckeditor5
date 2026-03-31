@@ -49,7 +49,8 @@ class FancyWidget extends Plugin {
 	}
 }
 
-ClassicEditor.create( global.document.querySelector( '#editor' ), {
+ClassicEditor.create( {
+	attachTo: global.document.querySelector( '#editor' ),
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, List, Table, FancyWidget ],
 	toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList', 'insertTable' ]
 } )

@@ -12,7 +12,7 @@ order: 10
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 
 <info-box warning>
-	Since version 41.0.0, the list support plugin has changed for CKEditor&nbsp;5. You can read more about this change in the {@link updating/update-to-41#breaking-changes-to-the-list-plugin Update to CKEditor 41.0.0} guide.
+	Since version 41.0.0, the list support plugin has changed for CKEditor&nbsp;5. You can read more about this change in the `#breaking-changes-to-the-list-plugin` section of `Update to 41.x` in {@link updating/updating-from-older-versions updating from older versions}  guide.
 </info-box>
 
 ## Demo
@@ -43,7 +43,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
@@ -67,7 +67,7 @@ To enable selected sub-features of the {@link features/lists-properties list pro
 import { ClassicEditor, List, ListProperties } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		plugins: [ List, ListProperties, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {

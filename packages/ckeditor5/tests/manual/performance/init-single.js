@@ -15,7 +15,10 @@ function startTest() {
 	const startTime = window.performance.now();
 
 	ClassicEditor
-		.create( editorElement, finalConfig )
+		.create( {
+			...finalConfig,
+			attachTo: editorElement
+		} )
 		.then( editor => {
 			const testTime = window.performance.now() - startTime;
 

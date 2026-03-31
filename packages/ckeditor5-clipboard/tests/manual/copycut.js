@@ -9,7 +9,8 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { _stringifyView } from '@ckeditor/ckeditor5-engine';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]

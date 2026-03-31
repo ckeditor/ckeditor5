@@ -9,12 +9,13 @@ import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { LinkImage } from '../../src/linkimage.js';
 
 // Just to have nicely styles switchbutton;
-import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';
+import '@ckeditor/ckeditor5-ui/theme/components/list/list.css';
 
 window.editors = {};
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
@@ -69,7 +70,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor2' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor2' ),
 		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
@@ -104,7 +106,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor3' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor3' ),
 		plugins: [ ArticlePluginSet, LinkImage, Bold, Italic, Underline ],
 		toolbar: [
 			'link',

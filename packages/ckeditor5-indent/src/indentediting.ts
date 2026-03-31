@@ -7,7 +7,7 @@
  * @module indent/indentediting
  */
 
-import { Plugin, MultiCommand } from 'ckeditor5/src/core.js';
+import { Plugin, MultiCommand } from '@ckeditor/ckeditor5-core';
 
 /**
  * The indent editing feature.

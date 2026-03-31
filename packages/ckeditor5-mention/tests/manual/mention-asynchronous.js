@@ -12,7 +12,8 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { Font } from '@ckeditor/ckeditor5-font';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, Underline, Font, Mention ],
 		toolbar: [
 			'heading',

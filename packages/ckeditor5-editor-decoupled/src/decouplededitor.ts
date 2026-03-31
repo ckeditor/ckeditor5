@@ -11,13 +11,13 @@ import {
 	Editor,
 	ElementApiMixin,
 	secureSourceElement,
+	normalizeRootsConfig,
+	normalizeSingleRootEditorConstructorParams,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core.js';
-import {
-	CKEditorError,
-	getDataFromElement
-} from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-core';
+
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { DecoupledEditorUI } from './decouplededitorui.js';
 import { DecoupledEditorUIView } from './decouplededitoruiview.js';
@@ -59,28 +59,48 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
+	 * @param config The editor configuration.
+	 */
+	protected constructor( config: EditorConfig );
+
+	/**
+	 * Creates an instance of the decoupled editor.
+	 *
+	 * **Note:** Do not use the constructor to create editor instances. Use the static
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
+	 *
+	 * **Note**: This constructor signature is deprecated and will be removed in the future release.
+	 *
+	 * @deprecated
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param config The editor configuration.
 	 */
-	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
-		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
+	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig );
 
-		super( config );
+	protected constructor( sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig, config: EditorConfig = {} ) {
+		const {
+			sourceElementOrData,
+			editorConfig
+		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
-		}
+		super( editorConfig );
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this, sourceElementOrData );
+		normalizeRootsConfig( sourceElementOrData, this.config );
+
+		// From this point use only normalized `roots.main.element`.
+		const sourceElement = this.config.get( 'roots' )!.main.element;
+
+		if ( isElement( sourceElement ) ) {
+			if ( sourceElement.tagName === 'TEXTAREA' ) {
+				// Documented in core/editor/editor.js
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
+			}
+
+			this.sourceElement = sourceElement;
+			secureSourceElement( this, sourceElement );
 		}
 
 		this.model.document.createRoot();
@@ -89,7 +109,7 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, {
 			editableElement: this.sourceElement,
 			shouldToolbarGroupWhenFull,
-			label: this.config.get( 'label' )
+			label: this.config.get( 'roots' )!.main.label
 		} );
 
 		this.ui = new DecoupledEditorUI( this, view );
@@ -147,6 +167,105 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 *
 	 * ```ts
 	 * DecoupledEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' )
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 *
+	 * 		// Append the toolbar to the <body> element.
+	 * 		document.body.appendChild( editor.ui.view.toolbar.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * The element's content will be used as the editor data and the element will become the editable element.
+	 *
+	 * # Creating a detached editor
+	 *
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
+	 * In this case, you will have to manually append both the toolbar element and the editable element to your web page.
+	 *
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			initialData: '<p>Hello world!</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 *
+	 * 		// Append the toolbar to the <body> element.
+	 * 		document.body.appendChild( editor.ui.view.toolbar.element );
+	 *
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.getEditableElement() );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
+	 *
+	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
+	 *
+	 * ```ts
+	 * DecoupledEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' ),
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 *
+	 * 		// Append the toolbar to the <body> element.
+	 * 		document.body.appendChild( editor.ui.view.toolbar.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
+	 * makes it difficult to set the content of the source element.
+	 *
+	 * # Configuring the editor
+	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * customizing plugins, toolbar and more.
+	 *
+	 * @param config The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 */
+	public static override create( config: EditorConfig ): Promise<DecoupledEditor>;
+
+	/**
+	 * Creates a new decoupled editor instance.
+	 *
+	 * **Note**: This method signature is deprecated and will be removed in the future release.
+	 *
+	 * **Note:** remember that `DecoupledEditor` does not append the toolbar element to your web page, so you have to do it manually
+	 * after the editor has been initialized.
+	 *
+	 * There are two ways how the editor can be initialized.
+	 *
+	 * # Using an existing DOM element (and loading data from it)
+	 *
+	 * You can initialize the editor using an existing DOM element:
+	 *
+	 * ```ts
+	 * DecoupledEditor
 	 * 	.create( document.querySelector( '#editor' ) )
 	 * 	.then( editor => {
 	 * 		console.log( 'Editor was initialized', editor );
@@ -186,14 +305,16 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 * # Using an existing DOM element (and data provided in `config.initialData`)
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
 	 * ```ts
 	 * DecoupledEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( editor => {
 	 * 		console.log( 'Editor was initialized', editor );
@@ -216,6 +337,7 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and more.
 	 *
+	 * @deprecated
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
@@ -231,29 +353,24 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<DecoupledEditor> {
-		return new Promise( resolve => {
-			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig ): Promise<DecoupledEditor>;
 
-			const editor = new this( sourceElementOrData, config );
+	public static override create(
+		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
+		config: EditorConfig = {}
+	): Promise<DecoupledEditor> {
+		return new Promise( resolve => {
+			const editor = new this( sourceElementOrDataOrConfig as any, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
-}
-
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
 
 function isElement( value: any ): value is Element {

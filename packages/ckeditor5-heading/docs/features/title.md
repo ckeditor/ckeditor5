@@ -44,7 +44,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Title } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Title, /* ... */ ]
 		title: {
@@ -64,12 +64,14 @@ To change the title placeholder, use the {@link module:heading/title~HeadingTitl
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		title: {
 			placeholder: 'My custom placeholder for the title'
 		},
-		placeholder: 'My custom placeholder for the body'
+		root: {
+			placeholder: 'My custom placeholder for the body'
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );

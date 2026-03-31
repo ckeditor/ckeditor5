@@ -30,7 +30,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, RemoveFormat } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RemoveFormat, /* ... */ ],
 		toolbar: [ 'removeFormat', /* ... */ ]
@@ -56,7 +56,7 @@ In order for the remove formatting feature to work with custom content, you need
 
 This is already done for most inline elements supported by the {@link features/general-html-support General HTML Support} plugin and its derivatives such as the {@link features/style Style} plugin.
 
-By default, formatting is not removed from the {@link features/link link} elements. To remove formatting from them as well, you need to create a {@link getting-started/legacy-getting-started/extending-features plugin} that extends the schema and tells the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
+By default, formatting is not removed from the {@link features/link link} elements. To remove formatting from them as well, you need to create a {@link getting-started/setup/configuration plugin} that extends the schema and tells the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
 
 ```js
 // A simple plugin that extends the remove format feature to consider links.
@@ -72,7 +72,7 @@ Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/config
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [
 			RemoveFormat,

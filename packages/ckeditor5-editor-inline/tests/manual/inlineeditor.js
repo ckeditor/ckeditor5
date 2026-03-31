@@ -17,11 +17,14 @@ function initEditors() {
 
 	function init( selector ) {
 		InlineEditor
-			.create( document.querySelector( selector ), {
+			.create( {
 				image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-				menuBar: { isVisible: true }
+				menuBar: { isVisible: true },
+				root: {
+					element: document.querySelector( selector )
+				}
 			} )
 			.then( editor => {
 				console.log( `${ selector } has been initialized`, editor );

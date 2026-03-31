@@ -16,7 +16,8 @@ import {
 import { TableEditor } from './build-table-source.js';
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-column-resize' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-column-resize' ),
 		extraPlugins: [
 			TableColumnResize,
 			TableProperties,

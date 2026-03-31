@@ -7,7 +7,7 @@
  * @module html-support/integrations/style
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	createObjectView,

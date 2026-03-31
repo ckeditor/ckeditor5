@@ -15,7 +15,8 @@ initEditor( '#editor-scrollable-parent' );
 
 function initEditor( elementId ) {
 	ClassicEditor
-		.create( document.querySelector( elementId ), {
+		.create( {
+			attachTo: document.querySelector( elementId ),
 			plugins: [ ArticlePluginSet, ListProperties, FontColor, FindAndReplace ],
 			toolbar: [
 				'heading',
