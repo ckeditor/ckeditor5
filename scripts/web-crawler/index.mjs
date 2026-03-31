@@ -68,7 +68,7 @@ function parseArguments( args ) {
 	], config );
 
 	const defaultOptionsForManual = minimist( [
-		'-u', 'http://localhost:8125/',
+		'-u', `http://localhost:${ process.env.MANUAL_TEST_PORT || '8125' }/`,
 		'-d', 1
 	], config );
 

@@ -30,13 +30,21 @@ fi
 
 echo "Starting the manual test server..."
 
+PORT_FILE="build/.manual-tests/.port"
+rm -f "$PORT_FILE"
+
 # `yarn run` does not forward SIGTERM to process, so we need to use the command directly.
 node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js --tsconfig ./tsconfig.test.json $MANUAL_TEST_SERVER_OPTIONS &
 
 MANUAL_TEST_SERVER_PROCESS_ID=$!
 
 echo "Waiting for the server..."
-node_modules/.bin/wait-on http://localhost:8125 && pnpm run manual:verify
+
+# Wait for the port file to be created by the server (indicates the server is ready and the port is known).
+while [ ! -f "$PORT_FILE" ]; do sleep 0.5; done
+PORT=$(cat "$PORT_FILE")
+
+node_modules/.bin/wait-on "http://localhost:$PORT" && MANUAL_TEST_PORT=$PORT pnpm run manual:verify
 
 MANUAL_VERIFY_EXIT_CODE=$?
 
