@@ -31,11 +31,11 @@ Colors used across the AI package are now available through a shared CSS variabl
 
 #### Table improvements
 
-We are introducing table alignment and text wrap support, giving users and integrators much more control over how tables are positioned relative to surrounding content. Tables can now be aligned left, centre, or right with proper text wrapping — a feature well-known from CKEditor 4 that many users have been requesting.
+We are introducing table alignment, giving users and integrators much more control over how tables are positioned relative to surrounding content. Tables can now be aligned left, centre, or right with proper text wrapping — a feature well-known from CKEditor 4 that many users have been requesting.
 
-[Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output than the legacy `float`-based approach. A configuration option lets teams migrating from CKEditor 4 switch to the previous default behaviour. Text wrap allows content to flow around left- or right-aligned tables, with both class-based and inline-style output supported.
+[Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output. A configuration option lets teams migrating from CKEditor 4 switch to the previous default behaviour.
 
-We are also bringing back [the ability to toggle cells](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (`<th>`) and data (`<td>`) types in the Cell Properties panel, making it easy to place headers anywhere in a table for better semantics and accessibility.
+We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (<th>) and data (<td>) in the Cell Properties panel. This makes it easy to place headers anywhere in a table for improved semantics and accessibility.
 
 The editor now recognizes legacy HTML table attributes during upcasting, preserving styling from older HTML content and improving compatibility with CKEditor 4.
 
