@@ -29,6 +29,7 @@
 	/* Color */
 	--ck-dropdown-panel-background-color: var(--ck-color-surface-container);
 	--ck-dropdown-panel-border-color: var(--ck-color-border-container);
+	--ck-dropdown-list-background-color: transparent;
 
 	/* Border */
 	--ck-dropdown-panel-border: var(--ck-dropdown-panel-border-width) solid var(--ck-dropdown-panel-border-color);
@@ -224,6 +225,11 @@
 
 	&.ck-dropdown__panel_nw {
 		border-radius: var(--ck-dropdown-panel-border-radius-nw);
+	}
+
+	/* Prevent the list's own background from overlapping the panel's rounded corners. */
+	& > .ck-list {
+		background: var(--ck-dropdown-list-background-color);
 	}
 
 	&:focus {
