@@ -37,12 +37,14 @@
 
 	/* Motion */
 	--ck-color-grid-tile-hover-transform: none;
+	--ck-color-grid-tile-focus-transform: var(--ck-color-grid-tile-hover-transform);
 	--ck-color-grid-tile-transition: box-shadow var(--ck-color-grid-tile-transition-duration) var(--ck-color-grid-tile-transition-timing-function);
 	--ck-color-grid-tile-transition-duration: var(--ck-transition-duration-control);
 	--ck-color-grid-tile-transition-reduced: var(--ck-transition-none);
 	--ck-color-grid-tile-transition-timing-function: var(--ck-transition-timing-function-surface);
 
 	/* State / meta */
+	--ck-color-grid-tile-hover-layer: auto;
 	--ck-color-grid-tile-disabled-cursor: unset;
 	--ck-color-grid-tile-disabled-transition: unset;
 }
@@ -82,12 +84,15 @@
 		}
 
 		&:hover:not( .ck-disabled ) {
+			z-index: var(--ck-color-grid-tile-hover-layer);
 			box-shadow: var(--ck-color-grid-tile-hover-box-shadow);
 			transform: var(--ck-color-grid-tile-hover-transform);
 		}
 
 		&:focus:not( .ck-disabled ) {
+			z-index: var(--ck-color-grid-tile-hover-layer);
 			box-shadow: var(--ck-color-grid-tile-focus-box-shadow);
+			transform: var(--ck-color-grid-tile-focus-transform);
 		}
 	}
 
