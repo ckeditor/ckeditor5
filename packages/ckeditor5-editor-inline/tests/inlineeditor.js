@@ -61,6 +61,22 @@ describe( 'InlineEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates main root element with the given modelElement name', () => {
+			const customEditor = new InlineEditor( {
+				root: {
+					modelElement: 'customRoot',
+					initialData: ''
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {

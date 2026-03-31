@@ -172,7 +172,7 @@ export class MultiRootEditor extends Editor {
 
 		for ( const [ rootName, rootConfig ] of rootsConfig ) {
 			// Create root and `UIView` element for each editable container.
-			const root = this.model.document.createRoot( '$root', rootName );
+			const root = this.model.document.createRoot( rootConfig.modelElement || '$root', rootName );
 
 			if ( rootConfig.lazyLoad ) {
 				root._isLoaded = false;
@@ -461,7 +461,7 @@ export class MultiRootEditor extends Editor {
 	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
 		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
-		const modelElement: string = options.elementName || '$root';
+		const modelElement: string = options.modelElement || options.elementName || '$root';
 
 		if ( isElement( options.element ) ) {
 			/**

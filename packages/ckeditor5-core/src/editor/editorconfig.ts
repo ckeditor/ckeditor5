@@ -1242,6 +1242,24 @@ export interface RootConfig {
 	placeholder?: string;
 
 	/**
+	 * The model root element name. TODO
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			modelElement: '$inlineRoot'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * @default '$root'
+	 */
+	modelElement?: string;
+
+	/**
 	 * Label which briefly describes this editing area.
 	 *
 	 * It is used for the `aria-label` attribute set on the editor editing area, helping assistive technologies

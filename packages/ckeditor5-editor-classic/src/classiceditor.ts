@@ -87,7 +87,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			this.sourceElement = sourceElement;
 		}
 
-		this.model.document.createRoot();
+		this.model.document.createRoot( this.config.get( 'roots' )!.main.modelElement );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 

@@ -35,6 +35,16 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$root' ) ).to.be.true;
 		} );
 
+		it( 'registers $inlineRoot to the schema', () => {
+			expect( schema.isRegistered( '$inlineRoot' ) ).to.be.true;
+			expect( schema.isLimit( '$inlineRoot' ) ).to.be.true;
+			expect( schema.checkChild( [ '$inlineRoot' ], '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$inlineRoot' ], '$inlineObject' ) ).to.be.true;
+			expect( schema.checkChild( [ '$inlineRoot' ], '$block' ) ).to.be.false;
+			expect( schema.checkChild( [ '$inlineRoot' ], '$container' ) ).to.be.false;
+			expect( schema.checkChild( [ '$inlineRoot' ], '$blockObject' ) ).to.be.false;
+		} );
+
 		it( 'registers $container to the schema', () => {
 			expect( schema.isRegistered( '$container' ) ).to.be.true;
 			expect( schema.checkChild( [ '$root' ], '$container' ) ).to.be.true;

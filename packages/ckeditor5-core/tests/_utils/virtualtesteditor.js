@@ -18,7 +18,7 @@ export class VirtualTestEditor extends Editor {
 		super( config );
 
 		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
+		this.model.document.createRoot( config?.root?.modelElement ?? config?.roots?.main?.modelElement );
 	}
 
 	static create( config = {} ) {
