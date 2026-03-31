@@ -201,18 +201,18 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 			this._convertMarkerAdd( markerName, markerRange, conversionApi );
 		}
 
-		// Sort the markers in a stable fashion to ensure that the order in which they are
-		// added to the model's marker collection does not affect how they are
-		// downcast. One particular use case that we are targeting here, is one where
-		// two markers are adjacent but not overlapping, such as an insertion/deletion
-		// suggestion pair representing the replacement of a range of text. In this
-		// case, putting the markers in DOM order causes the first marker's end to be
-		// serialized right after the second marker's start, while putting the markers
-		// in reverse DOM order causes it to be right before the second marker's
-		// start. So, we sort these in a way that ensures non-intersecting ranges are in
-		// reverse DOM order, and intersecting ranges are in something approximating
-		// reverse DOM order (since reverse DOM order doesn't have a precise meaning
-		// when working with intersecting ranges).
+		// Sort markers in reverse DOM order so that the downcast result is deterministic
+		// regardless of the order markers were added to the collection.
+		//
+		// Example: replacing "old" with "new" creates two adjacent markers (delete + insert).
+		// With `markerToElement`, each boundary is a self-closing tag, so the processing
+		// order directly controls where they land at the shared boundary point:
+		//
+		//   Stable (reverse DOM order):   <DEL-START/>old<DEL-END/><INS-START/>new<INS-END/>
+		//   Unstable (insertion order):    <DEL-START/>old<INS-START/><DEL-END/>new<INS-END/>
+		//
+		// Non-intersecting ranges  → strict reverse DOM order.
+		// Intersecting ranges      → best-effort reverse DOM order (ambiguous by nature).
 		const markersToAdd = differ.getMarkersToAdd()
 			.sort( ( a, b ) => compareMarkersForDowncast( [ a.name, a.range ], [ b.name, b.range ] ) );
 
@@ -246,18 +246,8 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 		this._convertInsert( range, conversionApi );
 
-		// Sort the markers in a stable fashion to ensure that the order in which they are
-		// added to the model's marker collection does not affect how they are
-		// downcast. One particular use case that we are targeting here, is one where
-		// two markers are adjacent but not overlapping, such as an insertion/deletion
-		// suggestion pair representing the replacement of a range of text. In this
-		// case, putting the markers in DOM order causes the first marker's end to be
-		// serialized right after the second marker's start, while putting the markers
-		// in reverse DOM order causes it to be right before the second marker's
-		// start. So, we sort these in a way that ensures non-intersecting ranges are in
-		// reverse DOM order, and intersecting ranges are in something approximating
-		// reverse DOM order (since reverse DOM order doesn't have a precise meaning
-		// when working with intersecting ranges).
+		// Sort markers in reverse DOM order for deterministic downcast output.
+		// See the analogous sort in `convertChanges()` for a detailed rationale and examples.
 		for ( const [ name, range ] of Array.from( markers ).sort( compareMarkersForDowncast ) ) {
 			this._convertMarkerAdd( name, range, conversionApi );
 		}
