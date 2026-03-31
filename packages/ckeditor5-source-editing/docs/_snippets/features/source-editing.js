@@ -14,7 +14,8 @@ import { SourceEditingEditor } from './source-editing-imports.js';
 import './source-editing.css';
 
 SourceEditingEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		toolbar: {
 			items: [
 				'undo', 'redo',

@@ -10,7 +10,8 @@ import { Underline, Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Link } from '@ckeditor/ckeditor5-link';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Paragraph, Underline, Bold, Italic, Link ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic', 'link' ]
 	} )

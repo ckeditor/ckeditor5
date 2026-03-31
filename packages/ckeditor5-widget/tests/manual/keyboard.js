@@ -168,7 +168,10 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-ltr' ), config )
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor-ltr' )
+	} )
 	.then( editor => {
 		window.editorLtr = editor;
 
@@ -179,7 +182,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-rtl' ), Object.assign( {}, config, {
+	.create( Object.assign( {}, config, {
+		attachTo: document.querySelector( '#editor-rtl' ),
 		language: 'ar'
 	} ) )
 	.then( editor => {

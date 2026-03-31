@@ -134,7 +134,8 @@ class MentionCommandSwitcher extends Plugin {
 }
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, Underline, Font, Mention, InlineWidget, MentionCommandSwitcher ],
 		toolbar: [
 			'heading',

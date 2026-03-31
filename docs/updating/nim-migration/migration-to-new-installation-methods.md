@@ -59,9 +59,6 @@ module.exports = {
 						loader: 'postcss-loader',
 						options: {
 							postcssOptions: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
 								minify: true
 							} )
 						}
@@ -84,7 +81,8 @@ import { FormatPainter } from '@ckeditor/ckeditor5-format-painter';
 import { SlashCommand } from '@ckeditor/ckeditor5-slash-command';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
 		licenseKey: '<YOUR_LICENSE_KEY>',
@@ -117,7 +115,8 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
 		licenseKey: '<YOUR_LICENSE_KEY>',
@@ -157,7 +156,8 @@ import coreTranslations from 'ckeditor5/translations/pl.js';
 import premiumFeaturesTranslations from 'ckeditor5-premium-features/translations/pl.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
 		licenseKey: '<YOUR_LICENSE_KEY>',
@@ -189,7 +189,8 @@ const { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } = CKEDITOR
 const { FormatPainter, SlashCommand } = CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, FormatPainter, SlashCommand ],
 		toolbar: [ /* ... */ ],
 		licenseKey: '<YOUR_LICENSE_KEY>'

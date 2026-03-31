@@ -7,8 +7,9 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core.js';
-import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+import { Plugin, type Editor, type ElementApi } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import {
 	ViewDowncastWriter,
 	enableViewPlaceholder,
@@ -27,7 +28,7 @@ import {
 	type ViewElement,
 	type ModelWriter,
 	type PlaceholderableViewElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 // A list of element names that should be treated by the Title plugin as title-like.
 // This means that an element of a type from this list will be changed to a title element
@@ -64,7 +65,7 @@ export class Title extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'Paragraph' ] as const;
+		return [ Paragraph ] as const;
 	}
 
 	/**
@@ -354,9 +355,6 @@ export class Title extends Plugin {
 		const sourceElement = editor.sourceElement;
 
 		const titlePlaceholder = editor.config.get( 'title.placeholder' ) || t( 'Type your title' );
-		const bodyPlaceholder = editor.config.get( 'placeholder' ) ||
-			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' ) ||
-			t( 'Type or paste your content here.' );
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:title-content', ( evt, data, conversionApi ) => {
@@ -395,6 +393,10 @@ export class Title extends Plugin {
 						hideViewPlaceholder( writer, oldBody );
 						writer.removeAttribute( 'data-placeholder', oldBody );
 					}
+
+					const bodyPlaceholder = editor.config.get( 'roots' )![ viewRoot.rootName ]?.placeholder ||
+						isTextArea( sourceElement ) && sourceElement.getAttribute( 'placeholder' ) ||
+						t( 'Type or paste your content here.' );
 
 					writer.setAttribute( 'data-placeholder', bodyPlaceholder, body );
 					bodyViewElements.set( viewRoot.rootName, body );
@@ -601,12 +603,15 @@ function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootEl
  *
  * ```ts
  * ClassicEditor
- *   .create( document.querySelector( '#editor' ), {
+ *   .create( {
+ *     attachTo: document.querySelector( '#editor' ),
  *     plugins: [ Title, ... ],
  *     title: {
  *       placeholder: 'My custom placeholder for the title'
  *     },
- *     placeholder: 'My custom placeholder for the body'
+ *     root: {
+ *       placeholder: 'My custom placeholder for the body'
+ *     }
  *   } )
  *   .then( ... )
  *   .catch( ... );
@@ -622,4 +627,11 @@ export interface HeadingTitleConfig {
 	 * Read more in {@link module:heading/title~HeadingTitleConfig}.
 	 */
 	placeholder?: string;
+}
+
+/**
+ * Returns true when given element is a DOM textarea.
+ */
+function isTextArea( sourceElement: HTMLElement | undefined ): sourceElement is HTMLTextAreaElement {
+	return !!sourceElement && sourceElement.tagName.toLowerCase() === 'textarea';
 }

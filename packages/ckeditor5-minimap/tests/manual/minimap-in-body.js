@@ -22,6 +22,9 @@ import { shortData, mediumData, longData } from '../fixtures.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const config = {
+	root: {
+		element: document.querySelector( '#editor-content' )
+	},
 	plugins: [
 		Alignment,
 		ArticlePluginSet,
@@ -93,7 +96,7 @@ const config = {
 };
 
 DecoupledEditor
-	.create( document.querySelector( '#editor-content' ), config )
+	.create( config )
 	.then( editor => {
 		window.editorInstance = editor;
 

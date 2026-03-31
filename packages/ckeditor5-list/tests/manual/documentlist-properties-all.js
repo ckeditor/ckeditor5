@@ -30,7 +30,8 @@ import { List } from '../../src/list.js';
 import { ListProperties } from '../../src/listproperties.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		...( {
 			plugins: [
 				Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
@@ -85,7 +86,9 @@ ClassicEditor
 					'resizeImage'
 				]
 			},
-			placeholder: 'Type the content here!',
+			root: {
+				placeholder: 'Type the content here!'
+			},
 			htmlEmbed: {
 				showPreviews: true,
 				sanitizeHtml: html => ( { html, hasChange: false } )

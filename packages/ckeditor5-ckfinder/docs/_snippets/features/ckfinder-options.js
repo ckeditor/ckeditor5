@@ -9,7 +9,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-ckfinder-options' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-ckfinder-options' ),
 		toolbar: {
 			items: [
 				'undo', 'redo',

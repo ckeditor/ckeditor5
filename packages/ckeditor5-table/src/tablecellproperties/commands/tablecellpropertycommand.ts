@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellpropertycommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, Batch, ModelWriter } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelElement, Batch, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../../tableutils.js';
 import { getSelectionAffectedTable } from '../../utils/common.js';
 

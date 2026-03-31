@@ -36,6 +36,7 @@ async function reloadEditor( options = {} ) {
 	}
 
 	const config = {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, FontFamily ],
 		toolbar: [
@@ -49,5 +50,5 @@ async function reloadEditor( options = {} ) {
 		config.fontFamily.supportAllValues = true;
 	}
 
-	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+	window.editor = await ClassicEditor.create( config );
 }

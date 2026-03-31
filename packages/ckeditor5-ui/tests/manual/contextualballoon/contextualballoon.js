@@ -73,7 +73,8 @@ class CustomStackHighlight {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, BalloonToolbar, CustomStackHighlight, Mention ],
 		toolbar: [ 'bold', 'link' ],

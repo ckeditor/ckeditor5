@@ -34,7 +34,11 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
  */
 function initEditor() {
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
+			root: {
+				placeholder: 'Type the content here!'
+			},
 			plugins: [
 				ArticlePluginSet, CodeBlock, Alignment, TableColumnResize,
 				TableProperties, TableCellProperties, SpecialCharacters, SpecialCharactersEssentials,
@@ -73,7 +77,6 @@ function initEditor() {
 					'imageStyle:breakText'
 				]
 			},
-			placeholder: 'Type the content here!',
 			mention: {
 				feeds: [
 					{

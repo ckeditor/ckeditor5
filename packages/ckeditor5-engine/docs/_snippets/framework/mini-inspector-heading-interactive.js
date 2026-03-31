@@ -47,9 +47,12 @@ function CustomHeading( editor ) {
 	} );
 }
 
-MiniInspectorEditor.create( document.querySelector( '#mini-inspector-heading-interactive' ), {
+MiniInspectorEditor.create( {
 	plugins: [ Essentials, CustomHeading ],
-	toolbar: []
+	toolbar: [],
+	root: {
+		element: document.querySelector( '#mini-inspector-heading-interactive' )
+	}
 } )
 	.then( editor => {
 		window.editor = editor;

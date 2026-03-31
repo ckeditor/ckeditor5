@@ -130,7 +130,9 @@ const commonConfig = {
 			'resizeImage'
 		]
 	},
-	placeholder: 'Type the content here!',
+	root: {
+		placeholder: 'Type the content here!'
+	},
 	mention: {
 		feeds: [
 			{
@@ -245,8 +247,11 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 		}
 
 		DecoupledEditor
-			.create( editorElement, Object.assign( commonConfig,
+			.create( Object.assign( {}, commonConfig,
 				{
+					root: {
+						element: editorElement
+					},
 					toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_INPUT.checked },
 					fullscreen: {
 						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
@@ -287,8 +292,9 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 		}
 
 		ClassicEditor
-			.create( editorElement, Object.assign( commonConfig,
+			.create( Object.assign( {}, commonConfig,
 				{
+					attachTo: editorElement,
 					menuBar: { isVisible: MENU_BAR_INPUT.checked },
 					toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_INPUT.checked },
 					fullscreen: {
@@ -309,8 +315,9 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 } );
 
 ClassicEditor
-	.create( editorElement, Object.assign( commonConfig,
+	.create( Object.assign( {}, commonConfig,
 		{
+			attachTo: editorElement,
 			menuBar: { isVisible: MENU_BAR_INPUT.checked },
 			fullscreen: {
 				menuBar: {

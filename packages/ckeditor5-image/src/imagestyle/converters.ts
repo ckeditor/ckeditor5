@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isEqual from 'es-toolkit/compat/isEqual';
+import { isEqual } from 'es-toolkit/compat';
 import type {
 	DowncastAttributeEvent,
 	ModelElement,
@@ -11,8 +11,8 @@ import type {
 	UpcastConversionApi,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine.js';
-import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-engine';
+import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 import { DEFAULT_OPTIONS } from './utils.js';
 

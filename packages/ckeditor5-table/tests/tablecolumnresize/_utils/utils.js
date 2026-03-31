@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { global } from 'ckeditor5/src/utils.js';
-import { Rect } from '@ckeditor/ckeditor5-utils';
+import { global, Rect } from '@ckeditor/ckeditor5-utils';
 import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { TableColumnResizeEditing } from '../../../src/tablecolumnresize/tablecolumnresizeediting.js';
 import { getTableColumnsWidths } from '../../../src/tablecolumnresize/utils.js';

@@ -8,9 +8,6 @@ import { constants, readFile, writeFile, copyFile, access, mkdir } from 'node:fs
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
 import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-import umbertoJson from '../../docs/umberto.json' with { type: 'json' };
-
-const { CKBOX_VERSION } = umbertoJson.variables;
 
 /**
  * @param {Set<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -26,6 +23,7 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 	const constants = await getConstants();
 
 	await addBootstrapSnippet( snippets, paths );
+	await buildCKBoxAssets( paths );
 	await buildSnippets( snippets, paths, constants, imports );
 	await buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder );
 
@@ -65,6 +63,50 @@ async function getDependencies( packageName ) {
 	} catch {
 		return [];
 	}
+}
+
+/**
+ * Builds CKBox JS and CSS assets from the `ckbox` npm package and writes them to the output path.
+ *
+ * @param {Paths} paths
+ * @returns {Promise<void>}
+ */
+async function buildCKBoxAssets( paths ) {
+	const outputDir = upath.join( paths.output, 'assets', 'ckbox' );
+
+	await mkdir( outputDir, { recursive: true } );
+
+	const sharedOptions = {
+		bundle: true,
+		minify: true,
+		legalComments: 'none',
+		nodePaths: [
+			upath.join( CKEDITOR5_ROOT_PATH, 'node_modules' ),
+			upath.join( CKEDITOR5_COMMERCIAL_PATH, 'node_modules' )
+		]
+	};
+
+	await Promise.all( [
+		esbuild( {
+			...sharedOptions,
+			entryPoints: [ 'ckbox' ],
+			format: 'esm',
+			target: 'es2022',
+			outfile: upath.join( outputDir, 'ckbox.js' )
+		} ),
+		esbuild( {
+			...sharedOptions,
+			entryPoints: [ '@ckbox/uploader' ],
+			format: 'esm',
+			target: 'es2022',
+			outfile: upath.join( outputDir, 'ckboxWidget.js' )
+		} ),
+		esbuild( {
+			...sharedOptions,
+			entryPoints: [ 'ckbox/dist/styles/ckbox.css' ],
+			outfile: upath.join( outputDir, 'ckbox.css' )
+		} )
+	] );
 }
 
 /**
@@ -197,6 +239,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	const editorStylePaths = [
 		'%BASE_PATH%/assets/ckeditor5/ckeditor5.css',
 		'%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
+		'%BASE_PATH%/assets/ckbox/ckbox.css',
 		'%BASE_PATH%/assets/global.css'
 	];
 
@@ -206,12 +249,16 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckbox.js">',
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckbox/ckboxWidget.js">',
 		'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
-		`<link rel="preload" href="https://cdn.ckbox.io/ckbox/${ CKBOX_VERSION }/ckbox.js" as="script">`,
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="%BASE_PATH%/assets/global.js"></script>',
-		`<script src="https://cdn.ckbox.io/ckbox/${ CKBOX_VERSION }/ckbox.js"></script>`,
-		`<script src="https://cdn.ckbox.io/uploader/${ CKBOX_VERSION }/ckboxWidget.js"></script>`,
+		'<script type="module">' +
+			'import * as CKBox from \'ckbox\';' +
+			'import * as CKBoxUploader from \'@ckbox/uploader\'; ' +
+			'window.CKBox = Object.assign( {}, CKBox, CKBoxUploader );' +
+		'</script>',
 		getLayeredStyles( 'editor', editorStylePaths )
 	];
 
@@ -295,7 +342,9 @@ async function getImportMap() {
 		'ckeditor5': '%BASE_PATH%/assets/ckeditor5/ckeditor5.js',
 		'ckeditor5/': '%BASE_PATH%/assets/ckeditor5/',
 		'ckeditor5-premium-features': '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js',
-		'ckeditor5-premium-features/': '%BASE_PATH%/assets/ckeditor5-premium-features/'
+		'ckeditor5-premium-features/': '%BASE_PATH%/assets/ckeditor5-premium-features/',
+		'ckbox': '%BASE_PATH%/assets/ckbox/ckbox.js',
+		'@ckbox/uploader': '%BASE_PATH%/assets/ckbox/ckboxWidget.js'
 	};
 
 	/**

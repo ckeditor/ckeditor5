@@ -19,7 +19,8 @@ import { ImageUpload } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, TableToolbar, PageBreak, CloudServices, TableColumnResize,
 			TableProperties, TableCellProperties, EasyImage, PasteFromOffice, FontColor, FontBackgroundColor, ImageUpload ],

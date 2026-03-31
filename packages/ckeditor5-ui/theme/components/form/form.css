@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
 	--ck-form-default-width: 340px;
@@ -45,39 +43,39 @@
 	&.ck-responsive-form {
 		& .ck.ck-form__row {
 			&.ck-form__row_with-submit {
-				@mixin ck-media-phone {
+				@media screen and (max-width: 600px) {
 					flex-direction: column;
 					align-items: stretch;
 					padding: 0;
 				}
 
 				> .ck {
-					@mixin ck-media-phone {
+					@media screen and (max-width: 600px) {
 						margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
 					}
 				}
 
 				.ck-button_with-text {
-					@mixin ck-media-phone {
+					@media screen and (max-width: 600px) {
 						justify-content: center;
 					}
 				}
 			}
 
 			&.ck-form__row_large-bottom-padding {
-				@mixin ck-media-phone {
+				@media screen and (max-width: 600px) {
 					padding-bottom: var(--ck-spacing-large);
 				}
 			}
 		}
 
-		@mixin ck-dir ltr {
+		[dir="ltr"] & {
 			& > :not(:first-child) {
 				margin-left: 0;
 			}
 		}
 
-		@mixin ck-dir rtl {
+		[dir="rtl"] & {
 			& > :not(:last-child) {
 				margin-left: 0;
 			}

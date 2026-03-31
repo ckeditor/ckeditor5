@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconMarker, IconPen, IconEraser } from 'ckeditor5/src/icons.js';
+import { IconMarker, IconPen, IconEraser } from '@ckeditor/ckeditor5-icons';
 
 import { HighlightEditing } from '../src/highlightediting.js';
 import { HighlightUI } from '../src/highlightui.js';

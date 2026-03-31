@@ -5,12 +5,12 @@
 			"className": "Bold",
 			"description": "Implements bold formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/bold.js",
+			"path": "src/bold.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "bold",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/bold.svg"
+					"iconName": "IconBold"
 				}
 			],
 			"htmlOutput": [
@@ -24,12 +24,12 @@
 			"className": "Code",
 			"description": "Implements inline code formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/code.js",
+			"path": "src/code.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "code",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/code.svg"
+					"iconName": "IconCode"
 				}
 			],
 			"htmlOutput": [
@@ -43,12 +43,12 @@
 			"className": "Italic",
 			"description": "Implements italic formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/italic.js",
+			"path": "src/italic.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "italic",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/italic.svg"
+					"iconName": "IconItalic"
 				}
 			],
 			"htmlOutput": [
@@ -62,12 +62,12 @@
 			"className": "Strikethrough",
 			"description": "Implements strikethrough formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/strikethrough.js",
+			"path": "src/strikethrough.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "strikethrough",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/strikethrough.svg"
+					"iconName": "IconStrikethrough"
 				}
 			],
 			"htmlOutput": [
@@ -81,12 +81,12 @@
 			"className": "Subscript",
 			"description": "Implements subscript formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/subscript.js",
+			"path": "src/subscript.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "subscript",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/subscript.svg"
+					"iconName": "IconSubscript"
 				}
 			],
 			"htmlOutput": [
@@ -100,12 +100,12 @@
 			"className": "Superscript",
 			"description": "Implements superscript formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/superscript.js",
+			"path": "src/superscript.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "superscript",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/superscript.svg"
+					"iconName": "IconSuperscript"
 				}
 			],
 			"htmlOutput": [
@@ -119,12 +119,12 @@
 			"className": "Underline",
 			"description": "Implements underline formatting support. It is a part of the basic text styles package.",
 			"docs": "features/basic-styles.html",
-			"path": "src/underline.js",
+			"path": "src/underline.ts",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "underline",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/underline.svg"
+					"iconName": "IconUnderline"
 				}
 			],
 			"htmlOutput": [

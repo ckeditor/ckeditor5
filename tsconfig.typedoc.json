@@ -7,10 +7,7 @@
     "baseUrl": ".",
     "paths": {
       "ckeditor5": [
-        "./"
-      ],
-      "ckeditor5-collaboration": [
-        "../../packages/ckeditor5-collaboration"
+        "./packages/ckeditor5"
       ],
       "@ckeditor/*": [
         "packages/*",

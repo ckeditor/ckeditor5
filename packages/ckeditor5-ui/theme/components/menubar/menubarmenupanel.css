@@ -9,9 +9,42 @@
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
+	border-radius: var(--ck-rounded-corners-radius);
+	box-shadow: var(--ck-drop-shadow), 0 0;
+
+	background: var(--ck-color-dropdown-panel-background);
+	border: 1px solid var(--ck-color-dropdown-panel-border);
+	bottom: 0;
+	height: fit-content;
+
 	z-index: var(--ck-z-panel);
 	max-width: var(--ck-menu-bar-menu-max-width);
 	position: absolute;
+
+	/* Corner border radius consistent with the button. */
+	&.ck-menu-bar__menu__panel_position_es,
+	&.ck-menu-bar__menu__panel_position_se {
+		border-top-left-radius: 0;
+	}
+
+	&.ck-menu-bar__menu__panel_position_ws,
+	&.ck-menu-bar__menu__panel_position_sw {
+		border-top-right-radius: 0;
+	}
+
+	&.ck-menu-bar__menu__panel_position_en,
+	&.ck-menu-bar__menu__panel_position_ne {
+		border-bottom-left-radius: 0;
+	}
+
+	&.ck-menu-bar__menu__panel_position_wn,
+	&.ck-menu-bar__menu__panel_position_nw {
+		border-bottom-right-radius: 0;
+	}
+
+	&:focus {
+		outline: none;
+	}
 
 	&.ck-menu-bar__menu__panel_position_ne,
 	&.ck-menu-bar__menu__panel_position_nw {
@@ -58,5 +91,28 @@
 
 	&.ck-menu-bar__menu__panel_position_wn {
 		bottom: 0px;
+	}
+}
+
+.ck.ck-menu-bar {
+	& .ck-list-item-button {
+		&:focus,
+		&:active {
+			border-color: transparent;
+			box-shadow: none;
+		}
+	}
+
+	&.ck-menu-bar_focus-border-enabled .ck-list-item-button {
+		&:focus,
+		&:active {
+			/* Fix truncated shadows due to rendering order. */
+			position: relative;
+			z-index: 2;
+
+			outline: none;
+			border: var(--ck-focus-ring);
+			box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		}
 	}
 }

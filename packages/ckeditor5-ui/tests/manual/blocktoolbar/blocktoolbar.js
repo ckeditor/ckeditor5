@@ -13,7 +13,10 @@ import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { BlockToolbar } from '../../../src/toolbar/block/blocktoolbar.js';
 
 BalloonEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
 		plugins: [
 			Essentials, List, Paragraph, Heading, Image, ImageCaption,
 			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, CodeBlock

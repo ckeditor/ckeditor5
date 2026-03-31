@@ -11,7 +11,8 @@ import {
 import { HighlightEditor } from './build-highlight-source.js';
 
 HighlightEditor
-	.create( document.querySelector( '#snippet-highlight-custom-colors-inline' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-highlight-custom-colors-inline' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

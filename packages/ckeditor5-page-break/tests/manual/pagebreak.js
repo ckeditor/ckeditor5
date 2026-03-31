@@ -12,7 +12,8 @@ import { PageBreak } from '../../src/pagebreak.js';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, PageBreak ],
 		toolbar: [

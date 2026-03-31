@@ -139,10 +139,6 @@ msgctxt "The label for the group of toolbars that allows configuring the text al
 msgid "Table cell text alignment"
 msgstr "Alignement du texte de la cellule"
 
-msgctxt "The label for the toolbar that allows configuring the alignment of a table."
-msgid "Alignment"
-msgstr "Alignement"
-
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
 msgstr "Barre d'outils pour modifier l'alignement horizontal du texte"
@@ -218,18 +214,6 @@ msgstr "Aligner le texte au milieu"
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
 msgstr "Aligner le texte en bas"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
-msgid "Align table to the left"
-msgstr "Aligner le tableau à gauche"
-
-msgctxt "The label used by assistive technologies describing a button that centers the table."
-msgid "Center table"
-msgstr "Centrer le tableau "
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
-msgid "Align table to the right"
-msgstr "Aligner le tableau à droite"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
@@ -330,3 +314,15 @@ msgstr "Cellule de données"
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
 msgstr "Cellule d'en-tête"
+
+msgctxt "Label for the set/unset table footer row button."
+msgid "Footer row"
+msgstr "Ligne de pied de page"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a column header."
+msgid "Column header"
+msgstr "En-tête de colonne"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a row header."
+msgid "Row header"
+msgstr "En-tête de ligne"

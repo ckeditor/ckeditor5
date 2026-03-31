@@ -23,7 +23,8 @@ import { ImageBlock } from '../../src/imageblock.js';
 import { ImageCaption } from '../../src/imagecaption.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			Autoformat,

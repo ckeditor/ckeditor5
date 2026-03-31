@@ -13,7 +13,8 @@ import { Link } from '@ckeditor/ckeditor5-link';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Typing,
 			Paragraph,

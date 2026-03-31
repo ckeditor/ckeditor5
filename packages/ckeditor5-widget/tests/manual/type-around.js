@@ -105,7 +105,8 @@ document.querySelector( '#toggleReadOnly' ).addEventListener( 'click', () => {
 } );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			ArticlePluginSet,
 			HorizontalLine,

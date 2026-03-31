@@ -18,7 +18,8 @@ document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', 
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	AutosaveEditor
-		.create( document.querySelector( '#snippet-manualsave' ), {
+		.create( {
+			attachTo: document.querySelector( '#snippet-manualsave' ),
 			cloudServices: CS_CONFIG,
 			ui: {
 				viewportOffset: {

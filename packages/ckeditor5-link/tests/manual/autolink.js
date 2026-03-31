@@ -15,7 +15,8 @@ import { AutoLink } from '../../src/autolink.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Bold, Typing, Paragraph, Undo, Enter, ShiftEnter, Link, AutoLink ],
 		toolbar: [ 'link', 'undo', 'redo' ]
 	} )

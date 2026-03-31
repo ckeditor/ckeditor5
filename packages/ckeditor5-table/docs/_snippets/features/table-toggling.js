@@ -103,7 +103,8 @@ const COLOR_PALETTE = [
 ];
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-toggling' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-toggling' ),
 		extraPlugins: [
 			TableLayout,
 			TableProperties,

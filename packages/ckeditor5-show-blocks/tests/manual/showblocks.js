@@ -50,7 +50,8 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption,
 			ImageStyle, ImageToolbar, Indent, Italic, Link, List, MediaEmbed,
@@ -174,7 +175,9 @@ ClassicEditor
 				}
 			]
 		},
-		placeholder: 'Type or paste your content here!',
+		root: {
+			placeholder: 'Type or paste your content here!'
+		},
 		table: {
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
@@ -200,7 +203,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-rtl' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-rtl' ),
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, ShowBlocks ],
 		toolbar: [

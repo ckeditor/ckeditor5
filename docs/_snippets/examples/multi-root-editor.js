@@ -7,19 +7,25 @@ import { CS_CONFIG, MultiRootEditor } from '@snippets/index.js';
 
 MultiRootEditor
 	.create(
-		// Define roots / editable areas:
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		// Editor configration:
 		{
 			removePlugins: [
 				'CKBox'
 			],
-			cloudServices: CS_CONFIG
+			cloudServices: CS_CONFIG,
+			roots: {
+				header: {
+					element: document.querySelector( '#header' )
+				},
+				content: {
+					element: document.querySelector( '#content' )
+				},
+				leftSide: {
+					element: document.querySelector( '#left-side' )
+				},
+				rightSide: {
+					element: document.querySelector( '#right-side' )
+				}
+			}
 		}
 	)
 	.then( editor => {

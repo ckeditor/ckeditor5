@@ -73,7 +73,8 @@ class AutoLinker extends Plugin {
 	}
 }
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( {
+	attachTo: document.querySelector( '#editor' ),
 	plugins: [ Enter, Typing, Paragraph, Undo, Link, AutoLinker ],
 	toolbar: [ 'undo', 'redo' ]
 } );

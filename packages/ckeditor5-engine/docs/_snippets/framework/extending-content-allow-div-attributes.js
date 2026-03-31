@@ -61,7 +61,8 @@ function ConvertDivAttributes( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-div-attributes' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-div-attributes' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ ConvertDivAttributes ],
 		ui: {

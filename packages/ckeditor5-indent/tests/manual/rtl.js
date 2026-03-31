@@ -11,7 +11,8 @@ import { Indent } from '../../src/indent.js';
 import { IndentBlock } from '../../src/indentblock.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		language: 'ar',
 		plugins: [ ArticlePluginSet, Indent, IndentBlock ],
 		toolbar: [

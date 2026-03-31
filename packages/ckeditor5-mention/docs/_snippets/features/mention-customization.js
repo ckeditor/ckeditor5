@@ -11,7 +11,8 @@ import {
 import { MentionEditor } from './build-mention-source.js';
 
 MentionEditor
-	.create( document.querySelector( '#snippet-mention-customization' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-mention-customization' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ MentionCustomization ],
 		toolbar: {
@@ -90,7 +91,7 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -100,11 +101,13 @@ function MentionCustomization( editor ) {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
-				'href': modelAttributeValue.link
+				'href': modelAttributeValue.link,
+				// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},

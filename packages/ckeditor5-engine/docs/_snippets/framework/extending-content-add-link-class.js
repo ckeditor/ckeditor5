@@ -30,7 +30,8 @@ function AddClassToAllLinks( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link-classes' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-link-classes' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ AddClassToAllLinks ],
 		ui: {

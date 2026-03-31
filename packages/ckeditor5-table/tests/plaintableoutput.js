@@ -123,6 +123,50 @@ describe( 'PlainTableOutput', () => {
 				);
 			} );
 
+			it( 'should create footer rows', () => {
+				_setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ],
+					[ '5', '6' ]
+				], { footerRows: 2 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<tbody>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+						'</tbody>' +
+						'<tfoot>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+							'<tr><td>5</td><td>6</td></tr>' +
+						'</tfoot>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should create footer rows and heading rows', () => {
+				_setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ],
+					[ '5', '6' ],
+					[ '7', '8' ]
+				], { headingRows: 1, footerRows: 2 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<thead>' +
+							'<tr><th>1</th><th>2</th></tr>' +
+						'</thead>' +
+						'<tbody>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+						'</tbody>' +
+						'<tfoot>' +
+							'<tr><td>5</td><td>6</td></tr>' +
+							'<tr><td>7</td><td>8</td></tr>' +
+						'</tfoot>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should work when heading rows number is bigger than number of rows', () => {
 				_setModelData( model, modelTable( [
 					[ '1', '2' ],
@@ -135,6 +179,22 @@ describe( 'PlainTableOutput', () => {
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
 						'</thead>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should work when footer rows number is bigger than number of rows', () => {
+				_setModelData( model, modelTable( [
+					[ '1', '2' ],
+					[ '3', '4' ]
+				], { footerRows: 3 } ) );
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table">' +
+						'<tfoot>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+							'<tr><td>3</td><td>4</td></tr>' +
+						'</tfoot>' +
 					'</table>'
 				);
 			} );
@@ -186,7 +246,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should be overridable', () => {
-				const table = createEmptyTable( model );
+				const table = createEmptyTable();
 
 				editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
 					dispatcher.on( 'attribute:tableBorderColor:table', ( evt, data, conversionApi ) => {
@@ -202,7 +262,7 @@ describe( 'PlainTableOutput', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable( model );
+					table = createEmptyTable();
 				} );
 
 				it( 'tableBorderStyle', () => {
@@ -234,7 +294,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;' );
+					assertPlainTableClass( editor, 'table-style-align-right' );
 				} );
 
 				it( 'tableWidth', () => {
@@ -256,41 +316,11 @@ describe( 'PlainTableOutput', () => {
 				} );
 			} );
 
-			describe( 'should create attribute [experimental]', () => {
-				let table, editor, editorElement, model;
-
-				beforeEach( async () => {
-					editorElement = document.createElement( 'div' );
-					document.body.appendChild( editorElement );
-
-					editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaptionEditing, TablePropertiesEditing, PlainTableOutput, ClipboardPipeline ],
-						experimentalFlags: {
-							useExtendedTableBlockAlignment: true
-						}
-					} );
-
-					model = editor.model;
-					table = createEmptyTable( model );
-				} );
-
-				afterEach( async () => {
-					editorElement.remove();
-					await editor.destroy();
-				} );
-
-				it( 'tableAlignment', () => {
-					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
-
-					assertPlainTableStyle( editor, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
-				} );
-			} );
-
 			describe( 'should remove attribute', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable( model );
+					table = createEmptyTable();
 				} );
 
 				it( 'tableBorderStyle', () => {
@@ -341,7 +371,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;' );
+					assertPlainTableClass( editor, 'table-style-align-right' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
@@ -379,40 +409,6 @@ describe( 'PlainTableOutput', () => {
 				} );
 			} );
 
-			describe( 'should remove attribute [experimental]', () => {
-				let table, editor, editorElement, model;
-
-				beforeEach( async () => {
-					editorElement = document.createElement( 'div' );
-					document.body.appendChild( editorElement );
-
-					editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaptionEditing, TablePropertiesEditing, PlainTableOutput, ClipboardPipeline ],
-						experimentalFlags: {
-							useExtendedTableBlockAlignment: true
-						}
-					} );
-
-					model = editor.model;
-					table = createEmptyTable( model );
-				} );
-
-				afterEach( async () => {
-					editorElement.remove();
-					await editor.destroy();
-				} );
-
-				it( 'tableAlignment', () => {
-					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
-
-					assertPlainTableStyle( editor, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
-
-					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
-
-					assertPlainTableStyle( editor, '' );
-				} );
-			} );
-
 			describe( 'should not create attribute', () => {
 				let table, testEditor;
 
@@ -422,7 +418,7 @@ describe( 'PlainTableOutput', () => {
 					} );
 
 					model = testEditor.model;
-					table = createEmptyTable( model );
+					table = createEmptyTable();
 				} );
 
 				afterEach( async () => {
@@ -555,7 +551,7 @@ describe( 'PlainTableOutput', () => {
 				await testEditor.destroy();
 			} );
 
-			function createEmptyTable( model ) {
+			function createEmptyTable() {
 				_setModelData(
 					model,
 					'<table>' +
@@ -575,6 +571,16 @@ describe( 'PlainTableOutput', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					`<table class="table"${ tableStyleEntry }>` +
+						'<tbody><tr><td>foo</td></tr></tbody>' +
+					'</table>'
+				);
+			}
+
+			function assertPlainTableClass( editor, tableClass ) {
+				const tableClassEntry = tableClass ? ` ${ tableClass }` : '';
+
+				expect( editor.getData() ).to.equalMarkup(
+					`<table class="table${ tableClassEntry }">` +
 						'<tbody><tr><td>foo</td></tr></tbody>' +
 					'</table>'
 				);

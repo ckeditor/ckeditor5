@@ -77,7 +77,8 @@ This is because to see the button, we need to register it in the editor's config
 Open `src/main.js` and update the configuration of the editor:
 
 ```js
-const editor = await ClassicEditor.create( element, {
+const editor = await ClassicEditor.create( {
+	attachTo: element,
 	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	plugins: [
 		Essentials,

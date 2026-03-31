@@ -233,7 +233,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Style, GeneralHtmlSupport } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Style, GeneralHtmlSupport, /* ... */ ],
 		toolbar: [ 'style', /* ... */ ],
@@ -259,7 +259,7 @@ Configuring the styles feature takes two steps. First, you need to define the st
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		style: {
 			definitions: [

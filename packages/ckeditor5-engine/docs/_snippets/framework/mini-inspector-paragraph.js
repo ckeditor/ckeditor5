@@ -7,7 +7,11 @@ import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspe
 import { MiniInspectorEditor } from '@snippets/mini-inspector.js';
 
 MiniInspectorEditor
-	.create( document.querySelector( '#mini-inspector-paragraph' ) )
+	.create( {
+		root: {
+			element: document.querySelector( '#mini-inspector-paragraph' )
+		}
+	} )
 	.then( editor => {
 		window.editor = editor;
 

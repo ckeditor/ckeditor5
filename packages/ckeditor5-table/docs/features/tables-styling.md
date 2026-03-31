@@ -37,7 +37,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Table, TableCellProperties, TableProperties, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
@@ -116,7 +116,7 @@ const customColorPalette = [
 ];
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		table: {
 			contentToolbar: [
@@ -143,7 +143,7 @@ ClassicEditor
 
 ### Default table and table cell styles
 
-The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link getting-started/advanced/content-styles editor content styles}.
+The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link getting-started/setup/css editor content styles}.
 
 The **“Table properties”** and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 

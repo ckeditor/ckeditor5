@@ -12,7 +12,8 @@ import { EasyImage } from '../../src/easyimage.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, CloudServices, ImageUpload, EasyImage ],
 		toolbar: [

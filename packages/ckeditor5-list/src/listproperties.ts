@@ -7,7 +7,7 @@
  * @module list/listproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ListPropertiesEditing } from './listproperties/listpropertiesediting.js';
 import { ListPropertiesUI } from './listproperties/listpropertiesui.js';
 

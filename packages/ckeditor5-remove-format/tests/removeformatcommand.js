@@ -129,6 +129,19 @@ describe( 'RemoveFormatCommand', () => {
 				assert: () => expectEnabledPropertyToBe( true )
 			},
 
+			'state with selection attribute markers on an element': {
+				input: '<p>fo[]o</p>',
+				beforeAssert: () => {
+					model.change( writer => {
+						const p = model.document.getRoot().getChild( 0 );
+						writer.setAttribute( 'selection:someBlockFormatting', 'foo', p );
+						writer.setAttribute( 'selection:fooA', 'bar', p );
+						writer.setAttribute( 'selection:irrelevant', 'true', p );
+					} );
+				},
+				assert: () => expectEnabledPropertyToBe( true )
+			},
+
 			'state with block formatting': {
 				input: '<p someBlockFormatting="foo">f[oo</p><p>]bar</p>',
 				assert: () => expectEnabledPropertyToBe( true )
@@ -189,7 +202,33 @@ describe( 'RemoveFormatCommand', () => {
 					expect( model.document.selection.hasAttribute( 'irrelevant' ) ).to.equal( true );
 				}
 			},
-
+			'state with formatted selection alone (selection attribute marker)': {
+				input: '<p>fo[]o</p>',
+				setDataOptions: {
+					selectionAttributes: {
+						'selection:someBlockFormatting': 'foo',
+						'selection:fooA': 'bar',
+						'selection:irrelevant': true
+					}
+				},
+				assert: () => {
+					expect( model.document.selection.hasAttribute( 'selection:someBlockFormatting' ) ).to.be.false;
+					expect( model.document.selection.hasAttribute( 'selection:fooA' ) ).to.be.false;
+					expect( model.document.selection.hasAttribute( 'selection:irrelevant' ) ).to.be.true;
+				}
+			},
+			'state with selection attribute markers on an element': {
+				input: '<p>fo[]o</p>',
+				beforeAssert: () => {
+					model.change( writer => {
+						const p = model.document.getRoot().getChild( 0 );
+						writer.setAttribute( 'selection:someBlockFormatting', 'foo', p );
+						writer.setAttribute( 'selection:fooA', 'bar', p );
+						writer.setAttribute( 'selection:irrelevant', 'true', p );
+					} );
+				},
+				assert: () => expectModelToBeEqual( '<p selection:fooA="BAR" selection:irrelevant="true">fo[]o</p>' )
+			},
 			'state with block formatting': {
 				input: '<p someBlockFormatting="foo">f[oo</p><p someBlockFormatting="bar">]bar</p>',
 				assert: () => expectModelToBeEqual( '<p>f[oo</p><p someBlockFormatting="bar">]bar</p>' )
@@ -305,6 +344,10 @@ describe( 'RemoveFormatCommand', () => {
 		for ( const [ key, testConfig ] of Object.entries( useCases ) ) {
 			it( key, () => {
 				_setModelData( model, testConfig.input, testConfig.setDataOptions );
+
+				if ( testConfig.beforeAssert ) {
+					testConfig.beforeAssert();
+				}
 
 				if ( options && options.beforeAssert ) {
 					options.beforeAssert();

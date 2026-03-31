@@ -7,8 +7,8 @@
  * @module indent/integrations/indentblocklistcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
 import { _isListItemBlock } from '@ckeditor/ckeditor5-list';
 
 import type { IndentBehavior } from '../indentcommandbehavior/indentbehavior.js';
@@ -70,6 +70,7 @@ export class IndentBlockListCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
+		const listUtils = editor.plugins.get( 'ListUtils' );
 
 		model.change( writer => {
 			const listItem = this._getFirstListItemIfSelectionIsAtListStart( selection )!;
@@ -91,7 +92,10 @@ export class IndentBlockListCommand extends Command {
 				listItems.push( listItem );
 			}
 
-			for ( const item of listItems ) {
+			// Expand to all list items in the selected lists to process them together and reduce postfixer usage.
+			const expandedListItems = listUtils.expandListBlocksToCompleteList( listItems );
+
+			for ( const item of expandedListItems ) {
 				const currentIndent = item.getAttribute( 'blockIndentList' ) as string;
 				const nextIndent = this._indentBehavior.getNextIndent( currentIndent );
 
