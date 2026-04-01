@@ -41,7 +41,9 @@ MANUAL_TEST_SERVER_PROCESS_ID=$!
 echo "Waiting for the server..."
 
 # Wait for the port file to be created and written by the server.
-# Bail out if the server process exits before producing the file.
+# Fall back to the default port if the file is not produced (e.g. older server version).
+# Bail out if the server process exits before we detect a port.
+DEFAULT_PORT=8125
 TIMEOUT=60
 ELAPSED=0
 
@@ -52,9 +54,9 @@ while [ -z "$PORT" ]; do
   fi
 
   if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-    echo "Timed out waiting for the server to start."
-    kill -9 $MANUAL_TEST_SERVER_PROCESS_ID
-    exit 1
+    echo "Port file not found within ${TIMEOUT}s. Falling back to default port ${DEFAULT_PORT}."
+    PORT=$DEFAULT_PORT
+    break
   fi
 
   sleep 1
