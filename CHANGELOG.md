@@ -30,9 +30,9 @@ Colors used across the AI package are now available through a shared CSS variabl
 
 #### Table improvements
 
-We are introducing table alignment, giving users and integrators much more control over how tables are positioned relative to surrounding content. Tables can now be aligned left, centre, or right with proper text wrapping — a feature well-known from CKEditor 4 that many users have been requesting.
+We are introducing table alignment, giving users and integrators much more control over how tables are positioned relative to surrounding content. Tables can now be aligned left, or right with proper text wrapping — a feature well-known from CKEditor 4 that many users have been requesting.
 
-[Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output. A configuration option lets teams migrating from CKEditor 4 switch to the previous default behaviour.
+[Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output. With a configuration option, teams which are migrating from CKEditor 4 can switch the output back to inlinse styles if needed.
 
 We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (`<th>`) and data (`<td>`) in the Cell Properties panel. 
 
