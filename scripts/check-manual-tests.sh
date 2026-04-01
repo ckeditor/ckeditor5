@@ -40,9 +40,30 @@ MANUAL_TEST_SERVER_PROCESS_ID=$!
 
 echo "Waiting for the server..."
 
-# Wait for the port file to be created by the server (indicates the server is ready and the port is known).
-while [ ! -f "$PORT_FILE" ]; do sleep 0.5; done
-PORT=$(cat "$PORT_FILE")
+# Wait for the port file to be created and written by the server.
+# Bail out if the server process exits before producing the file.
+TIMEOUT=60
+ELAPSED=0
+
+while [ -z "$PORT" ]; do
+  if ! kill -0 "$MANUAL_TEST_SERVER_PROCESS_ID" 2>/dev/null; then
+    echo "Server process exited before producing the port file."
+    exit 1
+  fi
+
+  if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+    echo "Timed out waiting for the server to start."
+    kill -9 $MANUAL_TEST_SERVER_PROCESS_ID
+    exit 1
+  fi
+
+  sleep 1
+  ELAPSED=$((ELAPSED + 1))
+
+  if [ -f "$PORT_FILE" ]; then
+    PORT=$(cat "$PORT_FILE")
+  fi
+done
 
 node_modules/.bin/wait-on "http://localhost:$PORT" && MANUAL_TEST_PORT=$PORT pnpm run manual:verify
 
