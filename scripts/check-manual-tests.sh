@@ -46,6 +46,7 @@ echo "Waiting for the server..."
 DEFAULT_PORT=8125
 TIMEOUT=60
 ELAPSED=0
+PORT=""
 
 while [ -z "$PORT" ]; do
   if ! kill -0 "$MANUAL_TEST_SERVER_PROCESS_ID" 2>/dev/null; then
