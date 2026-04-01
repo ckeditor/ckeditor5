@@ -28,7 +28,6 @@ The styling of suggestion previews in [AI Chat](https://ckeditor.com/docs/ckedit
 
 Colors used across the AI package are now available through a shared CSS variable palette, making AI components easier to customize. A new [programmatic API guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-programmatic.html) also describes how to interact with AI features from code.
 
-
 #### Table improvements
 
 We are introducing table alignment, giving users and integrators much more control over how tables are positioned relative to surrounding content. Tables can now be aligned left, centre, or right with proper text wrapping — a feature well-known from CKEditor 4 that many users have been requesting.
