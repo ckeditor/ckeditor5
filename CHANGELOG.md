@@ -52,7 +52,7 @@ Several default table behaviors have also been updated:
 
 #### Export to PDF default version change
 
-The Export to PDF feature now defaults to version 2 of the converter API, so you will enjoy a range of [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#new-features-in-v2) right out of the box — including advanced header and footer configurations, flexible page sizing, PDF metadata editing, owner password protection, and digital signature support.
+The Export to PDF feature now defaults to version 2 of the converter API, so you will enjoy a range of [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#html-to-pdf-converter-features) right out of the box — including advanced header and footer configurations, flexible page sizing, PDF metadata editing, owner password protection, and digital signature support.
 
 Since the new version may produce slightly different output than version 1, we recommend reviewing the new [default configuration](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#default-configuration).
 
