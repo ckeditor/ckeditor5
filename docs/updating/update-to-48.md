@@ -231,16 +231,19 @@ If needed, fix your custom styles by making your override selector more specific
 The following simplified example shows the kind of difference you may notice:
 
 ```css
-/* Before */
+/* Source code */
 .ck.ck-button, a.ck.ck-button {
 	&.ck-button_with-text {}
 }
+
+/* Before */
+.ck.ck-button.ck-button_with-text, a.ck.ck-button.ck-button_with-text {}
 
 /* After */
 :is(.ck.ck-button, a.ck.ck-button).ck-button_with-text {}
 ```
 
-These selectors look similar, but the second one can have a stronger effect in the cascade, which may change which rule wins.
+The "Before" and "After" selectors look similar, but the second has a stronger effect in the cascade and may change which rule wins.
 
 If you do not override the editor styles, no action is required.
 
