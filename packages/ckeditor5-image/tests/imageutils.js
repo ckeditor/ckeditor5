@@ -397,6 +397,25 @@ describe( 'ImageUtils plugin', () => {
 			} );
 		} );
 
+		it( 'should return true when the selection directly in a root that has a non-$root element name', () => {
+			model.schema.register( 'customRoot', {
+				isLimit: true
+			} );
+			model.schema.extend( 'imageBlock', {
+				allowIn: 'customRoot'
+			} );
+
+			const root = model.document.createRoot( 'customRoot', 'custom' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( root, 0 )
+				) );
+			} );
+
+			expect( imageUtils.isImageAllowed() ).to.be.true;
+		} );
+
 		it( 'should return true when the selection is in empty block', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 

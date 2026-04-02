@@ -61,6 +61,22 @@ describe( 'ClassicEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates main root element with the given modelElement name', () => {
+			const customEditor = new ClassicEditor( {
+				root: {
+					modelElement: 'customRoot',
+					initialData: ''
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		it( 'contains the source element as #sourceElement property', () => {

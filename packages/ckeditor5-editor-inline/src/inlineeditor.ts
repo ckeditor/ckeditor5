@@ -97,7 +97,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		this.config.define( 'menuBar.isVisible', false );
 
-		this.model.document.createRoot();
+		this.model.document.createRoot( this.config.get( 'roots' )!.main.modelElement );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 

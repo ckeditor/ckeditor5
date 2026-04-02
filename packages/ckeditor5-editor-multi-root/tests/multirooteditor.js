@@ -56,6 +56,25 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.model.document.getRoot( 'foo' ) ).to.instanceof( ModelRootElement );
 			expect( editor.model.document.getRoot( 'bar' ) ).to.instanceof( ModelRootElement );
+
+			expect( editor.model.document.getRoot( 'foo' ).name ).to.equal( '$root' );
+			expect( editor.model.document.getRoot( 'bar' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates roots with the given modelElement names', () => {
+			const customEditor = new MultiRootEditor( {
+				roots: {
+					foo: { modelElement: 'customRoot', initialData: '' },
+					bar: { initialData: '' }
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'foo' ).name ).to.equal( 'customRoot' );
+			expect( customEditor.model.document.getRoot( 'bar' ).name ).to.equal( '$root' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		describe( 'ui', () => {
@@ -1100,6 +1119,22 @@ describe( 'MultiRootEditor', () => {
 			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root.name ).to.equal( 'div' );
+		} );
+
+		it( 'should add a model root with default name', () => {
+			editor.addRoot( 'bar', {} );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.name ).to.equal( '$root' );
+		} );
+
+		it( 'should add a model root with given modelElement', () => {
+			editor.addRoot( 'bar', { modelElement: 'customRoot' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.name ).to.equal( 'customRoot' );
 		} );
 
 		it( 'should add a model root with given attributes', () => {
