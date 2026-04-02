@@ -23,6 +23,7 @@ import mixedElements from './mixed-elements/input.word.html';
 import multiBlockBlockAfter from './multi-block-block-after/input.word.html';
 import listContinuation from './list-continuation/input.word2016.html';
 import indentBlockList from './indent-block-list/input.word.html';
+import nestedContinued from './nested-continued/input.word.html';
 
 import simpleNormalized from './simple/normalized.word2016.html';
 import styledNormalized from './styled/normalized.word2016.html';
@@ -43,6 +44,7 @@ import mixedElementsNormalized from './mixed-elements/normalized.word.html';
 import multiBlockBlockAfterNormalized from './multi-block-block-after/normalized.word.html';
 import listContinuationNormalized from './list-continuation/normalized.word2016.html';
 import indentBlockListNormalized from './indent-block-list/normalized.word.html';
+import nestedContinuedNormalized from './nested-continued/normalized.word.html';
 
 import simpleModel from './simple/model.word2016.html';
 import styledModel from './styled/model.word2016.html';
@@ -63,6 +65,7 @@ import mixedElementsModel from './mixed-elements/model.word.html';
 import multiBlockBlockAfterModel from './multi-block-block-after/model.word.html';
 import listContinuationModel from './list-continuation/model.word2016.html';
 import indentBlockListModel from './indent-block-list/model.word.html';
+import nestedContinuedModel from './nested-continued/model.word.html';
 
 export const fixtures = {
 	input: {
@@ -84,7 +87,8 @@ export const fixtures = {
 		mixedElements,
 		multiBlockBlockAfter,
 		listContinuation,
-		indentBlockList
+		indentBlockList,
+		nestedContinued
 	},
 	normalized: {
 		simple: simpleNormalized,
@@ -105,7 +109,8 @@ export const fixtures = {
 		mixedElements: mixedElementsNormalized,
 		multiBlockBlockAfter: multiBlockBlockAfterNormalized,
 		listContinuation: listContinuationNormalized,
-		indentBlockList: indentBlockListNormalized
+		indentBlockList: indentBlockListNormalized,
+		nestedContinued: nestedContinuedNormalized
 	},
 	model: {
 		simple: simpleModel,
@@ -126,7 +131,8 @@ export const fixtures = {
 		mixedElements: mixedElementsModel,
 		multiBlockBlockAfter: multiBlockBlockAfterModel,
 		listContinuation: listContinuationModel,
-		indentBlockList: indentBlockListModel
+		indentBlockList: indentBlockListModel,
+		nestedContinued: nestedContinuedModel
 	}
 };
 
