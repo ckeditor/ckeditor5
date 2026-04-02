@@ -19,7 +19,9 @@ function initEditor( element, placeholder ) {
 			attachTo: element,
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
-			placeholder
+			root: {
+				placeholder
+			}
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
@@ -32,4 +34,4 @@ function initEditor( element, placeholder ) {
 }
 
 initEditor( document.querySelector( '#editor-1' ) );
-initEditor( document.querySelector( '#editor-2' ), 'The placeholder from editor.config.placeholder' );
+initEditor( document.querySelector( '#editor-2' ), 'The placeholder from editor.config.root.placeholder' );
