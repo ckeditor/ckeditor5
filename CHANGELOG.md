@@ -30,6 +30,14 @@ Colors used across the AI package are now available through a shared CSS variabl
 
 #### Table improvements
 
+We are introducing table alignment, giving users and integrators much more control over how tables are positioned relative to surrounding content. Tables can now be aligned left, or right with proper text wrapping — a feature well-known from CKEditor 4 that many users have been requesting.
+
+[Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output. With a configuration option, teams which are migrating from CKEditor 4 can switch the output back to inlinse styles if needed.
+
+We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (`<th>`) and data (`<td>`) in the Cell Properties panel. 
+
+Additionally header cells can be associated with related row or column with the [`scope` attribute](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-scope) using the “Row header” or “Column header” options. These options help screen readers understand the table structure.
+
 The editor now recognizes legacy HTML table attributes during upcasting, preserving styling from older HTML content and improving compatibility with CKEditor 4.
 
 * The `<table border="N">` attribute is now converted to `tableBorderWidth`.
@@ -44,7 +52,7 @@ Several default table behaviors have also been updated:
 
 #### Export to PDF default version change
 
-The Export to PDF feature now defaults to version 2 of the converter API, so you will enjoy a range of [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#new-features-in-v2) right out of the box — including advanced header and footer configurations, flexible page sizing, PDF metadata editing, owner password protection, and digital signature support.
+The Export to PDF feature now defaults to version 2 of the converter API, so you will enjoy a range of [powerful enhancements](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#html-to-pdf-converter-features) right out of the box — including advanced header and footer configurations, flexible page sizing, PDF metadata editing, owner password protection, and digital signature support.
 
 Since the new version may produce slightly different output than version 1, we recommend reviewing the new [default configuration](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html#default-configuration).
 
