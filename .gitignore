@@ -16,6 +16,7 @@ docs/api/output.json
 yarn.lock
 package-lock.json
 coverage/
+coverage-vitest/
 
 # Files associated with specific development environments.
 .DS_Store

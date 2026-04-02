@@ -27,38 +27,38 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^55.0.0
-        version: 55.0.0(postcss@8.5.6)(tslib@2.8.1)(typescript@5.5.4)
+        specifier: ^55.2.0
+        version: 55.2.0(postcss@8.5.6)(tslib@2.8.1)(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^55.0.0
-        version: 55.0.0
+        specifier: ^55.2.0
+        version: 55.2.0
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^55.0.0
-        version: 55.0.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.2.0
+        version: 55.2.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-ci':
-        specifier: ^55.0.0
-        version: 55.0.0
+        specifier: ^55.2.0
+        version: 55.2.0
       '@ckeditor/ckeditor5-dev-dependency-checker':
-        specifier: ^55.0.0
-        version: 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.2.0
+        version: 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^55.0.0
-        version: 55.0.0(typescript@5.5.4)
+        specifier: ^55.2.0
+        version: 55.2.0(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^55.0.0
-        version: 55.0.0
+        specifier: ^55.2.0
+        version: 55.2.0
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^55.0.0
-        version: 55.0.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.2.0
+        version: 55.2.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-stale-bot':
-        specifier: ^55.0.0
-        version: 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+        specifier: ^55.2.0
+        version: 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: ^55.0.0
-        version: 55.0.0(@swc/core@1.13.5)(esbuild@0.25.10)
+        specifier: ^55.2.0
+        version: 55.2.0(@swc/core@1.13.5)(esbuild@0.25.10)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^55.0.0
-        version: 55.0.0(typescript@5.5.4)
+        specifier: ^55.2.0
+        version: 55.2.0(typescript@5.5.4)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.0
         version: 5.0.0
@@ -4329,62 +4329,62 @@ packages:
   '@ckbox/uploader@2.11.0':
     resolution: {integrity: sha512-joskUAalQIBDF0bvRpDBQDxQteVqUrU7Fvx+peQy+0Al/Cj5bzkSZlkChMBPAPsc6HqZyuNfaAN+CSO5sCHt0A==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@55.0.0':
-    resolution: {integrity: sha512-7B0njsGc+rQFkmGnszGZQmn8V9dJnhFv8yIUxom7/y+cIIM+WDJUuXh7C/ahjW/fiMnyql6h8zYsDmbfTzhEvA==}
+  '@ckeditor/ckeditor5-dev-build-tools@55.2.0':
+    resolution: {integrity: sha512-pUa3GqCOEb7m5xhbUPV6gKLIgsX/TI3MXT51u0wa+A822ZFVbaXoGd2LissPkuK9WcGfmgU1gT8TzcyFTCTYig==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@55.0.0':
-    resolution: {integrity: sha512-o9LewJMw3ma3M0F4JAv5Zpfd1/Ut9FQinnLAdf3dJP4Vz6PjoJHevPDMbE1vt9mzMniTt5jAUrPdIlAHao3xtg==}
+  '@ckeditor/ckeditor5-dev-bump-year@55.2.0':
+    resolution: {integrity: sha512-wP8YgItcwRZgYR68y5ikQg32d3TKo/JkvvrwuPFBmEsQ/6DduNEaPQGeW5EzOnPj8hydAwCKswgCroVr7RBSVg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@55.0.0':
-    resolution: {integrity: sha512-tGv2kHBMvd9hrUESuEFDXlHPGOsKYXahgofnvIVwfRRWYvrpMjZoQX80C7S0KO12s8cBviK+VFGUd4u1dudLsw==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-    hasBin: true
-
-  '@ckeditor/ckeditor5-dev-ci@55.0.0':
-    resolution: {integrity: sha512-LrwcVTACyhOktd5BdSnKfBPi8eUubd28zGO4VPQfhvAsVgZA4KZg7szB1j7D6G1qX86w6NuKHBx6FNYgORTnPA==}
+  '@ckeditor/ckeditor5-dev-changelog@55.2.0':
+    resolution: {integrity: sha512-2M9aXE9sEGhUxDJjunTcTILSJFtlLQcnMlK/UOyZWiGCG3iLRErC1DE7HpUad6x7F20MGWNNF9ddD0FUbLaVag==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@55.0.0':
-    resolution: {integrity: sha512-+pIh5IfBQXMySBG5kQ2miubTXA7e/IE54Ot/Oiwf7eRm/A0lpa7J3s2Ndnfus/R3nNJF77SoFnVTcOQBF2VhNQ==}
+  '@ckeditor/ckeditor5-dev-ci@55.2.0':
+    resolution: {integrity: sha512-fysmC2vIm0CtUjYL0wX/t4ePLWhIw5icnjKDsrnpFRIeWi1EOlNcSxw0Ul5IxBAm2rqXjjZWFKcn6kRTxqzqkw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@55.0.0':
-    resolution: {integrity: sha512-UUTbsLvMLouObmE7CVWX1a0gwCdZWV0SOj28ULYYh+VP0BI7ZkpT6o81kycddff9b2XyZfYQ5nSuYPf0fpxRmA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-license-checker@55.0.0':
-    resolution: {integrity: sha512-CGmNAVKJPOxXrRN/jJHh8c0AfS62TcpNQMd7FitgEBCIM2m408lO3XPO6MWjp6WPBaMH+6XIMTTeRYlybQMTFQ==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-release-tools@55.0.0':
-    resolution: {integrity: sha512-0tErAjSx+JX6SxV9Zb/LeC3ni9cdVzel21SmKnb9QE3GKAVVrUxaYE4Fa3t5f4u5ovNSxWFIH9hMWBwBMo1YgQ==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-stale-bot@55.0.0':
-    resolution: {integrity: sha512-Ll01PJQGq0YewWARPzNATOkeLpjUaarvW44BzX9Gw11i0p4uXYzAye4pW4D8NLEqUUh4fah/F+sTXx0N4JxjGA==}
+  '@ckeditor/ckeditor5-dev-dependency-checker@55.2.0':
+    resolution: {integrity: sha512-mZdOniDO/ZuYmrLu4nsisk+8YFfyvI+pOzAgsksrYUdG1E5m6sqR1dHMqqyC6ZC2bAotacjp61FyCfoIvSQe8g==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@55.0.0':
-    resolution: {integrity: sha512-qgIyZWdx0b/k8wxsnoGdEO4PzfHYovxX07tRYFP8Luq3cOCybDGxu+VEyvEQb096j5CLWu80/oEGGH5qjJxjMg==}
+  '@ckeditor/ckeditor5-dev-docs@55.2.0':
+    resolution: {integrity: sha512-fSvO4j4cZbV8yU1obDlosZ4BE1/22DrDjPne7HCDkqYzEBuQscMGUnZPwX9YWPsgZ2LlrXKpn6Tcky1TLuDfLw==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-license-checker@55.2.0':
+    resolution: {integrity: sha512-hEeaXmYCScAIW9cmiKmZaR3KXjMkGfGI1832+a6COIYp4XGbrPehIm7JaeeJmmD8iHyfWm4PvMl3kXBOs+HJOw==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-release-tools@55.2.0':
+    resolution: {integrity: sha512-tCmqgI4U56mQW1buhcd90rKWxq5s75gC1OyNS5fv1JaWGh2ps2tWTSZSfm43dQsIoLg1glWdxOJSG5X8grBPqA==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-stale-bot@55.2.0':
+    resolution: {integrity: sha512-W8tJJuPJtJCAxKeNInHEGEDaBkuXYYzVLOUBDMIep2C8/Q/g6ZiX/bNhAAnMXd+vseWrxhA3WEUpnORY4eC2ug==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-translations@55.0.0':
-    resolution: {integrity: sha512-IVe0kR343OyCtCbK1xZ6Hy6xiOOUGSpevk4Q9FNrr13s1Jl4h2lWs7Vqzjdo7ihqCujktAAC9A8udgh2zBfeXw==}
+  '@ckeditor/ckeditor5-dev-tests@55.2.0':
+    resolution: {integrity: sha512-mxi6FcDRpO7/EvAE2hrALnm5xK5KEg/BDoXW0JNmNF7RR8z0tlNFD+E6Y8ifdmqdCDXW/ZCw27D1NV02R7bsqw==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+    hasBin: true
+
+  '@ckeditor/ckeditor5-dev-translations@55.2.0':
+    resolution: {integrity: sha512-qjEgm9yAgAgUPbScrPRQ6rF4ffdgibMIJqDF9rQkZtstbl4bSc44sQs6trItrPl4ohKjDTF+eiZBKoOc5MMDiA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@55.0.0':
-    resolution: {integrity: sha512-xyvn/+ZIcl0RJAqCUZj43rudUmPVOgpN2OgdAlO4YC2z7binUmdmKKqijFmkUqsBdpC3p7VY4Xjrv7qbwNFavA==}
+  '@ckeditor/ckeditor5-dev-utils@55.2.0':
+    resolution: {integrity: sha512-ymt09EKAhNcWqMXaRng1Apx88Px0fsuv31Y/9fXFRjEsYOUVCgevtwOCg3AvgnqSi1THMipaUEbFO7JMQKLM7g==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@55.0.0':
-    resolution: {integrity: sha512-7MInM6RGj+eGeT6o6GVwR3VGWV/WxhW8ViBZSDF1ha17bVJq758U8o4hmklO2eVGUEfk6c4hVPuIOnt90MDxQQ==}
+  '@ckeditor/ckeditor5-dev-web-crawler@55.2.0':
+    resolution: {integrity: sha512-FmpX2aS79HLKMZIMbb25/t5xsZKaFURv2b/VrlyxmPGE2pKI7S5XY8/uRrl4CURb5jpy12xPpCMp6ZQfwZoqCg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.0':
@@ -4411,8 +4411,8 @@ packages:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@55.0.0':
-    resolution: {integrity: sha512-9NhVFj4ROH5D4De+h3bR56Q2cpUorTxwsIuRFm8SaodRt3OcrNYdiYqtXkt7gXjKq4GHELyiMxlwtqMbN/wfIw==}
+  '@ckeditor/typedoc-plugins@55.2.0':
+    resolution: {integrity: sha512-BZgGtr7kD6PVenbzW2q1/IbuAAmS02buDZgTlU/Ysi1t2ni6pdtzlIEjHun9Rz3pNFi098/dEgQsgeCXZnMaww==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.14
@@ -5621,6 +5621,30 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@sentry-internal/tracing@7.120.4':
+    resolution: {integrity: sha512-Fz5+4XCg3akeoFK+K7g+d7HqGMjmnLoY2eJlpONJmaeT9pXY7yfUyXKZMmMajdE2LxxKJgQ2YKvSCaGVamTjHw==}
+    engines: {node: '>=8'}
+
+  '@sentry/core@7.120.4':
+    resolution: {integrity: sha512-TXu3Q5kKiq8db9OXGkWyXUbIxMMuttB5vJ031yolOl5T/B69JRyAoKuojLBjRv1XX583gS1rSSoX8YXX7ATFGA==}
+    engines: {node: '>=8'}
+
+  '@sentry/integrations@7.120.4':
+    resolution: {integrity: sha512-kkBTLk053XlhDCg7OkBQTIMF4puqFibeRO3E3YiVc4PGLnocXMaVpOSCkMqAc1k1kZ09UgGi8DxfQhnFEjUkpA==}
+    engines: {node: '>=8'}
+
+  '@sentry/node@7.120.4':
+    resolution: {integrity: sha512-qq3wZAXXj2SRWhqErnGCSJKUhPSlZ+RGnCZjhfjHpP49KNpcd9YdPTIUsFMgeyjdh6Ew6aVCv23g1hTP0CHpYw==}
+    engines: {node: '>=8'}
+
+  '@sentry/types@7.120.4':
+    resolution: {integrity: sha512-cUq2hSSe6/qrU6oZsEP4InMI5VVdD86aypE+ENrQ6eZEVLTCYm1w6XhW1NvIu3UuWh7gZec4a9J7AFpYxki88Q==}
+    engines: {node: '>=8'}
+
+  '@sentry/utils@7.120.4':
+    resolution: {integrity: sha512-zCKpyDIWKHwtervNK2ZlaK8mMV7gVUijAgFeJStH+CU/imcdquizV3pFLlSQYRswG+Lbyd6CT/LGRh3IbtkCFw==}
+    engines: {node: '>=8'}
+
   '@shikijs/core@3.13.0':
     resolution: {integrity: sha512-3P8rGsg2Eh2qIHekwuQjzWhKI4jV97PhvYjYUzGqjvJfqdQPz+nMlfWahU24GZAyW1FxFI1sYjyhfh5CoLmIUA==}
 
@@ -6511,6 +6535,10 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
+  boolean@3.2.0:
+    resolution: {integrity: sha512-d0II/GO9uf9lfUHH2BQsjxzRJZBdsjgsBiW4BvhWk/3qoKwQFjIDVN19PfX8F2D/r9PCMTtLWjYVCFrpeYUzsw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
   brace-expansion@1.1.12:
     resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
 
@@ -7338,6 +7366,9 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
+  detect-node@2.1.0:
+    resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
+
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
 
@@ -7946,6 +7977,10 @@ packages:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
+  global-agent@3.0.0:
+    resolution: {integrity: sha512-PT6XReJ+D07JvGoxQMkT6qji/jVNfX/h364XHZOWeRzy64sSFr+xJ5OX7LI3b4MPQzdL4H8Y8M0xzPpsVMwA8Q==}
+    engines: {node: '>=10.0'}
+
   global-modules@1.0.0:
     resolution: {integrity: sha512-sKzpEkf11GpOFuw0Zzjzmt4B4UZwjOcG757PPvrfhxcLFbq0wpsgpOqxpxtxFiCG4DtG93M6XRVbF2oGdev7bg==}
     engines: {node: '>=0.10.0'}
@@ -7973,6 +8008,10 @@ packages:
   globals@16.4.0:
     resolution: {integrity: sha512-ob/2LcVVaVGCYN+r14cnwnoDPUufjiYgSqRhiFD0Q1iI4Odora5RE8Iv1D24hAz5oMophRGkGz+yuvQmmUMnMw==}
     engines: {node: '>=18'}
+
+  globalthis@1.0.4:
+    resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
+    engines: {node: '>= 0.4'}
 
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
@@ -8269,6 +8308,9 @@ packages:
   ignore@7.0.5:
     resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
+
+  immediate@3.0.6:
+    resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
 
   immutable@5.1.5:
     resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
@@ -8786,6 +8828,9 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
+  lie@3.1.1:
+    resolution: {integrity: sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw==}
+
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
     engines: {node: '>= 12.0.0'}
@@ -8903,6 +8948,9 @@ packages:
     resolution: {integrity: sha512-FkQT6ZuX+8ywks3Mol5nHtuKzf+Rhtp88PPJUkcU0fP6JzNi7s9a+dWRQ8WrCxlGe3vHij85A4R1uL4wRg06WA==}
     engines: {node: '>=12.20'}
     hasBin: true
+
+  localforage@1.10.0:
+    resolution: {integrity: sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==}
 
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
@@ -9128,6 +9176,10 @@ packages:
     resolution: {integrity: sha512-CTPAcRBq57cn3R8n3hwc2REddc28hjR7RzDXQ+lXLmMJYqn20BaI2cGw6QjgZGIgVfp2Wdfw4aMzgNteQ6qJgQ==}
     engines: {node: '>= 20'}
     hasBin: true
+
+  matcher@3.0.0:
+    resolution: {integrity: sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==}
+    engines: {node: '>=10'}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -10469,6 +10521,10 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  roarr@2.15.4:
+    resolution: {integrity: sha512-CHhPh+UNHD2GTXNYhPWLnU8ONHdI+5DI+4EYIAOaiD63rHeYlZvyh8P+in5999TTSFgUYuKUAjzRI4mdh/p+2A==}
+    engines: {node: '>=8.0'}
+
   robust-predicates@3.0.2:
     resolution: {integrity: sha512-IXgzBWvWQwE6PrDI05OvmXUIruQTcoMDzRsOd5CDvHCVLcLHMTSYvOK5Cm46kWqlV3yAbuSpBZdJ5oP5OUoStg==}
 
@@ -10562,6 +10618,10 @@ packages:
     resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  serialize-error@7.0.1:
+    resolution: {integrity: sha512-8I8TjW5KMOKsZQTvoxjuSIa7foAwPWGOts+6o7sgjz41/qMD9VQHEDxi6PBvK2l0MXUmqZyNpUK+T2tQaaElvw==}
+    engines: {node: '>=10'}
 
   serialize-javascript@7.0.4:
     resolution: {integrity: sha512-DuGdB+Po43Q5Jxwpzt1lhyFSYKryqoNjQSA9M92tyw0lyHIOur+XCalOUe0KTJpyqzT8+fQ5A0Jf7vCx/NKmIg==}
@@ -10692,6 +10752,11 @@ packages:
 
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
+
+  snyk@1.1303.1:
+    resolution: {integrity: sha512-VJzv3rgdb9MNM/d6BlJFWrnxNaskUyHbOrWaujoXhnpTAccDgkF6G60v5VIrjey3KHLpwZxMA2akoyB1zvfFVw==}
+    engines: {node: '>=12'}
+    hasBin: true
 
   socket.io-adapter@2.5.5:
     resolution: {integrity: sha512-eLDQas5dzPgOWCk9GuuJC2lBqItuhKI4uxGgo9aIV7MYbk2h9Q6uULEh8WBzThoI7l+qU9Ast9fVUmkqPP9wYg==}
@@ -11090,6 +11155,10 @@ packages:
   type-detect@4.1.0:
     resolution: {integrity: sha512-Acylog8/luQ8L7il+geoSxhEkazvkslg7PSNKOX59mbB9cOveP5aq9h74Y7YU8yDpJwetzQQrfIwtf4Wp4LKcw==}
     engines: {node: '>=4'}
+
+  type-fest@0.13.1:
+    resolution: {integrity: sha512-34R7HTnG0XIJcBSn5XhDd7nNFPRcXYRZrBB2O2jdKqYODldSzBAqzsWoZYYvduky73toYS/ESqxPvkDf/F0XMg==}
+    engines: {node: '>=10'}
 
   type-fest@0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
@@ -12451,7 +12520,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@ckeditor/ckeditor5-dev-build-tools@55.0.0(postcss@8.5.6)(tslib@2.8.1)(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-build-tools@55.2.0(postcss@8.5.6)(tslib@2.8.1)(typescript@5.5.4)':
     dependencies:
       '@rollup/plugin-commonjs': 28.0.6(rollup@4.59.0)
       '@rollup/plugin-json': 6.1.0(rollup@4.59.0)
@@ -12480,18 +12549,18 @@ snapshots:
       - tslib
       - typescript
 
-  '@ckeditor/ckeditor5-dev-bump-year@55.0.0':
+  '@ckeditor/ckeditor5-dev-bump-year@55.2.0':
     dependencies:
       glob: 13.0.0
 
-  '@ckeditor/ckeditor5-dev-changelog@55.0.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-changelog@55.2.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       date-fns: 4.1.0
       glob: 13.0.0
       gray-matter: 4.0.3
       inquirer: 12.9.6(@types/node@25.3.0)
-      semver: 7.7.2
+      semver: 7.7.4
       upath: 2.0.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -12500,14 +12569,15 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-ci@55.0.0':
+  '@ckeditor/ckeditor5-dev-ci@55.2.0':
     dependencies:
       '@octokit/rest': 22.0.0
       slack-notify: 2.0.7
+      snyk: 1.1303.1
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-dependency-checker@55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       depcheck: 1.4.7
       glob: 13.0.0
       minimist: 1.2.8
@@ -12520,9 +12590,9 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-docs@55.0.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-docs@55.2.0(typescript@5.5.4)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 55.0.0(typedoc@0.28.14(typescript@5.5.4))
+      '@ckeditor/typedoc-plugins': 55.2.0(typedoc@0.28.14(typescript@5.5.4))
       glob: 13.0.0
       typedoc: 0.28.14(typescript@5.5.4)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.14(typescript@5.5.4))
@@ -12530,19 +12600,19 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@55.0.0':
+  '@ckeditor/ckeditor5-dev-license-checker@55.2.0':
     dependencies:
       diff: 8.0.3
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-release-tools@55.0.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-release-tools@55.2.0(@babel/core@7.28.4)(@types/node@25.3.0)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@octokit/rest': 22.0.0
       cli-columns: 4.0.0
       glob: 13.0.0
       inquirer: 12.9.6(@types/node@25.3.0)
-      semver: 7.7.2
+      semver: 7.7.4
       shell-escape: 0.2.0
       simple-git: 3.33.0
       upath: 2.0.1
@@ -12553,9 +12623,9 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-stale-bot@55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-stale-bot@55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       date-fns: 4.1.0
       graphql: 16.11.0
       graphql-request: 7.2.0(graphql@16.11.0)
@@ -12568,11 +12638,11 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@55.0.0(@swc/core@1.13.5)(esbuild@0.25.10)':
+  '@ckeditor/ckeditor5-dev-tests@55.2.0(@swc/core@1.13.5)(esbuild@0.25.10)':
     dependencies:
       '@babel/core': 7.28.4
-      '@ckeditor/ckeditor5-dev-translations': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-translations': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-inspector': 5.0.0
       '@types/chai': 4.3.20
       '@types/karma-sinon-chai': 2.0.6
@@ -12624,11 +12694,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-translations@55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
       '@babel/parser': 7.29.0
       '@babel/traverse': 7.29.0
-      '@ckeditor/ckeditor5-dev-utils': 55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
       glob: 13.0.0
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -12641,7 +12711,7 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@55.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-utils@55.2.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))':
     dependencies:
       '@types/through2': 2.0.41
       babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.105.2(@swc/core@1.13.5)(esbuild@0.25.10))
@@ -12667,7 +12737,7 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-web-crawler@55.0.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-web-crawler@55.2.0(typescript@5.5.4)':
     dependencies:
       puppeteer: 24.39.1(typescript@5.5.4)
       puppeteer-cluster: 0.24.0(puppeteer@24.39.1(typescript@5.5.4))
@@ -12700,7 +12770,7 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@55.0.0(typedoc@0.28.14(typescript@5.5.4))':
+  '@ckeditor/typedoc-plugins@55.2.0(typedoc@0.28.14(typescript@5.5.4))':
     dependencies:
       typedoc: 0.28.14(typescript@5.5.4)
       upath: 2.0.1
@@ -13307,7 +13377,7 @@ snapshots:
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   '@npmcli/git@7.0.0':
     dependencies:
@@ -13317,7 +13387,7 @@ snapshots:
       npm-pick-manifest: 11.0.1
       proc-log: 5.0.0
       promise-retry: 2.0.1
-      semver: 7.7.2
+      semver: 7.7.4
       which: 5.0.0
 
   '@npmcli/installed-package-contents@4.0.0':
@@ -13334,7 +13404,7 @@ snapshots:
       hosted-git-info: 9.0.0
       json-parse-even-better-errors: 4.0.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       validate-npm-package-license: 3.0.4
 
   '@npmcli/promise-spawn@8.0.3':
@@ -13691,6 +13761,38 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.59.0':
     optional: true
+
+  '@sentry-internal/tracing@7.120.4':
+    dependencies:
+      '@sentry/core': 7.120.4
+      '@sentry/types': 7.120.4
+      '@sentry/utils': 7.120.4
+
+  '@sentry/core@7.120.4':
+    dependencies:
+      '@sentry/types': 7.120.4
+      '@sentry/utils': 7.120.4
+
+  '@sentry/integrations@7.120.4':
+    dependencies:
+      '@sentry/core': 7.120.4
+      '@sentry/types': 7.120.4
+      '@sentry/utils': 7.120.4
+      localforage: 1.10.0
+
+  '@sentry/node@7.120.4':
+    dependencies:
+      '@sentry-internal/tracing': 7.120.4
+      '@sentry/core': 7.120.4
+      '@sentry/integrations': 7.120.4
+      '@sentry/types': 7.120.4
+      '@sentry/utils': 7.120.4
+
+  '@sentry/types@7.120.4': {}
+
+  '@sentry/utils@7.120.4':
+    dependencies:
+      '@sentry/types': 7.120.4
 
   '@shikijs/core@3.13.0':
     dependencies:
@@ -14183,7 +14285,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.9
-      semver: 7.7.2
+      semver: 7.7.4
       ts-api-utils: 2.1.0(typescript@5.5.4)
       typescript: 5.5.4
     transitivePeerDependencies:
@@ -14694,6 +14796,8 @@ snapshots:
 
   boolbase@1.0.0: {}
 
+  boolean@3.2.0: {}
+
   brace-expansion@1.1.12:
     dependencies:
       balanced-match: 1.0.2
@@ -15191,7 +15295,7 @@ snapshots:
       postcss-modules-scope: 3.2.1(postcss@8.5.6)
       postcss-modules-values: 4.0.0(postcss@8.5.6)
       postcss-value-parser: 4.2.0
-      semver: 7.7.2
+      semver: 7.7.4
     optionalDependencies:
       webpack: 5.105.2(@swc/core@1.13.5)(esbuild@0.25.10)
 
@@ -15589,7 +15693,7 @@ snapshots:
       require-package-name: 2.0.1
       resolve: 1.22.11
       resolve-from: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       yargs: 16.2.0
     transitivePeerDependencies:
       - supports-color
@@ -15612,6 +15716,8 @@ snapshots:
   detect-libc@2.1.1: {}
 
   detect-node-es@1.1.0: {}
+
+  detect-node@2.1.0: {}
 
   devlop@1.1.0:
     dependencies:
@@ -15710,7 +15816,7 @@ snapshots:
       '@one-ini/wasm': 0.1.1
       commander: 10.0.1
       minimatch: 9.0.9
-      semver: 7.7.2
+      semver: 7.7.4
 
   ee-first@1.1.1: {}
 
@@ -16294,6 +16400,15 @@ snapshots:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
+  global-agent@3.0.0:
+    dependencies:
+      boolean: 3.2.0
+      es6-error: 4.1.1
+      matcher: 3.0.0
+      roarr: 2.15.4
+      semver: 7.7.4
+      serialize-error: 7.0.1
+
   global-modules@1.0.0:
     dependencies:
       global-prefix: 1.0.2
@@ -16323,6 +16438,11 @@ snapshots:
   globals@15.15.0: {}
 
   globals@16.4.0: {}
+
+  globalthis@1.0.4:
+    dependencies:
+      define-properties: 1.2.1
+      gopd: 1.2.0
 
   globby@11.1.0:
     dependencies:
@@ -16742,6 +16862,8 @@ snapshots:
 
   ignore@7.0.5: {}
 
+  immediate@3.0.6: {}
+
   immutable@5.1.5: {}
 
   import-fresh@3.3.1:
@@ -16934,7 +17056,7 @@ snapshots:
       '@babel/parser': 7.29.0
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.7.2
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -17302,6 +17424,10 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
+  lie@3.1.1:
+    dependencies:
+      immediate: 3.0.6
+
   lightningcss-android-arm64@1.32.0:
     optional: true
 
@@ -17427,6 +17553,10 @@ snapshots:
     transitivePeerDependencies:
       - '@75lb/nature'
       - supports-color
+
+  localforage@1.10.0:
+    dependencies:
+      lie: 3.1.1
 
   locate-path@5.0.0:
     dependencies:
@@ -17639,7 +17769,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   make-fetch-happen@14.0.3:
     dependencies:
@@ -17705,6 +17835,10 @@ snapshots:
   markdown-table@3.0.4: {}
 
   marked@16.4.0: {}
+
+  matcher@3.0.0:
+    dependencies:
+      escape-string-regexp: 4.0.0
 
   math-intrinsics@1.1.0: {}
 
@@ -18287,7 +18421,7 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       tar: 7.5.11
       tinyglobby: 0.2.15
       which: 5.0.0
@@ -18298,7 +18432,7 @@ snapshots:
     dependencies:
       growly: 1.3.0
       is-wsl: 2.2.0
-      semver: 7.7.2
+      semver: 7.7.4
       shellwords: 0.1.1
       uuid: 8.3.2
       which: 2.0.2
@@ -18325,7 +18459,7 @@ snapshots:
 
   npm-install-checks@7.1.2:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   npm-normalize-package-bin@4.0.0: {}
 
@@ -18335,7 +18469,7 @@ snapshots:
     dependencies:
       hosted-git-info: 9.0.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       validate-npm-package-name: 6.0.2
 
   npm-packlist@10.0.2:
@@ -18348,7 +18482,7 @@ snapshots:
       npm-install-checks: 7.1.2
       npm-normalize-package-bin: 4.0.0
       npm-package-arg: 13.0.0
-      semver: 7.7.2
+      semver: 7.7.4
 
   npm-registry-fetch@19.0.0:
     dependencies:
@@ -19390,6 +19524,15 @@ snapshots:
       glob: 11.1.0
       package-json-from-dist: 1.0.1
 
+  roarr@2.15.4:
+    dependencies:
+      boolean: 3.2.0
+      detect-node: 2.1.0
+      globalthis: 1.0.4
+      json-stringify-safe: 5.0.1
+      semver-compare: 1.0.0
+      sprintf-js: 1.1.3
+
   robust-predicates@3.0.2: {}
 
   rollup-plugin-svg-import@3.0.0(rollup@4.59.0):
@@ -19513,6 +19656,10 @@ snapshots:
   semver@7.7.2: {}
 
   semver@7.7.4: {}
+
+  serialize-error@7.0.1:
+    dependencies:
+      type-fest: 0.13.1
 
   serialize-javascript@7.0.4: {}
 
@@ -19699,6 +19846,11 @@ snapshots:
   smart-buffer@4.2.0: {}
 
   smob@1.5.0: {}
+
+  snyk@1.1303.1:
+    dependencies:
+      '@sentry/node': 7.120.4
+      global-agent: 3.0.0
 
   socket.io-adapter@2.5.5:
     dependencies:
@@ -20169,6 +20321,8 @@ snapshots:
   type-detect@4.0.8: {}
 
   type-detect@4.1.0: {}
+
+  type-fest@0.13.1: {}
 
   type-fest@0.8.1: {}
 

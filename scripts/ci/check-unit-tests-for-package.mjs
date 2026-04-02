@@ -26,7 +26,9 @@ async function main() {
 		const exitCode = checkCodeCoverage();
 
 		if ( coverageFile ) {
-			const matches = await glob( 'coverage/*/lcov.info' );
+			// Karma writes to coverage/<BrowserName>/lcov.info,
+			// Vitest writes to coverage-vitest/lcov.info (merged into coverage/lcov.info by the test runner).
+			const matches = await glob( [ 'coverage/*/lcov.info', 'coverage-vitest/lcov.info' ] );
 
 			for ( const filePath of matches ) {
 				const buffer = await fs.readFile( filePath );
@@ -80,7 +82,15 @@ function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 }
 
 function checkCodeCoverage() {
-	execSync( 'cp coverage/*/coverage-final.json .nyc_output', {
+	// Karma writes coverage-final.json to coverage/<BrowserName>/,
+	// Vitest writes it to coverage-vitest/. Copy whichever exists
+	// with distinct names so nyc can merge both.
+	execSync( 'cp coverage/*/coverage-final.json .nyc_output/karma-coverage.json 2>/dev/null || true', {
+		cwd: process.cwd(),
+		stdio: 'inherit'
+	} );
+
+	execSync( 'cp coverage-vitest/coverage-final.json .nyc_output/vitest-coverage.json 2>/dev/null || true', {
 		cwd: process.cwd(),
 		stdio: 'inherit'
 	} );
