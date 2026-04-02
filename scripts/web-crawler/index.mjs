@@ -6,8 +6,6 @@
  */
 
 import minimist from 'minimist';
-import fs from 'node:fs';
-import path from 'node:path';
 import { DEFAULT_CONCURRENCY, DEFAULT_TIMEOUT, runCrawler, toArray, isUrlValid } from '@ckeditor/ckeditor5-dev-web-crawler';
 
 const options = parseArguments( process.argv.slice( 2 ) );
@@ -34,7 +32,8 @@ function parseArguments( args ) {
 			'depth',
 			'exclusions',
 			'concurrency',
-			'timeout'
+			'timeout',
+			'port'
 		],
 
 		boolean: [
@@ -71,11 +70,10 @@ function parseArguments( args ) {
 
 	// Port resolution priority:
 	// 1. Explicit --port CLI argument
-	// 2. MANUAL_TEST_PORT environment variable
-	// 3. Port read from the `build/.manual-tests/.port` file written by the dev server
-	// 4. Default port 8125
+	// 2. MANUAL_TEST_PORT environment variable (set by check-manual-tests.sh)
+	// 3. Default port 8125
 	const defaultOptionsForManual = minimist( [
-		'-u', `http://localhost:${ parsedOptions.port || process.env.MANUAL_TEST_PORT || getPortFromFile() || '8125' }/`,
+		'-u', `http://localhost:${ parsedOptions.port || process.env.MANUAL_TEST_PORT || '8125' }/`,
 		'-d', 1
 	], config );
 
@@ -106,14 +104,4 @@ function parseArguments( args ) {
 		silent: options.silent,
 		ignoreHTTPSErrors: true
 	};
-}
-
-function getPortFromFile() {
-	const portFilePath = path.join( process.cwd(), 'build', '.manual-tests', '.port' );
-
-	try {
-		return fs.readFileSync( portFilePath, 'utf-8' ).trim();
-	} catch {
-		return null;
-	}
 }
