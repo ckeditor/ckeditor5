@@ -15,7 +15,6 @@ import {
 	type ModelSelectionChangeRangeEvent
 } from './selection.js';
 import { ModelText } from './text.js';
-import { ModelTextProxy } from './textproxy.js';
 
 import type { ModelDocumentChangeEvent, ModelDocument } from './document.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
@@ -1198,12 +1197,12 @@ class LiveSelection extends ModelSelection {
 			// 4. If not, try to find the first character on the left, that is in the same node.
 			// When gravity is overridden then don't take node before into consideration.
 			if ( !this.isGravityOverridden && !attrs ) {
-				attrs = getTextAttributes( nodeBefore, schema, 'left' );
+				attrs = getTextAttributes( nodeBefore, schema, 'backward' );
 			}
 
 			// 5. If not found, try to find the first character on the right, that is in the same node.
 			if ( !attrs ) {
-				attrs = getTextAttributes( nodeAfter, schema, 'right' );
+				attrs = getTextAttributes( nodeAfter, schema, 'forward' );
 			}
 
 			// 6. If not found, selection should retrieve attributes from parent.
@@ -1235,76 +1234,39 @@ class LiveSelection extends ModelSelection {
 /**
  * Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}.
  *
- * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
+ * It checks if the passed model node is a text node and, if so, returns it's attributes.
  * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
 function getTextAttributes(
-	startNode: ModelItem | null,
+	startNode: ModelNode | null,
 	schema: ModelSchema,
-	scan: 'single' | 'left' | 'right' = 'single'
+	scan: 'self' | 'backward' | 'forward' = 'self'
 ): Iterable<[string, unknown]> | null {
 	if ( !startNode ) {
 		return null;
 	}
 
-	// This case can happen only for non-collapsed selection.
-	// It is already handled in `_getSurroundingAttributes` as `if ( value.type == 'text' )`).
-	// However this condition was also in `getTextAttributes` before. It's kept as a paranoid check.
-	/* istanbul ignore if -- @preserve */
-	if ( startNode instanceof ModelTextProxy ) {
-		return startNode.getAttributes();
-	}
-
-	for ( let node: ModelNode | null = startNode; node; node = getNextNode( node ) ) {
-		const attrs = getTextAttributesFromSingleNode( node );
-
-		if ( attrs ) {
-			return attrs;
+	for ( const node of siblingNodes( startNode, scan ) ) {
+		if ( !node ) {
+			return null;
 		}
-	}
 
-	return null;
-
-	function getNextNode( node: ModelNode ) {
-		switch ( scan ) {
-			case 'single': return null;
-			case 'left': return node.previousSibling;
-			case 'right': return node.nextSibling;
-		}
-	}
-
-	function getTextAttributesFromSingleNode( node: ModelNode ) {
 		if ( node instanceof ModelText ) {
 			return node.getAttributes();
 		}
 
-		if ( node.is( 'element', 'softBreak' ) ) {
-			const attributes: Array<[ string, unknown ]> = [];
-
-			for ( const [ key, value ] of node.getAttributes() ) {
-				if ( schema.checkAttribute( '$text', key ) ) {
-					attributes.push( [ key, value ] );
-				}
-			}
-
-			return attributes;
-		}
-
 		if ( !schema.isInline( node ) ) {
-			return null;
+			continue;
 		}
 
-		if ( !schema.isObject( node ) ) {
-			return [];
-		}
-
+		const isObject = schema.isObject( node );
 		const attributes: Array<[string, unknown]> = [];
 
 		// Collect all attributes that can be applied to the text node.
 		for ( const [ key, value ] of node.getAttributes() ) {
 			if (
 				schema.checkAttribute( '$text', key ) &&
-				schema.getAttributeProperties( key ).copyFromObject !== false
+				( !isObject || schema.getAttributeProperties( key ).copyFromObject !== false )
 			) {
 				attributes.push( [ key, value ] );
 			}
@@ -1312,6 +1274,30 @@ function getTextAttributes(
 
 		return attributes;
 	}
+
+	return null;
+}
+
+/**
+ * Returns sibling nodes from the given start node.
+ */
+function* siblingNodes( startNode: ModelNode, scan: 'self' | 'backward' | 'forward' ) {
+	if ( scan == 'self' ) {
+		yield startNode;
+	}
+	else {
+		let node: ModelNode | null = startNode;
+
+		while ( node ) {
+			node = scan == 'backward' ?
+				node.previousSibling :
+				node.nextSibling;
+
+			yield node;
+		}
+	}
+
+	return null;
 }
 
 /**

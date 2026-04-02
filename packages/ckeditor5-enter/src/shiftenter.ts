@@ -100,6 +100,9 @@ export class ShiftEnter extends Plugin {
 	}
 }
 
+/**
+ * The post-fixer that removes attributes from stale soft-break elements.
+ */
 function removeStaleSoftBreakAttributes( writer: ModelWriter ): boolean {
 	const parentsToCheck = new Set<ModelElement>();
 
@@ -115,31 +118,39 @@ function removeStaleSoftBreakAttributes( writer: ModelWriter ): boolean {
 		}
 	}
 
+	let wasChanged = false;
+
 	for ( const parent of parentsToCheck ) {
+		// Just a sibling nodes check. We do not need to check attributes of nested elements.
 		for ( const child of parent.getChildren() ) {
+			// Find a softBreak element.
 			if ( !child.is( 'element', 'softBreak' ) ) {
 				continue;
 			}
 
 			const nextSibling = child.nextSibling;
 
+			// Do not remove attributes when softBreak is the last element or there is some element after it.
 			if ( !nextSibling || nextSibling.is( 'element' ) ) {
 				continue;
 			}
 
 			for ( const [ key, value ] of child.getAttributes() ) {
+				// Remove the attribute if the next sibling does not have the same attribute.
 				if ( !hasSameAttribute( nextSibling, key, value ) ) {
 					writer.removeAttribute( key, child );
-
-					return true;
+					wasChanged = true;
 				}
 			}
 		}
 	}
 
-	return false;
+	return wasChanged;
 }
 
+/**
+ * Returns `true` if the given node has the same attribute as the one provided in the parameters.
+ */
 function hasSameAttribute( node: ModelNode | null, key: string, value: unknown ): boolean {
 	return node?.getAttribute( key ) === value;
 }

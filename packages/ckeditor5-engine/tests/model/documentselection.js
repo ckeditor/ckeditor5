@@ -1122,6 +1122,30 @@ describe( 'DocumentSelection', () => {
 					new ModelElement( 'p', { p: true } ),
 					new ModelText( 'e', { e: true } )
 				] );
+
+				// Just to make sure how model looks.
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<p p="true"></p>' +
+
+					'<$text a="true">a</$text>' +
+
+					'<p p="true"></p>' +
+
+					'<$text b="true">b</$text>' +
+					'<$text c="true">c</$text>' +
+
+					'<p>' +
+						'<$text d="true">d</$text>' +
+					'</p>' +
+
+					'<p p="true"></p>' +
+
+					'<$text e="true">e</$text>' +
+
+					// Left-overs from parent describe.
+					'<p>foobar</p>' +
+					'<p></p>'
+				);
 			} );
 
 			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
@@ -1406,73 +1430,44 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		// #7459 and #19853
-		describe( 'handles inline non-object elements while reading surrounding attributes', () => {
+		// #7459
+		describe( 'softBreak integration', () => {
 			beforeEach( () => {
-				model.schema.extend( '$text', { allowAttributes: 'foo' } );
-
 				model.schema.register( 'softBreak', {
 					allowWhere: '$text',
 					allowAttributesOf: '$text',
 					isInline: true
 				} );
-
-				model.schema.register( 'inlineBoundary', {
-					allowWhere: '$text',
-					isInline: true
-				} );
 			} );
 
-			it( 'should not inherit attributes from a node before a softBreak when copyOnEnter is disabled', () => {
-				model.schema.setAttributeProperties( 'foo', { copyOnEnter: false } );
-				_setModelData( model, '<p><$text foo="true">Foo Bar.</$text><softBreak></softBreak>[]</p>' );
+			it( 'should not inherit attributes from a node before an inline element', () => {
+				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak></softBreak>[]</p>' );
 
-				expect( selection.hasAttribute( 'foo' ) ).to.equal( false );
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
-			it( 'should inherit attributes from a softBreak carrying copied attributes', () => {
-				model.schema.setAttributeProperties( 'bold', { copyOnEnter: true } );
+			it( 'should not inherit attributes from a node after an inline element (override gravity)', () => {
+				_setModelData( model, '<p>[]<softBreak></softBreak><$text bold="true">Foo Bar.</$text></p>' );
+
+				const overrideGravityUid = selection._overrideGravity();
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+
+				selection._restoreGravity( overrideGravityUid );
+			} );
+
+			it( 'should inherit attributes from an inline element', () => {
 				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak bold="true"></softBreak>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 
-			it( 'should not inherit attributes from a node after a softBreak when copyOnEnter is disabled (override gravity)', () => {
-				model.schema.setAttributeProperties( 'foo', { copyOnEnter: false } );
-				_setModelData( model, '<p>[]<softBreak></softBreak><$text foo="true">Foo Bar.</$text></p>' );
-
-				const overrideGravityUid = selection._overrideGravity();
-
-				expect( selection.hasAttribute( 'foo' ) ).to.equal( false );
-
-				selection._restoreGravity( overrideGravityUid );
-			} );
-
-			it( 'should inherit attributes from a softBreak carrying copied attributes with override gravity', () => {
-				model.schema.setAttributeProperties( 'bold', { copyOnEnter: true } );
+			it( 'should inherit attributes from an inline element (override gravity)', () => {
 				_setModelData( model, '<p>[]<softBreak bold="true"></softBreak><$text bold="true">Foo Bar.</$text></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
-
-				selection._restoreGravity( overrideGravityUid );
-			} );
-
-			it( 'should not inherit attributes from a node before a generic inline element even when copyOnEnter is enabled', () => {
-				model.schema.setAttributeProperties( 'bold', { copyOnEnter: true } );
-				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><inlineBoundary></inlineBoundary>[]</p>' );
-
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
-			} );
-
-			it( 'should not inherit attributes after generic inline element with override gravity even when copyOnEnter is enabled', () => {
-				model.schema.setAttributeProperties( 'bold', { copyOnEnter: true } );
-				_setModelData( model, '<p>[]<inlineBoundary></inlineBoundary><$text bold="true">Foo Bar.</$text></p>' );
-
-				const overrideGravityUid = selection._overrideGravity();
-
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 
 				selection._restoreGravity( overrideGravityUid );
 			} );
