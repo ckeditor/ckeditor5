@@ -51,7 +51,13 @@ export function transformListItemLikeElementsIntoLists(
 		return;
 	}
 
-	const encounteredLists: Record<string, number> = {};
+	// Tracks how many items have been added to each encountered list, keyed by indent level and list ID.
+	// Used to set the `start` attribute on a new <ol> when a list at a given indent is interrupted by
+	// a non-list block (e.g. a paragraph) and then resumed.
+	// Structure: { [indent]: { [listId:level]: itemCount } }
+	// Example: { 0: { '1:1': 3 }, 1: { '0:2': 2 } } means the top-level list (id=1) has 3 items,
+	// and the nested list (id=0) has 2 items so the next continuation should start at 3.
+	const encounteredLists: Record<number, Record<string, number>> = {};
 
 	const stack: ListStack = [];
 
@@ -62,10 +68,18 @@ export function transformListItemLikeElementsIntoLists(
 			if ( !isListContinuation( itemLikeElement ) ) {
 				applyIndentationToTopLevelList( writer, stack, topLevelListInfo );
 				topLevelListInfo = createTopLevelListInfo();
+				// Clear counters for nested levels only. The top-level counter (index 0) must survive
+				// so that a resumed top-level list (same id, interrupted by a paragraph) can still
+				// receive the correct `start` attribute. Nested counters must be cleared because
+				// a sibling top-level list item should not inherit the nested list counts from
+				// a previous top-level list item.
+				clearEncounteredListsFromLevel( encounteredLists, 1 );
 				stack.length = 0;
 			}
 
-			// Combined list ID for addressing encounter lists counters.
+			// Key used to look up this list inside `encounteredLists[indent]`.
+			// Combines the list id and level so that two different lists at the same indent
+			// level (e.g. first an <ol>, then a <ul> after a paragraph break) don't share a counter.
 			const originalListId = `${ itemLikeElement.id }:${ itemLikeElement.indent }`;
 
 			// Normalized list item indentation.
@@ -73,11 +87,16 @@ export function transformListItemLikeElementsIntoLists(
 
 			// Trimming of the list stack on list ID change.
 			if ( indent < stack.length && stack[ indent ].id !== itemLikeElement.id ) {
+				// A different list started at this indent level — counters for this level and deeper
+				// belong to the previous list context and must not carry over.
+				clearEncounteredListsFromLevel( encounteredLists, indent );
 				stack.length = indent;
 			}
 
 			// Trimming of the list stack on lower indent list encountered.
 			if ( indent < stack.length - 1 ) {
+				// We jumped back to a shallower indent — any counters deeper than the new top are stale.
+				clearEncounteredListsFromLevel( encounteredLists, indent + 1 );
 				stack.length = indent + 1;
 			}
 			else {
@@ -85,14 +104,15 @@ export function transformListItemLikeElementsIntoLists(
 
 				// Create a new OL/UL if required (greater indent or different list type).
 				if ( indent > stack.length - 1 || stack[ indent ].listElement.name != listStyle.type ) {
-					// Check if there is some start index to set from a previous list.
+					// If this list was seen before at this indent (i.e. it was interrupted by a non-list block
+					// and is now resuming), set `start` so the numbering continues from where it left off.
 					if (
-						indent == 0 &&
 						listStyle.type == 'ol' &&
 						itemLikeElement.id !== undefined &&
-						encounteredLists[ originalListId ]
+						encounteredLists[ indent ] &&
+						encounteredLists[ indent ][ originalListId ]
 					) {
-						listStyle.startIndex = encounteredLists[ originalListId ];
+						listStyle.startIndex = encounteredLists[ indent ][ originalListId ];
 					}
 
 					const listElement = createNewEmptyList( listStyle, writer, hasMultiLevelListPlugin );
@@ -116,9 +136,15 @@ export function transformListItemLikeElementsIntoLists(
 						listItemElements: []
 					};
 
-					// Prepare list counter for start index.
-					if ( indent == 0 && itemLikeElement.id !== undefined ) {
-						encounteredLists[ originalListId ] = listStyle.startIndex || 1;
+					// Record the starting value for this list so that if it is interrupted and resumed later,
+					// the continuation list can pick up numbering from the right value.
+					// For a fresh list `listStyle.startIndex` is undefined, so we fall back to 1.
+					if ( itemLikeElement.id !== undefined ) {
+						if ( !encounteredLists[ indent ] ) {
+							encounteredLists[ indent ] = {};
+						}
+
+						encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
 					}
 				}
 			}
@@ -133,9 +159,9 @@ export function transformListItemLikeElementsIntoLists(
 			writer.appendChild( listItem, stack[ indent ].listElement );
 			stack[ indent ].listItemElements.push( listItem );
 
-			// Increment list counter.
-			if ( indent == 0 && itemLikeElement.id !== undefined ) {
-				encounteredLists[ originalListId ]++;
+			// Count the item so that `encounteredLists` always holds the value the *next* continuation list should start at.
+			if ( itemLikeElement.id !== undefined && encounteredLists[ indent ] ) {
+				encounteredLists[ indent ][ originalListId ]++;
 			}
 
 			// Append list block to LI.
@@ -152,13 +178,24 @@ export function transformListItemLikeElementsIntoLists(
 			// Other blocks in a list item.
 			const stackItem = stack.find( stackItem => stackItem.marginLeft == itemLikeElement.marginLeft );
 
-			// This might be a paragraph that has known margin, but it is not a real list block.
+			// A non-list block (e.g. a plain paragraph) whose margin-left matches one of the active list items.
+			// The match is done by margin-left value — nested list items sometimes have no explicit margin-left,
+			// so the match typically resolves to an ancestor <li> rather than the deepest one.
 			if ( stackItem ) {
 				const listItems = stackItem.listItemElements;
 
 				// Append block to LI.
 				writer.appendChild( itemLikeElement.element, listItems[ listItems.length - 1 ] );
 				writer.removeStyle( 'margin-left', itemLikeElement.element );
+
+				// Trim the stack to the matched level. Without this, the next nested list item would
+				// be appended to the existing nested <ol>/<ul> that appears *before* this paragraph
+				// in the DOM, instead of creating a new one *after* it.
+				stack.length = stack.indexOf( stackItem ) + 1;
+				// Clear counters only for levels deeper than the direct children of the matched <li>.
+				// The counter at `stack.length` must survive so the next nested list can continue
+				// numbering from where it left off (e.g. <ol start="3">).
+				clearEncounteredListsFromLevel( encounteredLists, stack.length + 1 );
 			} else {
 				stack.length = 0;
 			}
@@ -538,6 +575,24 @@ function mapListStyleDefinition( value: string ) {
 			return value;
 		default:
 			return null;
+	}
+}
+
+/**
+ * Removes all encountered list counters at or deeper than the given indent level.
+ * Should be called whenever the stack is trimmed to a shallower level, so that counters
+ * accumulated inside a list item do not incorrectly affect a sibling list item at the same level.
+ * Example: when we exit <li>Item A</li> and enter <li>Item B</li>, any nested list counters
+ * from Item A must not be reused as continuation start values inside Item B.
+ */
+function clearEncounteredListsFromLevel(
+	encounteredLists: Record<number, Record<string, number>>,
+	fromIndent: number
+): void {
+	for ( const key of Object.keys( encounteredLists ) ) {
+		if ( Number( key ) >= fromIndent ) {
+			delete encounteredLists[ Number( key ) ];
+		}
 	}
 }
 
