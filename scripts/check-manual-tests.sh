@@ -43,7 +43,7 @@ MANUAL_TEST_SERVER_PROCESS_ID=$!
 
 echo "Waiting for the server on port $PORT..."
 
-node_modules/.bin/wait-on "http://localhost:$PORT" && MANUAL_TEST_PORT=$PORT pnpm run manual:verify
+node_modules/.bin/wait-on "http://localhost:$PORT" && pnpm run manual:verify --port $PORT
 
 MANUAL_VERIFY_EXIT_CODE=$?
 

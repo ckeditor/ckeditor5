@@ -68,12 +68,8 @@ function parseArguments( args ) {
 		'-e', '/assets/'
 	], config );
 
-	// Port resolution priority:
-	// 1. Explicit --port CLI argument
-	// 2. MANUAL_TEST_PORT environment variable (set by check-manual-tests.sh)
-	// 3. Default port 8125
 	const defaultOptionsForManual = minimist( [
-		'-u', `http://localhost:${ parsedOptions.port || process.env.MANUAL_TEST_PORT || '8125' }/`,
+		'-u', `http://localhost:${ parsedOptions.port || '8125' }/`,
 		'-d', 1
 	], config );
 
