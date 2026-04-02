@@ -50,7 +50,7 @@ class MultirootEditor extends Editor {
 			roots[ rootName ] = roots[ rootName ] || {};
 
 			if ( roots[ rootName ].initialData === undefined ) {
-				roots[ rootName ].initialData = getDataFromElement( sourceElements[ rootName ] );
+				roots[ rootName ].initialData = getDataFromElement( roots[ rootName ].element );
 			}
 		}
 
