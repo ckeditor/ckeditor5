@@ -176,8 +176,8 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       umberto:
-        specifier: ^10.1.3
-        version: 10.1.3(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: ^10.2.0
+        version: 10.2.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -12220,8 +12220,8 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@10.1.3:
-    resolution: {integrity: sha512-VQMV9iKTjFF+w3bEhPJwujkJg5eii8tP/JNzzTGtGBsdoIbo4SE4xWoEU+4ZOS3akzLQpJ8HKqgzi3vz/NzPfA==}
+  umberto@10.2.0:
+    resolution: {integrity: sha512-OPG4ELaa/poaTNr1UFwJ7n6EHZewhRFxMk0G24ttsZWA/+3bzyvzm+ZVCI9SCoIE1V3NMmmSIxyBM2kyuc9mQQ==}
     engines: {node: '>=24.11.0'}
 
   undici-types@7.13.0:
@@ -21360,7 +21360,7 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@10.1.3(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@10.2.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
