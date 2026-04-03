@@ -436,7 +436,7 @@ describe( 'ListFormatting', () => {
 		} );
 
 		describe( 'removing text node from a list item', () => {
-			it( 'should remove attribute from li if all formatted text is removed', () => {
+			it( 'should preserve attribute on li if all formatted text is removed from a single list item', () => {
 				_setModelData( model,
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'[<$text inlineFormat="foo">foo</$text>]' +
@@ -446,7 +446,23 @@ describe( 'ListFormatting', () => {
 				editor.execute( 'delete' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listItemId="a" listType="numbered"></paragraph>'
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered" selection:inlineFormat="foo">' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should remove attribute from li if the entire content was removed from multiple list items', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+						'[<$text inlineFormat="foo">foo</$text></paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+						'<$text inlineFormat="foo">bar</$text>]</paragraph>'
+				);
+
+				editor.execute( 'delete' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph></paragraph>'
 				);
 			} );
 
