@@ -118,7 +118,8 @@ Finally, you need to load the `SimpleBox` plugin in your `main.js` file:
 import SimpleBox from './simplebox/simplebox';                                 // ADDED
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
@@ -358,7 +359,8 @@ import SimpleBox from './simplebox/simplebox';
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';                 // ADDED
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
@@ -779,7 +781,8 @@ The last thing you need to do is tell the editor to display the button in the to
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, SimpleBox ],
 		// Insert the "simpleBox" button into the editor toolbar.
@@ -919,7 +922,7 @@ function getClosestSelectedSimpleBoxElement( selection ) {
 }
 ```
 
-The command checks if the selection is inside a simple box and enables itself accordingly. The `value` property reflects the current state of the `secret` attribute (either `true` or `undefined`). 
+The command checks if the selection is inside a simple box and enables itself accordingly. The `value` property reflects the current state of the `secret` attribute (either `true` or `undefined`).
 
 The `execute()` method accepts an optional `options` parameter with a `value` property. If no value is provided, the command automatically toggles the current state (hence its name, a "toggle" command). You can also explicitly pass a value if needed, but for most use cases, calling `editor.execute( 'toggleSimpleBoxSecret' )` without parameters is sufficient.
 
@@ -1000,9 +1003,9 @@ export default class SimpleBoxEditing extends Plugin {
 		// ...
 	}
 
-	_defineConverters() {                                                       
+	_defineConverters() {
 
-		// <simpleBox> converters 
+		// <simpleBox> converters
 		// (no changes)
 
 		// Changed: Set custom property for widget detection.
@@ -1193,7 +1196,8 @@ Finally, add the toolbar configuration to the editor setup in `main.js`:
 import SimpleBox from './simplebox/simplebox';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,

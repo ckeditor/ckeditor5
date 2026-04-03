@@ -131,7 +131,13 @@ async function reloadEditor( config ) {
 		await window.editorInstance.destroy();
 	}
 
-	const editor = await DecoupledEditor.create( document.querySelector( '#editor-content' ), config );
+	const editor = await DecoupledEditor.create( {
+		...config,
+		root: {
+			element: document.querySelector( '#editor-content' )
+		}
+	} );
+
 	const toolbarContainer = document.querySelector( '#toolbar-container' );
 
 	toolbarContainer.innerHTML = '';

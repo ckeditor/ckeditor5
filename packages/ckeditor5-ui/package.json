@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-ui",
-  "version": "47.6.1",
+  "version": "48.0.0",
   "description": "The UI framework and standard UI library of CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -46,7 +46,7 @@
     "@types/color-convert": "2.0.4",
     "color-convert": "3.1.0",
     "color-parse": "2.0.2",
-    "es-toolkit": "1.39.5",
+    "es-toolkit": "1.45.1",
     "vanilla-colorful": "0.7.2"
   },
   "devDependencies": {

@@ -29,7 +29,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { HtmlComment } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HtmlComment, ... ],
 	} )
@@ -56,3 +56,4 @@ CKEditor&nbsp;5 has other features related to HTML editing you may want to check
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support).
+

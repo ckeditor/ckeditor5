@@ -10,7 +10,9 @@ import {
 import { BlockQuoteEditor } from './block-quote-source.js';
 
 BlockQuoteEditor
-	.create( document.querySelector( '#snippet-block-quote' ) )
+	.create( {
+		attachTo: document.querySelector( '#snippet-block-quote' )
+	} )
 	.then( editor => {
 		window.editor = editor;
 

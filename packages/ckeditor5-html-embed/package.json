@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-html-embed",
-  "version": "47.6.1",
+  "version": "48.0.0",
   "description": "HTML embed feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -49,7 +49,7 @@
     "@ckeditor/ckeditor5-media-embed": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
-    "es-toolkit": "1.39.5",
+    "es-toolkit": "1.45.1",
     "sanitize-html": "^2.13.0"
   },
   "scripts": {

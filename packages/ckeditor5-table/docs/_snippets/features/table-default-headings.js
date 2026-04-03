@@ -10,7 +10,8 @@ import {
 import { TableEditor } from './build-table-source.js';
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-default-headings' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-default-headings' ),
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			defaultHeadings: { rows: 1, columns: 1 }

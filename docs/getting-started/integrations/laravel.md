@@ -94,7 +94,8 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` f
 			} from 'ckeditor5';
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 					plugins: [ Essentials, Paragraph, Bold, Italic, Font ],
 					toolbar: [

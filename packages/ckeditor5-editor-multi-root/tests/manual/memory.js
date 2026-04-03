@@ -12,16 +12,23 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 function initEditor() {
-	const editorData = {
-		intro: document.querySelector( '#editor-intro' ),
-		content: document.querySelector( '#editor-content' ),
-		outro: document.querySelector( '#editor-outro' )
+	const roots = {
+		intro: {
+			element: document.querySelector( '#editor-intro' )
+		},
+		content: {
+			element: document.querySelector( '#editor-content' )
+		},
+		outro: {
+			element: document.querySelector( '#editor-outro' )
+		}
 	};
 
 	let editor;
 
 	MultiRootEditor
-		.create( editorData, {
+		.create( {
+			roots,
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )

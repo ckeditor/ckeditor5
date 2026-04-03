@@ -13,6 +13,7 @@ export class Declaration {
 		localName,
 		type,
 		internal,
+		explicitInternal = false,
 		fileName,
 		lineNumber,
 		baseClasses = []
@@ -22,6 +23,7 @@ export class Declaration {
 		this.references = []; // At start it is populated with names as string, later replaced with declarations while resolving.
 
 		this.internal = internal;
+		this.explicitInternal = explicitInternal;
 
 		this.fileName = fileName;
 		this.lineNumber = lineNumber;
@@ -29,10 +31,13 @@ export class Declaration {
 	}
 
 	static create( { localName, type, internal, node, baseClasses = [] } ) {
+		const explicitInternal = isInternalNode( node );
+
 		return new Declaration( {
 			localName,
 			type: Declaration.declarationTypes[ type ] || type,
-			internal: internal || isInternalNode( node ),
+			internal: internal || explicitInternal,
+			explicitInternal,
 			fileName: node.loc.filename,
 			lineNumber: node.loc.start.line,
 			baseClasses

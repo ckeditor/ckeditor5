@@ -100,15 +100,24 @@ export default defineConfig( [
 					returnValue: true
 				} ]
 			} ],
-			'@typescript-eslint/no-restricted-imports': [ 'error', {
-				patterns: [ {
-					group: disallowedRelativePathImportsPattern,
-					message: disallowedRelativePathImportsMessage
-				}, {
-					regex: disallowedPackageImportsPattern,
-					message: disallowedPackageImportsMessage
-				} ]
-			} ]
+			'@typescript-eslint/no-restricted-imports': [ 'error',
+				{
+					patterns: [
+						{
+							group: disallowedRelativePathImportsPattern,
+							message: disallowedRelativePathImportsMessage
+						},
+						{
+							regex: disallowedPackageImportsPattern,
+							message: disallowedPackageImportsMessage
+						},
+						{
+							regex: '^es-toolkit$',
+							message: 'Import from `es-toolkit/compat` instead.'
+						}
+					]
+				}
+			]
 		}
 	},
 	{
@@ -123,10 +132,16 @@ export default defineConfig( [
 
 		rules: {
 			'no-restricted-imports': [ 'error', {
-				patterns: [ {
-					regex: disallowedPackageImportsPattern,
-					message: disallowedPackageImportsMessage
-				} ]
+				patterns: [
+					{
+						regex: disallowedPackageImportsPattern,
+						message: disallowedPackageImportsMessage
+					},
+					{
+						regex: '^es-toolkit$',
+						message: 'Import from `es-toolkit/compat` instead.'
+					}
+				]
 			} ]
 		}
 	},
@@ -141,10 +156,16 @@ export default defineConfig( [
 
 		rules: {
 			'@typescript-eslint/no-restricted-imports': [ 'error', {
-				patterns: [ {
-					regex: disallowedPackageImportsPattern,
-					message: disallowedPackageImportsMessage
-				} ]
+				patterns: [
+					{
+						regex: disallowedPackageImportsPattern,
+						message: disallowedPackageImportsMessage
+					},
+					{
+						regex: '^es-toolkit$',
+						message: 'Import from `es-toolkit/compat` instead.'
+					}
+				]
 			} ]
 		}
 	},

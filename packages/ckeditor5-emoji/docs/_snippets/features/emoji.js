@@ -13,7 +13,8 @@ import {
 import { EmojiEditor } from './emoji-source.js';
 
 EmojiEditor
-	.create( document.querySelector( '#snippet-emoji' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-emoji' ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

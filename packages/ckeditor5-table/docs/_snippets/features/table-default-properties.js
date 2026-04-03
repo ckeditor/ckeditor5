@@ -14,7 +14,8 @@ import {
 import { TableEditor } from './build-table-source.js';
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-default-properties' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-default-properties' ),
 		extraPlugins: [
 			TableProperties,
 			TableCellProperties
@@ -59,7 +60,9 @@ TableEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		placeholder: 'Insert the new table with the default styles applied.'
+		root: {
+			placeholder: 'Insert the new table with the default styles applied.'
+		}
 	} )
 	.then( editor => {
 		window.editorDefaultStyles = editor;

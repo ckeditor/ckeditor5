@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isEqual from 'es-toolkit/compat/isEqual';
+import { isEqual } from 'es-toolkit/compat';
 import type {
 	DowncastAttributeEvent,
 	ModelElement,

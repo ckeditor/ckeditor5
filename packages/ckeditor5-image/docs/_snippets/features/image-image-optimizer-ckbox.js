@@ -11,7 +11,8 @@ import {
 import { ImageOptimizerEditor } from './build-image-optimizer-source.js';
 
 ImageOptimizerEditor
-	.create( document.querySelector( '#image-optimizer-ckbox' ), {
+	.create( {
+		attachTo: document.querySelector( '#image-optimizer-ckbox' ),
 		removePlugins: [ 'ArticlePluginSet', 'LinkImage', 'Uploadcare', 'UploadcareImageEdit' ],
 		toolbar: {
 			items: [

@@ -16,7 +16,8 @@ import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 ClassicEditor
-	.create( document.querySelector( '#editor1' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor1' ),
 		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'uploadImage', 'alignment' ]
 	} )
@@ -30,12 +31,15 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor2' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor2' ),
 		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'uploadImage', 'alignment' ],
-		placeholder: 'Custom body placeholder',
 		title: {
 			placeholder: 'Custom title placeholder'
+		},
+		root: {
+			placeholder: 'Custom body placeholder'
 		}
 	} )
 	.then( editor => {

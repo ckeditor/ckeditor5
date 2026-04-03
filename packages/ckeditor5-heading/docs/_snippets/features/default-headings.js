@@ -13,7 +13,8 @@ import {
 import { HeadingEditor } from './heading-source.js';
 
 HeadingEditor
-	.create( document.querySelector( '#snippet-default-headings' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-default-headings' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

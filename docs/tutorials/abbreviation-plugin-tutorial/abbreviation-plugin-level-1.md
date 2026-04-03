@@ -115,7 +115,8 @@ Now, we need to load the `Abbreviation` plugin in our `main.js` file. The editor
 import Abbreviation from './abbreviation/abbreviation';					// ADDED
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic,
@@ -320,7 +321,8 @@ We passed the name of the button in the `componentFactory.add`, so it is now ava
 import Abbreviation from './abbreviation/abbreviation';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [
 			Essentials, Paragraph, Heading, List, Bold, Italic, Abbreviation

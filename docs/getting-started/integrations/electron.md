@@ -20,8 +20,8 @@ This guide will show you how to integrate CKEditor&nbsp;5 with an Electron appli
 
 ### Setting up an Electron project
 
-The quickest way to set up an Electron project is to use Electron Forge's `create-electron-app` command. [Follow the Getting Started guide](https://www.electronforge.io/) to create the application. 
-	
+The quickest way to set up an Electron project is to use Electron Forge's `create-electron-app` command. [Follow the Getting Started guide](https://www.electronforge.io/) to create the application.
+
 When executing `npx create-electron-app@latest my-app` in the terminal, you will be prompted to choose a bundler and a language. For the sake of this tutorial, we have chosen to use Vite and vanilla JavaScript.
 
 When the setup is finished, you should be able to go to the app's directory and run it by executing:
@@ -81,7 +81,8 @@ const {
 const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 		toolbar: [
@@ -95,7 +96,7 @@ ClassicEditor
 ```
 
 This code imports all necessary CKEditor 5 plugins and initializes the editor instance with the provided configuration.
-	
+
 Now modify the `index.html` file so it looks like this:
 
 ```html

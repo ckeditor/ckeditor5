@@ -9,7 +9,8 @@
 	/* stylelint-disable-next-line declaration-property-value-disallowed-list */
 	--ck-content-font-color: #000;
 	--ck-content-line-height: 1.5;
-	--ck-content-word-break: break-word;
+	--ck-content-word-break: normal;
+	--ck-content-overflow-wrap: break-word;
 }
 
 .ck-content {
@@ -18,4 +19,5 @@
 	color: var(--ck-content-font-color);
 	line-height: var(--ck-content-line-height);
 	word-break: var(--ck-content-word-break);
+	overflow-wrap: var(--ck-content-overflow-wrap);
 }

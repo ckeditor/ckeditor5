@@ -13,10 +13,13 @@ if ( window.top === window ) {
 	document.getElementById( 'info' ).style.display = 'block';
 } else {
 	BalloonEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet ],
-			toolbar: [ 'bold', 'link' ]
+			toolbar: [ 'bold', 'link' ],
+			root: {
+				element: document.querySelector( '#editor' )
+			}
 		} )
 		.then( editor => {
 			window.editor = editor;

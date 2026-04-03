@@ -43,7 +43,8 @@ import { Clipboard, DragDrop } from '../../src/index.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor-classic' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-classic' ),
 		plugins: [
 			Essentials, Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
 			List, Paragraph, Table, TableToolbar, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
@@ -111,7 +112,9 @@ ClassicEditor
 				'resizeImage'
 			]
 		},
-		placeholder: 'Type the content here!',
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		mention: {
 			feeds: [
 				{
@@ -223,7 +226,10 @@ ClassicEditor
 const editorData = document.querySelector( '#editor-classic' ).innerHTML;
 
 DecoupledEditor
-	.create( editorData, {
+	.create( {
+		root: {
+			initialData: editorData
+		},
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, Clipboard, Table, DragDrop ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'insertTable', 'undo', 'redo' ]
 	} )
@@ -240,7 +246,10 @@ DecoupledEditor
 	} );
 
 BalloonEditor
-	.create( document.querySelector( '#editor-balloon' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor-balloon' )
+		},
 		plugins: [
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
@@ -276,7 +285,10 @@ BalloonEditor
 	} );
 
 BalloonEditor
-	.create( document.querySelector( '#editor-balloon-custom-icon' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor-balloon-custom-icon' )
+		},
 		plugins: [
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
@@ -314,7 +326,10 @@ BalloonEditor
 	} );
 
 BalloonEditor
-	.create( document.querySelector( '#editor-block-rtl' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '#editor-block-rtl' )
+		},
 		plugins: [
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,

@@ -325,7 +325,8 @@ function SimpleImage( editor: Editor ) {
 }
 
 ClassicEditor
-	.create( document.getElementById( 'editor' )!, {
+	.create( {
+		attachTo: document.getElementById( 'editor' )!,
 		plugins: [
 			ArticlePluginSet, EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage,
 			CloudServices, SourceEditing, GeneralHtmlSupport, SimpleImage

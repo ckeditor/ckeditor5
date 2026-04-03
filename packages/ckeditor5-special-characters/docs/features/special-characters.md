@@ -33,7 +33,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, SpecialCharacters, SpecialCharactersEssentials } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, /* ... */ ],
 		toolbar: [ 'specialCharacters', /* ... */ ],
@@ -68,7 +68,7 @@ function SpecialCharactersEmoji( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersEmoji,
@@ -110,7 +110,7 @@ function SpecialCharactersExtended( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersEssentials, SpecialCharactersExtended,
@@ -148,7 +148,7 @@ For example, you can limit the categories to "Mathematical" and "Currency" only 
 import { ClassicEditor, SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [
 			SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical,
@@ -171,7 +171,7 @@ The categories order can be customized using the {@link module:special-character
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
 		specialCharacters: {

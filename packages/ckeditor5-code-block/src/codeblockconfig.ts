@@ -12,7 +12,8 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
+ * 		attachTo: editorElement,
  * 		codeBlock:  ... // The code block feature configuration.
  * 	} )
  * 	.then( ... )
@@ -34,7 +35,8 @@ export interface CodeBlockConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		codeBlock: {
 	 * 			languages: [
 	 * 				// ...
@@ -58,7 +60,8 @@ export interface CodeBlockConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		codeBlock: {
 	 * 			languages: [
 	 * 				// Do not render the CSS class for the plain text code blocks.

@@ -139,28 +139,15 @@ Once you have updated all the imports, it is time to build and validate the bund
 1. Build the plugin with the following command. It will create the `dist` folder with the plugin bundles for the new installation methods.
 
 	```bash
-	npm run prepare
+	npm run build
 	```
 
 2. Inspect the imports at the top of the `dist/index.js` file. You should only see imports from `ckeditor5` (not from `ckeditor5/src/*`) and optionally from other external dependencies.
 
-3. Repeat the above step for the `dist/browser/index.js` file, but this time you should only see imports from `ckeditor5` or `ckeditor5-premium-features`. All other imports including external dependencies should be bundled with the plugin
+3. Repeat the above step for the `dist/browser/index.es.js` file, but this time you should only see imports from `ckeditor5` or `ckeditor5-premium-features`. All other imports, including external dependencies, should be bundled with the plugin.
 
 If you see imports in the second or third step that are not explicitly mentioned, check where the imports come from in the source code and if they have been updated according to the above migration steps. If this is the case and the imports in the generated bundle are still incorrect, please create a new issue in the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/new/choose).
 
 ## How to use your plugin in new installation methods?
 
-* The code can be imported from the package root.
-* If your plugin contains styles, they can be imported using the package name followed by `/index.css` (`import '<PLUGIN_NAME>/index.css'`).
-* If your plugin provides translations, they can be imported using the package name followed by `/translations/<LANGUAGE>.js` (`import '<PLUGIN_NAME>/translations/<LANGUAGE>.js'`).
-
-```js
-// Importing the plugin code.
-import { /* Plugin code */ } from '<PACKAGE_NAME>';
-
-// Optionally importing the styles.
-import '<PACKAGE_NAME>/index.css';
-
-// Optionally importing the translations.
-import pluginTranslations from '<PACKAGE_NAME>/translations/<LANGUAGE>.js';
-```
+Once the package is migrated, follow the {@link framework/development-tools/package-generator/build-output-and-integration Build output and integration} guide to integrate it with npm, ZIP, or CDN setups.

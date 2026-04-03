@@ -20,7 +20,8 @@ ClassicEditor.builtinPlugins.push( Bookmark, PictureEditing, ImageInsert, Source
 	ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-bookmark' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-bookmark' ),
 		toolbar: {
 			items: [
 				'bookmark',

@@ -13,7 +13,8 @@ import {
 import { ImageEditor } from './build-image-source.js';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-image-full' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-full' ),
 		toolbar: {
 			items: [
 				'undo', 'redo',

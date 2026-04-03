@@ -25,10 +25,14 @@ For example, this code will import the classic editor type and some essential te
 import { ClassicEditor, Bold, Italic, Link } from 'ckeditor5'; // Imports.
 
 ClassicEditor // Editor type declaration.
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Bold, Italic, Link ], // Plugins import.
-		toolbar: [ 'bold', 'italic', 'link' ] // Toolbar configuration.
+		toolbar: [ 'bold', 'italic', 'link' ], // Toolbar configuration.
+		root: {
+			placeholder: 'Type here...'
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -146,15 +150,13 @@ const {
 } = CKEDITOR;
 
 MultiRootEditor
-	.create(
-		// Define roots / editable areas:
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
+	.create( {
+		roots: {
+			header: { element: document.querySelector( '#header' ) },
+			content: { element: document.querySelector( '#content' ) },
+			leftSide: { element: document.querySelector( '#left-side' ) },
+			rightSide: { element: document.querySelector( '#right-side' ) }
 		},
-		{
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 		toolbar: [

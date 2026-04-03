@@ -29,7 +29,8 @@ const editors = [
 
 for ( const { id, callback } of editors ) {
 	ClassicEditor
-		.create( document.querySelector( `#${ id }` ), {
+		.create( {
+			attachTo: document.querySelector( `#${ id }` ),
 			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet ],
 			toolbar: [

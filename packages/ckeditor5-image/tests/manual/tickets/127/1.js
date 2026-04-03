@@ -16,7 +16,8 @@ import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 import { ImageToolbar } from '../../../../src/imagetoolbar.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ Enter, Typing, Paragraph, Link, Bold, Image, Undo, ImageToolbar, BalloonToolbar, ImageCaption ],
 		toolbar: [ 'bold', 'undo', 'redo' ]

@@ -7,7 +7,8 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '../_utils/articlepluginset.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {

@@ -17,7 +17,8 @@ import { RemoveFormat } from '../../src/removeformat.js';
 import { Link } from '@ckeditor/ckeditor5-link';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,

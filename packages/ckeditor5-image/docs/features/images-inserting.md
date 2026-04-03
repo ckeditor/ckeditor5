@@ -31,7 +31,7 @@ Using the URL of an image, the user may paste it into the editor. To enable this
 import { ClassicEditor, Image, ImageInsert } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageInsert, /* ... */  ],
 		toolbar: [ 'insertImage', /* ... */  ]
@@ -59,7 +59,7 @@ The {@link module:image/autoimage~AutoImage} plugin recognizes image links in th
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [ /* ... */ , Image, AutoImage ]
 	} )

@@ -12,7 +12,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			GeneralHtmlSupport,
 			Essentials,
@@ -57,7 +58,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-custom-element-name' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-custom-element-name' ),
 		plugins: [
 			GeneralHtmlSupport,
 			Essentials,

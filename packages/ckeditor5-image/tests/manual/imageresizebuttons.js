@@ -64,7 +64,10 @@ const config1 = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor1' ), config1 )
+	.create( {
+		...config1,
+		attachTo: document.querySelector( '#editor1' )
+	} )
 	.then( editor => {
 		window.editor1 = editor;
 	} )
@@ -124,7 +127,10 @@ const config2 = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor2' ), config2 )
+	.create( {
+		...config2,
+		attachTo: document.querySelector( '#editor2' )
+	} )
 	.then( editor => {
 		window.editor2 = editor;
 	} )

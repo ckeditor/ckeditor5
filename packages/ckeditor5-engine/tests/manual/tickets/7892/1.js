@@ -7,6 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 const config = {
+	attachTo: document.querySelector( '#editor' ),
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [ ArticlePluginSet ],
 	toolbar: [
@@ -15,7 +16,7 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( config )
 	.then( editor => {
 		window.editor = editor;
 	} )

@@ -47,7 +47,7 @@ You can configure resizing images by handles in two different ways in the CKEdit
 import { ClassicEditor, Image, ImageResizeEditing, ImageResizeHandles } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
 		image: {
@@ -165,7 +165,7 @@ This will enable the image resize feature only through the chosen UI: either a [
 import { ClassicEditor, Image, ImageResizeButtons, ImageResizeEditing, ImageToolbar } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, /* ... */ ],
 		image: {
 			resizeOptions: [
@@ -259,7 +259,7 @@ However, there are cases where you may prefer pixel values. You can thus configu
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( {
 		image: {
 			resizeUnit: 'px',
 			resizeOptions: [
@@ -330,7 +330,7 @@ To enable it you need to install the {@link module:image/imageresize~ImageResize
 import { ClassicEditor, Image, ImageResize } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [ Image, ImageResize, /* ... */ ]
 	} )

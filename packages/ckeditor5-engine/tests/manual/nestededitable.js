@@ -71,7 +71,8 @@ class NestedEditable extends Plugin {
 }
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, NestedEditable, Undo ],
 		toolbar: [ 'undo', 'redo' ]
 	} )

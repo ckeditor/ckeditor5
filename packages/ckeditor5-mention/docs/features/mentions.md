@@ -33,7 +33,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Mention } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Mention, /* ... */ ],
 		mention: {
@@ -45,6 +45,24 @@ ClassicEditor
 ```
 </code-switcher>
 
+## Unsupported contexts
+
+The mention autocompletion is automatically disabled inside {@link features/code-blocks code blocks}. Typing a mention marker (such as `@`) inside a code block will not trigger the autocomplete panel. This also applies to features built on top of mentions, such as {@link features/slash-commands slash commands} and {@link features/emoji emoji} autocompletion.
+
+If you want to disable this behavior and allow mention autocompletion inside code blocks, you can override it using the {@link module:engine/model/schema~ModelSchema#event:checkAttribute `Schema#checkAttribute`} event:
+
+```js
+editor.model.schema.on( 'checkAttribute', ( evt, args ) => {
+	const context = args[ 0 ];
+	const attributeName = args[ 1 ];
+
+	if ( attributeName === 'mention' && context.endsWith( 'codeBlock $text' ) ) {
+		evt.stop();
+		evt.return = true;
+	}
+}, { priority: 'high' } );
+```
+
 ## Configuration
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mentionconfig~MentionFeed `feed`} and a {@link module:mention/mentionconfig~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
@@ -53,7 +71,7 @@ The code snippet below was used to configure the demo above. It defines the list
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -94,7 +112,7 @@ The callback receives the query text which should be used to filter item suggest
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -159,7 +177,7 @@ This callback takes a feed item (it contains at least the `name` property) and m
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -200,7 +218,7 @@ The number of items displayed in the autocomplete list can be customized by defi
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		mention: {
 			// Define the custom number of visible mentions.
@@ -224,7 +242,7 @@ You can control the text inserted into the editor when creating a mention via th
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( {
 		// ... Other configuration options ...
 		mention: {
 			feeds: [
@@ -270,13 +288,13 @@ The converters must be defined with a `'high'` priority to be executed before th
 
 To control how the mention element is wrapped by other attribute elements (like bold, italic, etc) set its {@link module:engine/view/attributeelement~ViewAttributeElement#priority}. To replicate default plugin behavior and make mention to be wrapped by other elements set priority to `20`.
 
-By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this, the model attribute value object exposes a unique ID of each inserted mention to the model as `uid`. To prevent merging subsequent mentions, set it as {@link module:engine/view/attributeelement~ViewAttributeElement#id}.
+By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this, the model attribute value object exposes a unique ID of each inserted mention to the model as `uid`. To prevent merging subsequent mentions, set it as {@link module:engine/view/attributeelement~ViewAttributeElement#id}. The `uid` is persisted in the data output as the `data-mention-uid` attribute to guarantee that the same HTML always produces the same model. During clipboard (copy/cut) output, `data-mention-uid` is omitted so that pasted mentions receive fresh unique IDs.
 
 **Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:utils/priorities~PrioritiesType#highest `'highest'` priority} controls this behavior. We do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		plugins: [ Mention, MentionCustomization, /* ... */ ], // Add the custom mention plugin function.
 		mention: {
@@ -321,7 +339,7 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -331,11 +349,13 @@ function MentionCustomization( editor ) {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
-				'href': modelAttributeValue.link
+				'href': modelAttributeValue.link,
+				// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},
@@ -361,7 +381,8 @@ Below is an example of a customized mention feature that:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#snippet-mention-customization' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-mention-customization' ),
 		// ... Other configuration options ...
 		plugins: [ Mention, MentionCustomization, /* ... */ ],
 		mention: {
@@ -416,7 +437,7 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, { writer } ) => {
+		view: ( modelAttributeValue, { writer, options } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -426,11 +447,13 @@ function MentionCustomization( editor ) {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
-				'href': modelAttributeValue.link
+				'href': modelAttributeValue.link,
+				// Omit `data-mention-uid` in clipboard (copy/cut) to prevent UIDs duplication.
+				...( !options.isClipboardPipeline && { 'data-mention-uid': modelAttributeValue.uid } )
 			}, {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
-				// Prevent merging mentions together.
+				// Prevent merging mentions together in clipboard (when `data-mention-uid` is not available).
 				id: modelAttributeValue.uid
 			} );
 		},

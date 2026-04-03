@@ -28,7 +28,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, HorizontalLine } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HorizontalLine, /* ... */ ],
 		toolbar: [ 'horizontalLine', /* ... */ ],

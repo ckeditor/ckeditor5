@@ -34,7 +34,8 @@ function AddTargetToExternalLinks( editor ) {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link-external' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-link-external' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ AddTargetToExternalLinks ],
 		ui: {

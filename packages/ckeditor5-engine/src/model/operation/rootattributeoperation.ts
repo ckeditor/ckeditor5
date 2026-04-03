@@ -13,6 +13,7 @@ import { type ModelDocument } from '../document.js';
 import { type ModelRootElement } from '../rootelement.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { isEqual } from 'es-toolkit/compat';
 import type { ModelSelectable } from '../selection.js';
 
 /**
@@ -132,7 +133,7 @@ export class RootAttributeOperation extends Operation {
 			);
 		}
 
-		if ( this.oldValue !== null && this.root.getAttribute( this.key ) !== this.oldValue ) {
+		if ( this.oldValue !== null && !isEqual( this.root.getAttribute( this.key ), this.oldValue ) ) {
 			/**
 			 * The attribute which should be removed does not exist for the given node.
 			 *

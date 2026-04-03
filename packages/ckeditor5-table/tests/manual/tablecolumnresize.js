@@ -47,7 +47,10 @@ const editorConfig = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), editorConfig )
+	.create( {
+		...editorConfig,
+		attachTo: document.querySelector( '#editor' )
+	} )
 	.then( editor => {
 		window.editor = editor;
 	} )
@@ -56,7 +59,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-rtl' ), Object.assign( {}, editorConfig, {
+	.create( Object.assign( {}, editorConfig, {
+		attachTo: document.querySelector( '#editor-rtl' ),
 		language: 'ar'
 	} ) )
 	.then( editor => {

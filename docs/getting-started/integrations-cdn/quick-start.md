@@ -50,13 +50,17 @@ const {
 } = CKEDITOR;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 		toolbar: [
 			'undo', 'redo', '|', 'bold', 'italic', '|',
 			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-		]
+		],
+		root: {
+			placeholder: 'Type here...'
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -99,13 +103,17 @@ A simple HTML page with the CKEditor may look like the one below.
 			} = CKEDITOR;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
 						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-					]
+					],
+					root: {
+						placeholder: 'Type here...'
+					}
 				} )
 				.then( /* ... */ )
 				.catch( /* ... */ );
@@ -155,7 +163,8 @@ Both included scripts expose global variables named `CKEDITOR` and `CKEDITOR_PRE
 	const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [
@@ -209,7 +218,8 @@ A simple HTML page with the CKEditor may look like the one below.
 			const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: [
@@ -269,7 +279,8 @@ In the following script tag, import the desired plugins and add them to the `plu
 	import { FormatPainter } from 'ckeditor5-premium-features';
 
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [
@@ -322,7 +333,8 @@ Your final page should look similar to the one below.
 			import { FormatPainter } from 'ckeditor5-premium-features';
 
 			ClassicEditor
-				.create( document.querySelector( '#editor' ), {
+				.create( {
+					attachTo: document.querySelector( '#editor' ),
 					licenseKey: '<YOUR_LICENSE_KEY>',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 					toolbar: [

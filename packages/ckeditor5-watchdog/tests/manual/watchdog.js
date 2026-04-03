@@ -64,7 +64,10 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 function createWatchdog( editorElement, stateElement, name ) {
 	const watchdog = new EditorWatchdog( ClassicEditor );
 
-	watchdog.create( editorElement, editorConfig );
+	watchdog.create( {
+		...editorConfig,
+		attachTo: editorElement
+	} );
 
 	watchdog.on( 'error', () => {
 		console.log( `${ name } editor crashed!` );

@@ -13,7 +13,8 @@ import {
 import { MediaEditor } from './build-media-source.js';
 
 MediaEditor
-	.create( document.querySelector( '#snippet-media-embed' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-media-embed' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

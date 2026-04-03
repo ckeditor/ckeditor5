@@ -30,7 +30,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import { List } from '../../src/list.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, IndentBlock, Italic, Link,
 			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
@@ -84,7 +85,9 @@ ClassicEditor
 				'resizeImage'
 			]
 		},
-		placeholder: 'Type the content here!',
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: html => ( { html, hasChange: false } )
