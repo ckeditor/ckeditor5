@@ -120,6 +120,18 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	}
 
 	/**
+	 * Returns an array with all roots added to the document (except the {@link #graveyard graveyard root}).
+	 *
+	 * Detached roots **are not** returned by this method by default. This is to make sure that all features or algorithms that operate
+	 * on the document data know which roots are still a part of the document and should be processed.
+	 *
+	 * @param includeDetached Specified whether detached roots should be returned as well.
+	 */
+	public getRoots(): Array<ViewRootEditableElement> {
+		return Array.from( this.roots );
+	}
+
+	/**
 	 * Allows registering post-fixer callbacks. A post-fixers mechanism allows to update the view tree just before it is rendered
 	 * to the DOM.
 	 *
