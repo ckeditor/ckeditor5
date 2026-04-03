@@ -85,7 +85,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		this.config.define( 'menuBar.isVisible', false );
 
 		if ( isElement( sourceElement ) ) {
-			if ( !sourceElement.parentElement ) {
+			if ( !sourceElement.isConnected ) {
 				/**
 				 * Cannot initialize the editor because the provided source element is not attached to the DOM and cannot be replaced.
 				 *
