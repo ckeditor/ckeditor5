@@ -15,7 +15,6 @@ import {
 	type ModelSelectionChangeRangeEvent
 } from './selection.js';
 import { ModelText } from './text.js';
-import { ModelTextProxy } from './textproxy.js';
 
 import type { ModelDocumentChangeEvent, ModelDocument } from './document.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
@@ -23,6 +22,7 @@ import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js'
 import { type Batch } from './batch.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
+import { type ModelNode } from './node.js';
 import type { ModelPosition, ModelPositionOffset } from './position.js';
 import { type ModelRange } from './range.js';
 import { type ModelSchema } from './schema.js';
@@ -1157,7 +1157,7 @@ class LiveSelection extends ModelSelection {
 			return null;
 		}
 
-		let attrs = null;
+		let attrs: Iterable<[string, unknown]> | null = null;
 
 		if ( !this.isCollapsed ) {
 			// 1. If selection is a range...
@@ -1197,22 +1197,12 @@ class LiveSelection extends ModelSelection {
 			// 4. If not, try to find the first character on the left, that is in the same node.
 			// When gravity is overridden then don't take node before into consideration.
 			if ( !this.isGravityOverridden && !attrs ) {
-				let node = nodeBefore;
-
-				while ( node && !attrs ) {
-					node = node.previousSibling;
-					attrs = getTextAttributes( node, schema );
-				}
+				attrs = getTextAttributes( nodeBefore, schema, 'backward' );
 			}
 
 			// 5. If not found, try to find the first character on the right, that is in the same node.
 			if ( !attrs ) {
-				let node = nodeAfter;
-
-				while ( node && !attrs ) {
-					node = node.nextSibling;
-					attrs = getTextAttributes( node, schema );
-				}
+				attrs = getTextAttributes( nodeAfter, schema, 'forward' );
 			}
 
 			// 6. If not found, selection should retrieve attributes from parent.
@@ -1244,40 +1234,70 @@ class LiveSelection extends ModelSelection {
 /**
  * Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}.
  *
- * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
+ * It checks if the passed model node is a text node and, if so, returns it's attributes.
  * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
-function getTextAttributes( node: ModelItem | null, schema: ModelSchema ): Iterable<[string, unknown]> | null {
-	if ( !node ) {
+function getTextAttributes(
+	startNode: ModelNode | null,
+	schema: ModelSchema,
+	scan: 'self' | 'backward' | 'forward' = 'self'
+): Iterable<[string, unknown]> | null {
+	if ( !startNode ) {
 		return null;
 	}
 
-	if ( node instanceof ModelTextProxy || node instanceof ModelText ) {
-		return node.getAttributes();
+	for ( const node of siblingNodes( startNode, scan ) ) {
+		if ( !node ) {
+			return null;
+		}
+
+		if ( node instanceof ModelText ) {
+			return node.getAttributes();
+		}
+
+		if ( !schema.isInline( node ) ) {
+			continue;
+		}
+
+		const isObject = schema.isObject( node );
+		const attributes: Array<[string, unknown]> = [];
+
+		// Collect all attributes that can be applied to the text node.
+		for ( const [ key, value ] of node.getAttributes() ) {
+			if (
+				schema.checkAttribute( '$text', key ) &&
+				( !isObject || schema.getAttributeProperties( key ).copyFromObject !== false )
+			) {
+				attributes.push( [ key, value ] );
+			}
+		}
+
+		return attributes;
 	}
 
-	if ( !schema.isInline( node ) ) {
-		return null;
+	return null;
+}
+
+/**
+ * Returns sibling nodes from the given start node.
+ */
+function* siblingNodes( startNode: ModelNode, scan: 'self' | 'backward' | 'forward' ) {
+	if ( scan == 'self' ) {
+		yield startNode;
 	}
+	else {
+		let node: ModelNode | null = startNode;
 
-	// Stop on inline elements (such as `<softBreak>`) that are not objects (such as `<imageInline>` or `<mathml>`).
-	if ( !schema.isObject( node ) ) {
-		return [];
-	}
+		while ( node ) {
+			node = scan == 'backward' ?
+				node.previousSibling :
+				node.nextSibling;
 
-	const attributes: Array<[string, unknown]> = [];
-
-	// Collect all attributes that can be applied to the text node.
-	for ( const [ key, value ] of node.getAttributes() ) {
-		if (
-			schema.checkAttribute( '$text', key ) &&
-			schema.getAttributeProperties( key ).copyFromObject !== false
-		) {
-			attributes.push( [ key, value ] );
+			yield node;
 		}
 	}
 
-	return attributes;
+	return null;
 }
 
 /**

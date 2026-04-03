@@ -11,6 +11,12 @@ import { ShiftEnterCommand } from './shiftentercommand.js';
 import { EnterObserver, type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
+import type {
+	ModelElement,
+	ModelNode,
+	ModelWriter
+} from '@ckeditor/ckeditor5-engine';
+
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
  *
@@ -44,6 +50,7 @@ export class ShiftEnter extends Plugin {
 		// Configure the schema.
 		schema.register( 'softBreak', {
 			allowWhere: '$text',
+			allowAttributesOf: '$text',
 			isInline: true
 		} );
 
@@ -63,6 +70,7 @@ export class ShiftEnter extends Plugin {
 		view.addObserver( EnterObserver );
 
 		editor.commands.add( 'shiftEnter', new ShiftEnterCommand( editor ) );
+		editor.model.document.registerPostFixer( writer => removeStaleSoftBreakAttributes( writer ) );
 
 		this.listenTo<ViewDocumentEnterEvent>( viewDocument, 'enter', ( evt, data ) => {
 			// When not in composition, we handle the action, so prevent the default one.
@@ -90,4 +98,59 @@ export class ShiftEnter extends Plugin {
 			]
 		} );
 	}
+}
+
+/**
+ * The post-fixer that removes attributes from stale soft-break elements.
+ */
+function removeStaleSoftBreakAttributes( writer: ModelWriter ): boolean {
+	const parentsToCheck = new Set<ModelElement>();
+
+	for ( const change of writer.model.document.differ.getChanges() ) {
+		if ( change.type == 'insert' || change.type == 'remove' ) {
+			if ( change.position.parent.is( 'element' ) ) {
+				parentsToCheck.add( change.position.parent );
+			}
+		} else if ( change.type == 'attribute' ) {
+			if ( change.range.start.parent.is( 'element' ) ) {
+				parentsToCheck.add( change.range.start.parent );
+			}
+		}
+	}
+
+	let wasChanged = false;
+
+	for ( const parent of parentsToCheck ) {
+		// Just a sibling nodes check. We do not need to check attributes of nested elements.
+		for ( const child of parent.getChildren() ) {
+			// Find a softBreak element.
+			if ( !child.is( 'element', 'softBreak' ) ) {
+				continue;
+			}
+
+			const nextSibling = child.nextSibling;
+
+			// Do not remove attributes when softBreak is the last element or there is some element after it.
+			if ( !nextSibling || nextSibling.is( 'element' ) ) {
+				continue;
+			}
+
+			for ( const [ key, value ] of child.getAttributes() ) {
+				// Remove the attribute if the next sibling does not have the same attribute.
+				if ( !hasSameAttribute( nextSibling, key, value ) ) {
+					writer.removeAttribute( key, child );
+					wasChanged = true;
+				}
+			}
+		}
+	}
+
+	return wasChanged;
+}
+
+/**
+ * Returns `true` if the given node has the same attribute as the one provided in the parameters.
+ */
+function hasSameAttribute( node: ModelNode | null, key: string, value: unknown ): boolean {
+	return node?.getAttribute( key ) === value;
 }
