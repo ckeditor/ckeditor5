@@ -152,6 +152,9 @@ describe( 'DataController utils', () => {
 					allowIn: '$root',
 					allowAttributes: [ 'bold', 'italic' ]
 				} );
+
+				schema.setAttributeProperties( 'bold', { isFormatting: true } );
+				schema.setAttributeProperties( 'italic', { isFormatting: true } );
 			} );
 
 			it( 'deletes characters (first half has attrs)', () => {
@@ -174,7 +177,7 @@ describe( 'DataController utils', () => {
 
 			it( 'preserves selection attrs when emptied content', () => {
 				_setModelData( model,
-					'<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>'
+					'<paragraph>x</paragraph><paragraph><$text bold="true">[foo]</$text></paragraph><paragraph>y</paragraph>'
 				);
 
 				deleteContent( model, doc.selection );

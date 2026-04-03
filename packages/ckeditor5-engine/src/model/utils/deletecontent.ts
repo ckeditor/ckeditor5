@@ -107,7 +107,7 @@ export function deleteContent(
 	// touch the document selection attributes.
 	const selectionIsDocumentSelection = !!documentSelection.getFirstRange()?.isEqual( selRange );
 	const selectionAttributes = Array.from( documentSelection.getAttributes() );
-	const selectionParentWasEmpty = !!documentSelection.anchor?.parent.isEmpty;
+	const selectionParentWasEmpty = !!documentSelection.getFirstRange()?.start.parent.isEmpty;
 
 	model.change( writer => {
 		// 1. Replace the entire content with paragraph.
@@ -679,7 +679,8 @@ function restoreSelectionAttributesOnEmptyParent(
 	// Setting document selection attributes here also persists them as `selection:*`
 	// on the empty parent, so future typing keeps the pre-delete formatting.
 	for ( const [ key, value ] of selectionAttributes ) {
-		if ( writer.model.schema.checkAttributeInSelection( documentSelection, key ) ) {
+		if ( writer.model.schema.getAttributeProperties( key ).isFormatting &&
+			writer.model.schema.checkAttributeInSelection( documentSelection, key ) ) {
 			writer.setSelectionAttribute( key, value );
 		}
 	}
