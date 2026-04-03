@@ -7,6 +7,7 @@
  * @module editor-classic/classiceditor
  */
 
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { ClassicEditorUI } from './classiceditorui.js';
 import { ClassicEditorUIView } from './classiceditoruiview.js';
 
@@ -84,6 +85,15 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		this.config.define( 'menuBar.isVisible', false );
 
 		if ( isElement( sourceElement ) ) {
+			if ( !sourceElement.isConnected ) {
+				/**
+				 * Cannot initialize the editor because the provided source element is not attached to the DOM and cannot be replaced.
+				 *
+				 * @error editor-source-element-not-attached
+				 */
+				throw new CKEditorError( 'editor-source-element-not-attached', null );
+			}
+
 			this.sourceElement = sourceElement;
 		}
 
