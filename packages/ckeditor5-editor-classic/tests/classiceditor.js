@@ -507,6 +507,7 @@ describe( 'ClassicEditor', () => {
 				expect.fail( 'Promise should have been rejected' );
 			} catch ( err ) {
 				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.context ).to.be.null; // avoid watchdog restart
 				expect( err.message ).to.contain( 'editor-source-element-not-attached' );
 			}
 		} );
