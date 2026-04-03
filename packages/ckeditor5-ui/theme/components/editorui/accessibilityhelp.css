@@ -8,55 +8,22 @@
 	/* Size */
 	--ck-accessibility-help-dialog-max-height: 400px;
 	--ck-accessibility-help-dialog-max-width: 600px;
-	--ck-accessibility-help-kbd-min-width: 1.8em;
-
-	/* Spacing */
-	--ck-accessibility-help-code-padding: .4em;
-	--ck-accessibility-help-dialog-region-padding: var(--ck-spacing-region-edge-margin-block);
-	--ck-accessibility-help-dl-item-padding: .4em 0;
-	--ck-accessibility-help-kbd-adjacent-margin-inline-start: 2px;
-	--ck-accessibility-help-kbd-margin: 0 1px;
-	--ck-accessibility-help-section-margin: 1em 0;
-
-	/* Radius */
-	--ck-accessibility-help-code-border-radius: 2px;
-
-	/* Border */
-	--ck-accessibility-help-region-border: 1px solid transparent;
-	--ck-accessibility-help-divider-border: var(--ck-accessibility-help-divider-border-width) solid var(--ck-accessibility-help-dialog-border-color);
-	--ck-accessibility-help-divider-border-width: var(--ck-border-width-divider);
-
-	/* Shadow */
-	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
-	--ck-accessibility-help-region-focus-box-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow)), 0 0;
-	--ck-accessibility-help-kbd-box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
-
-	/* Color */
-	--ck-accessibility-help-dialog-border-color: hsl(220, 6%, 81%);
-	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
-	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
-
-	/* Typography */
-	--ck-accessibility-help-code-font-size: .9em;
-	--ck-accessibility-help-h3-font-size: 1.2em;
-	--ck-accessibility-help-h3-font-weight: var(--ck-font-weight-ui-heading);
-	--ck-accessibility-help-h4-font-size: 1em;
-	--ck-accessibility-help-h4-font-weight: var(--ck-font-weight-ui-heading);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
-	padding: var(--ck-accessibility-help-dialog-region-padding);
+	padding: var(--ck-spacing-region-edge-margin-block);
 	max-width: var(--ck-accessibility-help-dialog-max-width);
 	max-height: var(--ck-accessibility-help-dialog-max-height);
 	overflow: auto;
 	user-select: text;
 
-	border: var(--ck-accessibility-help-region-border);
+	border: 1px solid transparent;
 
 	&:focus {
 		outline: none;
 		border-color: var(--ck-focus-border-color);
-		box-shadow: var(--ck-accessibility-help-region-focus-box-shadow);
+		/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
+		box-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow)), 0 0;
 	}
 
 	* {
@@ -69,31 +36,31 @@
 	}
 
 	& h3 {
-		font-weight: var(--ck-accessibility-help-h3-font-weight);
-		font-size: var(--ck-accessibility-help-h3-font-size);
+		font-weight: var(--ck-font-weight-ui-heading);
+		font-size: 1.2em;
 	}
 
 	& h4 {
-		font-weight: var(--ck-accessibility-help-h4-font-weight);
-		font-size: var(--ck-accessibility-help-h4-font-size);
+		font-weight: var(--ck-font-weight-ui-heading);
+		font-size: 1em;
 	}
 
 	& p,
 	& h3,
 	& h4,
 	& table {
-		margin: var(--ck-accessibility-help-section-margin);
+		margin: 1em 0;
 	}
 
 	& dl {
 		display: grid;
 		grid-template-columns: 2fr 1fr;
-		border-top: var(--ck-accessibility-help-divider-border);
+		border-top: var(--ck-border-width-divider) solid var(--ck-accessibility-help-dialog-border-color, hsl(220, 6%, 81%));
 		border-bottom: none;
 
 		& dt, & dd {
-			border-bottom: var(--ck-accessibility-help-divider-border);
-			padding: var(--ck-accessibility-help-dl-item-padding);
+			border-bottom: var(--ck-border-width-divider) solid var(--ck-accessibility-help-dialog-border-color, hsl(220, 6%, 81%));
+			padding: .4em 0;
 		}
 
 		& dt {
@@ -108,13 +75,13 @@
 
 	& kbd, & code {
 		display: inline-block;
-		background: var(--ck-accessibility-help-dialog-code-background-color);
-		padding: var(--ck-accessibility-help-code-padding);
+		background: var(--ck-accessibility-help-dialog-code-background-color, hsl(0deg 0% 92.94%));
+		padding: .4em;
 		vertical-align: middle;
 		line-height: 1;
-		border-radius: var(--ck-accessibility-help-code-border-radius);
+		border-radius: 2px;
 		text-align: center;
-		font-size: var(--ck-accessibility-help-code-font-size);
+		font-size: .9em;
 	}
 
 	& code {
@@ -122,12 +89,12 @@
 	}
 
 	& kbd {
-		min-width: var(--ck-accessibility-help-kbd-min-width);
-		box-shadow: var(--ck-accessibility-help-kbd-box-shadow);
-		margin: var(--ck-accessibility-help-kbd-margin);
+		min-width: 1.8em;
+		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color, hsl(0deg 0% 61%));
+		margin: 0 1px;
 
 		& + kbd {
-			margin-left: var(--ck-accessibility-help-kbd-adjacent-margin-inline-start);
+			margin-left: 2px;
 		}
 	}
 }

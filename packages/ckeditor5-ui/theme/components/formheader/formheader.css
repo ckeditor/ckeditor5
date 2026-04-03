@@ -6,28 +6,19 @@
 :root {
 	/* Size */
 	--ck-form-header-height: 3.384em;
-	--ck-form-header-label-font-size: 1.153em;
 
 	/* Spacing */
-	--ck-form-header-back-button-gap: var(--ck-spacing-surface-item-gap-inline);
-	--ck-form-header-icon-gap: var(--ck-spacing-control-icon-gap);
 	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
-	--ck-form-header-padding-inline: var(--ck-spacing-control-meta-gap);
-	--ck-form-header-padding-inline-compact: var(--ck-spacing-surface-padding-inline);
-
-	/* Border */
-	--ck-form-header-border: var(--ck-form-header-border-width) solid var(--ck-color-base-border);
-	--ck-form-header-border-width: var(--ck-border-width-divider);
 
 	/* Typography */
-	--ck-form-header-label-font-weight: var(--ck-font-weight-ui-heading);
+	--ck-form-header-label-font-size: 1.153em;
 }
 
 .ck.ck-form__header {
-	padding: var(--ck-form-header-padding-block) var(--ck-form-header-padding-inline);
+	padding: var(--ck-form-header-padding-block) var(--ck-spacing-control-meta-gap);
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
-	border-bottom: var(--ck-form-header-border);
+	border-bottom: var(--ck-border-width-divider) solid var(--ck-color-base-border);
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
 	display: flex;
@@ -37,28 +28,28 @@
 	justify-content: space-between;
 
 	& > .ck-icon {
-		margin-inline-end: var(--ck-form-header-icon-gap);
+		margin-inline-end: var(--ck-spacing-control-icon-gap);
 		flex-shrink: 0;
 	}
 
 	& .ck-form__header__label {
 		/* Defaults to 15px. */
 		--ck-font-size-base: var(--ck-form-header-label-font-size);
-		font-weight: var(--ck-form-header-label-font-weight);
+		font-weight: var(--ck-font-weight-ui-heading);
 	}
 
 	/* Padding when back button is hidden */
 	&:has(.ck-button-back.ck-hidden) {
-		padding-inline: var(--ck-form-header-padding-inline) var(--ck-form-header-padding-inline);
+		padding-inline: var(--ck-spacing-control-meta-gap) var(--ck-spacing-control-meta-gap);
 	}
 
 	/* Padding when back button is visible */
 	&:has(.ck-button-back:not(.ck-hidden)) {
-		padding-inline: var(--ck-form-header-padding-inline-compact) var(--ck-form-header-padding-inline-compact);
+		padding-inline: var(--ck-spacing-surface-padding-inline) var(--ck-spacing-surface-padding-inline);
 	}
 
 	& > .ck-button-back {
-		margin-inline-end: var(--ck-form-header-back-button-gap);
+		margin-inline-end: var(--ck-spacing-surface-item-gap-inline);
 	}
 
 	& > .ck.ck-button {

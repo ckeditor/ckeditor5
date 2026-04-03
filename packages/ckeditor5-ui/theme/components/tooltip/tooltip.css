@@ -6,23 +6,13 @@
 
 :root {
 	/* Size */
-	--ck-tooltip-arrow-half-width: 4px;
-	--ck-tooltip-arrow-height: 4px;
 	--ck-tooltip-max-width: 200px;
 
 	/* Spacing */
-	--ck-tooltip-padding-inline: var(--ck-spacing-control-icon-gap);
-	--ck-tooltip-padding: 0 var(--ck-tooltip-padding-inline);
-	--ck-tooltip-text-padding: 4px;
-	--ck-tooltip-text-padding-block-inline: var(--ck-tooltip-text-padding) 0;
+	--ck-tooltip-padding: 0 var(--ck-spacing-control-icon-gap);
 
 	/* Border */
-	--ck-tooltip-arrow-border-width: 0 var(--ck-tooltip-arrow-half-width) var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width);
-	--ck-tooltip-arrow-border-width-up: var(--ck-tooltip-arrow-height) var(--ck-tooltip-arrow-half-width) 0 var(--ck-tooltip-arrow-half-width);
-	--ck-tooltip-arrow-offset: 0px;
-	--ck-tooltip-border-width: 0px;
-	--ck-tooltip-border-color: transparent;
-	--ck-tooltip-border: var(--ck-tooltip-border-width) solid var(--ck-tooltip-border-color);
+	--ck-tooltip-border: 0px solid transparent;
 
 	/* Color */
 	--ck-tooltip-background-color: var(--ck-color-surface-inverse);
@@ -30,19 +20,11 @@
 
 	/* Typography */
 	--ck-tooltip-text-font-size: .9em;
-	--ck-tooltip-text-line-height: 1.5;
 }
 
 .ck.ck-balloon-panel.ck-tooltip {
-	--ck-balloon-border-width: var(--ck-tooltip-border-width);
-	--ck-balloon-arrow-offset: var(--ck-tooltip-arrow-offset);
-	--ck-balloon-arrow-half-width: var(--ck-tooltip-arrow-half-width);
-	--ck-balloon-arrow-height: var(--ck-tooltip-arrow-height);
-	--ck-balloon-arrow-border-width: var(--ck-tooltip-arrow-border-width);
-	--ck-balloon-arrow-border-width-up: var(--ck-tooltip-arrow-border-width-up);
 	--ck-balloon-panel-border: var(--ck-tooltip-border);
-	--ck-balloon-border-color: var(--ck-tooltip-border-color);
-	--ck-panel-background-color: var(--ck-tooltip-background-color);
+	--ck-balloon-panel-background-color: var(--ck-tooltip-background-color);
 
 	padding: var(--ck-tooltip-padding);
 
@@ -55,14 +37,14 @@
 
 	& .ck-tooltip__text {
 		font-size: var(--ck-tooltip-text-font-size);
-		line-height: var(--ck-tooltip-text-line-height);
+		line-height: 1.5;
 		color: var(--ck-tooltip-text-color);
 	}
 
 	&.ck-tooltip_multi-line .ck-tooltip__text {
 		white-space: break-spaces;
 		display: inline-block;
-		padding: var(--ck-tooltip-text-padding-block-inline);
+		padding: 4px 0;
 		max-width: var(--ck-tooltip-max-width);
 	}
 

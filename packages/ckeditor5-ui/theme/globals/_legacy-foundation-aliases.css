@@ -31,7 +31,7 @@
 
 	/* Radius */
 	--ck-border-radius: var(--ck-radius-base);
-	--ck-rounded-corners-radius: var(--ck-radius-rounded);
+	--ck-rounded-corners-radius: var(--ck-radius-corners);
 
 	/* Shadow */
 	--ck-drop-shadow: var(--ck-shadow-md);

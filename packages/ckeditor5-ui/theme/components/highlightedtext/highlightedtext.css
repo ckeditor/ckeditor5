@@ -3,15 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	/* Typography */
-	--ck-highlighted-text-font-weight: var(--ck-font-weight-ui-inherit);
-}
-
 .ck.ck-highlighted-text mark {
 	background: var(--ck-color-highlight-background);
 	vertical-align: initial;
-	font-weight: var(--ck-highlighted-text-font-weight);
+	font-weight: var(--ck-font-weight-ui-inherit);
 	line-height: inherit;
 	font-size: inherit;
 }

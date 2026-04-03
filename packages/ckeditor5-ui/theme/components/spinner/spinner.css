@@ -6,28 +6,16 @@
 :root {
 	/* Size */
 	--ck-toolbar-spinner-size: 18px;
-
-	/* Border */
-	--ck-spinner-border: var(--ck-spinner-border-width) solid var(--ck-color-text);
-	--ck-spinner-border-width: var(--ck-border-width-emphasis);
-
-	/* Motion */
-	--ck-spinner-animation: var(--ck-spinner-animation-duration) var(--ck-spinner-animation-iteration-count) var(--ck-spinner-animation-name) var(--ck-spinner-animation-timing-function);
-	--ck-spinner-animation-duration: var(--ck-animation-duration-progress);
-	--ck-spinner-animation-duration-reduced: 3s;
-	--ck-spinner-animation-iteration-count: var(--ck-animation-repeat-infinite);
-	--ck-spinner-animation-name: ck-spinner-rotate;
-	--ck-spinner-animation-timing-function: var(--ck-animation-timing-function-progress);
 }
 
 .ck.ck-spinner-container {
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
-	animation: var(--ck-spinner-animation);
+	animation: var(--ck-animation-duration-progress) var(--ck-animation-repeat-infinite) ck-spinner-rotate var(--ck-animation-timing-function-progress);
 	display: block;
 
 	@media (prefers-reduced-motion: reduce) {
-		animation-duration: var(--ck-spinner-animation-duration-reduced);
+		animation-duration: 3s;
 	}
 	position: relative
 }
@@ -36,7 +24,7 @@
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
 	border-radius: var(--ck-radius-full);
-	border: var(--ck-spinner-border);
+	border: var(--ck-border-width-emphasis) solid var(--ck-color-text);
 	border-top-color: transparent;
 	position: absolute;
 	top: 50%;

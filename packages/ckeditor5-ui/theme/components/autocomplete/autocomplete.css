@@ -7,25 +7,13 @@
 	/* Size */
 	--ck-autocomplete-results-max-height: 200px;
 
-	/* Spacing */
-	--ck-autocomplete-results-edge-overlap: var(--ck-autocomplete-results-border-width);
-	--ck-autocomplete-results-margin-n: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
-	--ck-autocomplete-results-margin-s: calc(-1 * var(--ck-autocomplete-results-edge-overlap));
-
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
-	--ck-autocomplete-results-uniform-border-radius: initial;
+	--ck-autocomplete-results-uniform-border-radius: var(--ck-border-radius-uniform);
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-autocomplete-results-border-radius-n: var(--ck-autocomplete-results-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
-	--ck-autocomplete-results-border-radius-s: var(--ck-autocomplete-results-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 	/* Border */
-	--ck-autocomplete-results-border: var(--ck-autocomplete-results-border-width) solid var(--ck-dropdown-panel-border-color);
-	--ck-autocomplete-results-border-width: var(--ck-border-width-surface);
-
-	/* Shadow */
-	--ck-autocomplete-results-box-shadow: var(--ck-autocomplete-results-shadow), 0 0;
-	--ck-autocomplete-results-shadow: var(--ck-shadow-surface-floating);
+	--ck-autocomplete-results-border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 
 	/* Color */
 	--ck-autocomplete-results-background-color: var(--ck-color-surface-container);
@@ -34,7 +22,7 @@
 .ck.ck-autocomplete {
 	& > .ck-search__results {
 		border-radius: var(--ck-autocomplete-results-border-radius);
-		box-shadow: var(--ck-autocomplete-results-box-shadow);
+		box-shadow: var(--ck-shadow-surface-floating), 0 0;
 		max-height: var(--ck-autocomplete-results-max-height);
 		overflow-y: auto;
 		background: var(--ck-autocomplete-results-background-color);
@@ -43,18 +31,18 @@
 		position: absolute;
 
 		&.ck-search__results_n {
-			border-radius: var(--ck-autocomplete-results-border-radius-n);
+			border-radius: var(--ck-autocomplete-results-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
 
 			/* Prevent duplicated borders between the input and the results pane. */
-			margin-bottom: var(--ck-autocomplete-results-margin-n);
+			margin-bottom: calc(-1 * var(--ck-border-width-surface));
 			bottom: 100%;
 		}
 
 		&.ck-search__results_s {
-			border-radius: var(--ck-autocomplete-results-border-radius-s);
+			border-radius: var(--ck-autocomplete-results-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 			/* Prevent duplicated borders between the input and the results pane. */
-			margin-top: var(--ck-autocomplete-results-margin-s);
+			margin-top: calc(-1 * var(--ck-border-width-surface));
 			top: 100%;
 			bottom: auto;
 		}

@@ -5,11 +5,7 @@
 
 :root {
 	/* Spacing */
-	--ck-form-row-item-gap-inline: var(--ck-spacing-region-padding-inline);
-	--ck-form-row-padding-block-lg: var(--ck-spacing-region-edge-margin-block);
-	--ck-form-row-padding-block-start: var(--ck-spacing-region-padding-block);
-	--ck-form-row-padding-inline: var(--ck-spacing-region-padding-inline-wide);
-	--ck-form-row-padding: var(--ck-form-row-padding-block-start) var(--ck-form-row-padding-inline) 0;
+	--ck-form-row-padding: var(--ck-spacing-region-padding-block) var(--ck-spacing-region-padding-inline-wide) 0;
 }
 
 .ck.ck-form__row {
@@ -20,18 +16,18 @@
 	padding: var(--ck-form-row-padding);
 
 	&.ck-form__row_large-top-padding {
-		padding-top: var(--ck-form-row-padding-block-lg);
+		padding-top: var(--ck-spacing-region-edge-margin-block);
 	}
 
 	&.ck-form__row_large-bottom-padding {
-		padding-bottom: var(--ck-form-row-padding-block-lg);
+		padding-bottom: var(--ck-spacing-region-edge-margin-block);
 	}
 
 	&.ck-form__row_with-submit {
 		flex-wrap: nowrap;
 
 		& > *:not(:first-child) {
-			margin-inline-start: var(--ck-form-row-item-gap-inline);
+			margin-inline-start: var(--ck-spacing-region-padding-inline);
 		}
 	}
 

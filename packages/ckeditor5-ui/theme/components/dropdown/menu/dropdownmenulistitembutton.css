@@ -6,18 +6,6 @@
 :root {
 	/* Size */
 	--ck-dropdown-menu-list-item-spinner-size: 20px;
-
-	/* Spacing */
-	--ck-dropdown-menu-list-item-icon-gap: var(--ck-spacing-control-padding-inline-compact);
-
-	/* Border */
-	--ck-dropdown-menu-list-item-button-focus-border-color: transparent;
-
-	/* Shadow */
-	--ck-dropdown-menu-list-item-button-focus-box-shadow: none;
-
-	/* Color */
-	--ck-dropdown-menu-list-item-button-focus-background: var(--ck-button-default-hover-background-color);
 }
 
 .ck-button.ck-dropdown-menu-list__nested-menu__item__button {
@@ -31,8 +19,8 @@
 
 	& > .ck-spinner-container {
 		/* These margins are the same as for .ck-icon. */
-		margin-left: calc(-1 * var(--ck-dropdown-menu-list-item-icon-gap));
-		margin-right: var(--ck-dropdown-menu-list-item-icon-gap);
+		margin-left: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
+		margin-right: var(--ck-spacing-control-padding-inline-compact);
 	}
 
 	/*
@@ -40,11 +28,11 @@
 	 * while moving across a huge list of items so let's get rid of them
 	 */
 	&:focus {
-		border-color: var(--ck-dropdown-menu-list-item-button-focus-border-color);
-		box-shadow: var(--ck-dropdown-menu-list-item-button-focus-box-shadow);
+		border-color: transparent;
+		box-shadow: none;
 
 		&:not(.ck-on) {
-			background: var(--ck-dropdown-menu-list-item-button-focus-background);
+			background: var(--ck-button-default-hover-background-color);
 		}
 	}
 }

@@ -4,32 +4,12 @@
  */
 
 :root {
-	/* Size */
-	--ck-color-selector-hex-picker-height: 100px;
-	--ck-color-selector-hex-picker-min-width: 180px;
-	--ck-color-selector-hex-picker-pointer-size: 15px;
-
 	/* Spacing */
-	--ck-color-selector-hex-picker-action-bar-padding: 0 var(--ck-color-selector-hex-picker-padding) var(--ck-color-selector-hex-picker-padding);
-	--ck-color-selector-hex-picker-padding: 8px;
 	--ck-color-selector-padding: 0;
-	--ck-color-selector-picker-icon-gap: var(--ck-spacing-control-padding-inline);
-	--ck-color-selector-picker-padding-block: calc(var(--ck-spacing-control-padding-inline) / 2);
-	--ck-color-selector-picker-padding-inline: var(--ck-spacing-control-padding-inline);
 
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
-	--ck-color-selector-uniform-border-radius: initial;
-	--ck-color-selector-hue-border-radius: 0 0 var(--ck-border-radius-surface) var(--ck-border-radius-surface);
-	--ck-color-selector-picker-button-border-radius-attached-top: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
-	--ck-color-selector-saturation-border-radius: var(--ck-border-radius-surface) var(--ck-border-radius-surface) 0 0;
-
-	/* Border */
-	--ck-color-selector-picker-divider-border: var(--ck-color-selector-picker-divider-border-width) solid var(--ck-color-base-border);
-	--ck-color-selector-picker-divider-border-width: var(--ck-border-width-divider);
-
-	/* Typography */
-	--ck-color-selector-grid-label-font-weight: var(--ck-font-weight-ui-inherit);
+	--ck-color-selector-uniform-border-radius: var(--ck-border-radius-uniform);
 }
 
 .ck.ck-color-selector {
@@ -50,56 +30,56 @@
 
 		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button.ck-color-selector__color-picker {
-			padding: var(--ck-color-selector-picker-padding-block) var(--ck-color-selector-picker-padding-inline);
-			border-radius: var(--ck-color-selector-picker-button-border-radius-attached-top);
+			padding: calc(var(--ck-spacing-control-padding-inline) / 2) var(--ck-spacing-control-padding-inline);
+			border-radius: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 			&:not(:focus) {
-				border-top: var(--ck-color-selector-picker-divider-border);
+				border-top: var(--ck-border-width-divider) solid var(--ck-color-base-border);
 			}
 
 			& .ck.ck-icon {
 				[dir="ltr"] & {
-					margin-right: var(--ck-color-selector-picker-icon-gap);
+					margin-right: var(--ck-spacing-control-padding-inline);
 				}
 
 				[dir="rtl"] & {
-					margin-left: var(--ck-color-selector-picker-icon-gap);
+					margin-left: var(--ck-spacing-control-padding-inline);
 				}
 			}
 		}
 
 		& label.ck.ck-color-grid__label {
-			font-weight: var(--ck-color-selector-grid-label-font-weight);
+			font-weight: var(--ck-font-weight-ui-inherit);
 		}
 	}
 
 	/* View fragment with a color picker. */
 	& .ck-color-picker-fragment {
 		& .ck.ck-color-picker {
-			padding: var(--ck-color-selector-hex-picker-padding);
+			padding: 8px;
 
 			& .hex-color-picker {
-				height: var(--ck-color-selector-hex-picker-height);
-				min-width: var(--ck-color-selector-hex-picker-min-width);
+				height: 100px;
+				min-width: 180px;
 
 				&::part(saturation) {
-					border-radius: var(--ck-color-selector-saturation-border-radius);
+					border-radius: var(--ck-border-radius-surface) var(--ck-border-radius-surface) 0 0;
 				}
 
 				&::part(hue) {
-					border-radius: var(--ck-color-selector-hue-border-radius);
+					border-radius: 0 0 var(--ck-border-radius-surface) var(--ck-border-radius-surface);
 				}
 
 				&::part(saturation-pointer),
 				&::part(hue-pointer) {
-					width: var(--ck-color-selector-hex-picker-pointer-size);
-					height: var(--ck-color-selector-hex-picker-pointer-size);
+					width: 15px;
+					height: 15px;
 				}
 			}
 		}
 
 		& .ck.ck-color-selector_action-bar {
-			padding: var(--ck-color-selector-hex-picker-action-bar-padding);
+			padding: 0 8px 8px;
 			display: flex;
 			flex-direction: row;
 			justify-content: space-around;

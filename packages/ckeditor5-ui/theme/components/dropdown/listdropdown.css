@@ -6,27 +6,23 @@
 :root {
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
-	--ck-list-dropdown-uniform-border-radius: initial;
-	--ck-list-dropdown-first-item-button-border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 var(--ck-list-dropdown-panel-border-radius) 0 0);
-	--ck-list-dropdown-last-item-button-border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius));
-	--ck-list-dropdown-panel-attached-border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius) var(--ck-list-dropdown-panel-border-radius));
-	--ck-list-dropdown-panel-border-radius: var(--ck-dropdown-panel-border-radius);
+	--ck-list-dropdown-uniform-border-radius: var(--ck-border-radius-uniform);
 }
 
 .ck.ck-dropdown > .ck-dropdown__panel > .ck-list {
 	/* Disabled radius of top-left border to be consistent with .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
-	border-radius: var(--ck-list-dropdown-panel-attached-border-radius);
+	border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 var(--ck-dropdown-panel-border-radius) var(--ck-dropdown-panel-border-radius) var(--ck-dropdown-panel-border-radius));
 
 	/* Make sure the button belonging to the first/last child of the list goes well with the
 	border radius of the entire panel. */
 	& .ck-list__item {
 		&:first-child > .ck-button {
-			border-radius: var(--ck-list-dropdown-first-item-button-border-radius);
+			border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 var(--ck-dropdown-panel-border-radius) 0 0);
 		}
 
 		&:last-child > .ck-button {
-			border-radius: var(--ck-list-dropdown-last-item-button-border-radius);
+			border-radius: var(--ck-list-dropdown-uniform-border-radius, 0 0 var(--ck-dropdown-panel-border-radius) var(--ck-dropdown-panel-border-radius));
 		}
 	}
 }

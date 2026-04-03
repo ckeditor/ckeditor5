@@ -5,19 +5,10 @@
 
 :root {
 	/* Spacing */
-	--ck-responsive-form-item-gap-inline: var(--ck-spacing-region-padding-inline);
-	--ck-responsive-form-mobile-button-margin: var(--ck-spacing-region-edge-margin-block);
-	--ck-responsive-form-mobile-button-padding: var(--ck-spacing-control-padding-inline);
-	--ck-responsive-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
-	--ck-responsive-form-mobile-item-margin-shorthand: var(--ck-responsive-form-mobile-item-margin) var(--ck-responsive-form-mobile-item-margin) 0;
 	--ck-responsive-form-padding: var(--ck-spacing-region-edge-margin-block);
 
 	/* Border */
-	--ck-responsive-form-divider-border: var(--ck-responsive-form-divider-border-width) solid var(--ck-color-base-border);
-	--ck-responsive-form-divider-border-width: var(--ck-border-width-divider);
-
-	/* State / meta */
-	--ck-responsive-form-divider-offset: calc(-1 * var(--ck-responsive-form-divider-border-width));
+	--ck-responsive-form-divider-border: var(--ck-border-width-divider) solid var(--ck-color-base-border);
 }
 
 .ck.ck-responsive-form {
@@ -30,13 +21,13 @@
 
 	[dir="ltr"] & {
 		& > :not(:first-child) {
-			margin-left: var(--ck-responsive-form-item-gap-inline);
+			margin-left: var(--ck-spacing-region-padding-inline);
 		}
 	}
 
 	[dir="rtl"] & {
 		& > :not(:last-child) {
-			margin-left: var(--ck-responsive-form-item-gap-inline);
+			margin-left: var(--ck-spacing-region-padding-inline);
 		}
 	}
 
@@ -45,7 +36,7 @@
 		width: calc(.8 * var(--ck-input-width));
 
 		& .ck-labeled-field-view {
-			margin: var(--ck-responsive-form-mobile-item-margin-shorthand);
+			margin: var(--ck-spacing-region-edge-margin-block) var(--ck-spacing-region-edge-margin-block) 0;
 
 			& .ck-input-text,
 			& .ck-input-number {
@@ -61,8 +52,8 @@
 
 		& > .ck-button:nth-last-child(1),
 		& > .ck-button:nth-last-child(2) {
-			padding: var(--ck-responsive-form-mobile-button-padding);
-			margin-top: var(--ck-responsive-form-mobile-button-margin);
+			padding: var(--ck-spacing-control-padding-inline);
+			margin-top: var(--ck-spacing-region-edge-margin-block);
 			border-radius: 0;
 
 			&:not(:focus) {
@@ -86,9 +77,9 @@
 				content: "";
 				width: 0;
 				position: absolute;
-				right: var(--ck-responsive-form-divider-offset);
-				top: var(--ck-responsive-form-divider-offset);
-				bottom: var(--ck-responsive-form-divider-offset);
+				right: calc(-1 * var(--ck-border-width-divider));
+				top: calc(-1 * var(--ck-border-width-divider));
+				bottom: calc(-1 * var(--ck-border-width-divider));
 				z-index: 1;
 			}
 
@@ -112,9 +103,9 @@
 		content: "";
 		width: 0;
 		position: absolute;
-		right: var(--ck-responsive-form-divider-offset);
-		top: var(--ck-responsive-form-divider-offset);
-		bottom: var(--ck-responsive-form-divider-offset);
+		right: calc(-1 * var(--ck-border-width-divider));
+		top: calc(-1 * var(--ck-border-width-divider));
+		bottom: calc(-1 * var(--ck-border-width-divider));
 		z-index: 1;
 	}
 

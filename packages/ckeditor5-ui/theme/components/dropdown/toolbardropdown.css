@@ -7,15 +7,11 @@
 	border: 0;
 }
 
-:root {
-	/* Size */
-	--ck-toolbar-dropdown-max-width: 60vw;
-}
-
 .ck.ck-toolbar-dropdown > .ck-dropdown__panel {
 	/* https://github.com/ckeditor/ckeditor5/issues/5586 */
 	width: max-content;
-	max-width: var(--ck-toolbar-dropdown-max-width);
+	/* Backward compatibility: falls back to legacy --ck-toolbar-dropdown-max-width if overridden. */
+	max-width: var(--ck-toolbar-dropdown-max-width, 60vw);
 
 	& .ck-button {
 		&:focus {

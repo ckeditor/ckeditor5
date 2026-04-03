@@ -3,39 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	/* Spacing */
-	--ck-balloon-rotator-counter-gap-inline: var(--ck-spacing-control-padding-inline);
-	--ck-balloon-rotator-item-gap-inline: var(--ck-spacing-surface-item-gap-inline);
-	--ck-balloon-rotator-item-gap-block: var(--ck-spacing-surface-item-gap-block);
-	--ck-balloon-rotator-padding-inline: var(--ck-spacing-surface-padding-inline);
-	--ck-balloon-rotator-padding: 0 var(--ck-balloon-rotator-padding-inline);
-
-	/* Border */
-	--ck-balloon-rotator-divider-border: var(--ck-balloon-rotator-divider-border-width) solid var(--ck-toolbar-border-color);
-	--ck-balloon-rotator-divider-border-width: var(--ck-border-width-divider);
-}
-
 .ck .ck-balloon-rotator__navigation {
 	background: var(--ck-toolbar-background-color);
-	border-bottom: var(--ck-balloon-rotator-divider-border);
-	padding: var(--ck-balloon-rotator-padding);
+	border-bottom: var(--ck-border-width-divider) solid var(--ck-toolbar-border-color);
+	padding: 0 var(--ck-spacing-surface-padding-inline);
 	display: flex;
 	align-items: center;
 
 	/* Let's keep similar appearance to `ck-toolbar`. */
 	& > * {
-		margin-right: var(--ck-balloon-rotator-item-gap-inline);
-		margin-top: var(--ck-balloon-rotator-item-gap-block);
-		margin-bottom: var(--ck-balloon-rotator-item-gap-block);
+		margin-right: var(--ck-spacing-surface-item-gap-inline);
+		margin-top: var(--ck-spacing-surface-item-gap-block);
+		margin-bottom: var(--ck-spacing-surface-item-gap-block);
 	}
 
 	/* Gives counter more breath than buttons. */
 	& .ck-balloon-rotator__counter {
-		margin-right: var(--ck-balloon-rotator-counter-gap-inline);
+		margin-right: var(--ck-spacing-control-padding-inline);
 
 		/* We need to use smaller margin because of previous button's right margin. */
-		margin-left: var(--ck-balloon-rotator-item-gap-inline);
+		margin-left: var(--ck-spacing-surface-item-gap-inline);
 	}
 	justify-content: center
 }

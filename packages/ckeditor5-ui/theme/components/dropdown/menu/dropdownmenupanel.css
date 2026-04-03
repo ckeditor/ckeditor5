@@ -7,39 +7,23 @@
 :root {
 	/* Size */
 	--ck-dropdown-menu-panel-max-height: 314px;
-	--ck-dropdown-menu-panel-max-width: 75vw;
 
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
-	--ck-dropdown-menu-panel-uniform-border-radius: initial;
+	--ck-dropdown-menu-panel-uniform-border-radius: var(--ck-border-radius-uniform);
 	--ck-dropdown-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-menu-panel-border-radius-en: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
-	--ck-dropdown-menu-panel-border-radius-es: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
-	--ck-dropdown-menu-panel-border-radius-ne: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
-	--ck-dropdown-menu-panel-border-radius-nw: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
-	--ck-dropdown-menu-panel-border-radius-se: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
-	--ck-dropdown-menu-panel-border-radius-sw: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
-	--ck-dropdown-menu-panel-border-radius-wn: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
-	--ck-dropdown-menu-panel-border-radius-ws: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
-
-	/* Border */
-	--ck-dropdown-menu-panel-border: var(--ck-dropdown-menu-panel-border-width) solid var(--ck-dropdown-panel-border-color);
-	--ck-dropdown-menu-panel-border-width: var(--ck-border-width-surface);
-
-	/* Shadow */
-	--ck-dropdown-menu-panel-box-shadow: var(--ck-dropdown-menu-panel-shadow), 0 0;
-	--ck-dropdown-menu-panel-shadow: var(--ck-shadow-surface-floating);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
 	border-radius: var(--ck-dropdown-menu-panel-border-radius);
-	box-shadow: var(--ck-dropdown-menu-panel-box-shadow);
+	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
 	background: var(--ck-dropdown-panel-background-color);
-	border: var(--ck-dropdown-menu-panel-border);
+	border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 	bottom: 0;
 	height: fit-content;
-	max-width: var(--ck-dropdown-menu-panel-max-width);
+	/* Backward compatibility: falls back to legacy --ck-dropdown-menu-menu-panel-max-width if overridden. */
+	max-width: var(--ck-dropdown-menu-menu-panel-max-width, 75vw);
 	position: absolute;
 	max-height: var(--ck-dropdown-menu-panel-max-height); /* With the default settings, this is equal to 10 menu items. */
 	overflow-y: auto;
@@ -53,22 +37,22 @@
 	/* Corner border radius consistent with the button. */
 	&.ck-balloon-panel_es,
 	&.ck-balloon-panel_se {
-		border-radius: var(--ck-dropdown-menu-panel-border-radius-es);
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 	}
 
 	&.ck-balloon-panel_ws,
 	&.ck-balloon-panel_sw {
-		border-radius: var(--ck-dropdown-menu-panel-border-radius-ws);
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 	}
 
 	&.ck-balloon-panel_en,
 	&.ck-balloon-panel_ne {
-		border-radius: var(--ck-dropdown-menu-panel-border-radius-en);
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
 	}
 
 	&.ck-balloon-panel_wn,
 	&.ck-balloon-panel_nw {
-		border-radius: var(--ck-dropdown-menu-panel-border-radius-wn);
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
 	}
 
 	&:focus {

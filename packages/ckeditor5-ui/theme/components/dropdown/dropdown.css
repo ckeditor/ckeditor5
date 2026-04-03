@@ -6,25 +6,14 @@
 :root {
 	/* Size */
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
-	--ck-dropdown-button-label-width: 7em;
-	--ck-dropdown-max-width: 75vw;
 
 	/* Spacing */
-	--ck-dropdown-arrow-gap-inline-ltr: var(--ck-spacing-control-padding-inline);
-	--ck-dropdown-arrow-gap-inline-rtl: var(--ck-spacing-control-padding-inline-compact);
-	--ck-dropdown-arrow-offset-inline: var(--ck-spacing-control-padding-inline);
-	--ck-dropdown-icon-button-padding-inline: var(--ck-spacing-control-padding-inline-compact);
 	--ck-dropdown-panel-padding: 0;
 
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
-	--ck-dropdown-panel-uniform-border-radius: initial;
-	--ck-dropdown-button-border-radius-on: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
+	--ck-dropdown-panel-uniform-border-radius: var(--ck-border-radius-uniform);
 	--ck-dropdown-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-dropdown-panel-border-radius-ne: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
-	--ck-dropdown-panel-border-radius-nw: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
-	--ck-dropdown-panel-border-radius-se: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
-	--ck-dropdown-panel-border-radius-sw: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 
 	/* Color */
 	--ck-dropdown-panel-background-color: var(--ck-color-surface-container);
@@ -32,19 +21,7 @@
 	--ck-dropdown-list-background-color: transparent;
 
 	/* Border */
-	--ck-dropdown-panel-border: var(--ck-dropdown-panel-border-width) solid var(--ck-dropdown-panel-border-color);
-	--ck-dropdown-panel-border-width: var(--ck-border-width-surface);
-
-	/* Shadow */
-	--ck-dropdown-button-active-box-shadow: none;
-	--ck-dropdown-button-focus-box-shadow: var(--ck-dropdown-button-focus-shadow), 0 0;
-	--ck-dropdown-button-focus-shadow: var(--ck-interactive-focus-shadow);
-	--ck-dropdown-panel-box-shadow: var(--ck-dropdown-panel-shadow), 0 0;
-	--ck-dropdown-panel-shadow: var(--ck-shadow-surface-floating);
-
-	/* State / meta */
-	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
-	--ck-dropdown-button-label-disabled-opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
+	--ck-dropdown-panel-border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 }
 
 .ck.ck-dropdown {
@@ -61,19 +38,19 @@
 
 	[dir="ltr"] & {
 		& .ck-dropdown__arrow {
-			right: var(--ck-dropdown-arrow-offset-inline);
+			right: var(--ck-spacing-control-padding-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-dropdown-arrow-gap-inline-ltr);
+			margin-left: var(--ck-spacing-control-padding-inline);
 		}
 	}
 
 	[dir="rtl"] & {
 		& .ck-dropdown__arrow {
-			left: var(--ck-dropdown-arrow-offset-inline);
+			left: var(--ck-spacing-control-padding-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-dropdown-arrow-gap-inline-rtl);
+			margin-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 
@@ -86,32 +63,33 @@
 		[dir="ltr"] & {
 			&:not(.ck-button_with-text) {
 				/* Make sure dropdowns with just an icon have the right inner spacing */
-				padding-left: var(--ck-dropdown-icon-button-padding-inline);
+				padding-left: var(--ck-spacing-control-padding-inline-compact);
 			}
 		}
 
 		[dir="rtl"] & {
 			&:not(.ck-button_with-text) {
 				/* Make sure dropdowns with just an icon have the right inner spacing */
-				padding-right: var(--ck-dropdown-icon-button-padding-inline);
+				padding-right: var(--ck-spacing-control-padding-inline-compact);
 			}
 		}
 
 		/* #23 */
 		& .ck-button__label {
-			width: var(--ck-dropdown-button-label-width);
+			width: 7em;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 		&.ck-disabled .ck-button__label {
-			opacity: var(--ck-dropdown-button-label-disabled-opacity);
+			/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+			opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/816 */
 		&.ck-on {
-			border-radius: var(--ck-dropdown-button-border-radius-on);
+			border-radius: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-bottom));
 		}
 
 		&.ck-dropdown__button_label-width_auto .ck-button__label {
@@ -121,10 +99,10 @@
 		/* https://github.com/ckeditor/ckeditor5/issues/8699 */
 		&.ck-off:active,
 		&.ck-on:active {
-			box-shadow: var(--ck-dropdown-button-active-box-shadow);
+			box-shadow: none;
 
 			&:focus {
-				box-shadow: var(--ck-dropdown-button-focus-box-shadow);
+				box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 			}
 		}
 		width: 100%
@@ -135,7 +113,8 @@
 	& .ck-dropdown__panel {
 		display: none;
 		z-index: var(--ck-layer-panel);
-		max-width: var(--ck-dropdown-max-width);
+		/* Backward compatibility: falls back to legacy --ck-dropdown-max-width if overridden. */
+		max-width: var(--ck-dropdown-max-width, 75vw);
 
 		position: absolute;
 
@@ -199,7 +178,7 @@
 
 .ck.ck-dropdown__panel {
 	border-radius: var(--ck-dropdown-panel-border-radius);
-	box-shadow: var(--ck-dropdown-panel-box-shadow);
+	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 	padding: var(--ck-dropdown-panel-padding);
 
 	background: var(--ck-dropdown-panel-background-color);
@@ -212,19 +191,19 @@
 	/* Disabled corner border radius to be consistent with the .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
 	&.ck-dropdown__panel_se {
-		border-radius: var(--ck-dropdown-panel-border-radius-se);
+		border-radius: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 	}
 
 	&.ck-dropdown__panel_sw {
-		border-radius: var(--ck-dropdown-panel-border-radius-sw);
+		border-radius: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 	}
 
 	&.ck-dropdown__panel_ne {
-		border-radius: var(--ck-dropdown-panel-border-radius-ne);
+		border-radius: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
 	}
 
 	&.ck-dropdown__panel_nw {
-		border-radius: var(--ck-dropdown-panel-border-radius-nw);
+		border-radius: var(--ck-dropdown-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
 	}
 
 	/* Prevent the list's own background from overlapping the panel's rounded corners. */

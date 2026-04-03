@@ -4,76 +4,49 @@
  */
 
 :root {
-	/* Size */
-	--ck-menu-bar-menu-max-width: 75vw;
-
-	/* Spacing */
-	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
-
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
-	--ck-menu-bar-panel-uniform-border-radius: initial;
+	--ck-menu-bar-panel-uniform-border-radius: var(--ck-border-radius-uniform);
 	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
-	--ck-menu-bar-panel-border-radius-en: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
-	--ck-menu-bar-panel-border-radius-es: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
-	--ck-menu-bar-panel-border-radius-ne: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
-	--ck-menu-bar-panel-border-radius-nw: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
-	--ck-menu-bar-panel-border-radius-se: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
-	--ck-menu-bar-panel-border-radius-sw: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
-	--ck-menu-bar-panel-border-radius-wn: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
-	--ck-menu-bar-panel-border-radius-ws: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
-
-	/* Border */
-	--ck-menu-bar-item-focus-reset-border-color: transparent;
-	--ck-menu-bar-panel-border: var(--ck-menu-bar-panel-border-width) solid var(--ck-dropdown-panel-border-color);
-	--ck-menu-bar-panel-border-width: var(--ck-border-width-surface);
-
-	/* Shadow */
-	--ck-menu-bar-item-focus-box-shadow: var(--ck-menu-bar-item-focus-shadow), 0 0;
-	--ck-menu-bar-item-focus-reset-box-shadow: none;
-	--ck-menu-bar-item-focus-shadow: var(--ck-interactive-focus-shadow);
-	--ck-menu-bar-panel-box-shadow: var(--ck-menu-bar-panel-shadow), 0 0;
-	--ck-menu-bar-panel-shadow: var(--ck-shadow-surface-floating);
 
 	/* State / meta */
-	--ck-menu-bar-item-focus-layer: var(--ck-layer-control-raised);
-	--ck-menu-bar-item-focus-ring: var(--ck-interactive-focus-ring);
 	--ck-menu-bar-item-focus-border-color: var(--ck-interactive-focus-border-color);
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
 	border-radius: var(--ck-menu-bar-panel-border-radius);
-	box-shadow: var(--ck-menu-bar-panel-box-shadow);
+	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
 	background: var(--ck-dropdown-panel-background-color);
-	border: var(--ck-menu-bar-panel-border);
+	border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 	bottom: 0;
 	height: fit-content;
 
 	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
 	z-index: var(--ck-z-panel, var(--ck-z-overlay));
-	max-width: var(--ck-menu-bar-menu-max-width);
+	/* Backward compatibility: falls back to legacy --ck-menu-bar-menu-max-width if overridden. */
+	max-width: var(--ck-menu-bar-menu-max-width, 75vw);
 	position: absolute;
 
 	/* Corner border radius consistent with the button. */
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_se {
-		border-radius: var(--ck-menu-bar-panel-border-radius-es);
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_sw {
-		border-radius: var(--ck-menu-bar-panel-border-radius-ws);
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 	}
 
 	&.ck-menu-bar__menu__panel_position_en,
 	&.ck-menu-bar__menu__panel_position_ne {
-		border-radius: var(--ck-menu-bar-panel-border-radius-en);
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
 	}
 
 	&.ck-menu-bar__menu__panel_position_wn,
 	&.ck-menu-bar__menu__panel_position_nw {
-		border-radius: var(--ck-menu-bar-panel-border-radius-wn);
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
 	}
 
 	&:focus {
@@ -103,7 +76,7 @@
 
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_en {
-		left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset, 5px) );
 	}
 
 	&.ck-menu-bar__menu__panel_position_es {
@@ -116,7 +89,7 @@
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_wn {
-		right: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		right: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset, 5px) );
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws {
@@ -132,8 +105,8 @@
 	& .ck-list-item-button {
 		&:focus,
 		&:active {
-			border-color: var(--ck-menu-bar-item-focus-reset-border-color);
-			box-shadow: var(--ck-menu-bar-item-focus-reset-box-shadow);
+			border-color: transparent;
+			box-shadow: none;
 		}
 	}
 
@@ -142,11 +115,11 @@
 		&:active {
 			/* Fix truncated shadows due to rendering order. */
 			position: relative;
-			z-index: var(--ck-menu-bar-item-focus-layer);
+			z-index: var(--ck-layer-control-raised);
 
 			outline: none;
 			border-color: var(--ck-menu-bar-item-focus-border-color);
-			box-shadow: var(--ck-menu-bar-item-focus-box-shadow);
+			box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 		}
 	}
 }

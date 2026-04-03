@@ -36,7 +36,6 @@
 	--ck-color-switch-button-on-background: var(--ck-switch-button-on-background-color);
 	--ck-color-switch-button-on-hover-background: var(--ck-switch-button-on-hover-background-color);
 	--ck-color-switch-button-inner-background: var(--ck-switch-button-inner-background-color);
-	--ck-color-switch-button-inner-shadow: var(--ck-switch-button-inner-shadow-color);
 
 	/* -- Dropdown ------------------------------------------------------------------------------ */
 
@@ -62,13 +61,12 @@
 	--ck-color-list-background: var(--ck-list-background-color);
 	--ck-color-list-button-hover-background: var(--ck-list-button-hover-background-color);
 	--ck-color-list-button-on-background: var(--ck-list-button-on-background-color);
-	--ck-color-list-button-on-background-focus: var(--ck-list-button-on-focus-background-color);
 	--ck-color-list-button-on-text: var(--ck-list-button-on-text-color);
 
 	/* -- Panel --------------------------------------------------------------------------------- */
 
-	--ck-color-panel-background: var(--ck-panel-background-color);
-	--ck-color-panel-border: var(--ck-panel-border-color);
+	--ck-color-panel-background: var(--ck-balloon-panel-background-color);
+	--ck-color-panel-border: var(--ck-balloon-panel-border-color);
 
 	/* -- Toolbar ------------------------------------------------------------------------------- */
 

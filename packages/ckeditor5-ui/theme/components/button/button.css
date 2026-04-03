@@ -4,28 +4,14 @@
  */
 
 :root {
-	/* Size */
-	--ck-button-min-size: var(--ck-size-control-min-height);
-
 	/* Spacing */
-	--ck-button-icon-gap: var(--ck-spacing-control-icon-gap);
-	--ck-button-keystroke-gap: var(--ck-spacing-control-meta-gap);
 	--ck-button-padding: var(--ck-spacing-control-padding-block);
-	--ck-button-padding-block: var(--ck-spacing-control-padding-block);
-	--ck-button-padding-inline: var(--ck-spacing-control-padding-inline);
 
 	/* Radius */
 	--ck-button-border-radius: var(--ck-border-radius-control);
 
 	/* Border */
-	--ck-button-border: var(--ck-button-border-width) solid transparent;
-	--ck-button-border-width: var(--ck-border-width-control);
-
-	/* Shadow */
-	--ck-button-focus-box-shadow: var(--ck-button-focus-shadow), 0 0;
-	--ck-button-focus-disabled-box-shadow: var(--ck-button-focus-disabled-shadow), 0 0;
-	--ck-button-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
-	--ck-button-focus-shadow: var(--ck-interactive-focus-shadow);
+	--ck-button-border: var(--ck-border-width-control) solid transparent;
 
 	/* Color */
 	--ck-button-default-background-color: transparent;
@@ -47,18 +33,7 @@
 	--ck-button-save-color: var(--ck-color-feedback-success);
 	--ck-button-cancel-color: var(--ck-color-feedback-warning);
 
-	/* Typography */
-	--ck-button-bold-font-weight: var(--ck-font-weight-ui-emphasis);
-	--ck-button-label-font-weight: var(--ck-font-weight-ui-inherit);
-
-	/* Motion */
-	--ck-button-transition: box-shadow var(--ck-button-transition-duration) var(--ck-button-transition-timing-function), border var(--ck-button-transition-duration) var(--ck-button-transition-timing-function);
-	--ck-button-transition-duration: var(--ck-transition-duration-control);
-	--ck-button-transition-reduced: var(--ck-transition-none);
-	--ck-button-transition-timing-function: var(--ck-transition-timing-function-control);
-
 	/* State / meta */
-	--ck-button-focus-ring: var(--ck-interactive-focus-ring);
 	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
 	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
 	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled))
@@ -91,8 +66,8 @@ a.ck.ck-button {
 	text-align: center;
 
 	/* A very important piece of styling. Go to variable declaration to learn more. */
-	min-width: var(--ck-button-min-size);
-	min-height: var(--ck-button-min-size);
+	min-width: var(--ck-size-control-min-height);
+	min-height: var(--ck-size-control-min-height);
 
 	/* Normalize the height of the line. Removing this will break consistent height
 	among text and text-less buttons (with icons). */
@@ -105,7 +80,7 @@ a.ck.ck-button {
 	border: var(--ck-button-border);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: var(--ck-button-transition);
+	transition: box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-control), border var(--ck-transition-duration-control) var(--ck-transition-timing-function-control);
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;
@@ -117,7 +92,7 @@ a.ck.ck-button {
 	align-items: center;
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: var(--ck-button-transition-reduced);
+		transition: var(--ck-transition-none);
 	}
 
 	/* stylelint-disable no-descending-specificity */
@@ -125,7 +100,7 @@ a.ck.ck-button {
 	&:focus {
 		outline: none;
 		border-color: var(--ck-button-focus-border-color);
-		box-shadow: var(--ck-button-focus-box-shadow);
+		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -139,7 +114,7 @@ a.ck.ck-button {
 	& .ck-button__label {
 		/* Enable font size inheritance, which allows fluid UI scaling. */
 		font-size: inherit;
-		font-weight: var(--ck-button-label-font-weight);
+		font-weight: var(--ck-font-weight-ui-inherit);
 		color: inherit;
 		cursor: inherit;
 
@@ -163,11 +138,11 @@ a.ck.ck-button {
 		opacity: .5;
 
 		[dir="ltr"] & {
-			margin-left: var(--ck-button-keystroke-gap);
+			margin-left: var(--ck-spacing-control-meta-gap);
 		}
 
 		[dir="rtl"] & {
-			margin-right: var(--ck-button-keystroke-gap);
+			margin-right: var(--ck-spacing-control-meta-gap);
 		}
 	}
 
@@ -178,7 +153,7 @@ a.ck.ck-button {
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-button-focus-disabled-box-shadow);
+			box-shadow: var(--ck-interactive-focus-disabled-shadow), 0 0;
 		}
 
 		& .ck-button__icon {
@@ -196,15 +171,15 @@ a.ck.ck-button {
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-button-padding-block) var(--ck-button-padding-inline);
+		padding: var(--ck-spacing-control-padding-block) var(--ck-spacing-control-padding-inline);
 
 		& .ck-button__icon {
 			[dir="ltr"] & {
-				margin-right: var(--ck-button-icon-gap);
+				margin-right: var(--ck-spacing-control-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-button-icon-gap);
+				margin-left: var(--ck-spacing-control-icon-gap);
 			}
 		}
 		& .ck-button__label {
@@ -267,5 +242,5 @@ a.ck.ck-button-action {
 
 .ck.ck-button-bold,
 a.ck.ck-button-bold {
-	font-weight: var(--ck-button-bold-font-weight);
+	font-weight: var(--ck-font-weight-ui-emphasis);
 }

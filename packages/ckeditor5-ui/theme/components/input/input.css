@@ -5,12 +5,10 @@
 
 :root {
 	/* Size */
-	--ck-input-min-height: var(--ck-size-control-min-height);
 	--ck-input-width: 18em;
 
 	/* Spacing */
-	--ck-input-padding-block: var(--ck-spacing-control-padding-block-compact);
-	--ck-input-padding-inline: var(--ck-spacing-control-padding-inline-compact);
+	--ck-input-padding: var(--ck-spacing-control-padding-block-compact) var(--ck-spacing-control-padding-inline-compact);
 
 	/* Radius */
 	--ck-input-border-radius: var(--ck-border-radius-control);
@@ -25,32 +23,9 @@
 	--ck-input-disabled-text-color: var(--ck-color-text-disabled);
 
 	/* Border */
-	--ck-input-border: var(--ck-input-border-width) solid var(--ck-input-border-color);
-	--ck-input-border-width: var(--ck-border-width-control);
-	--ck-input-disabled-border: var(--ck-input-border-width) solid var(--ck-input-disabled-border-color);
-
-	/* Shadow */
-	--ck-input-focus-box-shadow: var(--ck-input-focus-shadow), 0 0;
-	--ck-input-focus-disabled-box-shadow: var(--ck-input-focus-disabled-shadow), 0 0;
-	--ck-input-focus-disabled-shadow: var(--ck-interactive-focus-disabled-shadow);
-	--ck-input-focus-error-box-shadow: var(--ck-input-focus-error-shadow), 0 0;
-	--ck-input-focus-error-shadow: var(--ck-interactive-focus-error-shadow);
-	--ck-input-focus-shadow: var(--ck-interactive-focus-shadow);
-
-	/* Motion */
-	--ck-input-error-animation: var(--ck-input-error-animation-name) var(--ck-input-error-animation-duration) var(--ck-input-error-animation-timing-function) var(--ck-input-error-animation-fill-mode);
-	--ck-input-error-animation-duration: var(--ck-animation-duration-feedback);
-	--ck-input-error-animation-fill-mode: var(--ck-animation-fill-mode-feedback);
-	--ck-input-error-animation-name: ck-input-shake;
-	--ck-input-error-animation-reduced: var(--ck-animation-none);
-	--ck-input-error-animation-timing-function: var(--ck-animation-timing-function-feedback);
-	--ck-input-transition: box-shadow var(--ck-input-transition-duration) var(--ck-input-transition-timing-function), border var(--ck-input-transition-duration) var(--ck-input-transition-timing-function);
-	--ck-input-transition-duration: var(--ck-transition-duration-control-fast);
-	--ck-input-transition-reduced: var(--ck-transition-none);
-	--ck-input-transition-timing-function: var(--ck-transition-timing-function-control);
+	--ck-input-border: var(--ck-border-width-control) solid var(--ck-input-border-color);
 
 	/* State / meta */
-	--ck-input-focus-ring: var(--ck-interactive-focus-ring);
 	--ck-input-focus-border-color: var(--ck-interactive-focus-border-color);
 
 	/* Compatibility */
@@ -61,46 +36,47 @@
 	border-radius: var(--ck-input-border-radius);
 	background: var(--ck-input-background-color);
 	border: var(--ck-input-border);
-	padding: var(--ck-input-padding-block) var(--ck-input-padding-inline);
+	padding: var(--ck-input-padding);
 	min-width: var(--ck-input-width);
+	color: var(--ck-input-text-color);
 
 	/* This is important to stay of the same height as surrounding buttons */
-	min-height: var(--ck-input-min-height);
+	min-height: var(--ck-size-control-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: var(--ck-input-transition);
+	transition: box-shadow var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control), border var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control);
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: var(--ck-input-transition-reduced);
+		transition: var(--ck-transition-none);
 	}
 
 	&:focus {
 		outline: none;
 		border-color: var(--ck-input-focus-border-color);
-		box-shadow: var(--ck-input-focus-box-shadow);
+		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 	}
 
 	&[readonly] {
-		border: var(--ck-input-disabled-border);
+		border: var(--ck-border-width-control) solid var(--ck-input-disabled-border-color);
 		background: var(--ck-input-disabled-background-color);
 		color: var(--ck-input-disabled-text-color);
 
 		&:focus {
 			/* The read-only input should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-input-focus-disabled-box-shadow);
+			box-shadow: var(--ck-interactive-focus-disabled-shadow), 0 0;
 		}
 	}
 
 	&.ck-error {
 		border-color: var(--ck-input-error-border-color);
-		animation: var(--ck-input-error-animation);
+		animation: ck-input-shake var(--ck-animation-duration-feedback) var(--ck-animation-timing-function-feedback) var(--ck-animation-fill-mode-feedback);
 
 		@media (prefers-reduced-motion: reduce) {
-			animation: var(--ck-input-error-animation-reduced);
+			animation: var(--ck-animation-none);
 		}
 
 		&:focus {
-			box-shadow: var(--ck-input-focus-error-box-shadow);
+			box-shadow: var(--ck-interactive-focus-error-shadow), 0 0;
 		}
 	}
 }
@@ -120,5 +96,9 @@
 
 	80% {
 		transform: translateX(1px);
+	}
+
+	100% {
+		transform: translateX(0);
 	}
 }

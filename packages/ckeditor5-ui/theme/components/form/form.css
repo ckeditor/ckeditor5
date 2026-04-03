@@ -9,16 +9,7 @@
 	--ck-form-default-width: 340px;
 
 	/* Spacing */
-	--ck-form-mobile-item-margin: var(--ck-spacing-region-edge-margin-block);
-	--ck-form-mobile-item-margin-shorthand: var(--ck-form-mobile-item-margin) var(--ck-form-mobile-item-margin) 0;
-	--ck-form-mobile-row-padding-block-end: var(--ck-spacing-region-edge-margin-block);
-	--ck-form-padding-block-end: var(--ck-spacing-region-edge-margin-block);
-	--ck-form-padding: 0 0 var(--ck-form-padding-block-end);
-
-	/* Border */
-	--ck-form-dropdown-border: var(--ck-form-dropdown-border-width) solid var(--ck-color-base-border);
-	--ck-form-dropdown-border-width: var(--ck-border-width-control);
-
+	--ck-form-padding: 0 0 var(--ck-spacing-region-edge-margin-block);
 }
 
 .ck.ck-form {
@@ -43,7 +34,7 @@
 
 		& .ck-dropdown__button {
 			&:not(:focus) {
-				border: var(--ck-form-dropdown-border);
+				border: var(--ck-border-width-control) solid var(--ck-color-base-border);
 			}
 
 			& .ck-button__label {
@@ -64,7 +55,7 @@
 
 				> .ck {
 					@media screen and (max-width: 600px) {
-						margin: var(--ck-form-mobile-item-margin-shorthand);
+						margin: var(--ck-spacing-region-edge-margin-block) var(--ck-spacing-region-edge-margin-block) 0;
 					}
 				}
 
@@ -77,7 +68,7 @@
 
 			&.ck-form__row_large-bottom-padding {
 				@media screen and (max-width: 600px) {
-					padding-bottom: var(--ck-form-mobile-row-padding-block-end);
+					padding-bottom: var(--ck-spacing-region-edge-margin-block);
 				}
 			}
 		}

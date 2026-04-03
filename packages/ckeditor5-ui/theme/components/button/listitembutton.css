@@ -5,19 +5,15 @@
 
 
 :root {
-	/* Size */
-	--ck-list-item-button-check-size: .9em;
-
 	/* Spacing */
+	--ck-list-item-button-padding: var(--ck-spacing-control-padding-block) calc(2 * var(--ck-spacing-control-padding-inline));
+
+	/* Radius */
 	--ck-list-item-button-border-radius: 0;
-	--ck-list-item-button-check-icon-gap: var(--ck-spacing-control-padding-inline-compact);
-	--ck-list-item-button-padding-block: var(--ck-spacing-control-padding-block);
-	--ck-list-item-button-padding-inline: calc(2 * var(--ck-spacing-control-padding-inline));
-	--ck-list-item-button-padding-inline-compact: var(--ck-spacing-control-padding-inline-compact);
 }
 
 .ck.ck-button.ck-list-item-button {
-	padding: var(--ck-list-item-button-padding-block) var(--ck-list-item-button-padding-inline);
+	padding: var(--ck-list-item-button-padding);
 
 	&,
 	&.ck-on {
@@ -27,11 +23,11 @@
 
 	&:has(.ck-list-item-button__check-holder) {
 		[dir="ltr"] & {
-			padding-left: var(--ck-list-item-button-padding-inline-compact);
+			padding-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			padding-right: var(--ck-list-item-button-padding-inline-compact);
+			padding-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 
@@ -67,25 +63,25 @@
 
 	&.ck-list-item-button_toggleable {
 		[dir="ltr"] & {
-			padding-left: var(--ck-list-item-button-padding-inline-compact);
+			padding-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			padding-right: var(--ck-list-item-button-padding-inline-compact);
+			padding-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 
 	& .ck-list-item-button__check-holder {
 		display: inline-flex;
-		width: var(--ck-list-item-button-check-size);
-		height: var(--ck-list-item-button-check-size);
+		width: .9em;
+		height: .9em;
 
 		[dir="ltr"] & {
-			margin-right: var(--ck-list-item-button-check-icon-gap);
+			margin-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			margin-left: var(--ck-list-item-button-check-icon-gap);
+			margin-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 

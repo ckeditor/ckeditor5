@@ -17,6 +17,12 @@
 	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
 	--ck-border-radius-surface: var(--ck-border-radius, var(--ck-radius-base));
 
+	/* Uniform radius opt-out for attached surfaces. Set to a radius value
+	 * (e.g. var(--ck-radius-base)) to disable cut-corner / attached-edge behavior
+	 * on all panels, dropdowns, menus, and toolbars at once. Defaults to `initial`
+	 * (no override — each surface keeps its positional corners). */
+	--ck-border-radius-uniform: initial;
+
 	/* Radius for attached surfaces where one edge touches trigger/control. */
 	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);
 	--ck-border-radius-surface-attached-top: 0 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);

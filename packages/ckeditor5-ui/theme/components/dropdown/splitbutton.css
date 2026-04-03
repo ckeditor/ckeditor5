@@ -3,15 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	/* Radius */
-	--ck-splitbutton-border-radius: var(--ck-border-radius-control);
-
-	/* Color */
-	--ck-splitbutton-hover-background-color: var(--ck-color-interactive-hover-surface);
-	--ck-splitbutton-hover-border-color: var(--ck-color-border-control);
-}
-
 .ck.ck-splitbutton {
 	/*
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
@@ -67,7 +58,7 @@
 	/* Don't round the bottom left and right corners of the buttons when "open"
 	https://github.com/ckeditor/ckeditor5/issues/816 */
 	&.ck-splitbutton_open {
-		border-radius: var(--ck-splitbutton-border-radius);
+		border-radius: var(--ck-border-radius-control);
 
 		/* stylelint-disable-next-line no-descending-specificity */
 		& > .ck-splitbutton__action {
@@ -87,7 +78,7 @@
 		/* When the split button hovered as a whole, not as individual buttons. */
 		& > .ck-button:not(.ck-on):not(.ck-disabled):not(:hover) {
 			/* Fallback to `--ck-color-split-button-hover-background` for backward compatibility. */
-			background: var(--ck-color-split-button-hover-background, var(--ck-splitbutton-hover-background-color));
+			background: var(--ck-color-split-button-hover-background, var(--ck-color-interactive-hover-surface));
 		}
 
 		/* Splitbutton separator needs to be set with the ::after pseudoselector
@@ -98,14 +89,14 @@
 			width: 1px;
 			height: 100%;
 			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
-			background-color: var(--ck-color-split-button-hover-border, var(--ck-splitbutton-hover-border-color));
+			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-border-control));
 		}
 
 		/* Make sure the divider between the buttons looks fine when the button is focused */
 		& > .ck-splitbutton__arrow:focus::after {
-			--ck-splitbutton-hover-border-color: var(--ck-color-interactive-focus-border);
 			/* Fallback to `--ck-color-split-button-hover-border` for backward compatibility. */
 			--ck-color-split-button-hover-border: var(--ck-color-interactive-focus-border);
+			background-color: var(--ck-color-split-button-hover-border, var(--ck-color-interactive-focus-border));
 		}
 
 		[dir="ltr"] & {

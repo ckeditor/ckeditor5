@@ -4,9 +4,6 @@
  */
 
 :root {
-	/* Spacing */
-	--ck-menu-bar-list-item-icon-gap: var(--ck-spacing-control-icon-gap);
-
 	/* Radius */
 	--ck-menu-bar-list-item-button-border-radius: 0;
 }
@@ -26,14 +23,14 @@
 
 		& > .ck-spinner-container {
 			/* This ensures margins corresponding to the .ck-icon. */
-			font-size: var(--ck-icon-font-size);
+			font-size: .8333350694em;
 
 			[dir="ltr"] & {
-				margin-right: var(--ck-menu-bar-list-item-icon-gap);
+				margin-right: var(--ck-spacing-control-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-menu-bar-list-item-icon-gap);
+				margin-left: var(--ck-spacing-control-icon-gap);
 			}
 		}
 	}

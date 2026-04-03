@@ -4,24 +4,8 @@
  */
 
 :root {
-	/* Size */
-	--ck-collapsible-arrow-size: calc(0.5 * var(--ck-icon-size));
-
 	/* Spacing */
-	--ck-collapsible-arrow-gap: var(--ck-spacing-control-icon-gap);
-	--ck-collapsible-children-padding-block-end: var(--ck-spacing-region-edge-margin-block);
-	--ck-collapsible-children-padding-block-start: var(--ck-spacing-surface-section-gap-block);
-	--ck-collapsible-children-padding-inline: var(--ck-spacing-control-meta-gap);
-
-	/* Border */
-	--ck-collapsible-button-active-border-color: transparent;
-
-	/* Shadow */
-	--ck-collapsible-button-active-box-shadow: none;
-
-	/* Color */
-	--ck-collapsible-button-active-background: transparent;
-	--ck-collapsible-button-focus-background: transparent;
+	--ck-collapsible-children-padding: var(--ck-spacing-surface-section-gap-block) var(--ck-spacing-control-meta-gap) var(--ck-spacing-region-edge-margin-block);
 
 	/* Typography */
 	--ck-collapsible-button-font-weight: var(--ck-font-weight-ui-strong);
@@ -35,23 +19,24 @@
 		color: inherit;
 
 		&:focus {
-			background: var(--ck-collapsible-button-focus-background);
+			background: transparent;
 		}
 
 		&:active, &:not(:focus), &:hover:not(:focus) {
-			background: var(--ck-collapsible-button-active-background);
-			border-color: var(--ck-collapsible-button-active-border-color);
-			box-shadow: var(--ck-collapsible-button-active-box-shadow);
+			background: transparent;
+			border-color: transparent;
+			box-shadow: none;
 		}
 
 		& > .ck-icon {
-			margin-right: var(--ck-collapsible-arrow-gap);
-			width: var(--ck-collapsible-arrow-size);
+			margin-right: var(--ck-spacing-control-icon-gap);
+			/* Backward compatibility: falls back to legacy --ck-collapsible-arrow-size if overridden. */
+			width: var(--ck-collapsible-arrow-size, calc(0.5 * var(--ck-icon-size)));
 		}
 	}
 
 	& > .ck-collapsible__children {
-		padding: var(--ck-collapsible-children-padding-block-start) var(--ck-collapsible-children-padding-inline) var(--ck-collapsible-children-padding-block-end);
+		padding: var(--ck-collapsible-children-padding);
 	}
 
 	&.ck-collapsible_collapsed {

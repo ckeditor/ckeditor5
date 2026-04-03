@@ -4,36 +4,14 @@
  */
 
 :root {
-	/* Size */
-	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-labeled-field-label-default-position-x);
-
-	/* Spacing */
-	--ck-labeled-field-label-default-position-x: var(--ck-spacing-control-icon-gap);
-	--ck-labeled-field-label-default-position-y: calc(0.6 * var(--ck-font-size-base));
-	--ck-labeled-field-label-dropdown-offset-inline: var(--ck-spacing-control-padding-inline);
-	--ck-labeled-field-label-floating-offset-x: var(--ck-labeled-field-label-default-position-x);
-	--ck-labeled-field-label-floating-offset-y: -6px;
-	--ck-labeled-field-label-padding: 0 var(--ck-labeled-field-label-padding-inline);
-	/* Backward compatibility: falls back to legacy --ck-font-size-tiny if overridden. */
-	--ck-labeled-field-label-padding-inline: calc(.5 * var(--ck-font-size-tiny, var(--ck-font-size-xs)));
-	--ck-labeled-field-status-gap: var(--ck-spacing-surface-item-gap-inline);
-
 	/* Color */
 	--ck-labeled-field-label-background-color: var(--ck-color-base-background);
-
-	/* Typography */
-	--ck-labeled-field-label-font-weight: var(--ck-font-weight-ui-muted);
-
-	/* Motion */
-	--ck-labeled-field-view-transition: var(--ck-labeled-field-view-transition-duration) var(--ck-labeled-field-view-transition-timing-function);
-	--ck-labeled-field-view-transition-duration: var(--ck-transition-duration-control-fast);
-	--ck-labeled-field-view-transition-reduced: var(--ck-transition-none);
-	--ck-labeled-field-view-transition-timing-function: var(--ck-transition-timing-function-control-emphasized);
+	--ck-labeled-field-label-start-gap: var(--ck-spacing-control-icon-gap);
 }
 
 .ck.ck-labeled-field-view {
 	/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
-	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-rounded));
+	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 
 	& .ck.ck-label {
 		display: block;
@@ -50,9 +28,10 @@
 			pointer-events: none;
 			/* Fallback to `--ck-color-labeled-field-label-background` for backward compatibility. */
 			background: var(--ck-color-labeled-field-label-background, var(--ck-labeled-field-label-background-color));
-			padding: var(--ck-labeled-field-label-padding);
+			/* Backward compatibility: falls back to legacy --ck-font-size-tiny if overridden. */
+			padding: 0 calc(.5 * var(--ck-font-size-tiny, var(--ck-font-size-xs)));
 			line-height: initial;
-			font-weight: var(--ck-labeled-field-label-font-weight);
+			font-weight: var(--ck-font-weight-ui-muted);
 
 			/* Prevent overflow when the label is longer than the input */
 			text-overflow: ellipsis;
@@ -61,25 +40,25 @@
 			max-width: 100%;
 
 			transition:
-				transform var(--ck-labeled-field-view-transition),
-				padding var(--ck-labeled-field-view-transition),
-				background var(--ck-labeled-field-view-transition);
+				transform var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control-emphasized),
+				padding var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control-emphasized),
+				background var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control-emphasized);
 
 			[dir="ltr"] & {
 				left: 0px;
 				transform-origin: 0 0;
 				/* By default, display the label scaled down above the field. */
-				transform: translate(var(--ck-labeled-field-label-floating-offset-x), var(--ck-labeled-field-label-floating-offset-y)) scale(.75);
+				transform: translate(var(--ck-labeled-field-label-start-gap), -6px) scale(.75);
 			}
 
 			[dir="rtl"] & {
 				right: 0px;
 				transform-origin: 100% 0;
-				transform: translate(calc(-1 * var(--ck-labeled-field-label-floating-offset-x)), var(--ck-labeled-field-label-floating-offset-y)) scale(.75);
+				transform: translate(calc(-1 * var(--ck-labeled-field-label-start-gap)), -6px) scale(.75);
 			}
 
 			@media (prefers-reduced-motion: reduce) {
-				transition: var(--ck-labeled-field-view-transition-reduced);
+				transition: var(--ck-transition-none);
 			}
 		}
 		position: relative
@@ -98,7 +77,7 @@
 	& .ck-labeled-field-view__status {
 		/* Backward compatibility: falls back to legacy --ck-font-size-small if overridden. */
 		font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
-		margin-top: var(--ck-labeled-field-status-gap);
+		margin-top: var(--ck-spacing-surface-item-gap-inline);
 
 		/* Let the info wrap to the next line to avoid stretching the layout horizontally.
 		The status could be very long. */
@@ -120,16 +99,16 @@
 	&.ck-disabled.ck-labeled-field-view_empty:not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder):not(.ck-error) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		[dir="ltr"] & {
-			transform: translate(var(--ck-labeled-field-label-default-position-x), var(--ck-labeled-field-label-default-position-y)) scale(1);
+			transform: translate(var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap)), calc(0.6 * var(--ck-font-size-base))) scale(1);
 		}
 
 		/* stylelint-disable-next-line no-descending-specificity */
 		[dir="rtl"] & {
-			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x)), var(--ck-labeled-field-label-default-position-y)) scale(1);
+			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap))), calc(0.6 * var(--ck-font-size-base))) scale(1);
 		}
 
 		/* Compensate for the default translate position. */
-		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width));
+		max-width: var(--ck-labeled-field-empty-unfocused-max-width, calc(100% - 2 * var(--ck-labeled-field-label-start-gap)));
 
 		background: transparent;
 		padding: 0;
@@ -149,7 +128,7 @@
 
 	/* Make sure the label of the empty, unfocused input does not cover the dropdown arrow. */
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown + .ck-label {
-		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width) - var(--ck-dropdown-arrow-size) - var(--ck-labeled-field-label-dropdown-offset-inline));
+		max-width: var(--ck-labeled-field-empty-unfocused-max-width, calc(100% - 2 * var(--ck-labeled-field-label-start-gap) - var(--ck-dropdown-arrow-size) - var(--ck-spacing-control-padding-inline)));
 	}
 
 	&.ck-labeled-field-view_full-width {

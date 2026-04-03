@@ -3,23 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-:root {
-	/* Spacing */
-	--ck-menu-bar-gap: var(--ck-spacing-surface-item-gap-inline);
-	--ck-menu-bar-padding: var(--ck-spacing-surface-padding-inline);
-
-	/* Border */
-	--ck-menu-bar-border: var(--ck-menu-bar-border-width) solid var(--ck-toolbar-border-color);
-	--ck-menu-bar-border-width: var(--ck-border-width-surface);
-}
-
 .ck.ck-menu-bar {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
 	background: var(--ck-color-base-background);
-	padding: var(--ck-menu-bar-padding);
-	gap: var(--ck-menu-bar-gap);
-	border: var(--ck-menu-bar-border);
+	padding: var(--ck-spacing-surface-padding-inline);
+	gap: var(--ck-spacing-surface-item-gap-inline);
+	border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
 	width: 100%;
 }

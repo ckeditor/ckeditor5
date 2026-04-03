@@ -4,33 +4,16 @@
  */
 
 
-:root {
-	/* Spacing */
-	--ck-balloon-fake-panel-offset-horizontal: 6px;
-	--ck-balloon-fake-panel-offset-vertical: 6px;
-
-	/* Radius */
-	--ck-fake-panel-border-radius: var(--ck-border-radius-surface);
-
-	/* Border */
-	--ck-fake-panel-border: var(--ck-fake-panel-border-width) solid var(--ck-panel-border-color);
-	--ck-fake-panel-border-width: var(--ck-border-width-surface);
-
-	/* Shadow */
-	--ck-fake-panel-box-shadow: var(--ck-fake-panel-shadow), 0 0;
-	--ck-fake-panel-shadow: var(--ck-shadow-surface-floating);
-}
-
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
 
 .ck .ck-fake-panel div {
-	box-shadow: var(--ck-fake-panel-box-shadow);
+	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
 	min-height: 15px;
 
-	background: var(--ck-panel-background-color);
-	border: var(--ck-fake-panel-border);
-	border-radius: var(--ck-fake-panel-border-radius);
+	background: var(--ck-balloon-panel-background-color);
+	border: var(--ck-border-width-surface) solid var(--ck-balloon-panel-border-color);
+	border-radius: var(--ck-border-radius-surface);
 
 	width: 100%;
 	height: 100%;
@@ -38,20 +21,21 @@
 }
 
 .ck .ck-fake-panel div:nth-child( 1 ) {
-	margin-left: var(--ck-balloon-fake-panel-offset-horizontal);
-	margin-top: var(--ck-balloon-fake-panel-offset-vertical);
+	/* Backward compatibility: falls back to legacy --ck-balloon-fake-panel-offset-* if overridden. */
+	margin-left: var(--ck-balloon-fake-panel-offset-horizontal, 6px);
+	margin-top: var(--ck-balloon-fake-panel-offset-vertical, 6px);
 	z-index: 2;
 }
 
 .ck .ck-fake-panel div:nth-child( 2 ) {
-	margin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 2);
-	margin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 2);
+	margin-left: calc(2 * var(--ck-balloon-fake-panel-offset-horizontal, 6px));
+	margin-top: calc(2 * var(--ck-balloon-fake-panel-offset-vertical, 6px));
 	z-index: 1;
 }
 
 .ck .ck-fake-panel div:nth-child( 3 ) {
-	margin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 3);
-	margin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 3);
+	margin-left: calc(3 * var(--ck-balloon-fake-panel-offset-horizontal, 6px));
+	margin-top: calc(3 * var(--ck-balloon-fake-panel-offset-vertical, 6px));
 }
 
 .ck .ck-fake-panel {
@@ -63,8 +47,18 @@
 
 /* If balloon is positioned above element, we need to move fake panel to the top. */
 
-.ck .ck-balloon-panel_arrow_s + .ck-fake-panel,
-.ck .ck-balloon-panel_arrow_se + .ck-fake-panel,
-.ck .ck-balloon-panel_arrow_sw + .ck-fake-panel {
-	--ck-balloon-fake-panel-offset-vertical: -6px;
+.ck .ck-balloon-panel_arrow_s + .ck-fake-panel div,
+.ck .ck-balloon-panel_arrow_se + .ck-fake-panel div,
+.ck .ck-balloon-panel_arrow_sw + .ck-fake-panel div {
+	&:nth-child( 1 ) {
+		margin-top: calc(-1 * var(--ck-balloon-fake-panel-offset-vertical, 6px));
+	}
+
+	&:nth-child( 2 ) {
+		margin-top: calc(-2 * var(--ck-balloon-fake-panel-offset-vertical, 6px));
+	}
+
+	&:nth-child( 3 ) {
+		margin-top: calc(-3 * var(--ck-balloon-fake-panel-offset-vertical, 6px));
+	}
 }
