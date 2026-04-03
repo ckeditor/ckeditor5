@@ -99,7 +99,14 @@ export function deleteContent(
 
 	const schema = model.schema;
 	const documentSelection = model.document.selection;
-	const selectionAttributes = Array.from( model.document.selection.getAttributes() );
+
+	// Only restore selection attributes when the provided selection targets the same range as the document
+	// selection. We compare ranges rather than instances because CKEditor may pass a transient copy of the
+	// document selection (same range, but a different object without stored attributes). When the ranges
+	// differ, the caller is operating on a synthetic selection elsewhere in the document and we must not
+	// touch the document selection attributes.
+	const selectionIsDocumentSelection = !!documentSelection.getFirstRange()?.isEqual( selRange );
+	const selectionAttributes = Array.from( documentSelection.getAttributes() );
 	const selectionParentWasEmpty = !!documentSelection.anchor?.parent.isEmpty;
 
 	model.change( writer => {
@@ -166,7 +173,9 @@ export function deleteContent(
 			insertParagraph( writer, startPosition, selection, attributesForAutoparagraph );
 		}
 
-		restoreSelectionAttributesOnEmptyParent( writer, selectionAttributes, selectionParentWasEmpty );
+		if ( selectionIsDocumentSelection ) {
+			restoreSelectionAttributesOnEmptyParent( writer, selectionAttributes, selectionParentWasEmpty );
+		}
 
 		startPosition.detach();
 		endPosition.detach();
@@ -633,6 +642,16 @@ function collapseSelectionAt(
 	}
 }
 
+/**
+ * Restores the document selection attributes after a deletion that leaves the selection in an empty parent block.
+ * This preserves the pre-delete formatting (e.g. bold, italic) so that subsequent typing continues in the same style.
+ *
+ * Attributes are only restored when:
+ * - There were attributes on the selection before the deletion.
+ * - The deletion left the document selection's parent block empty.
+ * - The parent block was **not** already empty before the deletion — this ensures that attributes are not
+ *   re-applied when `deleteContent()` was called on a completely unrelated block.
+ */
 function restoreSelectionAttributesOnEmptyParent(
 	writer: ModelWriter,
 	selectionAttributes: Array<[ string, unknown ]>,

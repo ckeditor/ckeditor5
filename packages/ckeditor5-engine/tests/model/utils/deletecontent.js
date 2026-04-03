@@ -272,6 +272,42 @@ describe( 'DataController utils', () => {
 					'<paragraph>bar</paragraph>'
 				);
 			} );
+
+			it( 'does not restore attrs when the document selection anchor was in an already empty paragraph', () => {
+				const setSelectionAttributeSpy = sinon.spy( ModelWriter.prototype, 'setSelectionAttribute' );
+
+				// Paragraph 0 ("x") and paragraph 3 ("y") are outside the selection so that
+				// shouldEntireContentBeReplacedWithParagraph() returns false and the normal
+				// deletion path is taken. Paragraph 1 is empty – this is where the selection
+				// will be anchored. Paragraph 2 contains the content that will be deleted.
+				_setModelData(
+					model,
+					'<paragraph>x</paragraph>' +
+					'<paragraph>[]</paragraph>' +
+					'<paragraph><$text bold="true">foo</$text></paragraph>' +
+					'<paragraph>y</paragraph>'
+				);
+
+				// Extend the document selection so it is non-collapsed but still anchored
+				// inside the already-empty paragraph 1.
+				model.change( writer => {
+					const root = doc.getRoot();
+
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( root.getChild( 1 ), 0 ),
+						writer.createPositionAt( root.getChild( 2 ), 'end' )
+					) );
+					writer.setSelectionAttribute( 'bold', true );
+				} );
+
+				setSelectionAttributeSpy.resetHistory();
+
+				deleteContent( model, doc.selection );
+
+				// The anchor paragraph was already empty before the deletion, so attributes
+				// must not be restored – the user did not have the caret inside formatted content.
+				expect( setSelectionAttributeSpy.called ).to.be.false;
+			} );
 		} );
 
 		// Note: The algorithm does not care what kind of it's merging as it knows nothing useful about these elements.
