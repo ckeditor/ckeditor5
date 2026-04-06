@@ -5,7 +5,7 @@
 
 import {
 	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, DropdownView,
-	ToolbarView, createDropdown, EasyImage, Essentials, Heading, HorizontalLine, Image,
+	ToolbarView, createDropdown, Essentials, Heading, HorizontalLine, Image,
 	ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, Link,
 	MediaEmbed, Paragraph, RemoveFormat, Bold, Italic, Strikethrough, Superscript, Subscript,
 	Underline, Table, TableToolbar
@@ -108,7 +108,6 @@ DecoupledEditor
 			Autoformat,
 			BlockQuote,
 			Bold,
-			EasyImage,
 			Essentials,
 			Font,
 			Heading,

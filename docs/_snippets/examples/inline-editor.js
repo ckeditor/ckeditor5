@@ -47,7 +47,6 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			'ImageToolbar',
 			'ImageUpload',
 			'List',
-			'EasyImage',
 			'CKFinder',
 			'CKFinderUploadAdapter'
 		];

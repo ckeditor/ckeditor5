@@ -6,7 +6,7 @@
 import {
 	DecoupledEditor, Essentials, Alignment, FontSize, FontFamily, FontColor, FontBackgroundColor,
 	CKFinderUploadAdapter, Autoformat, Bold, Italic, Strikethrough, Underline, BlockQuote, CKBox,
-	CKFinder, EasyImage, Heading, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar,
+	CKFinder, Heading, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar,
 	ImageUpload, PictureEditing, Indent, IndentBlock, Link, List, ListProperties, MediaEmbed,
 	Paragraph, PasteFromOffice, Table, TableToolbar, TextTransformation, CloudServices
 } from 'ckeditor5';
@@ -31,7 +31,6 @@ export class MiniInspectorEditor extends DecoupledEditor {
 		CKBox,
 		CKFinder,
 		CloudServices,
-		EasyImage,
 		Heading,
 		Image,
 		ImageCaption,

@@ -14,7 +14,6 @@ import {
 	Editor,
 	ElementApiMixin,
 	attachToForm,
-	EasyImage,
 	Enter,
 	HeadingEditing,
 	Image,
@@ -281,7 +280,7 @@ class BootstrapEditorUI extends EditorUI {
 BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
-			Clipboard, Enter, Typing, Paragraph, EasyImage, Image, ImageUpload, CloudServices,
+			Clipboard, Enter, Typing, Paragraph, Image, ImageUpload, CloudServices,
 			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
 		],
 		cloudServices: CS_CONFIG
