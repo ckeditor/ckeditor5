@@ -135,12 +135,13 @@ function removeStaleSoftBreakAttributes( writer: ModelWriter ): boolean {
 				continue;
 			}
 
-			for ( const [ key, value ] of child.getAttributes() ) {
-				// Remove the attribute if the next sibling does not have the same attribute.
-				if ( !hasSameAttribute( nextSibling, key, value ) ) {
-					writer.removeAttribute( key, child );
-					wasChanged = true;
-				}
+			// Remove the attribute if the next sibling does not have the same attribute.
+			const attributesToRemove = Array.from( child.getAttributes() )
+				.filter( ( [ key, value ] ) => !hasSameAttribute( nextSibling, key, value ) );
+
+			for ( const [ key ] of attributesToRemove ) {
+				writer.removeAttribute( key, child );
+				wasChanged = true;
 			}
 		}
 	}

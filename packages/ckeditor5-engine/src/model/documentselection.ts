@@ -1234,8 +1234,8 @@ class LiveSelection extends ModelSelection {
 /**
  * Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}.
  *
- * It checks if the passed model node is a text node and, if so, returns it's attributes.
- * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
+ * It checks if the passed model node is a text node and, if so, returns its attributes.
+ * If not, it checks if item is an inline element and does the same. Otherwise, it returns `null`.
  */
 function getTextAttributes(
 	startNode: ModelNode | null,
