@@ -679,8 +679,10 @@ function restoreSelectionAttributesOnEmptyParent(
 	// Setting document selection attributes here also persists them as `selection:*`
 	// on the empty parent, so future typing keeps the pre-delete formatting.
 	for ( const [ key, value ] of selectionAttributes ) {
-		if ( writer.model.schema.getAttributeProperties( key ).isFormatting &&
-			writer.model.schema.checkAttributeInSelection( documentSelection, key ) ) {
+		if ( 
+			writer.model.schema.getAttributeProperties( key ).isFormatting &&
+			writer.model.schema.checkAttributeInSelection( documentSelection, key ) 
+		) {
 			writer.setSelectionAttribute( key, value );
 		}
 	}
