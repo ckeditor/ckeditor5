@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-show-blocks-border-color: hsl(0, 0%, 46%);
+	--ck-show-blocks-border-color: var(--ck-color-base-text-light);
 }
 
 .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) {

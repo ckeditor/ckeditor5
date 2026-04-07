@@ -9,8 +9,8 @@
 
 .ck .ck.ck-emoji__search {
 	display: flex;
-	padding: var(--ck-spacing-large);
-	padding-bottom: var(--ck-spacing-medium);
+	padding: var(--ck-spacing-large, var(--ck-spacing-lg));
+	padding-bottom: var(--ck-spacing-medium, var(--ck-spacing-md));
 	justify-content: space-between;
 	align-items: center;
 
@@ -32,9 +32,10 @@
 	height: 100%;
 	border-right: 1px solid var(--ck-color-base-text);
 	margin-right: -1px;
-	outline: solid 1px hsla(0, 0%, 100%, .5);
+	outline: var(--ck-outline-fake-caret);
 }
 
 div.ck.ck-balloon-panel.ck-emoji-picker-balloon {
-	z-index: calc( var( --ck-z-dialog ) + 1 );
+	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
+	z-index: calc( var( --ck-z-dialog, var(--ck-z-modal) ) + 1 );
 }
