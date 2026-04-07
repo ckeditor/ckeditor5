@@ -37,7 +37,7 @@
 	width: var(--ck-table-column-resizer-width);
 	cursor: col-resize;
 	user-select: none;
-	z-index: var(--ck-z-default);
+	z-index: var(--ck-z-default, var(--ck-z-base));
 }
 
 .ck.ck-editor__editable.ck-column-resize_disabled .table .ck-table-column-resizer {

@@ -5,6 +5,7 @@
 
 
 :root {
+	--ck-radius-xs: 1px;
 	/**
 	* Default border-radius value.
 	*/
