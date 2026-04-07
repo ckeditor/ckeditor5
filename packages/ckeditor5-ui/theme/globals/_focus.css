@@ -38,4 +38,10 @@
 	 * to avoid overriding the width on focus.
 	 */
 	--ck-focus-border-color: var(--ck-color-focus-border);
+
+	/**
+	 * Contrast outline for fake collapsed selections and carets.
+	 * Used across link, widget, emoji, and bookmark packages.
+	 */
+	--ck-outline-fake-caret: solid 1px hsla(0, 0%, 100%, .5);
 }
