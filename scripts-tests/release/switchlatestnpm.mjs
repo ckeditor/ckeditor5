@@ -89,8 +89,8 @@ describe( 'scripts/release/switchlatestnpm', () => {
 
 	// Given: @latest → 47.0.0
 	// When: publish 46.1.0
-	// Then: @latest → 47.0.0
-	it( 'should not reassign the @latest tag when publishing a version lower than the current @latest', async () => {
+	// Then: @latest temporarily set to 46.1.0, then restored to 47.0.0
+	it( 'should temporarily assign @latest to the hotfix and then restore it to the higher version', async () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '47.0.0' );
 
 		// Act: import executes the script (top-level await)
@@ -99,8 +99,15 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
 
-		expect( releaseTools.reassignNpmTags ).not.toHaveBeenCalledWith( expect.objectContaining( {
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 2 );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 1, expect.objectContaining( {
 			version: '46.1.0',
+			packages: packageNames,
+			npmTag: 'latest'
+		} ) );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 2, expect.objectContaining( {
+			version: '47.0.0',
+			packages: packageNames,
 			npmTag: 'latest'
 		} ) );
 	} );
@@ -186,9 +193,9 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	} );
 
 	// Given: @latest → 47.1.0, @lts-v47 → 47.1.0
-	// When: publish 46.1.1
-	// Then: @latest → 47.1.0, @lts-v47 → 47.1.0
-	it( 'should not reassign any npm tags when publishing an older version that does not affect @latest or @lts-v* tags', async () => {
+	// When: publish 46.1.1 (non-LTS major)
+	// Then: @latest temporarily set to 46.1.1, then restored to 47.1.0; @lts-v47 unchanged (46 is not LTS)
+	it( 'should temporarily assign @latest to the hotfix and restore it; skip @lts-v* when major is not LTS', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
 			'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/package.json': {
@@ -211,12 +218,15 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
 
-		expect( releaseTools.reassignNpmTags ).not.toHaveBeenCalledWith( expect.objectContaining( {
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 2 );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 1, expect.objectContaining( {
 			version: '46.1.1',
+			packages: packageNames,
 			npmTag: 'latest'
 		} ) );
-		expect( releaseTools.reassignNpmTags ).not.toHaveBeenCalledWith( expect.objectContaining( {
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 2, expect.objectContaining( {
 			version: '47.1.0',
+			packages: packageNames,
 			npmTag: 'latest'
 		} ) );
 		expect( releaseTools.reassignNpmTags ).not.toHaveBeenCalledWith( expect.objectContaining( {
@@ -270,8 +280,8 @@ describe( 'scripts/release/switchlatestnpm', () => {
 
 	// Given: @latest → 48.0.0, @lts-v47 → 47.1.0
 	// When: publish 47.1.1
-	// Then: @latest → 48.0.0, @lts-v47 → 47.1.1
-	it( 'should reassign the matching LTS tag (@lts-v47) to the new release and leave @latest unchanged', async () => {
+	// Then: @latest temporarily set to 47.1.1, @lts-v47 → 47.1.1, @latest restored to 48.0.0
+	it( 'should temporarily assign @latest to the LTS patch, update @lts-v47, then restore @latest to the higher version', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
 			'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/package.json': {
@@ -295,13 +305,20 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
 
-		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 1 );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledTimes( 3 );
 		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 1, expect.objectContaining( {
+			version: '47.1.1',
+			packages: packageNames,
+			npmTag: 'latest'
+		} ) );
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 2, expect.objectContaining( {
 			version: '47.1.1',
 			packages: packageNames,
 			npmTag: 'lts-v47'
 		} ) );
-		expect( releaseTools.reassignNpmTags ).not.toHaveBeenCalledWith( expect.objectContaining( {
+		expect( releaseTools.reassignNpmTags ).toHaveBeenNthCalledWith( 3, expect.objectContaining( {
+			version: '48.0.0',
+			packages: packageNames,
 			npmTag: 'latest'
 		} ) );
 	} );
