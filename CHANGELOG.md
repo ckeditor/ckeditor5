@@ -1,9 +1,9 @@
 Changelog
 =========
 
-## [47.6.2](https://github.com/ckeditor/ckeditor5/compare/v47.6.1...v47.6.2) (April 9, 2026)
+## [47.6.2](https://github.com/ckeditor/ckeditor5/compare/v47.6.1...v47.6.2) (April 8, 2026)
 
-We are releasing CKEditor 5 v47.6.2, a preparatory patch for the v47 LTS line that removes the no-longer-functional Amazon Bedrock AI integration ahead of the LTS maintenance period.
+We are releasing CKEditor 5 v47.6.2, a patch for the v47 line that removes the no-longer-functional Amazon Bedrock AI integration in the legacy AI Assistant plugin.
 
 ### Other changes
 
