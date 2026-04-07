@@ -9,9 +9,9 @@
 
 .ck.ck-list-styles-list {
 	grid-template-columns: repeat( 3, auto );
-	row-gap: var(--ck-spacing-medium);
-	column-gap: var(--ck-spacing-medium);
-	padding: var(--ck-spacing-large);
+	row-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
+	column-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
+	padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 
 	& .ck-button {
 		/* Make the button look like a thumbnail (the icon "takes it all"). */
