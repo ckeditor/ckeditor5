@@ -4,7 +4,7 @@
  */
 
 :root {
-	/* Based on default CKBox theme colors */
+	/* Based on default CKBox theme colors — content-layer: pending color palette */
 	--ck-image-processing-highlight-color: hsl(220, 10%, 98%);
 	--ck-image-processing-background-color: hsl(220, 10%, 90%);
 }
