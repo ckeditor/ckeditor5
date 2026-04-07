@@ -54,10 +54,10 @@ export function transformListItemLikeElementsIntoLists(
 	// Tracks how many items have been added to each encountered list, keyed by indent level and list ID.
 	// Used to set the `start` attribute on a new <ol> when a list at a given indent is interrupted by
 	// a non-list block (e.g. a paragraph) and then resumed.
-	// Structure: { [indent]: { [listId:level]: itemCount } }
-	// Example: { 0: { '1:1': 3 }, 1: { '0:2': 2 } } means the top-level list (id=1) has 3 items,
+	// Structure: [ { [listId:level]: itemCount } ] (array index is the indent level)
+	// Example: [ { '1:1': 3 }, { '0:2': 2 } ] means the top-level list (id=1) has 3 items,
 	// and the nested list (id=0) has 2 items so the next continuation should start at 3.
-	const encounteredLists: Record<number, Record<string, number>> = {};
+	const encounteredLists: Array<Record<string, number>> = [];
 
 	const stack: ListStack = [];
 
@@ -73,7 +73,7 @@ export function transformListItemLikeElementsIntoLists(
 				// receive the correct `start` attribute. Nested counters must be cleared because
 				// a sibling top-level list item should not inherit the nested list counts from
 				// a previous top-level list item.
-				clearEncounteredListsFromLevel( encounteredLists, 1 );
+				encounteredLists.length = 1;
 				stack.length = 0;
 			}
 
@@ -89,14 +89,14 @@ export function transformListItemLikeElementsIntoLists(
 			if ( indent < stack.length && stack[ indent ].id !== itemLikeElement.id ) {
 				// A different list started at this indent level — counters for this level and deeper
 				// belong to the previous list context and must not carry over.
-				clearEncounteredListsFromLevel( encounteredLists, indent );
+				encounteredLists.length = indent;
 				stack.length = indent;
 			}
 
 			// Trimming of the list stack on lower indent list encountered.
 			if ( indent < stack.length - 1 ) {
 				// We jumped back to a shallower indent — any counters deeper than the new top are stale.
-				clearEncounteredListsFromLevel( encounteredLists, indent + 1 );
+				encounteredLists.length = indent + 1;
 				stack.length = indent + 1;
 			}
 			else {
@@ -195,7 +195,7 @@ export function transformListItemLikeElementsIntoLists(
 				// Clear counters only for levels deeper than the direct children of the matched <li>.
 				// The counter at `stack.length` must survive so the next nested list can continue
 				// numbering from where it left off (e.g. <ol start="3">).
-				clearEncounteredListsFromLevel( encounteredLists, stack.length + 1 );
+				encounteredLists.length = stack.length + 1;
 			} else {
 				stack.length = 0;
 			}
@@ -575,24 +575,6 @@ function mapListStyleDefinition( value: string ) {
 			return value;
 		default:
 			return null;
-	}
-}
-
-/**
- * Removes all encountered list counters at or deeper than the given indent level.
- * Should be called whenever the stack is trimmed to a shallower level, so that counters
- * accumulated inside a list item do not incorrectly affect a sibling list item at the same level.
- * Example: when we exit <li>Item A</li> and enter <li>Item B</li>, any nested list counters
- * from Item A must not be reused as continuation start values inside Item B.
- */
-function clearEncounteredListsFromLevel(
-	encounteredLists: Record<number, Record<string, number>>,
-	fromIndent: number
-): void {
-	for ( const key of Object.keys( encounteredLists ) ) {
-		if ( Number( key ) >= fromIndent ) {
-			delete encounteredLists[ Number( key ) ];
-		}
 	}
 }
 
