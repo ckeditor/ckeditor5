@@ -126,7 +126,9 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
 				'formatPainter'
 			],
-			initialData
+			root: {
+				initialData
+			}
 		} );
 
 		// Prevent memory leaks if unmounted during creation.
