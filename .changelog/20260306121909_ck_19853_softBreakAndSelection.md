@@ -2,6 +2,7 @@
 type: Fix
 scope:
   - ckeditor5-engine
+  - ckeditor5-enter
 closes:
   - 19853
 ---
