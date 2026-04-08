@@ -132,16 +132,19 @@ describe( 'BlockQuoteCommand', () => {
 				plugins: [ BlockQuoteEditing ],
 				root: {
 					modelElement: 'customRoot'
-				}
+				},
+				extraPlugins: [
+					function( editor ) {
+						editor.model.schema.register( 'customRoot', {
+							isLimit: true,
+							allowContentOf: '$container'
+						} );
+					}
+				]
 			} );
 
 			const model = editor.model;
 			const command = editor.commands.get( 'blockQuote' );
-
-			model.schema.register( 'customRoot', {
-				isLimit: true,
-				allowContentOf: '$container'
-			} );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
@@ -157,16 +160,19 @@ describe( 'BlockQuoteCommand', () => {
 				plugins: [ BlockQuoteEditing ],
 				root: {
 					modelElement: 'customRoot'
-				}
+				},
+				extraPlugins: [
+					function( editor ) {
+						editor.model.schema.register( 'customRoot', {
+							isLimit: true,
+							allowChildren: 'paragraph'
+						} );
+					}
+				]
 			} );
 
 			const model = editor.model;
 			const command = editor.commands.get( 'blockQuote' );
-
-			model.schema.register( 'customRoot', {
-				isLimit: true,
-				allowChildren: 'paragraph'
-			} );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
