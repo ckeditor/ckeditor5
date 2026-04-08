@@ -43,6 +43,10 @@ describe( 'Model', () => {
 			expect( schema.checkChild( [ '$inlineRoot' ], '$block' ) ).to.be.false;
 			expect( schema.checkChild( [ '$inlineRoot' ], '$container' ) ).to.be.false;
 			expect( schema.checkChild( [ '$inlineRoot' ], '$blockObject' ) ).to.be.false;
+
+			schema.extend( '$root', { allowAttributes: 'foo' } );
+
+			expect( schema.checkAttribute( [ '$inlineRoot' ], 'foo' ) ).to.be.true;
 		} );
 
 		it( 'registers $container to the schema', () => {
@@ -96,6 +100,7 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$clipboardHolder' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
+			expect( schema.checkChild( [ '$clipboardHolder' ], '$inlineObject' ) ).to.be.true;
 		} );
 
 		it( 'registers $documentFragment to the schema', () => {
@@ -103,6 +108,7 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$documentFragment' ) ).to.be.true;
 			expect( schema.checkChild( [ '$documentFragment' ], '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$inlineObject' ) ).to.be.true;
 		} );
 
 		it( 'registers $marker to the schema and allows it in all registered elements', () => {
