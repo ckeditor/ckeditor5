@@ -343,7 +343,7 @@ export class MultiRootEditor extends Editor {
 	 * } );
 	 * ```
 	 */
-	public override destroy(): Promise<unknown> {
+	public override async destroy(): Promise<void> {
 		const shouldUpdateSourceElement = this.config.get( 'updateSourceElementOnDestroy' );
 		// Cache the data and editable DOM elements, then destroy.
 		// It's safe to assume that the model->view conversion will not work after `super.destroy()`,
@@ -356,12 +356,11 @@ export class MultiRootEditor extends Editor {
 
 		this.ui.destroy();
 
-		return super.destroy()
-			.then( () => {
-				for ( const rootName of Object.keys( this.sourceElements ) ) {
-					setDataInElement( this.sourceElements[ rootName ], data[ rootName ] );
-				}
-			} );
+		await super.destroy();
+
+		for ( const rootName of Object.keys( this.sourceElements ) ) {
+			setDataInElement( this.sourceElements[ rootName ], data[ rootName ] );
+		}
 	}
 
 	/**
@@ -462,6 +461,22 @@ export class MultiRootEditor extends Editor {
 		const initialData: string = options.initialData || options.data || '';
 		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
 		const modelElement: string = options.modelElement || options.elementName || '$root';
+
+		if ( !this.model.schema.isLimit( modelElement ) ) {
+			/**
+			 * The model root element must be a {@link module:engine/model/schema~ModelSchemaItemDefinition#isLimit limit element}.
+			 * The element name specified in {@link ~MultiRootEditor#addRoot `addRoot()`} options must be registered in the schema
+			 * with `isLimit` set to `true`.
+			 *
+			 * @error multi-root-editor-add-root-element-is-not-limit
+			 * @param rootName The name of the root that uses a non-limit element.
+			 * @param elementName The name of the model element used for the root.
+			 */
+			throw new CKEditorError( 'multi-root-editor-add-root-element-is-not-limit', this, {
+				rootName,
+				elementName: modelElement
+			} );
+		}
 
 		if ( isElement( options.element ) ) {
 			/**
@@ -1142,29 +1157,26 @@ export class MultiRootEditor extends Editor {
 		config: EditorConfig
 	): Promise<MultiRootEditor>;
 
-	public static override create(
+	public static override async create(
 		sourceElementsOrDataOrConfig: Record<string, HTMLElement> | Record<string, string>,
 		config: EditorConfig = {}
 	): Promise<MultiRootEditor> {
-		return new Promise( resolve => {
-			const editor = new this( sourceElementsOrDataOrConfig as any, config );
+		const editor = new this( sourceElementsOrDataOrConfig as any, config );
 
-			resolve(
-				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => {
-						const initialData = extractRootsConfigField( editor.config.get( 'roots' )!, 'initialData' );
+		await editor.initPlugins();
+		await editor.ui.init();
 
-						// This is checked directly before setting the initial data,
-						// as plugins may change `EditorConfig#initialData` value.
-						editor._verifyRootsWithInitialData( initialData );
+		const initialData = extractRootsConfigField( editor.config.get( 'roots' )!, 'initialData' );
 
-						return editor.data.init( initialData );
-					} )
-					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
-					.then( () => editor )
-			);
-		} );
+		// This is checked directly before setting the initial data,
+		// as plugins may change `EditorConfig#initialData` value.
+		editor._verifyRootsWithInitialData( initialData );
+
+		await editor.data.init( initialData );
+
+		editor.fire<EditorReadyEvent>( 'ready' );
+
+		return editor;
 	}
 
 	/**

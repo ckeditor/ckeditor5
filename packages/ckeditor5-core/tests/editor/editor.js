@@ -1410,6 +1410,39 @@ describe( 'Editor', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'should throw if a root element is not a limit element', () => {
+			const editor = new TestEditor();
+
+			editor.model.schema.register( 'nonLimit', { isBlock: true } );
+			editor.model.document.createRoot( 'nonLimit', 'main' );
+
+			return editor.initPlugins()
+				.then(
+					() => {
+						throw new Error( 'Expected to throw' );
+					},
+					err => {
+						expect( err ).to.be.instanceOf( CKEditorError );
+						expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
+					}
+				);
+		} );
+
+		it( 'should not throw if a root element is a limit element', () => {
+			const editor = new TestEditor();
+
+			editor.model.document.createRoot( '$root', 'main' );
+
+			return editor.initPlugins()
+				.then( () => {
+					editor.fire( 'ready' );
+					return editor.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'data API', () => {

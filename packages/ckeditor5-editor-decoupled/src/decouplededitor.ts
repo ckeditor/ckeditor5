@@ -138,19 +138,18 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * 	} );
 	 * ```
 	 */
-	public override destroy(): Promise<unknown> {
+	public override async destroy(): Promise<void> {
 		// Cache the data, then destroy.
 		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
 
 		this.ui.destroy();
 
-		return super.destroy()
-			.then( () => {
-				if ( this.sourceElement ) {
-					this.updateSourceElement( data );
-				}
-			} );
+		await super.destroy();
+
+		if ( this.sourceElement ) {
+			this.updateSourceElement( data );
+		}
 	}
 
 	/**
@@ -355,21 +354,19 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 */
 	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig ): Promise<DecoupledEditor>;
 
-	public static override create(
+	public static override async create(
 		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
 		config: EditorConfig = {}
 	): Promise<DecoupledEditor> {
-		return new Promise( resolve => {
-			const editor = new this( sourceElementOrDataOrConfig as any, config );
+		const editor = new this( sourceElementOrDataOrConfig as any, config );
 
-			resolve(
-				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
-					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
-					.then( () => editor )
-			);
-		} );
+		await editor.initPlugins();
+		await editor.ui.init();
+		await editor.data.init( editor.config.get( 'roots' )!.main.initialData! );
+
+		editor.fire<EditorReadyEvent>( 'ready' );
+
+		return editor;
 	}
 }
 

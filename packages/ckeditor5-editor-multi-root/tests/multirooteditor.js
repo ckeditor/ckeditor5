@@ -1114,6 +1114,7 @@ describe( 'MultiRootEditor', () => {
 		} );
 
 		it( 'should add a model root with given element name', () => {
+			editor.model.schema.register( 'div', { isLimit: true } );
 			editor.addRoot( 'bar', { elementName: 'div' } );
 
 			const root = editor.model.document.getRoot( 'bar' );
@@ -1130,11 +1131,20 @@ describe( 'MultiRootEditor', () => {
 		} );
 
 		it( 'should add a model root with given modelElement', () => {
+			editor.model.schema.register( 'customRoot', { isLimit: true } );
 			editor.addRoot( 'bar', { modelElement: 'customRoot' } );
 
 			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root.name ).to.equal( 'customRoot' );
+		} );
+
+		it( 'should throw if the model element is not a limit element', () => {
+			editor.model.schema.register( 'nonLimit', { isBlock: true } );
+
+			expect( () => {
+				editor.addRoot( 'bar', { modelElement: 'nonLimit' } );
+			} ).to.throw( CKEditorError, 'multi-root-editor-add-root-element-is-not-limit' );
 		} );
 
 		it( 'should add a model root with given attributes', () => {
