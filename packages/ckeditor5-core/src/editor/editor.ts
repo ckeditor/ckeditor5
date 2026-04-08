@@ -299,7 +299,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Holds attributes keys that were passed in
 	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-	 *  or {@link module:core/editor/editorconfig~EditorConfig#roots `config.root.modelAttributes`}.
+	 *  or {@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`}.
 	 */
 	protected readonly _registeredRootsAttributesKeys = new Set<string>();
 
@@ -956,7 +956,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Note: attributes passed in
 	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`} or
-	 *  {@link module:core/editor/editorconfig~EditorConfig#roots `config.root.modelAttributes`}
+	 *  {@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`}
 	 * are automatically registered as the editor is initialized. However, registering the same attribute twice does not have any
 	 * negative impact, so it is recommended to use this method in any feature that uses roots attributes.
 	 */
