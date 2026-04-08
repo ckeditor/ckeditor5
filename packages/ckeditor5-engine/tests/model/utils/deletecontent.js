@@ -313,6 +313,158 @@ describe( 'DataController utils', () => {
 			} );
 		} );
 
+		describe( 'selection relation detection (isRelatedToDocumentSelection)', () => {
+			beforeEach( () => {
+				model = new Model();
+				doc = model.document;
+				doc.createRoot();
+
+				const schema = model.schema;
+
+				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.extend( '$text', {
+					allowAttributes: [ 'bold' ]
+				} );
+				schema.setAttributeProperties( 'bold', { isFormatting: true } );
+			} );
+
+			it( 'restores attributes when selection is the DocumentSelection instance', () => {
+				_setModelData(
+					model,
+					'<paragraph><$text bold="true">[foo]</$text></paragraph>'
+				);
+
+				deleteContent( model, doc.selection );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'restores attributes when document selection is collapsed at the start of the given range', () => {
+				_setModelData(
+					model,
+					'<paragraph><$text bold="true">[]foo</$text></paragraph>'
+				);
+
+				const root = doc.getRoot();
+				const range = new ModelRange(
+					new ModelPosition( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 0, 3 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'restores attributes when document selection is collapsed at the end of the given range', () => {
+				_setModelData(
+					model,
+					'<paragraph><$text bold="true">foo[]</$text></paragraph>'
+				);
+
+				const root = doc.getRoot();
+				const range = new ModelRange(
+					new ModelPosition( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 0, 3 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'does not restore attributes when document selection is collapsed at an unrelated position', () => {
+				const setSelectionAttributeSpy = sinon.spy( ModelWriter.prototype, 'setSelectionAttribute' );
+
+				_setModelData(
+					model,
+					'<paragraph><$text bold="true">[]abc</$text></paragraph>' +
+					'<paragraph>foo</paragraph>'
+				);
+				setSelectionAttributeSpy.resetHistory();
+
+				const root = doc.getRoot();
+				const range = new ModelRange(
+					new ModelPosition( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 3 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( setSelectionAttributeSpy.called ).to.be.false;
+			} );
+
+			it( 'restores attributes when non-collapsed document selection intersects the given range', () => {
+				_setModelData(
+					model,
+					'<paragraph><$text bold="true">[abc</$text></paragraph>' +
+					'<paragraph>fo]o</paragraph>'
+				);
+
+				const root = doc.getRoot();
+				const range = new ModelRange(
+					new ModelPosition( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 1, 3 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'restores attributes when non-collapsed document selection intersects the given range (other side)', () => {
+				_setModelData(
+					model,
+					'<paragraph>foo</paragraph>' +
+					'<paragraph><$text bold="true">a[bc]</$text></paragraph>'
+				);
+
+				const root = doc.getRoot();
+				const range = new ModelRange(
+					new ModelPosition( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 1, 2 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'does not restore attributes when non-collapsed document selection does not intersect the given range', () => {
+				const setSelectionAttributeSpy = sinon.spy( ModelWriter.prototype, 'setSelectionAttribute' );
+
+				_setModelData(
+					model,
+					'<paragraph><$text bold="true">[abc]</$text></paragraph>' +
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+				setSelectionAttributeSpy.resetHistory();
+
+				const root = doc.getRoot();
+				const range = new ModelRange(
+					new ModelPosition( root, [ 2, 0 ] ),
+					new ModelPosition( root, [ 2, 3 ] )
+				);
+
+				const selection = new ModelSelection( [ range ] );
+
+				deleteContent( model, selection );
+
+				expect( setSelectionAttributeSpy.called ).to.be.false;
+			} );
+		} );
+
 		// Note: The algorithm does not care what kind of it's merging as it knows nothing useful about these elements.
 		// In most cases it handles all elements like you'd expect to handle block elements in HTML. However,
 		// in some scenarios where the tree depth is bigger results may be hard to justify. In fact, such cases

@@ -100,12 +100,7 @@ export function deleteContent(
 	const schema = model.schema;
 	const documentSelection = model.document.selection;
 
-	// Only restore selection attributes when the provided selection targets the same range as the document
-	// selection. We compare ranges rather than instances because CKEditor may pass a transient copy of the
-	// document selection (same range, but a different object without stored attributes). When the ranges
-	// differ, the caller is operating on a synthetic selection elsewhere in the document and we must not
-	// touch the document selection attributes.
-	const selectionIsDocumentSelection = !!documentSelection.getFirstRange()?.isEqual( selRange );
+	const selectionIsDocumentSelection = isRelatedToDocumentSelection( selection, documentSelection, selRange );
 	const selectionAttributes = Array.from( documentSelection.getAttributes() );
 	const selectionParentWasEmpty = !!documentSelection.getFirstRange()?.start.parent.isEmpty;
 
@@ -686,4 +681,32 @@ function restoreSelectionAttributesOnEmptyParent(
 			writer.setSelectionAttribute( key, value );
 		}
 	}
+}
+
+/**
+ * Checks whether the provided selection is related to the document selection.
+ *
+ * Returns `true` when:
+ * - the selection is a `DocumentSelection` instance, or
+ * - the document selection is collapsed and sits at the start or end of the given range, or
+ * - the document selection is not collapsed and its range intersects the given range.
+ */
+function isRelatedToDocumentSelection(
+	selection: ModelSelection | ModelDocumentSelection,
+	documentSelection: ModelDocumentSelection,
+	selRange: ModelRange
+): boolean {
+	if ( selection instanceof ModelDocumentSelection ) {
+		return true;
+	}
+
+	if ( documentSelection.isCollapsed ) {
+		const position = documentSelection.getFirstPosition()!;
+
+		return position.isEqual( selRange.start ) || position.isEqual( selRange.end );
+	}
+
+	const docSelRange = documentSelection.getFirstRange();
+
+	return !!docSelRange?.isIntersecting( selRange );
 }
