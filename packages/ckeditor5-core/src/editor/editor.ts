@@ -969,6 +969,23 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
+	/**
+	 * Returns attributes for the main root.
+	 *
+	 * Note: all and only {@link ~Editor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
+	 */
+	public getRootAttributes( rootName: string = 'main' ): EditorRootAttributes {
+		const rootAttributes: EditorRootAttributes = {};
+		const root = this.model.document.getRoot( rootName )!;
+
+		for ( const key of this._registeredRootsAttributesKeys ) {
+			rootAttributes[ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
+		}
+
+		return rootAttributes;
+	}
+
 	/* istanbul ignore next -- @preserve */
 	/**
 	 * Creates and initializes a new editor instance.
@@ -1278,6 +1295,11 @@ export type EditorDestroyEvent = {
 	name: 'destroy';
 	args: [];
 };
+
+/**
+ * Attributes set on a model root element.
+ */
+export type EditorRootAttributes = Record<string, unknown>;
 
 /**
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.

@@ -14,7 +14,8 @@ import {
 	normalizeMultiRootEditorConstructorParams,
 	type EditorConfig,
 	type EditorReadyEvent,
-	type RootConfig
+	type RootConfig,
+	type EditorRootAttributes
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -453,7 +454,7 @@ export class MultiRootEditor extends Editor {
 
 	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
-		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
+		const modelAttributes: EditorRootAttributes = options.modelAttributes || options.attributes || {};
 		const modelElement: string = options.elementName || '$root';
 
 		if ( isElement( options.element ) ) {
@@ -715,31 +716,14 @@ export class MultiRootEditor extends Editor {
 	 *
 	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
-	public getRootsAttributes(): Record<string, RootAttributes> {
-		const rootsAttributes: Record<string, RootAttributes> = Object.create( {} );
+	public getRootsAttributes(): Record<string, EditorRootAttributes> {
+		const rootsAttributes: Record<string, EditorRootAttributes> = {};
 
 		for ( const rootName of this.model.document.getRootNames() ) {
 			rootsAttributes[ rootName ] = this.getRootAttributes( rootName );
 		}
 
 		return rootsAttributes;
-	}
-
-	/**
-	 * Returns attributes for the specified root.
-	 *
-	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
-	 * If a registered root attribute is not set for a given root, `null` will be returned.
-	 */
-	public getRootAttributes( rootName: string ): RootAttributes {
-		const rootAttributes: RootAttributes = {};
-		const root = this.model.document.getRoot( rootName )!;
-
-		for ( const key of this._registeredRootsAttributesKeys ) {
-			rootAttributes[ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
-		}
-
-		return rootAttributes;
 	}
 
 	/**
@@ -1305,7 +1289,7 @@ export type AddRootOptions = {
 	/**
 	 * Initial attributes for the root.
 	 */
-	attributes?: RootAttributes;
+	attributes?: EditorRootAttributes;
 
 	/**
 	 * Element name for the root element in the model. It can be used to set different schema rules for different roots.
@@ -1338,11 +1322,6 @@ export interface AddRootRootConfig extends RootConfig {
  * Additional options available when loading a root.
  */
 export type LoadRootOptions = Omit<AddRootOptions, 'elementName' | 'isUndoable'>;
-
-/**
- * Attributes set on a model root element.
- */
-export type RootAttributes = Record<string, unknown>;
 
 /**
  * Additional options for the created editable element.

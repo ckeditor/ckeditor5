@@ -31,6 +31,7 @@ export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';
 
 export {
 	Editor,
+	type EditorRootAttributes,
 	type EditorCollectUsageDataEvent,
 	type EditorReadyEvent,
 	type EditorDestroyEvent,
