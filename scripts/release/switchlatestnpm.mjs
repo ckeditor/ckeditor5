@@ -27,28 +27,28 @@ const npmOwner = 'ckeditor';
 const packages = globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
 	.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
 
-// Capture the current @latest BEFORE making any changes.
-// This is the "true latest" (e.g. 48.x.x) that we will restore to afterwards.
-const trueLatestVersion = await releaseTools.getVersionForTag( 'ckeditor5', 'latest' );
+const latestPublishedVersion = await releaseTools.getVersionForTag( 'ckeditor5', 'latest' );
 
-console.log( `Current \`@latest\` on npm: ${ trueLatestVersion }.` );
+console.log( `Current \`@latest\` on npm: ${ latestPublishedVersion }.` );
 
-// Step 1: Assign @latest to the hotfix release.
-// This is intentional — the standard release procedure always moves the @latest tag
-// to the freshly published version, even when it is part of an older (LTS) release line.
-console.log( `Moving \`@latest\` → v${ currentVersion }.` );
+// Assign `@latest` only if the current version is newer than the one currently tagged as `@latest`.
+const shouldAssignLatest = !latestPublishedVersion || semver.compare( currentVersion, latestPublishedVersion ) > 0;
 
-await releaseTools.reassignNpmTags( {
-	npmOwner,
-	packages,
-	version: currentVersion,
-	npmTag: 'latest'
-} );
+if ( shouldAssignLatest ) {
+	console.log( `Moving \`@latest\` → v${ currentVersion }.` );
 
-// Step 2: Update the LTS tag (e.g., `lts-v47`) if the current version is part of an LTS release line.
+	await releaseTools.reassignNpmTags( {
+		npmOwner,
+		packages,
+		version: currentVersion,
+		npmTag: 'latest'
+	} );
+} else {
+	console.log( `Not touching \`@latest\` (current ${ latestPublishedVersion } is >= ${ currentVersion }).` );
+}
+
+// Update the corresponding LTS tag (e.g., `lts-v47`) if the current version is part of an LTS release line.
 if ( isCurrentVersionLTS ) {
-	console.log( `Moving \`lts-v${ currentMajor }\` → v${ currentVersion }.` );
-
 	await releaseTools.reassignNpmTags( {
 		npmOwner,
 		packages,
@@ -57,24 +57,6 @@ if ( isCurrentVersionLTS ) {
 	} );
 } else {
 	console.log( `Major ${ currentMajor } not listed as LTS; skipping LTS tag update.` );
-}
-
-// Step 3: Restore @latest to the "true latest" version captured before step 1.
-// This ensures that after the hotfix release, @latest still points to the most recent
-// major release on npm (e.g. 48.x.x), regardless of which LTS patch was just released.
-// The version is fetched dynamically to account for any concurrent hotfix that may have
-// been published in the meantime.
-if ( trueLatestVersion && semver.compare( trueLatestVersion, currentVersion ) > 0 ) {
-	console.log( `Restoring \`@latest\` → v${ trueLatestVersion } (fetched from npm before the release).` );
-
-	await releaseTools.reassignNpmTags( {
-		npmOwner,
-		packages,
-		version: trueLatestVersion,
-		npmTag: 'latest'
-	} );
-} else {
-	console.log( `\`@latest\` stays at v${ currentVersion } — no higher version was found on npm.` );
 }
 
 console.log( '✅ Done.' );
