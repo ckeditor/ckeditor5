@@ -1242,7 +1242,15 @@ export interface RootConfig {
 	placeholder?: string;
 
 	/**
-	 * The model root element name. TODO
+	 * The name of the model root element to use for this editor root.
+	 *
+	 * By default, the editor creates model roots using the generic `$root` element, which allows all standard block
+	 * content (paragraphs, headings, lists, tables, etc.). You can set this option to a custom element name if you
+	 * need a root with different schema rules — for example, a root that restricts or extends what content is allowed
+	 * at the top level.
+	 *
+	 * The element name must be registered in the {@link module:engine/model/schema~Schema schema} before or during
+	 * editor initialization.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -1253,6 +1261,24 @@ export interface RootConfig {
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you can set a different model element for each root:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			modelElement: '$inlineRoot',
+	 * 			initialData: 'My document title'
+	 * 		},
+	 * 		content: {
+	 * 			initialData: '<p>Main content goes here.</p>'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
 	 * ```
 	 *
 	 * @default '$root'
