@@ -10,7 +10,7 @@
 import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
 import { type Context } from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
-import { type Editor } from './editor.js';
+import type { EditorRootAttributes, Editor } from './editor.js';
 import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
 import type { EngineConfig } from '@ckeditor/ckeditor5-engine';
 
@@ -1290,6 +1290,98 @@ export interface RootConfig {
 	 * ```
 	 */
 	label?: string;
+
+	/**
+	 * Initial root attributes for a root.
+	 *
+	 * **Note: You must provide full set of attributes for each root. If an attribute is not set on a root, set the value to `null`.
+	 * Only provided attribute keys will be returned by
+	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#getRootsAttributes}.**
+	 *
+	 * Roots attributes hold additional data related to the document roots, in addition to the regular document data (which usually is
+	 * HTML). In roots attributes, for each root, you can store arbitrary key-value pairs with attributes connected with that root.
+	 * Use it to store any custom data that is specific to your integration or custom features.
+	 *
+	 * Currently, any official plugins do not use root attributes. This is a mechanism that is prepared for custom features
+	 * and non-standard integrations. If you do not provide any custom feature that would use root attributes, you do not need to
+	 * handle (save and load) this property.
+	 *
+	 * **Classic editor:**
+	 *
+	 * ```ts
+	 * ClassicEditor.create( {
+	 * 	root: {
+	 * 		modelAttributes: { customAttribute: true }
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 *
+	 * **Multi-root editor:**
+	 *
+	 * ```ts
+	 * MultiRootEditor.create(
+	 * 	// Roots for the editor:
+	 * 	{
+	 * 		uid1: document.querySelector( '#uid1' ),
+	 * 		uid2: document.querySelector( '#uid2' ),
+	 * 		uid3: document.querySelector( '#uid3' ),
+	 * 		uid4: document.querySelector( '#uid4' )
+	 * 	},
+	 * 	// Config:
+	 * 	{
+	 * 		roots: {
+	 * 			uid1: {
+	 * 				modelAttributes: { order: 20, isLocked: false } // Third, unlocked.
+	 * 			},
+	 * 			uid2: {
+	 * 				modelAttributes: { order: 10, isLocked: true } // Second, locked.
+	 * 			},
+	 * 			uid3: {
+	 * 				modelAttributes: { order: 30, isLocked: true } // Fourth, locked.
+	 * 			},
+	 * 			uid4: {
+	 * 				modelAttributes: { order: 0, isLocked: false } // First, unlocked.
+	 * 			}
+	 * 		}
+	 * 	}
+	 * )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 *
+	 * Note, that the above code snippet is only an example. You need to implement your own features that will use these attributes.
+	 *
+	 * Roots attributes can be changed the same way as attributes set on other model nodes:
+	 *
+	 * ```ts
+	 * editor.model.change( writer => {
+	 * 	const root = editor.model.getRoot( 'uid3' );
+	 *
+	 * 	writer.setAttribute( 'order', 40, root );
+	 * } );
+	 * ```
+	 *
+	 * You can react to root attributes changes by listening to
+	 * {@link module:engine/model/document~ModelDocument#event:change:data document `change:data` event}:
+	 *
+	 * ```ts
+	 * editor.model.document.on( 'change:data', () => {
+	 * 	const changedRoots = editor.model.document.differ.getChangedRoots();
+	 *
+	 * 	for ( const change of changedRoots ) {
+	 * 		if ( change.attributes ) {
+	 * 			const root = editor.model.getRoot( change.name );
+	 *
+	 * 			// ...
+	 * 		}
+	 * 	}
+	 * } );
+	 * ```
+	 */
+	modelAttributes?: EditorRootAttributes;
+
 }
 
 /**
