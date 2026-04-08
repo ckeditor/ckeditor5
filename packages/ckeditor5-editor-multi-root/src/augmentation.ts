@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import '@ckeditor/ckeditor5-core';
+
 declare module '@ckeditor/ckeditor5-core' {
 	interface RootConfig {
 
