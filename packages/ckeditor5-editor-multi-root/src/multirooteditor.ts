@@ -12,6 +12,7 @@ import {
 	secureSourceElement,
 	normalizeRootsConfig,
 	normalizeMultiRootEditorConstructorParams,
+	registerAndInitializeRootConfigAttributes,
 	type EditorConfig,
 	type EditorReadyEvent,
 	type RootConfig,
@@ -171,15 +172,9 @@ export class MultiRootEditor extends Editor {
 			if ( rootConfig.lazyLoad ) {
 				root._isLoaded = false;
 			}
-
-			const attributes = rootConfig.modelAttributes;
-
-			if ( attributes ) {
-				for ( const key of Object.keys( attributes ) ) {
-					this.registerRootAttribute( key );
-				}
-			}
 		}
+
+		registerAndInitializeRootConfigAttributes( this );
 
 		// Registering `$rootEditableOptions` attribute to make it available in the editor model.
 		// This allows to store editable options for each root in the model, and make them available on other RTC clients.
@@ -191,12 +186,6 @@ export class MultiRootEditor extends Editor {
 			this.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const [ rootName, rootConfig ] of rootsConfig ) {
 					const root = this.model.document.getRoot( rootName )!;
-
-					for ( const [ key, value ] of Object.entries( rootConfig.modelAttributes || {} ) ) {
-						if ( value !== null ) {
-							writer.setAttribute( key, value, root );
-						}
-					}
 
 					// Set editable config for consistency with `addRoot()` method. This will allow features
 					// to use the same configuration for both initially loaded and dynamically added roots.

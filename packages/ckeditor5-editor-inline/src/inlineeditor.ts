@@ -14,6 +14,7 @@ import {
 	secureSourceElement,
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
+	registerAndInitializeRootConfigAttributes,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
@@ -98,6 +99,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		this.config.define( 'menuBar.isVisible', false );
 
 		this.model.document.createRoot();
+		registerAndInitializeRootConfigAttributes( this );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 

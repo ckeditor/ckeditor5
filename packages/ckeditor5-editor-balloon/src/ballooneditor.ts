@@ -14,6 +14,7 @@ import {
 	secureSourceElement,
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
+	registerAndInitializeRootConfigAttributes,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
@@ -105,6 +106,7 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
 
 		this.model.document.createRoot();
+		registerAndInitializeRootConfigAttributes( this );
 
 		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement, this.config.get( 'roots' )!.main.label );
 		this.ui = new BalloonEditorUI( this, view );
