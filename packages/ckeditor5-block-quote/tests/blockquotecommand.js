@@ -128,8 +128,15 @@ describe( 'BlockQuoteCommand', () => {
 		);
 
 		it( 'is true when the custom root element does allow blockQuote', async () => {
+			function CustomRootPlugin( editor ) {
+				editor.model.schema.register( 'customRoot', {
+					isLimit: true,
+					allowContentOf: '$container'
+				} );
+			}
+
 			const editor = await VirtualTestEditor.create( {
-				plugins: [ BlockQuoteEditing ],
+				plugins: [ CustomRootPlugin, BlockQuoteEditing ],
 				root: {
 					modelElement: 'customRoot'
 				}
@@ -137,11 +144,6 @@ describe( 'BlockQuoteCommand', () => {
 
 			const model = editor.model;
 			const command = editor.commands.get( 'blockQuote' );
-
-			model.schema.register( 'customRoot', {
-				isLimit: true,
-				allowContentOf: '$container'
-			} );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
@@ -153,8 +155,15 @@ describe( 'BlockQuoteCommand', () => {
 		} );
 
 		it( 'is false when the root element does not allow blockQuote', async () => {
+			function CustomRootPlugin( editor ) {
+				editor.model.schema.register( 'customRoot', {
+					isLimit: true,
+					allowChildren: 'paragraph'
+				} );
+			}
+
 			const editor = await VirtualTestEditor.create( {
-				plugins: [ BlockQuoteEditing ],
+				plugins: [ CustomRootPlugin, BlockQuoteEditing ],
 				root: {
 					modelElement: 'customRoot'
 				}
@@ -162,11 +171,6 @@ describe( 'BlockQuoteCommand', () => {
 
 			const model = editor.model;
 			const command = editor.commands.get( 'blockQuote' );
-
-			model.schema.register( 'customRoot', {
-				isLimit: true,
-				allowChildren: 'paragraph'
-			} );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
