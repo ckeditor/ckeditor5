@@ -299,8 +299,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Holds attributes keys that were passed in
 	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-	 *  or {@link module:core/editor/editorconfig~EditorConfig#roots `config.root.modelAttributes`}
-	 * and should be returned by {@link #getRootsAttributes}.
+	 *  or {@link module:core/editor/editorconfig~EditorConfig#roots `config.root.modelAttributes`}.
 	 */
 	protected readonly _registeredRootsAttributesKeys = new Set<string>();
 
