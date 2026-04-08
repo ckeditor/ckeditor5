@@ -1250,7 +1250,8 @@ export interface RootConfig {
 	 * at the top level.
 	 *
 	 * The element name must be registered in the {@link module:engine/model/schema~Schema schema} before or during
-	 * editor initialization.
+	 * editor initialization. See the {@glink framework/deep-dive/schema "Schema"} guide for more information about
+	 * generic items like `$root` and `$inlineRoot`.
 	 *
 	 * ```ts
 	 * ClassicEditor
