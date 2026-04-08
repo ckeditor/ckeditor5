@@ -11,9 +11,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * Initial root attributes for a root.
 		 *
-		 * **Note: This configuration option is supported only by the
-		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
-		 *
 		 * **Note: You must provide full set of attributes for each root. If an attribute is not set on a root, set the value to `null`.
 		 * Only provided attribute keys will be returned by
 		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#getRootsAttributes}.**
@@ -25,6 +22,20 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * Currently, any official plugins do not use root attributes. This is a mechanism that is prepared for custom features
 		 * and non-standard integrations. If you do not provide any custom feature that would use root attributes, you do not need to
 		 * handle (save and load) this property.
+		 *
+		 * **Classic editor:**
+		 *
+		 * ```ts
+		 * ClassicEditor.create( {
+		 * 	root: {
+		 * 		modelAttributes: { customAttribute: true }
+		 * 	}
+		 * } )
+		 * .then( ... )
+		 * .catch( ... );
+		 * ```
+		 *
+		 * **Multi-root editor:**
 		 *
 		 * ```ts
 		 * MultiRootEditor.create(

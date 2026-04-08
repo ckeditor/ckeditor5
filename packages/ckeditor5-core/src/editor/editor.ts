@@ -297,6 +297,13 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
+	 * Holds attributes keys that were passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 * and should be returned by {@link #getRootsAttributes}.
+	 */
+	protected readonly _registeredRootsAttributesKeys = new Set<string>();
+
+	/**
 	 * `Editor` class is commonly put in `config.plugins` array.
 	 *
 	 * This property helps with better error detection.
@@ -941,6 +948,24 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public focus(): void {
 		this.editing.view.focus();
+	}
+
+	/**
+	 * Registers given string as a root attribute key. Registered root attributes are added to
+	 * {@link module:engine/model/schema~ModelSchema schema}.
+	 *
+	 * Note: attributes passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 * are automatically registered as the editor is initialized. However, registering the same attribute twice does not have any
+	 * negative impact, so it is recommended to use this method in any feature that uses roots attributes.
+	 */
+	public registerRootAttribute( key: string ): void {
+		if ( this._registeredRootsAttributesKeys.has( key ) ) {
+			return;
+		}
+
+		this._registeredRootsAttributesKeys.add( key );
+		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
 	/* istanbul ignore next -- @preserve */

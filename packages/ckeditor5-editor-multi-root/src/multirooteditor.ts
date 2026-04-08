@@ -72,13 +72,6 @@ export class MultiRootEditor extends Editor {
 	public readonly sourceElements: Record<string, HTMLElement>;
 
 	/**
-	 * Holds attributes keys that were passed in
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-	 * and should be returned by {@link #getRootsAttributes}.
-	 */
-	private readonly _registeredRootsAttributesKeys = new Set<string>();
-
-	/**
 	 * A set of lock IDs for enabling or disabling particular root.
 	 */
 	private readonly _readOnlyRootLocks = new Map<string, Set<symbol | string>>();
@@ -723,7 +716,7 @@ export class MultiRootEditor extends Editor {
 	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
 	public getRootsAttributes(): Record<string, RootAttributes> {
-		const rootsAttributes: Record<string, RootAttributes> = {};
+		const rootsAttributes: Record<string, RootAttributes> = Object.create( {} );
 
 		for ( const rootName of this.model.document.getRootNames() ) {
 			rootsAttributes[ rootName ] = this.getRootAttributes( rootName );
@@ -747,26 +740,6 @@ export class MultiRootEditor extends Editor {
 		}
 
 		return rootAttributes;
-	}
-
-	/**
-	 * Registers given string as a root attribute key. Registered root attributes are added to
-	 * {@link module:engine/model/schema~ModelSchema schema}, and also returned by
-	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
-	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
-	 *
-	 * Note: attributes passed in
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-	 * are automatically registered as the editor is initialized. However, registering the same attribute twice does not have any
-	 * negative impact, so it is recommended to use this method in any feature that uses roots attributes.
-	 */
-	public registerRootAttribute( key: string ): void {
-		if ( this._registeredRootsAttributesKeys.has( key ) ) {
-			return;
-		}
-
-		this._registeredRootsAttributesKeys.add( key );
-		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
 	/**
