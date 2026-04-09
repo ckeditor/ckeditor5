@@ -173,6 +173,12 @@ Or specify `version: '{%CKEDITOR_5_VERSION_LTS_V47%}'` when using functions such
 
 Apart from this, follow the matching guides covering the technology of your choice (for example, React, Angular, Vue, or vanilla JS) in the {@link getting-started/index Getting started} section.
 
+### Online Builder
+
+CKEditor 5 LTS Edition also has it own version of Online Builder. Same as its standard version it offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
+
+[Check out our interactive Builder for LTS Edition.](https://ckeditor.com/ckeditor-5/builder/lts-v47/)
+
 ## LTS additional warranties
 
 The LTS Edition comes with extended guarantees beyond regular release policies, designed to give enterprise teams stability and peace of mind.
