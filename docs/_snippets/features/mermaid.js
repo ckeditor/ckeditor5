@@ -6,6 +6,7 @@
 import { CKBox, PictureEditing, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -39,6 +40,11 @@ ClassicEditor
 			}
 		},
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		// A proper indentation is required for the Mermaid syntax to work.
 		root: {
 			initialData: `<h2>CKEditor timeline diagram</h2>
