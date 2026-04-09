@@ -290,7 +290,9 @@ function createEditor( number, table, type ) {
 	];
 
 	let config = {
-		initialData: table,
+		root: {
+			initialData: table
+		},
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		toolbar: [ 'insertTable', 'sourceEditing' ],
 		table: {
@@ -338,7 +340,10 @@ function createEditor( number, table, type ) {
 	}
 	console.log( config );
 
-	ClassicEditor.create( document.getElementById( element ), config )
+	ClassicEditor.create( {
+		...config,
+		attachTo: document.getElementById( element )
+	} )
 		.then( editor => {
 			window.CKEditorInspector.attach( editor );
 

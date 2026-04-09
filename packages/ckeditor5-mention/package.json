@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-mention",
-  "version": "47.6.0",
+  "version": "48.0.0",
   "description": "Mention feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -40,12 +40,13 @@
     "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.45.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
+    "@ckeditor/ckeditor5-code-block": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",

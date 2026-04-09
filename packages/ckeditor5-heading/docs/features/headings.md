@@ -47,7 +47,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Heading } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Heading, /* ... */ ],
 		toolbar: [ 'heading', /* ... */ ]
@@ -88,7 +88,7 @@ For example, the following editor will support only two levels of headings &ndas
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		heading: {
 			options: [
@@ -129,7 +129,7 @@ For example, the following editor will support the following two heading options
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		heading: {
 			options: [
@@ -163,7 +163,7 @@ To use individual toolbar buttons instead of the heading dropdown, you need to p
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', '|', 'undo', 'redo' ],
 		heading: {

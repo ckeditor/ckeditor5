@@ -12,10 +12,13 @@ import {
 	ElementApiMixin,
 	attachToForm,
 	secureSourceElement,
+	normalizeRootsConfig,
+	normalizeSingleRootEditorConstructorParams,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
-import { getDataFromElement, CKEditorError } from '@ckeditor/ckeditor5-utils';
+
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';
@@ -48,33 +51,53 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method instead.
 	 *
+	 * @param config The editor configuration.
+	 */
+	protected constructor( config: EditorConfig );
+
+	/**
+	 * Creates an instance of the inline editor.
+	 *
+	 * **Note:** Do not use the constructor to create editor instances. Use the static
+	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method instead.
+	 *
+	 * **Note**: This constructor signature is deprecated and will be removed in the future release.
+	 *
+	 * @deprecated
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
 	 * @param config The editor configuration.
 	 */
-	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ) {
-		// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
-		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
-			// Documented in core/editor/editorconfig.jsdoc.
-			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-			throw new CKEditorError( 'editor-create-initial-data', null );
-		}
+	protected constructor( sourceElementOrData: HTMLElement | string, config: EditorConfig );
 
-		super( config );
+	protected constructor( sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig, config: EditorConfig = {} ) {
+		const {
+			sourceElementOrData,
+			editorConfig
+		} = normalizeSingleRootEditorConstructorParams( sourceElementOrDataOrConfig, config );
+
+		super( editorConfig );
+
+		normalizeRootsConfig( sourceElementOrData, this.config );
+
+		// From this point use only normalized `roots.main.element`.
+		const sourceElement = this.config.get( 'roots' )!.main.element;
+
+		if ( isElement( sourceElement ) ) {
+			if ( sourceElement.tagName === 'TEXTAREA' ) {
+				// Documented in core/editor/editor.js
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
+			}
+
+			this.sourceElement = sourceElement;
+			secureSourceElement( this, sourceElement );
+		}
 
 		this.config.define( 'menuBar.isVisible', false );
 
-		if ( this.config.get( 'initialData' ) === undefined ) {
-			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
-		}
-
 		this.model.document.createRoot();
-
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this, sourceElementOrData );
-		}
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
@@ -83,7 +106,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
-			label: this.config.get( 'label' )
+			label: this.config.get( 'roots' )!.main.label
 		} );
 		this.ui = new InlineEditorUI( this, view );
 
@@ -114,6 +137,93 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 	/**
 	 * Creates a new inline editor instance.
+	 *
+	 * There are three general ways how the editor can be initialized.
+	 *
+	 * # Using an existing DOM element (and loading data from it)
+	 *
+	 * You can initialize the editor using an existing DOM element:
+	 *
+	 * ```ts
+	 * InlineEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' )
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * The element's content will be used as the editor data and the element will become the editable element.
+	 *
+	 * # Creating a detached editor
+	 *
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
+	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
+	 *
+	 * ```ts
+	 * InlineEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			initialData: '<p>Hello world!</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 *
+	 * 		// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 * 		document.body.appendChild( editor.ui.element );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
+	 *
+	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
+	 *
+	 * ```ts
+	 * InlineEditor
+	 * 	.create( {
+	 * 		root: {
+	 * 			element: document.querySelector( '#editor' ),
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
+	 * 	} )
+	 * 	.then( editor => {
+	 * 		console.log( 'Editor was initialized', editor );
+	 * 	} )
+	 * 	.catch( err => {
+	 * 		console.error( err.stack );
+	 * 	} );
+	 * ```
+	 *
+	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
+	 * makes it difficult to set the content of the source element.
+	 *
+	 * # Configuring the editor
+	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * customizing plugins, toolbar and more.
+	 *
+	 * @param config The editor configuration.
+	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
+	 */
+	public static override create( config: EditorConfig ): Promise<InlineEditor>;
+
+	/**
+	 * Creates a new inline editor instance.
+	 *
+	 * **Note**: This method signature is deprecated and will be removed in the future release.
 	 *
 	 * There are three general ways how the editor can be initialized.
 	 *
@@ -156,14 +266,16 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 * # Using an existing DOM element (and data provided in `config.initialData`)
+	 * # Using an existing DOM element (and data provided in `config.root.initialData`)
 	 *
 	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
 	 * ```ts
 	 * InlineEditor
 	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( editor => {
 	 * 		console.log( 'Editor was initialized', editor );
@@ -183,6 +295,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and more.
 	 *
+	 * @deprecated
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
@@ -197,29 +310,24 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * @param config The editor configuration.
 	 * @returns A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig = {} ): Promise<InlineEditor> {
-		return new Promise( resolve => {
-			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
+	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig ): Promise<InlineEditor>;
 
-			const editor = new this( sourceElementOrData, config );
+	public static override create(
+		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
+		config: EditorConfig = {}
+	): Promise<InlineEditor> {
+		return new Promise( resolve => {
+			const editor = new this( sourceElementOrDataOrConfig as any, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'initialData' )! ) )
+					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
 					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
 	}
-}
-
-function getInitialData( sourceElementOrData: HTMLElement | string ): string {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
 }
 
 function isElement( value: any ): value is Element {

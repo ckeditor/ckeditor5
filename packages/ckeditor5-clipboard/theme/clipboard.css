@@ -92,20 +92,19 @@
 		width: 0;
 		height: 0;
 		border-style: solid;
-
-		[dir="ltr"] & {
-			left: -1px;
-
-			border-width: calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0 calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height);
-			border-color: transparent transparent transparent var(--ck-clipboard-drop-target-color);
-		}
-
-		[dir="rtl"] & {
-			right: -1px;
-
-			border-width:calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height) calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0;
-			border-color: transparent var(--ck-clipboard-drop-target-color) transparent transparent;
-		}
 	}
+
 	pointer-events: none
+}
+
+[dir="ltr"] .ck.ck-clipboard-drop-target-line::before {
+	left: -1px;
+	border-width: calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0 calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height);
+	border-color: transparent transparent transparent var(--ck-clipboard-drop-target-color);
+}
+
+[dir="rtl"] .ck.ck-clipboard-drop-target-line::before {
+	right: -1px;
+	border-width: calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height) calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0;
+	border-color: transparent var(--ck-clipboard-drop-target-color) transparent transparent;
 }

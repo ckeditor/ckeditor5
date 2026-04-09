@@ -10,7 +10,8 @@ import { ImageInsertViaUrl } from '../../src/imageinsertviaurl.js';
 import { AutoImage } from '../../src/autoimage.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, AutoImage, LinkImage, ImageInsertViaUrl ],
 		toolbar: [
 			'heading',

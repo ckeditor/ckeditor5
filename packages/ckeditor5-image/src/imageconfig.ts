@@ -12,8 +12,9 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
- * 			image: ... // Image feature options.
+ * 	.create( {
+ * 		attachTo: editorElement,
+ * 		image: ... // Image feature options.
  * 	} )
  * 	.then( ... )
  * 	.catch( ... );
@@ -50,7 +51,8 @@ export interface ImageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		image: {
 	 * 			resizeUnit: "%",
 	 * 			resizeOptions: [ {
@@ -79,7 +81,8 @@ export interface ImageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		image: {
 	 * 			resizeUnit: "%",
 	 * 			resizeOptions: [ {
@@ -110,7 +113,8 @@ export interface ImageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		image: {
 	 * 			resizeUnit: "%",
 	 * 			resizeOptions: [ {
@@ -149,7 +153,8 @@ export interface ImageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		image: {
 	 * 			resizeUnit: "%",
 	 * 			resizeOptions: [ {
@@ -214,7 +219,8 @@ export interface ImageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		image: {
 	 * 			resizeUnit: 'px'
 	 * 		}
@@ -310,7 +316,8 @@ export interface ImageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
+	 * 		attachTo: editorElement,
 	 * 		image: {
 	 * 			styles: {
 	 * 				options: [ 'alignLeft', 'alignRight' ]
@@ -328,7 +335,7 @@ export interface ImageConfig {
 	 *
 	 * // ...
 	 *
-	 * ClassicEditor.create( editorElement, { image:
+	 * ClassicEditor.create( { image:
 	 * 	styles: {
 	 * 		options: {
 	 * 			// This will only customize the icon of the "block" style.
@@ -362,7 +369,7 @@ export interface ImageConfig {
 	 *
 	 * // ...
 	 *
-	 * ClassicEditor.create( editorElement, { image:
+	 * ClassicEditor.create( { image:
 	 * 	styles: {
 	 * 		// A list of completely custom styling options.
 	 * 		options: [
@@ -439,12 +446,13 @@ export interface ImageConfig {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
- * 			image: {
- * 				insert: {
+ * 	.create( {
+ * 		attachTo: editorElement,
+ * 		image: {
+ * 			insert: {
  * 				... // settings for "insertImage" view goes here
- * 				}
  * 			}
+ * 		}
  * 	} )
  * 	.then( ... )
  * 	.catch( ... );
@@ -537,7 +545,7 @@ export interface ImageResizeOption {
  * to define a completely custom drop-down in the image toolbar.
  *
  * ```ts
- * ClassicEditor.create( editorElement, {
+ * ClassicEditor.create( {
  * 	image: { toolbar: [
  * 			// One of the predefined drop-downs
  * 			'imageStyle:wrapText',
@@ -707,7 +715,8 @@ export interface ImageStyleOptionDefinition {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
+ * 		attachTo: editorElement,
  * 		image: {
  * 			upload:  ... // Image upload feature options.
  * 		}

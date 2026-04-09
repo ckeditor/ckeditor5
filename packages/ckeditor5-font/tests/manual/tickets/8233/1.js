@@ -9,6 +9,7 @@ import { FontSize } from '../../../../src/fontsize.js';
 import { FontFamily } from '../../../../src/fontfamily.js';
 
 const config = {
+	attachTo: document.querySelector( '#editor' ),
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [ ArticlePluginSet, FontSize, FontFamily ],
 	toolbar: [
@@ -24,7 +25,7 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( config )
 	.then( editor => {
 		window.editor = editor;
 	} )

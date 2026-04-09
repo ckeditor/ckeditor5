@@ -55,7 +55,8 @@ import 'ckeditor5/ckeditor5.css';
 
 $( document ).ready( () => {
 	ClassicEditor
-		.create( $( '#editor' )[ 0 ], {
+		.create( {
+			attachTo: $( '#editor' )[ 0 ],
 			licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 			toolbar: [
@@ -75,7 +76,7 @@ $( document ).ready( () => {
 
 Pass the imported plugins inside the configuration to the `create()` method and add toolbar items where applicable.
 
-The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
+The `create()` configuration uses the `attachTo` property to accept a DOM element, so you must ensure this element is added to your HTML page.
 
 ```html
 <div id="editor">
@@ -108,7 +109,8 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 $( document ).ready( () => {
 	ClassicEditor
-		.create( $( '#editor' )[ 0 ], {
+		.create( {
+			attachTo: $( '#editor' )[ 0 ],
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [

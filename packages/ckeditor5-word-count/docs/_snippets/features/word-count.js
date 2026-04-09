@@ -11,7 +11,8 @@ import {
 import { ClassicEditor } from './build-word-count-source.js';
 
 ClassicEditor
-	.create( document.querySelector( '#demo-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#demo-editor' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

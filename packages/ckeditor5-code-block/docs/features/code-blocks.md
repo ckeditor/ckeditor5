@@ -28,7 +28,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, CodeBlock } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ CodeBlock, /* ... */ ],
 		toolbar: [ 'codeBlock', /* ... */ ]
@@ -53,7 +53,7 @@ It is possible to configure which languages are available to the users. You can 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
@@ -72,7 +72,7 @@ By default, the CSS class of the `<code>` element in the data and editing is gen
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		codeBlock: {
 			languages: [
@@ -135,6 +135,13 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 <info-box>
 	You can turn off the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
 </info-box>
+
+### Disabled features inside code blocks
+
+Code blocks are designed to contain plain code, so several editor features are automatically disabled when the cursor is inside a code block:
+
+* **Text formatting** &ndash; Attributes such as bold, italic, and other formatting styles cannot be applied.
+* **Mentions, slash commands, and emoji** &ndash; The {@link features/mentions mention} autocompletion (and features built on top of it, such as {@link features/slash-commands slash commands} and {@link features/emoji emoji}) will not trigger inside code blocks.
 
 ### Preserving line indentation
 

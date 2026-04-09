@@ -139,10 +139,6 @@ msgctxt "The label for the group of toolbars that allows configuring the text al
 msgid "Table cell text alignment"
 msgstr "表格单元格中的文本水平对齐"
 
-msgctxt "The label for the toolbar that allows configuring the alignment of a table."
-msgid "Alignment"
-msgstr "对齐"
-
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
 msgstr "水平文本对齐工具栏"
@@ -218,18 +214,6 @@ msgstr "使单元格文本垂直居中"
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
 msgstr "使单元格文本对齐到底部"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
-msgid "Align table to the left"
-msgstr "使表格左对齐"
-
-msgctxt "The label used by assistive technologies describing a button that centers the table."
-msgid "Center table"
-msgstr "表格居中"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
-msgid "Align table to the right"
-msgstr "使表格右对齐"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
@@ -330,3 +314,15 @@ msgstr "数据单元格"
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
 msgstr "表头单元格"
+
+msgctxt "Label for the set/unset table footer row button."
+msgid "Footer row"
+msgstr "脚注行"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a column header."
+msgid "Column header"
+msgstr "列标题"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a row header."
+msgid "Row header"
+msgstr "行标题"

@@ -11,7 +11,8 @@ import {
 import { PlaceholderEditor } from './placeholder-build.js';
 
 PlaceholderEditor
-	.create( document.querySelector( '#snippet-placeholder-custom' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-placeholder-custom' ),
 		cloudServices: CS_CONFIG,
 		toolbar: [
 			'undo', 'redo', '|', 'heading',
@@ -34,7 +35,9 @@ PlaceholderEditor
 				top: getViewportTopOffsetConfig()
 			}
 		},
-		placeholder: 'Type some content here!'
+		root: {
+			placeholder: 'Type some content here!'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

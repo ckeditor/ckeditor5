@@ -16,7 +16,8 @@ import {
 ClassicEditor.builtinPlugins.push( TodoList, CKBox, CKBoxImageEdit, PictureEditing, ImageResize, AutoImage );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-todo-list' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-todo-list' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

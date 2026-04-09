@@ -251,7 +251,12 @@ class MinimalisticDialogs extends Plugin {
 }
 
 function initEditor( editorName, editorClass, direction = 'ltr', customCallback? ) {
-	editorClass.create( document.querySelector( '#' + editorName ) as HTMLElement, {
+	const element = document.querySelector( '#' + editorName ) as HTMLElement;
+
+	editorClass.create( {
+		...editorClass === ClassicEditor ?
+			{ attachTo: element } :
+			{ root: { element } },
 		plugins: [
 			Essentials,
 			Autoformat,
@@ -500,14 +505,15 @@ class MultiRootEditorIntegration extends Plugin {
 	}
 }
 
-const editorData: Record<string, HTMLElement> = {
-	intro: document.querySelector( '#editor-intro' )!,
-	content: document.querySelector( '#editor-content' )!,
-	outro: document.querySelector( '#editor-outro' )!
+const roots: Record<string, any> = {
+	intro: { element: document.querySelector( '#editor-intro' )! },
+	content: { element: document.querySelector( '#editor-content' )! },
+	outro: { element: document.querySelector( '#editor-outro' )! }
 };
 
 MultiRootEditor
-	.create( editorData, {
+	.create( {
+		roots,
 		plugins: [ Essentials,
 			Autoformat,
 			BlockQuote,

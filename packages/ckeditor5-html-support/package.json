@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-html-support",
-  "version": "47.6.0",
+  "version": "48.0.0",
   "description": "HTML Support feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -50,7 +50,7 @@
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.45.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "workspace:*",

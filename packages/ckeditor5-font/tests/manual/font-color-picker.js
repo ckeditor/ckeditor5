@@ -9,7 +9,8 @@ import { FontColor } from '../../src/fontcolor.js';
 import { FontBackgroundColor } from '../../src/fontbackgroundcolor.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-default-picker' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-default-picker' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,
@@ -42,7 +43,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-custom-picker' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-custom-picker' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,
@@ -83,7 +85,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-without-picker' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-without-picker' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,

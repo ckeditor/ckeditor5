@@ -468,6 +468,47 @@ describe( 'Drag and Drop', () => {
 			expect( _getViewData( view ) ).to.equal( '<p>fooabc{}bar</p>' );
 		} );
 
+		it( 'should finalize dragging when drop target range cannot be determined', () => {
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+			const clock = sinon.useFakeTimers();
+			const dataTransferMock = createDataTransfer();
+			const spyClipboardOutput = sinon.spy();
+			const spyClipboardInput = sinon.spy();
+
+			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+			fireDragStart( dataTransferMock );
+			expectDragStarted( dataTransferMock, 'foo', spyClipboardOutput );
+
+			// Dragging.
+
+			const targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
+			fireDragging( dataTransferMock, targetPosition );
+			clock.tick( 100 );
+
+			expectDraggingMarker( targetPosition );
+
+			// Stub getFinalDropRange to return null.
+			const dragDropTarget = editor.plugins.get( DragDropTarget );
+			sinon.stub( dragDropTarget, 'getFinalDropRange' ).returns( null );
+
+			// Dropping.
+
+			dataTransferMock.dropEffect = 'move';
+			fireDrop( dataTransferMock, targetPosition );
+			clock.tick( 100 );
+
+			// The clipboardInput event should have been stopped before reaching further listeners.
+			expect( spyClipboardInput.called ).to.be.false;
+
+			expectFinalized();
+
+			// Data should remain unchanged.
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]bar</paragraph>' );
+		} );
+
 		it( 'should not remove dragged range if it is from other drag session', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
@@ -2448,68 +2489,6 @@ describe( 'Drag and Drop', () => {
 		} );
 	} );
 
-	describe( 'integration with paragraph-only editor', () => {
-		beforeEach( async () => {
-			editorElement = document.createElement( 'div' );
-			document.body.appendChild( editorElement );
-
-			editor = await ClassicTestEditor.create( editorElement, {
-				useInlineRoot: true,
-				plugins: [ DragDrop, PastePlainText, Paragraph, Bold ]
-			} );
-
-			model = editor.model;
-			root = model.document.getRoot();
-			mapper = editor.editing.mapper;
-			view = editor.editing.view;
-			viewDocument = view.document;
-			domConverter = view.domConverter;
-		} );
-
-		afterEach( async () => {
-			await editor.destroy();
-			editorElement.remove();
-		} );
-
-		it( 'handles paste', () => {
-			_setModelData( model,
-				'foo[]'
-			);
-
-			editor.editing.view.document.fire( 'paste', {
-				dataTransfer: createDataTransfer( { 'text/html': '<strong>bar</strong>' } ),
-				stopPropagation() {},
-				preventDefault() {}
-			} );
-
-			expect( _getModelData( model ) ).to.equal( 'foo<$text bold="true">bar[]</$text>' );
-		} );
-
-		it( 'stops `clipboardInput` event', () => {
-			_setModelData( model,
-				'foo[]'
-			);
-
-			const spyClipboardInput = sinon.spy();
-			const rootElement = viewDocument.getRoot();
-			const domNode = domConverter.mapViewToDom( rootElement );
-
-			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
-
-			viewDocument.fire( 'clipboardInput', {
-				domTarget: domNode,
-				target: rootElement,
-				method: 'drop',
-				dataTransfer: createDataTransfer(),
-				domEvent: getMockedMousePosition( domNode ),
-				stopPropagation: () => {},
-				preventDefault: () => {}
-			} );
-
-			expect( spyClipboardInput.called ).to.be.false;
-		} );
-	} );
-
 	describe( '_updatePreview', () => {
 		let targetElement, dragDrop, warnStub;
 
@@ -2518,7 +2497,6 @@ describe( 'Drag and Drop', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				useInlineRoot: true,
 				plugins: [ DragDrop, PastePlainText, Paragraph, Bold ]
 			} );
 

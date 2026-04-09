@@ -422,7 +422,8 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 *   use the 'GPL' license key instead.
 				 *
 				 * ```js
-				 * ClassicEditor.create( document.querySelector( '#editor' ), {
+				 * ClassicEditor.create( {
+				 * 	attachTo: document.querySelector( '#editor' ),
 				 * 	licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 				 * 	// ... Other configuration options ...
 				 * } ) ;

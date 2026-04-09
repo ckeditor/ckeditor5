@@ -49,7 +49,7 @@ The image toolbar is configurable using the {@link module:image/imageconfig~Imag
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		image: {
 			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
 		}

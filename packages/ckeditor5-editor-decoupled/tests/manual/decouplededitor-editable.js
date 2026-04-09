@@ -16,7 +16,10 @@ let editor, editable, observer;
 
 function initEditor() {
 	DecoupledEditor
-		.create( document.querySelector( '.editor__editable' ), {
+		.create( {
+			root: {
+				element: document.querySelector( '.editor__editable' )
+			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )

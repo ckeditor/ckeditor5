@@ -35,7 +35,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Emoji, Mention } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Emoji, Mention, /* ... */ ],
 		toolbar: [ 'emoji', /* ... */ ],
@@ -59,6 +59,10 @@ The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
 
 You can freely choose how to load the feature: either as a whole (as shown in the example above) or select one of the sub-plugins if you need only one of the ways of inserting emojis into the document.
 
+## Unsupported contexts
+
+The emoji autocompletion triggered by the `:` marker is automatically disabled inside {@link features/code-blocks code blocks}. Typing `:` inside a code block will insert the character as plain text without triggering the emoji suggestions. The toolbar emoji picker button remains available regardless of the cursor position.
+
 ## Configuration
 
 The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfig `config.emoji`} object.
@@ -67,7 +71,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			// ... Other configuration options ...
 			emoji: {
 				dropdownLimit: 5
@@ -81,7 +85,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			// ... Other configuration options ...
 			emoji: {
 				skinTone: 'medium'
@@ -99,7 +103,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			// ... Other configuration options ...
 			emoji: {
 				definitionsUrl: 'https://example.com/emoji-definitions.json'
@@ -113,7 +117,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			// ... Other configuration options ...
 			emoji: {
 				version: 15
@@ -127,7 +131,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 	```js
 	ClassicEditor
-		.create( document.querySelector( '#editor' ), {
+		.create( {
 			// ... Other configuration options ...
 			emoji: {
 				useCustomFont: true

@@ -12,7 +12,8 @@ import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks
 const buttonContainer = document.getElementById( 'button-container' );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, ImageUpload ],
 		toolbar: [
 			'heading',

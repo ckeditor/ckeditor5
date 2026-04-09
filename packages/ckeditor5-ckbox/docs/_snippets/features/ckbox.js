@@ -15,8 +15,11 @@ import './ckbox.css';
 const { CKBoxWidget, CKBox } = window;
 
 CkBoxEditor
-	.create( document.querySelector( '#snippet-ckbox-ckeditor' ), {
-		initialData: document.querySelector( '#snippet-ckbox-content' ).innerHTML,
+	.create( {
+		attachTo: document.querySelector( '#snippet-ckbox-ckeditor' ),
+		root: {
+			initialData: document.querySelector( '#snippet-ckbox-content' ).innerHTML
+		},
 		toolbar: {
 			items: [
 				'undo', 'redo',

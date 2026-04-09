@@ -27,7 +27,8 @@ const editors = [
 
 for ( const { id, defaultHeadings } of editors ) {
 	ClassicEditor
-		.create( document.getElementById( id ), {
+		.create( {
+			attachTo: document.getElementById( id ),
 			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet ],
 			toolbar: [

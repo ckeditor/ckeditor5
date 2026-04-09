@@ -15,7 +15,8 @@ import { ImageEditor } from './build-image-source.js';
 // toolbarItems.splice( toolbarItems.indexOf( 'uploadImage' ), 1, 'insertImage' );
 
 ImageEditor
-	.create( document.querySelector( '#snippet-image-insert-via-url' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-insert-via-url' ),
 		removePlugins: [ 'ArticlePluginSet', 'ImageCaption', 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			items: [

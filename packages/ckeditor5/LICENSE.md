@@ -32,7 +32,7 @@ The following libraries are included in CKEditor&nbsp;5 under the [MIT license](
 * color-convert - Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com> and Copyright (c) 2016-2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
 * emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
-* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc and Copyright OpenJS Foundation and other contributors.
 * fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
 * hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>.

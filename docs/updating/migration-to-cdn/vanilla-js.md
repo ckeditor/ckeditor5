@@ -56,7 +56,8 @@ import { ClassicEditor } from 'ckeditor5';
 import { AIAdapter, /* ... other imports */ } from 'ckeditor5-premium-features';
 
 ClassicEditor
-	.create( document.querySelector('#editor'), {
+	.create( {
+		attachTo: document.querySelector('#editor'),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		// ... other configuration
 	} )
@@ -72,7 +73,8 @@ const { ClassicEditor } = window.CKEDITOR;
 const { AIAdapter, /* ... other imports */ } = window.CKEDITOR_PREMIUM_FEATURES;
 
 ClassicEditor
-	.create( document.querySelector('#editor'), {
+	.create( {
+		attachTo: document.querySelector('#editor'),
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		// ... other configuration
 	} )
@@ -110,7 +112,9 @@ Next, update your JavaScript file to use the `loadCKEditorCloud` function from t
 import { ClassicEditor } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector('#editor') )
+	.create( {
+		attachTo: document.querySelector('#editor')
+	} )
 	.catch( error => {
 		console.error(error);
 	} );

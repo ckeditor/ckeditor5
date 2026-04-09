@@ -73,6 +73,7 @@ async function reloadEditor( config = {} ) {
 
 	config = {
 		...config,
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, HtmlEmbed, Code, MediaEmbed, Table ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
@@ -84,7 +85,7 @@ async function reloadEditor( config = {} ) {
 		}
 	};
 
-	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+	window.editor = await ClassicEditor.create( config );
 }
 
 function getSanitizeHtmlConfig( defaultConfig ) {

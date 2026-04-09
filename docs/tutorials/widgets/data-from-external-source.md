@@ -112,7 +112,8 @@ Finally, you need to load the `ExternalDataWidget` plugin in your `main.js` file
 import ExternalDataWidget from './external-data-widget/externaldatawidget';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'undo', 'redo' ]
@@ -425,7 +426,8 @@ import {
 import ExternalDataWidgetCommand from './externaldatawidgetcommand';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
 

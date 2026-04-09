@@ -38,6 +38,10 @@
 	border: 1px solid hsl(0, 0%, 77%);
 	border-radius: 2px;
 
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+	margin: 0.9em 0;
+
 	/* Code block are language direction–agnostic. */
 	text-align: left;
 	direction: ltr;

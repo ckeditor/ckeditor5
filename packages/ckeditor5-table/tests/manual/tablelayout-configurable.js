@@ -499,10 +499,15 @@ const config = {
 	menuBar: {
 		isVisible: true
 	},
-	initialData: initialHTML
+	root: {
+		initialData: initialHTML
+	}
 };
 
-let editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+let editor = await ClassicEditor.create( {
+	...config,
+	attachTo: document.querySelector( '#editor' )
+} );
 
 window.editor = editor;
 
@@ -525,14 +530,24 @@ const tableTypeSelect = document.querySelector( '#tableType' );
 tableTypeSelect.addEventListener( 'change', async () => {
 	await editor.destroy();
 
-	const newConfig = { ...config, initialData: initialHTML };
+	const newConfig = {
+		...config,
+		root: {
+			...config.root,
+			initialData: initialHTML
+		}
+	};
 
 	newConfig.table = {
 		...newConfig.table,
 		...configTableTypes[ tableTypeSelect.value ]
 	};
 
-	editor = await ClassicEditor.create( document.querySelector( '#editor' ), newConfig );
+	editor = await ClassicEditor.create( {
+		...newConfig,
+		attachTo: document.querySelector( '#editor' )
+	} );
+
 	window.editor = editor;
 } );
 

@@ -77,7 +77,8 @@ class MinimalisticModal extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#ui-modal-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#ui-modal-editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic, Underline, MinimalisticModal, Dialog ],
 		toolbar: [ 'bold', 'italic', 'underline', '|', 'showModal' ]
 	} )

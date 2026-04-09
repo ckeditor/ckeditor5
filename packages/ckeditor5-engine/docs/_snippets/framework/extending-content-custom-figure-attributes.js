@@ -175,7 +175,8 @@ function downcastAttribute( modelElementName, viewElementName, viewAttribute, mo
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-custom-figure-attributes' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-custom-figure-attributes' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ CustomFigureAttributes ],
 		ui: {

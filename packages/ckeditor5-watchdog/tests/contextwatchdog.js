@@ -6,6 +6,7 @@
 import { ContextWatchdog } from '../src/contextwatchdog.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Context } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ContextWatchdog', () => {
@@ -727,6 +728,108 @@ describe( 'ContextWatchdog', () => {
 				await watchdog.destroy();
 			} );
 		} );
+	} );
+} );
+
+describe( 'ContextWatchdog - config-based editor creator', () => {
+	let watchdog;
+	let originalErrorHandler;
+
+	beforeEach( () => {
+		originalErrorHandler = window.onerror;
+		window.onerror = sinon.spy();
+	} );
+
+	afterEach( () => {
+		window.onerror = originalErrorHandler;
+
+		sinon.restore();
+	} );
+
+	function configBasedCreator( elementOrData, config ) {
+		if ( !elementOrData ) {
+			return ClassicTestEditor.create( config );
+		}
+
+		return ClassicTestEditor.create( elementOrData, config );
+	}
+
+	it( 'should add an item using config-based creator (without sourceElementOrData)', async () => {
+		watchdog = new ContextWatchdog( Context );
+
+		await watchdog.create();
+
+		await watchdog.add( {
+			id: 'editor1',
+			type: 'editor',
+			creator: configBasedCreator,
+			config: {
+				plugins: [ Paragraph ],
+				root: { initialData: '<p>foo</p>' }
+			}
+		} );
+
+		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
+
+		await watchdog.destroy();
+	} );
+
+	it( 'should restart an item using config-based creator after crash', async () => {
+		watchdog = new ContextWatchdog( Context );
+
+		await watchdog.create();
+
+		await watchdog.add( {
+			id: 'editor1',
+			type: 'editor',
+			creator: configBasedCreator,
+			config: {
+				plugins: [ Paragraph ],
+				root: { initialData: '<p>foo</p>' }
+			}
+		} );
+
+		const restartSpy = sinon.spy();
+		watchdog.on( 'itemRestart', restartSpy );
+
+		setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
+
+		await waitCycle();
+
+		sinon.assert.calledOnce( restartSpy );
+
+		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
+
+		await watchdog.destroy();
+	} );
+
+	it( 'should restart an item using config-based creator after context crash', async () => {
+		watchdog = new ContextWatchdog( Context );
+
+		await watchdog.create();
+
+		await watchdog.add( {
+			id: 'editor1',
+			type: 'editor',
+			creator: configBasedCreator,
+			config: {
+				plugins: [ Paragraph ],
+				root: { initialData: '<p>foo</p>' }
+			}
+		} );
+
+		const restartSpy = sinon.spy();
+		watchdog.on( 'restart', restartSpy );
+
+		setTimeout( () => throwCKEditorError( 'foo', watchdog.context ) );
+
+		await waitCycle();
+
+		sinon.assert.calledOnce( restartSpy );
+
+		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
+
+		await watchdog.destroy();
 	} );
 } );
 

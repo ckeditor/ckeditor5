@@ -100,7 +100,8 @@ const COLOR_PALETTE = [
 ];
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-nesting' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-table-nesting' ),
 		extraPlugins: [
 			TableProperties,
 			TableCellProperties

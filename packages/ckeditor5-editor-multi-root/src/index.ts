@@ -17,7 +17,9 @@ export type {
 	DetachRootEvent,
 	LoadRootEvent,
 	AddRootOptions,
-	LoadRootOptions
+	LoadRootOptions,
+	AddRootRootConfig,
+	RootEditableOptions
 } from './multirooteditor.js';
 
 import './augmentation.js';

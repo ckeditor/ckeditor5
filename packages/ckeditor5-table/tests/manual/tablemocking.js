@@ -14,7 +14,8 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { TableWalker } from '../../src/tablewalker.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet ],
 		toolbar: [

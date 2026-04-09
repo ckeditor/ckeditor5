@@ -139,10 +139,6 @@ msgctxt "The label for the group of toolbars that allows configuring the text al
 msgid "Table cell text alignment"
 msgstr "Поравнај тексту табели"
 
-msgctxt "The label for the toolbar that allows configuring the alignment of a table."
-msgid "Alignment"
-msgstr "Поравнање"
-
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
 msgstr "Хоризонтална трака са алаткама за поравнање текста"
@@ -218,18 +214,6 @@ msgstr "Поравнајте текст ћелије у средину"
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
 msgstr "Поравнајте текст ћелије према доле"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
-msgid "Align table to the left"
-msgstr "Поравнајте табелу на леву страну"
-
-msgctxt "The label used by assistive technologies describing a button that centers the table."
-msgid "Center table"
-msgstr "Центар табеле"
-
-msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
-msgid "Align table to the right"
-msgstr "Поравнајте табелу на десну страну"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
@@ -330,3 +314,15 @@ msgstr "Ćelija sa podacima"
 msgctxt "The label for the dropdown option for a header table cell."
 msgid "Header cell"
 msgstr "Zaglavna ćelija"
+
+msgctxt "Label for the set/unset table footer row button."
+msgid "Footer row"
+msgstr "Donji red tabele"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a column header."
+msgid "Column header"
+msgstr "Zaglavlje kolone"
+
+msgctxt "The label for the dropdown option for a header table cell that represents a row header."
+msgid "Row header"
+msgstr "Zaglavlje reda"

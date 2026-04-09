@@ -57,7 +57,7 @@ And this is the configuration code necessary:
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		/* ... */
 		ui: {
 			poweredBy: {

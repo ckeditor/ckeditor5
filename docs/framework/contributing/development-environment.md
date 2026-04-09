@@ -40,14 +40,14 @@ It is best to install it in your system is to [follow the official pnpm installa
 
 Then clone the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5):
 
-```
+```bash
 git clone https://github.com/ckeditor/ckeditor5.git
 cd ckeditor5
 ```
 
 And install all CKEditor&nbsp;5 packages from the [npm registry](http://npmjs.com/).
 
-```
+```bash
 pnpm install
 ```
 
@@ -55,13 +55,13 @@ pnpm install
 
 To run tests, you need to use the `test` and `manual` tasks.
 
-```
+```bash
 pnpm run test --watch --coverage --source-map --files=engine
 ```
 
 or, shorter:
 
-```
+```bash
 pnpm run test -- -wcs --files=engine
 ```
 
@@ -71,7 +71,7 @@ This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckedi
 
 To create a server for manual tests use the `manual` task:
 
-```
+```bash
 pnpm run manual
 ```
 
@@ -83,37 +83,17 @@ You can read more about the {@link framework/contributing/testing-environment Te
 
 To build the documentation, you need to run the `docs` task:
 
-```
+```bash
 pnpm run docs
 ```
 
 The documentation will be available in `build/docs/`.
 
-This task accepts the following arguments:
-
-* `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
-* `--skip-snippets` &ndash; Skips building live snippets.
-* `--skip-validation` &ndash; Skips the final link validation.
-* `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allows navigating over the partially built documentation.
-* `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:
-
-	```
-	--guides=image         // matches roughly "*image*"
-	--guides="features/*"  // matches roughly "*features/*"
-	--guides=features/image
-	```
-
-* `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
-* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor&nbsp;5 development.
-* `--verbose` &ndash; Prints out more information.
-
-```
-pnpm run docs --skip-api
-```
+This task accepts various flags for skipping certain steps, filtering guides or snippets, and more. Run `pnpm run docs -h` to see all available options and examples.
 
 After building documentation, you can quickly start an HTTP server to serve them:
 
-```
+```bash
 pnpm run docs:serve
 ```
 
@@ -123,7 +103,7 @@ To verify that all pages in our documentation can be opened without any errors, 
 
 To check pages in the documentation, build it (`pnpm run docs`), serve it (`pnpm run docs:serve`), and then run the crawler:
 
-```
+```bash
 pnpm run docs:verify
 ```
 
@@ -143,7 +123,7 @@ The crawler accepts the following arguments:
 
 For example, to check the documentation without the default exclusions (the API and assets links), using only 2 concurrent pages and terminate the scan as soon as first error is found, run this command:
 
-```
+```bash
 pnpm run docs:verify -e -c 2 -q
 ```
 
@@ -213,7 +193,7 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 Content styles let you customize the appearance of editor content presented to the readers.
 
-For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css CSS setup} guide.
+For a complete explanation of what content styles are, how they work, and how to configure them in your project, refer to the {@link getting-started/setup/css Content styles} guide.
 
 ## Additional information for contributors
 
@@ -223,7 +203,7 @@ By default, CKEditor&nbsp;5 supports SVG icons found in the `ckeditor5-*/theme/i
 
 To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **you should optimize all new icons before adding them to the code base**. To do that, you can use the `clean-up-svg-icons` script in the [root of the project](#setting-up-the-ckeditor-development-environment), a wrapper for the [SVGO](https://github.com/svg/svgo) tool:
 
-```
+```bash
 cd path/to/ckeditor5
 
 # Optimize all SVG files in the folder.
@@ -235,7 +215,9 @@ npm run clean-up-svg-icons path/to/icon/icon.svg
 
 The script reduces the icon size up to 70%, depending on the software used to create it and the general complexity of the image.
 
-**Note**: You may still need to tweak the source code of the SVG files manually after using the script:
+<info-box note>
+	You may still need to tweak the source code of the SVG files manually after using the script:
 
-* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source and running `clean-up-svg-icons` again usually does that.
-* Make sure the number of `<path>` elements is minimal. Merge paths whenever possible in the image processor before saving the file.
+	* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source and running `clean-up-svg-icons` again usually does that.
+	* Make sure the number of `<path>` elements is minimal. Merge paths whenever possible in the image processor before saving the file.
+</info-box>

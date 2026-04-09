@@ -12,7 +12,8 @@ import {
 import { ListEditor } from './lists-source.js';
 
 ListEditor
-	.create( document.querySelector( '#snippet-lists-reversed' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-lists-reversed' ),
 		extraPlugins: [ ListProperties ],
 		toolbar: {
 			items: [

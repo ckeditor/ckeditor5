@@ -40,7 +40,7 @@ An editor load occurs each time CKEditor is initialized in your application. For
 
 The editor initializes as follows:
 
-1. The integrator creates one or more editors on a page, typically using a method like `ClassicEditor.create(sourceElementOrData, configuration)`.
+1. The integrator creates one or more editors on a page, typically using a method like `ClassicEditor.create(configuration)`.
 2. Depending on the setup, the editor will either initialize with the selected DOM element or, if provided with data, initialize in a detached mode to be added to the DOM on demand.
 3. Upon the `ready` event, the editor sends usage information to the server to confirm the license. [Read more about the license check](#license-check-and-usage-data).
 

@@ -39,8 +39,9 @@
 	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled))
 }
 
+/* Use :where(a) (not plain a) to keep the anchor variant at zero specificity. */
 .ck.ck-button,
-a.ck.ck-button {
+:where(a).ck.ck-button {
 	--ck-button-background: var(--ck-button-default-background-color);
 	--ck-button-hover-background: var(--ck-button-default-hover-background-color);
 	--ck-button-active-background: var(--ck-button-default-active-background-color);

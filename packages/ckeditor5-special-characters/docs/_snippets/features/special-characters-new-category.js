@@ -22,7 +22,8 @@ function SpecialCharactersEmoji( editor ) {
 }
 
 SpecialCharactersEditor
-	.create( document.querySelector( '#snippet-special-characters-new-category' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-special-characters-new-category' ),
 		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersEmoji ],
 		toolbar: {
 			items: [

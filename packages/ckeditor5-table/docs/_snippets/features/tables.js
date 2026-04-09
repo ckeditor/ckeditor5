@@ -18,7 +18,8 @@ import {
 import { TableEditor } from './build-table-source.js';
 
 TableEditor
-	.create( document.querySelector( '#snippet-tables' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-tables' ),
 		extraPlugins: [
 			TableColumnResize,
 			TableCaption,

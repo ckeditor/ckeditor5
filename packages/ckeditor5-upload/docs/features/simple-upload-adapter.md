@@ -22,7 +22,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SimpleUploadAdapter, /* ... */ ],
 		toolbar: [ /* ... */ ],
@@ -41,7 +41,7 @@ The client side of this feature is configurable using the {@link module:upload/u
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		simpleUpload: {
 			// The URL that the images are uploaded to.

@@ -46,7 +46,7 @@ Some use cases might require hiding the editor toolbar when entering the read-on
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// The editor's configuration.
 		// ...
 	} )

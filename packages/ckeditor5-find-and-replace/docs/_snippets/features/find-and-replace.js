@@ -13,7 +13,8 @@ import {
 import { FindAndReplaceEditor } from './build-find-and-replace-source.js';
 
 FindAndReplaceEditor
-	.create( document.querySelector( '#snippet-findandreplace' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-findandreplace' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

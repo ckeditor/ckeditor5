@@ -39,7 +39,10 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		...config,
+		attachTo: document.querySelector( '#editor' )
+	} )
 	.then( editor => {
 		window.editor = editor;
 

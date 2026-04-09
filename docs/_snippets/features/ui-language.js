@@ -13,7 +13,8 @@ import { UiLanguageEditor } from './build-ui-language-source.js';
 import translations from 'ckeditor5/translations/es.js';
 
 UiLanguageEditor
-	.create( document.querySelector( '#snippet-ui-language' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-ui-language' ),
 		language: 'es',
 		translations,
 		cloudServices: CS_CONFIG,

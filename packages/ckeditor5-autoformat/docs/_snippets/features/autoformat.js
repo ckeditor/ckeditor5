@@ -15,7 +15,8 @@ import {
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-autoformat' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-autoformat' ),
 		plugins: ClassicEditor.builtinPlugins.concat( [
 			Code,
 			CodeBlock,

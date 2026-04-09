@@ -12,7 +12,8 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 		toolbar: {
 			items: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],

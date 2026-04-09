@@ -22,7 +22,10 @@ function initEditors() {
 
 	function init( selector ) {
 		InlineEditor
-			.create( document.querySelector( selector ), {
+			.create( {
+				root: {
+					element: document.querySelector( selector )
+				},
 				plugins: [ ArticlePluginSet ],
 				toolbar: {
 					items: [

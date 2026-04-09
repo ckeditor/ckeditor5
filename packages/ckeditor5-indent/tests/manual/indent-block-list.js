@@ -183,7 +183,9 @@ function getEditorConfig() {
 				'resizeImage'
 			]
 		},
-		placeholder: 'Type the content here!',
+		root: {
+			placeholder: 'Type the content here!'
+		},
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: html => ( { html, hasChange: false } )
@@ -215,7 +217,10 @@ function getEditorConfig() {
 
 function createEditor() {
 	const initialize = () =>
-		ClassicEditor.create( editorElement, getEditorConfig() )
+		ClassicEditor.create( {
+			...getEditorConfig(),
+			attachTo: editorElement
+		} )
 			.then( newEditor => {
 				editor = newEditor;
 				window.editor = editor;

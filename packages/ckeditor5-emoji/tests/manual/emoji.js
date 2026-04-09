@@ -71,34 +71,39 @@ async function reloadEditor() {
 
 	// Create new editors.
 	const promises = [
-		ClassicEditor.create( elements.emojiBoth, getEditorConfig( { extraPlugins: [ Emoji, Mention ] } ) )
+		ClassicEditor.create( {
+			...getEditorConfig( { extraPlugins: [ Emoji, Mention ] } ),
+			attachTo: elements.emojiBoth
+		} )
 			.catch( err => {
 				console.error( err.stack );
 			} ),
 
 		ClassicEditor
-			.create(
-				elements.emojiMention,
-				getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } )
-			)
+			.create( {
+				...getEditorConfig( { extraPlugins: [ EmojiMention, Mention ], emojiButtonInToolbar: false } ),
+				attachTo: elements.emojiMention
+			} )
 			.catch( err => {
 				console.error( err.stack );
 			} ),
 
 		ClassicEditor
-			.create(
-				elements.emojiPicker,
-				getEditorConfig( { extraPlugins: [ EmojiPicker ] } )
-			)
+			.create( {
+				...getEditorConfig( { extraPlugins: [ EmojiPicker ] } ),
+				attachTo: elements.emojiPicker
+			} )
 			.catch( err => {
 				console.error( err.stack );
 			} ),
 
 		BalloonEditor
 			.create(
-				elements.emojiPickerBalloonEditor,
 				getEditorConfig( {
-					extraPlugins: [ EmojiPicker, BalloonToolbar, Mention ]
+					extraPlugins: [ EmojiPicker, BalloonToolbar, Mention ],
+					root: {
+						element: elements.emojiPickerBalloonEditor
+					}
 				} )
 			)
 			.catch( err => {
@@ -112,7 +117,7 @@ async function reloadEditor() {
 	);
 }
 
-function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
+function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true, root = {} } ) {
 	const tempDiv = document.createElement( 'div' );
 	tempDiv.appendChild( elements.template.content.cloneNode( true ) );
 	const initialData = tempDiv.innerHTML;
@@ -153,7 +158,10 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 		menuBar: {
 			isVisible: true
 		},
-		initialData
+		root: {
+			initialData,
+			...root
+		}
 	};
 }
 

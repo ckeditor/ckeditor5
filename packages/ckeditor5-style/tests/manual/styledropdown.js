@@ -155,7 +155,9 @@ const config = {
 			'resizeImage'
 		]
 	},
-	placeholder: 'Type the content here!',
+	root: {
+		placeholder: 'Type the content here!'
+	},
 	mention: {
 		feeds: [
 			{
@@ -208,8 +210,9 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-full' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-full' ),
 		style: {
 			definitions: [
 				{
@@ -390,8 +393,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-just-inline' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-just-inline' ),
 		style: {
 			definitions: [
 				{
