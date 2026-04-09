@@ -1306,7 +1306,6 @@ export interface RootConfig {
 	 * and non-standard integrations. If you do not provide any custom feature that would use root attributes, you do not need to
 	 * handle (save and load) this property.
 	 *
-	 *
 	 * ```ts
 	 * ClassicEditor.create( {
 	 * 	root: {
