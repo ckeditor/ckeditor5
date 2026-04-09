@@ -5,6 +5,7 @@
 
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	InlineEditor,
 	getViewportTopOffsetConfig,
 	setViewportTopOffsetDynamically
@@ -17,9 +18,6 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		root: {
 			element: inlineElement
 		},
-		removePlugins: [
-			'CKBox'
-		],
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()
@@ -34,12 +32,16 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		}
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
 		config.removePlugins = [
-			...config.removePlugins,
 			'Blockquote',
 			'Image',
 			'ImageCaption',
@@ -47,8 +49,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			'ImageToolbar',
 			'ImageUpload',
 			'List',
-			'CKFinder',
-			'CKFinderUploadAdapter'
+			'CKBox'
 		];
 		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
 	} else {

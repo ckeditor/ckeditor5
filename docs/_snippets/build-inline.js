@@ -6,13 +6,11 @@
 import {
 	InlineEditor as InlineEditorBase,
 	Essentials,
-	CKFinderUploadAdapter,
 	Autoformat,
 	Bold,
 	Italic,
 	BlockQuote,
 	CKBox,
-	CKFinder,
 	Heading,
 	Image,
 	ImageCaption,
@@ -36,13 +34,11 @@ import {
 export class InlineEditor extends InlineEditorBase {
 	static builtinPlugins = [
 		Essentials,
-		CKFinderUploadAdapter,
 		Autoformat,
 		Bold,
 		Italic,
 		BlockQuote,
 		CKBox,
-		CKFinder,
 		Heading,
 		Image,
 		ImageCaption,

@@ -6,13 +6,11 @@
 import {
 	MultiRootEditor as MultiRootEditorBase,
 	Essentials,
-	CKFinderUploadAdapter,
 	Autoformat,
 	Bold,
 	Italic,
 	BlockQuote,
 	CKBox,
-	CKFinder,
 	Heading,
 	Image,
 	ImageCaption,
@@ -36,13 +34,11 @@ import {
 export class MultiRootEditor extends MultiRootEditorBase {
 	static builtinPlugins = [
 		Essentials,
-		CKFinderUploadAdapter,
 		Autoformat,
 		Bold,
 		Italic,
 		BlockQuote,
 		CKBox,
-		CKFinder,
 		Heading,
 		Image,
 		ImageCaption,
