@@ -10,6 +10,9 @@
 	/* Radius */
 	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
 	--ck-color-selector-uniform-border-radius: var(--ck-border-radius-uniform);
+
+	/* Border */
+	--ck-color-selector-color-picker-border-top: var(--ck-border-width-divider) solid var(--ck-color-base-border);
 }
 
 .ck.ck-color-selector {
@@ -34,7 +37,7 @@
 			border-radius: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 			&:not(:focus) {
-				border-top: var(--ck-border-width-divider) solid var(--ck-color-base-border);
+				border-top: var(--ck-color-selector-color-picker-border-top);
 			}
 
 			& .ck.ck-icon {

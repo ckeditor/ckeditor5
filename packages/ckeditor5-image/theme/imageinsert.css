@@ -6,6 +6,9 @@
 
 :root {
 	--ck-image-insert-insert-by-url-width: 250px;
+
+	/* Spacing */
+	--ck-image-insert-form-padding: 0;
 }
 
 .ck.ck-image-insert-url {
@@ -32,6 +35,8 @@
 }
 
 .ck.ck-image-insert-form {
+	padding: var(--ck-image-insert-form-padding);
+
 	& > .ck.ck-button {
 		display: block;
 		width: 100%;
