@@ -4,8 +4,8 @@
  */
 
 import {
-	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, CKBox, CloudServices, DropdownView,
-	ToolbarView, createDropdown, Essentials, Heading, HorizontalLine, Image,
+	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, CKBox, CloudServices,
+	DropdownView, ToolbarView, createDropdown, Essentials, Heading, HorizontalLine, Image,
 	ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, Link,
 	MediaEmbed, Paragraph, RemoveFormat, Bold, Italic, Strikethrough, Superscript, Subscript,
 	Underline, Table, TableToolbar
