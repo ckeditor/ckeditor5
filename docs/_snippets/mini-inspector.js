@@ -5,10 +5,9 @@
 
 import {
 	DecoupledEditor, Essentials, Alignment, FontSize, FontFamily, FontColor, FontBackgroundColor,
-	CKFinderUploadAdapter, Autoformat, Bold, Italic, Strikethrough, Underline, BlockQuote, CKBox,
-	CKFinder, Heading, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar,
-	ImageUpload, PictureEditing, Indent, IndentBlock, Link, List, ListProperties, MediaEmbed,
-	Paragraph, PasteFromOffice, Table, TableToolbar, TextTransformation, CloudServices
+	Autoformat, Bold, Italic, Strikethrough, Underline, BlockQuote, Heading, Image, ImageCaption,
+	ImageResize, ImageStyle, ImageToolbar, PictureEditing, Indent, IndentBlock, Link, List,
+	ListProperties, MediaEmbed, Paragraph, PasteFromOffice, Table, TableToolbar, TextTransformation
 } from 'ckeditor5';
 
 import './mini-inspector.css';
@@ -21,23 +20,18 @@ export class MiniInspectorEditor extends DecoupledEditor {
 		FontFamily,
 		FontColor,
 		FontBackgroundColor,
-		CKFinderUploadAdapter,
 		Autoformat,
 		Bold,
 		Italic,
 		Strikethrough,
 		Underline,
 		BlockQuote,
-		CKBox,
-		CKFinder,
-		CloudServices,
 		Heading,
 		Image,
 		ImageCaption,
 		ImageResize,
 		ImageStyle,
 		ImageToolbar,
-		ImageUpload,
 		Indent,
 		IndentBlock,
 		Link,
@@ -53,9 +47,6 @@ export class MiniInspectorEditor extends DecoupledEditor {
 	];
 
 	static defaultConfig = {
-		removePlugins: [
-			'CKBox'
-		],
 		toolbar: {
 			items: [
 				'heading',
@@ -80,7 +71,6 @@ export class MiniInspectorEditor extends DecoupledEditor {
 				'|',
 				'link',
 				'blockquote',
-				'uploadImage',
 				'insertTable',
 				'mediaEmbed',
 				'|',
