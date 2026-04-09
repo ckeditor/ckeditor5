@@ -6,6 +6,7 @@
 import { BalloonEditor } from '../../src/ballooneditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { createObserver } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 window.editors = {};
 window.editables = [];
@@ -19,7 +20,10 @@ function initEditors() {
 		BalloonEditor
 			.create( {
 				root: {
-					element: document.querySelector( selector )
+					element: document.querySelector( selector ),
+					modelAttributes: {
+						section: 'intro'
+					}
 				},
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
@@ -46,6 +50,7 @@ function initEditors() {
 				);
 
 				window._observers.push( observer );
+				CKEditorInspector.attach( editor );
 			} )
 			.catch( err => {
 				console.error( err.stack );
