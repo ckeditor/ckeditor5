@@ -1295,8 +1295,8 @@ export interface RootConfig {
 	 * Initial root attributes for a root.
 	 *
 	 * **Note: You must provide full set of attributes for each root. If an attribute is not set on a root, set the value to `null`.
-	 * Only provided attribute keys will be returned by
-	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#getRootsAttributes}.**
+	 * Only provided attribute keys will be returned by {@link module:module:core/editor/editor~Editor#getRootAttributes} or
+	 *  {@link module:editor-multi-root/multirooteditor~MultiRootEditor#getRootsAttributes}.**
 	 *
 	 * Roots attributes hold additional data related to the document roots, in addition to the regular document data (which usually is
 	 * HTML). In roots attributes, for each root, you can store arbitrary key-value pairs with attributes connected with that root.
@@ -1306,7 +1306,6 @@ export interface RootConfig {
 	 * and non-standard integrations. If you do not provide any custom feature that would use root attributes, you do not need to
 	 * handle (save and load) this property.
 	 *
-	 * **Classic editor:**
 	 *
 	 * ```ts
 	 * ClassicEditor.create( {
@@ -1318,7 +1317,7 @@ export interface RootConfig {
 	 * .catch( ... );
 	 * ```
 	 *
-	 * **Multi-root editor:**
+	 * If your editor implementation uses multiple roots, you should provide attributes for roots individually:
 	 *
 	 * ```ts
 	 * MultiRootEditor.create(
