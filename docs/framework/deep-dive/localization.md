@@ -99,7 +99,7 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 	const buttonView = new ButtonView( locale );
 
 	// The localized label.
-	const label = editor.t( 'Insert smiling face emoji' );
+	const label = editor.locale.t( 'Insert smiling face emoji' );
 
 	buttonView.set( {
 		label,
