@@ -232,6 +232,58 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
+		describe( 'config.roots.main.modelAttributes', () => {
+			it( 'should be possible to pass model attributes through config', async () => {
+				const editor = await InlineEditor.create( {
+					roots: {
+						main: {
+							modelAttributes: {
+								foo: 1,
+								bar: 2
+							}
+						}
+					}
+				} );
+
+				const root = editor.model.document.getRoot();
+
+				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
+				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+
+				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+					foo: 1,
+					bar: 2
+				} );
+
+				await editor.destroy();
+			} );
+		} );
+
+		describe( 'config.root.modelAttributes', () => {
+			it( 'should be possible to pass model attributes through config', async () => {
+				const editor = await InlineEditor.create( {
+					root: {
+						modelAttributes: {
+							foo: 1,
+							bar: 2
+						}
+					}
+				} );
+
+				const root = editor.model.document.getRoot();
+
+				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
+				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+
+				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+					foo: 1,
+					bar: 2
+				} );
+
+				await editor.destroy();
+			} );
+		} );
+
 		describe( 'config-only constructor', () => {
 			it( 'should create editor with config.root.initialData', async () => {
 				const editor = new InlineEditor( {
