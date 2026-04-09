@@ -970,7 +970,8 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Returns attributes for the main root.
+	 * Returns attributes for the specified root.
+	 * If no root name is provided, it returns attributes for the 'main' root by default.
 	 *
 	 * Note: all and only {@link ~Editor#registerRootAttribute registered} roots attributes will be returned.
 	 * If a registered root attribute is not set for a given root, `null` will be returned.
