@@ -17,7 +17,7 @@ import type { Editor } from '../editor.js';
  * @internal
  */
 export function registerAndInitializeRootConfigAttributes( editor: Editor ): void {
-	const rootsConfig = editor.config.get( 'roots' ) || {};
+	const rootsConfig = editor.config.get( 'roots' )!;
 	let hasRootAttributes = false;
 
 	for ( const rootConfig of Object.values( rootsConfig ) ) {
