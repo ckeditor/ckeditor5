@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module engine/model/utils/autoparagraphing
+ */
+
 import { type ModelNode } from '../node.js';
 import { type ModelPosition } from '../position.js';
 import { type ModelSchema } from '../schema.js';
 import { type ModelWriter } from '../writer.js';
-
-/**
- * @module engine/model/utils/autoparagraphing
- */
 
 /**
  * Fixes all empty roots.
