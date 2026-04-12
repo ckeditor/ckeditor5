@@ -603,16 +603,18 @@ export function isNumberedListType( listType: ListType ): boolean {
 
 /**
  * Checks whether the given list item block is the first block of its list. A block is considered
- * the first in its list if there is no preceding sibling that is a list item of the same type.
- * This works for any starting indent level and correctly handles adjacent lists of different types.
+ * the first in its list if there is no preceding list item at the same indent with the same type.
+ * Nested items are skipped while checking this condition.
  *
  * @internal
  */
 export function isListHead( node: ListElement ): boolean {
-	const previousSibling = node.previousSibling;
+	const previousSiblingInList = ListWalker.first( node, {
+		sameIndent: true,
+		sameAttributes: 'listType'
+	} );
 
-	return !previousSibling || !isListItemBlock( previousSibling ) ||
-		previousSibling.getAttribute( 'listType' ) !== node.getAttribute( 'listType' );
+	return !previousSiblingInList;
 }
 
 /**

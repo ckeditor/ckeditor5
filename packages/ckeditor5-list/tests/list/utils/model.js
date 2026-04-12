@@ -1880,6 +1880,18 @@ describe( 'List - utils - model', () => {
 			expect( isListHead( fragment.getChild( 2 ) ) ).to.be.false;
 		} );
 
+		it( 'should return false when nested items of different type are between items of the same list', () => {
+			const input = modelList( [
+				'* a',
+				'  # b',
+				'* c'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isListHead( fragment.getChild( 2 ) ) ).to.be.false;
+		} );
+
 		it( 'should return true for the first item after a list of a different type (regression)', () => {
 			const input = modelList( [
 				'# a',

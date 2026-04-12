@@ -1484,20 +1484,20 @@ describe( 'ListIndentCommand', () => {
 					} );
 				} );
 
-				it( 'should be false when selection is at start of first list item', () => {
+				it( 'should be true when selection is at start of first list item', () => {
 					_setModelData( model, modelList( [
 						'  * []0'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be false when a non-collapsed selection starts at the start of first list item', () => {
+				it( 'should be true when a non-collapsed selection starts at the start of first list item', () => {
 					_setModelData( model, modelList( [
 						'  * [0]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be true when selection is not at start of first list item', () => {

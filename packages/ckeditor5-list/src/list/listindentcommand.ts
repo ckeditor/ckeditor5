@@ -133,22 +133,8 @@ export class ListIndentCommand extends Command {
 			return false;
 		}
 
-		// If we are outdenting it is enough to be in list item. Every list item can always be outdented,
-		// unless IndentBlock is loaded and the selection is at the start of the first list item
-		// in the list — in that case, defer to the block outdent command.
+		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.
 		if ( this._direction == 'backward' ) {
-			if (
-				this.editor.config.get( 'list.allowSkipLevels' ) &&
-				this.editor.plugins.has( 'IndentBlockListIntegration' )
-			) {
-				const position = this.editor.model.document.selection.getFirstPosition()!;
-				const parent = position.parent as ListElement;
-
-				if ( position.isAtStart && isListHead( parent ) ) {
-					return false;
-				}
-			}
-
 			return true;
 		}
 
