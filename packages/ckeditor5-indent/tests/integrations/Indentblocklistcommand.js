@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
-import { isFirstListItemInList, expandListBlocksToCompleteList } from '../../../ckeditor5-list/src/list/utils/model.js';
+import { expandListBlocksToCompleteList } from '../../../ckeditor5-list/src/list/utils/model.js';
 import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
 import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
@@ -31,7 +31,7 @@ describe( 'IndentBlockListCommand', () => {
 
 				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
 					if ( name === 'ListUtils' ) {
-						return { isFirstListItemInList, expandListBlocksToCompleteList };
+						return { expandListBlocksToCompleteList };
 					}
 
 					if ( name === 'IndentBlockListIntegration' ) {
@@ -193,6 +193,28 @@ describe( 'IndentBlockListCommand', () => {
 						] ) );
 
 						expect( command.isEnabled ).to.be.true;
+					} );
+				} );
+
+				describe( 'adjacent lists of different types', () => {
+					it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'# bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be false when selection is at start of second item in bulleted list after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'* bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
 					} );
 				} );
 			} );
@@ -645,6 +667,28 @@ describe( 'IndentBlockListCommand', () => {
 
 					it( 'should be false in empty editor', () => {
 						_setModelData( model, '' );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'adjacent lists of different types', () => {
+					it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'# bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be false when selection is at start of second item in bulleted list after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'* bar',
+							'* []baz'
+						] ) );
 
 						expect( command.isEnabled ).to.be.false;
 					} );

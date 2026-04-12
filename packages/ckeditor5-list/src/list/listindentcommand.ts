@@ -13,6 +13,7 @@ import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-e
 import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
+	isListHead,
 	isFirstBlockOfListItem,
 	isListItemBlock,
 	isSingleListItem,
@@ -132,13 +133,43 @@ export class ListIndentCommand extends Command {
 			return false;
 		}
 
-		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.
+		// If we are outdenting it is enough to be in list item. Every list item can always be outdented,
+		// unless IndentBlock is loaded and the selection is at the start of the first list item
+		// in the list — in that case, defer to the block outdent command.
 		if ( this._direction == 'backward' ) {
+			if (
+				this.editor.config.get( 'list.allowSkipLevels' ) &&
+				this.editor.plugins.has( 'IndentBlockListIntegration' )
+			) {
+				const position = this.editor.model.document.selection.getFirstPosition()!;
+				const parent = position.parent as ListElement;
+
+				if ( position.isAtStart && isListHead( parent ) ) {
+					return false;
+				}
+			}
+
 			return true;
 		}
 
 		// A single block of a list item is selected, so it could be indented as a sublist.
 		if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
+			return true;
+		}
+
+		// When skip levels are allowed, any list item can always be indented further,
+		// unless IndentBlock is loaded and the selection is at the start of the first list item
+		// in the list — in that case, defer to the block indent command.
+		if ( this.editor.config.get( 'list.allowSkipLevels' ) ) {
+			if ( this.editor.plugins.has( 'IndentBlockListIntegration' ) ) {
+				const position = this.editor.model.document.selection.getFirstPosition()!;
+				const parent = position.parent as ListElement;
+
+				if ( position.isAtStart && isListHead( parent ) ) {
+					return false;
+				}
+			}
+
 			return true;
 		}
 

@@ -13,6 +13,7 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
+	isListHead,
 	isSingleListItem,
 	ListItemUid,
 	mergeListItemBefore,
@@ -1819,6 +1820,84 @@ describe( 'List - utils - model', () => {
 				fragment.getChild( 10 ),
 				fragment.getChild( 11 )
 			] );
+		} );
+	} );
+
+	describe( 'isListHead()', () => {
+		it( 'should return true for the first list item in the document', () => {
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isListHead( fragment.getChild( 0 ) ) ).to.be.true;
+		} );
+
+		it( 'should return false for a list item preceded by another list item of the same type', () => {
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isListHead( fragment.getChild( 1 ) ) ).to.be.false;
+		} );
+
+		it( 'should return true for a list item preceded by a non-list block', () => {
+			const input = modelList( [
+				'foo',
+				'* a'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isListHead( fragment.getChild( 1 ) ) ).to.be.true;
+		} );
+
+		it( 'should return true for a list item preceded by a list item of a different type', () => {
+			const input = modelList( [
+				'* a',
+				'# b'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isListHead( fragment.getChild( 1 ) ) ).to.be.true;
+		} );
+
+		it( 'should return false for a nested list item preceded by a list item of the same type', () => {
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'  * c'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isListHead( fragment.getChild( 2 ) ) ).to.be.false;
+		} );
+
+		it( 'should return true for the first item after a list of a different type (regression)', () => {
+			const input = modelList( [
+				'# a',
+				'# b',
+				'* c',
+				'* d'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			// First numbered item.
+			expect( isListHead( fragment.getChild( 0 ) ) ).to.be.true;
+			// Second numbered item.
+			expect( isListHead( fragment.getChild( 1 ) ) ).to.be.false;
+			// First bulleted item.
+			expect( isListHead( fragment.getChild( 2 ) ) ).to.be.true;
+			// Second bulleted item.
+			expect( isListHead( fragment.getChild( 3 ) ) ).to.be.false;
 		} );
 	} );
 } );

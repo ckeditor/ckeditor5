@@ -540,16 +540,17 @@ export class ListEditing extends Plugin {
 	private _setupModelPostFixing() {
 		const model = this.editor.model;
 		const attributeNames = this.getListAttributeNames();
-
 		// Register list fixing.
 		// First the low level handler.
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, attributeNames, this ) );
 
 		// Then the callbacks for the specific lists.
-		// The indentation fixing must be the first one...
-		this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
-			evt.return = fixListIndents( listNodes, writer ) || evt.return;
-		}, { priority: 'high' } );
+		// The indentation fixing must be the first one (but only when skip levels are not allowed)...
+		if ( !this.editor.config.get( 'list.allowSkipLevels' ) ) {
+			this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+				evt.return = fixListIndents( listNodes, writer ) || evt.return;
+			}, { priority: 'high' } );
+		}
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
 		this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {

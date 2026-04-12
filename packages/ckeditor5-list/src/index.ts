@@ -77,6 +77,7 @@ export {
 	getListItemBlocks as _getListItemBlocks,
 	getNestedListBlocks as _getNestedListBlocks,
 	getListItems as _getListItems,
+	isListHead as _isListHead,
 	isFirstBlockOfListItem as _isFirstBlockOfListItem,
 	isLastBlockOfListItem as _isLastBlockOfListItem,
 	expandListBlocksToCompleteItems as _expandListBlocksToCompleteItems,

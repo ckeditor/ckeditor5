@@ -376,7 +376,11 @@ export function outdentBlocksWithMerge(
 		}
 
 		// Merge with parent list item while outdenting and indent matches reference indent.
-		if ( block.getAttribute( 'listIndent' ) == referenceIndent ) {
+		// The parent block may be null if the block has no ancestor with a lower indent (e.g. when skip-level
+		// lists are enabled and the first item starts at indent > 0). In that case, skip the merge and just
+		// decrease the indent. Without skip-level lists, the post-fixer guarantees sequential indents, so
+		// a parent with a lower indent always exists and this guard has no effect.
+		if ( block.getAttribute( 'listIndent' ) == referenceIndent && parentBlocks.get( block ) ) {
 			const mergedBlocks = mergeListItemIfNotLast( block, parentBlocks.get( block ), writer );
 
 			// All list item blocks are updated while merging so add those to visited set.
@@ -598,18 +602,17 @@ export function isNumberedListType( listType: ListType ): boolean {
 }
 
 /**
- * Checks if the given list item is the first item in the list.
+ * Checks whether the given list item block is the first block of its list. A block is considered
+ * the first in its list if there is no preceding sibling that is a list item of the same type.
+ * This works for any starting indent level and correctly handles adjacent lists of different types.
  *
- * This function checks if there's any other list item before the given list item
- * at the same indent level with the same list type.
+ * @internal
  */
-export function isFirstListItemInList( listItem: ModelElement ): boolean {
-	const previousItem = ListWalker.first( listItem, {
-		sameIndent: true,
-		sameAttributes: 'listType'
-	} );
+export function isListHead( node: ListElement ): boolean {
+	const previousSibling = node.previousSibling;
 
-	return !previousItem;
+	return !previousSibling || !isListItemBlock( previousSibling ) ||
+		previousSibling.getAttribute( 'listType' ) !== node.getAttribute( 'listType' );
 }
 
 /**
