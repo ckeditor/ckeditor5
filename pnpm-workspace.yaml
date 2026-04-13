@@ -18,9 +18,41 @@ overrides:
   markdown-it-toc: 'npm:@maboloshi/markdown-it-toc@1.1.1'
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
-  'qs@^6.0.0': '^6.14.1'
   'diff@<8': '^8.0.3'
-  'lodash-es': '^4.17.23'
+  '@isaacs/brace-expansion@^5': '^5.0.1' # Remove after 2026-07-13.
+  '@tootallnate/once@^2': '^3.0.1' # Remove after 2026-07-13.
+  'ajv@^6': '^6.14.0' # Remove after 2026-07-13.
+  'ajv@^8': '^8.18.0' # Remove after 2026-07-13.
+  'axios@^1': '^1.15.0' # Remove after 2026-07-13.
+  'basic-ftp@^5': '^5.2.2' # Remove after 2026-07-13.
+  'brace-expansion@^1': '^1.1.13' # Remove after 2026-07-13.
+  'brace-expansion@^2': '^2.0.3' # Remove after 2026-07-13.
+  'dompurify@^3': '^3.3.2' # Remove after 2026-07-13.
+  'flatted@^3': '^3.4.2' # Remove after 2026-07-13.
+  'immutable@^5': '^5.1.5' # Remove after 2026-07-13.
+  'koa@^2': '^2.16.4' # Remove after 2026-07-13.
+  'lodash@^4': '^4.18.0' # Remove after 2026-07-13.
+  'lodash-es': '^4.18.0' # Remove after 2026-07-13.
+  'markdown-it@^13': '^14.1.1' # Remove after 2026-07-13.
+  'markdown-it@^14': '^14.1.1' # Remove after 2026-07-13.
+  'minimatch@^3': '^3.1.4' # Remove after 2026-07-13.
+  'minimatch@^7': '^7.4.8' # Remove after 2026-07-13.
+  'minimatch@^9': '^9.0.7' # Remove after 2026-07-13.
+  'minimatch@^10': '^10.2.3' # Remove after 2026-07-13.
+  'picomatch@^2': '^2.3.2' # Remove after 2026-07-13.
+  'picomatch@^4': '^4.0.4' # Remove after 2026-07-13.
+  'qs@^6': '^6.14.2' # Remove after 2026-07-13.
+  'rollup@^4': '^4.59.0' # Remove after 2026-07-13.
+  'serialize-javascript@^6': '^7.0.5' # Remove after 2026-07-13.
+  'serialize-javascript@^7': '^7.0.5' # Remove after 2026-07-13.
+  'simple-git@^3': '^3.32.3' # Remove after 2026-07-13.
+  'socket.io-parser@^4': '^4.2.6' # Remove after 2026-07-13.
+  'svgo@^3': '^3.3.3' # Remove after 2026-07-13.
+  'tar@^7': '^7.5.11' # Remove after 2026-07-13.
+  'vite@^7': '^7.3.2' # Remove after 2026-07-13.
+  'webpack@^5': '^5.104.1' # Remove after 2026-07-13.
+  'yaml@^1': '^1.10.3' # Remove after 2026-07-13.
+  'yaml@^2': '^2.8.3' # Remove after 2026-07-13.
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
