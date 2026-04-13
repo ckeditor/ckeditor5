@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelList } from '../../../ckeditor5-list/tests/list/_utils/utils.js';
-import { expandListBlocksToCompleteList } from '../../../ckeditor5-list/src/list/utils/model.js';
+import { isFirstListItemInList, expandListBlocksToCompleteList } from '../../../ckeditor5-list/src/list/utils/model.js';
 import { IndentUsingOffset } from '../../src/indentcommandbehavior/indentusingoffset.js';
 import { IndentUsingClasses } from '../../src/indentcommandbehavior/indentusingclasses.js';
 import { IndentBlockListCommand } from '../../src/integrations/indentblocklistcommand.js';
@@ -31,7 +31,7 @@ describe( 'IndentBlockListCommand', () => {
 
 				sinon.stub( editor.plugins, 'get' ).callsFake( name => {
 					if ( name === 'ListUtils' ) {
-						return { expandListBlocksToCompleteList };
+						return { isFirstListItemInList, expandListBlocksToCompleteList };
 					}
 
 					if ( name === 'IndentBlockListIntegration' ) {
@@ -212,6 +212,43 @@ describe( 'IndentBlockListCommand', () => {
 							'# foo',
 							'* bar',
 							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'when skip-level lists are enabled', () => {
+					it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
+						_setModelData( model, modelList( [
+							'foo',
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when skip-level list item is the first element in the document', () => {
+						_setModelData( model, modelList( [
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be false for a sublist item (has parent list item)', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a skip-level list item preceded by a list item of another type', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'    * []bar'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
@@ -688,6 +725,43 @@ describe( 'IndentBlockListCommand', () => {
 							'# foo',
 							'* bar',
 							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'when skip-level lists are enabled', () => {
+					it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
+						_setModelData( model, modelList( [
+							'foo',
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true when skip-level list item is the first element in the document', () => {
+						_setModelData( model, modelList( [
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be false for a sublist item (has parent list item)', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a skip-level list item preceded by a list item of another type', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'    * []bar'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;

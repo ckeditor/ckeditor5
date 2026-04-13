@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
-import { _isListHead, _isListItemBlock } from '@ckeditor/ckeditor5-list';
+import { _isListItemBlock, _isTopLevelListItem } from '@ckeditor/ckeditor5-list';
 
 import type { IndentBehavior } from '../indentcommandbehavior/indentbehavior.js';
 
@@ -79,11 +79,10 @@ export class IndentBlockListCommand extends Command {
 			if ( !options.firstListOnly ) {
 				const blocks = Array.from( selection.getSelectedBlocks() );
 
-				// Collect first items of each list in the selection.
 				for ( const block of blocks ) {
 					if (
 						_isListItemBlock( block ) &&
-						_isListHead( block ) &&
+						_isTopLevelListItem( block ) &&
 						model.schema.checkAttribute( block, 'blockIndentList' )
 					) {
 						listItems.push( block );
@@ -115,14 +114,16 @@ export class IndentBlockListCommand extends Command {
 	 */
 	private _getFirstListItemIfSelectionIsAtListStart( selection: ModelDocumentSelection ): ModelElement | null {
 		const position = selection.getFirstPosition()!;
+		const listUtils = this.editor.plugins.get( 'ListUtils' );
 		const parent = position.parent as ModelElement;
 		const schema = this.editor.model.schema;
 
 		if (
 			position.isAtStart &&
 			_isListItemBlock( parent ) &&
-			_isListHead( parent ) &&
-			schema.checkAttribute( parent, 'blockIndentList' )
+			_isTopLevelListItem( parent ) &&
+			schema.checkAttribute( parent, 'blockIndentList' ) &&
+			listUtils.isFirstListItemInList( parent )
 		) {
 			return parent;
 		}

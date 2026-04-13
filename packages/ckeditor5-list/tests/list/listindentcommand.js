@@ -1319,6 +1319,41 @@ describe( 'ListIndentCommand', () => {
 
 					expect( command.isEnabled ).to.be.true;
 				} );
+
+				it( 'should be false when selection is at start of a skip-level list item preceded by a paragraph', () => {
+					_setModelData( model, modelList( [
+						'foo',
+						'  * []0'
+					] ) );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be false when skip-level list item is the first element in the document', () => {
+					_setModelData( model, modelList( [
+						'    * []0'
+					] ) );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be true for a sublist item (not top-level, handled by list indent)', () => {
+					_setModelData( model, modelList( [
+						'* 0',
+						'    * []1'
+					] ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true for a skip-level list item preceded by a list item of another type', () => {
+					_setModelData( model, modelList( [
+						'# 0',
+						'    * []1'
+					] ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
 			} );
 		} );
 

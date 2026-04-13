@@ -602,17 +602,36 @@ export function isNumberedListType( listType: ListType ): boolean {
 }
 
 /**
- * Checks whether the given list item block is the first block of its list. A block is considered
- * the first in its list if there is no preceding sibling that is a list item of the same type.
- * This works for any starting indent level and correctly handles adjacent lists of different types.
+ * Checks if the given list item is the first item in the list.
+ *
+ * This function checks if there's any other list item before the given list item
+ * at the same indent level with the same list type.
+ */
+export function isFirstListItemInList( listItem: ModelElement ): boolean {
+	const previousItem = ListWalker.first( listItem, {
+		sameIndent: true,
+		sameAttributes: 'listType'
+	} );
+
+	return !previousItem;
+}
+
+/**
+ * Checks whether the given list item is at the top level of the list structure, meaning it is not
+ * nested inside another list item's scope. An item is considered top-level if it is at indent 0
+ * (which is always top-level) or if its previous sibling is not a list item block (indicating
+ * a skip-level list that starts after a non-list element or at the beginning of the document).
  *
  * @internal
  */
-export function isListHead( node: ListElement ): boolean {
+export function isTopLevelListItem( node: ListElement ): boolean {
+	if ( node.getAttribute( 'listIndent' ) === 0 ) {
+		return true;
+	}
+
 	const previousSibling = node.previousSibling;
 
-	return !previousSibling || !isListItemBlock( previousSibling ) ||
-		previousSibling.getAttribute( 'listType' ) !== node.getAttribute( 'listType' );
+	return !previousSibling || !isListItemBlock( previousSibling );
 }
 
 /**

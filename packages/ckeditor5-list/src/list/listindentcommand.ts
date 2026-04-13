@@ -13,10 +13,11 @@ import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-e
 import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
-	isListHead,
 	isFirstBlockOfListItem,
+	isFirstListItemInList,
 	isListItemBlock,
 	isSingleListItem,
+	isTopLevelListItem,
 	outdentBlocksWithMerge,
 	sortBlocks,
 	splitListItemBefore,
@@ -151,7 +152,7 @@ export class ListIndentCommand extends Command {
 				const position = this.editor.model.document.selection.getFirstPosition()!;
 				const parent = position.parent as ListElement;
 
-				if ( position.isAtStart && isListHead( parent ) ) {
+				if ( position.isAtStart && isTopLevelListItem( parent ) && isFirstListItemInList( parent ) ) {
 					return false;
 				}
 			}
