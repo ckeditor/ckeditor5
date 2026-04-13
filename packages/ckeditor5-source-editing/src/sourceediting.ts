@@ -271,7 +271,9 @@ export class SourceEditing extends Plugin {
 			// undo/redo while editor commands are force-disabled in source editing mode.
 			// See: https://github.com/ckeditor/ckeditor5/issues/13700
 			domSourceEditingElementTextarea.addEventListener( 'keydown', evt => {
-				if ( ( evt.ctrlKey || evt.metaKey ) && !evt.altKey && ( evt.key === 'z' || evt.key === 'y' ) ) {
+				const key = evt.key.toLowerCase();
+
+				if ( ( evt.ctrlKey || evt.metaKey ) && !evt.altKey && ( key === 'z' || key === 'y' ) ) {
 					evt.stopImmediatePropagation();
 				}
 			} );

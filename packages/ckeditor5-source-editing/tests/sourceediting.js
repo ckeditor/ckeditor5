@@ -460,6 +460,46 @@ describe( 'SourceEditing', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
+		it( 'should not block native undo keystroke with caps lock in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'Z',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native redo keystroke with caps lock in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'Y',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		it( 'should not intercept other Ctrl keystrokes in the textarea', () => {
 			button.fire( 'execute' );
 
