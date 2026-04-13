@@ -1484,25 +1484,54 @@ describe( 'ListIndentCommand', () => {
 					} );
 				} );
 
-				it( 'should be false when selection is at start of first list item', () => {
+				it( 'should be true when selection is at start of first list item', () => {
 					_setModelData( model, modelList( [
 						'  * []0'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be false when a non-collapsed selection starts at the start of first list item', () => {
+				it( 'should be true when a non-collapsed selection starts at the start of first list item', () => {
 					_setModelData( model, modelList( [
 						'  * [0]'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be true when selection is not at start of first list item', () => {
 					_setModelData( model, modelList( [
 						'  * 0[]'
+					] ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true for a single list item at indent 0 with no block indent', () => {
+					_setModelData( model, modelList( [
+						'* []0'
+					] ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when selection is at start of first list item preceded by a non-list block', () => {
+					_setModelData( model, modelList( [
+						'foo',
+						'* []0',
+						'* 1'
+					] ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+					_setModelData( model, modelList( [
+						'# 0',
+						'# 1',
+						'* []2',
+						'* 3'
 					] ) );
 
 					expect( command.isEnabled ).to.be.true;
@@ -1598,6 +1627,34 @@ describe( 'ListIndentCommand', () => {
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* 0[]',
+						'* 1'
+					] ) );
+				} );
+
+				it( 'should outdent the first list item at indent 0 back to a paragraph', () => {
+					_setModelData( model, modelList( [
+						'* []0'
+					] ) );
+
+					command.execute();
+
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						'[]0'
+					] ) );
+				} );
+
+				it( 'should outdent the first list item at indent 0 preceded by a non-list block', () => {
+					_setModelData( model, modelList( [
+						'foo',
+						'* []0',
+						'* 1'
+					] ) );
+
+					command.execute();
+
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+						'foo',
+						'[]0',
 						'* 1'
 					] ) );
 				} );
