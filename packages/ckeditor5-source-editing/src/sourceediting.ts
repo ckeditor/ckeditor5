@@ -266,6 +266,16 @@ export class SourceEditing extends Plugin {
 				editor.ui.update();
 			} );
 
+			// Allow native undo/redo in the textarea. The editor's keystroke handler (attached via
+			// setEditableElement()) intercepts Ctrl+Z/Y and calls preventDefault(), blocking browser
+			// undo/redo while editor commands are force-disabled in source editing mode.
+			// See: https://github.com/ckeditor/ckeditor5/issues/13700
+			domSourceEditingElementTextarea.addEventListener( 'keydown', evt => {
+				if ( ( evt.ctrlKey || evt.metaKey ) && !evt.altKey && ( evt.key === 'z' || evt.key === 'y' ) ) {
+					evt.stopImmediatePropagation();
+				}
+			} );
+
 			editingView.change( writer => {
 				const viewRoot = editingView.document.getRoot( rootName )!;
 

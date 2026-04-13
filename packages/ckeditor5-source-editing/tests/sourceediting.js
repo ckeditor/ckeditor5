@@ -400,6 +400,86 @@ describe( 'SourceEditing', () => {
 			expect( wrapper.dataset.value ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
 
+		it( 'should not block native undo keystroke in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'z',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native redo keystroke in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'y',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native undo keystroke with meta key in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'z',
+				metaKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not intercept other Ctrl keystrokes in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'a',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const stopImmediatePropagationSpy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( stopImmediatePropagationSpy.called ).to.be.false;
+		} );
+
 		it( 'should disable textarea if editor is in read-only mode', () => {
 			button.fire( 'execute' );
 
