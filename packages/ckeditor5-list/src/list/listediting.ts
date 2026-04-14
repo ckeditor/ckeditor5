@@ -487,7 +487,7 @@ export class ListEditing extends Plugin {
 					'attribute',
 					listItemDowncastConverter(
 						attributeNames, this._downcastStrategies, model,
-						{ allowSkipLevels }
+						allowSkipLevels ? { allowSkipLevels } : undefined
 					)
 				);
 
