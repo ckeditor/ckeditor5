@@ -10,6 +10,7 @@
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
+	Matcher,
 	addBorderStylesRules,
 	addPaddingStylesRules,
 	addBackgroundStylesRules,
@@ -227,10 +228,11 @@ function enableBorderProperties(
  */
 function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
-		allowAttributes: [ 'tableCellHorizontalAlignment' ]
+		allowAttributes: [ 'tableCellHorizontalAlignment', 'tableCellLegacyAlign' ]
 	} );
 
 	schema.setAttributeProperties( 'tableCellHorizontalAlignment', { isFormatting: true } );
+	schema.setAttributeProperties( 'tableCellLegacyAlign', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
@@ -238,11 +240,21 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 				name: 'tableCell',
 				key: 'tableCellHorizontalAlignment'
 			},
-			view: alignment => ( {
+			view: ( alignment: string | null ) => ( {
 				key: 'style',
-				value: {
-					'text-align': alignment
-				}
+				value: { 'text-align': alignment }
+			} )
+		} );
+
+	conversion.for( 'downcast' )
+		.attributeToAttribute( {
+			model: {
+				name: 'tableCell',
+				key: 'tableCellLegacyAlign'
+			},
+			view: ( alignment: string | null ) => ( {
+				key: 'align',
+				value: alignment
 			} )
 		} );
 
@@ -265,12 +277,11 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 						return align;
 					}
 
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
 					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
 				}
 			}
 		} )
-		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
+		// Support for the legacy `align` attribute (backward compatibility when pasting from other sources).
 		.attributeToAttribute( {
 			view: {
 				name: /^(td|th)$/,
@@ -279,20 +290,83 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 				}
 			},
 			model: {
-				key: 'tableCellHorizontalAlignment',
+				key: 'tableCellLegacyAlign',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
-					const align = viewElement.getAttribute( 'align' );
+					const align = viewElement.getAttribute( 'align' )!;
 
 					if ( align !== localDefaultValue ) {
 						return align;
 					}
 
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
 					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
 				}
 			}
 		} );
+
+	// A converter that adds a fallback for handling `td[align]`.
+	// If the child of a column that had an `align` attribute is a table (or any other element that supports block alignment),
+	// it aligns that element accordingly using the appropriate model attribute.
+	// See: https://github.com/ckeditor/ckeditor5/issues/20042
+	conversion.for( 'upcast' ).add( dispatcher => {
+		const matcher = new Matcher( {
+			name: /^(td|th)$/,
+			attributes: {
+				align: true
+			}
+		} );
+
+		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
+			const matcherResult = matcher.match( data.viewItem );
+
+			if ( !matcherResult ) {
+				return;
+			}
+
+			const modelElement = data.modelRange?.start.nodeAfter;
+
+			if ( !modelElement?.is( 'element' ) ) {
+				return;
+			}
+
+			const legacyAlign = modelElement.getAttribute( 'tableCellLegacyAlign' ) as string | undefined;
+
+			if ( !legacyAlign ) {
+				return;
+			}
+
+			for ( const child of modelElement.getChildren() ) {
+				if ( !child.is( 'element' ) ) {
+					continue;
+				}
+
+				if ( schema.checkAttribute( child, 'alignment' ) ) {
+					conversionApi.writer.setAttribute( 'alignment', legacyAlign, child );
+					continue;
+				}
+
+				const definition = conversionApi.schema.getDefinition( child );
+
+				if ( !definition ) {
+					continue;
+				}
+
+				for ( const attrName of definition.allowAttributes ) {
+					const attrProperties = conversionApi.schema.getAttributeProperties( attrName );
+
+					if ( !attrProperties.blockAlignment || child.hasAttribute( attrName ) ) {
+						continue;
+					}
+
+					const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ legacyAlign ];
+
+					if ( mappedValue ) {
+						conversionApi.writer.setAttribute( attrName, mappedValue, child );
+					}
+				}
+			}
+		}, { priority: 'lowest' } );
+	} );
 }
 
 /**
