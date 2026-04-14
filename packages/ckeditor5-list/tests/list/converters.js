@@ -1099,6 +1099,236 @@ describe( 'ListEditing - converters', () => {
 		} );
 	} );
 
+	describe( 'skip-level lists', () => {
+		let skipEditor, skipModel;
+
+		beforeEach( async () => {
+			skipEditor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing,
+					BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ],
+				list: {
+					allowSkipLevels: true
+				}
+			} );
+
+			skipModel = skipEditor.model;
+
+			sinon.stub( skipEditor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+		} );
+
+		afterEach( async () => {
+			await skipEditor.destroy();
+		} );
+
+		it( 'should create intermediate wrappers for a single skipped level', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should create intermediate wrappers for multiple skipped levels', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="3" listItemId="b" listType="bulleted">B</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li style="list-style-type:none">' +
+										'<ul>' +
+											'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+										'</ul>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should create intermediate wrappers when the first item has a skip level', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="2" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="bulleted">B</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="list-style-type:none">' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">A</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+					'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should merge intermediate wrappers for sibling items at the same skip level', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="1" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="list-style-type:none">' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">A</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should inherit the list type from the parent for intermediate levels', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ol>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should place intermediate and real items as siblings at the same indent', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">C</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should handle multi-block list item with skip level', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B1</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B2</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li>' +
+										'<p>B1</p>' +
+										'<p>B2</p>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should create intermediate wrappers for a numbered list', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="numbered">C</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ol>' +
+							'<li style="list-style-type:none">' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">C</span></li>' +
+						'</ol>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should handle a block widget at a skip level', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<blockQuote listIndent="2" listItemId="b" listType="bulleted">' +
+					'<paragraph>B</paragraph>' +
+				'</blockQuote>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><blockquote><p>B</p></blockquote></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
 	function getViewPosition( root, path, view ) {
 		let parent = root;
 
