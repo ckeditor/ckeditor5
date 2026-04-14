@@ -1381,21 +1381,21 @@ describe( 'table cell properties', () => {
 						editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'right' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyRight' );
 					} );
 
 					it( 'should upcast the align=center attribute', () => {
 						editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyCenter' );
 					} );
 
 					it( 'should upcast the align=justify attribute', () => {
 						editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyJustify' );
 					} );
 				} );
 
@@ -1500,7 +1500,7 @@ describe( 'table cell properties', () => {
 							editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'left' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyLeft' );
 						} );
 
 						it( 'should not upcast the align=right attribute  (due to the default value of the property)', () => {
@@ -1514,14 +1514,14 @@ describe( 'table cell properties', () => {
 							editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyCenter' );
 						} );
 
 						it( 'should upcast the align=justify attribute', () => {
 							editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyJustify' );
 						} );
 					} );
 				} );
@@ -2193,21 +2193,21 @@ describe( 'table cell properties', () => {
 							editor.setData( '<table class="layout-table"><tr><td align="right">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.equal( 'right' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.equal( 'legacyRight' );
 						} );
 
 						it( 'should upcast the align="center" attribute', () => {
 							editor.setData( '<table class="layout-table"><tr><td align="center">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyCenter' );
 						} );
 
 						it( 'should upcast the align="justify" attribute', () => {
 							editor.setData( '<table class="layout-table"><tr><td align="justify">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'legacyJustify' );
 						} );
 					} );
 				} );

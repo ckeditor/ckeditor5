@@ -10,9 +10,11 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { ImageInline, ImageCaption, ImageToolbar, ImageResize } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
@@ -30,6 +32,8 @@ import { TableLayout } from '../../src/tablelayout.js';
 const config = {
 	attachTo: document.querySelector( '#editor' ),
 	plugins: [
+		Alignment,
+		SourceEditing,
 		Autoformat,
 		BlockQuote,
 		Bold,
@@ -58,10 +62,11 @@ const config = {
 		TableToolbar
 	],
 	toolbar: [
+		'sourceEditing', '|',
 		'undo', 'redo', '|',
 		'insertTable', 'insertTableLayout', '|',
 		'heading', '|',
-		'bold', 'italic', 'link', '|',
+		'bold', 'italic', 'link', 'alignment', '|',
 		'bulletedList', 'numberedList', 'blockQuote'
 	],
 	table: {

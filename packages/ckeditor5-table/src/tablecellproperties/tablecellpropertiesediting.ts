@@ -7,6 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
+import { capitalize } from 'es-toolkit/compat';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
@@ -238,12 +239,21 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 				name: 'tableCell',
 				key: 'tableCellHorizontalAlignment'
 			},
-			view: alignment => ( {
-				key: 'style',
-				value: {
-					'text-align': alignment
+			view: ( alignment: string | null ) => {
+				if ( alignment?.startsWith( 'legacy' ) ) {
+					return {
+						key: 'align',
+						value: alignment.replaceAll( 'legacy', '' ).toLowerCase()
+					};
 				}
-			} )
+
+				return {
+					key: 'style',
+					value: {
+						'text-align': alignment
+					}
+				};
+			}
 		} );
 
 	conversion.for( 'upcast' )
@@ -282,10 +292,10 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 				key: 'tableCellHorizontalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
-					const align = viewElement.getAttribute( 'align' );
+					const align = viewElement.getAttribute( 'align' )!;
 
 					if ( align !== localDefaultValue ) {
-						return align;
+						return `legacy${ capitalize( align ) }`;
 					}
 
 					// Consume the style even if not applied to the element so it won't be processed by other converters.
