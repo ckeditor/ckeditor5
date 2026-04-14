@@ -45,6 +45,7 @@ import {
 	createModelToViewPositionMapper,
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
+	listItemSkipLevelUpcastConverter,
 	listItemUpcastConverter,
 	reconvertItemsOnDataChange
 } from './converters.js';
@@ -435,6 +436,7 @@ export class ListEditing extends Plugin {
 		const attributeNames = this.getListAttributeNames();
 		const multiBlock = editor.config.get( 'list.multiBlock' );
 		const elementName = multiBlock ? 'paragraph' : 'listItem';
+		const allowSkipLevels = !!editor.config.get( 'list.allowSkipLevels' );
 
 		editor.conversion.for( 'upcast' )
 			// Convert <li> to a generic paragraph (or listItem element) so the content of <li> is always inside a block.
@@ -463,6 +465,12 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
+				if ( allowSkipLevels ) {
+					dispatcher.on<UpcastElementEvent>(
+						'element:li', listItemSkipLevelUpcastConverter(), { priority: 'high' }
+					);
+				}
+
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 			} );
 
@@ -481,8 +489,6 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
-				const allowSkipLevels = !!editor.config.get( 'list.allowSkipLevels' );
-
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
 					listItemDowncastConverter(
@@ -501,8 +507,6 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
-				const allowSkipLevels = !!editor.config.get( 'list.allowSkipLevels' );
-
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, {
