@@ -20,8 +20,7 @@ export type TokenUrl = string | ( () => Promise<string> );
  * 	.create( {
  * 		attachTo: document.querySelector( '#editor' ),
  * 		cloudServices: {
- * 			tokenUrl: 'https://example.com/cs-token-endpoint',
- * 			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+ * 			tokenUrl: 'https://example.com/cs-token-endpoint'
  * 		}
  * 	} )
  * 	.then( ... )
@@ -95,8 +94,7 @@ export interface CloudServicesConfig {
 	 * to refresh the token.
 	 *
 	 * You can find more information about token endpoints in the
-	 * [Easy Image](https://ckeditor.com/docs/cs/latest/developer-resources/easy-image/service-details.html) guide
-	 * and [Cloud Services - Token endpoint](https://ckeditor.com/docs/cs/latest/developer-resources/security/token-endpoint.html)
+	 * [Cloud Services - Token endpoint](https://ckeditor.com/docs/cs/latest/developer-resources/security/token-endpoint.html)
 	 * documentation.
 	 *
 	 * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
@@ -105,15 +103,10 @@ export interface CloudServicesConfig {
 
 	/**
 	 * The endpoint URL for [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) uploads.
-	 * This option must be set for Easy Image to work correctly.
+	 * This option is used by the legacy Easy Image product.
 	 *
-	 * The upload URL is unique for each customer and can be found in the
-	 * [CKEditor Ecosystem customer dashboard](https://dashboard.ckeditor.com) after subscribing to the Easy Image service.
-	 * To learn more, check the [Easy Image](https://ckeditor.com/docs/cs/latest/developer-resources/easy-image/service-details.html) guide.
-	 *
-	 * Note: Easy Image is a legacy product and only maintained for existing clients.
-	 *
-	 * Note: Make sure to also set the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} configuration option.
+	 * Note: Easy Image is a legacy product and only maintained for existing clients. Make sure to also set the
+	 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} configuration option.
 	 */
 	uploadUrl?: string;
 

@@ -11,7 +11,8 @@ import {
 import { ImageEditor } from './build-image-source.js';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-image-insert-via-pasting-url-into-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-insert-via-pasting-url-into-editor' ),
 		removePlugins: [ 'ArticlePluginSet', 'ImageCaption', 'LinkImage' ],
 		cloudServices: CS_CONFIG,
 		toolbar: {

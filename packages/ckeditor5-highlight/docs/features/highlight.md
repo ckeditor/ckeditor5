@@ -27,7 +27,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, Highlight } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Highlight, /* ... */ ],
 		toolbar: [ 'highlight', /* ... */ ]
@@ -56,7 +56,7 @@ For example, the following editor supports two styles (a green marker and a red 
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		highlight: {
 			options: [
@@ -89,7 +89,7 @@ Instead of using the (default) `'highlight'` button, the feature also supports a
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		toolbar: {
 			items: [
@@ -139,7 +139,7 @@ You can use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hs
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		highlight: {
 			options: [

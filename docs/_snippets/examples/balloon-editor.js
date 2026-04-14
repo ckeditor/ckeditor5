@@ -5,17 +5,23 @@
 
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	BalloonEditor,
 	getViewportTopOffsetConfig,
 	setViewportTopOffsetDynamically
 } from '@snippets/index.js';
 
 BalloonEditor
-	.create( document.querySelector( '#snippet-balloon-editor' ), {
-		removePlugins: [
-			'CKBox'
-		],
+	.create( {
+		root: {
+			element: document.querySelector( '#snippet-balloon-editor' )
+		},
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

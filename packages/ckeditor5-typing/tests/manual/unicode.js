@@ -9,7 +9,8 @@ import { Typing } from '../../src/typing.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph ],
 		toolbar: []
 	} )

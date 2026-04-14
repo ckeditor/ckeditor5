@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { HtmlSupportDataSchemaBlockElementDefinition, HtmlSupportDataSchemaInlineElementDefinition } from './dataschema.js';
-
 /**
  * @module html-support/schemadefinitions
  */
+
+import type { HtmlSupportDataSchemaBlockElementDefinition, HtmlSupportDataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**
  * Skipped elements due to HTML deprecation:

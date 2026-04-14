@@ -11,14 +11,15 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 
-const editorData = {
-	intro: document.querySelector( '#editor-intro' ),
-	content: document.querySelector( '#editor-content' ),
-	outro: document.querySelector( '#editor-outro' )
+const roots = {
+	intro: { element: document.querySelector( '#editor-intro' ) },
+	content: { element: document.querySelector( '#editor-content' ) },
+	outro: { element: document.querySelector( '#editor-outro' ) }
 };
 
 MultiRootEditor
-	.create( editorData, {
+	.create( {
+		roots,
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, ShowBlocks ],
 		toolbar: [ 'showBlocks', '|', 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 	} )

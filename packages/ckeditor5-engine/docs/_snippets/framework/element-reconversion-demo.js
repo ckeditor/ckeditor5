@@ -337,7 +337,8 @@ class ComplexBox extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#editor-element-reconversion' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-element-reconversion' ),
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ ComplexBox ],
 		image: {

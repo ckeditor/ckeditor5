@@ -5,6 +5,7 @@
 
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	InlineEditor,
 	getViewportTopOffsetConfig,
 	setViewportTopOffsetDynamically
@@ -14,9 +15,9 @@ const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor 
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
-		removePlugins: [
-			'CKBox'
-		],
+		root: {
+			element: inlineElement
+		},
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()
@@ -31,12 +32,16 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		}
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
 		config.removePlugins = [
-			...config.removePlugins,
 			'Blockquote',
 			'Image',
 			'ImageCaption',
@@ -44,9 +49,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			'ImageToolbar',
 			'ImageUpload',
 			'List',
-			'EasyImage',
-			'CKFinder',
-			'CKFinderUploadAdapter'
+			'CKBox'
 		];
 		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
 	} else {
@@ -63,7 +66,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 	}
 
 	InlineEditor
-		.create( inlineElement, config )
+		.create( config )
 		.then( editor => {
 			window.editor = editor;
 

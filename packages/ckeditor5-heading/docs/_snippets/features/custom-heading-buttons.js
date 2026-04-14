@@ -11,7 +11,8 @@ import {
 import { HeadingEditor } from './heading-source.js';
 
 HeadingEditor
-	.create( document.querySelector( '#snippet-custom-heading-buttons' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-custom-heading-buttons' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

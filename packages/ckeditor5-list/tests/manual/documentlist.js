@@ -30,7 +30,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import { List } from '../../src/list.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, IndentBlock, Italic, Link,
 			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,

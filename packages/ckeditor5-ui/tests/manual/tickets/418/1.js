@@ -15,7 +15,8 @@ import { BlockToolbar } from '../../../../src/toolbar/block/blocktoolbar.js';
 import { BalloonToolbar } from '../../../../src/toolbar/balloon/balloontoolbar.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			Essentials,
 			List,

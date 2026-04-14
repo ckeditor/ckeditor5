@@ -35,7 +35,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 import { ClassicEditor, PageBreak } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ PageBreak, /* ... */ ],
 		toolbar: [ 'pageBreak', /* ... */ ],

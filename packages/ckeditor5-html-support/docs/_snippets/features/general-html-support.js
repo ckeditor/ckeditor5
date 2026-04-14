@@ -17,7 +17,8 @@ import { GHSEditor } from './general-html-support-source.js';
 import './general-html-support.css';
 
 GHSEditor
-	.create( document.querySelector( '#snippet-general-html-support' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-general-html-support' ),
 		extraPlugins: [
 			ArticlePluginSet,
 			GeneralHtmlSupport

@@ -76,7 +76,8 @@ class MinimalisticDialog extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#ui-dialog-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#ui-dialog-editor' ),
 		plugins: [ Essentials, Paragraph, Bold, Italic, Underline, MinimalisticDialog, Dialog ],
 		toolbar: [ 'bold', 'italic', 'underline', '|', 'showDialog' ]
 	} )

@@ -24,7 +24,7 @@ Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engin
 
 To run the automated tests, use the `pnpm run test [<args>...]` command.
 
-It accepts the following arguments:
+It accepts the following arguments (you can also run with `--help` to see all available options):
 
 * `--watch` (alias `-w`) &ndash; Whether to watch the files and execute tests whenever any file changes.
 * `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
@@ -39,19 +39,19 @@ It accepts the following arguments:
 
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
 
-```
+```bash
 pnpm run test -c --files=core
 ```
 
 Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
 
-```
+```bash
 pnpm run test -cw --files=engine/view/,typing
 ```
 
 Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
 
-```
+```bash
 pnpm run test -w --files=basic-styles/bold*
 ```
 
@@ -99,12 +99,11 @@ Negations work as well.
 expect( selection ).to.not.have.attribute( 'linkHref' );
 ```
 
-
 ## Running manual tests
 
 To start the manual tests server, use the `pnpm run manual` task.
 
-The `pnpm run manual` task accepts the following options:
+The `pnpm run manual` task accepts the following options (you can also run with `--help` to see all available options):
 
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
 * `--language="pl"` &ndash; The main language built into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link getting-started/setup/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
@@ -160,7 +159,8 @@ An example JavaScript file:
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph ]
 	} )
@@ -194,7 +194,7 @@ To verify that all manual tests can be **opened** without any errors (the crawle
 
 To check manual tests, start the server (`pnpm manual --files=XYZ`), and then run the crawler:
 
-```
+```bash
 pnpm run manual:verify
 ```
 
@@ -214,25 +214,25 @@ The command accepts the following arguments:
 
 Run all memory leak tests:
 
-```
+```bash
 pnpm run test:memory
 ```
 
 Test only the classic and inline editors:
 
-```
+```bash
 pnpm run test:memory --editor ClassicEditor --editor InlineEditor
 ```
 
 Use a custom HTML file from `scripts/memory/assets`:
 
-```
+```bash
 pnpm run test:memory --html my-test.html
 ```
 
 Reuse existing assets:
 
-```
+```bash
 pnpm run test:memory --no-build
 ```
 

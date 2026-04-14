@@ -30,13 +30,20 @@ fi
 
 echo "Starting the manual test server..."
 
+# Find a free port for the manual test server. The port is discovered by binding to port 0
+# (which lets the OS assign an ephemeral port) and then reading back the assigned port.
+# There is a small race window between releasing this port and the server binding to it,
+# but the server's EADDRINUSE retry logic handles that safely.
+PORT=$(node -e "const s=require('net').createServer();s.listen(0,()=>{process.stdout.write(String(s.address().port));s.close()})")
+
 # `yarn run` does not forward SIGTERM to process, so we need to use the command directly.
-node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js --tsconfig ./tsconfig.test.json $MANUAL_TEST_SERVER_OPTIONS &
+node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js --tsconfig ./tsconfig.test.json --port $PORT $MANUAL_TEST_SERVER_OPTIONS &
 
 MANUAL_TEST_SERVER_PROCESS_ID=$!
 
-echo "Waiting for the server..."
-node_modules/.bin/wait-on http://localhost:8125 && pnpm run manual:verify
+echo "Waiting for the server on port $PORT..."
+
+node_modules/.bin/wait-on "http://localhost:$PORT" && pnpm run manual:verify --port $PORT
 
 MANUAL_VERIFY_EXIT_CODE=$?
 

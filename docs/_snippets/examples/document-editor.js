@@ -6,17 +6,26 @@
 import { TableColumnResize } from 'ckeditor5';
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	DecoupledEditor,
 	getViewportTopOffsetConfig,
 	setViewportTopOffsetDynamically
 } from '@snippets/index.js';
 
 DecoupledEditor
-	.create( document.querySelector( '.document-editor__editable' ), {
+	.create( {
+		root: {
+			element: document.querySelector( '.document-editor__editable' )
+		},
 		extraPlugins: [
 			TableColumnResize
 		],
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		toolbar: {
 			items: [
 				'undo', 'redo',

@@ -69,8 +69,9 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-a' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-a' ),
 		list: {
 			properties: {
 				styles: true,
@@ -87,8 +88,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-b' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-b' ),
 		list: {
 			properties: {
 				styles: true,
@@ -105,8 +107,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-c' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-c' ),
 		list: {
 			properties: {
 				styles: true,
@@ -125,8 +128,9 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-d' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-d' ),
 		list: {
 			properties: {
 				styles: false,
@@ -143,8 +147,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-e' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-e' ),
 		list: {
 			properties: {
 				styles: false,
@@ -161,8 +166,9 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-f' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-f' ),
 		list: {
 			properties: {
 				styles: false,
@@ -181,8 +187,9 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-g' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-g' ),
 		list: {
 			properties: {
 				styles: true,
@@ -201,8 +208,9 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-h' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-h' ),
 		list: {
 			properties: {
 				styles: false,
@@ -221,8 +229,9 @@ ClassicEditor
 // ------------------------------------------------------------------
 
 ClassicEditor
-	.create( document.querySelector( '#editor-i' ), {
+	.create( {
 		...config,
+		attachTo: document.querySelector( '#editor-i' ),
 		menuBar: {
 			isVisible: true
 		},

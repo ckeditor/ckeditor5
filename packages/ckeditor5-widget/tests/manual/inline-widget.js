@@ -116,7 +116,8 @@ class InlineWidget extends Plugin {
 }
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table, Link ],
 		toolbar: [ 'heading', '|', 'bold', 'link', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
 	} )

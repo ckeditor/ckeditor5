@@ -37,7 +37,8 @@ ClassicEditor.builtinPlugins.push(
 	CKBoxImageEdit );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-html-embed' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-html-embed' ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

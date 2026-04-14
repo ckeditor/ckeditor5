@@ -10,7 +10,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph ],
 		toolbar: []
 	} )

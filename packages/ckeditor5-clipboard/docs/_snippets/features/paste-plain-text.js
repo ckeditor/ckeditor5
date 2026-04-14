@@ -11,7 +11,8 @@ import {
 import { PasteEditor } from './build-paste-source.js';
 
 PasteEditor
-	.create( document.querySelector( '#snippet-paste-plain-text' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-paste-plain-text' ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

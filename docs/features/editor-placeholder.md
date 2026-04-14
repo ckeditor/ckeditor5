@@ -35,7 +35,8 @@ Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.
 import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.getElementById( 'editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 	} )
@@ -58,7 +59,7 @@ You can use the {@link module:core/editor/editorconfig~EditorConfig#root `editor
 
 ```js
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		// ... Other configuration options ...
 		root: {
 			placeholder: 'Type the content here!'
@@ -76,31 +77,26 @@ If your editor implementation uses multiple roots, configure placeholders using 
 
 ```js
 MultiRootEditor
-	.create(
-	// Roots for the editor:
-		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		// Config:
-		{
-			roots: {
-				header: {
-					placeholder: 'Type header...'
-				},
-				content: {
-					placeholder: 'Type content...'
-				},
-				leftSide: {
-					placeholder: 'Type left-side...'
-				},
-				rightSide: {
-					placeholder: 'Type right-side...'
-				}
+	.create( {
+		roots: {
+			header: {
+				placeholder: 'Type header...',
+				element: document.querySelector( '#header' )
+			},
+			content: {
+				placeholder: 'Type content...',
+				element: document.querySelector( '#content' )
+			},
+			leftSide: {
+				placeholder: 'Type left-side...',
+				element: document.querySelector( '#left-side' )
+			},
+			rightSide: {
+				placeholder: 'Type right-side...',
+				element: document.querySelector( '#right-side' )
 			}
-		} )
+		}
+	} )
 	.then( editor => {
 		console.log( editor );
 	} )

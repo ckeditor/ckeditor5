@@ -10,7 +10,8 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 import { TextTransformation } from '../../src/texttransformation.js';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: global.document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, TextTransformation ],
 		toolbar: [
 			'heading',

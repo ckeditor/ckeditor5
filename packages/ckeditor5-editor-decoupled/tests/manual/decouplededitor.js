@@ -17,7 +17,10 @@ let editor, editable, observer;
 
 function initEditor() {
 	DecoupledEditor
-		.create( editorData, {
+		.create( {
+			root: {
+				initialData: editorData
+			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )

@@ -16,7 +16,8 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { CKFinderUploadAdapter } from '../../src/uploadadapter.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,

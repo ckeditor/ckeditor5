@@ -23,6 +23,7 @@ import { Bookmark } from '../../src/bookmark.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const config = {
+	attachTo: document.querySelector( '#editor-with-paste-from-office' ),
 	plugins: [
 		Essentials, Link, List, LinkImage, Paragraph, Table, Image, ImageUpload, ImageStyle, ImageToolbar,
 		CodeBlock, BlockQuote, EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, PasteFromOffice, Bookmark
@@ -55,7 +56,7 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-paste-from-office' ), config )
+	.create( config )
 	.then( editor => {
 		window.editor = editor;
 		CKEditorInspector.attach( { editor } );

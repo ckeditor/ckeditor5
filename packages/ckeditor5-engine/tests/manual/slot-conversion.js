@@ -234,7 +234,8 @@ function AddRenderCount( editor ) {
 }
 
 async function createEditor( multiSlot ) {
-	const editor = await ClassicEditor.create( document.querySelector( '#editor' ), {
+	const editor = await ClassicEditor.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, Box, AddRenderCount ],
 		toolbar: [
 			'heading',

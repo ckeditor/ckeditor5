@@ -1072,6 +1072,16 @@ The second case is common for the documentation files, because its pieces are lo
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
+### Valid `@module` tags: `ckeditor5-rules/validate-module-tag`
+
+<info-box warning>
+	This rule should only be used on `.ts` files in package `src/` directories.
+</info-box>
+
+This rule requires a file-level `@module` JSDoc tag at the top of each TypeScript source file in `packages/*/src`. The tag value must match the file path.
+
+For example, `packages/ckeditor5-feature/src/featureediting.ts` should start with `@module feature/featureediting`. For `index.ts` files, both `@module feature` and `@module feature/index` are allowed. The `augmentation.ts` file is excluded from this rule.
+
 ### Require or disallow certain plugin flags: `ckeditor5-rules/ckeditor-plugin-flags`
 
 <info-box warning>

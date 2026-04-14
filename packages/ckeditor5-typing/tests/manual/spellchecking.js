@@ -14,9 +14,10 @@ window.setInterval( function() {
 	console.log( _getModelData( window.editor.model ) );
 }, 3000 );
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
+ClassicEditor.create( {
 	plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
-	toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
+	toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
+	attachTo: document.querySelector( '#editor' )
 } )
 	.then( editor => {
 		window.editor = editor;

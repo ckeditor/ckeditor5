@@ -22,7 +22,8 @@ import { Bookmark } from '../../src/bookmark.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-output' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-output' ),
 		plugins: [
 			Essentials, Link, List, LinkImage, Paragraph, Table, Image, ImageUpload, CodeBlock,
 			BlockQuote, EasyImage, CloudServices, ImageInsert, Heading, Bold, Italic, Bookmark

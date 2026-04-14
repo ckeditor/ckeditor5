@@ -13,7 +13,8 @@ import { Image } from '../../../../src/image.js';
 import { ImageCaption } from '../../../../src/imagecaption.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Enter, Typing, Paragraph, Link, Image, ImageCaption, BlockToolbar ],
 		toolbar: [],
 		blockToolbar: [ 'Link' ]

@@ -11,7 +11,8 @@ import {
 import { ImageEditor } from './build-image-source.js';
 
 ImageEditor
-	.create( document.querySelector( '#snippet-presentational-image-style-default' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-presentational-image-style-default' ),
 		removePlugins: [ 'LinkImage', 'AutoImage', 'imageCaption' ],
 		toolbar: {
 			items: [

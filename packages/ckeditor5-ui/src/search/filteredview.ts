@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { FocusableView } from '../focuscycler.js';
-
 /**
  * @module ui/search/filteredview
  */
+
+import type { FocusableView } from '../focuscycler.js';
 
 /**
  * A view that can be filtered by a {@link module:ui/search/text/searchtextview~SearchTextView}.

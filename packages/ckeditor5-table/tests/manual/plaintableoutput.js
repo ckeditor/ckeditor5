@@ -18,7 +18,8 @@ import { TableCaption } from '../../src/tablecaption.js';
 import { PlainTableOutput } from '../../src/plaintableoutput.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [
 			ArticlePluginSet,
 			Table,

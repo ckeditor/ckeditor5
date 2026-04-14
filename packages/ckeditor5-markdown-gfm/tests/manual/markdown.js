@@ -13,7 +13,8 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Markdown } from '../../src/markdown.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Markdown, ArticlePluginSet, Code, CodeBlock, Strikethrough, TodoList, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading',

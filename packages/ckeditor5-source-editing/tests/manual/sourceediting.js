@@ -11,7 +11,8 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { SourceEditing } from '../../src/sourceediting.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ ArticlePluginSet, Table, TableToolbar, SourceEditing, CodeBlock ],
 		toolbar: [
 			'sourceEditing', '|', 'heading', '|', 'bold', 'italic', 'link', '|',

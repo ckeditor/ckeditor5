@@ -17,7 +17,8 @@ import { GHSEditor } from './general-html-support-source.js';
 import './full-page-html.css';
 
 GHSEditor
-	.create( document.querySelector( '#snippet-full-page-html' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-full-page-html' ),
 		extraPlugins: [
 			ArticlePluginSet,
 			FullPage,

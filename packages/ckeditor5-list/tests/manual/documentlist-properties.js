@@ -97,8 +97,9 @@ const config = {
 
 function createEditor( idSuffix, properties ) {
 	ClassicEditor
-		.create( document.querySelector( '#editor-' + idSuffix ), {
+		.create( {
 			...config,
+			attachTo: document.querySelector( '#editor-' + idSuffix ),
 			list: {
 				properties
 			}

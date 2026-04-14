@@ -14,7 +14,8 @@ import {
 import { SpecialCharactersEditor } from './special-characters-source.js';
 
 SpecialCharactersEditor
-	.create( document.querySelector( '#snippet-special-characters' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-special-characters' ),
 		extraPlugins: [ SpecialCharactersEssentials ],
 		toolbar: {
 			items: [

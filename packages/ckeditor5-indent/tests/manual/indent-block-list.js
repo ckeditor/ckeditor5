@@ -217,7 +217,10 @@ function getEditorConfig() {
 
 function createEditor() {
 	const initialize = () =>
-		ClassicEditor.create( editorElement, getEditorConfig() )
+		ClassicEditor.create( {
+			...getEditorConfig(),
+			attachTo: editorElement
+		} )
 			.then( newEditor => {
 				editor = newEditor;
 				window.editor = editor;

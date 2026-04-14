@@ -898,9 +898,13 @@ function modelChangePostFixer(
  */
 function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertContentEvent> {
 	return ( evt, [ content, selectable ] ) => {
-		const items = content.is( 'documentFragment' ) ?
+		// Only consider block elements for list attribute fixing. Applying list attributes to text nodes
+		// or inline objects does not make sense and can cause editor crashes.
+		// See https://github.com/ckeditor/ckeditor5/issues/19994.
+		const items = ( content.is( 'documentFragment' ) ?
 			Array.from( content.getChildren() ) :
-			[ content ];
+			[ content ]
+		).filter( item => !model.schema.isInline( item ) );
 
 		if ( !items.length ) {
 			return;

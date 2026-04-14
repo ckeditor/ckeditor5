@@ -48,7 +48,8 @@ const plugins = ClassicEditor.builtinPlugins
 	] );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-paste-from-markdown' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-paste-from-markdown' ),
 		plugins,
 		toolbar: {
 			items: [

@@ -16,7 +16,8 @@ const IFRAME_SRC = '//ckeditor.iframe.ly/api/iframe';
 const API_KEY = 'febab8169e71e501ae2e707f55105647';
 
 MediaEditor
-	.create( document.querySelector( '#snippet-media-embed-preview' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-media-embed-preview' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

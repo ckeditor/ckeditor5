@@ -7,6 +7,7 @@
  * @module editor-classic/classiceditor
  */
 
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { ClassicEditorUI } from './classiceditorui.js';
 import { ClassicEditorUIView } from './classiceditoruiview.js';
 
@@ -21,7 +22,6 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
-import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The classic editor implementation. It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
@@ -79,23 +79,21 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config, 'main', true );
 
-		if ( isElement( this.config.get( 'roots' )!.main.element ) ) {
-			/**
-			 * The `config.attachTo` option is not compatible with the `root.element` option.
-			 * Please use {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`}
-			 * to specify the source element for the {@link module:editor-classic/classiceditor~ClassicEditor}.
-			 *
-			 * @error editor-create-attachto-conflict
-			 */
-			logWarning( 'editor-create-attachto-conflict' );
-		}
-
 		// From this point use only normalized `roots.main.element`.
 		const sourceElement = this.config.get( 'attachTo' );
 
 		this.config.define( 'menuBar.isVisible', false );
 
 		if ( isElement( sourceElement ) ) {
+			if ( !sourceElement.isConnected ) {
+				/**
+				 * Cannot initialize the editor because the provided source element is not attached to the DOM and cannot be replaced.
+				 *
+				 * @error editor-source-element-not-attached
+				 */
+				throw new CKEditorError( 'editor-source-element-not-attached', null );
+			}
+
 			this.sourceElement = sourceElement;
 		}
 

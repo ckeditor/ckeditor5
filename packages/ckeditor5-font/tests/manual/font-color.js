@@ -9,7 +9,8 @@ import { FontColor } from '../../src/fontcolor.js';
 import { FontBackgroundColor } from '../../src/fontbackgroundcolor.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,
