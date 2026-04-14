@@ -21,7 +21,7 @@ export {
 export { Command, type CommandExecuteEvent } from './command.js';
 export { MultiCommand } from './multicommand.js';
 export { CommandCollection, type CommandsMap } from './commandcollection.js';
-export type { PluginsMap, PluginCollection, PluginEntry } from './plugincollection.js';
+export { type PluginsMap, PluginCollection, type PluginEntry } from './plugincollection.js';
 
 export { Context, type ContextConfig } from './context.js';
 export { ContextPlugin, type ContextInterface, type ContextPluginDependencies } from './contextplugin.js';
