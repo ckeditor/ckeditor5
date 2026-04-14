@@ -268,7 +268,14 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 		allowAttributes: [ 'tableAlignment' ]
 	} );
 
-	schema.setAttributeProperties( 'tableAlignment', { isFormatting: true } );
+	schema.setAttributeProperties( 'tableAlignment', {
+		isFormatting: true,
+		blockAlignment: {
+			left: 'blockLeft',
+			right: 'blockRight',
+			center: 'center'
+		}
+	} );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {

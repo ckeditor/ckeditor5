@@ -35,6 +35,16 @@
 		margin: 0.9em auto;
 	}
 
+	/*
+	 * We convert td[align] and th[align] attributes to text alignment styles (e.g., text-align: center).
+	 * To prevent the "propagation" of this text-align to nested tables, which are often used for aligning content
+	 * in email templates, we reset the text alignment using text-align: initial.
+	 * See: https://github.com/ckeditor/ckeditor5/issues/20042
+	 */
+	& :is(td, th)[style*="text-align"] > .table {
+		text-align: initial;
+	}
+
 	& table.table:not(.layout-table),
 	& figure.table:not(.layout-table) > table {
 		/* The table cells should have slight borders */

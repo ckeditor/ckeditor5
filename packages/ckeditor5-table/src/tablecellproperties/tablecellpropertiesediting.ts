@@ -10,6 +10,7 @@
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
+	Matcher,
 	addBorderStylesRules,
 	addPaddingStylesRules,
 	addBackgroundStylesRules,
@@ -293,6 +294,60 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 				}
 			}
 		} );
+
+	// A converter that adds a fallback for handling `td[align]`.
+	// If the child of a column that had an `align` attribute is a table (or any other element that supports block alignment),
+	// it aligns that element accordingly using the appropriate model attribute.
+	// See: https://github.com/ckeditor/ckeditor5/issues/20042
+	conversion.for( 'upcast' ).add( dispatcher => {
+		const matcher = new Matcher( {
+			name: /^(td|th)$/,
+			attributes: {
+				align: true
+			}
+		} );
+
+		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
+			const matcherResult = matcher.match( data.viewItem );
+
+			if ( !matcherResult ) {
+				return;
+			}
+
+			const alignValue = data.viewItem.getAttribute( 'align' )!;
+			const modelElement = data.modelRange?.start.nodeAfter;
+
+			if ( !modelElement?.is( 'element' ) ) {
+				return;
+			}
+
+			for ( const child of modelElement.getChildren() ) {
+				if ( !child.is( 'element' ) ) {
+					continue;
+				}
+
+				const definition = conversionApi.schema.getDefinition( child );
+
+				if ( !definition ) {
+					continue;
+				}
+
+				for ( const attrName of definition.allowAttributes ) {
+					const attrProperties = conversionApi.schema.getAttributeProperties( attrName );
+
+					if ( !attrProperties.blockAlignment || child.hasAttribute( attrName ) ) {
+						continue;
+					}
+
+					const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
+
+					if ( mappedValue ) {
+						conversionApi.writer.setAttribute( attrName, mappedValue, child );
+					}
+				}
+			}
+		}, { priority: 'lowest' } );
+	} );
 }
 
 /**
