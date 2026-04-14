@@ -3,23 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CS_CONFIG, MultiRootEditor } from '@snippets/index.js';
+import { CS_CONFIG, TOKEN_URL, MultiRootEditor } from '@snippets/index.js';
 
 MultiRootEditor
 	.create(
-		// Define roots / editable areas:
 		{
-			header: document.querySelector( '#header' ),
-			content: document.querySelector( '#content' ),
-			leftSide: document.querySelector( '#left-side' ),
-			rightSide: document.querySelector( '#right-side' )
-		},
-		// Editor configration:
-		{
-			removePlugins: [
-				'CKBox'
-			],
-			cloudServices: CS_CONFIG
+			cloudServices: CS_CONFIG,
+			ckbox: {
+				tokenUrl: TOKEN_URL,
+				forceDemoLabel: true,
+				allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+			},
+			roots: {
+				header: {
+					element: document.querySelector( '#header' )
+				},
+				content: {
+					element: document.querySelector( '#content' )
+				},
+				leftSide: {
+					element: document.querySelector( '#left-side' )
+				},
+				rightSide: {
+					element: document.querySelector( '#right-side' )
+				}
+			}
 		}
 	)
 	.then( editor => {

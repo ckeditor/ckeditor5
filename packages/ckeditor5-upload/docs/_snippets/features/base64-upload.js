@@ -14,7 +14,8 @@ import {
 ClassicEditor.builtinPlugins.push( Base64UploadAdapter );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-base64-upload' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-image-base64-upload' ),
 		removePlugins: [
 			'CKBox'
 		],

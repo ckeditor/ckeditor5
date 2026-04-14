@@ -18,9 +18,12 @@ const container = document.querySelector( '.container' );
 
 function initEditor() {
 	ClassicEditor
-		.create( `<h2>Hello world! #${ counter }</h2><p>This is an editor instance.</p>`, {
+		.create( {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
+			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
+			root: {
+				initialData: `<h2>Hello world! #${ counter }</h2><p>This is an editor instance.</p>`
+			}
 		} )
 		.then( editor => {
 			counter += 1;

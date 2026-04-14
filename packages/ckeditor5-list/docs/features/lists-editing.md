@@ -34,7 +34,7 @@ When working with simple content or in small editing areas, you might not need t
 import { ClassicEditor, List } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
@@ -60,7 +60,7 @@ To prevent this behavior, enable the {@link module:list/list/adjacentlistssuppor
 import { ClassicEditor, List, AdjacentListsSupport } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, AdjacentListsSupport, /* ... */ ]
 	} )

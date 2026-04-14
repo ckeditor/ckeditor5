@@ -319,7 +319,8 @@ class Abbreviation extends Plugin {
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-abbreviation-plugin' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-abbreviation-plugin' ),
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

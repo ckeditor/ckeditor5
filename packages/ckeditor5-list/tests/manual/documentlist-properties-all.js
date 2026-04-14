@@ -30,7 +30,8 @@ import { List } from '../../src/list.js';
 import { ListProperties } from '../../src/listproperties.js';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		...( {
 			plugins: [
 				Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,

@@ -5,6 +5,7 @@
 
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
 import { AutosaveEditor } from './build-autosave-source.js';
@@ -18,8 +19,14 @@ document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', 
 
 document.addEventListener( 'DOMContentLoaded', () => {
 	AutosaveEditor
-		.create( document.querySelector( '#snippet-manualsave' ), {
+		.create( {
+			attachTo: document.querySelector( '#snippet-manualsave' ),
 			cloudServices: CS_CONFIG,
+			ckbox: {
+				tokenUrl: TOKEN_URL,
+				forceDemoLabel: true,
+				allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+			},
 			ui: {
 				viewportOffset: {
 					top: getViewportTopOffsetConfig()

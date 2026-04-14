@@ -20,7 +20,8 @@ createEditor( '#editor-geometry', 'geometry' );
 
 function createEditor( target, inspectorName ) {
 	ClassicEditor
-		.create( document.querySelector( target ), {
+		.create( {
+			attachTo: document.querySelector( target ),
 			plugins: [ ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties ],
 			toolbar: [
 				'heading', '|',

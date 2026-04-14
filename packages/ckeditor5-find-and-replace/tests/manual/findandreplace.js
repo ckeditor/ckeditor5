@@ -21,7 +21,8 @@ createEditor( '#editor-dialog' );
 function createEditor( selector, featureConfig = {} ) {
 	// Note: We need to load paragraph because we don't have inline editors yet.
 	ClassicEditor
-		.create( document.querySelector( selector ), {
+		.create( {
+			attachTo: document.querySelector( selector ),
 			plugins: [ Essentials, Paragraph, FindAndReplace, Highlight, ArticlePluginSet, FontColor, SourceEditing ],
 			toolbar: [ 'findAndReplace', '|', 'sourceEditing', '|', 'heading', 'undo', 'redo', 'highlight', 'bold', 'fontColor' ],
 			image: {

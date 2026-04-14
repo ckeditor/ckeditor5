@@ -30,7 +30,8 @@ const dataDiv = document.querySelector( '#data' );
 const rtfDiv = document.querySelector( '#rtf' );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			ArticlePluginSet,

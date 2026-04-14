@@ -142,7 +142,8 @@ const DummyLinkList = createPredefinedLinksProvider( {
 } );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-link-providers' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-link-providers' ),
 		plugins: [
 			Link, Typing, Paragraph, Undo, Enter,
 			SocialLinksPlugin, ShopsLinksPlugin, EmptyLinkList, CKLinkList
@@ -157,7 +158,8 @@ ClassicEditor
 	} );
 
 ClassicEditor
-	.create( document.querySelector( '#editor-with-many-link-providers' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor-with-many-link-providers' ),
 		plugins: [
 			Link, Typing, Paragraph, Undo, Enter,
 			SocialLinksPlugin, ShopsLinksPlugin, EmptyLinkList, CKLinkList, DummyLinkList

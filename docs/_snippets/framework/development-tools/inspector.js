@@ -6,13 +6,20 @@
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-classic-editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-classic-editor' ),
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

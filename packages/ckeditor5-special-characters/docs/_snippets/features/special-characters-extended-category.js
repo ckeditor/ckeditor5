@@ -20,7 +20,8 @@ function SpecialCharactersExtended( editor ) {
 }
 
 SpecialCharactersEditor
-	.create( document.querySelector( '#snippet-special-characters-extended-category' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-special-characters-extended-category' ),
 		extraPlugins: [ SpecialCharactersEssentials, SpecialCharactersExtended ],
 		toolbar: {
 			items: [

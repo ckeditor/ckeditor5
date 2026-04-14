@@ -11,7 +11,8 @@ import {
 import { PlaceholderEditor } from './placeholder-build.js';
 
 PlaceholderEditor
-	.create( document.querySelector( '#snippet-placeholder-custom' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-placeholder-custom' ),
 		cloudServices: CS_CONFIG,
 		toolbar: [
 			'undo', 'redo', '|', 'heading',

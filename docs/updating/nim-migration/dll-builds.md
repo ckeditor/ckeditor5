@@ -68,7 +68,8 @@ If you are using the DLL build, follow the steps below:
 	<script type="module">
 	import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 
-	ClassicEditor.create( document.querySelector( '#editor' ), {
+	ClassicEditor.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Bold, Italic, Paragraph ],
 		toolbar: [ /* ... */ ]
 	} );
@@ -82,7 +83,8 @@ If you are using the DLL build, follow the steps below:
 	import { ClassicEditor, Essentials, Bold, Italic, Paragraph, Mention } from 'ckeditor5';
 	import { SlashCommand } from 'ckeditor5-premium-features';
 
-	ClassicEditor.create( document.querySelector( '#editor' ), {
+	ClassicEditor.create( {
+		attachTo: document.querySelector( '#editor' ),
 		plugins: [ Essentials, Bold, Italic, Paragraph, Mention, SlashCommand ],
 		toolbar: [ /* ... */ ],
 		licenseKey: '<YOUR_LICENSE_KEY>',
@@ -177,7 +179,10 @@ const config = {
 };
 
 CKEditor5.editorClassic.ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		...config
+	} )
 	.then( editor => {
 			window.editor = editor;
 	} );
@@ -287,7 +292,10 @@ const config = {
 };
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), config )
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		...config
+	} )
 	.then( editor => {
 			window.editor = editor;
 	} );

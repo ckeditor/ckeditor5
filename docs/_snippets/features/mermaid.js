@@ -6,15 +6,17 @@
 import { CKBox, PictureEditing, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
-import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';
+import { Mermaid } from '@ckeditor/ckeditor5-mermaid';
 
-import '@ckeditor/ckeditor5-mermaid/dist/index.css';
+import '@ckeditor/ckeditor5-mermaid/index.css';
 
 ClassicEditor
-	.create( document.querySelector( '#mermaid' ), {
+	.create( {
+		attachTo: document.querySelector( '#mermaid' ),
 		plugins: ClassicEditor.builtinPlugins.concat( [
 			PictureEditing,
 			ImageResize,
@@ -38,6 +40,11 @@ ClassicEditor
 			}
 		},
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		// A proper indentation is required for the Mermaid syntax to work.
 		root: {
 			initialData: `<h2>CKEditor timeline diagram</h2>

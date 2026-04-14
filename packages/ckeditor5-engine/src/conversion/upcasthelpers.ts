@@ -3,6 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
+ * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}.
+ *
+ * @module engine/conversion/upcasthelpers
+ */
+
 import { Matcher, type MatchClassPatterns, type MatcherPattern, type MatchPropertyPatterns } from '../view/matcher.js';
 import { ConversionHelpers } from './conversionhelpers.js';
 
@@ -20,13 +27,6 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 import { priorities, type EventInfo, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
 import { cloneDeep } from 'es-toolkit/compat';
-
-/**
- * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
- * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}.
- *
- * @module engine/conversion/upcasthelpers
- */
 
 /**
  * Upcast conversion helper functions.

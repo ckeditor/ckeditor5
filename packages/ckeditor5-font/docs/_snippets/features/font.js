@@ -13,7 +13,8 @@ import {
 import { FontEditor } from './build-font-source.js';
 
 FontEditor
-	.create( document.querySelector( '#snippet-font' ), {
+	.create( {
+		attachTo: document.querySelector( '#snippet-font' ),
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

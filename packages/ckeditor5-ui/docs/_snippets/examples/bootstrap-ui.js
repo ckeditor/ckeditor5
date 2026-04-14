@@ -10,15 +10,12 @@ import {
 	ItalicEditing,
 	UnderlineEditing,
 	Clipboard,
-	CloudServices,
 	Editor,
 	ElementApiMixin,
 	attachToForm,
-	EasyImage,
 	Enter,
 	HeadingEditing,
 	Image,
-	ImageUpload,
 	Paragraph,
 	Typing,
 	EditorUI,
@@ -28,8 +25,6 @@ import {
 	ElementReplacer,
 	getDataFromElement
 } from 'ckeditor5';
-
-import { CS_CONFIG } from '@snippets/index.js';
 
 // Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends ElementApiMixin( Editor ) {
@@ -281,10 +276,9 @@ class BootstrapEditorUI extends EditorUI {
 BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
-			Clipboard, Enter, Typing, Paragraph, EasyImage, Image, ImageUpload, CloudServices,
+			Clipboard, Enter, Typing, Paragraph, Image,
 			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
-		],
-		cloudServices: CS_CONFIG
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

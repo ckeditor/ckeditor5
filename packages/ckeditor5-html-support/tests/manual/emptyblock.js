@@ -22,8 +22,9 @@ const preserveEmptyBlocksCheckbox = document.getElementById( 'preserve-empty-blo
 
 function createEditor1( preserveEmptyBlocksInEditingView ) {
 	return ClassicEditor
-		.create( document.getElementById( 'editor1' ), {
+		.create( {
 			...config,
+			attachTo: document.getElementById( 'editor1' ),
 			htmlSupport: {
 				preserveEmptyBlocksInEditingView
 			}
@@ -38,8 +39,9 @@ function createEditor1( preserveEmptyBlocksInEditingView ) {
 createEditor1( preserveEmptyBlocksCheckbox.checked );
 
 ClassicEditor
-	.create( document.getElementById( 'editor2' ), {
+	.create( {
 		...config,
+		attachTo: document.getElementById( 'editor2' ),
 		plugins: config.plugins.filter( plugin => plugin !== EmptyBlock )
 	} )
 	.then( instance => {

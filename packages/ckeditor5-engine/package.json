@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
-  "version": "47.6.1",
+  "version": "48.0.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
