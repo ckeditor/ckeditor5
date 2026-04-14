@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DiffResult } from './diff.js';
-import type { Change } from './difftochanges.js';
-
 /**
  * @module utils/fastdiff
  */
+
+import type { DiffResult } from './diff.js';
+import type { Change } from './difftochanges.js';
 
 /**
  * Finds positions of the first and last change in the given string/array and generates a set of changes:

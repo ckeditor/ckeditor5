@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { FontFamilyOption } from '../fontconfig.js';
-
 /**
  * @module font/fontfamily/utils
  */
+
+import type { FontFamilyOption } from '../fontconfig.js';
 
 /**
  * Normalizes the {@link module:font/fontconfig~FontFamilyConfig#options configuration options}

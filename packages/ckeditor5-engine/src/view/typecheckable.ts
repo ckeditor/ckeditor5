@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module engine/view/typecheckable
+ */
+
 import { type ViewAttributeElement } from './attributeelement.js';
 import { type ViewContainerElement } from './containerelement.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
@@ -19,10 +23,6 @@ import { type ViewSelection } from './selection.js';
 import { type ViewText } from './text.js';
 import { type ViewTextProxy } from './textproxy.js';
 import { type ViewUIElement } from './uielement.js';
-
-/**
- * @module engine/view/typecheckable
- */
 
 export abstract class ViewTypeCheckable {
 	/**

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module engine/model/utils/getselectedcontent
+ */
+
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelDocumentSelection } from '../documentselection.js';
 import { type ModelElement } from '../element.js';
@@ -10,10 +14,6 @@ import { type Model } from '../model.js';
 import { type ModelRange } from '../range.js';
 import { type ModelSelection } from '../selection.js';
 import { type ModelWriter } from '../writer.js';
-
-/**
- * @module engine/model/utils/getselectedcontent
- */
 
 /**
  * Gets a clone of the selected content.

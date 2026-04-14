@@ -4,14 +4,15 @@
  */
 
 import {
-	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, DropdownView,
-	ToolbarView, createDropdown, EasyImage, Essentials, Heading, HorizontalLine, Image,
+	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, CKBox, CloudServices,
+	DropdownView, ToolbarView, createDropdown, Essentials, Heading, HorizontalLine, Image,
 	ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, Link,
 	MediaEmbed, Paragraph, RemoveFormat, Bold, Italic, Strikethrough, Superscript, Subscript,
 	Underline, Table, TableToolbar
 } from 'ckeditor5';
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	DecoupledEditor,
 	attachTourBalloon,
 	findToolbarItem
@@ -108,7 +109,8 @@ DecoupledEditor
 			Autoformat,
 			BlockQuote,
 			Bold,
-			EasyImage,
+			CKBox,
+			CloudServices,
 			Essentials,
 			Font,
 			Heading,
@@ -192,7 +194,12 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module image/imagestyle/converters
+ */
+
 import { isEqual } from 'es-toolkit/compat';
 import type {
 	DowncastAttributeEvent,
@@ -15,10 +19,6 @@ import type {
 import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 import { DEFAULT_OPTIONS } from './utils.js';
-
-/**
- * @module image/imagestyle/converters
- */
 
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.

@@ -1122,6 +1122,30 @@ describe( 'DocumentSelection', () => {
 					new ModelElement( 'p', { p: true } ),
 					new ModelText( 'e', { e: true } )
 				] );
+
+				// Just to make sure how model looks.
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<p p="true"></p>' +
+
+					'<$text a="true">a</$text>' +
+
+					'<p p="true"></p>' +
+
+					'<$text b="true">b</$text>' +
+					'<$text c="true">c</$text>' +
+
+					'<p>' +
+						'<$text d="true">d</$text>' +
+					'</p>' +
+
+					'<p p="true"></p>' +
+
+					'<$text e="true">e</$text>' +
+
+					// Left-overs from parent describe.
+					'<p>foobar</p>' +
+					'<p></p>'
+				);
 			} );
 
 			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
@@ -1407,10 +1431,11 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		// #7459
-		describe( 'ignores inline elements while reading surrounding attributes', () => {
+		describe( 'softBreak integration', () => {
 			beforeEach( () => {
 				model.schema.register( 'softBreak', {
 					allowWhere: '$text',
+					allowAttributesOf: '$text',
 					isInline: true
 				} );
 			} );
@@ -1427,6 +1452,22 @@ describe( 'DocumentSelection', () => {
 				const overrideGravityUid = selection._overrideGravity();
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+
+				selection._restoreGravity( overrideGravityUid );
+			} );
+
+			it( 'should inherit attributes from an inline element', () => {
+				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak bold="true"></softBreak>[]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'should inherit attributes from an inline element (override gravity)', () => {
+				_setModelData( model, '<p>[]<softBreak bold="true"></softBreak><$text bold="true">Foo Bar.</$text></p>' );
+
+				const overrideGravityUid = selection._overrideGravity();
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 
 				selection._restoreGravity( overrideGravityUid );
 			} );
