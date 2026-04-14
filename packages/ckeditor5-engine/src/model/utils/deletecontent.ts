@@ -98,6 +98,11 @@ export function deleteContent(
 	}
 
 	const schema = model.schema;
+	const documentSelection = model.document.selection;
+
+	const selectionIsDocumentSelection = isRelatedToDocumentSelection( selection, documentSelection, selRange );
+	const selectionAttributes = Array.from( documentSelection.getAttributes() );
+	const selectionParentWasEmpty = !!documentSelection.getFirstRange()?.start.parent.isEmpty;
 
 	model.change( writer => {
 		// 1. Replace the entire content with paragraph.
@@ -161,6 +166,10 @@ export function deleteContent(
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
 			insertParagraph( writer, startPosition, selection, attributesForAutoparagraph );
+		}
+
+		if ( selectionIsDocumentSelection ) {
+			restoreSelectionAttributesOnEmptyParent( writer, selectionAttributes, selectionParentWasEmpty );
 		}
 
 		startPosition.detach();
@@ -626,4 +635,78 @@ function collapseSelectionAt(
 	} else {
 		selection.setTo( positionOrRange );
 	}
+}
+
+/**
+ * Restores the document selection attributes after a deletion that leaves the selection in an empty parent block.
+ * This preserves the pre-delete formatting (e.g. bold, italic) so that subsequent typing continues in the same style.
+ *
+ * Attributes are only restored when:
+ * - There were attributes on the selection before the deletion.
+ * - The deletion left the document selection's parent block empty.
+ * - The parent block was **not** already empty before the deletion — this ensures that attributes are not
+ *   re-applied when `deleteContent()` was called on a completely unrelated block.
+ */
+function restoreSelectionAttributesOnEmptyParent(
+	writer: ModelWriter,
+	selectionAttributes: Array<[ string, unknown ]>,
+	selectionParentWasEmpty: boolean
+) {
+	if ( !selectionAttributes.length ) {
+		return;
+	}
+
+	const documentSelection = writer.model.document.selection;
+
+	const selectionParent = documentSelection.anchor!.parent as ModelElement;
+
+	if ( !selectionParent.isEmpty ) {
+		return;
+	}
+
+	// Preserve attributes only when the delete operation leaves the live selection in an empty parent
+	// that was not empty before the change. This avoids reasserting attributes on unrelated empty blocks
+	// when deleteContent() operates on a synthetic selection somewhere else in the document.
+	if ( selectionParentWasEmpty ) {
+		return;
+	}
+
+	// Setting document selection attributes here also persists them as `selection:*`
+	// on the empty parent, so future typing keeps the pre-delete formatting.
+	for ( const [ key, value ] of selectionAttributes ) {
+		if (
+			writer.model.schema.getAttributeProperties( key ).isFormatting &&
+			writer.model.schema.checkAttributeInSelection( documentSelection, key )
+		) {
+			writer.setSelectionAttribute( key, value );
+		}
+	}
+}
+
+/**
+ * Checks whether the provided selection is related to the document selection.
+ *
+ * Returns `true` when:
+ * - the selection is a `DocumentSelection` instance, or
+ * - the document selection is collapsed and sits at the start or end of the given range, or
+ * - the document selection is not collapsed and its range intersects the given range.
+ */
+function isRelatedToDocumentSelection(
+	selection: ModelSelection | ModelDocumentSelection,
+	documentSelection: ModelDocumentSelection,
+	selRange: ModelRange
+): boolean {
+	if ( selection instanceof ModelDocumentSelection ) {
+		return true;
+	}
+
+	if ( documentSelection.isCollapsed ) {
+		const position = documentSelection.getFirstPosition()!;
+
+		return position.isEqual( selRange.start ) || position.isEqual( selRange.end );
+	}
+
+	const docSelRange = documentSelection.getFirstRange();
+
+	return !!docSelRange?.isIntersecting( selRange );
 }
