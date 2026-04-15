@@ -2722,7 +2722,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 			);
 		} );
 
-		it( 'should inherit the list type from the parent for intermediate levels', () => {
+		it( 'should inherit the list type from the child item for intermediate levels', () => {
 			_setModelData( skipModel,
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
@@ -2731,13 +2731,13 @@ describe( 'ListEditing - converters - data pipeline', () => {
 			expect( skipEditor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ol>' +
 					'<li>A' +
-						'<ol>' +
+						'<ul>' +
 							'<li style="list-style-type:none;">' +
 								'<ul>' +
 									'<li>B</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ol>' +
+						'</ul>' +
 					'</li>' +
 				'</ol>'
 			);

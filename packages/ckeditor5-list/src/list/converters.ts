@@ -721,7 +721,10 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: ViewDowncast
  *
  * For skip-level lists (where indent gaps exist, e.g. indent 0 → indent 2), this function
  * generates intermediate wrapper pairs (ul/ol + li) at each missing level. These intermediate
- * wrappers are invisible (`list-style-type: none` on the li) and carry no model-backed attributes.
+ * wrappers are invisible (`list-style-type: none` on the li). Scope `'list'` strategies are
+ * applied so the wrapper element (ul/ol) carries the same classes and styles as real list
+ * wrappers, while scope `'item'` strategies are skipped since there is no model element
+ * backing the intermediate level.
  */
 function wrapListItemBlock(
 	listItem: ListElement,
@@ -747,22 +750,44 @@ function wrapListItemBlock(
 
 		if ( isIntermediate ) {
 			// Intermediate levels get invisible wrappers: list-style-type:none hides the marker on <li>,
-			// and no strategies are applied (no data-list-item-id, listStyle, etc.) since there is no
+			// and scope:'item' strategies are not applied (no data-list-item-id, etc.) since there is no
 			// model element backing this level.
 			//
 			// The <li> uses a fixed ID per indent (`list-item-skip-N`) so that sibling items sharing
 			// the same skipped level merge into one <li> (e.g. two items at indent 1 with no parent
 			// at indent 0 share one intermediate <li> at indent 0).
 			//
-			// The <ul/ol> uses the default real ID (list-type-indent) so it can merge with real list
-			// elements from other items at the same indent (e.g. a skip-level item at indent 2 followed
-			// by a real item at indent 0 — their <ul> at indent 0 must merge into one list).
-			const listType = currentListItem.getAttribute( 'listType' );
+			// The <ul/ol> uses the list type from the original item being wrapped (not the ancestor)
+			// so it can merge with real list elements from other items at the same indent. For example,
+			// a bulleted item indented past its numbered parent must produce a <ul> at the intermediate
+			// level so it merges with sibling <ul> items, rather than an <ol> that would split them
+			// into separate lists.
+			const listType = listItem.getAttribute( 'listType' );
 
 			const listItemViewElement = createListItemElement( writer, indent, `list-item-skip-${ indent }` );
 			const listViewElement = createListElement( writer, indent, listType );
 
 			writer.setStyle( 'list-style-type', 'none', listItemViewElement );
+
+			// Apply scope:'list' strategies so that intermediate <ol>/<ul> wrappers carry the same
+			// classes and styles as real list wrappers (e.g. multi-level-list class, todo-list class,
+			// list-style-type:none). Without this, intermediate and real list elements at the same
+			// indent would have mismatched attributes and could not merge correctly, causing browsers
+			// to render unwanted default markers.
+			for ( const strategy of strategies ) {
+				if (
+					strategy.scope == 'list' &&
+					listItem.hasAttribute( strategy.attributeName )
+				) {
+					strategy.setAttributeOnDowncast(
+						writer,
+						listItem.getAttribute( strategy.attributeName ),
+						listViewElement,
+						options,
+						listItem
+					);
+				}
+			}
 
 			viewRange = writer.wrap( viewRange, listItemViewElement );
 			viewRange = writer.wrap( viewRange, listViewElement );
