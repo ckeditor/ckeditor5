@@ -11,7 +11,7 @@ export {
 	FileRepository,
 	type UploadAdapter,
 	type UploadResponse,
-	type FileLoader
+	FileLoader
 } from './filerepository.js';
 export { Base64UploadAdapter } from './adapters/base64uploadadapter.js';
 export { SimpleUploadAdapter } from './adapters/simpleuploadadapter.js';
