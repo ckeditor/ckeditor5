@@ -276,22 +276,19 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => `
-					<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>
-					<script>
-						(function() {
-							const el = document.currentScript.previousElementSibling;
-
-							el.dispatchEvent( new CustomEvent( 'ck:snippet-transform', {
-								bubbles: true,
-								detail: { snippet: el }
-							} ) );
-						})();
-					</script>
-				`
-					.split( '\n' )
-					.map( line => line.trim() )
-					.join( '\n' )
+				() => [
+					`<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>`,
+					'<script>',
+					'(function() {',
+					'	const el = document.currentScript.previousElementSibling;',
+					'',
+					'\tel.dispatchEvent( new CustomEvent( \'ck:snippet-transform\', {',
+					'\t\tbubbles: true,',
+					'\t\tdetail: { snippet: el }',
+					'\t} ) );',
+					'})();',
+					'</script>'
+				].join( '\n' )
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.css' ) ) ) {
