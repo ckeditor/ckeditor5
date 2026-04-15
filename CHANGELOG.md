@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [47.7.0](https://github.com/ckeditor/ckeditor5/compare/v47.6.2...v47.7.0) (April 15, 2026)
+## [47.7.0](https://github.com/ckeditor/ckeditor5/compare/v47.6.2...v47.7.0) (April 16, 2026)
 
 ### Release highlights
 
