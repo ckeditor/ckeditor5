@@ -28,6 +28,7 @@ import { List } from '../../src/list.js';
 import { ListProperties } from '../../src/listproperties.js';
 
 const editorElement = document.querySelector( '#editor' );
+const INITIAL_DATA = editorElement.innerHTML;
 
 const controls = {
 	skipLevels: document.querySelector( '#skipLevels' ),
@@ -146,11 +147,11 @@ function createEditor() {
 		ClassicEditor.create( {
 			...getEditorConfig(),
 			attachTo: editorElement
-		} )
-			.then( newEditor => {
-				editor = newEditor;
-				window.editor = editor;
-			} );
+		} ).then( newEditor => {
+			editor = newEditor;
+			window.editor = editor;
+			editor.setData( INITIAL_DATA );
+		} );
 
 	return Promise.resolve()
 		.then( () => editor && editor.destroy() )
