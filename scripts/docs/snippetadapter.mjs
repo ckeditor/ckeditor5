@@ -280,12 +280,8 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 					`<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>`,
 					'<script>',
 					'(function() {',
-					'	const el = document.currentScript.previousElementSibling;',
-					'',
-					'\tel.dispatchEvent( new CustomEvent( \'ck:snippet-transform\', {',
-					'\t\tbubbles: true,',
-					'\t\tdetail: { snippet: el }',
-					'\t} ) );',
+					'  const snippet = document.currentScript.previousElementSibling;',
+					'  snippet.dispatchEvent( new CustomEvent( "ck:snippet-transform", { bubbles: true, detail: { snippet } } ) );',
 					'})();',
 					'</script>'
 				].join( '\n' )
