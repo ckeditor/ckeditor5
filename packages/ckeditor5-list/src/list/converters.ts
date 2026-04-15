@@ -757,12 +757,14 @@ function wrapListItemBlock(
 			// the same skipped level merge into one <li> (e.g. two items at indent 1 with no parent
 			// at indent 0 share one intermediate <li> at indent 0).
 			//
-			// The <ul/ol> uses the list type from the original item being wrapped (not the ancestor)
-			// so it can merge with real list elements from other items at the same indent. For example,
-			// a bulleted item indented past its numbered parent must produce a <ul> at the intermediate
-			// level so it merges with sibling <ul> items, rather than an <ol> that would split them
-			// into separate lists.
-			const listType = listItem.getAttribute( 'listType' );
+			// The <ul/ol> type is chosen to ensure correct merging at this indent:
+			// - If a real list item exists at this indent (found by walking forward), use its type
+			//   so the intermediate wrapper merges with that item's real wrapper.
+			// - Otherwise, use the ancestor's type so all intermediates at this indent share the
+			//   same type and merge with each other.
+			const siblingAtIndent = findSiblingListItemAt( listItem, indent );
+			const referenceItem = siblingAtIndent || currentListItem;
+			const listType = referenceItem.getAttribute( 'listType' );
 
 			const listItemViewElement = createListItemElement( writer, indent, `list-item-skip-${ indent }` );
 			const listViewElement = createListElement( writer, indent, listType );
@@ -774,17 +776,20 @@ function wrapListItemBlock(
 			// list-style-type:none). Without this, intermediate and real list elements at the same
 			// indent would have mismatched attributes and could not merge correctly, causing browsers
 			// to render unwanted default markers.
+			//
+			// Use the reference item (sibling or ancestor) as the strategy source so the attributes
+			// match whatever this intermediate is supposed to merge with.
 			for ( const strategy of strategies ) {
 				if (
 					strategy.scope == 'list' &&
-					listItem.hasAttribute( strategy.attributeName )
+					referenceItem.hasAttribute( strategy.attributeName )
 				) {
 					strategy.setAttributeOnDowncast(
 						writer,
-						listItem.getAttribute( strategy.attributeName ),
+						referenceItem.getAttribute( strategy.attributeName ),
 						listViewElement,
 						options,
-						listItem
+						referenceItem
 					);
 				}
 			}
@@ -837,6 +842,31 @@ function wrapListItemBlock(
 			}
 		}
 	}
+}
+
+/**
+ * Walks forward from the given list item through model siblings to find the first list item block
+ * at exactly the specified indent level. Stops when it encounters a non-list block or a list item
+ * at a lower indent (which means we left the current subtree).
+ */
+function findSiblingListItemAt( listItem: ListElement, targetIndent: number ): ListElement | null {
+	let node = listItem.nextSibling;
+
+	while ( node && isListItemBlock( node ) ) {
+		const indent = ( node as ListElement ).getAttribute( 'listIndent' );
+
+		if ( indent < targetIndent ) {
+			return null;
+		}
+
+		if ( indent === targetIndent ) {
+			return node as ListElement;
+		}
+
+		node = node.nextSibling;
+	}
+
+	return null;
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
