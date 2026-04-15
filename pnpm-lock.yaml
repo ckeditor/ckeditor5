@@ -2380,6 +2380,9 @@ importers:
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
+      '@ckeditor/ckeditor5-paste-from-office':
+        specifier: workspace:*
+        version: link:../ckeditor5-paste-from-office
       '@ckeditor/ckeditor5-remove-format':
         specifier: workspace:*
         version: link:../ckeditor5-remove-format
