@@ -1335,23 +1335,15 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 		const mapper = conversionApi.mapper;
 		const viewWriter = conversionApi.writer;
 
-		viewWriter.setCustomProperty( 'markerBoundaryType', 'start', viewStartElement );
-		viewWriter.setCustomProperty( 'markerBoundaryType', 'end', viewEndElement );
+		// Add "opening" element.
+		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
+		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
 
-		// Add "end" element only if range is not collapsed.
+		// Add "closing" element only if range is not collapsed.
 		if ( !markerRange.isCollapsed ) {
 			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
 			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
 		}
-
-		// Jump over end UI elements to find a proper position for "start" element.
-		// It should be after all marker "end" UI elements as markers conversion should be triggered in reverse DOM order.
-		const startViewPosition = mapper.toViewPosition( markerRange.start ).getLastMatchingPosition( ( { item } ) =>
-			item.is( 'uiElement' ) && item.getCustomProperty( 'markerBoundaryType' ) === 'end'
-		);
-
-		viewWriter.insert( startViewPosition, viewStartElement );
-		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
 
 		evt.stop();
 	};

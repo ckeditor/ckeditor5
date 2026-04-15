@@ -8,7 +8,6 @@
  */
 
 import { ModelConsumable } from './modelconsumable.js';
-import { compareMarkersForDowncast } from './comparemarkers.js';
 import { ModelRange } from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
@@ -201,23 +200,8 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 			this._convertMarkerAdd( markerName, markerRange, conversionApi );
 		}
 
-		// Sort markers in reverse DOM order so that the downcast result is deterministic
-		// regardless of the order markers were added to the collection.
-		//
-		// Example: replacing "old" with "new" creates two adjacent markers (delete + insert).
-		// With `markerToElement`, each boundary is a self-closing tag, so the processing
-		// order directly controls where they land at the shared boundary point:
-		//
-		//   Stable (reverse DOM order):   <DEL-START/>old<DEL-END/><INS-START/>new<INS-END/>
-		//   Unstable (insertion order):    <DEL-START/>old<INS-START/><DEL-END/>new<INS-END/>
-		//
-		// Non-intersecting ranges  → strict reverse DOM order.
-		// Intersecting ranges      → best-effort reverse DOM order (ambiguous by nature).
-		const markersToAdd = differ.getMarkersToAdd()
-			.sort( ( a, b ) => compareMarkersForDowncast( [ a.name, a.range ], [ b.name, b.range ] ) );
-
 		// After the view is updated, convert markers which have changed.
-		for ( const change of markersToAdd ) {
+		for ( const change of differ.getMarkersToAdd() ) {
 			this._convertMarkerAdd( change.name, change.range, conversionApi );
 		}
 
@@ -246,9 +230,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 		this._convertInsert( range, conversionApi );
 
-		// Sort markers in reverse DOM order for deterministic downcast output.
-		// See the analogous sort in `convertChanges()` for a detailed rationale and examples.
-		for ( const [ name, range ] of Array.from( markers ).sort( compareMarkersForDowncast ) ) {
+		for ( const [ name, range ] of markers ) {
 			this._convertMarkerAdd( name, range, conversionApi );
 		}
 
