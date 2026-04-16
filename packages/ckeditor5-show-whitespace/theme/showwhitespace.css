@@ -1,0 +1,211 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-show-whitespace-color: hsla(208, 88%, 56%, 0.91);
+	--ck-show-whitespace-nbsp-color: hsla(0, 100%, 39%, 0.5);
+	--ck-show-whitespace-tab-color: hsla(208, 88%, 56%, 0.91);
+	--ck-show-whitespace-soft-break-color: hsla(208, 88%, 56%, 0.91);
+	--ck-show-whitespace-paragraph-color: hsla(208, 88%, 56%, 0.91);
+	--ck-show-whitespace-trailing-bg: hsla(35, 100%, 50%, 0.25);
+}
+
+/* --- Space --- */
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-space {
+	position: relative;
+}
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-space::before {
+	/* Middle dot: · */
+	content: '\00B7';
+	color: var(--ck-show-whitespace-color);
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	pointer-events: none;
+	user-select: none;
+}
+
+/* --- Non-breaking space --- */
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-nbsp {
+	position: relative;
+}
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-nbsp::before {
+	/* Open box: ␣ — visually distinct from regular space. */
+	content: '\2423';
+	color: var(--ck-show-whitespace-nbsp-color);
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	pointer-events: none;
+	user-select: none;
+	font-size: 0.85em;
+}
+
+/* --- Tab --- */
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-tab {
+	position: relative;
+}
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-tab::before {
+	/* Right arrow: → */
+	content: '\2192';
+	color: var(--ck-show-whitespace-tab-color);
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	pointer-events: none;
+	user-select: none;
+}
+
+/* --- Soft break (Shift+Enter) --- */
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-soft-break::before {
+	/* Return arrow: ↵ */
+	content: '\21B5';
+	color: var(--ck-show-whitespace-soft-break-color);
+	pointer-events: none;
+	user-select: none;
+}
+
+/* --- Trailing whitespace --- */
+
+.ck.ck-editor__editable.ck-show-whitespace .ck-whitespace-trailing {
+	background-color: var(--ck-show-whitespace-trailing-bg);
+	border-radius: 1px;
+}
+
+/* --- Paragraph mark (CSS-only, no converter needed) --- */
+
+.ck.ck-editor__editable.ck-show-whitespace {
+	/* Block-level elements get a pilcrow mark at the end. */
+	& p::after,
+	& h1::after,
+	& h2::after,
+	& h3::after,
+	& h4::after,
+	& h5::after,
+	& h6::after,
+	& blockquote > p::after,
+	& li > .ck-list-bogus-paragraph::after {
+		/* Pilcrow: ¶ */
+		content: '\00B6';
+		color: var(--ck-show-whitespace-paragraph-color);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	& td > .ck-table-bogus-paragraph::after,
+	& th > .ck-table-bogus-paragraph::after {
+		/* End-of-cell marker like MS Word. */
+		content: '¤';
+		color: var(--ck-show-whitespace-paragraph-color);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	/* For empty blocks: the filler <br> pushes ::after to the next line,
+	   so hide ::after and use ::before instead (appears before the <br>, same line as cursor). */
+	& :has(> [data-cke-filler])::after {
+		content: none !important;
+	}
+
+	& :has(> [data-cke-filler]) {
+		position: relative;
+
+		&::before {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			content: '\00B6';
+			color: var(--ck-show-whitespace-paragraph-color);
+			pointer-events: none;
+			user-select: none;
+		}
+	}
+
+	/* Arrow between list marker and content — like the tab arrow in MS Word. */
+	& li > .ck-list-bogus-paragraph::before {
+		content: '\2192' !important;
+		position: static !important;
+		transform: none !important;
+		color: var(--ck-show-whitespace-color);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	/* For multi-block list items, target the first <p> inside <li>. */
+	& li > p:first-child::before {
+		content: '\2192';
+		color: var(--ck-show-whitespace-color);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	/* Empty list items: show pilcrow after the arrow and caret.
+	   Absolute positioning prevents the filler <br> from pushing it to the next line. */
+	& li > .ck-list-bogus-paragraph:has(> [data-cke-filler]) {
+		position: relative;
+
+		&::after {
+			content: '\00B6' !important;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%) translateX(2ch);
+			color: var(--ck-show-whitespace-paragraph-color);
+			pointer-events: none;
+			user-select: none;
+		}
+	}
+
+	& td,
+	& th {
+		& > :has(> [data-cke-filler]) {
+			position: relative;
+
+			&::before {
+				content: '¤';
+			}
+		}
+	}
+
+	/* Exclude the widget element itself from pilcrow marks.
+	   Content inside nested editables (table cells, etc.) is handled by the specific rules above. */
+	& .ck-widget::after,
+	& .ck-widget::before {
+		content: none !important;
+	}
+}
+
+/* --- Disable paragraph marks via config --- */
+
+/* stylelint-disable no-descending-specificity */
+.ck.ck-editor__editable.ck-show-whitespace--no-paragraph-marks {
+	& p::after,
+	& p::before,
+	& h1::after,
+	& h1::before,
+	& h2::after,
+	& h2::before,
+	& h3::after,
+	& h3::before,
+	& h4::after,
+	& h4::before,
+	& h5::after,
+	& h5::before,
+	& h6::after,
+	& h6::before,
+	& blockquote > p::after,
+	& blockquote > p::before,
+	& li > .ck-list-bogus-paragraph::after,
+	& td > .ck-table-bogus-paragraph::after,
+	& th > .ck-table-bogus-paragraph::after {
+		content: none !important;
+	}
+}

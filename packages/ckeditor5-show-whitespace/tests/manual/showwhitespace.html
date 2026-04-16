@@ -1,0 +1,62 @@
+<div id="editor">
+	<h2>Show whitespace demo</h2>
+	<p>This is a paragraph with regular spaces between words.</p>
+	<p>This paragraph has  multiple  consecutive  spaces.</p>
+	<p>This paragraph has a&nbsp;non-breaking&nbsp;space.</p>
+	<p>This paragraph has a soft break<br>inside it.</p>
+	<p>This paragraph has trailing spaces.   </p>
+	<h3>A heading with spaces</h3>
+
+	<h3>Lists</h3>
+	<ul>
+		<li>Unordered item with spaces between words.</li>
+		<li>Another item with  double  spaces.</li>
+		<li>Item with trailing spaces.   </li>
+	</ul>
+	<ol>
+		<li>First ordered item.</li>
+		<li>Second item with&nbsp;non-breaking space.</li>
+		<li>Third item.</li>
+	</ol>
+
+	<h3>Blockquote</h3>
+	<blockquote>
+		<p>This is a blockquote paragraph with spaces.</p>
+		<p>Second paragraph in blockquote with  double  spaces.</p>
+	</blockquote>
+
+	<h3>Table</h3>
+	<figure class="table">
+		<table>
+			<thead>
+				<tr>
+					<th>Column A</th>
+					<th>Column B</th>
+					<th>Column C</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Cell with spaces.</td>
+					<td>Cell with&nbsp;nbsp.</td>
+					<td>Cell with trailing.   </td>
+				</tr>
+				<tr>
+					<td>Another  cell.</td>
+					<td>More content here.</td>
+					<td>Last cell.</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>Final paragraph.</p>
+</div>
+<button id="get-data">Log editor.getData()</button>
+
+<style>
+	#get-data {
+		margin-top: 10px;
+		padding: 5px 10px;
+	}
+</style>

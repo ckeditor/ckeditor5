@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Show whitespace",
+			"className": "ShowWhitespace",
+			"description": "Allows to display invisible whitespace characters such as spaces, non-breaking spaces, tabs, soft breaks, and paragraph marks.",
+			"docs": "features/show-whitespace.html",
+			"path": "src/showwhitespace.ts",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "showWhitespace",
+					"iconName": "IconPilcrow"
+				}
+			]
+		}
+	]
+}
