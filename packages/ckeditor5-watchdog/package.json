@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "47.6.2",
+  "version": "47.7.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
