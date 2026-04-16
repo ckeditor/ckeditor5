@@ -160,10 +160,13 @@ export class ShowWhitespaceEditing extends Plugin {
 
 							// Wrap the whitespace character in a span with a unique id
 							// to prevent the view writer from merging adjacent spans.
+							// High priority (20) nests inside formatting elements (bold, italic, link)
+							// so they can merge across whitespace boundaries.
 							const wrapperSpan = viewWriter.createAttributeElement( 'span', {
 								class: cssClass
 							}, {
-								id: `ck-ws-${ modelPosition.offset }`
+								id: `ck-ws-${ modelPosition.offset }`,
+								priority: 20
 							} );
 
 							const modelRange = editor.model.createRange(

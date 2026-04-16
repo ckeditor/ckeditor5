@@ -295,6 +295,40 @@ describe( 'ShowWhitespaceEditing', () => {
 			expect( trailingCount ).to.equal( 0 );
 		} );
 
+		it( 'should nest whitespace spans inside formatting elements like bold', () => {
+			_setModelData( editor.model, '<paragraph><$text bold="true">foo bar</$text></paragraph>' );
+
+			editor.execute( 'showWhitespace' );
+
+			const root = editor.editing.view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+
+			// There should be a single <strong> wrapping everything,
+			// not fragmented <strong> elements broken by whitespace spans.
+			let strongCount = 0;
+
+			for ( const child of paragraph.getChildren() ) {
+				if ( child.is( 'attributeElement' ) && child.name === 'strong' ) {
+					strongCount++;
+				}
+			}
+
+			// One merged <strong> containing text and whitespace spans inside.
+			expect( strongCount ).to.equal( 1 );
+
+			// The whitespace span should be inside the <strong>.
+			const strong = paragraph.getChild( 0 );
+			let foundSpaceSpanInsideStrong = false;
+
+			for ( const child of strong.getChildren() ) {
+				if ( child.is( 'attributeElement' ) && child.hasClass( 'ck-whitespace-space' ) ) {
+					foundSpaceSpanInsideStrong = true;
+				}
+			}
+
+			expect( foundSpaceSpanInsideStrong ).to.be.true;
+		} );
+
 		it( 'should not mark trailing spaces when trailingSpaces config is false', async () => {
 			domElement.remove();
 			await editor.destroy();
