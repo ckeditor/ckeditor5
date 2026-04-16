@@ -17,7 +17,12 @@ describe( 'Emoji', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Emoji, Mention, Essentials, Paragraph ]
+			plugins: [ Emoji, Mention, Essentials, Paragraph ],
+
+			// To prevent warnings from EmojiRepository about mixing commercial license with CDN.
+			emoji: {
+				definitionsUrl: 'cdn'
+			}
 		} );
 	} );
 

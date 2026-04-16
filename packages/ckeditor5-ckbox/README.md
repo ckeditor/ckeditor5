@@ -5,7 +5,7 @@ CKEditor&nbsp;5 CKBox integration
 [![codecov](https://codecov.io/gh/ckeditor/ckeditor5/branch/master/graph/badge.svg)](https://codecov.io/gh/ckeditor/ckeditor5)
 [![CircleCI](https://circleci.com/gh/ckeditor/ckeditor5.svg?style=shield)](https://app.circleci.com/pipelines/github/ckeditor/ckeditor5?branch=master)
 
-This package implements the [CKBox feature](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html). It allows you to easily insert images as well as links to files into the editor content. It is a bridge between CKEditor&nbsp;5 WYSIWYG editor and [CKBox](https://ckeditor.com/ckbox/) file manager and uploader.
+This package implements the [CKBox feature](https://ckeditor.com/docs/ckeditor5/lts-v47/features/file-management/ckbox.html). It allows you to easily insert images as well as links to files into the editor content. It is a bridge between CKEditor&nbsp;5 WYSIWYG editor and [CKBox](https://ckeditor.com/ckbox/) file manager and uploader.
 
 ## Installation
 
@@ -21,19 +21,16 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the CKBox feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html#demo).
+Check out the [demo in the CKBox feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/file-management/ckbox.html#demo).
 
 ## Documentation
 
-See the [CKBox integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/ckbox.html) to learn more about the integration.
+See the [CKBox integration guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/file-management/ckbox.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/api/ckbox.html) to learn more about the integration.
 
-Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
+Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).

@@ -26,10 +26,10 @@ parameters:
     default: false
   chromeVersion:
     type: string
-    default: "145.0.7632.45"
+    default: "147.0.7727.55"
   isLtsPipeline:
     type: boolean
-    default: false
+    default: true
 
 orbs:
   continuation: circleci/continuation@0.1.2

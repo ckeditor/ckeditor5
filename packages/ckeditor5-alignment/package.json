@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-alignment",
-  "version": "47.6.1",
+  "version": "47.7.0",
   "description": "Text alignment feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.3.4",
+    "@ckeditor/ckeditor5-dev-utils": "^54.7.0",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-enter": "workspace:*",

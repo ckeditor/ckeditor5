@@ -21,15 +21,12 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Documentation
 
-For general introduction see the [Overview of CKEditor&nbsp;5 framework](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html) guide and then the [core editor architecture guide](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html).
+For general introduction see the [Overview of CKEditor&nbsp;5 framework](https://ckeditor.com/docs/ckeditor5/lts-v47/framework/index.html) guide and then the [core editor architecture guide](https://ckeditor.com/docs/ckeditor5/lts-v47/framework/architecture/core-editor-architecture.html).
 
-Additionally, see the [`@ckeditor/ckeditor5-core` package](https://ckeditor.com/docs/ckeditor5/latest/api/core.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) for even more information.
+Additionally, see the [`@ckeditor/ckeditor5-core` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/core.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/) for even more information.
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).

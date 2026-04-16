@@ -41,6 +41,7 @@ export class PoweredBy extends Badge {
 
 		const licenseKey = editor.config.get( 'licenseKey' )!;
 
+		/* istanbul ignore if -- @preserve */
 		if ( licenseKey == 'GPL' ) {
 			return true;
 		}

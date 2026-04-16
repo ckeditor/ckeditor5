@@ -80,6 +80,11 @@ describe( 'EmojiPicker', () => {
 			toolbar: [ 'emoji' ],
 			menuBar: {
 				isVisible: true
+			},
+
+			// To prevent warnings from EmojiRepository about mixing commercial license with CDN.
+			emoji: {
+				definitionsUrl: 'cdn'
 			}
 		} );
 
@@ -134,7 +139,8 @@ describe( 'EmojiPicker', () => {
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
 				emoji: {
-					skinTone: 'medium'
+					skinTone: 'medium',
+					definitionsUrl: 'cdn'
 				}
 			} );
 
@@ -156,7 +162,8 @@ describe( 'EmojiPicker', () => {
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ EmojiPicker, Essentials, Paragraph ],
 				emoji: {
-					skinTone: 'medium'
+					skinTone: 'medium',
+					definitionsUrl: 'cdn'
 				}
 			} );
 
@@ -226,7 +233,10 @@ describe( 'EmojiPicker', () => {
 				EmojiRepository._results = {};
 
 				const editor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ EmojiPicker, Paragraph, Essentials ]
+					plugins: [ EmojiPicker, Paragraph, Essentials ],
+					emoji: {
+						definitionsUrl: 'cdn'
+					}
 				} );
 
 				expect( editor.ui.componentFactory.has( 'emoji' ) ).to.equal( false );
@@ -266,7 +276,10 @@ describe( 'EmojiPicker', () => {
 				EmojiRepository._results = {};
 
 				const editor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ EmojiPicker, Paragraph, Essentials ]
+					plugins: [ EmojiPicker, Paragraph, Essentials ],
+					emoji: {
+						definitionsUrl: 'cdn'
+					}
 				} );
 
 				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( false );
