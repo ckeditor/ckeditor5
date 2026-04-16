@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-image",
-  "version": "47.6.1",
+  "version": "47.7.0",
   "description": "Image feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -33,7 +33,7 @@
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^54.3.4",
+    "@ckeditor/ckeditor5-dev-utils": "^54.7.0",
     "@ckeditor/ckeditor5-easy-image": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-enter": "workspace:*",

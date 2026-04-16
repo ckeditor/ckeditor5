@@ -9,32 +9,10 @@ modified_at: 2024-11-20
 
 # Editor license and legal terms
 
-CKEditor is dual-licensed. This means you can choose between an open-source and a commercial license.
+[CKEditor&nbsp;5 LTS Edition](https://ckeditor.com/ckeditor-5-lts/) provides an extended support cycle of up to three years with security updates and critical compatibility fixes, without introducing breaking changes. It is available entirely under commercial terms and follows the same licensing model as our commercially licensed functionalities.
 
-## Open source license
-
-The open-source distribution of CKEditor&nbsp;5 is licensed under the terms of GPL 2+. If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a [CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
-
-The following features are available for the GPL-compliant projects, but their availability varies depending on the commercial licensing plans:
-
-* {@link features/page-break Page break}
-* {@link features/remove-format Remove format}
-* {@link features/special-characters Special characters}
-* {@link features/layout-tables Layout tables}
-* {@link features/tables-resize Column resize}
-* {@link features/images-resizing Image Resize}
-* {@link features/simple-upload-adapter Simple Upload Adapter}
-* {@link features/base64-upload-adapter Base64 adapter}
-* {@link features/html-embed HTML embed}
-* {@link features/restricted-editing Restricted editing}
-* {@link features/paste-from-office Paste From Office}
-* {@link features/word-count Word count}
-* {@link features/find-and-replace Find and replace}
-* {@link features/bookmarks Bookmarks}
-* {@link features/full-page-html Full page HTML}
-* {@link features/tables-styling Table and cell properties}
-* {@link features/lists-properties List properties}
-* {@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
+While the source code of the LTS-only distribution (meaning the versions available only to LTS Edition customers) will continue to be published in our public repositories, the LTS-only distribution cannot be used under GPL.
+To learn more about using the LTS Edition, please visit the {@link getting-started/setup/using-lts-edition dedicated guide}  in our documentation or [contact our sales team](https://ckeditor.com/contact-sales/) for details.
 
 ## Commercial license
 
@@ -71,13 +49,6 @@ Cloud-hosting is available in self-service and custom plans. The packages are ma
 **Self-hosted distribution**
 
 Self-hosted distribution is available with custom plans, allowing you to host CKEditor&nbsp;5 on your own infrastructure. This option provides greater flexibility and complete control over your deployment environment.
-
-## CKEditor&nbsp;5 LTS Edition
-
-[CKEditor&nbsp;5 LTS Edition](https://ckeditor.com/ckeditor-5-lts/) provides an extended support cycle of up to three years with security updates and critical compatibility fixes, without introducing breaking changes. It is available entirely under commercial terms and follows the same licensing model as our commercially licensed functionalities.
-
-While the source code of the LTS-only distribution (meaning the versions available only to LTS Edition customers) will continue to be published in our public repositories, the LTS-only distribution cannot be used under GPL.
-To learn more about using the LTS Edition, please visit the {@link getting-started/setup/using-lts-edition dedicated guide}  in our documentation or [contact our sales team](https://ckeditor.com/contact-sales/) for details.
 
 ## Sources of intellectual property included in CKEditor
 

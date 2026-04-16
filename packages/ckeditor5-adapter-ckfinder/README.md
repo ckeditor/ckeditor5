@@ -21,19 +21,16 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the CKFinder feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html#demos).
+Check out the [demo in the CKFinder feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/ckfinder.html#demos).
 
 ## Documentation
 
-See the ["CKFinder integration" guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/adapter-ckfinder.html) to learn how to configure the adapter.
+See the ["CKFinder integration" guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/api/adapter-ckfinder.html) to learn how to configure the adapter.
 
-Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
+Check out the [comprehensive Image upload guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/image-upload.html) to learn about other ways to upload images into CKEditor&nbsp;5.
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).

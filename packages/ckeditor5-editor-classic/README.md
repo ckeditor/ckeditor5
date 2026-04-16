@@ -7,11 +7,11 @@ CKEditor&nbsp;5 classic editor implementation
 
 The classic editor implementation for CKEditor&nbsp;5.
 
-This package contains the [`ClassicEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+This package contains the [`ClassicEditor`](https://ckeditor.com/docs/ckeditor5/lts-v47/api/module_editor-classic_classiceditor-ClassicEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-editor-classic` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-classic.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-editor-classic` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/editor-classic.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/).
 
 ## Installation
 
@@ -21,9 +21,6 @@ npm install ckeditor5
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).

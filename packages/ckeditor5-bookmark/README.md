@@ -21,17 +21,14 @@ If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-
 
 ## Demo
 
-Check out the [demo in the bookmark feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html#demo).
+Check out the [demo in the bookmark feature guide](https://ckeditor.com/docs/ckeditor5/lts-v47/features/bookmarks.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-bookmark` package](https://ckeditor.com/docs/ckeditor5/latest/api/bookmark.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [bookmark](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html) feature guide.
+See the [`@ckeditor/ckeditor5-bookmark` package](https://ckeditor.com/docs/ckeditor5/lts-v47/api/bookmark.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/lts-v47/) as well as the [bookmark](https://ckeditor.com/docs/ckeditor5/lts-v47/features/bookmarks.html) feature guide.
 
 ## License
 
-Licensed under a dual-license model, this software is available under:
+CKEditor&nbsp;5 Long Term Support Edition is licensed under a commercial license and is protected by copyright law.
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
-* or commercial license terms from CKSource Holding sp. z o.o.
-
-For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+For more information, see: [https://ckeditor.com/pricing](https://ckeditor.com/pricing).
