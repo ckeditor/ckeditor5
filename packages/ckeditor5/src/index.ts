@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module ckeditor5
+ */
+
 export * from '@ckeditor/ckeditor5-ui';
 
 export * from '@ckeditor/ckeditor5-adapter-ckfinder';
