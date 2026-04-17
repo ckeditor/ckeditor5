@@ -56,6 +56,25 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.model.document.getRoot( 'foo' ) ).to.instanceof( ModelRootElement );
 			expect( editor.model.document.getRoot( 'bar' ) ).to.instanceof( ModelRootElement );
+
+			expect( editor.model.document.getRoot( 'foo' ).name ).to.equal( '$root' );
+			expect( editor.model.document.getRoot( 'bar' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates roots with the given modelElement names', () => {
+			const customEditor = new MultiRootEditor( {
+				roots: {
+					foo: { modelElement: 'customRoot', initialData: '' },
+					bar: { initialData: '' }
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'foo' ).name ).to.equal( 'customRoot' );
+			expect( customEditor.model.document.getRoot( 'bar' ).name ).to.equal( '$root' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		describe( 'ui', () => {
@@ -338,6 +357,73 @@ describe( 'MultiRootEditor', () => {
 
 				return editor.destroy();
 			} );
+		} );
+
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await MultiRootEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					roots: { foo: { modelElement: 'nonLimit' } }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
+		} );
+
+		it( 'should reject if a lazy-loaded root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await MultiRootEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					roots: {
+						foo: { lazyLoad: true, modelElement: 'nonLimit' }
+					}
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
+		} );
+
+		it( 'should reject if any of multiple roots is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await MultiRootEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					roots: {
+						foo: {},
+						bar: { modelElement: 'nonLimit' },
+						baz: {}
+					}
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+				expect( err.data ).to.deep.equal( {
+					rootName: 'bar',
+					elementName: 'nonLimit'
+				} );
+			}
 		} );
 
 		it( 'initializes with empty content if legacy config.initialData is set to an empty string', () => {
@@ -1095,11 +1181,37 @@ describe( 'MultiRootEditor', () => {
 		} );
 
 		it( 'should add a model root with given element name', () => {
+			editor.model.schema.register( 'div', { isLimit: true } );
 			editor.addRoot( 'bar', { elementName: 'div' } );
 
 			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root.name ).to.equal( 'div' );
+		} );
+
+		it( 'should add a model root with default name', () => {
+			editor.addRoot( 'bar', {} );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.name ).to.equal( '$root' );
+		} );
+
+		it( 'should add a model root with given modelElement', () => {
+			editor.model.schema.register( 'customRoot', { isLimit: true } );
+			editor.addRoot( 'bar', { modelElement: 'customRoot' } );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.name ).to.equal( 'customRoot' );
+		} );
+
+		it( 'should throw if the model element is not a limit element', () => {
+			editor.model.schema.register( 'nonLimit', { isBlock: true } );
+
+			expect( () => {
+				editor.addRoot( 'bar', { modelElement: 'nonLimit' } );
+			} ).to.throw( CKEditorError, 'multi-root-editor-add-root-element-is-not-limit' );
 		} );
 
 		it( 'should add a model root with given attributes', () => {

@@ -58,6 +58,7 @@ export {
 	normalizeSingleRootEditorConstructorParams,
 	normalizeMultiRootEditorConstructorParams
 } from './editor/utils/normalizerootsconfig.js';
+export { verifyRootElements } from './editor/utils/verifyrootelements.js';
 
 export { PendingActions, type PendingAction, type PendingActionsAddEvent, type PendingActionsRemoveEvent } from './pendingactions.js';
 

@@ -73,6 +73,22 @@ describe( 'BalloonEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates main root element with the given modelElement name', () => {
+			const customEditor = new BalloonEditor( {
+				root: {
+					modelElement: 'customRoot',
+					initialData: ''
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
@@ -570,6 +586,25 @@ describe( 'BalloonEditor', () => {
 				.then( () => {
 					el.remove();
 				} );
+		} );
+
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await BalloonEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					root: { modelElement: 'nonLimit' }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
 		} );
 
 		describe( 'configurable editor label (aria-label)', () => {

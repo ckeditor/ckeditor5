@@ -61,6 +61,22 @@ describe( 'ClassicEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates main root element with the given modelElement name', () => {
+			const customEditor = new ClassicEditor( {
+				root: {
+					modelElement: 'customRoot',
+					initialData: ''
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		it( 'contains the source element as #sourceElement property', () => {
@@ -560,6 +576,25 @@ describe( 'ClassicEditor', () => {
 				expect( err ).to.be.instanceof( CKEditorError );
 				expect( err.context ).to.be.null; // avoid watchdog restart
 				expect( err.message ).to.contain( 'editor-source-element-not-attached' );
+			}
+		} );
+
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await ClassicEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					root: { modelElement: 'nonLimit' }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
 			}
 		} );
 

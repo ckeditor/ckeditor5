@@ -19,6 +19,7 @@ describe( 'ModelTestEditor', () => {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -40,6 +41,20 @@ describe( 'ModelTestEditor', () => {
 			const editor = new ModelTestEditor();
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
+		} );
+
+		it( 'creates main root element with the given modelElement name', async () => {
+			const editor = new ModelTestEditor( {
+				root: {
+					modelElement: 'customRoot',
+					initialData: ''
+				}
+			} );
+
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
