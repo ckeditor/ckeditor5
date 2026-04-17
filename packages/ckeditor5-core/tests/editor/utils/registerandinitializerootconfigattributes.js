@@ -140,7 +140,7 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 		expect( editor.getRootAttributes( 'second' ) ).to.deep.equal( { foo: null } );
 	} );
 
-	it( 'should be possible to define for define attributes for multiple roots at once', async () => {
+	it( 'should be possible to define attributes for multiple roots at once', async () => {
 		editor = await CustomEditor.create( {
 			roots: {
 				main: {
