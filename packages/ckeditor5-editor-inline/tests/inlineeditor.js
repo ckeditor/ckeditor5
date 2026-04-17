@@ -584,6 +584,25 @@ describe( 'InlineEditor', () => {
 				} );
 		} );
 
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await InlineEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					root: { modelElement: 'nonLimit' }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
+		} );
+
 		describe( 'configurable editor label (aria-label)', () => {
 			it( 'should be set to the defaut value if not configured', () => {
 				expect( editor.editing.view.getDomRoot().getAttribute( 'aria-label' ) ).to.equal(

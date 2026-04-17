@@ -359,6 +359,73 @@ describe( 'MultiRootEditor', () => {
 			} );
 		} );
 
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await MultiRootEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					roots: { foo: { modelElement: 'nonLimit' } }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
+		} );
+
+		it( 'should reject if a lazy-loaded root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await MultiRootEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					roots: {
+						foo: { lazyLoad: true, modelElement: 'nonLimit' }
+					}
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
+		} );
+
+		it( 'should reject if any of multiple roots is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await MultiRootEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					roots: {
+						foo: {},
+						bar: { modelElement: 'nonLimit' },
+						baz: {}
+					}
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+				expect( err.data ).to.deep.equal( {
+					rootName: 'bar',
+					elementName: 'nonLimit'
+				} );
+			}
+		} );
+
 		it( 'initializes with empty content if legacy config.initialData is set to an empty string', () => {
 			return MultiRootEditor.create( {
 				foo: document.createElement( 'div' ),

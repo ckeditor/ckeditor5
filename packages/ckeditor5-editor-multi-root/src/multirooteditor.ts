@@ -13,6 +13,7 @@ import {
 	normalizeRootsConfig,
 	normalizeMultiRootEditorConstructorParams,
 	registerAndInitializeRootConfigAttributes,
+	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent,
 	type RootConfig,
@@ -1110,6 +1111,12 @@ export class MultiRootEditor extends Editor {
 		const editor = new this( sourceElementsOrDataOrConfig as any, config );
 
 		await editor.initPlugins();
+
+		// Roots are created in the editor constructor (before plugins are loaded), but the schema is only fully
+		// built after plugins register their items during init(). Custom root element names (e.g. registered by a
+		// plugin) may not exist in the schema at construction time, so we defer this check until here.
+		verifyRootElements( editor );
+
 		await editor.ui.init();
 
 		const initialData = extractRootsConfigField( editor.config.get( 'roots' )!, 'initialData' );

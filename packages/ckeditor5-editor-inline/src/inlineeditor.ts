@@ -15,6 +15,7 @@ import {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
 	registerAndInitializeRootConfigAttributes,
+	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
@@ -320,6 +321,12 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		const editor = new this( sourceElementOrDataOrConfig as any, config );
 
 		await editor.initPlugins();
+
+		// Roots are created in the editor constructor (before plugins are loaded), but the schema is only fully
+		// built after plugins register their items during init(). Custom root element names (e.g. registered by a
+		// plugin) may not exist in the schema at construction time, so we defer this check until here.
+		verifyRootElements( editor );
+
 		await editor.ui.init();
 		await editor.data.init( editor.config.get( 'roots' )!.main.initialData! );
 

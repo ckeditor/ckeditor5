@@ -579,6 +579,25 @@ describe( 'ClassicEditor', () => {
 			}
 		} );
 
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await ClassicEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					root: { modelElement: 'nonLimit' }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
+		} );
+
 		describe( 'ui', () => {
 			it( 'inserts editor UI next to editor element', () => {
 				expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );

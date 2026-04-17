@@ -840,11 +840,6 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 		checkPluginsAllowedByLicenseKey( this );
 
-		// Roots are created in the editor constructor (before plugins are loaded), but the schema is only fully
-		// built after plugins register their items during init(). Custom root element names (e.g. registered by a
-		// plugin) may not exist in the schema at construction time, so we defer this check until here.
-		verifyRootElements( this );
-
 		return loadedPlugins;
 
 		function checkPluginsAllowedByLicenseKey( editor: Editor ): void {
@@ -877,32 +872,6 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			if ( disallowedPlugin ) {
 				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
 				editor._showLicenseError( 'pluginNotAllowed', disallowedPlugin.pluginName );
-			}
-		}
-
-		function verifyRootElements( editor: Editor ): void {
-			const schema = editor.model.schema;
-
-			for ( const rootName of editor.model.document.getRootNames() ) {
-				const root = editor.model.document.getRoot( rootName )!;
-
-				if ( !schema.isLimit( root ) ) {
-					/**
-					 * The model root element must be a {@link module:engine/model/schema~ModelSchemaItemDefinition#isLimit limit element}.
-					 * The element name specified in
-					 * {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`}
-					 * (or `config.roots.<rootName>.modelElement`) must be registered in the schema
-					 * with `isLimit` set to `true`.
-					 *
-					 * @error editor-root-element-is-not-limit
-					 * @param rootName The name of the root that uses a non-limit element.
-					 * @param elementName The name of the model element used for the root.
-					 */
-					throw new CKEditorError( 'editor-root-element-is-not-limit', null, {
-						rootName,
-						elementName: root.name
-					} );
-				}
 			}
 		}
 	}
