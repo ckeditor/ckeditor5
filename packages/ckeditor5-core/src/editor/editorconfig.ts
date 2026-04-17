@@ -1320,26 +1320,22 @@ export interface RootConfig {
 	 *
 	 * ```ts
 	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		uid1: document.querySelector( '#uid1' ),
-	 * 		uid2: document.querySelector( '#uid2' ),
-	 * 		uid3: document.querySelector( '#uid3' ),
-	 * 		uid4: document.querySelector( '#uid4' )
-	 * 	},
-	 * 	// Config:
 	 * 	{
 	 * 		roots: {
 	 * 			uid1: {
+	 * 				// ... other root config
 	 * 				modelAttributes: { order: 20, isLocked: false } // Third, unlocked.
 	 * 			},
 	 * 			uid2: {
+	 * 				// ... other root config
 	 * 				modelAttributes: { order: 10, isLocked: true } // Second, locked.
 	 * 			},
 	 * 			uid3: {
+	 * 				// ... other root config
 	 * 				modelAttributes: { order: 30, isLocked: true } // Fourth, locked.
 	 * 			},
 	 * 			uid4: {
+	 * 				// ... other root config
 	 * 				modelAttributes: { order: 0, isLocked: false } // First, unlocked.
 	 * 			}
 	 * 		}
