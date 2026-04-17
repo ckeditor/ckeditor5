@@ -4263,6 +4263,59 @@ describe( 'DowncastHelpers', () => {
 				expect( viewToString( viewRoot ) ).to.equal( expected );
 			} );
 
+			it( 'nested markers sharing the same start position preserve outer-first nesting order', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				// "foobar" — marker:outer spans [0,6], marker:inner spans [0,3].
+				// Both share the same start position but differ in end position.
+				const outerRange = model.createRange(
+					model.createPositionAt( modelElement, 0 ),
+					model.createPositionAt( modelElement, 6 )
+				);
+				const innerRange = model.createRange(
+					model.createPositionAt( modelElement, 0 ),
+					model.createPositionAt( modelElement, 3 )
+				);
+
+				model.change( writer => {
+					writer.addMarker( 'marker:outer', { range: outerRange, usingOperation: false } );
+					writer.addMarker( 'marker:inner', { range: innerRange, usingOperation: false } );
+				} );
+
+				const expected =
+					'<div><p>' +
+					'<span class="marker:outer-start"></span>' +
+					'<span class="marker:inner-start"></span>' +
+					'foo' +
+					'<span class="marker:inner-end"></span>' +
+					'bar' +
+					'<span class="marker:outer-end"></span>' +
+					'</p></div>';
+
+				expect( viewToString( viewRoot ) ).to.equal( expected );
+
+				// Remove all markers.
+				model.change( writer => {
+					writer.removeMarker( 'marker:outer' );
+					writer.removeMarker( 'marker:inner' );
+				} );
+
+				// Re-add in reversed order to verify stability.
+				model.change( writer => {
+					writer.addMarker( 'marker:inner', { range: innerRange, usingOperation: false } );
+					writer.addMarker( 'marker:outer', { range: outerRange, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( expected );
+			} );
+
 			it( 'intersecting markers downcast consistently regardless of creation order', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',

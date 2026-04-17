@@ -38,9 +38,9 @@ export function compareMarkersForDowncast(
 			default:
 				switch ( range1.end.compareWith( range2.end ) ) {
 					case 'before':
-						return 1;
-					case 'after':
 						return -1;
+					case 'after':
+						return 1;
 					default:
 						return name2.localeCompare( name1 );
 				}

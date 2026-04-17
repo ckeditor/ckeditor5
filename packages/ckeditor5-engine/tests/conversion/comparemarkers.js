@@ -72,11 +72,12 @@ describe( 'compareMarkersForDowncast()', () => {
 		} );
 
 		it( 'should use end position as secondary key when starts are equal', () => {
-			// Same start — the longer range (ending later) sorts first, shorter after.
+			// Same start — the shorter range (ending earlier) sorts first so that the
+			// longer (outer) marker is processed last and its opening tag wraps the inner one.
 			expect( sortedNames( [
 				[ 'shorter', range( 2, 4 ) ],
 				[ 'longer', range( 2, 6 ) ]
-			] ) ).to.deep.equal( [ 'longer', 'shorter' ] );
+			] ) ).to.deep.equal( [ 'shorter', 'longer' ] );
 		} );
 
 		it( 'should sort three nested markers from innermost to outermost', () => {
@@ -131,7 +132,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'short', range( 0, 3 ) ],
 				[ 'long', range( 0, 7 ) ],
 				[ 'separate', range( 8, 9 ) ]
-			] ) ).to.deep.equal( [ 'separate', 'long', 'short' ] );
+			] ) ).to.deep.equal( [ 'separate', 'short', 'long' ] );
 		} );
 
 		it( 'should sort many markers consistently regardless of initial order', () => {
