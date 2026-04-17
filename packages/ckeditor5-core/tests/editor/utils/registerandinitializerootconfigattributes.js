@@ -110,7 +110,9 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 						bar: 2
 					}
 				},
-				second: {}
+				second: {
+					lazy: true
+				}
 			}
 		} );
 
@@ -122,17 +124,24 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 		expect( editor.model.document.getRoot( 'second' ) ).to.be.null;
 	} );
 
-	it( 'should be possible to define for define attributes for multiple roots at once', async () => {
-		class HiddenRootsCustomEditor extends CustomEditor {
-			constructor( ...args ) {
-				super( ...args );
-
-				this.model.document.createRoot( '$root', 'second' );
-				this.model.document.createRoot( '$root', 'third' );
+	it( 'should not crash if there is no `modelAttributes` specified for created root', async () => {
+		editor = await CustomEditor.create( {
+			roots: {
+				main: {
+					modelAttributes: {
+						foo: 1
+					}
+				},
+				second: {}
 			}
-		}
+		} );
 
-		editor = await HiddenRootsCustomEditor.create( {
+		expect( editor.getRootAttributes( 'main' ) ).to.deep.equal( { foo: 1 } );
+		expect( editor.getRootAttributes( 'second' ) ).to.deep.equal( { foo: null } );
+	} );
+
+	it( 'should be possible to define for define attributes for multiple roots at once', async () => {
+		editor = await CustomEditor.create( {
 			roots: {
 				main: {
 					modelAttributes: {
@@ -144,15 +153,27 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 						bar: 2
 					}
 				},
-				third: {}
+				third: {
+					modelAttributes: {
+						bar: 3
+					}
+				}
 			}
 		} );
 
-		expect( editor.getRootAttributes() ).to.deep.equal( { foo: 1, bar: null } );
-		expect( editor.getRootAttributes( 'second' ) ).to.deep.equal( { foo: null, bar: 2 } );
+		expect( editor.getRootAttributes( 'main' ) ).to.deep.equal( {
+			foo: 1,
+			bar: null
+		} );
+
+		expect( editor.getRootAttributes( 'second' ) ).to.deep.equal( {
+			foo: null,
+			bar: 2
+		} );
+
 		expect( editor.getRootAttributes( 'third' ) ).to.deep.equal( {
 			foo: null,
-			bar: null
+			bar: 3
 		} );
 	} );
 } );
@@ -168,14 +189,20 @@ class CustomEditor extends ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config, 'main', true );
 
-		this.model.document.createRoot();
+		for ( const [ root, rootConfig ] of Object.entries( this.config.get( 'roots' ) ) ) {
+			if ( rootConfig.lazy ) {
+				continue;
+			}
+
+			this.model.document.createRoot( '$root', root );
+		}
+
+		registerAndInitializeRootConfigAttributes( this );
 	}
 
 	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
-
-			registerAndInitializeRootConfigAttributes( editor );
 
 			resolve(
 				editor.initPlugins()
