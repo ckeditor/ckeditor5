@@ -1295,7 +1295,7 @@ export interface RootConfig {
 	 * Initial root attributes for a root.
 	 *
 	 * **Note: You must provide full set of attributes for each root. If an attribute is not set on a root, set the value to `null`.
-	 * Only provided attribute keys will be returned by {@link module:module:core/editor/editor~Editor#getRootAttributes} or
+	 * Only provided attribute keys will be returned by {@link module:core/editor/editor~Editor#getRootAttributes} or
 	 *  {@link module:editor-multi-root/multirooteditor~MultiRootEditor#getRootsAttributes}.**
 	 *
 	 * Roots attributes hold additional data related to the document roots, in addition to the regular document data (which usually is
