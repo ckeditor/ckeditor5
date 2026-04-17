@@ -46,7 +46,7 @@ describe( 'HorizontalLineCommand', () => {
 			} );
 		} );
 
-		it( 'should be true when the selection directly in a root that has a non-$root element name', () => {
+		it( 'should be true when the selection is directly in a root that has a non-$root element name', () => {
 			model.schema.register( 'customRoot', {
 				isLimit: true
 			} );
