@@ -987,7 +987,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			 *
 			 * @error get-root-attributes-missing-root
 			 */
-			throw new CKEditorError( 'get-root-attributes-missing-root', null, { rootName } );
+			throw new CKEditorError( 'get-root-attributes-missing-root', this, { rootName } );
 		}
 
 		const rootAttributes: EditorRootAttributes = {};
