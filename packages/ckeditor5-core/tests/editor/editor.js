@@ -1521,6 +1521,12 @@ describe( 'Editor', () => {
 			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
 		} );
 
+		it( 'should throw exception when accessing non existing root', () => {
+			expectToThrowCKEditorError( () => {
+				editor.getRootAttributes( 'unknown' );
+			}, 'get-root-attributes-missing-root', null, { rootName: 'unknown' } );
+		} );
+
 		it( 'should return attributes registered using #registerRootAttribute', () => {
 			const root = model.document.getRoot();
 

@@ -977,8 +977,19 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * If a registered root attribute is not set for a given root, `null` will be returned.
 	 */
 	public getRootAttributes( rootName: string = 'main' ): EditorRootAttributes {
+		const root = this.model.document.getRoot( rootName );
+
+		if ( !root ) {
+			/**
+			 * The requested root does not exist. Please ensure that the provided root name
+			 * is correct and that the root has been properly initialized in the document.
+			 *
+			 * @error get-root-attributes-missing-root
+			 */
+			throw new CKEditorError( 'get-root-attributes-missing-root', null, { rootName } );
+		}
+
 		const rootAttributes: EditorRootAttributes = {};
-		const root = this.model.document.getRoot( rootName )!;
 
 		for ( const key of this._registeredRootsAttributesKeys ) {
 			rootAttributes[ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
