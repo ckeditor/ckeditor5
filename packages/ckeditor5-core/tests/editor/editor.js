@@ -1474,6 +1474,105 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'registerRootAttribute', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await TestEditor.create();
+			model = editor.editing.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should extend root schema with allowed attribute', () => {
+			expect( model.schema.checkAttribute( '$root', 'foo' ) ).to.be.false;
+
+			editor.registerRootAttribute( 'foo' );
+
+			expect( model.schema.checkAttribute( '$root', 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should not crash if registered the same attribute twice', () => {
+			expect( model.schema.checkAttribute( '$root', 'bar' ) ).to.be.false;
+
+			editor.registerRootAttribute( 'bar' );
+			editor.registerRootAttribute( 'bar' );
+
+			expect( model.schema.checkAttribute( '$root', 'bar' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'getRootAttributes', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await TestEditor.create();
+			model = editor.editing.model;
+			model.document.createRoot( '$root', 'main' );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not crash if there are no attributes registered', () => {
+			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
+		} );
+
+		it( 'should throw exception when accessing non existing root', () => {
+			expectToThrowCKEditorError( () => {
+				editor.getRootAttributes( 'unknown' );
+			}, 'get-root-attributes-missing-root', editor, { rootName: 'unknown' } );
+		} );
+
+		it( 'should return attributes registered using #registerRootAttribute', () => {
+			const root = model.document.getRoot();
+
+			model.schema.extend( '$root', { allowAttributes: [ 'bar' ] } );
+			model.change( writer => {
+				writer.setAttribute( 'bar', 1, root );
+			} );
+
+			expect( root.getAttribute( 'bar' ) ).to.be.equal( 1 );
+			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
+
+			editor.registerRootAttribute( 'bar' );
+
+			expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				bar: 1
+			} );
+		} );
+
+		it( 'should return `null` if registered attribute is not present on the root', () => {
+			expect( editor.getRootAttributes() ).to.be.deep.equal( {} );
+
+			editor.registerRootAttribute( 'bar' );
+
+			expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				bar: null
+			} );
+		} );
+
+		it( 'should be possible to specify different root name in first parameter', () => {
+			editor.registerRootAttribute( 'bar' );
+
+			model.document.createRoot( '$root', 'second' );
+			model.change( writer => {
+				writer.setAttribute( 'bar', 1, model.document.getRoot( 'second' ) );
+			} );
+
+			expect( editor.getRootAttributes() ).to.be.deep.equal( {
+				bar: null
+			} );
+
+			expect( editor.getRootAttributes( 'second' ) ).to.be.deep.equal( {
+				bar: 1
+			} );
+		} );
+	} );
+
 	describe( 'static fields', () => {
 		it( 'Editor.Context', () => {
 			expect( Editor.Context ).to.equal( Context );

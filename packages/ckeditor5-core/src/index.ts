@@ -31,6 +31,7 @@ export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';
 
 export {
 	Editor,
+	type EditorRootAttributes,
 	type EditorCollectUsageDataEvent,
 	type EditorReadyEvent,
 	type EditorDestroyEvent,
@@ -51,6 +52,7 @@ export type {
 export { attachToForm } from './editor/utils/attachtoform.js';
 export { ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
 export { secureSourceElement } from './editor/utils/securesourceelement.js';
+export { registerAndInitializeRootConfigAttributes } from './editor/utils/registerandinitializerootconfigattributes.js';
 export {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
