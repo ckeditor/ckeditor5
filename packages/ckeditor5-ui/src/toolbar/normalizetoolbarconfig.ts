@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
-
 /**
  * @module ui/toolbar/normalizetoolbarconfig
  */
+
+import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 
 /**
  * Normalizes the toolbar configuration (`config.toolbar`), which:

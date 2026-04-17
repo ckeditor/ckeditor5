@@ -1037,6 +1037,34 @@ export default class Delete extends Plugin {
 }
 ```
 
+### Disallow TypeScript enums: `ckeditor5-rules/no-enum`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+TypeScript `enum` declarations are disallowed because they emit runtime code that is hard to tree-shake, behave inconsistently between numeric and string enums, and do not mix well with structural typing. Prefer a `const` object combined with a union type derived from its values, which produces a lighter and more predictable output.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+enum Direction {
+	Up = 'up',
+	Down = 'down'
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+const Direction = {
+	Up: 'up',
+	Down: 'down'
+} as const;
+
+type Direction = typeof Direction[ keyof typeof Direction ];
+```
+
 ### Imports within a package: `ckeditor5-rules/no-scoped-imports-within-package`
 
 All imports defined in every package, that point to a file from the same package, must be relative. You cannot use the scoped imports, if the target file is located in the same package as the import declaration. The resolved scoped import points to the package inside the `node_modules`, but not to the current working directory, and the source code in these two places may differ from each other.
@@ -1071,6 +1099,16 @@ As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/W
 The second case is common for the documentation files, because its pieces are located in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
+
+### Valid `@module` tags: `ckeditor5-rules/validate-module-tag`
+
+<info-box warning>
+	This rule should only be used on `.ts` files in package `src/` directories.
+</info-box>
+
+This rule requires a file-level `@module` JSDoc tag at the top of each TypeScript source file in `packages/*/src`. The tag value must match the file path.
+
+For example, `packages/ckeditor5-feature/src/featureediting.ts` should start with `@module feature/featureediting`. For `index.ts` files, both `@module feature` and `@module feature/index` are allowed. The `augmentation.ts` file is excluded from this rule.
 
 ### Require or disallow certain plugin flags: `ckeditor5-rules/ckeditor-plugin-flags`
 

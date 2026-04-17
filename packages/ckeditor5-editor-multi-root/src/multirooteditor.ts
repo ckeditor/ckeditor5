@@ -12,9 +12,11 @@ import {
 	secureSourceElement,
 	normalizeRootsConfig,
 	normalizeMultiRootEditorConstructorParams,
+	registerAndInitializeRootConfigAttributes,
 	type EditorConfig,
 	type EditorReadyEvent,
-	type RootConfig
+	type RootConfig,
+	type EditorRootAttributes
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -70,13 +72,6 @@ export class MultiRootEditor extends Editor {
 	 * The elements on which the editor has been initialized.
 	 */
 	public readonly sourceElements: Record<string, HTMLElement>;
-
-	/**
-	 * Holds attributes keys that were passed in
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-	 * and should be returned by {@link #getRootsAttributes}.
-	 */
-	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
 	/**
 	 * A set of lock IDs for enabling or disabling particular root.
@@ -177,15 +172,9 @@ export class MultiRootEditor extends Editor {
 			if ( rootConfig.lazyLoad ) {
 				root._isLoaded = false;
 			}
-
-			const attributes = rootConfig.modelAttributes;
-
-			if ( attributes ) {
-				for ( const key of Object.keys( attributes ) ) {
-					this.registerRootAttribute( key );
-				}
-			}
 		}
+
+		registerAndInitializeRootConfigAttributes( this );
 
 		// Registering `$rootEditableOptions` attribute to make it available in the editor model.
 		// This allows to store editable options for each root in the model, and make them available on other RTC clients.
@@ -197,12 +186,6 @@ export class MultiRootEditor extends Editor {
 			this.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const [ rootName, rootConfig ] of rootsConfig ) {
 					const root = this.model.document.getRoot( rootName )!;
-
-					for ( const [ key, value ] of Object.entries( rootConfig.modelAttributes || {} ) ) {
-						if ( value !== null ) {
-							writer.setAttribute( key, value, root );
-						}
-					}
 
 					// Set editable config for consistency with `addRoot()` method. This will allow features
 					// to use the same configuration for both initially loaded and dynamically added roots.
@@ -459,7 +442,7 @@ export class MultiRootEditor extends Editor {
 
 	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
-		const modelAttributes: RootAttributes = options.modelAttributes || options.attributes || {};
+		const modelAttributes: EditorRootAttributes = options.modelAttributes || options.attributes || {};
 		const modelElement: string = options.modelElement || options.elementName || '$root';
 
 		if ( !this.model.schema.isLimit( modelElement ) ) {
@@ -737,51 +720,14 @@ export class MultiRootEditor extends Editor {
 	 *
 	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
-	public getRootsAttributes(): Record<string, RootAttributes> {
-		const rootsAttributes: Record<string, RootAttributes> = {};
+	public getRootsAttributes(): Record<string, EditorRootAttributes> {
+		const rootsAttributes: Record<string, EditorRootAttributes> = {};
 
 		for ( const rootName of this.model.document.getRootNames() ) {
 			rootsAttributes[ rootName ] = this.getRootAttributes( rootName );
 		}
 
 		return rootsAttributes;
-	}
-
-	/**
-	 * Returns attributes for the specified root.
-	 *
-	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
-	 * If a registered root attribute is not set for a given root, `null` will be returned.
-	 */
-	public getRootAttributes( rootName: string ): RootAttributes {
-		const rootAttributes: RootAttributes = {};
-		const root = this.model.document.getRoot( rootName )!;
-
-		for ( const key of this._registeredRootsAttributesKeys ) {
-			rootAttributes[ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
-		}
-
-		return rootAttributes;
-	}
-
-	/**
-	 * Registers given string as a root attribute key. Registered root attributes are added to
-	 * {@link module:engine/model/schema~ModelSchema schema}, and also returned by
-	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
-	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
-	 *
-	 * Note: attributes passed in
-	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
-	 * are automatically registered as the editor is initialized. However, registering the same attribute twice does not have any
-	 * negative impact, so it is recommended to use this method in any feature that uses roots attributes.
-	 */
-	public registerRootAttribute( key: string ): void {
-		if ( this._registeredRootsAttributesKeys.has( key ) ) {
-			return;
-		}
-
-		this._registeredRootsAttributesKeys.add( key );
-		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
 	/**
@@ -1344,7 +1290,7 @@ export type AddRootOptions = {
 	/**
 	 * Initial attributes for the root.
 	 */
-	attributes?: RootAttributes;
+	attributes?: EditorRootAttributes;
 
 	/**
 	 * Element name for the root element in the model. It can be used to set different schema rules for different roots.
@@ -1377,11 +1323,6 @@ export interface AddRootRootConfig extends RootConfig {
  * Additional options available when loading a root.
  */
 export type LoadRootOptions = Omit<AddRootOptions, 'elementName' | 'isUndoable'>;
-
-/**
- * Attributes set on a model root element.
- */
-export type RootAttributes = Record<string, unknown>;
 
 /**
  * Additional options for the created editable element.

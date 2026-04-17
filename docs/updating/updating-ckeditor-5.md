@@ -56,7 +56,6 @@ This can be done by updating the `package.json` file with the latest editor vers
 		"@ckeditor/ckeditor5-block-quote": "^{@var ckeditor5-version}",
 		"@ckeditor/ckeditor5-ckfinder": "^{@var ckeditor5-version}",
 		"@ckeditor/ckeditor5-cloud-services": "^{@var ckeditor5-version}",
-		"@ckeditor/ckeditor5-easy-image": "^{@var ckeditor5-version}",
 		"@ckeditor/ckeditor5-editor-classic": "^{@var ckeditor5-version}",
 		"@ckeditor/ckeditor5-essentials": "^{@var ckeditor5-version}",
 		"@ckeditor/ckeditor5-heading": "^{@var ckeditor5-version}",

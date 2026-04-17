@@ -17,6 +17,7 @@ import {
 	attachToForm,
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
+	registerAndInitializeRootConfigAttributes,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
@@ -98,6 +99,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		}
 
 		this.model.document.createRoot( this.config.get( 'roots' )!.main.modelElement );
+		registerAndInitializeRootConfigAttributes( this );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 

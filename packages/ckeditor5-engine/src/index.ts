@@ -36,30 +36,30 @@ export {
 // Conversion.
 export { Conversion, type ConversionType } from './conversion/conversion.js';
 export { ConversionHelpers } from './conversion/conversionhelpers.js';
-export type {
+export {
 	DowncastDispatcher,
-	DowncastDispatcherEventMap,
-	DowncastAddMarkerEvent,
-	DowncastAttributeEvent,
-	DowncastConversionApi,
-	DowncastInsertEvent,
-	DowncastRemoveEvent,
-	DowncastRemoveMarkerEvent,
-	DowncastSelectionEvent,
-	DowncastReduceChangesEvent,
-	DowncastReduceChangesEventData,
-	DowncastEvent,
-	DowncastCleanSelectionEvent
+	type DowncastDispatcherEventMap,
+	type DowncastAddMarkerEvent,
+	type DowncastAttributeEvent,
+	type DowncastConversionApi,
+	type DowncastInsertEvent,
+	type DowncastRemoveEvent,
+	type DowncastRemoveMarkerEvent,
+	type DowncastSelectionEvent,
+	type DowncastReduceChangesEvent,
+	type DowncastReduceChangesEventData,
+	type DowncastEvent,
+	type DowncastCleanSelectionEvent
 } from './conversion/downcastdispatcher.js';
-export type {
+export {
 	UpcastDispatcher,
-	UpcastConversionApi,
-	UpcastConversionData,
-	UpcastElementEvent,
-	UpcastTextEvent,
-	UpcastViewCleanupEvent,
-	UpcastEvent,
-	UpcastDocumentFragmentEvent
+	type UpcastConversionApi,
+	type UpcastConversionData,
+	type UpcastElementEvent,
+	type UpcastTextEvent,
+	type UpcastViewCleanupEvent,
+	type UpcastEvent,
+	type UpcastDocumentFragmentEvent
 } from './conversion/upcastdispatcher.js';
 export { UpcastHelpers } from './conversion/upcasthelpers.js';
 export {
@@ -92,8 +92,8 @@ export {
 	type MapperModelToViewPositionEventData,
 	type MapperViewToModelPositionEventData
 } from './conversion/mapper.js';
-export type { ModelConsumable } from './conversion/modelconsumable.js';
-export type { Consumables, ViewConsumable } from './conversion/viewconsumable.js';
+export { ModelConsumable } from './conversion/modelconsumable.js';
+export { type Consumables, ViewConsumable } from './conversion/viewconsumable.js';
 
 // DataProcessor.
 export type { DataProcessor } from './dataprocessor/dataprocessor.js';
@@ -103,7 +103,7 @@ export { HtmlDataProcessor } from './dataprocessor/htmldataprocessor.js';
 export { XmlDataProcessor } from './dataprocessor/xmldataprocessor.js';
 
 // Model / Operation.
-export type { Operation } from './model/operation/operation.js';
+export { Operation } from './model/operation/operation.js';
 export { InsertOperation } from './model/operation/insertoperation.js';
 export { MoveOperation } from './model/operation/moveoperation.js';
 export { MergeOperation } from './model/operation/mergeoperation.js';
@@ -154,7 +154,7 @@ export { ModelText } from './model/text.js';
 export { ModelTextProxy } from './model/textproxy.js';
 export {
 	MarkerCollection,
-	type Marker,
+	Marker,
 	type MarkerData,
 	type MarkerChangeRangeEvent,
 	type MarkerCollectionChangeContentEvent,
