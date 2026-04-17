@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Color surface roles are defined in ./colors/_semantic-surface.css. */
+
+	/* Generic floating surface shadows. */
+	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	--ck-shadow-surface-floating: var(--ck-drop-shadow, var(--ck-shadow-md));
+}

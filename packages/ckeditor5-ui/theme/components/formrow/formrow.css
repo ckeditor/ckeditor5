@@ -3,26 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Spacing */
+	--ck-form-row-padding: var(--ck-spacing-region-padding-block) var(--ck-spacing-region-padding-inline-wide) 0;
+}
+
 .ck.ck-form__row {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
+	padding: var(--ck-form-row-padding);
 
 	&.ck-form__row_large-top-padding {
-		padding-top: var(--ck-spacing-large);
+		padding-top: var(--ck-spacing-region-edge-margin-block);
 	}
 
 	&.ck-form__row_large-bottom-padding {
-		padding-bottom: var(--ck-spacing-large);
+		padding-bottom: var(--ck-spacing-region-edge-margin-block);
 	}
 
 	&.ck-form__row_with-submit {
 		flex-wrap: nowrap;
 
 		& > *:not(:first-child) {
-			margin-inline-start: var(--ck-spacing-standard);
+			margin-inline-start: var(--ck-spacing-region-padding-inline);
 		}
 	}
 

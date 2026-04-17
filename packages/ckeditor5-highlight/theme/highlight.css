@@ -4,6 +4,7 @@
  */
 
 :root {
+	/* content-layer: pending color palette */
 	--ck-content-highlight-marker-yellow: hsl(60, 97%, 73%);
 	--ck-content-highlight-marker-green: hsl(120, 93%, 68%);
 	--ck-content-highlight-marker-pink: hsl(345, 96%, 73%);

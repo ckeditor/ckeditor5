@@ -7,20 +7,21 @@
 :root {
 	--ck-widget-outline-thickness: 3px;
 	--ck-widget-handler-icon-size: 16px;
-	--ck-widget-handler-animation-duration: 200ms;
-	--ck-widget-handler-animation-curve: ease;
+	--ck-widget-handler-animation-duration: var(--ck-duration-base);
+	--ck-widget-handler-animation-curve: var(--ck-ease-standard);
 
-	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
-	--ck-color-widget-hover-border: hsl(43, 100%, 62%);
+	--ck-color-widget-blurred-border: var(--ck-color-base-border-light);
+	--ck-color-widget-hover-border: var(--ck-color-base-attention);
 	--ck-color-widget-editable-focus-background: var(--ck-color-base-background);
 	--ck-color-widget-drag-handler-icon-color: var(--ck-color-base-background);
-	--ck-color-resizer: var(--ck-color-focus-border);
-	--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);
-	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);
+	--ck-color-resizer: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
+	--ck-color-resizer-tooltip-background: var(--ck-color-surface-inverse);
+	--ck-color-resizer-tooltip-text: var(--ck-color-text-inverse);
 
-	--ck-resizer-border-radius: var(--ck-border-radius);
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-resizer-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-resizer-tooltip-offset: 10px;
-	--ck-resizer-tooltip-height: calc(var(--ck-spacing-small) * 2 + 10px);
+	--ck-resizer-tooltip-height: calc(var(--ck-spacing-small, var(--ck-spacing-sm)) * 2 + 10px);
 }
 
 .ck .ck-widget {
@@ -35,7 +36,7 @@
 
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
-		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-focus-border);
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 	}
 
 	&:hover {
@@ -52,7 +53,8 @@
 	These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
 	&.ck-editor__nested-editable_focused,
 	&:focus {
-		box-shadow: var(--ck-inner-shadow), 0 0;
+		/* Backward compatibility: falls back to legacy --ck-inner-shadow if overridden. */
+		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 
 		@media (forced-colors: none) {
 			background-color: var(--ck-color-widget-editable-focus-background);
@@ -89,7 +91,8 @@
 			opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 		/* Make only top corners round. */
-		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+		border-radius: var(--ck-border-radius, var(--ck-radius-base)) var(--ck-border-radius, var(--ck-radius-base)) 0 0;
 
 		/* Place the drag handler outside the widget wrapper. */
 		transform: translateY(-100%);
@@ -141,7 +144,7 @@
 	&.ck-widget_selected:hover {
 		& > .ck-widget__selection-handle {
 			opacity: 1;
-			background-color: var(--ck-color-focus-border);
+			background-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 			visibility: visible;
 
 			/* When the widget is selected, notify the user using the proper look of the icon. */
@@ -233,9 +236,9 @@
 	color: var(--ck-color-resizer-tooltip-text);
 	border: 1px solid var(--ck-color-resizer-tooltip-text);
 	border-radius: var(--ck-resizer-border-radius);
-	font-size: var(--ck-font-size-tiny);
+	font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
 	display: block;
-	padding: 0 var(--ck-spacing-small);
+	padding: 0 var(--ck-spacing-small, var(--ck-spacing-sm));
 	height: var(--ck-resizer-tooltip-height);
 	line-height: var(--ck-resizer-tooltip-height);
 

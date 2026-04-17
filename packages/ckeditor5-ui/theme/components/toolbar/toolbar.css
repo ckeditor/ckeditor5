@@ -3,11 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Spacing */
+	--ck-toolbar-item-gap-inline: var(--ck-spacing-surface-item-gap-inline);
+	--ck-toolbar-padding: 0 var(--ck-spacing-surface-padding-inline);
+
+	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-toolbar-compact-uniform-border-radius: var(--ck-border-radius-uniform);
+	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
+	--ck-toolbar-vertical-button-border-radius: 0;
+
+	/* Color */
+	--ck-toolbar-background-color: var(--ck-color-surface-container);
+	--ck-toolbar-border-color: var(--ck-color-border-container);
+
+	/* Border */
+	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
+}
+
 .ck.ck-toolbar {
-	border-radius: var(--ck-rounded-corners-radius);
-	background: var(--ck-color-toolbar-background);
-	padding: 0 var(--ck-spacing-small);
-	border: 1px solid var(--ck-color-toolbar-border);
+	border-radius: var(--ck-toolbar-border-radius);
+	background: var(--ck-toolbar-background-color);
+	padding: var(--ck-toolbar-padding);
+	border: var(--ck-toolbar-border);
 	-webkit-user-select: none;
 	user-select: none;
 
@@ -19,14 +38,14 @@
 		height: var(--ck-icon-size);
 		width: 1px;
 		min-width: 1px;
-		background: var(--ck-color-toolbar-border);
+		background: var(--ck-toolbar-border-color);
 
 		/*
 		 * These margins make the separators look better in balloon toolbars (when aligned with the "tip").
 		 * See https://github.com/ckeditor/ckeditor5/issues/7493.
 		 */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
+		margin-top: var(--ck-spacing-surface-item-gap-block);
+		margin-bottom: var(--ck-spacing-surface-item-gap-block);
 		display: inline-block;
 
 		/*
@@ -48,7 +67,7 @@
 	& > .ck-toolbar__items {
 		& > *:not(.ck-toolbar__line-break) {
 			/* (#11) Separate toolbar items. */
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-toolbar-item-gap-inline);
 		}
 
 		/* Don't display a separator after an empty items container, for instance,
@@ -65,8 +84,8 @@
 	& > .ck-toolbar__items > *:not(.ck-toolbar__line-break),
 	& > .ck.ck-toolbar__grouped-dropdown {
 		/* Make sure items wrapped to the next line have v-spacing */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
+		margin-top: var(--ck-spacing-surface-item-gap-block);
+		margin-bottom: var(--ck-spacing-surface-item-gap-block);
 	}
 
 	&.ck-toolbar_vertical {
@@ -82,7 +101,7 @@
 			margin: 0;
 
 			/* Items in a vertical toolbar span the entire width so rounded corners are pointless. */
-			border-radius: 0;
+			border-radius: var(--ck-toolbar-vertical-button-border-radius);
 		}
 	}
 
@@ -107,7 +126,7 @@
 		 * This button has no arrow so let's revert that padding back to normal.
 		 */
 		& > .ck.ck-button.ck-dropdown__button {
-			padding-left: var(--ck-spacing-tiny);
+			padding-left: var(--ck-spacing-control-padding-inline-start-compact);
 		}
 		& > .ck-dropdown__button .ck-dropdown__arrow {
 			display: none;
@@ -165,7 +184,7 @@
 
 	&:not(.ck-toolbar_compact) > .ck-toolbar__items > .ck {
 		/* (#11) Separate toolbar items. */
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-toolbar-item-gap-inline);
 	}
 
 	& > .ck-toolbar__items > .ck:last-child {
@@ -175,25 +194,23 @@
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* No rounded corners on the right side of the first child. */
 		&:first-child {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 		}
 
 		/* No rounded corners on the left side of the last child. */
 		&:last-child {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 		}
 	}
 
 	/* Separate the the separator form the grouping dropdown when some items are grouped. */
 	& > .ck.ck-toolbar__separator {
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-spacing-surface-item-gap-inline);
 	}
 
 	/* Some spacing between the items and the separator before the grouped items dropdown. */
 	&.ck-toolbar_grouping > .ck-toolbar__items:not(:empty):not(:only-child) {
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-spacing-surface-item-gap-inline);
 	}
 }
 
@@ -213,25 +230,23 @@
 	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* No rounded corners on the right side of the first child. */
 		&:first-child {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 		}
 
 		/* No rounded corners on the left side of the last child. */
 		&:last-child {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+			border-radius: var(--ck-toolbar-compact-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 		}
 	}
 
 	/* Separate the the separator form the grouping dropdown when some items are grouped. */
 	& > .ck.ck-toolbar__separator {
-		margin-right: var(--ck-spacing-small);
+		margin-right: var(--ck-toolbar-item-gap-inline);
 	}
 
 	/* Some spacing between the items and the separator before the grouped items dropdown. */
 	&.ck-toolbar_grouping > .ck-toolbar__items:not(:empty):not(:only-child) {
-		margin-right: var(--ck-spacing-small);
+		margin-right: var(--ck-spacing-surface-item-gap-inline);
 	}
 }
 

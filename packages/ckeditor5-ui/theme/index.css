@@ -7,15 +7,25 @@
 @import "./globals/_disabled.css";
 @import "./globals/_focus.css";
 @import "./globals/_fonts.css";
+@import "./globals/_border.css";
 @import "./globals/_reset.css";
 @import "./globals/_rounded.css";
 @import "./globals/_shadow.css";
 @import "./globals/_spacing.css";
+@import "./globals/_semantic-typography.css";
+@import "./globals/_semantic-spacing.css";
+@import "./globals/_semantic-shape.css";
+@import "./globals/_semantic-surface.css";
+@import "./globals/_semantic-interactive.css";
+@import "./globals/_semantic-layout.css";
 @import "./globals/_hidden.css";
 @import "./globals/_zindex.css";
+@import "./globals/_semantic-layer.css";
 @import "./globals/_transition.css";
+@import "./globals/_semantic-motion.css";
 @import "./globals/_poweredby.css";
 @import "./globals/_evaluationbadge.css";
+@import "./globals/_legacy-foundation-aliases.css";
 
 @import "./components/responsive-form/responsiveform.css";
 @import "./components/form/form.css";

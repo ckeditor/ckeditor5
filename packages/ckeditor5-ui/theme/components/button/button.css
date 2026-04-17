@@ -3,13 +3,49 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Spacing */
+	--ck-button-padding: var(--ck-spacing-control-padding-block);
+
+	/* Radius */
+	--ck-button-border-radius: var(--ck-border-radius-control);
+
+	/* Border */
+	--ck-button-border: var(--ck-border-width-control) solid transparent;
+
+	/* Color */
+	--ck-button-default-background-color: transparent;
+	--ck-button-default-hover-background-color: var(--ck-color-interactive-hover-surface);
+	--ck-button-default-active-background-color: var(--ck-color-interactive-active-surface);
+	--ck-button-default-disabled-background-color: transparent;
+	--ck-button-on-background-color: var(--ck-color-interactive-selected-surface);
+	--ck-button-on-hover-background-color: var(--ck-color-interactive-selected-surface-hover);
+	--ck-button-on-active-background-color: var(--ck-color-interactive-selected-surface-hover);
+	/* Intentionally hardcoded: no matching semantic disabled surface exists yet. */
+	--ck-button-on-disabled-background-color: hsl(211, 15%, 95%);
+	--ck-button-on-text-color: var(--ck-color-interactive-selected-text);
+	--ck-button-action-background-color: var(--ck-color-interactive-primary-surface);
+	--ck-button-action-hover-background-color: var(--ck-color-interactive-primary-surface-hover);
+	--ck-button-action-active-background-color: var(--ck-color-interactive-primary-surface-hover);
+	/* Intentionally hardcoded: a faded variant of the action color with no semantic equivalent yet. */
+	--ck-button-action-disabled-background-color: hsl(104, 44%, 58%);
+	--ck-button-action-text-color: var(--ck-color-interactive-primary-text);
+	--ck-button-save-color: var(--ck-color-feedback-success);
+	--ck-button-cancel-color: var(--ck-color-feedback-warning);
+
+	/* State / meta */
+	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
+	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled))
+}
+
 /* Use :where(a) (not plain a) to keep the anchor variant at zero specificity. */
 .ck.ck-button,
 :where(a).ck.ck-button {
-	--ck-button-background: var(--ck-color-button-default-background);
-	--ck-button-hover-background: var(--ck-color-button-default-hover-background);
-	--ck-button-active-background: var(--ck-color-button-default-active-background);
-	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background);
+	--ck-button-background: var(--ck-button-default-background-color);
+	--ck-button-hover-background: var(--ck-button-default-hover-background-color);
+	--ck-button-active-background: var(--ck-button-default-active-background-color);
+	--ck-button-disabled-background: var(--ck-button-default-disabled-background-color);
 
 	background: var(--ck-button-background);
 
@@ -23,16 +59,16 @@
 		}
 	}
 
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-button-border-radius);
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
-	padding: var(--ck-spacing-tiny);
+	padding: var(--ck-button-padding);
 	text-align: center;
 
 	/* A very important piece of styling. Go to variable declaration to learn more. */
-	min-width: var(--ck-ui-component-min-height);
-	min-height: var(--ck-ui-component-min-height);
+	min-width: var(--ck-size-control-min-height);
+	min-height: var(--ck-size-control-min-height);
 
 	/* Normalize the height of the line. Removing this will break consistent height
 	among text and text-less buttons (with icons). */
@@ -42,10 +78,10 @@
 	font-size: inherit;
 
 	/* Avoid flickering when the foucs border shows up. */
-	border: 1px solid transparent;
+	border: var(--ck-button-border);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
+	transition: box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-control), border var(--ck-transition-duration-control) var(--ck-transition-timing-function-control);
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;
@@ -57,15 +93,15 @@
 	align-items: center;
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-transition-none);
 	}
 
 	/* stylelint-disable no-descending-specificity */
 	&:active,
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border-color: var(--ck-button-focus-border-color);
+		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -79,7 +115,7 @@
 	& .ck-button__label {
 		/* Enable font size inheritance, which allows fluid UI scaling. */
 		font-size: inherit;
-		font-weight: inherit;
+		font-weight: var(--ck-font-weight-ui-inherit);
 		color: inherit;
 		cursor: inherit;
 
@@ -103,11 +139,11 @@
 		opacity: .5;
 
 		[dir="ltr"] & {
-			margin-left: var(--ck-spacing-large);
+			margin-left: var(--ck-spacing-control-meta-gap);
 		}
 
 		[dir="rtl"] & {
-			margin-right: var(--ck-spacing-large);
+			margin-right: var(--ck-spacing-control-meta-gap);
 		}
 	}
 
@@ -118,16 +154,16 @@
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+			box-shadow: var(--ck-interactive-focus-disabled-shadow), 0 0;
 		}
 
 		& .ck-button__icon {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-button-opacity-disabled);
 		}
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3376 */
 		& .ck-button__label {
-			opacity: var(--ck-disabled-opacity);
+			opacity: var(--ck-button-opacity-disabled);
 		}
 
 		& .ck-button__keystroke {
@@ -136,15 +172,15 @@
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
+		padding: var(--ck-spacing-control-padding-block) var(--ck-spacing-control-padding-inline);
 
 		& .ck-button__icon {
 			[dir="ltr"] & {
-				margin-right: var(--ck-spacing-medium);
+				margin-right: var(--ck-spacing-control-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-spacing-medium);
+				margin-left: var(--ck-spacing-control-icon-gap);
 			}
 		}
 		& .ck-button__label {
@@ -161,20 +197,20 @@
 
 	/* A style of the button which is currently on, e.g. its feature is active. */
 	&.ck-on {
-		--ck-button-background: var(--ck-color-button-on-background);
-		--ck-button-hover-background: var(--ck-color-button-on-hover-background);
-		--ck-button-active-background: var(--ck-color-button-on-active-background);
-		--ck-button-disabled-background: var(--ck-color-button-on-disabled-background);
+		--ck-button-background: var(--ck-button-on-background-color);
+		--ck-button-hover-background: var(--ck-button-on-hover-background-color);
+		--ck-button-active-background: var(--ck-button-on-active-background-color);
+		--ck-button-disabled-background: var(--ck-button-on-disabled-background-color);
 
-		color: var(--ck-color-button-on-color);
+		color: var(--ck-button-on-text-color);
 	}
 
 	&.ck-button-save {
-		color: var(--ck-color-button-save);
+		color: var(--ck-button-save-color);
 	}
 
 	&.ck-button-cancel {
-		color: var(--ck-color-button-cancel);
+		color: var(--ck-button-cancel-color);
 	}
 
 	/* stylelint-disable no-descending-specificity */
@@ -197,15 +233,15 @@
 
 .ck.ck-button-action,
 a.ck.ck-button-action {
-	--ck-button-background: var(--ck-color-button-action-background);
-	--ck-button-hover-background: var(--ck-color-button-action-hover-background);
-	--ck-button-active-background: var(--ck-color-button-action-active-background);
-	--ck-button-disabled-background: var(--ck-color-button-action-disabled-background);
+	--ck-button-background: var(--ck-button-action-background-color);
+	--ck-button-hover-background: var(--ck-button-action-hover-background-color);
+	--ck-button-active-background: var(--ck-button-action-active-background-color);
+	--ck-button-disabled-background: var(--ck-button-action-disabled-background-color);
 
-	color: var(--ck-color-button-action-text);
+	color: var(--ck-button-action-text-color);
 }
 
 .ck.ck-button-bold,
 a.ck.ck-button-bold {
-	font-weight: bold;
+	font-weight: var(--ck-font-weight-ui-emphasis);
 }

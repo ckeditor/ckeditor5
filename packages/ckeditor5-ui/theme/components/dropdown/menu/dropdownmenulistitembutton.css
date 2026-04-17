@@ -3,19 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Size */
+	--ck-dropdown-menu-list-item-spinner-size: 20px;
+}
+
 .ck-button.ck-dropdown-menu-list__nested-menu__item__button {
 	border-radius: 0;
 
 	& > .ck-spinner-container,
 	& > .ck-spinner-container .ck-spinner {
 		/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */
-		--ck-toolbar-spinner-size: 20px;
+		--ck-toolbar-spinner-size: var(--ck-dropdown-menu-list-item-spinner-size);
 	}
 
 	& > .ck-spinner-container {
 		/* These margins are the same as for .ck-icon. */
-		margin-left: calc(-1 * var(--ck-spacing-small));
-		margin-right: var(--ck-spacing-small);
+		margin-left: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
+		margin-right: var(--ck-spacing-control-padding-inline-compact);
 	}
 
 	/*
@@ -27,7 +32,7 @@
 		box-shadow: none;
 
 		&:not(.ck-on) {
-			background: var(--ck-color-button-default-hover-background);
+			background: var(--ck-button-default-hover-background-color);
 		}
 	}
 }

@@ -8,6 +8,7 @@
 	--ck-insert-table-dropdown-box-height: 11px;
 	--ck-insert-table-dropdown-box-width: 12px;
 	--ck-insert-table-dropdown-box-margin: 1px;
+	--ck-insert-table-dropdown-box-border-radius: var(--ck-radius-xs);
 }
 
 .ck .ck-insert-table-dropdown__grid {
@@ -28,8 +29,8 @@
 	min-width: var(--ck-insert-table-dropdown-box-width);
 	min-height: var(--ck-insert-table-dropdown-box-height);
 	margin: var(--ck-insert-table-dropdown-box-margin);
-	border: 1px solid var(--ck-color-base-border);
-	border-radius: 1px;
+	border: var(--ck-border-width-thin) solid var(--ck-color-base-border);
+	border-radius: var(--ck-insert-table-dropdown-box-border-radius);
 	outline: none;
 	transition: none;
 
@@ -42,7 +43,7 @@
 	}
 
 	&.ck-on {
-		border-color: var(--ck-color-focus-border);
-		background: var(--ck-color-focus-outer-shadow);
+		border-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
+		background: var(--ck-color-focus-outer-shadow, var(--ck-focus-shadow));
 	}
 }

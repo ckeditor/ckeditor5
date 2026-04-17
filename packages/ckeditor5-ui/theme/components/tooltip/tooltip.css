@@ -4,15 +4,31 @@
  */
 
 
-.ck.ck-balloon-panel.ck-tooltip {
-	--ck-balloon-border-width: 0px;
-	--ck-balloon-arrow-offset: 0px;
-	--ck-balloon-arrow-half-width: 4px;
-	--ck-balloon-arrow-height: 4px;
-	--ck-tooltip-text-padding: 4px;
-	--ck-color-panel-background: var(--ck-color-tooltip-background);
+:root {
+	/* Size */
+	--ck-tooltip-max-width: 200px;
 
-	padding: 0 var(--ck-spacing-medium);
+	/* Spacing */
+	--ck-tooltip-padding: 0 var(--ck-spacing-control-icon-gap);
+
+	/* Border */
+	--ck-tooltip-border: 0px solid transparent;
+
+	/* Color */
+	--ck-tooltip-background-color: var(--ck-color-surface-inverse);
+	--ck-tooltip-text-color: var(--ck-color-text-inverse);
+
+	/* Typography */
+	--ck-tooltip-text-font-size: .9em;
+}
+
+.ck.ck-balloon-panel.ck-tooltip {
+	--ck-balloon-panel-border: var(--ck-tooltip-border);
+	--ck-balloon-panel-background-color: var(--ck-tooltip-background-color);
+
+	padding: var(--ck-tooltip-padding);
+
+	z-index: var(--ck-layer-tooltip);
 
 	/* Reset balloon panel styles */
 	box-shadow: none;
@@ -20,22 +36,20 @@
 	user-select: none;
 
 	& .ck-tooltip__text {
-		font-size: .9em;
+		font-size: var(--ck-tooltip-text-font-size);
 		line-height: 1.5;
-		color: var(--ck-color-tooltip-text);
+		color: var(--ck-tooltip-text-color);
 	}
 
 	&.ck-tooltip_multi-line .ck-tooltip__text {
 		white-space: break-spaces;
 		display: inline-block;
-		padding: var(--ck-tooltip-text-padding) 0;
-		max-width: 200px;
+		padding: 4px 0;
+		max-width: var(--ck-tooltip-max-width);
 	}
 
 	/* Hide the default shadow of the .ck-balloon-panel tip */
 	&::before {
 		display: none;
 	}
-
-	z-index: calc( var(--ck-z-dialog) + 100 )
 }

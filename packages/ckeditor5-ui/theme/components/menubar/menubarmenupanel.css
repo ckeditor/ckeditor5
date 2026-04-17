@@ -4,42 +4,49 @@
  */
 
 :root {
-	--ck-menu-bar-menu-max-width: 75vw;
-	--ck-menu-bar-nested-menu-horizontal-offset: 5px;
+	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-menu-bar-panel-uniform-border-radius: var(--ck-border-radius-uniform);
+	--ck-menu-bar-panel-border-radius: var(--ck-border-radius-surface-attached);
+
+	/* State / meta */
+	--ck-menu-bar-item-focus-border-color: var(--ck-interactive-focus-border-color);
 }
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
-	border-radius: var(--ck-rounded-corners-radius);
-	box-shadow: var(--ck-drop-shadow), 0 0;
+	border-radius: var(--ck-menu-bar-panel-border-radius);
+	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
-	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
+	background: var(--ck-dropdown-panel-background-color);
+	border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 	bottom: 0;
 	height: fit-content;
 
-	z-index: var(--ck-z-panel);
-	max-width: var(--ck-menu-bar-menu-max-width);
+	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+	z-index: var(--ck-z-panel, var(--ck-z-overlay));
+	/* Backward compatibility: falls back to legacy --ck-menu-bar-menu-max-width if overridden. */
+	max-width: var(--ck-menu-bar-menu-max-width, 75vw);
 	position: absolute;
 
 	/* Corner border radius consistent with the button. */
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_se {
-		border-top-left-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_sw {
-		border-top-right-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 	}
 
 	&.ck-menu-bar__menu__panel_position_en,
 	&.ck-menu-bar__menu__panel_position_ne {
-		border-bottom-left-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
 	}
 
 	&.ck-menu-bar__menu__panel_position_wn,
 	&.ck-menu-bar__menu__panel_position_nw {
-		border-bottom-right-radius: 0;
+		border-radius: var(--ck-menu-bar-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
 	}
 
 	&:focus {
@@ -69,7 +76,7 @@
 
 	&.ck-menu-bar__menu__panel_position_es,
 	&.ck-menu-bar__menu__panel_position_en {
-		left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		left: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset, 5px) );
 	}
 
 	&.ck-menu-bar__menu__panel_position_es {
@@ -82,7 +89,7 @@
 
 	&.ck-menu-bar__menu__panel_position_ws,
 	&.ck-menu-bar__menu__panel_position_wn {
-		right: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset) );
+		right: calc( 100% - var(--ck-menu-bar-nested-menu-horizontal-offset, 5px) );
 	}
 
 	&.ck-menu-bar__menu__panel_position_ws {
@@ -108,11 +115,11 @@
 		&:active {
 			/* Fix truncated shadows due to rendering order. */
 			position: relative;
-			z-index: 2;
+			z-index: var(--ck-layer-control-raised);
 
 			outline: none;
-			border: var(--ck-focus-ring);
-			box-shadow: var(--ck-focus-outer-shadow), 0 0;
+			border-color: var(--ck-menu-bar-item-focus-border-color);
+			box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 		}
 	}
 }

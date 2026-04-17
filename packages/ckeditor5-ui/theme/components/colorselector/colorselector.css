@@ -3,8 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Spacing */
+	--ck-color-selector-padding: 0;
+
+	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-color-selector-uniform-border-radius: var(--ck-border-radius-uniform);
+
+	/* Border */
+	--ck-color-selector-color-picker-border-top: var(--ck-border-width-divider) solid var(--ck-color-base-border);
+}
 
 .ck.ck-color-selector {
+	padding: var(--ck-color-selector-padding);
+
 	/* View fragment with color grids. */
 	& .ck-color-grids-fragment {
 		& .ck-button.ck-color-selector__remove-color,
@@ -20,27 +33,26 @@
 
 		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button.ck-color-selector__color-picker {
-			padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			padding: calc(var(--ck-spacing-control-padding-inline) / 2) var(--ck-spacing-control-padding-inline);
+			border-radius: var(--ck-color-selector-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
 
 			&:not(:focus) {
-				border-top: 1px solid var(--ck-color-base-border);
+				border-top: var(--ck-color-selector-color-picker-border-top);
 			}
 
 			& .ck.ck-icon {
 				[dir="ltr"] & {
-					margin-right: var(--ck-spacing-standard);
+					margin-right: var(--ck-spacing-control-padding-inline);
 				}
 
 				[dir="rtl"] & {
-					margin-left: var(--ck-spacing-standard);
+					margin-left: var(--ck-spacing-control-padding-inline);
 				}
 			}
 		}
 
 		& label.ck.ck-color-grid__label {
-			font-weight: unset;
+			font-weight: var(--ck-font-weight-ui-inherit);
 		}
 	}
 
@@ -54,11 +66,11 @@
 				min-width: 180px;
 
 				&::part(saturation) {
-					border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+					border-radius: var(--ck-border-radius-surface) var(--ck-border-radius-surface) 0 0;
 				}
 
 				&::part(hue) {
-					border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+					border-radius: 0 0 var(--ck-border-radius-surface) var(--ck-border-radius-surface);
 				}
 
 				&::part(saturation-pointer),
@@ -81,7 +93,4 @@
 			}
 		}
 	}
-	/* View fragment with color grids. */
-
-	/* View fragment with a color picker. */
 }

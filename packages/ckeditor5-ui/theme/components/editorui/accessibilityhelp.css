@@ -5,15 +5,13 @@
 
 
 :root {
-	--ck-accessibility-help-dialog-max-width: 600px;
+	/* Size */
 	--ck-accessibility-help-dialog-max-height: 400px;
-	--ck-accessibility-help-dialog-border-color: hsl(220, 6%, 81%);
-	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
-	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
+	--ck-accessibility-help-dialog-max-width: 600px;
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-spacing-region-edge-margin-block);
 	max-width: var(--ck-accessibility-help-dialog-max-width);
 	max-height: var(--ck-accessibility-help-dialog-max-height);
 	overflow: auto;
@@ -23,8 +21,9 @@
 
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border-color: var(--ck-focus-border-color);
+		/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
+		box-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow)), 0 0;
 	}
 
 	* {
@@ -37,12 +36,12 @@
 	}
 
 	& h3 {
-		font-weight: bold;
+		font-weight: var(--ck-font-weight-ui-heading);
 		font-size: 1.2em;
 	}
 
 	& h4 {
-		font-weight: bold;
+		font-weight: var(--ck-font-weight-ui-heading);
 		font-size: 1em;
 	}
 
@@ -56,11 +55,11 @@
 	& dl {
 		display: grid;
 		grid-template-columns: 2fr 1fr;
-		border-top: 1px solid var(--ck-accessibility-help-dialog-border-color);
+		border-top: var(--ck-border-width-divider) solid var(--ck-accessibility-help-dialog-border-color, hsl(220, 6%, 81%));
 		border-bottom: none;
 
 		& dt, & dd {
-			border-bottom: 1px solid var(--ck-accessibility-help-dialog-border-color);
+			border-bottom: var(--ck-border-width-divider) solid var(--ck-accessibility-help-dialog-border-color, hsl(220, 6%, 81%));
 			padding: .4em 0;
 		}
 
@@ -76,7 +75,7 @@
 
 	& kbd, & code {
 		display: inline-block;
-		background: var(--ck-accessibility-help-dialog-code-background-color);
+		background: var(--ck-accessibility-help-dialog-code-background-color, hsl(0deg 0% 92.94%));
 		padding: .4em;
 		vertical-align: middle;
 		line-height: 1;
@@ -91,7 +90,7 @@
 
 	& kbd {
 		min-width: 1.8em;
-		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
+		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color, hsl(0deg 0% 61%));
 		margin: 0 1px;
 
 		& + kbd {

@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-color-code-block-label-background: hsl(0, 0%, 46%);
+	--ck-color-code-block-label-background: var(--ck-color-base-text-light);
 }
 
 .ck.ck-editor__editable pre[data-language]::after {
@@ -15,10 +15,11 @@
 	background: var(--ck-color-code-block-label-background);
 
 	font-size: 10px;
-	font-family: var(--ck-font-face);
+	/* Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	font-family: var(--ck-font-face, var(--ck-font-family));
 	line-height: 16px;
-	padding: var(--ck-spacing-tiny) var(--ck-spacing-medium);
-	color: hsl(0, 0%, 100%);
+	padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-medium, var(--ck-spacing-md));
+	color: var(--ck-color-base-background);
 	white-space: nowrap;
 }
 
@@ -29,6 +30,7 @@
 	overflow-x: hidden;
 }
 
+/* content-layer: pending color palette */
 .ck-content pre {
 	padding: 1em;
 	color: hsl(0, 0%, 20.8%);

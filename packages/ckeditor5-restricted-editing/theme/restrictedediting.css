@@ -4,6 +4,7 @@
  */
 
 :root {
+	/* content-layer: pending color palette */
 	--ck-color-restricted-editing-exception-background: hsla(31, 100%, 65%, .2);
 	--ck-color-restricted-editing-exception-hover-background: hsla(31, 100%, 65%, .35);
 	--ck-color-restricted-editing-exception-brackets: hsla(31, 100%, 40%, .4);
