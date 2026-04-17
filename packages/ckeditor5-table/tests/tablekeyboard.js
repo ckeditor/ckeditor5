@@ -3627,7 +3627,11 @@ describe( 'TableKeyboard', () => {
 				return VirtualTestEditor
 					.create( {
 						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageBlockEditing, MediaEmbedEditing ],
-						language: 'ar'
+						language: 'ar',
+						translations: [ { ar: {
+							dictionary: [],
+							getPluralForm: sinon.spy()
+						} } ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
