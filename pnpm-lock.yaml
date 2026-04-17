@@ -107,14 +107,14 @@ importers:
         specifier: ^9.34.0
         version: 9.36.0(jiti@2.6.1)
       eslint-config-ckeditor5:
-        specifier: ^14.1.0
-        version: 14.1.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4)
+        specifier: ^15.0.0
+        version: 15.0.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^14.1.0
-        version: 14.1.0
+        specifier: ^15.0.0
+        version: 15.0.0
       estree-walker:
         specifier: ^3.0.3
         version: 3.0.3
@@ -7760,8 +7760,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-config-ckeditor5@14.1.0:
-    resolution: {integrity: sha512-mDDu0YB/GnoIXbXKCldUaEsC+Z/5lZVrHetEvpP8MI0zuWChbNBrPIokeQ829Yz7uSF7PEk8bFPXktwAK2ccQA==}
+  eslint-config-ckeditor5@15.0.0:
+    resolution: {integrity: sha512-XpemPdkTE96OIRIBNbbVovqw/KejKheCHL3tlil0vz8mDdVp/TO7Cj81GEvHz2jdoR4SuY1GCTFUp8FzMRhdHg==}
     engines: {node: '>=24.11.0'}
     peerDependencies:
       eslint: ^9.0.0
@@ -7771,8 +7771,8 @@ packages:
     resolution: {integrity: sha512-blbD5ZSQnjNEUaG38VCO4WG9nfDQWE8/IOmt8DFRHXUIfZikaIXmsQTdWNFk0/e0j7RgIVRza86MpsJ+aHgFLg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  eslint-plugin-ckeditor5-rules@14.1.0:
-    resolution: {integrity: sha512-ssewEesRNL0MVfNTraM7l8xtTfBKmlNIjK0kCXsiJgLanmoRn0CZ1LEepICZifNx2eKzCf5tF+6phYVleh88PA==}
+  eslint-plugin-ckeditor5-rules@15.0.0:
+    resolution: {integrity: sha512-naZRNFCpiEhanWKaCqqgxB9hlx+K8RmKATkVwxt4z7nPQnPjg5Yh2UYAoBtCBXhG9iiHclR35T4b694o0KynTw==}
     engines: {node: '>=24.11.0'}
 
   eslint-plugin-mocha@11.2.0:
@@ -16247,13 +16247,13 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-ckeditor5@14.1.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4):
+  eslint-config-ckeditor5@15.0.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4):
     dependencies:
       '@eslint/js': 9.39.4
       '@eslint/markdown': 6.6.0
       '@stylistic/eslint-plugin': 4.4.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4)
       eslint: 9.36.0(jiti@2.6.1)
-      eslint-plugin-ckeditor5-rules: 14.1.0
+      eslint-plugin-ckeditor5-rules: 15.0.0
       eslint-plugin-mocha: 11.2.0(eslint@9.36.0(jiti@2.6.1))
       globals: 16.5.0
       typescript: 5.5.4
@@ -16267,7 +16267,7 @@ snapshots:
       strip-ansi: 6.0.1
       text-table: 0.2.0
 
-  eslint-plugin-ckeditor5-rules@14.1.0:
+  eslint-plugin-ckeditor5-rules@15.0.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       enhanced-resolve: 5.20.1
