@@ -168,7 +168,7 @@ export class MultiRootEditor extends Editor {
 
 		for ( const [ rootName, rootConfig ] of rootsConfig ) {
 			// Create root and `UIView` element for each editable container.
-			const root = this.model.document.createRoot( rootConfig.modelElement || '$root', rootName );
+			const root = this.model.document.createRoot( rootConfig.modelElement, rootName );
 
 			if ( rootConfig.lazyLoad ) {
 				root._isLoaded = false;
