@@ -218,22 +218,22 @@ describe( 'IndentBlockListCommand', () => {
 					} );
 				} );
 
-				describe( 'when skip-level lists are enabled', () => {
-					it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
+				describe( 'skip-level list items (listIndent > 0)', () => {
+					it( 'should be false when selection is at start of a skip-level list item preceded by a paragraph', () => {
 						_setModelData( model, modelList( [
 							'foo',
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true when skip-level list item is the first element in the document', () => {
+					it( 'should be false when skip-level list item is the first element in the document', () => {
 						_setModelData( model, modelList( [
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).to.be.false;
 					} );
 
 					it( 'should be false for a sublist item (has parent list item)', () => {
@@ -731,22 +731,22 @@ describe( 'IndentBlockListCommand', () => {
 					} );
 				} );
 
-				describe( 'when skip-level lists are enabled', () => {
-					it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
+				describe( 'skip-level list items (listIndent > 0)', () => {
+					it( 'should be false when selection is at start of a skip-level list item preceded by a paragraph', () => {
 						_setModelData( model, modelList( [
 							'foo',
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true when skip-level list item is the first element in the document', () => {
+					it( 'should be false when skip-level list item is the first element in the document', () => {
 						_setModelData( model, modelList( [
 							'  * []bar'
 						] ) );
 
-						expect( command.isEnabled ).to.be.true;
+						expect( command.isEnabled ).to.be.false;
 					} );
 
 					it( 'should be false for a sublist item (has parent list item)', () => {

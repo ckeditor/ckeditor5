@@ -121,7 +121,7 @@ export class IndentBlockListCommand extends Command {
 		if (
 			position.isAtStart &&
 			_isListItemBlock( parent ) &&
-			parent.getAttribute( 'listIndent' ) === 0 &&
+			parent.getAttribute( 'listIndent' ) == 0 &&
 			schema.checkAttribute( parent, 'blockIndentList' ) &&
 			listUtils.isFirstListItemInList( parent )
 		) {
