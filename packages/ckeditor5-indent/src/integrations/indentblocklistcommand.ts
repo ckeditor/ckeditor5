@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import type { ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
-import { _isListItemBlock, _isTopLevelListItem } from '@ckeditor/ckeditor5-list';
+import { _isListItemBlock } from '@ckeditor/ckeditor5-list';
 
 import type { IndentBehavior } from '../indentcommandbehavior/indentbehavior.js';
 
@@ -82,7 +82,7 @@ export class IndentBlockListCommand extends Command {
 				for ( const block of blocks ) {
 					if (
 						_isListItemBlock( block ) &&
-						_isTopLevelListItem( block ) &&
+						block.getAttribute( 'listIndent' ) === 0 &&
 						model.schema.checkAttribute( block, 'blockIndentList' )
 					) {
 						listItems.push( block );
@@ -121,7 +121,7 @@ export class IndentBlockListCommand extends Command {
 		if (
 			position.isAtStart &&
 			_isListItemBlock( parent ) &&
-			_isTopLevelListItem( parent ) &&
+			parent.getAttribute( 'listIndent' ) === 0 &&
 			schema.checkAttribute( parent, 'blockIndentList' ) &&
 			listUtils.isFirstListItemInList( parent )
 		) {

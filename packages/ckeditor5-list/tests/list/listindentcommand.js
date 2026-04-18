@@ -1246,114 +1246,51 @@ describe( 'ListIndentCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			describe( 'with IndentBlockListIntegration', () => {
-				beforeEach( () => {
-					sinon.stub( editor.plugins, 'has' ).callsFake( name => {
-						return name === 'IndentBlockListIntegration';
-					} );
-				} );
+			it( 'should be true when a non-collapsed selection starts at the start of first list item', () => {
+				_setModelData( model, modelList( [
+					'* [0]',
+					'* 1'
+				] ) );
 
-				it( 'should be false when selection is at start of first list item', () => {
-					_setModelData( model, modelList( [
-						'* []0',
-						'* 1'
-					] ) );
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-					expect( command.isEnabled ).to.be.false;
-				} );
+			it( 'should be true when selection is at start of first item preceded by a non-list block', () => {
+				_setModelData( model, modelList( [
+					'foo',
+					'* []0',
+					'* 1'
+				] ) );
 
-				it( 'should be false when a non-collapsed selection starts at the start of first list item', () => {
-					_setModelData( model, modelList( [
-						'* [0]',
-						'* 1'
-					] ) );
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-					expect( command.isEnabled ).to.be.false;
-				} );
+			it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+				_setModelData( model, modelList( [
+					'# 0',
+					'# 1',
+					'* []2',
+					'* 3'
+				] ) );
 
-				it( 'should be true when selection is not at start of first list item', () => {
-					_setModelData( model, modelList( [
-						'* 0[]',
-						'* 1'
-					] ) );
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-					expect( command.isEnabled ).to.be.true;
-				} );
+			it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
+				_setModelData( model, modelList( [
+					'foo',
+					'  * []0'
+				] ) );
 
-				it( 'should be true for second list item', () => {
-					_setModelData( model, modelList( [
-						'* 0',
-						'* []1'
-					] ) );
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-					expect( command.isEnabled ).to.be.true;
-				} );
+			it( 'should be true when skip-level list item is the first element in the document', () => {
+				_setModelData( model, modelList( [
+					'    * []0'
+				] ) );
 
-				it( 'should be false when selection is at start of first item preceded by a non-list block', () => {
-					_setModelData( model, modelList( [
-						'foo',
-						'* []0',
-						'* 1'
-					] ) );
-
-					expect( command.isEnabled ).to.be.false;
-				} );
-
-				it( 'should be false when selection is at start of first bulleted item after numbered list', () => {
-					_setModelData( model, modelList( [
-						'# 0',
-						'# 1',
-						'* []2',
-						'* 3'
-					] ) );
-
-					expect( command.isEnabled ).to.be.false;
-				} );
-
-				it( 'should be true when selection is at start of a non-first item in the list', () => {
-					_setModelData( model, modelList( [
-						'* 0',
-						'* []1',
-						'* 2'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
-
-				it( 'should be false when selection is at start of a skip-level list item preceded by a paragraph', () => {
-					_setModelData( model, modelList( [
-						'foo',
-						'  * []0'
-					] ) );
-
-					expect( command.isEnabled ).to.be.false;
-				} );
-
-				it( 'should be false when skip-level list item is the first element in the document', () => {
-					_setModelData( model, modelList( [
-						'    * []0'
-					] ) );
-
-					expect( command.isEnabled ).to.be.false;
-				} );
-
-				it( 'should be true for a sublist item (not top-level, handled by list indent)', () => {
-					_setModelData( model, modelList( [
-						'* 0',
-						'    * []1'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
-
-				it( 'should be true for a skip-level list item preceded by a list item of another type', () => {
-					_setModelData( model, modelList( [
-						'# 0',
-						'    * []1'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 
@@ -1446,26 +1383,18 @@ describe( 'ListIndentCommand', () => {
 				] ) );
 			} );
 
-			describe( 'with IndentBlockListIntegration', () => {
-				beforeEach( () => {
-					sinon.stub( editor.plugins, 'has' ).callsFake( name => {
-						return name === 'IndentBlockListIntegration';
-					} );
-				} );
+			it( 'should indent the first list item when selection is not at the start of the item', () => {
+				_setModelData( model, modelList( [
+					'* 0[]',
+					'* 1'
+				] ) );
 
-				it( 'should indent the first list item when selection is not at the start of the item', () => {
-					_setModelData( model, modelList( [
-						'* 0[]',
-						'* 1'
-					] ) );
+				command.execute();
 
-					command.execute();
-
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
-						'  * 0[]',
-						'* 1'
-					] ) );
-				} );
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'  * 0[]',
+					'* 1'
+				] ) );
 			} );
 		} );
 	} );
@@ -1512,65 +1441,20 @@ describe( 'ListIndentCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			describe( 'with IndentBlockListIntegration', () => {
-				beforeEach( () => {
-					sinon.stub( editor.plugins, 'has' ).callsFake( name => {
-						return name === 'IndentBlockListIntegration';
-					} );
-				} );
+			it( 'should be true when selection is at start of first skip-level list item', () => {
+				_setModelData( model, modelList( [
+					'  * []0'
+				] ) );
 
-				it( 'should be true when selection is at start of first list item', () => {
-					_setModelData( model, modelList( [
-						'  * []0'
-					] ) );
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-					expect( command.isEnabled ).to.be.true;
-				} );
+			it( 'should be true for a single list item at indent 0', () => {
+				_setModelData( model, modelList( [
+					'* []0'
+				] ) );
 
-				it( 'should be true when a non-collapsed selection starts at the start of first list item', () => {
-					_setModelData( model, modelList( [
-						'  * [0]'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
-
-				it( 'should be true when selection is not at start of first list item', () => {
-					_setModelData( model, modelList( [
-						'  * 0[]'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
-
-				it( 'should be true for a single list item at indent 0 with no block indent', () => {
-					_setModelData( model, modelList( [
-						'* []0'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
-
-				it( 'should be true when selection is at start of first list item preceded by a non-list block', () => {
-					_setModelData( model, modelList( [
-						'foo',
-						'* []0',
-						'* 1'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
-
-				it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
-					_setModelData( model, modelList( [
-						'# 0',
-						'# 1',
-						'* []2',
-						'* 3'
-					] ) );
-
-					expect( command.isEnabled ).to.be.true;
-				} );
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 
@@ -1645,54 +1529,32 @@ describe( 'ListIndentCommand', () => {
 				] ) );
 			} );
 
-			describe( 'with IndentBlockListIntegration', () => {
-				beforeEach( () => {
-					sinon.stub( editor.plugins, 'has' ).callsFake( name => {
-						return name === 'IndentBlockListIntegration';
-					} );
-				} );
+			it( 'should outdent the first list item at indent 0 back to a paragraph', () => {
+				_setModelData( model, modelList( [
+					'* []0'
+				] ) );
 
-				it( 'should outdent the first list item when selection is not at the start of the item', () => {
-					_setModelData( model, modelList( [
-						'  * 0[]',
-						'* 1'
-					] ) );
+				command.execute();
 
-					command.execute();
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'[]0'
+				] ) );
+			} );
 
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
-						'* 0[]',
-						'* 1'
-					] ) );
-				} );
+			it( 'should outdent the first list item at indent 0 preceded by a non-list block', () => {
+				_setModelData( model, modelList( [
+					'foo',
+					'* []0',
+					'* 1'
+				] ) );
 
-				it( 'should outdent the first list item at indent 0 back to a paragraph', () => {
-					_setModelData( model, modelList( [
-						'* []0'
-					] ) );
+				command.execute();
 
-					command.execute();
-
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
-						'[]0'
-					] ) );
-				} );
-
-				it( 'should outdent the first list item at indent 0 preceded by a non-list block', () => {
-					_setModelData( model, modelList( [
-						'foo',
-						'* []0',
-						'* 1'
-					] ) );
-
-					command.execute();
-
-					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
-						'foo',
-						'[]0',
-						'* 1'
-					] ) );
-				} );
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'foo',
+					'[]0',
+					'* 1'
+				] ) );
 			} );
 		} );
 	} );
