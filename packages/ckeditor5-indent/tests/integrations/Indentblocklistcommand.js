@@ -195,6 +195,65 @@ describe( 'IndentBlockListCommand', () => {
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
+
+				describe( 'adjacent lists of different types', () => {
+					it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'# bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be false when selection is at start of second item in bulleted list after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'* bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'skip-level list items (listIndent > 0)', () => {
+					it( 'should be false when selection is at start of a skip-level list item preceded by a paragraph', () => {
+						_setModelData( model, modelList( [
+							'foo',
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when skip-level list item is the first element in the document', () => {
+						_setModelData( model, modelList( [
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a sublist item (has parent list item)', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a skip-level list item preceded by a list item of another type', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
 			} );
 
 			describe( 'execute', () => {
@@ -645,6 +704,65 @@ describe( 'IndentBlockListCommand', () => {
 
 					it( 'should be false in empty editor', () => {
 						_setModelData( model, '' );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'adjacent lists of different types', () => {
+					it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'# bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be false when selection is at start of second item in bulleted list after numbered list', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'* bar',
+							'* []baz'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+				} );
+
+				describe( 'skip-level list items (listIndent > 0)', () => {
+					it( 'should be false when selection is at start of a skip-level list item preceded by a paragraph', () => {
+						_setModelData( model, modelList( [
+							'foo',
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false when skip-level list item is the first element in the document', () => {
+						_setModelData( model, modelList( [
+							'  * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a sublist item (has parent list item)', () => {
+						_setModelData( model, modelList( [
+							'* foo',
+							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a skip-level list item preceded by a list item of another type', () => {
+						_setModelData( model, modelList( [
+							'# foo',
+							'    * []bar'
+						] ) );
 
 						expect( command.isEnabled ).to.be.false;
 					} );

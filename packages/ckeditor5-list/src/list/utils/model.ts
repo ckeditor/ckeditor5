@@ -376,7 +376,11 @@ export function outdentBlocksWithMerge(
 		}
 
 		// Merge with parent list item while outdenting and indent matches reference indent.
-		if ( block.getAttribute( 'listIndent' ) == referenceIndent ) {
+		// The parent block may be null if the block has no ancestor with a lower indent (e.g. when skip-level
+		// lists are enabled and the first item starts at indent > 0). In that case, skip the merge and just
+		// decrease the indent. Without skip-level lists, the post-fixer guarantees sequential indents, so
+		// a parent with a lower indent always exists and this guard has no effect.
+		if ( block.getAttribute( 'listIndent' ) == referenceIndent && parentBlocks.get( block ) ) {
 			const mergedBlocks = mergeListItemIfNotLast( block, parentBlocks.get( block ), writer );
 
 			// All list item blocks are updated while merging so add those to visited set.
