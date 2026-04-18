@@ -15,7 +15,6 @@ import {
 	isLastBlockOfListItem,
 	isFirstListItemInList,
 	isSingleListItem,
-	isTopLevelListItem,
 	ListItemUid,
 	mergeListItemBefore,
 	outdentBlocksWithMerge,
@@ -1962,87 +1961,6 @@ describe( 'List - utils - model', () => {
 			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
 			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
 			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'isTopLevelListItem()', () => {
-		it( 'should return true for a list item at indent 0', () => {
-			const input = modelList( [
-				'* a',
-				'* b'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isTopLevelListItem( fragment.getChild( 1 ) ) ).to.be.true;
-		} );
-
-		it( 'should return true for a list item at indent 0 after a different type list', () => {
-			const input = modelList( [
-				'# a',
-				'* b'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isTopLevelListItem( fragment.getChild( 1 ) ) ).to.be.true;
-		} );
-
-		it( 'should return false for a sublist item', () => {
-			const input = modelList( [
-				'* a',
-				'  * b'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isTopLevelListItem( fragment.getChild( 1 ) ) ).to.be.false;
-		} );
-
-		it( 'should return true for a skip-level list item preceded by a non-list block', () => {
-			const input = modelList( [
-				'foo',
-				'  * a'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 1 ) ) ).to.be.true;
-		} );
-
-		it( 'should return true for a skip-level list item that is first in the document', () => {
-			const input = modelList( [
-				'    * a'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 0 ) ) ).to.be.true;
-		} );
-
-		it( 'should return false for a skip-level sublist item preceded by a list item', () => {
-			const input = modelList( [
-				'* a',
-				'      * b'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 1 ) ) ).to.be.false;
-		} );
-
-		it( 'should return false for a skip-level list item preceded by a list item of another type', () => {
-			const input = modelList( [
-				'# a',
-				'    * b'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
-			expect( isTopLevelListItem( fragment.getChild( 1 ) ) ).to.be.false;
 		} );
 	} );
 } );

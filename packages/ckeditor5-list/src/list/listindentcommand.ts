@@ -14,10 +14,8 @@ import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
 	isFirstBlockOfListItem,
-	isFirstListItemInList,
 	isListItemBlock,
 	isSingleListItem,
-	isTopLevelListItem,
 	outdentBlocksWithMerge,
 	sortBlocks,
 	splitListItemBefore,
@@ -144,19 +142,8 @@ export class ListIndentCommand extends Command {
 			return true;
 		}
 
-		// When skip levels are allowed, any list item can always be indented further,
-		// unless IndentBlock is loaded and the selection is at the start of the first list item
-		// in the list — in that case, defer to the block indent command.
+		// When skip levels are allowed, any list item can always be indented further.
 		if ( this.editor.config.get( 'list.allowSkipLevels' ) ) {
-			if ( this.editor.plugins.has( 'IndentBlockListIntegration' ) ) {
-				const position = this.editor.model.document.selection.getFirstPosition()!;
-				const parent = position.parent as ListElement;
-
-				if ( position.isAtStart && isTopLevelListItem( parent ) && isFirstListItemInList( parent ) ) {
-					return false;
-				}
-			}
-
 			return true;
 		}
 
