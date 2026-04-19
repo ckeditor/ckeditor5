@@ -370,7 +370,7 @@ export function listItemDowncastConverter(
 	attributeNames: Array<string>,
 	strategies: Array<ListDowncastStrategy>,
 	model: Model,
-	{ dataPipeline }: { dataPipeline?: boolean } = {}
+	{ dataPipeline, allowSkipLevels }: { dataPipeline?: boolean; allowSkipLevels?: boolean }
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
 	const consumer = createAttributesConsumer( attributeNames, strategies );
 
@@ -390,7 +390,8 @@ export function listItemDowncastConverter(
 
 		const options = {
 			...conversionApi.options,
-			dataPipeline
+			dataPipeline,
+			allowSkipLevels
 		};
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
@@ -681,6 +682,10 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: ViewDowncast
 
 /**
  * Wraps the given list item with appropriate attribute elements for ul, ol, and li.
+ *
+ * For skip-level lists (where indent gaps exist, e.g. indent 0 → indent 2), this function
+ * generates intermediate wrapper pairs (ul/ol + li) at each missing level. These intermediate
+ * wrappers are invisible (`list-style-type: none` on the li) and carry no model-backed attributes.
  */
 function wrapListItemBlock(
 	listItem: ListElement,
@@ -694,40 +699,83 @@ function wrapListItemBlock(
 	}
 
 	const listItemIndent = listItem.getAttribute( 'listIndent' );
+	const allowSkipLevels = options.allowSkipLevels;
 	let currentListItem: ListElement | null = listItem;
 
 	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-		const listItemViewElement = createListItemElement( writer, indent, currentListItem.getAttribute( 'listItemId' ) );
-		const listViewElement = createListElement( writer, indent, currentListItem.getAttribute( 'listType' ) );
+		// When ListWalker jumps over indent levels (e.g. from indent 2 to indent 0, either because
+		// allowSkipLevels is enabled or because the item is at the start of a fragment and its
+		// nearest ancestor is further up), the levels in between have no corresponding model element.
+		// We detect these "intermediate" levels by checking if currentListItem's indent doesn't match
+		// the current loop indent. Handling this regardless of the allowSkipLevels config makes the
+		// downcast resilient to unexpected skip-level states in the model.
+		const isIntermediate = currentListItem.getAttribute( 'listIndent' ) !== indent;
 
-		for ( const strategy of strategies ) {
-			if (
-				( strategy.scope == 'list' || strategy.scope == 'item' ) &&
-				currentListItem.hasAttribute( strategy.attributeName )
-			) {
-				strategy.setAttributeOnDowncast(
-					writer,
-					currentListItem.getAttribute( strategy.attributeName ),
-					strategy.scope == 'list' ? listViewElement : listItemViewElement,
-					options,
-					currentListItem
-				);
+		if ( isIntermediate ) {
+			// Intermediate levels get invisible wrappers: list-style-type:none hides the marker on <li>,
+			// and no strategies are applied (no data-list-item-id, listStyle, etc.) since there is no
+			// model element backing this level.
+			//
+			// The <li> uses a fixed ID per indent (`list-item-skip-N`) so that sibling items sharing
+			// the same skipped level merge into one <li> (e.g. two items at indent 1 with no parent
+			// at indent 0 share one intermediate <li> at indent 0).
+			//
+			// The <ul/ol> uses the default real ID (list-type-indent) so it can merge with real list
+			// elements from other items at the same indent (e.g. a skip-level item at indent 2 followed
+			// by a real item at indent 0 — their <ul> at indent 0 must merge into one list).
+			const listType = currentListItem.getAttribute( 'listType' );
+
+			const listItemViewElement = createListItemElement( writer, indent, `list-item-skip-${ indent }` );
+			const listViewElement = createListElement( writer, indent, listType );
+
+			writer.setStyle( 'list-style-type', 'none', listItemViewElement );
+
+			viewRange = writer.wrap( viewRange, listItemViewElement );
+			viewRange = writer.wrap( viewRange, listViewElement );
+		} else {
+			const listItemViewElement = createListItemElement( writer, indent, currentListItem.getAttribute( 'listItemId' ) );
+			const listViewElement = createListElement( writer, indent, currentListItem.getAttribute( 'listType' ) );
+
+			for ( const strategy of strategies ) {
+				if (
+					( strategy.scope == 'list' || strategy.scope == 'item' ) &&
+					currentListItem.hasAttribute( strategy.attributeName )
+				) {
+					strategy.setAttributeOnDowncast(
+						writer,
+						currentListItem.getAttribute( strategy.attributeName ),
+						strategy.scope == 'list' ? listViewElement : listItemViewElement,
+						options,
+						currentListItem
+					);
+				}
 			}
-		}
 
-		viewRange = writer.wrap( viewRange, listItemViewElement );
-		viewRange = writer.wrap( viewRange, listViewElement );
+			viewRange = writer.wrap( viewRange, listItemViewElement );
+			viewRange = writer.wrap( viewRange, listViewElement );
+		}
 
 		if ( indent == 0 ) {
 			break;
 		}
 
-		currentListItem = ListWalker.first( currentListItem, { lowerIndent: true } );
+		// Only look for a parent when at a real (non-intermediate) level. At intermediate levels
+		// currentListItem already points to the nearest found ancestor and won't change.
+		if ( !isIntermediate ) {
+			const nextListItem = ListWalker.first( currentListItem, { lowerIndent: true } );
 
-		// There is no list item with lower indent, this means this is a document fragment containing
-		// only a part of nested list (like copy to clipboard) so we don't need to try to wrap it further.
-		if ( !currentListItem ) {
-			break;
+			if ( nextListItem ) {
+				currentListItem = nextListItem;
+			} else if ( !allowSkipLevels ) {
+				// There is no list item with lower indent, this means this is a document fragment
+				// containing only a part of nested list (like copy to clipboard) so we don't need
+				// to try to wrap it further.
+				//
+				// When allowSkipLevels is enabled, the loop continues to indent 0 producing
+				// intermediate wrappers at every remaining level to ensure a complete HTML structure
+				// regardless of whether the item has a preceding parent.
+				break;
+			}
 		}
 	}
 }
