@@ -721,7 +721,10 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: ViewDowncast
  *
  * For skip-level lists (where indent gaps exist, e.g. indent 0 → indent 2), this function
  * generates intermediate wrapper pairs (ul/ol + li) at each missing level. These intermediate
- * wrappers are invisible (`list-style-type: none` on the li) and carry no model-backed attributes.
+ * wrappers are invisible (`list-style-type: none` on the li). Scope `'list'` strategies are
+ * applied so the wrapper element (ul/ol) carries the same classes and styles as real list
+ * wrappers, while scope `'item'` strategies are skipped since there is no model element
+ * backing the intermediate level.
  */
 function wrapListItemBlock(
 	listItem: ListElement,
@@ -749,22 +752,49 @@ function wrapListItemBlock(
 
 		if ( isIntermediate ) {
 			// Intermediate levels get invisible wrappers: list-style-type:none hides the marker on <li>,
-			// and no strategies are applied (no data-list-item-id, listStyle, etc.) since there is no
+			// and scope:'item' strategies are not applied (no data-list-item-id, etc.) since there is no
 			// model element backing this level.
 			//
 			// The <li> uses a fixed ID per indent (`list-item-skip-N`) so that sibling items sharing
 			// the same skipped level merge into one <li> (e.g. two items at indent 1 with no parent
 			// at indent 0 share one intermediate <li> at indent 0).
 			//
-			// The <ul/ol> uses the default real ID (list-type-indent) so it can merge with real list
-			// elements from other items at the same indent (e.g. a skip-level item at indent 2 followed
-			// by a real item at indent 0 — their <ul> at indent 0 must merge into one list).
-			const listType = currentListItem.getAttribute( 'listType' );
+			// The <ul/ol> type is chosen to ensure correct merging at this indent:
+			// - If a real list item exists at this indent (found by walking forward), use its type
+			//   so the intermediate wrapper merges with that item's real wrapper.
+			// - Otherwise, use the ancestor's type so all intermediates at this indent share the
+			//   same type and merge with each other.
+			const siblingAtIndent = findSiblingListItemAt( listItem, indent );
+			const referenceItem = siblingAtIndent || currentListItem;
+			const listType = referenceItem.getAttribute( 'listType' );
 
 			const listItemViewElement = createListItemElement( writer, indent, `list-item-skip-${ indent }` );
 			const listViewElement = createListElement( writer, indent, listType );
 
 			writer.setStyle( 'list-style-type', 'none', listItemViewElement );
+
+			// Apply scope:'list' strategies so that intermediate <ol>/<ul> wrappers carry the same
+			// classes and styles as real list wrappers (e.g. multi-level-list class, todo-list class,
+			// list-style-type:none). Without this, intermediate and real list elements at the same
+			// indent would have mismatched attributes and could not merge correctly, causing browsers
+			// to render unwanted default markers.
+			//
+			// Use the reference item (sibling or ancestor) as the strategy source so the attributes
+			// match whatever this intermediate is supposed to merge with.
+			for ( const strategy of strategies ) {
+				if (
+					strategy.scope == 'list' &&
+					referenceItem.hasAttribute( strategy.attributeName )
+				) {
+					strategy.setAttributeOnDowncast(
+						writer,
+						referenceItem.getAttribute( strategy.attributeName ),
+						listViewElement,
+						options,
+						referenceItem
+					);
+				}
+			}
 
 			viewRange = writer.wrap( viewRange, listItemViewElement );
 			viewRange = writer.wrap( viewRange, listViewElement );
@@ -814,6 +844,31 @@ function wrapListItemBlock(
 			}
 		}
 	}
+}
+
+/**
+ * Walks forward from the given list item through model siblings to find the first list item block
+ * at exactly the specified indent level. Stops when it encounters a non-list block or a list item
+ * at a lower indent (which means we left the current subtree).
+ */
+function findSiblingListItemAt( listItem: ListElement, targetIndent: number ): ListElement | null {
+	let node = listItem.nextSibling;
+
+	while ( node && isListItemBlock( node ) ) {
+		const indent = ( node as ListElement ).getAttribute( 'listIndent' );
+
+		if ( indent < targetIndent ) {
+			return null;
+		}
+
+		if ( indent === targetIndent ) {
+			return node as ListElement;
+		}
+
+		node = node.nextSibling;
+	}
+
+	return null;
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.

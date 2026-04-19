@@ -4,6 +4,7 @@
  */
 
 import { ListEditing } from '../../src/list/listediting.js';
+import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 
 import { ModelRange, _getModelData, _parseModel, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
@@ -1208,7 +1209,7 @@ describe( 'ListEditing - converters', () => {
 			);
 		} );
 
-		it( 'should inherit the list type from the parent for intermediate levels', () => {
+		it( 'should inherit the list type from the ancestor for intermediate levels without a sibling', () => {
 			_setModelData( skipModel,
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
@@ -1304,6 +1305,30 @@ describe( 'ListEditing - converters', () => {
 			);
 		} );
 
+		it( 'should merge intermediate and real list wrappers in a mixed-type list', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">C</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
+
 		it( 'should handle a block widget at a skip level', () => {
 			_setModelData( skipModel,
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
@@ -1326,6 +1351,126 @@ describe( 'ListEditing - converters', () => {
 					'</li>' +
 				'</ul>'
 			);
+		} );
+
+		it( 'should merge intermediate wrappers when child items at different depths have different types', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="3" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ol>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">B</span>' +
+										'<ul>' +
+											'<li><span class="ck-list-bogus-paragraph">C</span></li>' +
+										'</ul>' +
+									'</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not pick a sibling from a different list context (lower indent boundary)', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="0" listItemId="d" listType="bulleted">D</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ol>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ol>' +
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">D</span>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">C</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should use sibling type at one intermediate level and ancestor type at another', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="3" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ul>' +
+							'<li style="list-style-type:none">' +
+								'<ol>' +
+									'<li style="list-style-type:none">' +
+										'<ul>' +
+											'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+										'</ul>' +
+									'</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">C</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should apply scope:list strategies on intermediate wrappers', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, ListEditing, ListPropertiesEditing ],
+				list: {
+					allowSkipLevels: true,
+					properties: { styles: true }
+				}
+			} );
+
+			_setModelData( editor.model,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered" listStyle="upper-roman">A</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="numbered" listStyle="upper-roman">B</paragraph>'
+			);
+
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol style="list-style-type:upper-roman">' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">A</span>' +
+						'<ol style="list-style-type:upper-roman">' +
+							'<li style="list-style-type:none">' +
+								'<ol style="list-style-type:upper-roman">' +
+									'<li><span class="ck-list-bogus-paragraph">B</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			await editor.destroy();
 		} );
 	} );
 
