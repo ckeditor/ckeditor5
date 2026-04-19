@@ -79,7 +79,6 @@ export {
 	getListItems as _getListItems,
 	isFirstBlockOfListItem as _isFirstBlockOfListItem,
 	isLastBlockOfListItem as _isLastBlockOfListItem,
-	isTopLevelListItem as _isTopLevelListItem,
 	expandListBlocksToCompleteItems as _expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList as _expandListBlocksToCompleteList,
 	splitListItemBefore as _splitListItemBefore,

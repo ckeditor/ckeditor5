@@ -45,7 +45,7 @@ import {
 	createModelToViewPositionMapper,
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
-	listItemSkipLevelUpcastConverter,
+	listItemSkipLevelConsumer,
 	listItemUpcastConverter,
 	reconvertItemsOnDataChange
 } from './converters.js';
@@ -466,8 +466,13 @@ export class ListEditing extends Plugin {
 			} )
 			.add( dispatcher => {
 				if ( allowSkipLevels ) {
+					// A consuming converter for intermediate `<li>` wrappers produced by the skip-level downcast
+					// (or by external sources). It is registered with 'high' priority so it reliably runs before
+					// any other `element:li` upcast converter. Registration order inside this `.add()` is already
+					// enough for our own converters, but `high` guards against other plugins that may attach their
+					// own `element:li` listeners at the default priority in a separate `.add()` block.
 					dispatcher.on<UpcastElementEvent>(
-						'element:li', listItemSkipLevelUpcastConverter(), { priority: 'high' }
+						'element:li', listItemSkipLevelConsumer(), { priority: 'high' }
 					);
 				}
 
@@ -492,8 +497,10 @@ export class ListEditing extends Plugin {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
 					listItemDowncastConverter(
-						attributeNames, this._downcastStrategies, model,
-						allowSkipLevels ? { allowSkipLevels } : undefined
+						attributeNames,
+						this._downcastStrategies,
+						model,
+						{ allowSkipLevels }
 					)
 				);
 
