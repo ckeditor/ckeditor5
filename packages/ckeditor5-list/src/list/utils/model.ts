@@ -617,24 +617,6 @@ export function isFirstListItemInList( listItem: ModelElement ): boolean {
 }
 
 /**
- * Checks whether the given list item is at the top level of the list structure, meaning it is not
- * nested inside another list item's scope. An item is considered top-level if it is at indent 0
- * (which is always top-level) or if its previous sibling is not a list item block (indicating
- * a skip-level list that starts after a non-list element or at the beginning of the document).
- *
- * @internal
- */
-export function isTopLevelListItem( node: ListElement ): boolean {
-	if ( node.getAttribute( 'listIndent' ) === 0 ) {
-		return true;
-	}
-
-	const previousSibling = node.previousSibling;
-
-	return !previousSibling || !isListItemBlock( previousSibling );
-}
-
-/**
  * Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
  */
 function mergeListItemIfNotLast(

@@ -406,7 +406,7 @@ export function listItemDowncastConverter(
 	attributeNames: Array<string>,
 	strategies: Array<ListDowncastStrategy>,
 	model: Model,
-	{ dataPipeline, allowSkipLevels }: { dataPipeline?: boolean; allowSkipLevels?: boolean } = {}
+	{ dataPipeline, allowSkipLevels }: { dataPipeline?: boolean; allowSkipLevels?: boolean }
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
 	const consumer = createAttributesConsumer( attributeNames, strategies );
 
@@ -739,11 +739,13 @@ function wrapListItemBlock(
 	let currentListItem: ListElement | null = listItem;
 
 	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-		// When allowSkipLevels is enabled and ListWalker jumps over indent levels (e.g. from indent 2
-		// to indent 0), the levels in between have no corresponding model element. We detect these
-		// "intermediate" levels by checking if currentListItem's indent doesn't match the current
-		// loop indent.
-		const isIntermediate = allowSkipLevels && currentListItem.getAttribute( 'listIndent' ) !== indent;
+		// When ListWalker jumps over indent levels (e.g. from indent 2 to indent 0, either because
+		// allowSkipLevels is enabled or because the item is at the start of a fragment and its
+		// nearest ancestor is further up), the levels in between have no corresponding model element.
+		// We detect these "intermediate" levels by checking if currentListItem's indent doesn't match
+		// the current loop indent. Handling this regardless of the allowSkipLevels config makes the
+		// downcast resilient to unexpected skip-level states in the model.
+		const isIntermediate = currentListItem.getAttribute( 'listIndent' ) !== indent;
 
 		if ( isIntermediate ) {
 			// Intermediate levels get invisible wrappers: list-style-type:none hides the marker on <li>,
