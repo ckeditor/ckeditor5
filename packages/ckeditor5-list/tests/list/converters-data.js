@@ -5,7 +5,7 @@
 
 import { ListEditing } from '../../src/list/listediting.js';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
@@ -2835,6 +2835,300 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</li>' +
 				'</ul>'
 			);
+		} );
+
+		describe( 'upcast', () => {
+			it( 'should not handle skip-level wrapper if the element was already consumed', () => {
+				skipEditor.conversion.for( 'upcast' ).add( dispatcher => {
+					dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
+						if ( data.viewItem.getStyle( 'list-style-type' ) === 'none' ) {
+							conversionApi.consumable.consume( data.viewItem, { name: true } );
+						}
+					}, { priority: 'highest' } );
+				} );
+
+				skipEditor.setData(
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li>B</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">A</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast single skip-level wrapper to the model and preserve indent gap', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li>B</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast multiple skip-level wrappers to the model and preserve indent gap', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li style="list-style-type:none;">' +
+											'<ul>' +
+												'<li>B</li>' +
+											'</ul>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="3" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast skip-level wrappers to the model when the first item has a skip level', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li style="list-style-type:none;">' +
+							'<ul>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li>A</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>B</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast skip-level wrapper but upcast sibling items under it', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li style="list-style-type:none;">' +
+							'<ul>' +
+								'<li>A</li>' +
+								'<li>B</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast skip-level wrapper to the model with mixed list types', () => {
+				skipEditor.setData(
+					'<ol>' +
+						'<li>A' +
+							'<ol>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li>B</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a01" listType="numbered">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast skip-level wrapper to the model when a real item follows at an intermediate indent', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li>B</li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>C</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">C</paragraph>'
+				);
+			} );
+
+			it( 'should not upcast skip-level wrapper to the model in a numbered list', () => {
+				skipEditor.setData(
+					'<ol>' +
+						'<li>A' +
+							'<ol>' +
+								'<li style="list-style-type:none;">' +
+									'<ol>' +
+										'<li>B</li>' +
+									'</ol>' +
+								'</li>' +
+								'<li>C</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a02" listType="numbered">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="numbered">B</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="numbered">C</paragraph>'
+				);
+			} );
+
+			it( 'should roundtrip a single skipped level (model -> data -> model)', () => {
+				_setModelData( skipModel,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
+				);
+
+				const data = skipEditor.getData();
+
+				skipEditor.setData( data );
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should roundtrip multiple skipped levels (model -> data -> model)', () => {
+				_setModelData( skipModel,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="3" listItemId="b" listType="bulleted">B</paragraph>'
+				);
+
+				const data = skipEditor.getData();
+
+				skipEditor.setData( data );
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="3" listItemId="b" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should roundtrip when the first item starts at a skip level', () => {
+				_setModelData( skipModel,
+					'<paragraph listIndent="2" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">B</paragraph>'
+				);
+
+				const data = skipEditor.getData();
+
+				skipEditor.setData( data );
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="2" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should roundtrip list with skip and real item at intermediate indent', () => {
+				_setModelData( skipModel,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+				);
+
+				const data = skipEditor.getData();
+
+				skipEditor.setData( data );
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+				);
+			} );
+
+			it( 'should roundtrip a multi-block list item with skip level', () => {
+				_setModelData( skipModel,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B2</paragraph>'
+				);
+
+				const data = skipEditor.getData();
+
+				skipEditor.setData( data );
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B2</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'upcast without allowSkipLevels', () => {
+			it( 'should upcast skip-level wrapper as a regular list item when allowSkipLevels is disabled', () => {
+				// Uses the main editor which does NOT have allowSkipLevels.
+				// The phantom <li> is treated as a regular (empty) list item, producing an
+				// extra empty paragraph at indent 1 with sequential indentation (0, 1, 2).
+				editor.setData(
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<li style="list-style-type:none;">' +
+									'<ul>' +
+										'<li>B</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted"></paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );
