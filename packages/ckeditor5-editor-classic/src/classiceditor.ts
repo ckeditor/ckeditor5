@@ -124,7 +124,7 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 * configuration option is set to `true`.
 	 */
-	public override async destroy(): Promise<void> {
+	public override async destroy(): Promise<unknown> {
 		if ( this.sourceElement ) {
 			this.updateSourceElement();
 		}
@@ -132,6 +132,10 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		this.ui.destroy();
 
 		await super.destroy();
+
+		// To satisfy the return type and to keep it backward compatible.
+		// eslint-disable-next-line no-useless-return
+		return;
 	}
 
 	/**

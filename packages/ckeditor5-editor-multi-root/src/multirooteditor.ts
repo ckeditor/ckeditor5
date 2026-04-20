@@ -327,7 +327,7 @@ export class MultiRootEditor extends Editor {
 	 * } );
 	 * ```
 	 */
-	public override async destroy(): Promise<void> {
+	public override async destroy(): Promise<unknown> {
 		const shouldUpdateSourceElement = this.config.get( 'updateSourceElementOnDestroy' );
 		// Cache the data and editable DOM elements, then destroy.
 		// It's safe to assume that the model->view conversion will not work after `super.destroy()`,
@@ -345,6 +345,10 @@ export class MultiRootEditor extends Editor {
 		for ( const rootName of Object.keys( this.sourceElements ) ) {
 			setDataInElement( this.sourceElements[ rootName ], data[ rootName ] );
 		}
+
+		// To satisfy the return type and to keep it backward compatible.
+		// eslint-disable-next-line no-useless-return
+		return;
 	}
 
 	/**

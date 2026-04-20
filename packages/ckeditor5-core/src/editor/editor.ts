@@ -885,7 +885,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * @fires destroy
 	 * @returns A promise that resolves once the editor instance is fully destroyed.
 	 */
-	public async destroy(): Promise<void> {
+	public async destroy(): Promise<unknown> {
 		if ( this.state == 'initializing' ) {
 			await new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
 		}
@@ -904,6 +904,10 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		// Remove the editor from the context.
 		// When the context was created by this editor, the context will be destroyed.
 		await this._context._removeEditor( this );
+
+		// To satisfy the return type and to keep it backward compatible.
+		// eslint-disable-next-line no-useless-return
+		return;
 	}
 
 	/**
