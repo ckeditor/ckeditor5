@@ -15,6 +15,7 @@ import {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
 	registerAndInitializeRootConfigAttributes,
+	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent
 } from '@ckeditor/ckeditor5-core';
@@ -98,7 +99,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		this.config.define( 'menuBar.isVisible', false );
 
-		this.model.document.createRoot();
+		this.model.document.createRoot( this.config.get( 'roots' )!.main.modelElement );
 		registerAndInitializeRootConfigAttributes( this );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
@@ -122,19 +123,18 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 * configuration option is set to `true`.
 	 */
-	public override destroy(): Promise<unknown> {
+	public override async destroy(): Promise<void> {
 		// Cache the data, then destroy.
 		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
 
 		this.ui.destroy();
 
-		return super.destroy()
-			.then( () => {
-				if ( this.sourceElement ) {
-					this.updateSourceElement( data );
-				}
-			} );
+		await super.destroy();
+
+		if ( this.sourceElement ) {
+			this.updateSourceElement( data );
+		}
 	}
 
 	/**
@@ -314,21 +314,25 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 */
 	public static override create( sourceElementOrData: HTMLElement | string, config: EditorConfig ): Promise<InlineEditor>;
 
-	public static override create(
+	public static override async create(
 		sourceElementOrDataOrConfig: HTMLElement | string | EditorConfig,
 		config: EditorConfig = {}
 	): Promise<InlineEditor> {
-		return new Promise( resolve => {
-			const editor = new this( sourceElementOrDataOrConfig as any, config );
+		const editor = new this( sourceElementOrDataOrConfig as any, config );
 
-			resolve(
-				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => editor.data.init( editor.config.get( 'roots' )!.main.initialData! ) )
-					.then( () => editor.fire<EditorReadyEvent>( 'ready' ) )
-					.then( () => editor )
-			);
-		} );
+		await editor.initPlugins();
+
+		// Roots are created in the editor constructor (before plugins are loaded), but the schema is only fully
+		// built after plugins register their items during init(). Custom root element names (e.g. registered by a
+		// plugin) may not exist in the schema at construction time, so we defer this check until here.
+		verifyRootElements( editor );
+
+		await editor.ui.init();
+		await editor.data.init( editor.config.get( 'roots' )!.main.initialData! );
+
+		editor.fire<EditorReadyEvent>( 'ready' );
+
+		return editor;
 	}
 }
 

@@ -829,19 +829,18 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
 	 */
-	public initPlugins(): Promise<LoadedPlugins> {
+	public async initPlugins(): Promise<LoadedPlugins> {
 		const config = this.config;
 		const plugins = config.get( 'plugins' )!;
 		const removePlugins = config.get( 'removePlugins' ) || [];
 		const extraPlugins = config.get( 'extraPlugins' ) || [];
 		const substitutePlugins = config.get( 'substitutePlugins' ) || [];
 
-		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins )
-			.then( plugins => {
-				checkPluginsAllowedByLicenseKey( this );
+		const loadedPlugins = await this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins );
 
-				return plugins;
-			} );
+		checkPluginsAllowedByLicenseKey( this );
+
+		return loadedPlugins;
 
 		function checkPluginsAllowedByLicenseKey( editor: Editor ): void {
 			const licenseKey = editor.config.get( 'licenseKey' )!;
@@ -886,29 +885,25 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * @fires destroy
 	 * @returns A promise that resolves once the editor instance is fully destroyed.
 	 */
-	public destroy(): Promise<unknown> {
-		let readyPromise: Promise<unknown> = Promise.resolve();
-
+	public async destroy(): Promise<void> {
 		if ( this.state == 'initializing' ) {
-			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
+			await new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
 		}
 
-		return readyPromise
-			.then( () => {
-				this.fire<EditorDestroyEvent>( 'destroy' );
-				this.stopListening();
-				this.commands.destroy();
-			} )
-			.then( () => this.plugins.destroy() )
-			.then( () => {
-				this.model.destroy();
-				this.data.destroy();
-				this.editing.destroy();
-				this.keystrokes.destroy();
-			} )
-			// Remove the editor from the context.
-			// When the context was created by this editor, the context will be destroyed.
-			.then( () => this._context._removeEditor( this ) );
+		this.fire<EditorDestroyEvent>( 'destroy' );
+		this.stopListening();
+		this.commands.destroy();
+
+		await this.plugins.destroy();
+
+		this.model.destroy();
+		this.data.destroy();
+		this.editing.destroy();
+		this.keystrokes.destroy();
+
+		// Remove the editor from the context.
+		// When the context was created by this editor, the context will be destroyed.
+		await this._context._removeEditor( this );
 	}
 
 	/**

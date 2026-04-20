@@ -112,6 +112,12 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 			isLimit: true
 		} );
 
+		this.schema.register( '$inlineRoot', {
+			allowContentOf: '$block',
+			allowAttributesOf: '$root',
+			isLimit: true
+		} );
+
 		this.schema.register( '$container', {
 			allowIn: [ '$root', '$container' ]
 		} );
@@ -141,13 +147,13 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 		} );
 
 		this.schema.register( '$clipboardHolder', {
-			allowContentOf: '$root',
+			allowContentOf: [ '$root', '$inlineRoot' ],
 			allowChildren: '$text',
 			isLimit: true
 		} );
 
 		this.schema.register( '$documentFragment', {
-			allowContentOf: '$root',
+			allowContentOf: [ '$root', '$inlineRoot' ],
 			allowChildren: '$text',
 			isLimit: true
 		} );
