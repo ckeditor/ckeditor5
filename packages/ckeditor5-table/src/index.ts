@@ -9,7 +9,7 @@
 
 export { PlainTableOutput } from './plaintableoutput.js';
 export { Table } from './table.js';
-export { TableWalker, type TableSlot, type TableWalkerOptions } from './tablewalker.js';
+export { TableWalker, TableSlot, type TableWalkerOptions } from './tablewalker.js';
 export { TableEditing, type TableConversionAdditionalSlot } from './tableediting.js';
 export { TableUI } from './tableui.js';
 export { TableToolbar } from './tabletoolbar.js';

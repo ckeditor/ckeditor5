@@ -1381,6 +1381,18 @@ describe( 'ListIndentCommand', () => {
 					'* 5',
 					'* 6'
 				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'    * []1',
+					'      * 2',
+					'        * 3',
+					'      * 4',
+					'* 5',
+					'* 6'
+				] ) );
 			} );
 
 			it( 'should indent the first list item when selection is not at the start of the item', () => {
@@ -1487,6 +1499,16 @@ describe( 'ListIndentCommand', () => {
 
 			it( 'should outdent only selected items when multiple items are selected', () => {
 				_setModelData( model, modelList( [
+					'* 0',
+					'    * [1',
+					'    * 2',
+					'    * 3]',
+					'* 4'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'  * [1',
 					'  * 2',

@@ -168,6 +168,10 @@ export class MenuBarView extends View implements FocusableView {
 		for ( const topLevelCategoryMenuView of this.children ) {
 			topLevelCategoryMenuView.isOpen = false;
 		}
+
+		// Set isOpen synchronously to prevent deferred events (e.g. mouseenter fired by the browser
+		// after DOM manipulations) from re-opening menus via `toggleMenusAndFocusItemsOnHover`.
+		this.isOpen = false;
 	}
 
 	/**
