@@ -5,6 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
@@ -29,7 +30,7 @@ describe( 'table cell properties', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ]
+				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
 			} );
 
 			model = editor.model;
@@ -1370,32 +1371,176 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'the [align] attribute', () => {
-					it( 'should not upcast the align=left attribute (due to the default value of the property)', () => {
-						editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
+					it( 'should apply align=left to paragraph child', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="left">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+						const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'left' );
+					} );
+
+					it( 'should apply align=right to paragraph child', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="right">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+						const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'right' );
+					} );
+
+					it( 'should apply align=center to paragraph child', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="center">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+						const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'center' );
+					} );
+
+					it( 'should apply align=justify to paragraph child', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="justify">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+						const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'justify' );
+					} );
+
+					it( 'should NOT set tableCellHorizontalAlignment on tableCell', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="right">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 					} );
 
-					it( 'should upcast the align=right attribute', () => {
-						editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
+					it( 'should apply alignment to ALL block children (paragraph and nested table)', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="center">' +
+										'<p>text</p>' +
+										'<table>' +
+											'<tr>' +
+												'<td><p>a</p></td>' +
+											'</tr>' +
+										'</table>' +
+									'</td>' +
+								'</tr>' +
+							'</table>'
+						);
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						const paragraph = tableCell.getChild( 0 );
+						const nestedTable = tableCell.getChild( 1 );
 
-						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'right' );
+						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'center' );
+						expect( nestedTable.is( 'element', 'table' ) ).to.be.true;
 					} );
 
-					it( 'should upcast the align=center attribute', () => {
-						editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
-						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+					it( 'should apply alignment to all direct block children independently per td level', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="right">' +
+										'<p>outer</p>' +
+										'<table>' +
+											'<tr>' +
+												'<td align="center">' +
+													'<p>inner</p>' +
+													'<table>' +
+														'<tr>' +
+															'<td><p>deepest</p></td>' +
+														'</tr>' +
+													'</table>' +
+												'</td>' +
+											'</tr>' +
+										'</table>' +
+									'</td>' +
+								'</tr>' +
+							'</table>'
+						);
 
-						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[
+									'<paragraph alignment="right">outer</paragraph>' +
+									modelTable( [
+										[
+											'<paragraph alignment="center">inner</paragraph>' +
+											modelTable( [
+												[ '<paragraph>deepest</paragraph>' ]
+											] )
+										]
+									] )
+								]
+							] )
+						);
 					} );
 
-					it( 'should upcast the align=justify attribute', () => {
-						editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
-						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+					it( 'should not propagate alignment into nested table cells that have no align attribute (shallow iteration)', () => {
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="right">' +
+										'<p>outer</p>' +
+										'<table>' +
+											'<tr>' +
+												'<td>' +
+													'<p>inner</p>' +
+												'</td>' +
+											'</tr>' +
+										'</table>' +
+									'</td>' +
+								'</tr>' +
+							'</table>'
+						);
 
-						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[
+									'<paragraph alignment="right">outer</paragraph>' +
+									modelTable( [
+										[ '<paragraph>inner</paragraph>' ]
+									] )
+								]
+							] )
+						);
+					} );
+
+					it( 'should consume the align attribute so GHS will not store it', () => {
+						editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { attributes: [ 'align' ] } ) ).to.be.false;
+						}, { priority: 'lowest' } ) );
+
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="right">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
 					} );
 				} );
 
@@ -1456,7 +1601,7 @@ describe( 'table cell properties', () => {
 
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ],
 							language: 'ar'
 						} );
 
@@ -1496,32 +1641,56 @@ describe( 'table cell properties', () => {
 					} );
 
 					describe( 'the [align] attribute', () => {
-						it( 'should upcast the align=left attribute', () => {
-							editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align=left to paragraph child', () => {
+							editor.setData(
+								'<table>' +
+									'<tr>' +
+										'<td align="left">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'left' );
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'left' );
 						} );
 
-						it( 'should not upcast the align=right attribute  (due to the default value of the property)', () => {
-							editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align=right to paragraph child', () => {
+							editor.setData(
+								'<table>' +
+									'<tr>' +
+										'<td align="right">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'right' );
 						} );
 
-						it( 'should upcast the align=center attribute', () => {
-							editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align=center to paragraph child', () => {
+							editor.setData(
+								'<table>' +
+									'<tr>' +
+										'<td align="center">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'center' );
 						} );
 
-						it( 'should upcast the align=justify attribute', () => {
-							editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align=justify to paragraph child', () => {
+							editor.setData(
+								'<table>' +
+									'<tr>' +
+										'<td align="justify">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'justify' );
 						} );
 					} );
 				} );
@@ -2141,7 +2310,7 @@ describe( 'table cell properties', () => {
 		describe( 'table layout', () => {
 			beforeEach( async () => {
 				editor = await VirtualTestEditor.create( {
-					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ]
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing, AlignmentEditing ]
 				} );
 
 				model = editor.model;
@@ -2182,32 +2351,56 @@ describe( 'table cell properties', () => {
 					} );
 
 					describe( 'the `align` attribute', () => {
-						it( 'should not upcast the align="left" attribute (due to the default value of the property)', () => {
-							editor.setData( '<table class="layout-table"><tr><td align="left">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align="left" to paragraph child', () => {
+							editor.setData(
+								'<table class="layout-table">' +
+									'<tr>' +
+										'<td align="left">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'left' );
 						} );
 
-						it( 'should upcast the align="right" attribute ', () => {
-							editor.setData( '<table class="layout-table"><tr><td align="right">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align="right" to paragraph child', () => {
+							editor.setData(
+								'<table class="layout-table">' +
+									'<tr>' +
+										'<td align="right">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.equal( 'right' );
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'right' );
 						} );
 
-						it( 'should upcast the align="center" attribute', () => {
-							editor.setData( '<table class="layout-table"><tr><td align="center">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align="center" to paragraph child', () => {
+							editor.setData(
+								'<table class="layout-table">' +
+									'<tr>' +
+										'<td align="center">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'center' );
 						} );
 
-						it( 'should upcast the align="justify" attribute', () => {
-							editor.setData( '<table class="layout-table"><tr><td align="justify">foo</td></tr></table>' );
-							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						it( 'should apply align="justify" to paragraph child', () => {
+							editor.setData(
+								'<table class="layout-table">' +
+									'<tr>' +
+										'<td align="justify">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'justify' );
 						} );
 					} );
 				} );
