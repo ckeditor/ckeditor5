@@ -8,8 +8,8 @@ import { createTableAsciiArt, modelTable, prepareModelTableInput, prettyFormatMo
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
-import { diffString } from 'json-diff';
 import { debounce } from 'es-toolkit/compat';
+import { atomizeChangeset, diff, Operation } from 'json-diff-ts';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { TableWalker } from '../../src/tablewalker.js';
 
@@ -190,3 +190,48 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function diffString( left, right, options = {} ) {
+	const neutral = options.theme?.[ ' ' ] || ( string => string );
+	const add = options.theme?.[ '+' ] || neutral;
+	const remove = options.theme?.[ '-' ] || neutral;
+	const changes = atomizeChangeset( diff( left, right ) );
+
+	if ( !changes.length ) {
+		return '';
+	}
+
+	return changes
+		.flatMap( change => {
+			if ( change.type == Operation.UPDATE ) {
+				return [
+					remove( `- ${ escapeHtml( change.path ) }: ${ formatDiffValue( change.oldValue ) }` ),
+					add( `+ ${ escapeHtml( change.path ) }: ${ formatDiffValue( change.value ) }` )
+				];
+			}
+
+			if ( change.type == Operation.ADD ) {
+				return [ add( `+ ${ escapeHtml( change.path ) }: ${ formatDiffValue( change.value ) }` ) ];
+			}
+
+			return [ remove( `- ${ escapeHtml( change.path ) }: ${ formatDiffValue( change.oldValue ) }` ) ];
+		} )
+		.join( '\n' );
+}
+
+function formatDiffValue( value ) {
+	if ( typeof value == 'undefined' ) {
+		return 'undefined';
+	}
+
+	return escapeHtml( JSON.stringify( value ) );
+}
+
+function escapeHtml( value ) {
+	return value
+		.replace( /&/g, '&amp;' )
+		.replace( /</g, '&lt;' )
+		.replace( />/g, '&gt;' )
+		.replace( /"/g, '&quot;' )
+		.replace( /'/g, '&#39;' );
+}
