@@ -481,9 +481,16 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
+				const allowSkipLevels = !!editor.config.get( 'list.allowSkipLevels' );
+
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+					listItemDowncastConverter(
+						attributeNames,
+						this._downcastStrategies,
+						model,
+						{ allowSkipLevels }
+					)
 				);
 
 				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter( model.schema ) );
@@ -496,9 +503,13 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
+				const allowSkipLevels = !!editor.config.get( 'list.allowSkipLevels' );
+
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, {
+						dataPipeline: true, allowSkipLevels
+					} )
 				);
 			} );
 
