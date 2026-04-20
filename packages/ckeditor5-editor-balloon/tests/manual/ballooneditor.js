@@ -19,7 +19,10 @@ function initEditors() {
 		BalloonEditor
 			.create( {
 				root: {
-					element: document.querySelector( selector )
+					element: document.querySelector( selector ),
+					modelAttributes: {
+						section: 'intro'
+					}
 				},
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],

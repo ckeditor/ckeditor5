@@ -1037,6 +1037,34 @@ export default class Delete extends Plugin {
 }
 ```
 
+### Disallow TypeScript enums: `ckeditor5-rules/no-enum`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+TypeScript `enum` declarations are disallowed because they emit runtime code that is hard to tree-shake, behave inconsistently between numeric and string enums, and do not mix well with structural typing. Prefer a `const` object combined with a union type derived from its values, which produces a lighter and more predictable output.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+enum Direction {
+	Up = 'up',
+	Down = 'down'
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+const Direction = {
+	Up: 'up',
+	Down: 'down'
+} as const;
+
+type Direction = typeof Direction[ keyof typeof Direction ];
+```
+
 ### Imports within a package: `ckeditor5-rules/no-scoped-imports-within-package`
 
 All imports defined in every package, that point to a file from the same package, must be relative. You cannot use the scoped imports, if the target file is located in the same package as the import declaration. The resolved scoped import points to the package inside the `node_modules`, but not to the current working directory, and the source code in these two places may differ from each other.

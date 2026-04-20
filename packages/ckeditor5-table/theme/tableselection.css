@@ -8,8 +8,7 @@
 }
 
 .ck.ck-editor__editable .table table {
-	& td.ck-editor__editable_selected,
-	& th.ck-editor__editable_selected {
+	& :where(td, th).ck-editor__editable_selected {
 		position: relative;
 		caret-color: transparent;
 		box-shadow: unset;

@@ -2198,6 +2198,41 @@ describe( 'MenuBarView', () => {
 			expect( getMenuByLabel( menuBarView, 'Edit' ).isOpen ).to.be.false;
 			expect( getMenuByLabel( menuBarView, 'Format' ).isOpen ).to.be.false;
 		} );
+
+		it( 'should synchronously set #isOpen to false without waiting for the timeout in _setupIsOpenUpdater', () => {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
+
+			menuBarView.render();
+
+			getMenuByLabel( menuBarView, 'Edit' ).isOpen = true;
+
+			// Wait for the _setupIsOpenUpdater timeout to update isOpen to true.
+			return wait( 0 ).then( () => {
+				expect( menuBarView.isOpen ).to.be.true;
+
+				menuBarView.close();
+
+				// isOpen must be false synchronously, before any pending timeouts fire.
+				// This prevents deferred browser mouseenter events (e.g. after a DOM move)
+				// from re-opening menus via toggleMenusAndFocusItemsOnHover.
+				expect( menuBarView.isOpen ).to.be.false;
+			} );
+		} );
 	} );
 
 	describe( 'disable()', () => {

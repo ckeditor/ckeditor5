@@ -59,11 +59,11 @@ describe( 'ShiftEnter integration', () => {
 		);
 	} );
 
-	it( 'should not inherit text attributes before the "softBreak" element', () => {
+	it( 'should inherit only copyOnEnter text attributes before the "softBreak" element', () => {
 		_setModelData( model,
 			'<paragraph>' +
 				'<$text linkHref="foo" bold="true">Bolded link</$text>' +
-				'<softBreak></softBreak>' +
+				'<softBreak bold="true"></softBreak>' +
 				'F[]' +
 			'</paragraph>'
 		);
@@ -73,6 +73,6 @@ describe( 'ShiftEnter integration', () => {
 		const selection = model.document.selection;
 
 		expect( selection.hasAttribute( 'linkHref' ) ).to.equal( false );
-		expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+		expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 	} );
 } );
