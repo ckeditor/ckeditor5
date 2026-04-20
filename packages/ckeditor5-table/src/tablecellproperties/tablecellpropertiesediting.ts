@@ -297,54 +297,66 @@ function enableLegacyAlignmentProperty( conversion: Conversion ) {
 				return;
 			}
 
-			const modelElement = data.modelRange?.start.nodeAfter as ModelElement;
-			const alignValue = data.viewItem.getAttribute( 'align' )!;
+			const modelElement = data.modelRange?.start.nodeAfter;
 
-			if ( !conversionApi.consumable.consume( data.viewItem, matcherResult.match ) ) {
+			if ( !modelElement || !modelElement.is( 'element' ) ) {
 				return;
 			}
 
+			const alignValue = data.viewItem.getAttribute( 'align' )!;
+
+			if ( !conversionApi.consumable.consume( data.viewItem, { attributes: [ 'align' ] } ) ) {
+				return;
+			}
+
+			// Let's convert children first.
+			conversionApi.convertChildren( data.viewItem, modelElement );
+			conversionApi.updateConversionResult( modelElement, data );
+
+			// Iterate over children and apply proper align.
 			for ( const child of modelElement.getChildren() ) {
-				if ( !child.is( 'element' ) ) {
-					continue;
-				}
-
-				const definition = conversionApi.schema.getDefinition( child )!;
-				let matchedAlignment = false;
-
-				// Let's check if block alignment is allowed on the child.
-				for ( const attrName of definition.allowAttributes ) {
-					if ( child.hasAttribute( attrName ) ) {
-						continue;
-					}
-
-					const attrProperties = conversionApi.schema.getAttributeProperties( attrName );
-
-					// If found attribute that is block alignment, try to find proper mapping.
-					if ( attrProperties.blockAlignment ) {
-						const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
-
-						if ( mappedValue ) {
-							conversionApi.writer.setAttribute( attrName, mappedValue, child );
-						}
-
-						matchedAlignment = true;
-						break;
-					}
-				}
-
-				// If there is no block align attribute present on the child, check if plain text `alignment` works.
-				if ( !matchedAlignment && definition.allowAttributes.includes( 'alignment' ) ) {
-					conversionApi.writer.setAttribute( 'alignment', alignValue, child );
-					matchedAlignment = true;
-				}
-
-				if ( matchedAlignment ) {
-					break;
+				if ( child.is( 'element' ) ) {
+					applyAlignmentToChild( child, alignValue, conversionApi );
 				}
 			}
-		}, { priority: 'lowest' } );
+		}, { priority: 'low' } );
 	} );
+
+	function applyAlignmentToChild(
+		child: ModelElement,
+		alignValue: string,
+		conversionApi: UpcastConversionApi
+	): void {
+		const definition = conversionApi.schema.getDefinition( child );
+
+		if ( !definition ) {
+			return;
+		}
+
+		for ( const attrName of definition.allowAttributes ) {
+			if ( child.hasAttribute( attrName ) ) {
+				continue;
+			}
+
+			const attrProperties = conversionApi.schema.getAttributeProperties( attrName );
+
+			// If found attribute that is block alignment, try to find proper mapping.
+			if ( attrProperties.blockAlignment ) {
+				const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
+
+				if ( mappedValue ) {
+					conversionApi.writer.setAttribute( attrName, mappedValue, child );
+				}
+
+				return;
+			}
+		}
+
+		// If there is no block align attribute present on the child, check if plain text `alignment` works.
+		if ( definition.allowAttributes.includes( 'alignment' ) ) {
+			conversionApi.writer.setAttribute( 'alignment', alignValue, child );
+		}
+	}
 }
 
 /**
