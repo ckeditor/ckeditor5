@@ -1498,6 +1498,138 @@ describe( 'Indent MultiCommand integrations', () => {
 		} );
 	} );
 
+	describe( 'list with indent block and allowSkipLevels', () => {
+		let element, editor, model;
+		let indentListSpy, outdentListSpy, indentBlockListSpy, outdentBlockListSpy;
+
+		beforeEach( async () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, ListEditing, IndentEditing, IndentBlock ],
+				list: {
+					allowSkipLevels: true
+				}
+			} );
+
+			model = editor.model;
+
+			indentListSpy = sinon.spy( editor.commands.get( 'indentList' ), 'execute' );
+			outdentListSpy = sinon.spy( editor.commands.get( 'outdentList' ), 'execute' );
+			indentBlockListSpy = sinon.spy( editor.commands.get( 'indentBlockList' ), 'execute' );
+			outdentBlockListSpy = sinon.spy( editor.commands.get( 'outdentBlockList' ), 'execute' );
+		} );
+
+		afterEach( async () => {
+			element.remove();
+			await editor.destroy();
+		} );
+
+		describe( 'indent command', () => {
+			it( 'should execute indentBlockList when at start of first list item at indent 0', () => {
+				_setModelData( model, modelList( [
+					'* []A',
+					'* B'
+				] ) );
+
+				editor.commands.get( 'indent' ).execute();
+
+				expect( indentBlockListSpy.callCount ).to.equal( 1, 'indentBlockList command call count' );
+				expect( indentListSpy.callCount ).to.equal( 0, 'indentList command call count' );
+			} );
+
+			it( 'should execute indentBlockList when a non-collapsed selection starts at the start of first list item at indent 0', () => {
+				_setModelData( model, modelList( [
+					'* [A]',
+					'* B'
+				] ) );
+
+				editor.commands.get( 'indent' ).execute();
+
+				expect( indentBlockListSpy.callCount ).to.equal( 1, 'indentBlockList command call count' );
+				expect( indentListSpy.callCount ).to.equal( 0, 'indentList command call count' );
+			} );
+
+			it( 'should execute indentList when cursor is not at start of first list item', () => {
+				_setModelData( model, modelList( [
+					'* A[]',
+					'* B'
+				] ) );
+
+				editor.commands.get( 'indent' ).execute();
+
+				expect( indentBlockListSpy.callCount ).to.equal( 0, 'indentBlockList command call count' );
+				expect( indentListSpy.callCount ).to.equal( 1, 'indentList command call count' );
+			} );
+
+			it( 'should execute indentList when at start of first skip-level list item (indent > 0)', () => {
+				_setModelData( model, modelList( [
+					'  * []A'
+				] ) );
+
+				editor.commands.get( 'indent' ).execute();
+
+				expect( indentBlockListSpy.callCount ).to.equal( 0, 'indentBlockList command call count' );
+				expect( indentListSpy.callCount ).to.equal( 1, 'indentList command call count' );
+			} );
+
+			it( 'should execute indentList when at start of second list item', () => {
+				_setModelData( model, modelList( [
+					'* A',
+					'* []B'
+				] ) );
+
+				editor.commands.get( 'indent' ).execute();
+
+				expect( indentBlockListSpy.callCount ).to.equal( 0, 'indentBlockList command call count' );
+				expect( indentListSpy.callCount ).to.equal( 1, 'indentList command call count' );
+			} );
+		} );
+
+		describe( 'outdent command', () => {
+			it( 'should execute outdentBlockList when at start of first list item at indent 0 with block indent', () => {
+				_setModelData( model, modelList( [
+					'* []A',
+					'* B'
+				] ) );
+
+				// Apply block indent first so outdentBlockList can be enabled.
+				model.change( writer => {
+					writer.setAttribute( 'blockIndentList', '40px', model.document.getRoot().getChild( 0 ) );
+					writer.setAttribute( 'blockIndentList', '40px', model.document.getRoot().getChild( 1 ) );
+				} );
+
+				editor.commands.get( 'outdent' ).execute();
+
+				expect( outdentBlockListSpy.callCount ).to.equal( 1, 'outdentBlockList command call count' );
+				expect( outdentListSpy.callCount ).to.equal( 0, 'outdentList command call count' );
+			} );
+
+			it( 'should execute outdentList when at start of first skip-level list item (indent > 0)', () => {
+				_setModelData( model, modelList( [
+					'  * []A'
+				] ) );
+
+				editor.commands.get( 'outdent' ).execute();
+
+				expect( outdentBlockListSpy.callCount ).to.equal( 0, 'outdentBlockList command call count' );
+				expect( outdentListSpy.callCount ).to.equal( 1, 'outdentList command call count' );
+			} );
+
+			it( 'should execute outdentList when at start of first list item at indent 0 without block indent', () => {
+				_setModelData( model, modelList( [
+					'* []A'
+				] ) );
+
+				editor.commands.get( 'outdent' ).execute();
+
+				expect( outdentBlockListSpy.callCount ).to.equal( 0, 'outdentBlockList command call count' );
+				expect( outdentListSpy.callCount ).to.equal( 1, 'outdentList command call count' );
+			} );
+		} );
+	} );
+
 	// @param {Iterable.<String>} input
 	// @param {Iterable.<String>} expected
 	// @param {String} commandName Name of a command to execute.

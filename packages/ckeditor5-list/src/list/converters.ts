@@ -327,15 +327,21 @@ export function reconvertItemsOnDataChange(
 				continue;
 			}
 
-			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }` as const;
-			const needsRefresh = listEditing.fire<ListEditingCheckAttributesEvent>( eventName, {
-				viewElement: element as ViewElement,
-				modelAttributes: stack[ indent ].modelAttributes,
-				modelReferenceElement: stack[ indent ].modelElement
-			} );
+			// The stack is indexed by listIndent, so with skip-level lists it may have empty slots
+			// for skipped indent levels. Skip attribute checking for those but still track the indent
+			// level below. Without skip-level lists, the post-fixer ensures sequential indents, so the
+			// stack is always fully populated and this guard has no effect.
+			if ( stack[ indent ] ) {
+				const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }` as const;
+				const needsRefresh = listEditing.fire<ListEditingCheckAttributesEvent>( eventName, {
+					viewElement: element as ViewElement,
+					modelAttributes: stack[ indent ].modelAttributes,
+					modelReferenceElement: stack[ indent ].modelElement
+				} );
 
-			if ( needsRefresh ) {
-				break;
+				if ( needsRefresh ) {
+					break;
+				}
 			}
 
 			if ( isListElement ) {

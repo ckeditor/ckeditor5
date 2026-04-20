@@ -1194,4 +1194,390 @@ describe( 'ListIndentCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'forward (indent) - allowSkipLevels', () => {
+		let command;
+
+		beforeEach( () => {
+			editor.config.set( 'list.allowSkipLevels', true );
+
+			command = new ListIndentCommand( editor, 'forward' );
+		} );
+
+		afterEach( () => {
+			command.destroy();
+		} );
+
+		describe( 'isEnabled', () => {
+			it( 'should be true for first list item (no IndentBlock)', () => {
+				_setModelData( model, modelList( [
+					'* []0',
+					'* 1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true for second list item', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'* []1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true for a deeply nested item', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * 1',
+					'    * []2'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when first item at given indent has no sibling', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * []1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when a non-collapsed selection starts at the start of first list item', () => {
+				_setModelData( model, modelList( [
+					'* [0]',
+					'* 1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when selection is at start of first item preceded by a non-list block', () => {
+				_setModelData( model, modelList( [
+					'foo',
+					'* []0',
+					'* 1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when selection is at start of first bulleted item after numbered list', () => {
+				_setModelData( model, modelList( [
+					'# 0',
+					'# 1',
+					'* []2',
+					'* 3'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when selection is at start of a skip-level list item preceded by a paragraph', () => {
+				_setModelData( model, modelList( [
+					'foo',
+					'  * []0'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when skip-level list item is the first element in the document', () => {
+				_setModelData( model, modelList( [
+					'    * []0'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'execute()', () => {
+			it( 'should indent the first list item by one level (skip-level)', () => {
+				_setModelData( model, modelList( [
+					'* []0',
+					'* 1'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'  * []0',
+					'* 1'
+				] ) );
+			} );
+
+			it( 'should indent a list item that already has no sibling', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * []1'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'    * []1'
+				] ) );
+			} );
+
+			it( 'should indent a deeply nested item', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * 1',
+					'    * []2'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'  * 1',
+					'      * []2'
+				] ) );
+			} );
+
+			it( 'should indent only selected items when multiple items are selected', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'* [1',
+					'* 2',
+					'* 3]',
+					'* 4'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'  * [1',
+					'  * 2',
+					'  * 3]',
+					'* 4'
+				] ) );
+			} );
+
+			it( 'should indent a list item together with its nested items', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'* []1',
+					'  * 2',
+					'    * 3',
+					'  * 4',
+					'* 5',
+					'* 6'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'  * []1',
+					'    * 2',
+					'      * 3',
+					'    * 4',
+					'* 5',
+					'* 6'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'    * []1',
+					'      * 2',
+					'        * 3',
+					'      * 4',
+					'* 5',
+					'* 6'
+				] ) );
+			} );
+
+			it( 'should indent the first list item when selection is not at the start of the item', () => {
+				_setModelData( model, modelList( [
+					'* 0[]',
+					'* 1'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'  * 0[]',
+					'* 1'
+				] ) );
+			} );
+		} );
+	} );
+
+	describe( 'backward (outdent) - allowSkipLevels', () => {
+		let command;
+
+		beforeEach( () => {
+			editor.config.set( 'list.allowSkipLevels', true );
+
+			command = new ListIndentCommand( editor, 'backward' );
+		} );
+
+		afterEach( () => {
+			command.destroy();
+		} );
+
+		describe( 'isEnabled', () => {
+			it( 'should be true if selection starts in skip-level list item', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * []1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true if selection starts in first list item', () => {
+				_setModelData( model, modelList( [
+					'  * []0',
+					'* 1'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true in a deeply nested list item', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * 1',
+					'    * []2'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when selection is at start of first skip-level list item', () => {
+				_setModelData( model, modelList( [
+					'  * []0'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true for a single list item at indent 0', () => {
+				_setModelData( model, modelList( [
+					'* []0'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'execute()', () => {
+			it( 'should outdent a skip-level item', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'      * []1'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'    * []1'
+				] ) );
+			} );
+
+			it( 'should outdent first item starting at indent > 0', () => {
+				_setModelData( model, modelList( [
+					'    * []0'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'  * []0'
+				] ) );
+			} );
+
+			it( 'should outdent only selected items when multiple items are selected', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'    * [1',
+					'    * 2',
+					'    * 3]',
+					'* 4'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'  * [1',
+					'  * 2',
+					'  * 3]',
+					'* 4'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'* [1',
+					'* 2',
+					'* 3]',
+					'* 4'
+				] ) );
+			} );
+
+			it( 'should outdent a list item together with its nested items', () => {
+				_setModelData( model, modelList( [
+					'* 0',
+					'  * []1',
+					'    * 2',
+					'      * 3',
+					'    * 4',
+					'* 5',
+					'* 6'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'* []1',
+					'  * 2',
+					'    * 3',
+					'  * 4',
+					'* 5',
+					'* 6'
+				] ) );
+			} );
+
+			it( 'should outdent the first list item at indent 0 back to a paragraph', () => {
+				_setModelData( model, modelList( [
+					'* []0'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'[]0'
+				] ) );
+			} );
+
+			it( 'should outdent the first list item at indent 0 preceded by a non-list block', () => {
+				_setModelData( model, modelList( [
+					'foo',
+					'* []0',
+					'* 1'
+				] ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'foo',
+					'[]0',
+					'* 1'
+				] ) );
+			} );
+		} );
+	} );
 } );

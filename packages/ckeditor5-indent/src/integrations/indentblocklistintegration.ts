@@ -242,7 +242,11 @@ export class IndentBlockListIntegration extends Plugin {
 		const indentCommand = editor.commands.get( 'indent' ) as MultiCommand;
 		const outdentCommand = editor.commands.get( 'outdent' ) as MultiCommand;
 
-		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )! );
+		// Priority is highest so that block indent takes precedence over list indent (`indentList` is registered
+		// at `high`). When the selection is at the start of the first list item at indent 0, the block indent
+		// command adds margin instead of increasing the list indent level. For items at higher indent levels,
+		// this command is disabled and falls through to `indentList`.
+		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockList' )!, { priority: 'highest' } );
 		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlockList' )! );
 
 		indentCommand.registerChildCommand( editor.commands.get( 'indentBlockListItem' )! );
