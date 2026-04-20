@@ -96,7 +96,8 @@ const tasks = new Listr( [
 			const releaseUrl = await releaseTools.createGithubRelease( {
 				token: githubToken,
 				version: latestVersion,
-				description: versionChangelog
+				description: versionChangelog,
+				isLatest: false
 			} );
 
 			task.output = `Release page: ${ releaseUrl }`;
