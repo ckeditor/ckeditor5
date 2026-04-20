@@ -15,9 +15,11 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { setupTestHelpers } from './_utils/utils.js';
 import { stubUid } from './_utils/uid.js';
 
@@ -3127,6 +3129,57 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="a01" listType="bulleted"></paragraph>' +
 					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'upcast with GeneralHtmlSupport', () => {
+			let ghsEditor, ghsModel, ghsElement;
+
+			beforeEach( async () => {
+				ghsElement = document.createElement( 'div' );
+				document.body.appendChild( ghsElement );
+
+				ghsEditor = await ClassicTestEditor.create( ghsElement, {
+					plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing,
+						BlockQuoteEditing, TableEditing, HeadingEditing, CodeBlockEditing, GeneralHtmlSupport ],
+					list: {
+						allowSkipLevels: true
+					},
+					htmlSupport: {
+						allow: [
+							{
+								name: /./,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					}
+				} );
+
+				ghsModel = ghsEditor.model;
+			} );
+
+			afterEach( async () => {
+				ghsElement.remove();
+				await ghsEditor.destroy();
+			} );
+
+			it( 'should preserve text from a skip-level wrapper that unexpectedly contains text content', () => {
+				ghsEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;">' +
+							'<ol>' +
+								'<li style="list-style-type:none;">foobar</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph htmlLiAttributes="{"styles":{"list-style-type":"none"}}" htmlOlAttributes="{}" ' +
+					'listIndent="1" listItemId="a00" listType="numbered">foobar</paragraph>'
 				);
 			} );
 		} );
