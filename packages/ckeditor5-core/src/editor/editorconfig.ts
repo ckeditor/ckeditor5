@@ -1249,7 +1249,7 @@ export interface RootConfig {
 	 * need a root with different schema rules — for example, a root that restricts or extends what content is allowed
 	 * at the top level.
 	 *
-	 * The element name must be registered in the {@link module:engine/model/schema~Schema schema} before or during
+	 * The element name must be registered in the {@link module:engine/model/schema~ModelSchema schema} before or during
 	 * editor initialization. See the {@glink framework/deep-dive/schema "Schema"} guide for more information about
 	 * generic items like `$root` and `$inlineRoot`.
 	 *

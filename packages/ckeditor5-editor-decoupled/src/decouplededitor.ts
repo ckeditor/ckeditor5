@@ -141,7 +141,7 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	 * 	} );
 	 * ```
 	 */
-	public override async destroy(): Promise<void> {
+	public override async destroy(): Promise<unknown> {
 		// Cache the data, then destroy.
 		// It's safe to assume that the model->view conversion will not work after super.destroy().
 		const data = this.getData();
@@ -153,6 +153,10 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		if ( this.sourceElement ) {
 			this.updateSourceElement( data );
 		}
+
+		// To satisfy the return type and to keep it backward compatible.
+		// eslint-disable-next-line no-useless-return
+		return;
 	}
 
 	/**
