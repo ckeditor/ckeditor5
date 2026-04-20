@@ -107,14 +107,14 @@ importers:
         specifier: ^9.34.0
         version: 9.36.0(jiti@2.6.1)
       eslint-config-ckeditor5:
-        specifier: ^14.1.0
-        version: 14.1.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4)
+        specifier: ^15.0.0
+        version: 15.0.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^14.1.0
-        version: 14.1.0
+        specifier: ^15.0.0
+        version: 15.0.0
       estree-walker:
         specifier: ^3.0.3
         version: 3.0.3
@@ -6568,8 +6568,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axios@1.13.5:
-    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
+  axios@1.15.0:
+    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
 
   b4a@1.7.3:
     resolution: {integrity: sha512-5Q2mfq2WfGuFp3uS//0s6baOJLMoVduPYVeNmDYxu5OUA1/cBfvr2RIS7vi62LdNj/urk1hfmj867I3qt6uZ7Q==}
@@ -6670,8 +6670,8 @@ packages:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
 
-  basic-ftp@5.2.1:
-    resolution: {integrity: sha512-0yaL8JdxTknKDILitVpfYfV2Ob6yb3udX/hK97M7I3jOeznBNxQPtVvTUtnhUkyHlxFWyr5Lvknmgzoc7jf+1Q==}
+  basic-ftp@5.2.2:
+    resolution: {integrity: sha512-1tDrzKsdCg70WGvbFss/ulVAxupNauGnOlgpyjKzeQxzyllBLS0CGLV7tjIXTK3ZQA9/FBEm9qyFFN1bciA6pw==}
     engines: {node: '>=10.0.0'}
 
   batch@0.6.1:
@@ -7763,8 +7763,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-config-ckeditor5@14.1.0:
-    resolution: {integrity: sha512-mDDu0YB/GnoIXbXKCldUaEsC+Z/5lZVrHetEvpP8MI0zuWChbNBrPIokeQ829Yz7uSF7PEk8bFPXktwAK2ccQA==}
+  eslint-config-ckeditor5@15.0.0:
+    resolution: {integrity: sha512-XpemPdkTE96OIRIBNbbVovqw/KejKheCHL3tlil0vz8mDdVp/TO7Cj81GEvHz2jdoR4SuY1GCTFUp8FzMRhdHg==}
     engines: {node: '>=24.11.0'}
     peerDependencies:
       eslint: ^9.0.0
@@ -7774,8 +7774,8 @@ packages:
     resolution: {integrity: sha512-blbD5ZSQnjNEUaG38VCO4WG9nfDQWE8/IOmt8DFRHXUIfZikaIXmsQTdWNFk0/e0j7RgIVRza86MpsJ+aHgFLg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  eslint-plugin-ckeditor5-rules@14.1.0:
-    resolution: {integrity: sha512-ssewEesRNL0MVfNTraM7l8xtTfBKmlNIjK0kCXsiJgLanmoRn0CZ1LEepICZifNx2eKzCf5tF+6phYVleh88PA==}
+  eslint-plugin-ckeditor5-rules@15.0.0:
+    resolution: {integrity: sha512-naZRNFCpiEhanWKaCqqgxB9hlx+K8RmKATkVwxt4z7nPQnPjg5Yh2UYAoBtCBXhG9iiHclR35T4b694o0KynTw==}
     engines: {node: '>=24.11.0'}
 
   eslint-plugin-mocha@11.2.0:
@@ -10333,6 +10333,10 @@ packages:
 
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+
+  proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
 
   publint@0.3.13:
     resolution: {integrity: sha512-NC+lph09+BRO9LJgKlIy3WQXyu6/6WDQ0dCA60KALUwdKVf3PfGuC6fY8I+oKB/5kEPh50aOSUz+6yWy1n4EfA==}
@@ -14902,11 +14906,11 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.13.5:
+  axios@1.15.0:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
-      proxy-from-env: 1.1.0
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
 
@@ -15009,7 +15013,7 @@ snapshots:
     dependencies:
       safe-buffer: 5.1.2
 
-  basic-ftp@5.2.1: {}
+  basic-ftp@5.2.2: {}
 
   batch@0.6.1: {}
 
@@ -16246,13 +16250,13 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-ckeditor5@14.1.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4):
+  eslint-config-ckeditor5@15.0.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4):
     dependencies:
       '@eslint/js': 9.39.4
       '@eslint/markdown': 6.6.0
       '@stylistic/eslint-plugin': 4.4.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.5.4)
       eslint: 9.36.0(jiti@2.6.1)
-      eslint-plugin-ckeditor5-rules: 14.1.0
+      eslint-plugin-ckeditor5-rules: 15.0.0
       eslint-plugin-mocha: 11.2.0(eslint@9.36.0(jiti@2.6.1))
       globals: 16.5.0
       typescript: 5.5.4
@@ -16266,7 +16270,7 @@ snapshots:
       strip-ansi: 6.0.1
       text-table: 0.2.0
 
-  eslint-plugin-ckeditor5-rules@14.1.0:
+  eslint-plugin-ckeditor5-rules@15.0.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       enhanced-resolve: 5.20.1
@@ -16628,7 +16632,7 @@ snapshots:
 
   get-uri@6.0.5:
     dependencies:
-      basic-ftp: 5.2.1
+      basic-ftp: 5.2.2
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -19361,6 +19365,8 @@ snapshots:
 
   proxy-from-env@1.1.0: {}
 
+  proxy-from-env@2.1.0: {}
+
   publint@0.3.13:
     dependencies:
       '@publint/pack': 0.1.2
@@ -20922,7 +20928,7 @@ snapshots:
 
   wait-on@9.0.4:
     dependencies:
-      axios: 1.13.5
+      axios: 1.15.0
       joi: 18.0.2
       lodash: 4.18.1
       minimist: 1.2.8

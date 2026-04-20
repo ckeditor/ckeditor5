@@ -1329,7 +1329,7 @@ describe( 'ListEditing - converters', () => {
 			);
 		} );
 
-		it( 'should handle a block widget at a skip level', () => {
+		it( 'should handle a container at a skip level', () => {
 			_setModelData( skipModel,
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<blockQuote listIndent="2" listItemId="b" listType="bulleted">' +

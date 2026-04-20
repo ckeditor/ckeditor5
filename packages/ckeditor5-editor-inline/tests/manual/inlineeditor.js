@@ -23,7 +23,10 @@ function initEditors() {
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 				menuBar: { isVisible: true },
 				root: {
-					element: document.querySelector( selector )
+					element: document.querySelector( selector ),
+					modelAttributes: {
+						foo: selector
+					}
 				}
 			} )
 			.then( editor => {
