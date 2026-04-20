@@ -299,7 +299,8 @@ function enableLegacyAlignmentProperty( conversion: Conversion ) {
 
 			const modelElement = data.modelRange?.start.nodeAfter;
 
-			if ( !modelElement || !modelElement.is( 'element' ) ) {
+			/* istanbul ignore if -- @preserve */
+			if ( !modelElement?.is( 'element' ) ) {
 				return;
 			}
 
@@ -309,11 +310,9 @@ function enableLegacyAlignmentProperty( conversion: Conversion ) {
 				return;
 			}
 
-			// Let's convert children first.
 			conversionApi.convertChildren( data.viewItem, modelElement );
 			conversionApi.updateConversionResult( modelElement, data );
 
-			// Iterate over children and apply proper align.
 			for ( const child of modelElement.getChildren() ) {
 				if ( child.is( 'element' ) ) {
 					applyAlignmentToChild( child, alignValue, conversionApi );
@@ -322,39 +321,31 @@ function enableLegacyAlignmentProperty( conversion: Conversion ) {
 		}, { priority: 'low' } );
 	} );
 
-	function applyAlignmentToChild(
-		child: ModelElement,
-		alignValue: string,
-		conversionApi: UpcastConversionApi
-	): void {
-		const definition = conversionApi.schema.getDefinition( child );
+	function applyAlignmentToChild( child: ModelElement, alignValue: string, { schema, writer }: UpcastConversionApi ): void {
+		const definition = schema.getDefinition( child );
 
-		if ( !definition ) {
-			return;
-		}
-
-		for ( const attrName of definition.allowAttributes ) {
-			if ( child.hasAttribute( attrName ) ) {
-				continue;
-			}
-
-			const attrProperties = conversionApi.schema.getAttributeProperties( attrName );
-
-			// If found attribute that is block alignment, try to find proper mapping.
-			if ( attrProperties.blockAlignment ) {
-				const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
-
-				if ( mappedValue ) {
-					conversionApi.writer.setAttribute( attrName, mappedValue, child );
+		if ( definition ) {
+			for ( const attrName of definition.allowAttributes ) {
+				if ( child.hasAttribute( attrName ) ) {
+					continue;
 				}
 
-				return;
+				const attrProperties = schema.getAttributeProperties( attrName );
+
+				if ( attrProperties.blockAlignment ) {
+					const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
+
+					if ( mappedValue ) {
+						writer.setAttribute( attrName, mappedValue, child );
+					}
+
+					return;
+				}
 			}
 		}
 
-		// If there is no block align attribute present on the child, check if plain text `alignment` works.
-		if ( definition.allowAttributes.includes( 'alignment' ) ) {
-			conversionApi.writer.setAttribute( 'alignment', alignValue, child );
+		if ( !child.hasAttribute( 'alignment' ) && schema.checkAttribute( child, 'alignment' ) ) {
+			writer.setAttribute( 'alignment', alignValue, child );
 		}
 	}
 }

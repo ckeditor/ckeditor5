@@ -1451,6 +1451,7 @@ describe( 'table cell properties', () => {
 								'</tr>' +
 							'</table>'
 						);
+
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 						const paragraph = tableCell.getChild( 0 );
 						const nestedTable = tableCell.getChild( 1 );
@@ -1541,6 +1542,88 @@ describe( 'table cell properties', () => {
 								'</tr>' +
 							'</table>'
 						);
+					} );
+
+					it( 'should do nothing if attribute is already consumed', () => {
+						editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.viewItem, { attributes: [ 'align' ] } );
+						}, { priority: 'highest' } ) );
+
+						editor.setData(
+							'<table>' +
+								'<tr>' +
+									'<td align="right">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [ [ '<paragraph>foo</paragraph>' ] ] )
+						);
+					} );
+
+					describe( 'with table properties editing', () => {
+						beforeEach( async () => {
+							await editor.destroy();
+
+							editor = await VirtualTestEditor.create( {
+								plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TablePropertiesEditing, AlignmentEditing ]
+							} );
+
+							model = editor.model;
+						} );
+
+						it( 'should block align nested table', () => {
+							editor.setData(
+								'<table>' +
+									'<tr>' +
+										'<td align="right">' +
+											'<p>text</p>' +
+											'<table>' +
+												'<tr>' +
+													'<td><p>a</p></td>' +
+												'</tr>' +
+											'</table>' +
+										'</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+								modelTable( [
+									[
+										'<paragraph alignment="right">text</paragraph>' +
+										modelTable( [ [ '<paragraph>a</paragraph>' ] ], { tableAlignment: 'blockRight' } )
+									]
+								] )
+							);
+						} );
+
+						it( 'should not override alignment if already present', () => {
+							editor.setData(
+								'<table>' +
+									'<tr>' +
+										'<td align="center">' +
+											'<p style="text-align: right">text</p>' +
+											'<table style="margin-left:0;margin-right:auto;">' +
+												'<tr>' +
+													'<td><p>a</p></td>' +
+												'</tr>' +
+											'</table>' +
+										'</td>' +
+									'</tr>' +
+								'</table>'
+							);
+
+							expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+								modelTable( [
+									[
+										'<paragraph alignment="right">text</paragraph>' +
+										modelTable( [ [ '<paragraph>a</paragraph>' ] ], { tableAlignment: 'blockLeft' } )
+									]
+								] )
+							);
+						} );
 					} );
 				} );
 
