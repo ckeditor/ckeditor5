@@ -10,6 +10,7 @@
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
+	Matcher,
 	addBorderStylesRules,
 	addPaddingStylesRules,
 	addBackgroundStylesRules,
@@ -167,6 +168,8 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment! );
+		enableLegacyAlignmentProperty( conversion );
+
 		editor.commands.add(
 			'tableCellHorizontalAlignment',
 			new TableCellHorizontalAlignmentCommand( editor, defaultTableCellProperties.horizontalAlignment! )
@@ -269,30 +272,79 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
 				}
 			}
-		} )
-		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
-		.attributeToAttribute( {
-			view: {
-				name: /^(td|th)$/,
-				attributes: {
-					align: ALIGN_VALUES_REG_EXP
-				}
-			},
-			model: {
-				key: 'tableCellHorizontalAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
-					const align = viewElement.getAttribute( 'align' );
+		} );
+}
 
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
-				}
+/**
+ * Upcasts legacy `td[align]` property to proper block alignment attributes in child elements.
+ * If there is no block alignment property supported on the element, then the `alignment` fallback will be used.
+ *
+ * See: https://github.com/ckeditor/ckeditor5/issues/20042
+ */
+function enableLegacyAlignmentProperty( conversion: Conversion ) {
+	conversion.for( 'upcast' ).add( dispatcher => {
+		const matcher = new Matcher( {
+			name: /^(td|th)$/,
+			attributes: {
+				align: true
 			}
 		} );
+
+		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
+			const matcherResult = matcher.match( data.viewItem );
+
+			if ( !matcherResult ) {
+				return;
+			}
+
+			const modelElement = data.modelRange?.start.nodeAfter as ModelElement;
+			const alignValue = data.viewItem.getAttribute( 'align' )!;
+
+			if ( !conversionApi.consumable.consume( data.viewItem, matcherResult.match ) ) {
+				return;
+			}
+
+			for ( const child of modelElement.getChildren() ) {
+				if ( !child.is( 'element' ) ) {
+					continue;
+				}
+
+				const definition = conversionApi.schema.getDefinition( child )!;
+				let matchedAlignment = false;
+
+				// Let's check if block alignment is allowed on the child.
+				for ( const attrName of definition.allowAttributes ) {
+					if ( child.hasAttribute( attrName ) ) {
+						continue;
+					}
+
+					const attrProperties = conversionApi.schema.getAttributeProperties( attrName );
+
+					// If found attribute that is block alignment, try to find proper mapping.
+					if ( attrProperties.blockAlignment ) {
+						const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
+
+						if ( mappedValue ) {
+							conversionApi.writer.setAttribute( attrName, mappedValue, child );
+						}
+
+						matchedAlignment = true;
+						break;
+					}
+				}
+
+				// If there is no block align attribute present on the child, check if plain text `alignment` works.
+				if ( !matchedAlignment && definition.allowAttributes.includes( 'alignment' ) ) {
+					conversionApi.writer.setAttribute( 'alignment', alignValue, child );
+					matchedAlignment = true;
+				}
+
+				if ( matchedAlignment ) {
+					break;
+				}
+			}
+		}, { priority: 'lowest' } );
+	} );
 }
 
 /**
