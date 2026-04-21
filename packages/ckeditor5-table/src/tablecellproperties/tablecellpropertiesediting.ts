@@ -286,7 +286,7 @@ function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 		const matcher = new Matcher( {
 			name: /^(td|th)$/,
 			attributes: {
-				align: true
+				align: ALIGN_VALUES_REG_EXP
 			}
 		} );
 
