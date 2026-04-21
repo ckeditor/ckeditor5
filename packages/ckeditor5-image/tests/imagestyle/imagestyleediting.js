@@ -180,21 +180,35 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).blockAlignment ).to.be.deep.equal( {
-					center: 'alignCenter',
-					left: 'alignBlockLeft',
-					right: 'alignBlockRight'
+					center: {
+						isDefault: true,
+						value: 'block'
+					},
+					left: {
+						isDefault: false,
+						value: 'alignBlockLeft'
+					},
+					right: {
+						isDefault: false,
+						value: 'alignBlockRight'
+					}
 				} );
 
 				await editor.destroy();
 			} );
 
-			it( 'should register blank `blockAlignment` schema property on ' +
+			it( 'should register proper `blockAlignment` schema property on ' +
 					'`imageStyle` attribute (ImageBlockEditing)', async () => {
 				const editor = await ModelTestEditor.create( {
 					plugins: [ ImageBlockEditing, ImageStyleEditing ]
 				} );
 
-				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).blockAlignment ).to.be.deep.equal( {} );
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).blockAlignment ).to.be.deep.equal( {
+					center: {
+						isDefault: true,
+						value: 'block'
+					}
+				} );
 
 				await editor.destroy();
 			} );

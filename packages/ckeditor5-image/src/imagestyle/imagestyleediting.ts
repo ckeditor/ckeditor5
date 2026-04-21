@@ -185,7 +185,7 @@ function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefin
 		}
 
 		return {
-			isDefault: found.isDefault,
+			isDefault: !!found.isDefault,
 			value: found.name
 		};
 	};
