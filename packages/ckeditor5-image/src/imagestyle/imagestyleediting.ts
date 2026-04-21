@@ -171,8 +171,7 @@ export class ImageStyleEditing extends Plugin {
  * vs. tables).
  *
  * @param styles An array of available image style option definitions.
- * @returns A record mapping basic alignments to their valid, block-specific style names
- * (e.g., `{ left: 'alignBlockLeft', right: 'alignBlockRight' }`).
+ * @returns A record mapping basic alignments to their valid, block-specific style names.
  */
 function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefinition> ) {
 	const pickFirstSupported = ( ...names: Array<string> ) => {
