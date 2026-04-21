@@ -114,7 +114,6 @@ export class TableCellPropertiesEditing extends Plugin {
 		const conversion = editor.conversion;
 
 		editor.config.define( 'table.tableCellProperties.defaultProperties', { } );
-		editor.config.define( 'table.tableCellProperties.legacyAlignmentProperty', false );
 
 		const defaultTableCellProperties = getNormalizedDefaultCellProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
@@ -169,10 +168,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment! );
-
-		if ( editor.config.get( 'table.tableCellProperties.legacyAlignmentProperty' ) ) {
-			enableLegacyAlignmentProperty( conversion );
-		}
+		enableLegacyHorizontalAlignmentAttribute( conversion );
 
 		editor.commands.add(
 			'tableCellHorizontalAlignment',
@@ -285,7 +281,7 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
  *
  * See: https://github.com/ckeditor/ckeditor5/issues/20042
  */
-function enableLegacyAlignmentProperty( conversion: Conversion ) {
+function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 	conversion.for( 'upcast' ).add( dispatcher => {
 		const matcher = new Matcher( {
 			name: /^(td|th)$/,

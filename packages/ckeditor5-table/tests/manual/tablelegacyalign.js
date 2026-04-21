@@ -84,10 +84,7 @@ const config = {
 	table: {
 		contentToolbar: [
 			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-		],
-		tableCellProperties: {
-			legacyAlignmentProperty: true
-		}
+		]
 	},
 	htmlSupport: {
 		allow: [
