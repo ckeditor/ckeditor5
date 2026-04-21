@@ -30,12 +30,7 @@ describe( 'table cell properties', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ],
-				table: {
-					tableCellProperties: {
-						legacyAlignmentProperty: true
-					}
-				}
+				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
 			} );
 
 			model = editor.model;
@@ -68,6 +63,7 @@ describe( 'table cell properties', () => {
 			expect( config ).to.be.an( 'object' );
 			expect( config ).to.have.property( 'defaultProperties' );
 			expect( config.defaultProperties ).to.deep.equal( {} );
+			expect( config.legacyAlignmentProperty ).to.be.equal( false );
 		} );
 
 		it( 'adds tableCellBorderColor command', () => {
@@ -1376,6 +1372,24 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'the [align] attribute', () => {
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ],
+							table: {
+								tableCellProperties: {
+									legacyAlignmentProperty: true
+								}
+							}
+						} );
+
+						model = editor.model;
+						schema = model.schema;
+					} );
+
+					afterEach( async () => {
+						await editor.destroy();
+					} );
+
 					it( 'should apply align=left to paragraph child', () => {
 						editor.setData(
 							'<table>' +
@@ -2455,6 +2469,27 @@ describe( 'table cell properties', () => {
 					} );
 
 					describe( 'the `align` attribute', () => {
+						it( 'should not be upcasted by default', async () => {
+							await editor.destroy();
+
+							editor = await VirtualTestEditor.create( {
+								plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing, AlignmentEditing ]
+							} );
+
+							model = editor.model;
+
+							editor.setData(
+								'<table class="layout-table">' +
+									'<tr>' +
+										'<td align="left">foo</td>' +
+									'</tr>' +
+								'</table>'
+							);
+							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
+
+							expect( paragraph.getAttribute( 'alignment' ) ).to.be.undefined;
+						} );
+
 						it( 'should apply align="left" to paragraph child', () => {
 							editor.setData(
 								'<table class="layout-table">' +

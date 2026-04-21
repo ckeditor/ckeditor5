@@ -114,6 +114,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		const conversion = editor.conversion;
 
 		editor.config.define( 'table.tableCellProperties.defaultProperties', { } );
+		editor.config.define( 'table.tableCellProperties.legacyAlignmentProperty', false );
 
 		const defaultTableCellProperties = getNormalizedDefaultCellProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
