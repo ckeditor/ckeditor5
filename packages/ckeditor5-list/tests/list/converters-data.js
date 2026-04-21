@@ -2724,7 +2724,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 			);
 		} );
 
-		it( 'should inherit the list type from the parent for intermediate levels', () => {
+		it( 'should inherit the list type from the ancestor for intermediate levels without a sibling', () => {
 			_setModelData( skipModel,
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
