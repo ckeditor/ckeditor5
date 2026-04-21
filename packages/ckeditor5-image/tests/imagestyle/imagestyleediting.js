@@ -4,10 +4,13 @@
  */
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import { TableCellPropertiesEditing, TableEditing, TablePropertiesEditing } from '@ckeditor/ckeditor5-table';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 
 import { ImageStyleEditing } from '../../src/imagestyle/imagestyleediting.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
@@ -1068,6 +1071,90 @@ describe( 'ImageStyleEditing', () => {
 
 					await customEditor.destroy();
 				} );
+			} );
+		} );
+	} );
+
+	describe( 'table cell alignment integration', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( {
+				plugins: [
+					Paragraph, AlignmentEditing,
+					ImageBlockEditing, ImageInlineEditing, ImageStyleEditing,
+					TableEditing, TablePropertiesEditing, TableCellPropertiesEditing
+				]
+			} );
+
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		describe( 'of the inline image', () => {
+			it( 'should wrap inline image with paragraph and align such paragraph if placed within `td[align]` column', () => {
+				editor.setData(
+					'<table>' +
+						'<tr>' +
+							'<td align="right">' +
+								'<img src="/assets/sample.png" />' +
+							'</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [ [
+						'<paragraph alignment="right">' +
+							'<imageInline src="/assets/sample.png"></imageInline>' +
+						'</paragraph>'
+					] ] )
+				);
+			} );
+		} );
+
+		describe( 'of the block image', () => {
+			it( 'should properly align image if placed in `td[align]` column', () => {
+				editor.setData(
+					'<table>' +
+						'<tr>' +
+							'<td align="right">' +
+								'<figure class="image">' +
+									'<img alt="Foo." />' +
+								'</figure>' +
+							'</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [ [
+						'<imageBlock alt="Foo." imageStyle="alignBlockRight"></imageBlock>'
+					] ] )
+				);
+			} );
+
+			it( 'should not override already set alignment if placed within `td[align]` column', () => {
+				editor.setData(
+					'<table>' +
+						'<tr>' +
+							'<td align="right">' +
+								'<figure class="image image-style-align-center">' +
+									'<img alt="Foo." />' +
+								'</figure>' +
+							'</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [ [
+						'<imageBlock alt="Foo." imageStyle="alignCenter"></imageBlock>'
+					] ] )
+				);
 			} );
 		} );
 	} );
