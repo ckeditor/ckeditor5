@@ -1084,7 +1084,12 @@ describe( 'ImageStyleEditing', () => {
 					Paragraph, AlignmentEditing,
 					ImageBlockEditing, ImageInlineEditing, ImageStyleEditing,
 					TableEditing, TablePropertiesEditing, TableCellPropertiesEditing
-				]
+				],
+				table: {
+					tableCellProperties: {
+						legacyAlignmentProperty: true
+					}
+				}
 			} );
 
 			model = editor.model;

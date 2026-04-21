@@ -551,6 +551,31 @@ export interface TableCellPropertiesConfig {
 	 * @default true
 	 */
 	scopedHeaders?: boolean;
+
+	/**
+	 * When set to `true`, enables upcasting of the legacy `align` attribute on `<td>` and `<th>` elements
+	 * to alignment attributes on their block-level children (e.g. paragraphs, headings).
+	 *
+	 * The `td[align]` value is applied only to children that do not already have an alignment set,
+	 * making it act as a default. This is intended for email content, where `td[align]` is the
+	 * canonical source of block alignment and takes precedence over CSS-based alignment on
+	 * individual block elements.
+	 *
+	 * For example, a block element that appears centered in a browser
+	 * due to `margin: 0 auto` default styles, but is placed inside `td[align="right"]`, is treated
+	 * as right-aligned rather than centered.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		enableLegacyAlignmentProperty: true
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * @default false
+	 */
+	legacyAlignmentProperty?: boolean;
 }
 
 /**

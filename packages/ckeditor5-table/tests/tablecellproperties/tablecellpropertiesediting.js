@@ -30,7 +30,12 @@ describe( 'table cell properties', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
+				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ],
+				table: {
+					tableCellProperties: {
+						legacyAlignmentProperty: true
+					}
+				}
 			} );
 
 			model = editor.model;
@@ -1567,7 +1572,12 @@ describe( 'table cell properties', () => {
 							await editor.destroy();
 
 							editor = await VirtualTestEditor.create( {
-								plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TablePropertiesEditing, AlignmentEditing ]
+								plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TablePropertiesEditing, AlignmentEditing ],
+								table: {
+									tableCellProperties: {
+										legacyAlignmentProperty: true
+									}
+								}
 							} );
 
 							model = editor.model;
@@ -1658,6 +1668,7 @@ describe( 'table cell properties', () => {
 						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
 						table: {
 							tableCellProperties: {
+								legacyAlignmentProperty: true,
 								defaultProperties: {
 									horizontalAlignment: 'center'
 								}
@@ -1685,7 +1696,12 @@ describe( 'table cell properties', () => {
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
 							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ],
-							language: 'ar'
+							language: 'ar',
+							table: {
+								tableCellProperties: {
+									legacyAlignmentProperty: true
+								}
+							}
 						} );
 
 						model = editor.model;
@@ -2393,7 +2409,12 @@ describe( 'table cell properties', () => {
 		describe( 'table layout', () => {
 			beforeEach( async () => {
 				editor = await VirtualTestEditor.create( {
-					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing, AlignmentEditing ]
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing, AlignmentEditing ],
+					table: {
+						tableCellProperties: {
+							legacyAlignmentProperty: true
+						}
+					}
 				} );
 
 				model = editor.model;

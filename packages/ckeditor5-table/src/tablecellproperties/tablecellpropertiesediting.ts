@@ -168,7 +168,10 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment! );
-		enableLegacyAlignmentProperty( conversion );
+
+		if ( editor.config.get( 'table.tableCellProperties.legacyAlignmentProperty' ) ) {
+			enableLegacyAlignmentProperty( conversion );
+		}
 
 		editor.commands.add(
 			'tableCellHorizontalAlignment',
