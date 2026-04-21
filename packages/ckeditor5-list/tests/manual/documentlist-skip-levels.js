@@ -22,6 +22,7 @@ import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { TodoList } from '../../src/todolist.js';
 
 import { List } from '../../src/list.js';
@@ -45,7 +46,7 @@ function getEditorConfig() {
 		Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
 		MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, ImageResize, LinkImage,
 		HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-		SourceEditing, List, TodoList
+		SourceEditing, List, TodoList, Autoformat
 	];
 
 	if ( controls.indentBlock.checked ) {
