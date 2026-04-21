@@ -169,6 +169,43 @@ describe( 'ImageStyleEditing', () => {
 
 				await editor.destroy();
 			} );
+
+			it( 'should register `blockAlignment` schema property on ' +
+					'`imageStyle` attribute (ImageInlineEditing + ImageBlockEditing)', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageInlineEditing, ImageBlockEditing, ImageStyleEditing ]
+				} );
+
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).blockAlignment ).to.be.deep.equal( {
+					center: 'alignCenter',
+					left: 'alignBlockLeft',
+					right: 'alignBlockRight'
+				} );
+
+				await editor.destroy();
+			} );
+
+			it( 'should register blank `blockAlignment` schema property on ' +
+					'`imageStyle` attribute (ImageBlockEditing)', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageStyleEditing ]
+				} );
+
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).blockAlignment ).to.be.deep.equal( {} );
+
+				await editor.destroy();
+			} );
+
+			it( 'should not register `blockAlignment` schema property on ' +
+				'`imageStyle` attribute (ImageInlineEditing)', async () => {
+				const editor = await ModelTestEditor.create( {
+					plugins: [ ImageInlineEditing, ImageStyleEditing ]
+				} );
+
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).blockAlignment ).to.be.undefined;
+
+				await editor.destroy();
+			} );
 		} );
 
 		it( 'should call the normalizedStyles with the proper arguments', async () => {

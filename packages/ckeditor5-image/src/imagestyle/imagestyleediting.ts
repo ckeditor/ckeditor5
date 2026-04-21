@@ -7,12 +7,14 @@
  * @module image/imagestyle/imagestyleediting
  */
 
+import { pickBy } from 'es-toolkit/compat';
+
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 
 import { ImageStyleCommand } from './imagestylecommand.js';
 import { ImageUtils } from '../imageutils.js';
-import { utils } from './utils.js';
+import { getStyleDefinitionByName, utils } from './utils.js';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 
@@ -97,7 +99,10 @@ export class ImageStyleEditing extends Plugin {
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
 		if ( isBlockPluginLoaded ) {
 			schema.extend( 'imageBlock', { allowAttributes: 'imageStyle' } );
-			schema.setAttributeProperties( 'imageStyle', { isFormatting: true } );
+			schema.setAttributeProperties( 'imageStyle', {
+				isFormatting: true,
+				blockAlignment: getBlockAlignmentAttributeProperty( this.normalizedStyles! )
+			} );
 
 			// Converter for figure element from view to model.
 			editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:figure', viewToModelConverter, { priority: 'low' } );
@@ -156,4 +161,32 @@ export class ImageStyleEditing extends Plugin {
 			return changed;
 		} );
 	}
+}
+
+/**
+ * Returns a mapping of generic alignment values ('left', 'right', 'center') to their corresponding
+ * block image alignment style names.
+ *
+ * This function is particularly useful for scenarios like `td[align]` conversion, which needs to know
+ * exactly how to map a generic `align` attribute to the correct alignment value. This mapping is necessary
+ * because the actual alignment value can differ depending on the target element type (e.g., block images
+ * vs. tables).
+ *
+ * @param styles An array of available image style option definitions.
+ * @returns A record mapping basic alignments to their valid, block-specific style names
+ * (e.g., `{ left: 'alignBlockLeft', right: 'alignBlockRight' }`).
+ */
+function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefinition> ): Record<string, string> {
+	return pickBy(
+		{
+			left: 'alignBlockLeft',
+			right: 'alignBlockRight',
+			center: 'alignCenter'
+		},
+		alignValue => {
+			const definition = getStyleDefinitionByName( alignValue, styles );
+
+			return !!definition?.modelElements.includes( 'imageBlock' );
+		}
+	) as Record<string, string>;
 }

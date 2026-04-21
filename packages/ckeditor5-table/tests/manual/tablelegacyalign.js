@@ -12,7 +12,7 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { ImageInline, ImageCaption, ImageToolbar, ImageResize } from '@ckeditor/ckeditor5-image';
+import { ImageInline, ImageCaption, ImageToolbar, ImageResize, ImageStyle, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -43,8 +43,10 @@ const config = {
 		HorizontalLine,
 		ImageCaption,
 		ImageInline,
+		ImageBlock,
 		ImageToolbar,
 		ImageResize,
+		ImageStyle,
 		Indent,
 		Italic,
 		Link,
@@ -61,6 +63,16 @@ const config = {
 		TableSelection,
 		TableToolbar
 	],
+	image: {
+		toolbar: [
+			'imageStyle:inline',
+			'imageStyle:block',
+			'imageStyle:wrapText',
+			'|',
+			'toggleImageCaption',
+			'imageTextAlternative'
+		]
+	},
 	toolbar: [
 		'sourceEditing', '|',
 		'undo', 'redo', '|',
@@ -84,7 +96,6 @@ const config = {
 			}
 		]
 	},
-	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	menuBar: {
 		isVisible: true
 	}
