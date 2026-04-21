@@ -7,8 +7,6 @@
  * @module image/imagestyle/imagestyleediting
  */
 
-import { pickBy } from 'es-toolkit/compat';
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 
@@ -176,17 +174,31 @@ export class ImageStyleEditing extends Plugin {
  * @returns A record mapping basic alignments to their valid, block-specific style names
  * (e.g., `{ left: 'alignBlockLeft', right: 'alignBlockRight' }`).
  */
-function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefinition> ): Record<string, string> {
-	return pickBy(
-		{
-			left: 'alignBlockLeft',
-			right: 'alignBlockRight',
-			center: 'alignCenter'
-		},
-		alignValue => {
-			const definition = getStyleDefinitionByName( alignValue, styles );
+function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefinition> ) {
+	const pickFirstSupported = ( ...names: Array<string> ) => {
+		const found = names
+			.map( name => getStyleDefinitionByName( name, styles ) )
+			.find( definition => definition?.modelElements.includes( 'imageBlock' ) );
 
-			return !!definition?.modelElements.includes( 'imageBlock' );
+		if ( !found ) {
+			return;
 		}
-	) as Record<string, string>;
+
+		return {
+			isDefault: found.isDefault,
+			value: found.name
+		};
+	};
+
+	const candidates: Record<string, Array<string>> = {
+		left: [ 'alignBlockLeft', 'alignLeft' ],
+		right: [ 'alignBlockRight', 'alignRight' ],
+		center: [ 'block', 'alignCenter' ]
+	};
+
+	return Object.fromEntries(
+		Object.entries( candidates )
+			.map( ( [ align, names ] ) => [ align, pickFirstSupported( ...names ) ] )
+			.filter( ( [ , resolved ] ) => resolved !== undefined )
+	);
 }

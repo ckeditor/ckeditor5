@@ -67,7 +67,7 @@ const config = {
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
-			'imageStyle:wrapText',
+			'imageStyle:breakText',
 			'|',
 			'toggleImageCaption',
 			'imageTextAlternative'

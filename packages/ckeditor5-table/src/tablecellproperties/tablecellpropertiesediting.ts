@@ -337,10 +337,10 @@ function enableLegacyAlignmentProperty( conversion: Conversion ) {
 				const attrProperties = schema.getAttributeProperties( attrName );
 
 				if ( attrProperties.blockAlignment ) {
-					const mappedValue = ( attrProperties.blockAlignment as Record<string, string> )[ alignValue ];
+					const mappedValue = ( attrProperties.blockAlignment as BlockAlignmentAttributeProperty )[ alignValue ];
 
-					if ( mappedValue ) {
-						writer.setAttribute( attrName, mappedValue, child );
+					if ( mappedValue && !mappedValue.isDefault ) {
+						writer.setAttribute( attrName, mappedValue.value, child );
 					}
 
 					return;
@@ -353,6 +353,11 @@ function enableLegacyAlignmentProperty( conversion: Conversion ) {
 		}
 	}
 }
+
+type BlockAlignmentAttributeProperty = Record<string, {
+	isDefault?: boolean;
+	value: string;
+}>;
 
 /**
  * Enables the `'verticalAlignment'` attribute for table cells.

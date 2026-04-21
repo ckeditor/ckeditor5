@@ -271,9 +271,9 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 	schema.setAttributeProperties( 'tableAlignment', {
 		isFormatting: true,
 		blockAlignment: {
-			left: 'blockLeft',
-			right: 'blockRight',
-			center: 'center'
+			left: { value: 'blockLeft' },
+			right: { value: 'blockRight' },
+			center: { value: 'center' }
 		}
 	} );
 
