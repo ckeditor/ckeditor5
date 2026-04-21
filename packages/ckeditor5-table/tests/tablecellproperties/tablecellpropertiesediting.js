@@ -2404,6 +2404,18 @@ describe( 'table cell properties', () => {
 		} );
 
 		describe( 'table layout', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing, AlignmentEditing ]
+				} );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			describe( 'upcast', () => {
 				describe( 'horizontal alignment', () => {
 					it( 'should not upcast text-align:left style (due to the default value of the property)', () => {
