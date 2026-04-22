@@ -421,8 +421,9 @@
 		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
 	"hooks": {
-		"beforeHexo":[
-			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
+		"beforeHexo": [
+			"../scripts/docs/fetch-ckeditor5-lts-version.mjs",
+			"../scripts/docs/inject-ckbox-version.mjs"
 		]
 	},
 	"docsearch": {
@@ -920,8 +921,5 @@
 			"navigationIncludeIndex": true,
 			"slug": "support"
 		}
-	],
-	"variables": {
-		"CKBOX_VERSION": "2.9.2"
-	}
+	]
 }
