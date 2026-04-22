@@ -76,7 +76,7 @@ $( document ).ready( () => {
 
 Pass the imported plugins inside the configuration to the `create()` method and add toolbar items where applicable.
 
-The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
+The `create()` configuration uses the `attachTo` property to accept a DOM element, so you must ensure this element is added to your HTML page.
 
 ```html
 <div id="editor">

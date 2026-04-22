@@ -28,7 +28,7 @@ export { DeleteObserver as _DeleteObserver, type DeleteEventData } from './delet
 
 export type { TypingConfig, TextTypingTransformationDescription } from './typingconfig.js';
 export type { ViewDocumentDeleteEvent } from './deleteobserver.js';
-export type { ViewDocumentInsertTextEvent, InsertTextEventData, InsertTextObserver } from './inserttextobserver.js';
+export { type ViewDocumentInsertTextEvent, type InsertTextEventData, InsertTextObserver } from './inserttextobserver.js';
 export type {
 	TextWatcherMatchedEvent,
 	TextWatcherMatchedDataEvent,

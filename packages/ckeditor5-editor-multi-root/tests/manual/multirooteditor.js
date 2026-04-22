@@ -14,9 +14,24 @@ import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
 const roots = {
-	intro: { element: document.querySelector( '#editor-intro' ) },
-	content: { element: document.querySelector( '#editor-content' ) },
-	outro: { element: document.querySelector( '#editor-outro' ) }
+	intro: {
+		element: document.querySelector( '#editor-intro' ),
+		modelAttributes: {
+			section: 'intro'
+		}
+	},
+	content: {
+		element: document.querySelector( '#editor-content' ),
+		modelAttributes: {
+			section: 'content'
+		}
+	},
+	outro: {
+		element: document.querySelector( '#editor-outro' ),
+		modelAttributes: {
+			section: 'outro'
+		}
+	}
 };
 
 let editor;

@@ -61,6 +61,22 @@ describe( 'ClassicEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+		} );
+
+		it( 'creates main root element with the given modelElement name', () => {
+			const customEditor = new ClassicEditor( {
+				root: {
+					modelElement: 'customRoot',
+					initialData: ''
+				}
+			} );
+
+			expect( customEditor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+
+			customEditor.fire( 'ready' );
+
+			return customEditor.destroy();
 		} );
 
 		it( 'contains the source element as #sourceElement property', () => {
@@ -106,7 +122,7 @@ describe( 'ClassicEditor', () => {
 
 			describe( 'automatic toolbar items groupping', () => {
 				it( 'should be on by default', async () => {
-					const editorElement = document.createElement( 'div' );
+					const editorElement = document.body.appendChild( document.createElement( 'div' ) );
 					const editor = new ClassicEditor( editorElement );
 
 					expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.true;
@@ -118,7 +134,7 @@ describe( 'ClassicEditor', () => {
 				} );
 
 				it( 'can be disabled using config.toolbar.shouldNotGroupWhenFull', async () => {
-					const editorElement = document.createElement( 'div' );
+					const editorElement = document.body.appendChild( document.createElement( 'div' ) );
 					const editor = new ClassicEditor( editorElement, {
 						toolbar: {
 							shouldNotGroupWhenFull: true
@@ -136,18 +152,25 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		describe( 'config.roots.main.initialData', () => {
-			it( 'if not set, is set using DOM element data', async () => {
-				const editorElement = document.createElement( 'div' );
-				editorElement.innerHTML = '<p>Foo</p>';
+			let editorElement;
 
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				editorElement.innerHTML = '<p>Foo</p>';
+				document.body.appendChild( editorElement );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+			} );
+
+			it( 'if not set, is set using DOM element data', async () => {
 				const editor = new ClassicEditor( editorElement );
 
 				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Foo</p>' );
 
 				editor.fire( 'ready' );
 				await editor.destroy();
-
-				editorElement.remove();
 			} );
 
 			it( 'if not set, is set using data passed in constructor', async () => {
@@ -160,9 +183,6 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			it( 'if set, is not overwritten with DOM element data (legacy config.initialData)', async () => {
-				const editorElement = document.createElement( 'div' );
-				editorElement.innerHTML = '<p>Foo</p>';
-
 				const editor = new ClassicEditor( editorElement, { initialData: '<p>Bar</p>' } );
 
 				expect( editor.config.get( 'roots.main.initialData' ) ).to.equal( '<p>Bar</p>' );
@@ -193,9 +213,6 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			it( 'it should throw if config.root and config.roots.main is set', () => {
-				const editorElement = document.createElement( 'div' );
-				editorElement.innerHTML = '<p>Foo</p>';
-
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, {
@@ -206,9 +223,6 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.root.initialData is set', () => {
-				const editorElement = document.createElement( 'div' );
-				editorElement.innerHTML = '<p>Foo</p>';
-
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, {
@@ -219,9 +233,6 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			it( 'it should throw if legacy config.initialData and config.roots.main.initialData is set', () => {
-				const editorElement = document.createElement( 'div' );
-				editorElement.innerHTML = '<p>Foo</p>';
-
 				expect( () => {
 					// eslint-disable-next-line no-new
 					new ClassicEditor( editorElement, {
@@ -232,14 +243,11 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			it( 'it should throw if source element and config.attachTo are both set', () => {
-				const sourceElement = document.createElement( 'div' );
-				sourceElement.innerHTML = '<p>Foo</p>';
-
 				const attachToElement = document.createElement( 'div' );
 
 				expect( () => {
 					// eslint-disable-next-line no-new
-					new ClassicEditor( sourceElement, { attachTo: attachToElement } );
+					new ClassicEditor( editorElement, { attachTo: attachToElement } );
 				} ).to.throw( CKEditorError, 'editor-create-attachto-overspecified' );
 			} );
 		} );
@@ -280,6 +288,57 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
+		describe( 'config.roots.main.modelAttributes', () => {
+			it( 'should be possible to pass model attributes through config', async () => {
+				const editor = await ClassicEditor.create( {
+					roots: {
+						main: {
+							modelAttributes: {
+								foo: 1,
+								bar: 2
+							}
+						}
+					}
+				} );
+
+				const root = editor.model.document.getRoot();
+
+				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
+				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+
+				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+					foo: 1,
+					bar: 2
+				} );
+
+				await editor.destroy();
+			} );
+		} );
+
+		describe( 'config.root.modelAttributes', () => {
+			it( 'should be possible to pass model attributes through config', async () => {
+				const editor = await ClassicEditor.create( {
+					root: {
+						modelAttributes: {
+							foo: 1,
+							bar: 2
+						}
+					}
+				} );
+
+				const root = editor.model.document.getRoot();
+
+				expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
+				expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+
+				expect( editor.getRootAttributes() ).to.be.deep.equal( {
+					foo: 1,
+					bar: 2
+				} );
+
+				await editor.destroy();
+			} );
+		} );
 		describe( 'config-only constructor', () => {
 			it( 'should create editor with config.root.initialData', async () => {
 				const editor = new ClassicEditor( {
@@ -295,7 +354,7 @@ describe( 'ClassicEditor', () => {
 			} );
 
 			it( 'should create editor with config.attachTo and use data from it', async () => {
-				const el = document.createElement( 'div' );
+				const el = document.body.appendChild( document.createElement( 'div' ) );
 				el.innerHTML = '<p>Bar</p>';
 
 				const editor = new ClassicEditor( {
@@ -307,10 +366,12 @@ describe( 'ClassicEditor', () => {
 
 				editor.fire( 'ready' );
 				await editor.destroy();
+
+				el.remove();
 			} );
 
 			it( 'should create editor with config.attachTo and use root.initialData', async () => {
-				const el = document.createElement( 'div' );
+				const el = document.body.appendChild( document.createElement( 'div' ) );
 				el.innerHTML = '<p>Bar</p>';
 
 				const editor = new ClassicEditor( {
@@ -325,6 +386,8 @@ describe( 'ClassicEditor', () => {
 
 				editor.fire( 'ready' );
 				await editor.destroy();
+
+				el.remove();
 			} );
 
 			it( 'should log warning when config.root.element is set', async () => {
@@ -501,6 +564,38 @@ describe( 'ClassicEditor', () => {
 				.then( () => {
 					el.remove();
 				} );
+		} );
+
+		it( 'should raise exception when editor is being attached to not attached DOM element', async () => {
+			const editorElement = document.createElement( 'div' );
+
+			try {
+				await ClassicEditor.create( { attachTo: editorElement } );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.context ).to.be.null; // avoid watchdog restart
+				expect( err.message ).to.contain( 'editor-source-element-not-attached' );
+			}
+		} );
+
+		it( 'should reject if a root element is not a limit element', async () => {
+			class NonLimitRootPlugin extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'nonLimit', { isBlock: true } );
+				}
+			}
+
+			try {
+				await ClassicEditor.create( {
+					plugins: [ Paragraph, NonLimitRootPlugin ],
+					root: { modelElement: 'nonLimit' }
+				} );
+				expect.fail( 'Promise should have been rejected' );
+			} catch ( err ) {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /editor-root-element-is-not-limit/ );
+			}
 		} );
 
 		describe( 'ui', () => {
