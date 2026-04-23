@@ -5,6 +5,7 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Title } from '../src/title.js';
 import { Heading } from '../src/heading.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
@@ -941,6 +942,73 @@ describe( 'Title', () => {
 			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'with a custom root modelElement', () => {
+		let customElement, customEditor, customModel;
+
+		class CustomRootSchema extends Plugin {
+			init() {
+				this.editor.model.schema.register( 'myRoot', {
+					inheritAllFrom: '$root',
+					allowChildren: [ '$container', '$block' ]
+				} );
+			}
+		}
+
+		beforeEach( async () => {
+			customElement = document.createElement( 'div' );
+			document.body.appendChild( customElement );
+
+			customEditor = await ClassicTestEditor.create( customElement, {
+				plugins: [ CustomRootSchema, Paragraph, Title, Heading ],
+				root: { modelElement: 'myRoot' }
+			} );
+			customModel = customEditor.model;
+		} );
+
+		afterEach( async () => {
+			await customEditor.destroy();
+			customElement.remove();
+		} );
+
+		it( 'should register title as an allowed child of the configured custom root element', () => {
+			expect( customModel.schema.checkChild( 'myRoot', 'title' ) ).to.equal( true );
+		} );
+
+		it( 'should not register title as an allowed child of the generic $root when a custom root is configured', () => {
+			expect( customModel.schema.checkChild( '$root', 'title' ) ).to.equal( false );
+		} );
+
+		it( 'should convert h1 at the start of a custom root to title on setData', () => {
+			customEditor.setData( '<h1>Foo</h1><p>Bar</p>' );
+
+			expect( _getModelData( customModel ) ).to.equal(
+				'<title><title-content>[]Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should convert h1 to title in data.parse() when the configured root is passed as context', () => {
+			const modelFrag = customEditor.data.parse(
+				'<h1>Foo</h1><p>Bar</p>',
+				customModel.document.getRoot( 'main' )
+			);
+
+			expect( _stringifyModel( modelFrag ) ).to.equal(
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should not convert h1 to title in data.parse() when the default $root context is used for a custom root', () => {
+			const modelFrag = customEditor.data.parse( '<h1>Foo</h1><p>Bar</p>' );
+
+			expect( _stringifyModel( modelFrag ) ).to.equal(
+				'<heading1>Foo</heading1>' +
+				'<paragraph>Bar</paragraph>'
 			);
 		} );
 	} );

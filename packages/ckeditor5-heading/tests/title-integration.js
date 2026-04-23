@@ -9,6 +9,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -96,5 +97,56 @@ describe( 'Title integration with multi root editor', () => {
 
 		// Does not include title and body.
 		expect( barModelRoot.isEmpty ).to.be.true;
+	} );
+} );
+
+describe( 'Title integration with multi root editor and custom root modelElement', () => {
+	let multiRoot;
+
+	class CustomRootsSchema extends Plugin {
+		init() {
+			this.editor.model.schema.register( 'myRootA', {
+				inheritAllFrom: '$root',
+				allowChildren: [ '$container', '$block' ]
+			} );
+			this.editor.model.schema.register( 'myRootB', {
+				inheritAllFrom: '$root',
+				allowChildren: [ '$container', '$block' ]
+			} );
+		}
+	}
+
+	beforeEach( async () => {
+		multiRoot = await MultiRootEditor.create( {}, {
+			plugins: [ CustomRootsSchema, Paragraph, Heading, Enter, Title ],
+			roots: {
+				foo: {
+					modelElement: 'myRootA',
+					initialData: '<h1>FooTitle</h1><p>Foo</p>'
+				},
+				bar: {
+					modelElement: 'myRootB',
+					initialData: '<h1>BarTitle</h1><p>Bar</p>'
+				}
+			}
+		} );
+	} );
+
+	afterEach( async () => {
+		await multiRoot.destroy();
+	} );
+
+	it( 'should allow title inside every configured custom root model element', () => {
+		const schema = multiRoot.model.schema;
+
+		expect( schema.checkChild( 'myRootA', 'title' ) ).to.equal( true );
+		expect( schema.checkChild( 'myRootB', 'title' ) ).to.equal( true );
+	} );
+
+	it( 'should upcast h1 to title at the start of every configured custom root', () => {
+		const titlePlugin = multiRoot.plugins.get( Title );
+
+		expect( titlePlugin.getTitle( { rootName: 'foo' } ) ).to.equal( 'FooTitle' );
+		expect( titlePlugin.getTitle( { rootName: 'bar' } ) ).to.equal( 'BarTitle' );
 	} );
 } );

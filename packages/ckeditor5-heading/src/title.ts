@@ -21,8 +21,6 @@ import {
 	type MapperModelToViewPositionEvent,
 	type Model,
 	type ModelRootElement,
-	type UpcastConversionApi,
-	type UpcastConversionData,
 	type UpcastElementEvent,
 	type EditingView,
 	type ViewElement,
@@ -83,7 +81,14 @@ export class Title extends Plugin {
 		// </title>
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/2005.
-		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
+		// Collect every configured root model element name so the `title` schema entry and the
+		// upcast converter below keep working when `config.root.modelElement` (or any
+		// `config.roots.<rootName>.modelElement`) is customized.
+		const rootModelElements = new Set<string>(
+			Object.values( editor.config.get( 'roots' )! ).map( rootConfig => rootConfig.modelElement! )
+		);
+
+		model.schema.register( 'title', { isBlock: true, allowIn: Array.from( rootModelElements ) } );
 		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
 		model.schema.extend( '$text', { allowIn: 'title-content' } );
 
@@ -110,9 +115,11 @@ export class Title extends Plugin {
 
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
+		const h1Converter = dataViewModelH1Insertion( rootModelElements );
+
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', h1Converter, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', h1Converter, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', h1Converter, { priority: 'high' } );
 
 		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
@@ -469,36 +476,40 @@ export class Title extends Plugin {
 }
 
 /**
- * A view-to-model converter for the h1 that appears at the beginning of the document (a title element).
+ * Creates a view-to-model converter for the h1 that appears at the beginning of the document (a title element).
+ *
+ * The upcast context element is named after the editor's configured root `modelElement`, so the converter matches
+ * the parent against every known root model element name rather than the literal `$root`.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param evt An object containing information about the fired event.
- * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
- * @param conversionApi Conversion interface to be used by the callback.
+ * @param rootModelElements Set of root element names the title plugin is scoped to.
  */
-function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
-	const modelCursor = data.modelCursor;
-	const viewItem = data.viewItem;
+function dataViewModelH1Insertion( rootModelElements: Set<string> ): GetCallback<UpcastElementEvent> {
+	return ( evt, data, conversionApi ) => {
+		const modelCursor = data.modelCursor;
+		const viewItem = data.viewItem;
+		const parent = modelCursor.parent;
 
-	if ( !modelCursor.isAtStart || !modelCursor.parent.is( 'element', '$root' ) ) {
-		return;
-	}
+		if ( !modelCursor.isAtStart || !parent.is( 'element' ) || !rootModelElements.has( parent.name ) ) {
+			return;
+		}
 
-	if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
-		return;
-	}
+		if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
+			return;
+		}
 
-	const modelWriter = conversionApi.writer;
+		const modelWriter = conversionApi.writer;
 
-	const title = modelWriter.createElement( 'title' );
-	const titleContent = modelWriter.createElement( 'title-content' );
+		const title = modelWriter.createElement( 'title' );
+		const titleContent = modelWriter.createElement( 'title-content' );
 
-	modelWriter.append( titleContent, title );
-	modelWriter.insert( title, modelCursor );
+		modelWriter.append( titleContent, title );
+		modelWriter.insert( title, modelCursor );
 
-	conversionApi.convertChildren( viewItem, titleContent );
+		conversionApi.convertChildren( viewItem, titleContent );
 
-	conversionApi.updateConversionResult( title, data );
+		conversionApi.updateConversionResult( title, data );
+	};
 }
 
 /**
