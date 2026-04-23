@@ -82,9 +82,17 @@ export class MoveOperation extends Operation {
 	 */
 	public get affectedSelectable(): ModelSelectable {
 		return [
-			ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ),
+			this.sourceRange,
 			ModelRange._createFromPositionAndShift( this.targetPosition, 0 )
 		];
+	}
+
+	/**
+	 * Returns the range that is moved by this operation. This is equal to a range starting at {@link #sourcePosition} spanning over
+	 * {@link #howMany} nodes.
+	 */
+	public get sourceRange(): ModelRange {
+		return ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
 	}
 
 	/**
@@ -175,7 +183,7 @@ export class MoveOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		_move( ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+		_move( this.sourceRange, this.targetPosition );
 	}
 
 	/**
