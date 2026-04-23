@@ -162,7 +162,8 @@
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/content-filter.html": "features/pasting/paste-from-google-docs.html#automatic-content-filtering",
 		"features/easy-image.html": "features/images/image-upload/image-upload.html",
-		"features/easy-video.html": "features/media-embed.html",
+		"features/easy-video.html": "features/media-embed/media-embed.html",
+		"features/media-embed.html": "features/media-embed/media-embed.html",
 		"features/emoji-panel.html": "features/emoji.html",
 		"features/export-pdf.html": "features/converters/export-pdf.html",
 		"features/export-word.html": "features/converters/export-word.html",
@@ -170,7 +171,7 @@
 		"features/horizontal-rule.html": "features/horizontal-line.html",
 		"features/html-comments.html": "features/html/html-comments.html",
 		"features/html-embed.html": "features/html/html-embed.html",
-		"features/iframe-embed.html": "features/media-embed.html",
+		"features/iframe-embed.html": "features/media-embed/media-embed.html",
 		"features/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
@@ -215,8 +216,8 @@
 		"features/toolbar/menubar.html": "getting-started/setup/menubar.html",
 		"features/toolbar/toolbar.html": "getting-started/setup/toolbar.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
-		"features/video-upload.html": "features/media-embed.html",
-		"features/video.html": "features/media-embed.html",
+		"features/video-upload.html": "features/media-embed/media-embed.html",
+		"features/video.html": "features/media-embed/media-embed.html",
 		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html",
 		"framework/development-tools.html": "framework/develpment-tools/inspector.html",
 		"framework/guides/architecture/core-editor-architecture.html": "framework/architecture/core-editor-architecture.html",
@@ -722,6 +723,11 @@
 					"name": "Lists",
 					"id": "features-lists",
 					"slug": "lists"
+				},
+				{
+					"name": "Media embed",
+					"id": "features-media-embed",
+					"slug": "media-embed"
 				},
 				{
 					"name": "Pagination",
