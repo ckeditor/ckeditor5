@@ -65,6 +65,7 @@ export class MediaEmbedResizeEditing extends Plugin {
 		editor.commands.add( 'resizeMediaEmbed', new ResizeMediaEmbedCommand( editor ) );
 
 		this._registerConverters();
+		this._registerResizedWidthPostFixer();
 	}
 
 	/**
@@ -127,6 +128,48 @@ export class MediaEmbedResizeEditing extends Plugin {
 			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { classes: [ RESIZED_MEDIA_CLASS ] } );
 			} );
+		} );
+	}
+
+	/**
+	 * Enforces the invariant that `resizedWidth` may only exist on media whose URL points to a resizable provider.
+	 * Without this, switching URL from a resizable provider (e.g. YouTube) to a non-resizable one (e.g. Spotify)
+	 * would leave a stale `style="width: X%"` on the figure, with no UI path to clear it.
+	 */
+	private _registerResizedWidthPostFixer(): void {
+		const editor = this.editor;
+		const document = editor.model.document;
+		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
+
+		document.registerPostFixer( writer => {
+			let didFix = false;
+
+			for ( const change of document.differ.getChanges() ) {
+				if ( change.type !== 'attribute' || change.attributeKey !== 'url' ) {
+					continue;
+				}
+
+				const element = change.range.start.nodeAfter;
+
+				/* istanbul ignore if: paranoid check — `attribute:url` only fires on media elements here -- @preserve */
+				if ( !element || !element.is( 'element', 'media' ) ) {
+					continue;
+				}
+
+				if ( !element.hasAttribute( 'resizedWidth' ) ) {
+					continue;
+				}
+
+				const url = ( element.getAttribute( 'url' ) as string | undefined ) ||
+
+				/* istanbul ignore next: URL rarely absent when a url-change fires on an element with resizedWidth -- @preserve */ '';
+				if ( !registry.isMediaResizable( url ) ) {
+					writer.removeAttribute( 'resizedWidth', element );
+					didFix = true;
+				}
+			}
+
+			return didFix;
 		} );
 	}
 }

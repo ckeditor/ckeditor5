@@ -53,14 +53,20 @@ export class MediaEmbedResizeHandles extends Plugin {
 	}
 
 	/**
-	 * Iterates over all media model elements and attaches a resizer to any that don't already have one.
+	 * Attaches a resizer to every media widget and keeps each resizer's `isEnabled` in sync
+	 * with whether the current URL points to a resizable provider.
+	 *
+	 * Always-attach is intentional. Detaching a resizer after a URL change would trigger
+	 * `WidgetResizer._cleanup()`, which re-applies a stale `_initialViewWidth` captured at the
+	 * start of a prior drag — leaving an orphan `style="width: …"` on the figure. Toggling
+	 * `isEnabled` hides the handles without invoking destroy-time cleanup.
 	 */
 	private _setupResizerCreator(): void {
 		const editor = this.editor;
 		const widgetResize = editor.plugins.get( WidgetResize );
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		const attachToAllMedia = () => {
+		const syncResizers = () => {
 			const root = editor.model.document.getRoot();
 
 			/* istanbul ignore if: paranoid check -- @preserve */
@@ -73,10 +79,6 @@ export class MediaEmbedResizeHandles extends Plugin {
 					continue;
 				}
 
-				if ( !registry.isMediaResizable( item.getAttribute( 'url' ) as string || '' ) ) {
-					continue;
-				}
-
 				const viewElement = editor.editing.mapper.toViewElement( item ) as ViewContainerElement | undefined;
 
 				/* istanbul ignore if: paranoid check — conversion has run at this point -- @preserve */
@@ -84,35 +86,46 @@ export class MediaEmbedResizeHandles extends Plugin {
 					continue;
 				}
 
-				if ( widgetResize.getResizerByViewElement( viewElement ) ) {
-					continue;
-				}
+				const resizer = widgetResize.getResizerByViewElement( viewElement ) ||
+					this._attachResizer( item, viewElement );
 
-				this._attachResizer( item, viewElement );
+				const isResizable = registry.isMediaResizable( item.getAttribute( 'url' ) as string || '' );
+				resizer.isEnabled = this.isEnabled && isResizable;
 			}
 		};
 
-		// Attach resizers after the initial render.
-		editor.ui.once( 'update', attachToAllMedia );
+		// Sync resizers after the initial render.
+		editor.ui.once( 'update', syncResizers );
 
-		// Attach resizers after any model change that might insert media.
-		// Skip the sweep for text-only changes (typing); only element inserts can produce
-		// a new media widget. Low priority ensures downcast has produced the view element.
+		// Sync after inserts (new media) and after URL changes (provider may have switched between
+		// resizable/non-resizable). Skip text-only changes. Low priority ensures downcast has run.
 		this.listenTo( editor.model.document, 'change:data', () => {
-			const hasElementInsert = editor.model.document.differ.getChanges().some(
-				change => change.type === 'insert' && change.name !== '$text'
-			);
+			const hasRelevantChange = editor.model.document.differ.getChanges().some( change => {
+				if ( change.type === 'insert' && change.name !== '$text' ) {
+					return true;
+				}
 
-			if ( hasElementInsert ) {
-				attachToAllMedia();
+				if ( change.type === 'attribute' && change.attributeKey === 'url' ) {
+					return true;
+				}
+
+				return false;
+			} );
+
+			if ( hasRelevantChange ) {
+				syncResizers();
 			}
 		}, { priority: 'low' } );
+
+		// Plugin's own isEnabled (bound to the command) can flip independently of model changes —
+		// propagate those flips to every attached resizer.
+		this.on( 'change:isEnabled', syncResizers );
 	}
 
 	/**
 	 * Attaches a resizer to a single media widget.
 	 */
-	private _attachResizer( modelElement: ModelElement, widgetView: ViewContainerElement ): void {
+	private _attachResizer( modelElement: ModelElement, widgetView: ViewContainerElement ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -137,11 +150,11 @@ export class MediaEmbedResizeHandles extends Plugin {
 			}
 		} );
 
-		resizer.bind( 'isEnabled' ).to( this );
-
 		// Redraw once the view has flushed to DOM — otherwise the freshly inserted resizer
 		// UIElement has no inline styles and handles cluster at the top-left corner (visible
 		// after drag-and-drop until another event eventually triggers a redraw).
 		editingView.once( 'render', () => resizer.redraw() );
+
+		return resizer;
 	}
 }

@@ -273,4 +273,40 @@ describe( 'MediaEmbedResizeEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'resizedWidth post-fixer', () => {
+		it( 'removes resizedWidth when URL changes from a resizable to a non-resizable provider', () => {
+			_setModelData( model, '<media resizedWidth="50%" url="https://youtu.be/foo"></media>' );
+
+			const mediaModel = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => writer.setAttribute( 'url', 'https://open.spotify.com/track/foo', mediaModel ) );
+
+			expect( mediaModel.hasAttribute( 'resizedWidth' ) ).to.be.false;
+			expect( editor.getData() ).to.not.match( /style="width/ );
+			expect( editor.getData() ).to.not.match( /media_resized/ );
+		} );
+
+		it( 'keeps resizedWidth when URL changes between two resizable providers', () => {
+			_setModelData( model, '<media resizedWidth="50%" url="https://youtu.be/foo"></media>' );
+
+			const mediaModel = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => writer.setAttribute( 'url', 'https://vimeo.com/1234', mediaModel ) );
+
+			expect( mediaModel.getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
+		} );
+
+		it( 'is a no-op on URL change when the media has no resizedWidth', () => {
+			_setModelData( model, '<media url="https://youtu.be/foo"></media>' );
+
+			const mediaModel = model.document.getRoot().getChild( 0 );
+
+			expect( () =>
+				model.change( writer => writer.setAttribute( 'url', 'https://open.spotify.com/track/foo', mediaModel ) )
+			).to.not.throw();
+
+			expect( mediaModel.hasAttribute( 'resizedWidth' ) ).to.be.false;
+		} );
+	} );
 } );
