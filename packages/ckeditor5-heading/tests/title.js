@@ -5,7 +5,6 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Title } from '../src/title.js';
 import { Heading } from '../src/heading.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
@@ -946,70 +945,101 @@ describe( 'Title', () => {
 		} );
 	} );
 
-	describe( 'with a custom root modelElement', () => {
-		let customElement, customEditor, customModel;
-
-		class CustomRootSchema extends Plugin {
-			init() {
-				this.editor.model.schema.register( 'myRoot', {
-					inheritAllFrom: '$root',
-					allowChildren: [ '$container', '$block' ]
-				} );
-			}
-		}
+	describe( 'with an $inlineRoot modelElement', () => {
+		let inlineElement, inlineEditor, inlineModel, inlineRoot, titlePlugin;
 
 		beforeEach( async () => {
-			customElement = document.createElement( 'div' );
-			document.body.appendChild( customElement );
+			inlineElement = document.createElement( 'div' );
+			document.body.appendChild( inlineElement );
 
-			customEditor = await ClassicTestEditor.create( customElement, {
-				plugins: [ CustomRootSchema, Paragraph, Title, Heading ],
-				root: { modelElement: 'myRoot' }
+			inlineEditor = await ClassicTestEditor.create( inlineElement, {
+				plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+				root: { modelElement: '$inlineRoot' }
 			} );
-			customModel = customEditor.model;
+			inlineModel = inlineEditor.model;
+			inlineRoot = inlineModel.document.getRoot();
+			titlePlugin = inlineEditor.plugins.get( Title );
 		} );
 
 		afterEach( async () => {
-			await customEditor.destroy();
-			customElement.remove();
+			await inlineEditor.destroy();
+			inlineElement.remove();
 		} );
 
-		it( 'should register title as an allowed child of the configured custom root element', () => {
-			expect( customModel.schema.checkChild( 'myRoot', 'title' ) ).to.equal( true );
+		it( 'should not allow title as a child of $inlineRoot', () => {
+			expect( inlineModel.schema.checkChild( inlineRoot, 'title' ) ).to.equal( false );
 		} );
 
-		it( 'should not register title as an allowed child of the generic $root when a custom root is configured', () => {
-			expect( customModel.schema.checkChild( '$root', 'title' ) ).to.equal( false );
+		it( 'should not allow paragraph as a child of $inlineRoot', () => {
+			// Sanity check behind the `_fixBodyElement` schema guard.
+			expect( inlineModel.schema.checkChild( inlineRoot, 'paragraph' ) ).to.equal( false );
 		} );
 
-		it( 'should convert h1 at the start of a custom root to title on setData', () => {
-			customEditor.setData( '<h1>Foo</h1><p>Bar</p>' );
+		it( 'should not insert a title element into $inlineRoot on load (model post-fixer no-op)', () => {
+			inlineEditor.setData( 'Foo' );
 
-			expect( _getModelData( customModel ) ).to.equal(
-				'<title><title-content>[]Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			const hasTitle = Array.from( inlineRoot.getChildren() )
+				.some( child => child.is( 'element' ) && child.name === 'title' );
+
+			expect( hasTitle ).to.equal( false );
 		} );
 
-		it( 'should convert h1 to title in data.parse() when the configured root is passed as context', () => {
-			const modelFrag = customEditor.data.parse(
-				'<h1>Foo</h1><p>Bar</p>',
-				customModel.document.getRoot( 'main' )
-			);
+		it( 'should not insert a paragraph body placeholder into $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
 
-			expect( _stringifyModel( modelFrag ) ).to.equal(
-				'<title><title-content>Foo</title-content></title>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			const hasParagraph = Array.from( inlineRoot.getChildren() )
+				.some( child => child.is( 'element' ) && child.name === 'paragraph' );
+
+			expect( hasParagraph ).to.equal( false );
 		} );
 
-		it( 'should not convert h1 to title in data.parse() when the default $root context is used for a custom root', () => {
-			const modelFrag = customEditor.data.parse( '<h1>Foo</h1><p>Bar</p>' );
+		it( 'should return an empty string from getTitle() for $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
 
-			expect( _stringifyModel( modelFrag ) ).to.equal(
-				'<heading1>Foo</heading1>' +
-				'<paragraph>Bar</paragraph>'
-			);
+			expect( titlePlugin.getTitle() ).to.equal( '' );
+		} );
+
+		it( 'should fall back to the full root data from getBody() for $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			// No title structure exists, so the whole root IS the body.
+			expect( titlePlugin.getBody() ).to.equal( 'Foo' );
+		} );
+
+		it( 'should not upcast <h1> to title when the target root is $inlineRoot', () => {
+			inlineEditor.setData( '<h1>Foo</h1>' );
+
+			const hasTitle = Array.from( inlineRoot.getChildren() )
+				.some( child => child.is( 'element' ) && child.name === 'title' );
+
+			expect( hasTitle ).to.equal( false );
+		} );
+
+		it( 'should no-op on Shift+Tab when the root is $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			inlineModel.change( writer => {
+				writer.setSelection( inlineRoot, 0 );
+			} );
+
+			const eventData = getEventData( keyCodes.tab, { shiftKey: true } );
+
+			inlineEditor.keystrokes.press( eventData );
+
+			sinon.assert.notCalled( eventData.preventDefault );
+			sinon.assert.notCalled( eventData.stopPropagation );
+		} );
+
+		it( 'should not throw when the view post-fixer runs after a model change on $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			expect( () => {
+				inlineModel.change( writer => {
+					writer.insertText( ' bar', writer.createPositionAt( inlineRoot, 'end' ) );
+				} );
+			} ).not.to.throw();
+
+			expect( inlineEditor.getData() ).to.equal( 'Foo bar' );
 		} );
 	} );
 } );

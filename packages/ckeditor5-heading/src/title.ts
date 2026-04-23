@@ -21,6 +21,8 @@ import {
 	type MapperModelToViewPositionEvent,
 	type Model,
 	type ModelRootElement,
+	type UpcastConversionApi,
+	type UpcastConversionData,
 	type UpcastElementEvent,
 	type EditingView,
 	type ViewElement,
@@ -81,14 +83,14 @@ export class Title extends Plugin {
 		// </title>
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/2005.
-		// Collect every configured root model element name so the `title` schema entry and the
-		// upcast converter below keep working when `config.root.modelElement` (or any
-		// `config.roots.<rootName>.modelElement`) is customized.
-		const rootModelElements = new Set<string>(
-			Object.values( editor.config.get( 'roots' )! ).map( rootConfig => rootConfig.modelElement! )
-		);
-
-		model.schema.register( 'title', { isBlock: true, allowIn: Array.from( rootModelElements ) } );
+		//
+		// Title is scoped to roots whose `modelElement` is the generic `$root`. Custom root
+		// `modelElement` names (including `$inlineRoot`) are intentionally not supported:
+		// the title structure (`title` + `title-content` + paragraph body placeholder) relies on
+		// the root accepting `$block` content, which is not guaranteed for custom or inline roots.
+		// Runtime codepaths below additionally guard on `schema.checkChild( root, 'title' )` so
+		// the plugin gracefully no-ops on roots where the schema does not allow the title element.
+		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
 		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
 		model.schema.extend( '$text', { allowIn: 'title-content' } );
 
@@ -115,11 +117,9 @@ export class Title extends Plugin {
 
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
-		const h1Converter = dataViewModelH1Insertion( rootModelElements );
-
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', h1Converter, { priority: 'high' } );
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', h1Converter, { priority: 'high' } );
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', h1Converter, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
 
 		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
@@ -155,7 +155,13 @@ export class Title extends Plugin {
 	public getTitle( options: Record<string, unknown> = {} ): string {
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const titleElement = this._getTitleElement( rootName );
-		const titleContentElement = titleElement!.getChild( 0 ) as ModelElement;
+
+		// Root does not support the title structure (custom/inline root) — nothing to stringify.
+		if ( !titleElement ) {
+			return '';
+		}
+
+		const titleContentElement = titleElement.getChild( 0 ) as ModelElement;
 
 		return this.editor.data.stringify( titleContentElement, options );
 	}
@@ -177,6 +183,20 @@ export class Title extends Plugin {
 		const model = editor.model;
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const root = editor.model.document.getRoot( rootName )!;
+
+		// Root does not support the title structure (custom/inline root) — the whole root is the body.
+		// Delegate to the regular data getter so mixed-root callers receive useful content.
+		if ( !model.schema.checkChild( root, 'title' ) ) {
+			return data.get( { ...options, rootName: root.rootName } );
+		}
+
+		// Root is empty / missing the expected title element (e.g. detached root or transient state) — no body to stringify.
+		const firstChild = root.getChild( 0 );
+
+		if ( !firstChild || !firstChild.is( 'element', 'title' ) ) {
+			return '';
+		}
+
 		const view = editor.editing.view;
 		const viewWriter = new ViewDowncastWriter( view.document );
 
@@ -184,7 +204,7 @@ export class Title extends Plugin {
 		const viewDocumentFragment = viewWriter.createDocumentFragment();
 
 		// Find all markers that intersects with body.
-		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 )! );
+		const bodyStartPosition = model.createPositionAfter( firstChild );
 		const bodyRange = model.createRange( bodyStartPosition, model.createPositionAt( root, 'end' ) );
 
 		const markers = new Map();
@@ -213,7 +233,13 @@ export class Title extends Plugin {
 	 * Returns the `title` element when it is in the document. Returns `undefined` otherwise.
 	 */
 	private _getTitleElement( rootName?: string ): ModelElement | undefined {
-		const root = this.editor.model.document.getRoot( rootName )!;
+		const model = this.editor.model;
+		const root = model.document.getRoot( rootName )!;
+
+		// Root does not support the title structure (custom/inline root).
+		if ( !model.schema.checkChild( root, 'title' ) ) {
+			return;
+		}
 
 		for ( const child of root.getChildren() as IterableIterator<ModelElement> ) {
 			if ( isTitle( child ) ) {
@@ -263,6 +289,11 @@ export class Title extends Plugin {
 		const model = this.editor.model;
 
 		for ( const modelRoot of this.editor.model.document.getRoots() ) {
+			// Skip roots that do not support the title structure (custom/inline root).
+			if ( !model.schema.checkChild( modelRoot, 'title' ) ) {
+				continue;
+			}
+
 			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<ModelElement> ).filter( isTitle );
 			const firstTitleElement = titleElements[ 0 ];
 			const firstRootChild = modelRoot.getChild( 0 ) as ModelElement;
@@ -312,12 +343,15 @@ export class Title extends Plugin {
 	 * when it is needed for the placeholder purposes.
 	 */
 	private _fixBodyElement( writer: ModelWriter ) {
+		const schema = this.editor.model.schema;
 		let changed = false;
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
 			const modelRoot = this.editor.model.document.getRoot( rootName )!;
 
-			if ( modelRoot.childCount < 2 ) {
+			// Only insert the paragraph body placeholder when the root actually accepts `paragraph`.
+			// Custom/inline roots that do not accept `$block` are intentionally skipped.
+			if ( modelRoot.childCount < 2 && schema.checkChild( modelRoot, 'paragraph' ) ) {
 				const placeholder = writer.createElement( 'paragraph' );
 
 				writer.insert( placeholder, modelRoot, 1 );
@@ -339,7 +373,12 @@ export class Title extends Plugin {
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
 			const root = this.editor.model.document.getRoot( rootName )!;
-			const placeholder = this._bodyPlaceholder.get( rootName )!;
+			const placeholder = this._bodyPlaceholder.get( rootName );
+
+			// Roots that do not support the title structure never had a body placeholder created.
+			if ( !placeholder ) {
+				continue;
+			}
 
 			if ( shouldRemoveLastParagraph( placeholder, root ) ) {
 				this._bodyPlaceholder.delete( rootName );
@@ -390,7 +429,20 @@ export class Title extends Plugin {
 					continue;
 				}
 
-				// If `viewRoot` is not empty, then we can expect at least two elements in it.
+				// Skip roots whose schema does not support the title structure (custom/inline root).
+				// Their view root won't have the expected title+body layout.
+				const modelRoot = editor.editing.mapper.toModelElement( viewRoot )!;
+
+				if ( !editor.model.schema.checkChild( modelRoot, 'title' ) ) {
+					continue;
+				}
+
+				// Defensive: a title-allowed root should also have the body placeholder from `_fixBodyElement`,
+				// but skip if the layout is unexpectedly incomplete (e.g. a root that allows `title` but not `paragraph`).
+				if ( viewRoot.childCount < 2 ) {
+					continue;
+				}
+
 				const body = viewRoot!.getChild( 1 ) as ViewElement;
 				const oldBody = bodyViewElements.get( viewRoot.rootName );
 
@@ -462,6 +514,11 @@ export class Title extends Plugin {
 				const selectionPosition = selection.getFirstPosition()!;
 				const root = editor.model.document.getRoot( selectionPosition.root.rootName! )!;
 
+				// Root does not support the title structure (custom/inline root) — no title to jump to.
+				if ( !model.schema.checkChild( root, 'title' ) ) {
+					return;
+				}
+
 				const title = root.getChild( 0 ) as ModelElement;
 				const body = root.getChild( 1 );
 
@@ -476,40 +533,39 @@ export class Title extends Plugin {
 }
 
 /**
- * Creates a view-to-model converter for the h1 that appears at the beginning of the document (a title element).
+ * A view-to-model converter for the h1 that appears at the beginning of the document (a title element).
  *
- * The upcast context element is named after the editor's configured root `modelElement`, so the converter matches
- * the parent against every known root model element name rather than the literal `$root`.
+ * Matches only the synthetic upcast parent named `$root` (the default generic root element). Title is not supported
+ * for roots whose `modelElement` is customized, so this converter intentionally does not fire on them.
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
- * @param rootModelElements Set of root element names the title plugin is scoped to.
+ * @param evt An object containing information about the fired event.
+ * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
+ * @param conversionApi Conversion interface to be used by the callback.
  */
-function dataViewModelH1Insertion( rootModelElements: Set<string> ): GetCallback<UpcastElementEvent> {
-	return ( evt, data, conversionApi ) => {
-		const modelCursor = data.modelCursor;
-		const viewItem = data.viewItem;
-		const parent = modelCursor.parent;
+function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
+	const modelCursor = data.modelCursor;
+	const viewItem = data.viewItem;
 
-		if ( !modelCursor.isAtStart || !parent.is( 'element' ) || !rootModelElements.has( parent.name ) ) {
-			return;
-		}
+	if ( !modelCursor.isAtStart || !modelCursor.parent.is( 'element', '$root' ) ) {
+		return;
+	}
 
-		if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
-			return;
-		}
+	if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
+		return;
+	}
 
-		const modelWriter = conversionApi.writer;
+	const modelWriter = conversionApi.writer;
 
-		const title = modelWriter.createElement( 'title' );
-		const titleContent = modelWriter.createElement( 'title-content' );
+	const title = modelWriter.createElement( 'title' );
+	const titleContent = modelWriter.createElement( 'title-content' );
 
-		modelWriter.append( titleContent, title );
-		modelWriter.insert( title, modelCursor );
+	modelWriter.append( titleContent, title );
+	modelWriter.insert( title, modelCursor );
 
-		conversionApi.convertChildren( viewItem, titleContent );
+	conversionApi.convertChildren( viewItem, titleContent );
 
-		conversionApi.updateConversionResult( title, data );
-	};
+	conversionApi.updateConversionResult( title, data );
 }
 
 /**
