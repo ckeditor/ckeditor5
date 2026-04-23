@@ -297,6 +297,13 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	protected readonly _readOnlyLocks: Set<symbol | string>;
 
 	/**
+	 * Holds attributes keys that were passed in
+	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
+	 *  or {@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`}.
+	 */
+	protected readonly _registeredRootsAttributesKeys = new Set<string>();
+
+	/**
 	 * `Editor` class is commonly put in `config.plugins` array.
 	 *
 	 * This property helps with better error detection.
@@ -822,19 +829,18 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
 	 */
-	public initPlugins(): Promise<LoadedPlugins> {
+	public async initPlugins(): Promise<LoadedPlugins> {
 		const config = this.config;
 		const plugins = config.get( 'plugins' )!;
 		const removePlugins = config.get( 'removePlugins' ) || [];
 		const extraPlugins = config.get( 'extraPlugins' ) || [];
 		const substitutePlugins = config.get( 'substitutePlugins' ) || [];
 
-		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins )
-			.then( plugins => {
-				checkPluginsAllowedByLicenseKey( this );
+		const loadedPlugins = await this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins );
 
-				return plugins;
-			} );
+		checkPluginsAllowedByLicenseKey( this );
+
+		return loadedPlugins;
 
 		function checkPluginsAllowedByLicenseKey( editor: Editor ): void {
 			const licenseKey = editor.config.get( 'licenseKey' )!;
@@ -879,29 +885,29 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * @fires destroy
 	 * @returns A promise that resolves once the editor instance is fully destroyed.
 	 */
-	public destroy(): Promise<unknown> {
-		let readyPromise: Promise<unknown> = Promise.resolve();
-
+	public async destroy(): Promise<unknown> {
 		if ( this.state == 'initializing' ) {
-			readyPromise = new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
+			await new Promise( resolve => this.once<EditorReadyEvent>( 'ready', resolve ) );
 		}
 
-		return readyPromise
-			.then( () => {
-				this.fire<EditorDestroyEvent>( 'destroy' );
-				this.stopListening();
-				this.commands.destroy();
-			} )
-			.then( () => this.plugins.destroy() )
-			.then( () => {
-				this.model.destroy();
-				this.data.destroy();
-				this.editing.destroy();
-				this.keystrokes.destroy();
-			} )
-			// Remove the editor from the context.
-			// When the context was created by this editor, the context will be destroyed.
-			.then( () => this._context._removeEditor( this ) );
+		this.fire<EditorDestroyEvent>( 'destroy' );
+		this.stopListening();
+		this.commands.destroy();
+
+		await this.plugins.destroy();
+
+		this.model.destroy();
+		this.data.destroy();
+		this.editing.destroy();
+		this.keystrokes.destroy();
+
+		// Remove the editor from the context.
+		// When the context was created by this editor, the context will be destroyed.
+		await this._context._removeEditor( this );
+
+		// To satisfy the return type and to keep it backward compatible.
+		// eslint-disable-next-line no-useless-return
+		return;
 	}
 
 	/**
@@ -941,6 +947,55 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public focus(): void {
 		this.editing.view.focus();
+	}
+
+	/**
+	 * Registers a given string as a root attribute key. Registered root attributes are added to
+	 * the {@link module:engine/model/schema~ModelSchema schema}.
+	 *
+	 * Note: Attributes passed in the configuration for multi-root editors
+	 * ({@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}) or
+	 * single-root editors ({@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`})
+	 * are automatically registered when the editor is initialized. However, registering the same attribute twice
+	 * does not have any negative impact, so it is recommended to use this method in any feature that uses
+	 * root attributes.
+	 */
+	public registerRootAttribute( key: string ): void {
+		if ( this._registeredRootsAttributesKeys.has( key ) ) {
+			return;
+		}
+
+		this._registeredRootsAttributesKeys.add( key );
+		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
+	}
+
+	/**
+	 * Returns attributes for the specified root.
+	 * If no root name is provided, it returns attributes for the 'main' root by default.
+	 *
+	 * Note: all and only {@link ~Editor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
+	 */
+	public getRootAttributes( rootName: string = 'main' ): EditorRootAttributes {
+		const root = this.model.document.getRoot( rootName );
+
+		if ( !root ) {
+			/**
+			 * The requested root does not exist. Please ensure that the provided root name
+			 * is correct and that the root has been properly initialized in the document.
+			 *
+			 * @error get-root-attributes-missing-root
+			 */
+			throw new CKEditorError( 'get-root-attributes-missing-root', this, { rootName } );
+		}
+
+		const rootAttributes: EditorRootAttributes = {};
+
+		for ( const key of this._registeredRootsAttributesKeys ) {
+			rootAttributes[ key ] = root.hasAttribute( key ) ? root.getAttribute( key ) : null;
+		}
+
+		return rootAttributes;
 	}
 
 	/* istanbul ignore next -- @preserve */
@@ -1252,6 +1307,11 @@ export type EditorDestroyEvent = {
 	name: 'destroy';
 	args: [];
 };
+
+/**
+ * Attributes set on a model root element.
+ */
+export type EditorRootAttributes = Record<string, unknown>;
 
 /**
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
