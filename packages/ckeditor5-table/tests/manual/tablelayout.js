@@ -15,7 +15,7 @@ import { ImageInline, ImageCaption, ImageToolbar, ImageResize } from '@ckeditor/
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { MediaEmbed, MediaEmbedResize } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table } from '../../src/table.js';
 import { TableToolbar } from '../../src/tabletoolbar.js';
@@ -46,6 +46,7 @@ const config = {
 		Link,
 		List,
 		MediaEmbed,
+		MediaEmbedResize,
 		Paragraph,
 		Table,
 		TableCaption,

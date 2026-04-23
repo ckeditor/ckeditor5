@@ -6,12 +6,13 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { MediaEmbed } from '../../src/mediaembed.js';
+import { MediaEmbedResize } from '../../src/mediaembedresize.js';
 
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [ ArticlePluginSet, MediaEmbed ],
+		plugins: [ ArticlePluginSet, MediaEmbed, MediaEmbedResize ],
 		toolbar: [
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
 		]

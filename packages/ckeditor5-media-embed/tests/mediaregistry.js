@@ -121,4 +121,50 @@ describe( 'MediaRegistry', () => {
 			] );
 		} );
 	} );
+
+	describe( 'isMediaResizable()', () => {
+		let mediaRegistry;
+
+		beforeEach( () => {
+			mediaRegistry = new MediaRegistry( {}, {
+				providers: [
+					{
+						name: 'youtube',
+						url: /^youtu\.be\/(\w+)/
+					},
+					{
+						name: 'spotify',
+						url: /^open\.spotify\.com\/(track\/\w+)/,
+						isResizable: false
+					}
+				]
+			} );
+		} );
+
+		it( 'returns true for a provider without the isResizable flag', () => {
+			expect( mediaRegistry.isMediaResizable( 'https://youtu.be/foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false for a provider with isResizable: false', () => {
+			expect( mediaRegistry.isMediaResizable( 'https://open.spotify.com/track/foo' ) ).to.be.false;
+		} );
+
+		it( 'returns true for a URL that matches no provider', () => {
+			expect( mediaRegistry.isMediaResizable( 'https://example.com/unknown' ) ).to.be.true;
+		} );
+
+		it( 'returns true for an empty URL', () => {
+			expect( mediaRegistry.isMediaResizable( '' ) ).to.be.true;
+		} );
+
+		it( 'returns true for a URL that matches a provider with isResizable: true explicitly', () => {
+			const registry = new MediaRegistry( {}, {
+				providers: [
+					{ name: 'example', url: /^example\.com/, isResizable: true }
+				]
+			} );
+
+			expect( registry.isMediaResizable( 'https://example.com' ) ).to.be.true;
+		} );
+	} );
 } );
