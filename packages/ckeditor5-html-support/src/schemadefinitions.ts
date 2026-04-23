@@ -298,7 +298,8 @@ export const defaultConfig = {
 					'$text'
 				],
 				allowIn: 'htmlDetails',
-				isBlock: false
+				isBlock: false,
+				isLimit: true
 			}
 		},
 		{
