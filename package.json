@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-root",
-  "version": "47.7.0",
+  "version": "47.7.1",
   "description": "The development environment of CKEditor 5 LTS Edition - the best browser-based rich text editor.",
   "private": true,
   "keywords": [
