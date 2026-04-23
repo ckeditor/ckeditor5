@@ -1337,7 +1337,7 @@ describe( 'ListElementSupport', () => {
 			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
 		} );
 
-		it( 'should be possible to properly upcast definition list inside list item-', () => {
+		it( 'should be possible to properly upcast definition list inside list item', () => {
 			editor.setData(
 				'<ol>' +
 					'<li>Foo</li>' +
