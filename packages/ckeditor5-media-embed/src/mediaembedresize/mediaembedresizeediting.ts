@@ -108,6 +108,10 @@ export class MediaEmbedResizeEditing extends Plugin {
 		);
 
 		// Upcast: style.width on <figure class="media"> → resizedWidth.
+		//
+		// The `hasClass` guard lives in the value callback (not the matcher) because the `media`
+		// class is already consumed upstream by MediaEmbedEditing. Without the guard, any figure
+		// with a width style would match and could race image resize's upcast on image figures.
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
@@ -118,7 +122,13 @@ export class MediaEmbedResizeEditing extends Plugin {
 				},
 				model: {
 					key: 'resizedWidth',
-					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'width' )
+					value: ( viewElement: ViewElement ) => {
+						if ( !viewElement.hasClass( 'media' ) ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'width' );
+					}
 				}
 			} );
 

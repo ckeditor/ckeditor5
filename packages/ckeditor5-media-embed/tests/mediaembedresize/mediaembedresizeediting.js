@@ -152,6 +152,28 @@ describe( 'MediaEmbedResizeEditing', () => {
 
 				expect( mediaModel.hasAttribute( 'resizedWidth' ) ).to.be.false;
 			} );
+
+			it( 'does not set resizedWidth on a non-media figure that upcasts to another model element', () => {
+				// Regression: this converter used to match any <figure> with a width style, racing
+				// image resize's figure-width upcast. The value-callback guard (`hasClass('media')`)
+				// prevents that. Simulate image resize's setup by registering a schema element that
+				// accepts `resizedWidth` and upcasts from a non-media figure.
+				editor.model.schema.register( 'customWidget', {
+					inheritAllFrom: '$blockObject',
+					allowAttributes: [ 'resizedWidth' ]
+				} );
+				editor.conversion.elementToElement( {
+					view: { name: 'figure', classes: [ 'widget' ] },
+					model: 'customWidget'
+				} );
+
+				editor.setData( '<figure class="widget" style="width:50%;"></figure>' );
+
+				const widget = model.document.getRoot().getChild( 0 );
+
+				expect( widget.name ).to.equal( 'customWidget' );
+				expect( widget.hasAttribute( 'resizedWidth' ), 'resizedWidth not set on non-media figure' ).to.be.false;
+			} );
 		} );
 
 		describe( 'round-trip', () => {
