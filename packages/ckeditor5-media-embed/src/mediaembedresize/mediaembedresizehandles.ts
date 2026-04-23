@@ -12,8 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 import { MediaEmbedEditing } from '../mediaembedediting.js';
 import type { ResizeMediaEmbedCommand } from './resizemediaembedcommand.js';
-
-const RESIZED_MEDIA_CLASS = 'media_resized';
+import { RESIZED_MEDIA_CLASS } from './constants.js';
 
 /**
  * The media embed resize by handles feature.
