@@ -369,6 +369,25 @@ describe( 'Title', () => {
 				'<paragraph></paragraph>'
 			);
 		} );
+
+		it( 'should keep the body placeholder paragraph once it has typed content', () => {
+			// On an empty editor the post-fixer creates a `<paragraph>` placeholder and remembers it.
+			// Typing into it gives the placeholder `childCount > 0`, which must short-circuit
+			// `shouldRemoveLastParagraph` so the paragraph is kept.
+			const root = model.document.getRoot();
+			const placeholderParagraph = root.getChild( 1 );
+
+			expect( placeholderParagraph.name ).to.equal( 'paragraph' );
+			expect( placeholderParagraph.childCount ).to.equal( 0 );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( placeholderParagraph, 0 ) );
+			} );
+
+			// The placeholder is still there with the typed content.
+			expect( root.getChild( 1 ) ).to.equal( placeholderParagraph );
+			expect( placeholderParagraph.childCount ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'getTitle()', () => {

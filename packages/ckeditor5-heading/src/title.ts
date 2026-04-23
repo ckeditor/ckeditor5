@@ -431,15 +431,11 @@ export class Title extends Plugin {
 
 				// Skip roots whose schema does not support the title structure (custom/inline root).
 				// Their view root won't have the expected title+body layout.
+				// A title-allowed root always has a paragraph body placeholder created by `_fixBodyElement`,
+				// so the second view child is guaranteed to exist once this guard passes.
 				const modelRoot = editor.editing.mapper.toModelElement( viewRoot )!;
 
 				if ( !editor.model.schema.checkChild( modelRoot, 'title' ) ) {
-					continue;
-				}
-
-				// Defensive: a title-allowed root should also have the body placeholder from `_fixBodyElement`,
-				// but skip if the layout is unexpectedly incomplete (e.g. a root that allows `title` but not `paragraph`).
-				if ( viewRoot.childCount < 2 ) {
 					continue;
 				}
 
@@ -654,7 +650,7 @@ function fixTitleElement( title: ModelElement, writer: ModelWriter, model: Model
  * purpose and it's not needed anymore. Returns false otherwise.
  */
 function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootElement ) {
-	if ( !placeholder || !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
+	if ( !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
 		return false;
 	}
 
