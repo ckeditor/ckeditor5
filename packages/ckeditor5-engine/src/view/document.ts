@@ -120,7 +120,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	}
 
 	/**
-	 * Returns an array with all roots added to the document (except the {@link #graveyard graveyard root}).
+	 * Returns an array with all roots added to the document.
 	 *
 	 * Detached roots **are not** returned by this method by default. This is to make sure that all features or algorithms that operate
 	 * on the document data know which roots are still a part of the document and should be processed.
