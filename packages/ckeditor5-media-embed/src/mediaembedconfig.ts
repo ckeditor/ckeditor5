@@ -13,7 +13,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 /**
  * The configuration of the media embed features.
  *
- * Read more about {@glink features/media-embed#configuration configuring the media embed feature}.
+ * Read more about {@glink features/media-embed/media-embed-configuration configuring the media embed feature}.
  *
  * ```ts
  * ClassicEditor
@@ -246,17 +246,19 @@ export interface MediaEmbedConfig {
  * }
  * ```
  *
- * To implement responsive media, you can use the following HTML structure:
+ * To implement responsive media, set an `aspect-ratio` on the iframe. The HTML `width` and
+ * `height` attributes act as the intrinsic size (useful for layout hints in containers like
+ * table cells), while CSS `width: 100%` and `height: auto` make the element scale with its
+ * container while preserving the declared aspect ratio:
  *
  * ```ts
  * {
  * 	...
  * 	html: match =>
- * 		'<div style="position:relative; padding-bottom:100%; height:0">' +
- * 			'<iframe src="..." frameborder="0" ' +
- * 				'style="position:absolute; width:100%; height:100%; top:0; left:0">' +
- * 			'</iframe>' +
- * 		'</div>'
+ * 		`<iframe src="..." width="1280" height="720" ` +
+ * 			`style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ` +
+ * 			'frameborder="0" allowfullscreen>' +
+ * 		'</iframe>'
  * }
  * ```
  */
@@ -288,4 +290,13 @@ export interface MediaEmbedProvider {
 	 * is `true`, the rendering function **will always** be used for the media in the editor data output.
 	 */
 	html?: ( match: RegExpMatchArray ) => string;
+
+	/**
+	 * When set to `false`, media matched by this provider will not display resize handles.
+	 *
+	 * This option is used by the {@link module:media-embed/mediaembedresize~MediaEmbedResize} feature.
+	 *
+	 * @default true
+	 */
+	isResizable?: boolean;
 }

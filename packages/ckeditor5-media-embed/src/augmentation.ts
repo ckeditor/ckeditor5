@@ -10,7 +10,11 @@ import type {
 	MediaEmbedEditing,
 	MediaEmbedToolbar,
 	MediaEmbedUI,
-	MediaEmbedCommand
+	MediaEmbedCommand,
+	MediaEmbedResize,
+	MediaEmbedResizeEditing,
+	MediaEmbedResizeHandles,
+	ResizeMediaEmbedCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -30,9 +34,13 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ MediaEmbedEditing.pluginName ]: MediaEmbedEditing;
 		[ MediaEmbedToolbar.pluginName ]: MediaEmbedToolbar;
 		[ MediaEmbedUI.pluginName ]: MediaEmbedUI;
+		[ MediaEmbedResize.pluginName ]: MediaEmbedResize;
+		[ MediaEmbedResizeEditing.pluginName ]: MediaEmbedResizeEditing;
+		[ MediaEmbedResizeHandles.pluginName ]: MediaEmbedResizeHandles;
 	}
 
 	interface CommandsMap {
 		mediaEmbed: MediaEmbedCommand;
+		resizeMediaEmbed: ResizeMediaEmbedCommand;
 	}
 }

@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content .media.media_resized {
+	display: block;
+	box-sizing: border-box;
+	max-width: 100%;
+
+	/*
+		Center the resized figure so both left and right resize handles
+		behave symmetrically. Without this, the figure stays left-aligned
+		and dragging the left handle produces unintuitive results.
+	*/
+	margin-left: auto;
+	margin-right: auto;
+
+	/* The wrapper should fill the figure when an explicit width is set. */
+	& > div[data-oembed-url] {
+		width: 100%;
+	}
+}
+
+/*Hide the resize outline and handles in the drag preview. */
+.ck .ck-widget.media:-webkit-drag > .ck-widget__resizer {
+	display: none;
+}

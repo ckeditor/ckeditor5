@@ -98,6 +98,36 @@ export class MediaRegistry {
 	}
 
 	/**
+	 * Checks whether the media matched by the given URL is resizable.
+	 *
+	 * Returns `false` when the matching provider has
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedProvider#isResizable `isResizable`} set to `false`.
+	 * Returns `true` in all other cases (including when no provider matches).
+	 *
+	 * @param url The URL to check.
+	 * @internal
+	 */
+	public isMediaResizable( url: string ): boolean {
+		if ( !url ) {
+			return true;
+		}
+
+		url = url.trim();
+
+		for ( const definition of this.providerDefinitions ) {
+			const pattern = toArray( definition.url );
+
+			for ( const subPattern of pattern ) {
+				if ( this._getUrlMatches( url, subPattern ) ) {
+					return definition.isResizable !== false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns a `Media` instance for the given URL.
 	 *
 	 * @param url The URL of the media.
