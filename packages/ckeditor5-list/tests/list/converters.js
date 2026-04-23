@@ -1472,6 +1472,82 @@ describe( 'ListEditing - converters', () => {
 
 			await editor.destroy();
 		} );
+
+		it( 'should refresh intermediate wrappers when listType changes on an item following a skip-level item', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="1" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="numbered">bbb</paragraph>'
+			);
+
+			skipModel.change( writer => {
+				writer.setAttribute( 'listType', 'bulleted', skipModel.document.getRoot().getChild( 1 ) );
+			} );
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="list-style-type:none">' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">aaa</span></li>' +
+						'</ol>' +
+					'</li>' +
+					'<li><span class="ck-list-bogus-paragraph">bbb</span></li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should keep consistent marker styling after indenting multiple items into a skip level', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">ccc</paragraph>' +
+				'<paragraph listIndent="1" listItemId="d" listType="bulleted">ddd</paragraph>'
+			);
+
+			// Indent bbb, ccc, ddd one by one (each as a separate model change).
+			for ( let i = 1; i <= 3; i++ ) {
+				skipModel.change( writer => {
+					writer.setAttribute( 'listIndent', 2, skipModel.document.getRoot().getChild( i ) );
+				} );
+			}
+
+			// All three items end up at indent 2 and share a single intermediate wrapper at indent 1,
+			// so their markers are consistent (all rendered by the same <ul>).
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ol>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">aaa</span>' +
+						'<ol>' +
+							'<li style="list-style-type:none">' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">bbb</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">ccc</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">ddd</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'should refresh intermediate wrappers after undoing an outdent of a skip-level item', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="numbered">ccc</paragraph>'
+			);
+
+			const initialView = _getViewData( skipEditor.editing.view, { withoutSelection: true } );
+
+			// Outdent bbb from indent 2 to indent 1.
+			skipModel.change( writer => {
+				writer.setAttribute( 'listIndent', 1, skipModel.document.getRoot().getChild( 1 ) );
+			} );
+
+			skipEditor.execute( 'undo' );
+
+			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal( initialView );
+		} );
 	} );
 
 	function getViewPosition( root, path, view ) {

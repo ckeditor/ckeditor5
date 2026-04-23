@@ -260,6 +260,33 @@ export function reconvertItemsOnDataChange(
 				modelElement: node
 			};
 
+			// Skip-level lists have view wrappers (<ol>/<ul>) at indent levels with no matching
+			// model item. Each such wrapper inherits its attributes (listStart, listStyle, etc.)
+			// from a nearby model item - the first sibling found at that indent, or the current
+			// node as a fallback. Remember that item here so later we can compare the wrapper
+			// against the current model and tell whether it's still up to date.
+			for ( let i = itemIndent - 1; i >= 0; i-- ) {
+				if ( stack[ i ] ) {
+					break;
+				}
+
+				const siblingAtIndent = findSiblingListItemAt( node, i );
+				const referenceItem: ListElement = siblingAtIndent || node;
+
+				const modelAttributes: ListItemAttributesMap = {
+					...Object.fromEntries(
+						Array.from( referenceItem.getAttributes() )
+							.filter( ( [ key ] ) => attributeNames.includes( key ) )
+					),
+					listItemId: `list-item-skip-${ i }`
+				};
+
+				stack[ i ] = {
+					modelAttributes,
+					modelElement: referenceItem
+				};
+			}
+
 			// Find all blocks of the current node.
 			const blocks = getListItemBlocks( node, { direction: 'forward' } );
 
