@@ -193,6 +193,7 @@ describe( 'PastePlainText', () => {
 
 		viewDocument.fire( 'clipboardInput', {
 			dataTransfer: dataTransferMock,
+			content: dataTransferMock.getData( 'text/html' ),
 			stopPropagation() {},
 			preventDefault() {}
 		} );
@@ -221,6 +222,7 @@ describe( 'PastePlainText', () => {
 
 		viewDocument.fire( 'clipboardInput', {
 			dataTransfer: dataTransferMock,
+			content: dataTransferMock.getData( 'text/html' ),
 			stopPropagation() {},
 			preventDefault() {}
 		} );
@@ -236,6 +238,7 @@ describe( 'PastePlainText', () => {
 				'text/html': 'foo',
 				'text/plain': 'foo'
 			} ),
+			content: 'foo',
 			stopPropagation() {},
 			preventDefault() {}
 		} );
@@ -251,6 +254,7 @@ describe( 'PastePlainText', () => {
 				'text/html': 'foo',
 				'text/plain': 'foo'
 			} ),
+			content: 'foo',
 			stopPropagation() {},
 			preventDefault() {}
 		} );
@@ -269,6 +273,7 @@ describe( 'PastePlainText', () => {
 				'text/html': 'foo',
 				'text/plain': 'foo'
 			} ),
+			content: 'foo',
 			stopPropagation() {},
 			preventDefault() {}
 		} );
@@ -292,6 +297,7 @@ describe( 'PastePlainText', () => {
 				'text/html': '<obj></obj>',
 				'text/plain': 'foo'
 			} ),
+			content: 'foo',
 			stopPropagation() {},
 			preventDefault() {}
 		} );

@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
+import type { ClipboardInputTransformationEvent } from '@ckeditor/ckeditor5-clipboard';
 import type { ModelDocumentSelectionChangeEvent, Model, ModelPosition, ModelRange, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from '@ckeditor/ckeditor5-typing';
 import type { EnterCommand, ShiftEnterCommand } from '@ckeditor/ckeditor5-enter';
@@ -163,7 +163,7 @@ export class AutoLink extends Plugin {
 		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const linkCommand = editor.commands.get( 'link' )!;
 
-		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
+		clipboardPipeline.on<ClipboardInputTransformationEvent>( 'inputTransformation', ( evt, data ) => {
 			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed || data.method !== 'paste' ) {
 				// Abort if we are disabled or the selection is collapsed.
 				return;
