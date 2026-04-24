@@ -5,6 +5,8 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v47.7.1.
 
+> **ℹ️ Long Term Support Edition release:** This is a [CKEditor 5 Long Term Support (LTS) Edition](https://ckeditor.com/ckeditor-5-lts/) release, available only to LTS subscribers. It delivers security and critical maintenance fixes for the v47 line. [Visit documentation](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html) to learn more.
+
 ### Release highlights
 
 The release addresses a vulnerability identified in the [`protobuf.js`](https://www.npmjs.com/package/protobufjs) package ([`CVE-2026-41242`](https://github.com/protobufjs/protobuf.js/security/advisories/GHSA-xq3m-2v4x-88gg)), used within our [**`@ckeditor/ckeditor5-operations-compressor`**](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor) package for real-time collaboration.
