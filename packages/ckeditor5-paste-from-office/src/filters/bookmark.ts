@@ -7,9 +7,10 @@
  * @module paste-from-office/filters/bookmark
  */
 
-import {
-	type ViewUpcastWriter,
-	type ViewDocumentFragment
+import type {
+	ViewUpcastWriter,
+	ViewDocumentFragment,
+	ViewElement
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -40,5 +41,15 @@ export function transformBookmarks(
 		const children = element.getChildren();
 
 		writer.insertChild( index, children, element.parent! );
+
+		if ( isHiddenMsBookmarkAnchor( element ) ) {
+			writer.remove( element );
+		}
 	}
+}
+
+function isHiddenMsBookmarkAnchor( element: ViewElement ) {
+	const name = element.getAttribute( 'name' );
+
+	return !!name && name.startsWith( '_' );
 }
