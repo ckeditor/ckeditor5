@@ -42,13 +42,13 @@ export function transformBookmarks(
 
 		writer.insertChild( index, children, element.parent! );
 
-		if ( isHiddenMsBookmarkAnchor( element ) ) {
+		if ( isHiddenBookmarkAnchor( element ) ) {
 			writer.remove( element );
 		}
 	}
 }
 
-function isHiddenMsBookmarkAnchor( element: ViewElement ) {
+function isHiddenBookmarkAnchor( element: ViewElement ) {
 	const name = element.getAttribute( 'name' );
 
 	return !!name && name.startsWith( '_' );
