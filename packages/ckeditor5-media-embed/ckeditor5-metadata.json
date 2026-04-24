@@ -73,6 +73,25 @@
 			]
 		},
 		{
+			"name": "Media embed resize",
+			"className": "MediaEmbedResize",
+			"description": "Allows for resizing media embeds using handles.",
+			"docs": "features/media-embed-resize.html",
+			"path": "src/mediaembedresize.ts",
+			"requires": [
+				"MediaEmbed"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "media_resized",
+					"styles": [
+						"width"
+					]
+				}
+			]
+		},
+		{
 			"name": "Media embed toolbar",
 			"className": "MediaEmbedToolbar",
 			"description": "Implements an optional toolbar for media embed that shows when the media element is selected.",
