@@ -278,7 +278,8 @@ export function reconvertItemsOnDataChange(
 						Array.from( referenceItem.getAttributes() )
 							.filter( ( [ key ] ) => attributeNames.includes( key ) )
 					),
-					listItemId: `list-item-skip-${ i }`
+					listItemId: `list-item-skip-${ i }`,
+					listIndent: i
 				};
 
 				stack[ i ] = {
