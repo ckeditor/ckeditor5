@@ -297,7 +297,7 @@ describe( 'PastePlainText', () => {
 				'text/html': '<obj></obj>',
 				'text/plain': 'foo'
 			} ),
-			content: 'foo',
+			content: '<obj></obj>',
 			stopPropagation() {},
 			preventDefault() {}
 		} );
