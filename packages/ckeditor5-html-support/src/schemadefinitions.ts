@@ -498,7 +498,7 @@ export const defaultConfig = {
 			modelSchema: {
 				allowWhere: '$container',
 				allowChildren: [ 'htmlDt', 'htmlDd', 'htmlDiv' ],
-				allowAttributesOf: [ '$listItem' ],
+				allowAttributesOf: [ '$container' ],
 				isBlock: false
 			}
 		},
