@@ -22,7 +22,8 @@ The {@link module:media-embed/mediaembedresize~MediaEmbedResize} plugin is not l
 import { ClassicEditor, MediaEmbed, MediaEmbedResize } from 'ckeditor5';
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MediaEmbed, MediaEmbedResize, /* ... */ ],
 		toolbar: [ 'mediaEmbed', /* ... */ ]
