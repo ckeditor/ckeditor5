@@ -2547,6 +2547,9 @@ importers:
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
+      '@ckeditor/ckeditor5-editor-multi-root':
+        specifier: workspace:*
+        version: link:../ckeditor5-editor-multi-root
       '@ckeditor/ckeditor5-image':
         specifier: workspace:*
         version: link:../ckeditor5-image
