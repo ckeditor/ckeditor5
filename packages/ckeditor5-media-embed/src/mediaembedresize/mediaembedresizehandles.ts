@@ -66,30 +66,25 @@ export class MediaEmbedResizeHandles extends Plugin {
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		const syncResizers = () => {
-			const root = editor.model.document.getRoot();
+			for ( const root of editor.model.document.getRoots() ) {
+				for ( const item of editor.model.createRangeIn( root ).getItems() ) {
+					if ( !item.is( 'element', 'media' ) ) {
+						continue;
+					}
 
-			/* istanbul ignore if: paranoid check -- @preserve */
-			if ( !root ) {
-				return;
-			}
+					const viewElement = editor.editing.mapper.toViewElement( item ) as ViewContainerElement | undefined;
 
-			for ( const item of editor.model.createRangeIn( root ).getItems() ) {
-				if ( !item.is( 'element', 'media' ) ) {
-					continue;
+					/* istanbul ignore if: paranoid check — conversion has run at this point -- @preserve */
+					if ( !viewElement ) {
+						continue;
+					}
+
+					const resizer = widgetResize.getResizerByViewElement( viewElement ) ||
+						this._attachResizer( item, viewElement );
+
+					const isResizable = registry.isMediaResizable( item.getAttribute( 'url' ) as string || '' );
+					resizer.isEnabled = this.isEnabled && isResizable;
 				}
-
-				const viewElement = editor.editing.mapper.toViewElement( item ) as ViewContainerElement | undefined;
-
-				/* istanbul ignore if: paranoid check — conversion has run at this point -- @preserve */
-				if ( !viewElement ) {
-					continue;
-				}
-
-				const resizer = widgetResize.getResizerByViewElement( viewElement ) ||
-					this._attachResizer( item, viewElement );
-
-				const isResizable = registry.isMediaResizable( item.getAttribute( 'url' ) as string || '' );
-				resizer.isEnabled = this.isEnabled && isResizable;
 			}
 		};
 

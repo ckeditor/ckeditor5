@@ -5,6 +5,7 @@
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Widget, WidgetResize } from '@ckeditor/ckeditor5-widget';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -319,6 +320,52 @@ describe( 'MediaEmbedResizeHandles', () => {
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPoint );
 
 			expect( widget.hasClass( 'media_resized' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'multi-root editor integration', () => {
+		let multiRoot;
+
+		beforeEach( async () => {
+			multiRoot = await MultiRootEditor.create( {
+				foo: document.createElement( 'div' ),
+				bar: document.createElement( 'div' )
+			}, {
+				plugins: [
+					Widget,
+					Paragraph,
+					MediaEmbedEditing,
+					MediaEmbedResizeEditing,
+					MediaEmbedResizeHandles
+				]
+			} );
+		} );
+
+		afterEach( async () => {
+			await multiRoot.destroy();
+		} );
+
+		it( 'attaches a resizer to media widgets in every root (no "main" root)', () => {
+			// Guards the regression where `getRoot()` (defaulting to "main") would return null
+			// and skip resizer creation entirely, and where only the "main" root would be processed.
+			expect( multiRoot.model.document.getRoot( 'main' ) ).to.be.null;
+
+			const widgetResize = multiRoot.plugins.get( WidgetResize );
+
+			let fooMedia, barMedia;
+			multiRoot.model.change( writer => {
+				fooMedia = writer.createElement( 'media', { url: YOUTUBE_URL } );
+				barMedia = writer.createElement( 'media', { url: YOUTUBE_URL } );
+
+				writer.append( fooMedia, multiRoot.model.document.getRoot( 'foo' ) );
+				writer.append( barMedia, multiRoot.model.document.getRoot( 'bar' ) );
+			} );
+
+			const fooViewElement = multiRoot.editing.mapper.toViewElement( fooMedia );
+			const barViewElement = multiRoot.editing.mapper.toViewElement( barMedia );
+
+			expect( widgetResize.getResizerByViewElement( fooViewElement ) ).to.not.be.undefined;
+			expect( widgetResize.getResizerByViewElement( barViewElement ) ).to.not.be.undefined;
 		} );
 	} );
 
