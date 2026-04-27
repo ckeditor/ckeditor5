@@ -602,11 +602,18 @@ export function isNumberedListType( listType: ListType ): boolean {
 }
 
 /**
- * Checks if the given list item is the first item in its list at the given indent.
+ * Checks if the given list item block is the first block of the first item in its list at the given indent.
  *
- * Returns `false` when any preceding list block belongs to the same list — either as a same-indent
- * sibling of the same `listType`, or as a higher-indent block (a regular nested child, or an
- * intermediate skip-level `<li style="list-style-type:none">` wrapper). For example, in the model:
+ * Walks back over previous siblings and returns:
+ * - `true` if it reaches a non-list block or a list block at a lower indent (a new list begins here),
+ * - `false` if it finds a same-indent block of the same `listItemId` (a continuation of the current item) or of the same
+ *   `listType` (the visible list already has earlier items),
+ * - `true` if it finds a same-indent block of a different `listType` and a different `listItemId` (a different list ends; ours
+ *   starts here),
+ * - `false` if it walks off the start of the document while passing only higher-indent blocks (those blocks
+ *   live inside an intermediate skip-level `<li style="list-style-type:none">` wrapper at our indent).
+ *
+ * For example, in the model:
  *
  * ```
  * '  # aaa'
@@ -630,28 +637,37 @@ export function isNumberedListType( listType: ListType ): boolean {
  * So `bbb` is the second visible item in the outer list and the function returns `false`.
  */
 export function isFirstListItemInList( listItem: ModelElement ): boolean {
-	// Same-indent, same-type predecessor. If it exists, we are not the first item in the list.
-	const sameIndentMatch = ListWalker.first( listItem, {
-		sameIndent: true,
-		sameAttributes: 'listType'
-	} );
+	const itemIndent = listItem.getAttribute( 'listIndent' ) as number;
+	const itemListType = listItem.getAttribute( 'listType' );
+	const itemListItemId = listItem.getAttribute( 'listItemId' );
 
-	if ( sameIndentMatch ) {
-		return false;
+	let previous = listItem.previousSibling;
+	let sawHigherIndent = false;
+
+	while ( isListItemBlock( previous ) ) {
+		const previousIndent = previous.getAttribute( 'listIndent' ) as number;
+
+		if ( previousIndent < itemIndent ) {
+			return true;
+		}
+
+		if ( previousIndent === itemIndent ) {
+			// The previous block belongs to the current item — we are a continuation block, not the first block of
+			// the list item, so item-block indent should not apply (a normal list indent should fall through instead).
+			if ( previous.getAttribute( 'listItemId' ) === itemListItemId ) {
+				return false;
+			}
+
+			return previous.getAttribute( 'listType' ) !== itemListType;
+		}
+
+		sawHigherIndent = true;
+		previous = previous.previousSibling;
 	}
 
-	// A higher-indent immediate predecessor means we are nested below something at our indent
-	// (a real parent or an intermediate skip-level wrapper), so we are not first either.
-	const previousItem = listItem.previousSibling;
-
-	if (
-		isListItemBlock( previousItem ) &&
-		( previousItem.getAttribute( 'listIndent' ) as number ) > ( listItem.getAttribute( 'listIndent' ) as number )
-	) {
-		return false;
-	}
-
-	return true;
+	// Walked off the start of the document. If only higher-indent blocks were on the way, they
+	// live inside an intermediate skip-level wrapper at our indent — we are not first.
+	return !sawHigherIndent;
 }
 
 /**

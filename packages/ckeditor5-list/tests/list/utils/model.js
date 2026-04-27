@@ -1980,5 +1980,42 @@ describe( 'List - utils - model', () => {
 			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
 			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
 		} );
+
+		it( 'should return true for an item starting a new list after a different-type list with a nested list', () => {
+			const input = modelList( [
+				'# a',
+				'  * b',
+				'* c'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.true;
+		} );
+
+		it( 'should return false for a continuation block of a multi-block list item', () => {
+			const input = modelList( [
+				'* a',
+				'  text'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+		} );
+
+		it( 'should return false for an item placed after a multi-block continuation of a preceding item', () => {
+			const input = modelList( [
+				'* a',
+				'* b',
+				'  text',
+				'* c'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isFirstListItemInList( fragment.getChild( 3 ) ) ).to.be.false;
+		} );
 	} );
 } );
