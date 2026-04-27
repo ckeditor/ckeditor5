@@ -4,7 +4,7 @@
 			"name": "Media embed",
 			"className": "MediaEmbed",
 			"description": "Allows for inserting embeddable media such as YouTube or Vimeo videos, Instagram posts and tweets or Google Maps into your rich-text content.",
-			"docs": "features/media-embed.html",
+			"docs": "features/media-embed/media-embed.html",
 			"path": "src/mediaembed.ts",
 			"uiComponents": [
 				{
@@ -76,7 +76,7 @@
 			"name": "Media embed resize",
 			"className": "MediaEmbedResize",
 			"description": "Allows for resizing media embeds using handles.",
-			"docs": "features/media-embed-resize.html",
+			"docs": "features/media-embed/media-embed-resize.html",
 			"path": "src/mediaembedresize.ts",
 			"requires": [
 				"MediaEmbed"
@@ -95,7 +95,7 @@
 			"name": "Media embed toolbar",
 			"className": "MediaEmbedToolbar",
 			"description": "Implements an optional toolbar for media embed that shows when the media element is selected.",
-			"docs": "features/media-embed.html",
+			"docs": "features/media-embed/media-embed.html",
 			"path": "src/mediaembedtoolbar.ts",
 			"requires": [
 				"MediaEmbed"
