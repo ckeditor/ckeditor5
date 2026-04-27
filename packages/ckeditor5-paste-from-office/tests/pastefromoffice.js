@@ -141,7 +141,7 @@ describe( 'PasteFromOffice', () => {
 				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 
-				clipboard.fire( 'clipboardInput', data );
+				viewDocument.fire( 'clipboardInput', data );
 
 				expect( data.extraContent ).to.be.undefined;
 
