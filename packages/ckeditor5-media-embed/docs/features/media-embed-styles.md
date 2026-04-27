@@ -8,7 +8,7 @@ order: 60
 
 # Styling media in the editor content
 
-While the editor comes with default styles for popular media providers like Facebook, Instagram or X, you can create additional styles for non-previewable media in your editor content to help users identify them.
+While the editor comes with default styles for popular media providers like Facebook, Instagram, or X, you can create additional styles for non-previewable media in your editor content to help users identify them.
 
 ## Styling non-previewable media
 
@@ -29,7 +29,7 @@ The HTML structure of every non-previewable media in the editor is as follows:
 </figure>
 ```
 
-For example, you can create a dedicated style for media coming from the [ckeditor.com](https://ckeditor.com) domain. To do that, you will need some additional styles included in your website.
+For example, you can create a dedicated style for media coming from the [ckeditor.com](https://ckeditor.com) domain. To accomplish that, you will need some additional styles included in your website.
 
 First, you must hide the generic media icon displayed for non-previewable media:
 
@@ -67,7 +67,7 @@ Finally, make sure the URL in the placeholder has the right contrast:
 }
 ```
 
-Before you load the data, make sure the `ckeditor.com` provider is {@link features/media-embed-configuration#extending-media-providers enabled in your configuration}. In its most basic form it could look like this:
+Before you load the data, make sure the `ckeditor.com` provider is {@link features/media-embed-configuration#extending-media-providers enabled in your configuration}. In its most basic form, it could look like this:
 
 ```js
 mediaEmbed: {

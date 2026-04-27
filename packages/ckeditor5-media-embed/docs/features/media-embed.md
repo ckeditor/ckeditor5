@@ -66,7 +66,7 @@ The [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/
 
 ## Previewable and non-previewable media
 
-When the media embed feature is asked to embed a specific media element via its URL it needs to make a decision how the media will be displayed in the editor.
+When the media embed feature is asked to embed a specific media element via its URL, it needs to decide about how the media will be displayed in the editor.
 
 ### Previewable media
 
@@ -80,7 +80,7 @@ If, for instance, the URL to embed is `https://www.youtube.com/watch?v=H08tGjXNH
 </iframe>
 ```
 
-The CSS `aspect-ratio` property keeps the video responsive while the HTML `width` and `height` attributes provide an intrinsic size so the iframe behaves well in table cells and other layout contexts. The crucial part is the iframe element's `src` which the media embed feature predicts based on the given video URL.
+The CSS `aspect-ratio` property keeps the video responsive, while the HTML `width` and `height` attributes provide an intrinsic size so the iframe behaves well in table cells and other layout contexts. The crucial part is the iframe element's `src` which the media embed feature predicts based on the given video URL.
 
 Thanks to the ability to hardcode this URL to HTML transformation, the media embed feature can show previews of YouTube, Dailymotion, or Vimeo videos, and Spotify widgets without requesting any external service.
 

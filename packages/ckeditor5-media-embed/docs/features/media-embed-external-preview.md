@@ -27,7 +27,7 @@ Follow the [Iframely integration with CKEditor&nbsp;5](https://iframely.com/docs
 
 By default, the media embed feature produces output that does not contain previews of embedded media, called the {@link features/media-embed-configuration#semantic-data-output-default semantic output}. This means that you need to transform the output `<oembed>` elements into real media on your target website.
 
-There are many ways to do that. The simplest, plug-and-play solutions are described here. You can also implement this transformation as part of your backend service or you can use different services than described in this section.
+There are many ways to do that. The simplest plug-and-play solutions are described here. You can also implement this transformation as part of your backend service, or you can use different services than described in this section.
 
 <info-box>
 	While the easiest solution (described below) is to replace embedded media on the client side, it is not necessarily the most optimal way. A more powerful and flexible solution is to request these services on your backend. Refer to the documentation of the service of your choice for more information.
@@ -35,7 +35,7 @@ There are many ways to do that. The simplest, plug-and-play solutions are descri
 
 ### Iframely
 
-[Iframely](https://iframely.com) offers the [embed.js](https://iframely.com/docs/embedjs) library which converts [various media](https://iframely.com/docs/providers) URLs into rich previews. It works in the frontend and remains fully compatible with the output produced by CKEditor&nbsp;5.
+[Iframely](https://iframely.com) offers the [embed.js](https://iframely.com/docs/embedjs) library, which converts [various media](https://iframely.com/docs/providers) URLs into rich previews. It works in the frontend and remains fully compatible with the output produced by CKEditor&nbsp;5.
 
 First, having [secured the API key](https://iframely.com/docs/allow-origins), load the `embed.js` library from the CDN into your website:
 
@@ -79,7 +79,7 @@ When you configure the feature to {@link features/media-embed-configuration#incl
 </figure>
 ```
 
-You can still convert this data by Iframely with just a few extra lines of code. To do that, in addition to the code snippet from the previous section, use a slightly longer code snippet that discards the media preview saved in the database before using `iframely.load()`:
+You can still convert this data by Iframely with just a few extra lines of code. To achieve that, in addition to the code snippet from the previous section, use a slightly longer code snippet that discards the media preview saved in the database before using `iframely.load()`:
 
 ```html
 <script>
@@ -97,7 +97,7 @@ You can still convert this data by Iframely with just a few extra lines of code.
 
 ### Embedly
 
-Just like Iframely, [Embedly](https://embed.ly) offers the client–side API which converts media URLs into rich previews.
+Just like Iframely, [Embedly](https://embed.ly) offers the client–side API, which converts media URLs into rich previews.
 
 To start using it, load the library from the CDN into your website:
 
@@ -140,7 +140,7 @@ Embedly automatically discovers links like `<a href="..." class="embedly-card"><
 
 #### Non-semantic data
 
-In this case, the code is almost the same as with the semantic data but you should discard the media preview saved in the database before using Embedly to avoid code duplication:
+In this case, the code is almost the same as with the semantic data, but you should discard the media preview saved in the database before using Embedly to avoid code duplication:
 
 ```html
 <script>

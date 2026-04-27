@@ -40,7 +40,7 @@ If `elementName` is overridden to something other than the default value, the ex
 
 ### Including previews in data
 
-Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor. If the media element is "previewable", the media preview (HTML) is saved to the database:
+Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor. If the media element is "previewable," the media preview (HTML) is saved to the database:
 
 ```html
 <figure class="media">
@@ -58,7 +58,7 @@ Currently, the preview is only available for content providers for which CKEdito
 </figure>
 ```
 
-This means that, unless you [limit the list of providers](#media-providers) to only those which are previewable, you need to {@link features/media-embed-external-preview make sure that the media are displayed on your website}.
+This means that, unless you [limit the list of providers](#media-providers) to only those that are previewable, you need to {@link features/media-embed-external-preview make sure that the media are displayed on your website}.
 
 Read more about {@link features/media-embed#previewable-and-non-previewable-media non-previewable media}.
 
