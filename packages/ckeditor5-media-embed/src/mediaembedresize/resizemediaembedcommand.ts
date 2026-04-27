@@ -26,7 +26,12 @@ export class ResizeMediaEmbedCommand extends Command {
 		const element = getSelectedMediaModelWidget( this.editor.model.document.selection );
 
 		this.isEnabled = !!element;
-		this.value = element?.getAttribute( 'resizedWidth' ) as string || null;
+
+		if ( !element || !element.hasAttribute( 'resizedWidth' ) ) {
+			this.value = null;
+		} else {
+			this.value = element.getAttribute( 'resizedWidth' ) as string;
+		}
 	}
 
 	/**
@@ -41,7 +46,7 @@ export class ResizeMediaEmbedCommand extends Command {
 	 * ```
 	 *
 	 * @param options
-	 * @param options.width The new width of the media embed.
+	 * @param options.width The new width of the media embed. Pass `null` to remove the resize.
 	 * @fires execute
 	 */
 	public override execute( options: { width: string | null } ): void {
@@ -50,11 +55,7 @@ export class ResizeMediaEmbedCommand extends Command {
 
 		if ( mediaElement ) {
 			model.change( writer => {
-				if ( options.width ) {
-					writer.setAttribute( 'resizedWidth', options.width, mediaElement );
-				} else {
-					writer.removeAttribute( 'resizedWidth', mediaElement );
-				}
+				writer.setAttribute( 'resizedWidth', options.width, mediaElement );
 			} );
 		}
 	}

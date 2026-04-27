@@ -70,6 +70,12 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			expect( command.value ).to.equal( '50%' );
 		} );
+
+		it( 'preserves an empty-string resizedWidth value (does not coerce to null)', () => {
+			_setModelData( model, '[<media resizedWidth="" url="https://youtu.be/foo"></media>]' );
+
+			expect( command.value ).to.equal( '' );
+		} );
 	} );
 
 	describe( 'execute()', () => {
@@ -100,6 +106,16 @@ describe( 'ResizeMediaEmbedCommand', () => {
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<media url="https://youtu.be/foo"></media>]'
+			);
+		} );
+
+		it( 'sets an empty-string resizedWidth (does not treat it as null)', () => {
+			_setModelData( model, '[<media url="https://youtu.be/foo"></media>]' );
+
+			command.execute( { width: '' } );
+
+			expect( _getModelData( model ) ).to.equal(
+				'[<media resizedWidth="" url="https://youtu.be/foo"></media>]'
 			);
 		} );
 
