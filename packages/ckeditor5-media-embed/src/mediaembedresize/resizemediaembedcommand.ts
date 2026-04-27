@@ -38,15 +38,16 @@ export class ResizeMediaEmbedCommand extends Command {
 	 * Executes the command.
 	 *
 	 * ```ts
-	 * // Sets the width to 50%:
+	 * // Sets the width as a percentage of the parent width:
 	 * editor.execute( 'resizeMediaEmbed', { width: '50%' } );
 	 *
-	 * // Removes the width attribute:
+	 * // Removes the resize and restores the default width:
 	 * editor.execute( 'resizeMediaEmbed', { width: null } );
 	 * ```
 	 *
 	 * @param options
-	 * @param options.width The new width of the media embed. Pass `null` to remove the resize.
+	 * @param options.width The new width of the media embed as a CSS `width` value
+	 * (e.g. `'50%'`), or `null` to remove the resize.
 	 * @fires execute
 	 */
 	public override execute( options: { width: string | null } ): void {

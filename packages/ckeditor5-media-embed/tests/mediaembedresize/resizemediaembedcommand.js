@@ -119,6 +119,26 @@ describe( 'ResizeMediaEmbedCommand', () => {
 			);
 		} );
 
+		it( 'sets a pixel resizedWidth value', () => {
+			_setModelData( model, '[<media url="https://youtu.be/foo"></media>]' );
+
+			command.execute( { width: '300px' } );
+
+			expect( _getModelData( model ) ).to.equal(
+				'[<media resizedWidth="300px" url="https://youtu.be/foo"></media>]'
+			);
+		} );
+
+		it( 'stores any string verbatim (the command does not validate the width)', () => {
+			_setModelData( model, '[<media url="https://youtu.be/foo"></media>]' );
+
+			command.execute( { width: 'not-a-css-value' } );
+
+			expect( _getModelData( model ) ).to.equal(
+				'[<media resizedWidth="not-a-css-value" url="https://youtu.be/foo"></media>]'
+			);
+		} );
+
 		it( 'does nothing when no media is selected', () => {
 			_setModelData( model, '<paragraph>x[]</paragraph><media url="https://youtu.be/foo"></media>' );
 
