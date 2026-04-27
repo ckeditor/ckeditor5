@@ -73,11 +73,13 @@ When the media embed feature is asked to embed a specific media element via its 
 If, for instance, the URL to embed is `https://www.youtube.com/watch?v=H08tGjXNHO4`, the feature can predict that it needs to produce the following HTML to show this YouTube video:
 
 ```html
-<iframe src="https://www.youtube.com/embed/${ videoId }"
-	width="1280" height="720"
-	style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;"
-	frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
-</iframe>
+<div>
+	<iframe src="https://www.youtube.com/embed/${ videoId }"
+		width="1280" height="720"
+		style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;"
+		frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+	</iframe>
+</div>
 ```
 
 The CSS `aspect-ratio` property keeps the video responsive, while the HTML `width` and `height` attributes provide an intrinsic size so the iframe behaves well in table cells and other layout contexts. The crucial part is the iframe element's `src` which the media embed feature predicts based on the given video URL.

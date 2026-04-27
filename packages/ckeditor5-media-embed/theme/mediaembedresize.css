@@ -22,7 +22,7 @@
 	}
 }
 
-/*Hide the resize outline and handles in the drag preview. */
+/* Hide the resize outline and handles in the drag preview. */
 .ck .ck-widget.media:-webkit-drag > .ck-widget__resizer {
 	display: none;
 }

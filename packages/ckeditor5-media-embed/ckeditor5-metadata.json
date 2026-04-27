@@ -37,27 +37,25 @@
 				},
 				{
 					"elements": "div",
-					"styles": [
-						"height",
-						"padding-bottom",
-						"position"
-					],
 					"isAlternative": true,
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
+					"_comment": "A plain wrapper element placed between the outer `<div data-oembed-url>` and the preview `<iframe>`."
 				},
 				{
 					"elements": "iframe",
 					"styles": [
+						"aspect-ratio",
+						"border",
+						"display",
 						"height",
-						"left",
-						"position",
-						"top",
 						"width"
 					],
 					"attributes": [
 						"*allow*",
 						"frameborder",
-						"src"
+						"height",
+						"referrerpolicy",
+						"src",
+						"width"
 					],
 					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."

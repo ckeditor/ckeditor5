@@ -249,16 +249,19 @@ export interface MediaEmbedConfig {
  * To implement responsive media, set an `aspect-ratio` on the iframe. The HTML `width` and
  * `height` attributes act as the intrinsic size (useful for layout hints in containers like
  * table cells), while CSS `width: 100%` and `height: auto` make the element scale with its
- * container while preserving the declared aspect ratio:
+ * container while preserving the declared aspect ratio. The iframe is wrapped in a plain
+ * `<div>` so external styles or queries that target this wrapper continue to work:
  *
  * ```ts
  * {
  * 	...
  * 	html: match =>
- * 		`<iframe src="..." width="1280" height="720" ` +
- * 			`style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ` +
- * 			'frameborder="0" allowfullscreen>' +
- * 		'</iframe>'
+ * 		'<div>' +
+ * 			`<iframe src="..." width="1280" height="720" ` +
+ * 				`style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ` +
+ * 				'frameborder="0" allowfullscreen>' +
+ * 			'</iframe>' +
+ * 		'</div>'
  * }
  * ```
  */

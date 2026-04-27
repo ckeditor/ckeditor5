@@ -60,11 +60,13 @@ export class MediaEmbedEditing extends Plugin {
 						const id = match[ 1 ];
 
 						return (
-							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
-								'width="1280" height="720" ' +
-								'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
-								'frameborder="0" allowfullscreen allow="autoplay">' +
-							'</iframe>'
+							'<div>' +
+								`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
+									'frameborder="0" allowfullscreen allow="autoplay">' +
+								'</iframe>' +
+							'</div>'
 						);
 					}
 				},
@@ -83,11 +85,13 @@ export class MediaEmbedEditing extends Plugin {
 						const id = match[ 1 ];
 
 						return (
-							`<iframe src="https://open.spotify.com/embed/${ id }" ` +
-								'width="300" height="378" ' +
-								'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
-								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-							'</iframe>'
+							'<div>' +
+								`<iframe src="https://open.spotify.com/embed/${ id }" ` +
+									'width="300" height="378" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
+									'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+								'</iframe>' +
+							'</div>'
 						);
 					}
 				},
@@ -106,12 +110,14 @@ export class MediaEmbedEditing extends Plugin {
 						const time = match[ 2 ];
 
 						return (
-							`<iframe src="https://www.youtube.com/embed/${ id }${ time ? `?start=${ time }` : '' }" ` +
-								'width="1280" height="720" ' +
-								'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
-								'frameborder="0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" ' +
-								'allowfullscreen>' +
-							'</iframe>'
+							'<div>' +
+								`<iframe src="https://www.youtube.com/embed/${ id }${ time ? `?start=${ time }` : '' }" ` +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
+									'frameborder="0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" ' +
+									'allowfullscreen>' +
+								'</iframe>' +
+							'</div>'
 						);
 					}
 				},
@@ -131,11 +137,13 @@ export class MediaEmbedEditing extends Plugin {
 						const id = match[ 1 ];
 
 						return (
-							`<iframe src="https://player.vimeo.com/video/${ id }" ` +
-								'width="1280" height="720" ' +
-								'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
-								'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
-							'</iframe>'
+							'<div>' +
+								`<iframe src="https://player.vimeo.com/video/${ id }" ` +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
+									'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
+								'</iframe>' +
+							'</div>'
 						);
 					}
 				},

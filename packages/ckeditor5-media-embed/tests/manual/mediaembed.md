@@ -97,12 +97,12 @@
 ### Aspect ratio (modern CSS)
 
 1. Inspect a YouTube or Vimeo iframe in the DOM,
-1. It should render as a single `<iframe>` (no outer `<div style="padding-bottom...">` wrapper),
-1. Its CSS should include `aspect-ratio: 16 / 9` and `height: auto`,
+1. The iframe should be wrapped in a plain `<div>` (no `padding-bottom` or `position` styles on the wrapper),
+1. The iframe's inline CSS should include `aspect-ratio: 16 / 9` and `height: auto`,
 1. Resizing the embed should preserve the 16:9 proportion.
 
 ### Data migration
 
 1. Load the existing document (the "Media with previews" section uses the old `padding-bottom` wrapper format),
 1. The editor should render them correctly — upcast reads only the URL and regenerates the preview using the current provider HTML,
-1. Call `editor.getData()` — the `<iframe>` inside `<div data-oembed-url>` should carry inline `aspect-ratio` CSS directly. There should be no additional `<div style="padding-bottom: …">` wrapper around the iframe.
+1. Call `editor.getData()` — the iframe should carry inline `aspect-ratio` CSS directly, wrapped only in a plain `<div>` (no `padding-bottom` or `position` styles on the wrapper).

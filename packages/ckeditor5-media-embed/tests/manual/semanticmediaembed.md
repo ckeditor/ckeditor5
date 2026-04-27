@@ -89,6 +89,6 @@
 ### Aspect ratio in the editing view (semantic mode)
 
 1. Inspect a YouTube or Vimeo iframe in the DOM,
-1. It should render as a single `<iframe>` (no outer `<div style="padding-bottom...">` wrapper),
-1. Its CSS should include `aspect-ratio: 16 / 9` and `height: auto`,
+1. The iframe should be wrapped in a plain `<div>` (no `padding-bottom` or `position` styles on the wrapper),
+1. The iframe's inline CSS should include `aspect-ratio: 16 / 9` and `height: auto`,
 1. Resizing the embed should preserve the 16:9 proportion.
