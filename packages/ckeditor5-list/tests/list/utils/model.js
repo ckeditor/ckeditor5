@@ -1824,7 +1824,7 @@ describe( 'List - utils - model', () => {
 	} );
 
 	describe( 'isFirstListItemInList()', () => {
-		it( 'should return true for the first list item in the document', () => {
+		it( 'should return true for the first item in a list and false for the next same-type sibling', () => {
 			const input = modelList( [
 				'* a',
 				'* b'
@@ -1833,16 +1833,6 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 
 			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-		} );
-
-		it( 'should return false for a list item preceded by another list item of the same type', () => {
-			const input = modelList( [
-				'* a',
-				'* b'
-			] );
-
-			const fragment = _parseModel( input, schema );
-
 			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
 		} );
 
@@ -1857,7 +1847,7 @@ describe( 'List - utils - model', () => {
 			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
 		} );
 
-		it( 'should return true for a list item preceded by a list item of a different type', () => {
+		it( 'should return true for a list item preceded by a list item of a different type at the same indent', () => {
 			const input = modelList( [
 				'* a',
 				'# b'
@@ -1868,7 +1858,7 @@ describe( 'List - utils - model', () => {
 			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
 		} );
 
-		it( 'should return false for a nested list item preceded by a list item of the same type', () => {
+		it( 'should return false for a nested list item preceded by a same-indent same-type sibling', () => {
 			const input = modelList( [
 				'* a',
 				'  * b',
@@ -1912,7 +1902,7 @@ describe( 'List - utils - model', () => {
 			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
 		} );
 
-		it( 'should return true for a skip-level list item (indent > 0, first in document)', () => {
+		it( 'should return true for a skip-level list item that is first in the document', () => {
 			const input = modelList( [
 				'  * a',
 				'    * b'
@@ -1923,19 +1913,47 @@ describe( 'List - utils - model', () => {
 			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
 		} );
 
-		it( 'should return true for a higher-indent item when the preceding item has a lower indent', () => {
+		it( 'should return false for a top-level item placed after a same-type skip-level nested list', () => {
+			// `bbb` is the second visible item in the outer numbered list, so it is not first.
 			const input = modelList( [
-				'      * a',
-				'    * b'
+				'  # aaa',
+				'# bbb'
 			] );
 
 			const fragment = _parseModel( input, schema );
 
 			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
 		} );
 
-		it( 'should return true for same-type items at different indent levels (two separate lists)', () => {
+		it( 'should return false for an item placed after a higher-indent block of a different type', () => {
+			// The higher-indent block is rendered inside a phantom skip-level wrapper at our indent,
+			// so the visible list already has earlier items regardless of the wrapper's type.
+			const input = modelList( [
+				'  * a',
+				'# b'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+		} );
+
+		it( 'should return false along a chain of higher-indent skip-level items', () => {
+			const input = modelList( [
+				'    * a',
+				'  * b',
+				'* c'
+			] );
+
+			const fragment = _parseModel( input, schema );
+
+			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
+			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.false;
+		} );
+
+		it( 'should return false for a top-level item placed after a different-type skip-level nested list and before list item', () => {
 			const input = modelList( [
 				'  * a',
 				'# b',
@@ -1945,11 +1963,11 @@ describe( 'List - utils - model', () => {
 			const fragment = _parseModel( input, schema );
 
 			expect( isFirstListItemInList( fragment.getChild( 0 ) ) ).to.be.true;
-			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.true;
+			expect( isFirstListItemInList( fragment.getChild( 1 ) ) ).to.be.false;
 			expect( isFirstListItemInList( fragment.getChild( 2 ) ) ).to.be.true;
 		} );
 
-		it( 'should return false for same-type item after nested different-type item at higher indent', () => {
+		it( 'should return true for a top-level item placed after a different-type skip-level nested list and before list item', () => {
 			const input = modelList( [
 				'  * a',
 				'    # b',

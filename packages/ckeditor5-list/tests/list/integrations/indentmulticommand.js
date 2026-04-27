@@ -1585,6 +1585,34 @@ describe( 'Indent MultiCommand integrations', () => {
 				expect( indentBlockListSpy.callCount ).to.equal( 0, 'indentBlockList command call count' );
 				expect( indentListSpy.callCount ).to.equal( 1, 'indentList command call count' );
 			} );
+
+			// See ckeditor/ckeditor5-commercial#9763.
+			it( 'should execute indentList (not indentBlockList) when at start of a top-level item ' +
+				'placed after a skip-level nested list', () => {
+				// In the view this model is rendered as:
+				//   <ol>
+				//     <li style="list-style-type:none">
+				//       <ol><li>A</li></ol>
+				//     </li>
+				//     <li>B</li>
+				//   </ol>
+				// `B` is the second visible item in the outer list, so Tab should indent it as a list item
+				// (joining the nested list under the intermediate wrapper), not apply block indent.
+				_setModelData( model, modelList( [
+					'  # A',
+					'# []B'
+				] ) );
+
+				editor.commands.get( 'indent' ).execute();
+
+				expect( indentBlockListSpy.callCount ).to.equal( 0, 'indentBlockList command call count' );
+				expect( indentListSpy.callCount ).to.equal( 1, 'indentList command call count' );
+
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+					'  # A',
+					'  # []B'
+				] ) );
+			} );
 		} );
 
 		describe( 'outdent command', () => {

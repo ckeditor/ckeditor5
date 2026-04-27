@@ -602,18 +602,56 @@ export function isNumberedListType( listType: ListType ): boolean {
 }
 
 /**
- * Checks if the given list item is the first item in the list.
+ * Checks if the given list item is the first item in its list at the given indent.
  *
- * This function checks if there's any other list item before the given list item
- * at the same indent level with the same list type.
+ * Returns `false` when any preceding list block belongs to the same list — either as a same-indent
+ * sibling of the same `listType`, or as a higher-indent block (a regular nested child, or an
+ * intermediate skip-level `<li style="list-style-type:none">` wrapper). For example, in the model:
+ *
+ * ```
+ * '  # aaa'
+ * '# bbb'
+ * ```
+ *
+ * `bbb` is preceded by a higher-indent block `aaa`, which in the view is rendered inside an intermediate
+ * skip-level wrapper at indent 0:
+ *
+ * ```html
+ * <ol>
+ *   <li style="list-style-type:none">
+ *     <ol>
+ *       <li>aaa</li>
+ *     </ol>
+ *   </li>
+ *   <li>bbb</li>
+ * </ol>
+ * ```
+ *
+ * So `bbb` is the second visible item in the outer list and the function returns `false`.
  */
 export function isFirstListItemInList( listItem: ModelElement ): boolean {
-	const previousItem = ListWalker.first( listItem, {
+	// Same-indent, same-type predecessor. If it exists, we are not the first item in the list.
+	const sameIndentMatch = ListWalker.first( listItem, {
 		sameIndent: true,
 		sameAttributes: 'listType'
 	} );
 
-	return !previousItem;
+	if ( sameIndentMatch ) {
+		return false;
+	}
+
+	// A higher-indent immediate predecessor means we are nested below something at our indent
+	// (a real parent or an intermediate skip-level wrapper), so we are not first either.
+	const previousItem = listItem.previousSibling;
+
+	if (
+		isListItemBlock( previousItem ) &&
+		( previousItem.getAttribute( 'listIndent' ) as number ) > ( listItem.getAttribute( 'listIndent' ) as number )
+	) {
+		return false;
+	}
+
+	return true;
 }
 
 /**

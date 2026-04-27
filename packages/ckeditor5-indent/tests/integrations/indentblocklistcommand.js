@@ -253,6 +253,16 @@ describe( 'IndentBlockListCommand', () => {
 
 						expect( command.isEnabled ).to.be.false;
 					} );
+
+					it( 'should be false for a top-level item placed after a skip-level nested list', () => {
+						// `bbb` is the second visible item in the outer list, so block indent must not kick in.
+						_setModelData( model, modelList( [
+							'  # aaa',
+							'# []bbb'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
 				} );
 			} );
 
@@ -762,6 +772,24 @@ describe( 'IndentBlockListCommand', () => {
 						_setModelData( model, modelList( [
 							'# foo',
 							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					// See ckeditor/ckeditor5-commercial#9763.
+					it( 'should be false for a top-level item placed after a same-type skip-level nested list', () => {
+						// In the view this model is rendered as:
+						//   <ol>
+						//     <li style="list-style-type:none">
+						//       <ol><li>aaa</li></ol>
+						//     </li>
+						//     <li>bbb</li>
+						//   </ol>
+						// `bbb` is the second visible item in the outer list, so block indent must not kick in.
+						_setModelData( model, modelList( [
+							'  # aaa',
+							'# []bbb'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
