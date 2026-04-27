@@ -1283,7 +1283,7 @@ export type EditorDestroyEvent = {
  * If you did not intend to use LTS, please note that all releases in the v47.7 line are
  * for LTS subscribers only. To use a non-LTS edition, either upgrade to v48 or newer,
  * which is our standard [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html)
- * release line, or stay on a version v47.6.2 or older.
+ * release line, or stay on a version 47.6.2 or earlier.
  *
  * @error license-key-lts-not-allowed
  */
