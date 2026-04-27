@@ -328,9 +328,10 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 		beforeEach( async () => {
 			multiRoot = await MultiRootEditor.create( {
-				foo: document.createElement( 'div' ),
-				bar: document.createElement( 'div' )
-			}, {
+				roots: {
+					foo: { element: document.createElement( 'div' ) },
+					bar: { element: document.createElement( 'div' ) }
+				},
 				plugins: [
 					Widget,
 					Paragraph,
@@ -370,7 +371,8 @@ describe( 'MediaEmbedResizeHandles', () => {
 	} );
 
 	async function createEditor() {
-		const newEditor = await ClassicEditor.create( editorElement, {
+		const newEditor = await ClassicEditor.create( {
+			attachTo: editorElement,
 			plugins: [
 				Widget,
 				Paragraph,

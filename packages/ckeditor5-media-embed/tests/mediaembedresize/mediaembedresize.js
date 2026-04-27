@@ -18,7 +18,8 @@ describe( 'MediaEmbedResize', () => {
 		global.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
-			.create( editorElement, {
+			.create( {
+				attachTo: editorElement,
 				plugins: [ MediaEmbedResize ]
 			} )
 			.then( newEditor => {
