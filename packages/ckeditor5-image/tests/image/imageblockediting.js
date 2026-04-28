@@ -619,7 +619,10 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData()
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
@@ -634,7 +637,10 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '[<imageBlock src="/assets/sample.png?id=B"></imageBlock>]' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData()
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<imageBlock src="/assets/sample.png?id=A"></imageBlock>]'
@@ -649,7 +655,10 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData()
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
@@ -677,7 +686,8 @@ describe( 'ImageBlockEditing', () => {
 				target: viewElement,
 				dataTransfer,
 				targetRanges: [ targetViewRange ],
-				domEvent: sinon.spy()
+				domEvent: sinon.spy(),
+				content: dataTransfer.getData()
 			} );
 
 			expect( _getModelData( model ) ).to.equal(
@@ -693,7 +703,10 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData()
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo<imageInline src="/assets/sample.png"></imageInline>[]</paragraph>'
@@ -708,7 +721,10 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData()
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<imageBlock alt="abc" src="/assets/sample.png"></imageBlock>]'
@@ -723,7 +739,11 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'paste' } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData(),
+				method: 'paste'
+			} );
 
 			setTimeout( () => {
 				expect( _getModelData( model ) ).to.equal(
@@ -742,7 +762,11 @@ describe( 'ImageBlockEditing', () => {
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'foo' } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData(),
+				method: 'foo'
+			} );
 
 			setTimeout( () => {
 				expect( _getModelData( model ) ).to.equal(

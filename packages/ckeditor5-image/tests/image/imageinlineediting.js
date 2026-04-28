@@ -662,7 +662,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
@@ -677,7 +680,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph listIndent="0" listItemId="000" listType="bulleted"></paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<imageBlock listIndent="0" listItemId="a00" listType="bulleted" src="/assets/sample.png"></imageBlock>]'
@@ -692,7 +698,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
@@ -720,7 +729,8 @@ describe( 'ImageInlineEditing', () => {
 				target: viewElement,
 				dataTransfer,
 				targetRanges: [ targetViewRange ],
-				domEvent: sinon.spy()
+				domEvent: sinon.spy(),
+				content: dataTransfer.getData( 'text/html' )
 			} );
 
 			expect( _getModelData( model ) ).to.equal(
@@ -736,7 +746,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
@@ -753,7 +766,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
@@ -768,7 +784,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '[<imageBlock src="/assets/sample.png?id=B"></imageBlock>]' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'[<imageBlock src="/assets/sample.png?id=A"></imageBlock>]'
@@ -783,7 +802,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline alt="abc" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
@@ -798,7 +820,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline linkHref="https://cksource.com" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
@@ -819,7 +844,10 @@ describe( 'ImageInlineEditing', () => {
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline foo="bar" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
@@ -837,7 +865,10 @@ describe( 'ImageInlineEditing', () => {
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f<imageInline resizedWidth="25%" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
@@ -852,7 +883,11 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'paste' } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				method: 'paste',
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			setTimeout( () => {
 				expect( _getModelData( model ) ).to.equal(
@@ -871,7 +906,11 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'foo' } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				method: 'foo',
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			setTimeout( () => {
 				expect( _getModelData( model ) ).to.equal(
@@ -946,7 +985,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
@@ -961,7 +1003,10 @@ describe( 'ImageInlineEditing', () => {
 
 			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>' );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expect( _getModelData( model ) ).to.equal(
 				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
