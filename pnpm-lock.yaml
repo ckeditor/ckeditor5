@@ -574,6 +574,9 @@ importers:
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
+      '@ckeditor/ckeditor5-undo':
+        specifier: workspace:*
+        version: link:../ckeditor5-undo
 
   packages/ckeditor5-block-quote:
     dependencies:
