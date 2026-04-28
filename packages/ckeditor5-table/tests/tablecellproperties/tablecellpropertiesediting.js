@@ -30,7 +30,7 @@ describe( 'table cell properties', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ TableCellPropertiesEditing, TablePropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
+				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
 			} );
 
 			model = editor.model;
@@ -1373,7 +1373,7 @@ describe( 'table cell properties', () => {
 				describe( 'the [align] attribute', () => {
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
+							plugins: [ TablePropertiesEditing, TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
 						} );
 
 						model = editor.model;
@@ -1472,9 +1472,7 @@ describe( 'table cell properties', () => {
 
 						expect( paragraph.getAttribute( 'alignment' ) ).to.be.equal( 'center' );
 						expect( nestedTable.is( 'element', 'table' ) ).to.be.true;
-
-						// `center` is default value of `tableAlign` attribute.
-						expect( nestedTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+						expect( nestedTable.getAttribute( 'tableAlignment' ) ).to.be.equal( 'center' );
 					} );
 
 					it( 'should apply alignment to all direct block children independently per td level', () => {
