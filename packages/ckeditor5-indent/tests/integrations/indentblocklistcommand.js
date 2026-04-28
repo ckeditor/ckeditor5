@@ -253,6 +253,16 @@ describe( 'IndentBlockListCommand', () => {
 
 						expect( command.isEnabled ).to.be.false;
 					} );
+
+					it( 'should be false for a top-level item placed after a skip-level nested list', () => {
+						// `bbb` is the second visible item in the outer list, so block indent must not kick in.
+						_setModelData( model, modelList( [
+							'  # aaa',
+							'# []bbb'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
 				} );
 			} );
 
@@ -762,6 +772,15 @@ describe( 'IndentBlockListCommand', () => {
 						_setModelData( model, modelList( [
 							'# foo',
 							'    * []bar'
+						] ) );
+
+						expect( command.isEnabled ).to.be.false;
+					} );
+
+					it( 'should be false for a top-level item placed after a same-type skip-level nested list', () => {
+						_setModelData( model, modelList( [
+							'  # aaa',
+							'# []bbb'
 						] ) );
 
 						expect( command.isEnabled ).to.be.false;
