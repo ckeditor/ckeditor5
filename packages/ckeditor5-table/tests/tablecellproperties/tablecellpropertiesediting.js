@@ -1509,7 +1509,7 @@ describe( 'table cell properties', () => {
 												[ '<paragraph>deepest</paragraph>' ]
 											] )
 										]
-									] )
+									], { tableAlignment: 'right' } )
 								]
 							] )
 						);
@@ -1541,7 +1541,7 @@ describe( 'table cell properties', () => {
 										[ '<paragraph>inner</paragraph>' ]
 									] )
 								]
-							] )
+							], { tableAlignment: 'right' } )
 						);
 					} );
 
