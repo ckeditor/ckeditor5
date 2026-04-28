@@ -23,7 +23,7 @@
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */
-export interface SubscriptConfig {
+export interface BasicStyleSubscriptConfig {
 
 	/**
 	 * Whether `subscript` and `superscript` attributes are allowed to coexist on the same text.
@@ -35,7 +35,7 @@ export interface SubscriptConfig {
 	 * text. This is useful for content such as isotope notation (`¹⁴₆C`) or tensor indices (`T^i_j`).
 	 *
 	 * The flag is symmetric with
-	 * {@link module:basic-styles/superscriptconfig~SuperscriptConfig#allowNesting `config.superscript.allowNesting`}:
+	 * {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig#allowNesting `config.superscript.allowNesting`}:
 	 * if either is set to `true`, both commands skip the mutual-exclusion step.
 	 *
 	 * The flag only affects command execution. Content set through the data pipeline (for example

@@ -19,11 +19,11 @@ import type {
 	StrikethroughEditing,
 	StrikethroughUI,
 	SubscriptCommand,
-	SubscriptConfig,
+	BasicStyleSubscriptConfig,
 	SubscriptEditing,
 	SubscriptUI,
 	SuperscriptCommand,
-	SuperscriptConfig,
+	BasicStyleSuperscriptConfig,
 	SuperscriptEditing,
 	SuperscriptUI,
 	Underline,
@@ -37,16 +37,16 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:basic-styles/superscript~Superscript superscript feature}.
 		 *
-		 * Read more in {@link module:basic-styles/superscriptconfig~SuperscriptConfig}.
+		 * Read more in {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig}.
 		 */
-		superscript?: SuperscriptConfig;
+		superscript?: BasicStyleSuperscriptConfig;
 
 		/**
 		 * The configuration of the {@link module:basic-styles/subscript~Subscript subscript feature}.
 		 *
-		 * Read more in {@link module:basic-styles/subscriptconfig~SubscriptConfig}.
+		 * Read more in {@link module:basic-styles/subscriptconfig~BasicStyleSubscriptConfig}.
 		 */
-		subscript?: SubscriptConfig;
+		subscript?: BasicStyleSubscriptConfig;
 	}
 
 	interface PluginsMap {

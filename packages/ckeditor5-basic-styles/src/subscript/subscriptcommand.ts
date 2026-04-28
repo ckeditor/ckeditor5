@@ -26,8 +26,8 @@ const SUPERSCRIPT = 'superscript';
  * single undo step.
  *
  * The mutual exclusion can be disabled by setting either
- * {@link module:basic-styles/subscriptconfig~SubscriptConfig#allowNesting `config.subscript.allowNesting`}
- * or {@link module:basic-styles/superscriptconfig~SuperscriptConfig#allowNesting `config.superscript.allowNesting`}
+ * {@link module:basic-styles/subscriptconfig~BasicStyleSubscriptConfig#allowNesting `config.subscript.allowNesting`}
+ * or {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig#allowNesting `config.superscript.allowNesting`}
  * to `true`. In that case the command behaves the same as the plain
  * {@link module:basic-styles/attributecommand~AttributeCommand}.
  *
