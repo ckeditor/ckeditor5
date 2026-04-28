@@ -1472,7 +1472,7 @@ describe( 'table cell properties', () => {
 
 						expect( paragraph.getAttribute( 'alignment' ) ).to.be.equal( 'center' );
 						expect( nestedTable.is( 'element', 'table' ) ).to.be.true;
-						expect( nestedTable.getAttribute( 'tableAlignment' ) ).to.be.equal( 'center' );
+						expect( nestedTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
 					} );
 
 					it( 'should apply alignment to all direct block children independently per td level', () => {
@@ -1507,7 +1507,7 @@ describe( 'table cell properties', () => {
 											'<paragraph alignment="center">inner</paragraph>' +
 											modelTable( [
 												[ '<paragraph>deepest</paragraph>' ]
-											], { tableAlignment: 'center' } )
+											] )
 										]
 									], { tableAlignment: 'blockRight' } )
 								]

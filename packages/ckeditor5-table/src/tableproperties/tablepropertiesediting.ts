@@ -279,7 +279,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 			},
 			center: {
 				value: 'center',
-				isCenter: modelElement.getAttribute( 'tableType' ) !== 'layout'
+				isDefault: modelElement.getAttribute( 'tableType' ) !== 'layout'
 			}
 		} )
 	} );
