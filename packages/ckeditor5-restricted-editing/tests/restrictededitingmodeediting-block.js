@@ -702,8 +702,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 
 				model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 3 ) );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					dataTransfer,
+					content: dataTransfer.getData( 'text/html' )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -724,8 +727,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 
 				model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' ) );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					dataTransfer,
+					content: dataTransfer.getData( 'text/html' )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -751,8 +757,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 					)
 				) );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					dataTransfer,
+					content: dataTransfer.getData( 'text/html' )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -778,8 +787,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 					)
 				) );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					dataTransfer,
+					content: dataTransfer.getData( 'text/html' )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -802,8 +814,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 				} );
 
 				it( 'should paste text inside exception marker', () => {
+					const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equal(
@@ -818,11 +833,14 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 				} );
 
 				it( 'should paste allowed text attributes inside exception marker', () => {
+					const dataTransfer = createDataTransfer( {
+						'text/html': '<p><a href="foo"><b><i>XXX</i></b></a></p>',
+						'text/plain': 'XXX'
+					} );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( {
-							'text/html': '<p><a href="foo"><b><i>XXX</i></b></a></p>',
-							'text/plain': 'XXX'
-						} )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equal(
@@ -841,8 +859,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 				} );
 
 				it( 'should paste disallowed (for inline exceptions) text attributes inside exception marker', () => {
+					const dataTransfer = createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equal(
@@ -856,8 +877,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 				} );
 
 				it( 'should allow pasting block elements', () => {
+					const dataTransfer = createDataTransfer( { 'text/html': '<blockquote><p>XXX</p></blockquote>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<blockquote><p>XXX</p></blockquote>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equal(
@@ -873,8 +897,11 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 				} );
 
 				it( 'should allow pasting multiple block elements', () => {
+					const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p><p>YYY</p><p>ZZZ</p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p><p>YYY</p><p>ZZZ</p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equal(
@@ -890,18 +917,21 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 				} );
 
 				it( 'should strip block exception while pasting', () => {
+					const dataTransfer = createDataTransfer( {
+						'text/html':
+							'<p>AAA</p>' +
+							'<div class="restricted-editing-exception">XXX</div>' +
+							'<blockquote>' +
+								'<p>BBB</p>' +
+								'<div class="restricted-editing-exception">YYY</div>' +
+							'</blockquote>' +
+							'<p>CCC</p>',
+						'text/plain': 'XXX'
+					} );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( {
-							'text/html':
-								'<p>AAA</p>' +
-								'<div class="restricted-editing-exception">XXX</div>' +
-								'<blockquote>' +
-									'<p>BBB</p>' +
-									'<div class="restricted-editing-exception">YYY</div>' +
-								'</blockquote>' +
-								'<p>CCC</p>',
-							'text/plain': 'XXX'
-						} )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equal(

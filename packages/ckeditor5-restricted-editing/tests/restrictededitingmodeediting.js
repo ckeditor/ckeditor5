@@ -1325,8 +1325,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					dataTransfer,
+					content: dataTransfer.getData( 'text/html' )
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -1339,8 +1342,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					content: dataTransfer.getData( 'text/html' ),
+					dataTransfer
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -1355,8 +1361,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					content: dataTransfer.getData( 'text/html' ),
+					dataTransfer
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -1371,8 +1380,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', spy );
 
+				const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 				viewDoc.fire( 'clipboardInput', {
-					dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+					content: dataTransfer.getData( 'text/html' ),
+					dataTransfer
 				} );
 
 				sinon.assert.notCalled( spy );
@@ -1385,8 +1397,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+						content: dataTransfer.getData( 'text/html' ),
+						dataTransfer
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]ar baz</paragraph>' );
@@ -1398,11 +1413,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( {
+						'text/html': '<p><a href="foo"><b><i>XXX</i></b></a></p>',
+						'text/plain': 'XXX'
+					} );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( {
-							'text/html': '<p><a href="foo"><b><i>XXX</i></b></a></p>',
-							'text/plain': 'XXX'
-						} )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup(
@@ -1419,8 +1437,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } )
+						content: dataTransfer.getData( 'text/html' ),
+						dataTransfer
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]ar baz</paragraph>' );
@@ -1432,8 +1453,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p><b><s><i>XXX</i></s></b></p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><b><s><i>XXX</i></s></b></p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect(
@@ -1448,8 +1472,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<blockquote><p>XXX</p></blockquote>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<blockquote><p>XXX</p></blockquote>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]ar baz</paragraph>' );
@@ -1463,8 +1490,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p>XXX</p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]r baz</paragraph>' );
@@ -1476,8 +1506,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p><b>XXX</b></p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><b>XXX</b></p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo b<$text bold="true">XXX[]</$text>r baz</paragraph>' );
@@ -1489,8 +1522,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><s>XXX</s></p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>foo bXXX[]r baz</paragraph>' );
@@ -1502,8 +1538,11 @@ describe( 'RestrictedEditingModeEditing', () => {
 					const firstParagraph = model.document.getRoot().getChild( 0 );
 					addExceptionMarker( 4, 7, firstParagraph, 'inline:1' );
 
+					const dataTransfer = createDataTransfer( { 'text/html': '<p><b><s><i>XXX</i></s></b></p>', 'text/plain': 'XXX' } );
+
 					viewDoc.fire( 'clipboardInput', {
-						dataTransfer: createDataTransfer( { 'text/html': '<p><b><s><i>XXX</i></s></b></p>', 'text/plain': 'XXX' } )
+						dataTransfer,
+						content: dataTransfer.getData( 'text/html' )
 					} );
 
 					expect(

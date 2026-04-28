@@ -181,7 +181,8 @@ describe( 'TableSelection - integration', () => {
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
-				stop: sinon.spy()
+				stop: sinon.spy(),
+				content: dataTransferMock.getData( 'text/html' )
 			} );
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
