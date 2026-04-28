@@ -30,7 +30,7 @@ describe( 'table cell properties', () => {
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
-				plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
+				plugins: [ TableCellPropertiesEditing, TablePropertiesEditing, Paragraph, TableEditing, AlignmentEditing ]
 			} );
 
 			model = editor.model;
@@ -1394,7 +1394,8 @@ describe( 'table cell properties', () => {
 						);
 						const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'left' );
+						// `left` is default value of alignment attribute.
+						expect( paragraph.getAttribute( 'alignment' ) ).to.be.undefined;
 					} );
 
 					it( 'should apply align=right to paragraph child', () => {
@@ -1469,8 +1470,11 @@ describe( 'table cell properties', () => {
 						const paragraph = tableCell.getChild( 0 );
 						const nestedTable = tableCell.getChild( 1 );
 
-						expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'center' );
+						expect( paragraph.getAttribute( 'alignment' ) ).to.be.equal( 'center' );
 						expect( nestedTable.is( 'element', 'table' ) ).to.be.true;
+
+						// `center` is default value of `tableAlign` attribute.
+						expect( nestedTable.getAttribute( 'tableAlignment' ) ).to.be.undefined;
 					} );
 
 					it( 'should apply alignment to all direct block children independently per td level', () => {
@@ -1747,7 +1751,8 @@ describe( 'table cell properties', () => {
 							);
 							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'left' );
+							// `left` is default value of alignment attribute.
+							expect( paragraph.getAttribute( 'alignment' ) ).to.be.undefined;
 						} );
 
 						it( 'should apply align=right to paragraph child', () => {
@@ -2457,7 +2462,8 @@ describe( 'table cell properties', () => {
 							);
 							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'left' );
+							// `left` is default value of alignment attribute.
+							expect( paragraph.getAttribute( 'alignment' ) ).to.be.undefined;
 						} );
 
 						it( 'should apply align="right" to paragraph child', () => {

@@ -64,7 +64,18 @@ export class AlignmentEditing extends Plugin {
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
-		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
+		editor.model.schema.setAttributeProperties( 'alignment', {
+			isFormatting: true,
+			blockAlignment: {
+				left: {
+					value: 'left',
+					isDefault: true
+				},
+				right: { value: 'right' },
+				center: { value: 'center' },
+				justify: { value: 'justify' }
+			}
+		} );
 
 		if ( shouldUseClasses ) {
 			editor.conversion.attributeToAttribute( buildClassDefinition( optionsToConvert ) );

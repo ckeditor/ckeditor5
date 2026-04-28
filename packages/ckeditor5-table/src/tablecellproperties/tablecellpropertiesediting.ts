@@ -310,9 +310,6 @@ function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 				return;
 			}
 
-			conversionApi.convertChildren( data.viewItem, modelElement );
-			conversionApi.updateConversionResult( modelElement, data );
-
 			for ( const child of modelElement.getChildren() ) {
 				if ( child.is( 'element' ) ) {
 					applyAlignmentToChild( child, alignValue, conversionApi );
@@ -342,10 +339,6 @@ function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 					return;
 				}
 			}
-		}
-
-		if ( !child.hasAttribute( 'alignment' ) && schema.checkAttribute( child, 'alignment' ) ) {
-			writer.setAttribute( 'alignment', alignValue, child );
 		}
 	}
 }
