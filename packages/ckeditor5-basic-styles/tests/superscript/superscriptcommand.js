@@ -139,6 +139,20 @@ describe( 'SuperscriptCommand', () => {
 			expect( selection.hasAttribute( 'subscript' ) ).to.be.false;
 		} );
 
+		it( 'removes the stored subscript on empty blocks inside a multi-block selection', () => {
+			_setModelData( model, '[<paragraph>foo</paragraph><paragraph></paragraph><paragraph>foo</paragraph>]' );
+
+			editor.execute( 'subscript' );
+			editor.execute( 'superscript' );
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getNodeByPath( [ 1 ] ), 0 );
+			} );
+
+			expect( model.document.selection.hasAttribute( 'subscript' ) ).to.be.false;
+			expect( model.document.selection.hasAttribute( 'superscript' ) ).to.be.true;
+		} );
+
 		it( 'restores the original subscript with a single undo step', () => {
 			_setModelData( model, '<paragraph>[<$text subscript="true">foo</$text>]</paragraph>' );
 
