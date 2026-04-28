@@ -22,6 +22,7 @@
   ],
   "devDependencies": {
     "@babel/parser": "^7.23.3",
+    "@ckbox/uploader": "2.9.2",
     "@ckeditor/ckeditor5-dev-build-tools": "^54.7.0",
     "@ckeditor/ckeditor5-dev-bump-year": "^54.7.0",
     "@ckeditor/ckeditor5-dev-changelog": "^54.7.0",
@@ -43,6 +44,7 @@
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
     "chalk": "^5.0.0",
+    "ckbox": "2.9.2",
     "date-fns": "^4.0.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.34.0",
