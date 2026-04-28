@@ -1749,8 +1749,7 @@ describe( 'table cell properties', () => {
 							);
 							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							// `left` is default value of alignment attribute.
-							expect( paragraph.getAttribute( 'alignment' ) ).to.be.undefined;
+							expect( paragraph.getAttribute( 'alignment' ) ).to.be.equal( 'left' );
 						} );
 
 						it( 'should apply align=right to paragraph child', () => {
@@ -1763,7 +1762,8 @@ describe( 'table cell properties', () => {
 							);
 							const paragraph = model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 
-							expect( paragraph.getAttribute( 'alignment' ) ).to.equal( 'right' );
+							// `right` is default value of alignment attribute.
+							expect( paragraph.getAttribute( 'alignment' ) ).to.be.undefined;
 						} );
 
 						it( 'should apply align=center to paragraph child', () => {

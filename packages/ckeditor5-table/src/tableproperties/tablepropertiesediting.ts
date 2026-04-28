@@ -270,11 +270,18 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 
 	schema.setAttributeProperties( 'tableAlignment', {
 		isFormatting: true,
-		blockAlignment: {
-			left: { value: 'blockLeft' },
-			right: { value: 'blockRight' },
-			center: { value: 'center' }
-		}
+		blockAlignment: ( modelElement: ModelElement ) => ( {
+			left: {
+				value: 'blockLeft'
+			},
+			right: {
+				value: 'blockRight'
+			},
+			center: {
+				value: 'center',
+				isCenter: modelElement.getAttribute( 'tableType' ) !== 'layout'
+			}
+		} )
 	} );
 
 	conversion.for( 'downcast' )

@@ -187,7 +187,8 @@ export {
 	type ModelSchemaItemDefinition,
 	type ModelSchemaCompiledItemDefinition,
 	type ModelSchemaContextDefinition,
-	type ModelSchemaContextItem
+	type ModelSchemaContextItem,
+	type ModelBlockAlignmentAttributesMapping
 } from './model/schema.js';
 export {
 	ModelSelection,

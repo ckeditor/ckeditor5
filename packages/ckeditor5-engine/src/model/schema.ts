@@ -2095,8 +2095,22 @@ export interface ModelAttributeProperties {
 	 */
 	copyFromObject?: boolean;
 
+	/**
+     * Defines the mapping of all possible block alignments for a specific model element.
+     * It is used by features that need to determine whether an element can be aligned,
+     * and apply the alignment if possible.
+     */
+	blockAlignment?:
+        | ModelBlockAlignmentAttributesMapping
+        | ( ( element: ModelElement ) => ModelBlockAlignmentAttributesMapping );
+
 	[ name: string ]: unknown;
 }
+
+export type ModelBlockAlignmentAttributesMapping = Record<string, {
+	isDefault?: boolean;
+	value: string;
+}>;
 
 export type ModelSchemaAttributeCheckCallback = ( context: ModelSchemaContext, attributeName: string ) => boolean | undefined;
 

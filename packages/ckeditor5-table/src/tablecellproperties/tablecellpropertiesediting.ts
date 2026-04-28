@@ -327,26 +327,27 @@ function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
 					continue;
 				}
 
-				const attrProperties = schema.getAttributeProperties( attrName );
+				const { blockAlignment } = schema.getAttributeProperties( attrName );
 
-				if ( attrProperties.blockAlignment ) {
-					const mappedValue = ( attrProperties.blockAlignment as BlockAlignmentAttributeProperty )[ alignValue ];
-
-					if ( mappedValue && !mappedValue.isDefault ) {
-						writer.setAttribute( attrName, mappedValue.value, child );
-					}
-
-					return;
+				if ( !blockAlignment ) {
+					continue;
 				}
+
+				const blockAlignmentMapping = typeof blockAlignment === 'function' ?
+					blockAlignment( child ) :
+					blockAlignment;
+
+				const mappedValue = blockAlignmentMapping[ alignValue ];
+
+				if ( mappedValue && !mappedValue.isDefault ) {
+					writer.setAttribute( attrName, mappedValue.value, child );
+				}
+
+				return;
 			}
 		}
 	}
 }
-
-type BlockAlignmentAttributeProperty = Record<string, {
-	isDefault?: boolean;
-	value: string;
-}>;
 
 /**
  * Enables the `'verticalAlignment'` attribute for table cells.

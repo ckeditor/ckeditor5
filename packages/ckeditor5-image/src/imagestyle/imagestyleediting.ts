@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import type { ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
+import type { ModelBlockAlignmentAttributesMapping, ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 
 import { ImageStyleCommand } from './imagestylecommand.js';
 import { ImageUtils } from '../imageutils.js';
@@ -173,7 +173,7 @@ export class ImageStyleEditing extends Plugin {
  * @param styles An array of available image style option definitions.
  * @returns A record mapping basic alignments to their valid, block-specific style names.
  */
-function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefinition> ) {
+function getBlockAlignmentAttributeProperty( styles: Array<ImageStyleOptionDefinition> ): ModelBlockAlignmentAttributesMapping {
 	const pickFirstSupported = ( ...names: Array<string> ) => {
 		const found = names
 			.map( name => getStyleDefinitionByName( name, styles ) )
