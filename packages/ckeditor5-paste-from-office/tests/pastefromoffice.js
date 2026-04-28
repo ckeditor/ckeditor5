@@ -17,7 +17,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { CodeBlockUI, CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
 describe( 'PasteFromOffice', () => {
-	let editor, pasteFromOffice, clipboard, element, viewDocument;
+	let editor, pasteFromOffice, element, viewDocument;
 
 	testUtils.createSinonSandbox();
 
@@ -29,7 +29,6 @@ describe( 'PasteFromOffice', () => {
 			plugins: [ PasteFromOffice, Paragraph, CodeBlockEditing, CodeBlockUI ]
 		} );
 		pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
-		clipboard = editor.plugins.get( 'ClipboardPipeline' );
 		viewDocument = editor.editing.view.document;
 	} );
 
@@ -103,13 +102,6 @@ describe( 'PasteFromOffice', () => {
 				expect( data.extraContent ).to.have.property( 'stylesString' );
 				expect( data.content ).to.be.instanceOf( ViewDocumentFragment );
 
-				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
-				expect( data._parsedData ).to.have.property( 'body' );
-				expect( data._parsedData ).to.have.property( 'bodyString' );
-				expect( data._parsedData ).to.have.property( 'styles' );
-				expect( data._parsedData ).to.have.property( 'stylesString' );
-				expect( data._parsedData.body ).to.be.instanceOf( ViewDocumentFragment );
-
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -138,14 +130,14 @@ describe( 'PasteFromOffice', () => {
 			it( 'should process data for codeBlock', () => {
 				_setModelData( editor.model, '<codeBlock language="plaintext">[]</codeBlock>' );
 
-				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
+				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>', '' );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
 
 				viewDocument.fire( 'clipboardInput', data );
 
 				expect( data.extraContent ).to.be.undefined;
 
-				sinon.assert.notCalled( getDataSpy );
+				sinon.assert.called( getDataSpy );
 			} );
 
 			function checkNotProcessedData( inputString ) {
@@ -158,30 +150,6 @@ describe( 'PasteFromOffice', () => {
 				expect( data.content ).to.deep.equal( inputString );
 
 				sinon.assert.called( getDataSpy );
-			}
-		} );
-
-		describe.skip( 'data which already have the flag', () => {
-			it( 'should not process again ms word data containing a flag', () => {
-				checkAlreadyProcessedData( '<meta name=Generator content="Microsoft Word 15">' +
-					'<p class="MsoNormal">Hello world<o:p></o:p></p>' );
-			} );
-
-			it( 'should not process again google docs data containing a flag', () => {
-				checkAlreadyProcessedData( '<meta charset="utf-8"><b id="docs-internal-guid-30db46f5-7fff-15a1-e17c-1234567890ab"' +
-					'style="font-weight:normal;"><p dir="ltr">Hello world</p></b>' );
-			} );
-
-			function checkAlreadyProcessedData( inputString ) {
-				const data = setUpData( inputString, true );
-				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
-
-				clipboard.fire( 'inputTransformation', data );
-
-				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
-				expect( data._parsedData ).to.be.undefined;
-
-				sinon.assert.notCalled( getDataSpy );
 			}
 		} );
 	} );
@@ -246,20 +214,22 @@ describe( 'PasteFromOffice', () => {
 					'[]o' +
 				'</codeBlock>' );
 
-			sinon.assert.calledOnce( dataTransferMock.getData );
+			expect( dataTransferMock.getData ).to.be.called;
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
 		} );
 	} );
 
-	// @param {String} inputString html to be processed by paste from office
-	// @param {Boolean} [isTransformedWithPasteFromOffice=false] if set, marks output data with isTransformedWithPasteFromOffice flag
-	// @returns {Object} data object simulating content obtained from the clipboard
-	function setUpData( inputString ) {
+	function setUpData( htmlString, plainTextString ) {
 		return {
-			content: inputString,
-			dataTransfer: createDataTransfer( { 'text/html': inputString } )
+			content: htmlString,
+			dataTransfer: createDataTransfer( {
+				'text/html': htmlString,
+				...typeof plainTextString === 'string' && {
+					'text/plain': plainTextString
+				}
+			} )
 		};
 	}
 } );
