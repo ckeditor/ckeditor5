@@ -75,6 +75,13 @@ export class ListMergeCommand extends Command {
 		model.change( writer => {
 			const { firstElement, lastElement } = this._getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel );
 
+			// A defensive guard. When `_getMergeSubjectElements()` cannot determine a valid pair of elements
+			// to merge (for example because there is no list block before/after the current one),
+			// the command should be a no-op instead of throwing on `null.getAttribute()`.
+			if ( !firstElement || !lastElement ) {
+				return;
+			}
+
 			const firstIndent = firstElement.getAttribute( 'listIndent' ) || 0;
 			const lastIndent = lastElement.getAttribute( 'listIndent' );
 			const lastElementId = lastElement.getAttribute( 'listItemId' );
@@ -213,6 +220,12 @@ export class ListMergeCommand extends Command {
 					//    * b
 					//    c
 					firstElement = ListWalker.first( positionParent, { sameIndent: true, lowerIndent: true } );
+
+					// Fallback for "skip-level" structures where the previous list block in the model
+					// happens to live at a *higher* indent (no same-or-lower-indent block precedes it).
+					if ( !firstElement && isListItemBlock( positionParent.previousSibling ) ) {
+						firstElement = positionParent.previousSibling;
+					}
 				} else {
 					firstElement = positionParent.previousSibling;
 				}
