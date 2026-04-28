@@ -1507,7 +1507,7 @@ describe( 'table cell properties', () => {
 											'<paragraph alignment="center">inner</paragraph>' +
 											modelTable( [
 												[ '<paragraph>deepest</paragraph>' ]
-											] )
+											], { tableAlignment: 'center' } )
 										]
 									], { tableAlignment: 'blockRight' } )
 								]
