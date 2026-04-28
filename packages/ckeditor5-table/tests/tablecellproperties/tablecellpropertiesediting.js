@@ -1509,7 +1509,7 @@ describe( 'table cell properties', () => {
 												[ '<paragraph>deepest</paragraph>' ]
 											] )
 										]
-									], { tableAlignment: 'right' } )
+									], { tableAlignment: 'blockRight' } )
 								]
 							] )
 						);
@@ -1539,9 +1539,9 @@ describe( 'table cell properties', () => {
 									'<paragraph alignment="right">outer</paragraph>' +
 									modelTable( [
 										[ '<paragraph>inner</paragraph>' ]
-									] )
+									], { tableAlignment: 'blockRight' } )
 								]
-							], { tableAlignment: 'right' } )
+							] )
 						);
 					} );
 
