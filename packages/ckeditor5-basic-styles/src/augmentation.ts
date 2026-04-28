@@ -18,8 +18,12 @@ import type {
 	Strikethrough,
 	StrikethroughEditing,
 	StrikethroughUI,
+	SubscriptCommand,
+	SubscriptConfig,
 	SubscriptEditing,
 	SubscriptUI,
+	SuperscriptCommand,
+	SuperscriptConfig,
 	SuperscriptEditing,
 	SuperscriptUI,
 	Underline,
@@ -28,6 +32,23 @@ import type {
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:basic-styles/superscript~Superscript superscript feature}.
+		 *
+		 * Read more in {@link module:basic-styles/superscriptconfig~SuperscriptConfig}.
+		 */
+		superscript?: SuperscriptConfig;
+
+		/**
+		 * The configuration of the {@link module:basic-styles/subscript~Subscript subscript feature}.
+		 *
+		 * Read more in {@link module:basic-styles/subscriptconfig~SubscriptConfig}.
+		 */
+		subscript?: SubscriptConfig;
+	}
+
 	interface PluginsMap {
 		[ Superscript.pluginName ]: Superscript;
 		[ Subscript.pluginName ]: Subscript;
@@ -58,8 +79,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		code: AttributeCommand;
 		italic: AttributeCommand;
 		strikethrough: AttributeCommand;
-		subscript: AttributeCommand;
-		superscript: AttributeCommand;
+		subscript: SubscriptCommand;
+		superscript: SuperscriptCommand;
 		underline: AttributeCommand;
 	}
 }

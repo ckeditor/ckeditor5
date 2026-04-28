@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { AttributeCommand } from '../attributecommand.js';
+import { SuperscriptCommand } from './superscriptcommand.js';
 
 const SUPERSCRIPT = 'superscript';
 
@@ -38,6 +38,9 @@ export class SuperscriptEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+
+		editor.config.define( SUPERSCRIPT, { allowNesting: false } );
+
 		// Allow super attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUPERSCRIPT } );
 		editor.model.schema.setAttributeProperties( SUPERSCRIPT, {
@@ -60,6 +63,6 @@ export class SuperscriptEditing extends Plugin {
 		} );
 
 		// Create super command.
-		editor.commands.add( SUPERSCRIPT, new AttributeCommand( editor, SUPERSCRIPT ) );
+		editor.commands.add( SUPERSCRIPT, new SuperscriptCommand( editor ) );
 	}
 }
