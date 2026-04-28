@@ -106,9 +106,9 @@ function getBlockAlignmentAttributeProperty( locale: Locale ) {
 		justify: { value: 'justify' }
 	} satisfies Record<AlignmentSupportedOption, unknown>;
 
-	for ( const mapping of Object.values( blockAlignment ) ) {
-		mapping.isDefault = isDefault( mapping.value, locale );
-	}
+	const defaultDirection = locale.contentLanguageDirection == 'rtl' ? 'right' : 'left';
+
+	blockAlignment[ defaultDirection ]!.isDefault = true;
 
 	return blockAlignment;
 }
