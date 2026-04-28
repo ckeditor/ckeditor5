@@ -610,8 +610,9 @@ export function isNumberedListType( listType: ListType ): boolean {
  *   `listType` (the visible list already has earlier items),
  * - `true` if it finds a same-indent block of a different `listType` and a different `listItemId` (a different list ends; ours
  *   starts here),
- * - `false` if it walks off the start of the document while passing only higher-indent blocks (those blocks
- *   live inside an intermediate skip-level `<li style="list-style-type:none">` wrapper at our indent).
+ * - `false` if the loop ends (it reaches the first non-list-item block, or no more previous siblings) while passing only
+ *   higher-indent blocks (those blocks live inside an intermediate skip-level `<li style="list-style-type:none">` wrapper
+ *   at our indent).
  *
  * For example, in the model:
  *
@@ -665,8 +666,8 @@ export function isFirstListItemInList( listItem: ModelElement ): boolean {
 		previous = previous.previousSibling;
 	}
 
-	// Walked off the start of the document. If only higher-indent blocks were on the way, they
-	// live inside an intermediate skip-level wrapper at our indent — we are not first.
+	// Reached the first non-list-item block (or no more previous siblings). If only higher-indent blocks were on
+	// the way, they live inside an intermediate skip-level wrapper at our indent — we are not first.
 	return !sawHigherIndent;
 }
 
