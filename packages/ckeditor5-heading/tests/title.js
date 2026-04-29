@@ -965,9 +965,13 @@ describe( 'Title', () => {
 	} );
 
 	describe( 'with an $inlineRoot modelElement', () => {
-		let inlineElement, inlineEditor, inlineModel, inlineRoot, titlePlugin;
+		let inlineElement, inlineEditor, inlineModel, inlineRoot, titlePlugin, warnStub;
 
 		beforeEach( async () => {
+			// Title logs a single `title-no-supported-root` warning when no root accepts the title element;
+			// silence it here so the CI watchdog for unexpected console output does not fail the suite.
+			warnStub = sinon.stub( console, 'warn' );
+
 			inlineElement = document.createElement( 'div' );
 			document.body.appendChild( inlineElement );
 
@@ -983,6 +987,7 @@ describe( 'Title', () => {
 		afterEach( async () => {
 			await inlineEditor.destroy();
 			inlineElement.remove();
+			warnStub.restore();
 		} );
 
 		it( 'should not allow title as a child of $inlineRoot', () => {
