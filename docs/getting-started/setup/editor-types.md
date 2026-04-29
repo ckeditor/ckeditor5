@@ -20,13 +20,15 @@ Other custom-tailored editor types can be made using the {@link framework/extern
 
 ## Classic editor
 
-Classic editor is what most users traditionally learned to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+The classic editor is what most users traditionally learned to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 {@img assets/img/editor-type-classic.png 800 Classic editor type.}
 
-See an {@link examples/builds/classic-editor example of the classic editor} in action.
+<snippet-footer>
+	See an {@link examples/builds/classic-editor example of the classic editor} in action.
+</snippet-footer>
 
-Use the following import to put classic editor on your page:
+Use the following import to put the classic editor on your page:
 
 <code-switcher>
 ```js
@@ -54,9 +56,11 @@ The inline editor comes with a floating toolbar that becomes visible when the ed
 
 {@img assets/img/editor-type-inline.png 800 Inline editor type.}
 
-See an {@link examples/builds/inline-editor example of the inline editor} in action.
+<snippet-footer>
+	See an {@link examples/builds/inline-editor example of the inline editor} in action.
+</snippet-footer>
 
-Use the following import to put inline editor on your page:
+Use the following import to put the inline editor on your page:
 
 <code-switcher>
 ```js
@@ -86,15 +90,19 @@ Balloon editor is similar to inline editor. The difference between them is that 
 
 {@img assets/img/editor-type-balloon.png 800 Balloon editor type.}
 
-See an {@link examples/builds/balloon-editor example of the balloon editor} in action.
+<snippet-footer>
+	See an {@link examples/builds/balloon-editor example of the balloon editor} in action.
+</snippet-footer>
 
 Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
 
 {@img assets/img/editor-type-balloon-block.png 800 Balloon block editor type.}
 
-See an {@link examples/builds/balloon-block-editor example of the balloon block editor} in action.
+<snippet-footer>
+	See an {@link examples/builds/balloon-block-editor example of the balloon block editor} in action.
+</snippet-footer>
 
-Use one of the following imports to put balloon editor on your page:
+Use one of the following imports to put the balloon editor on your page:
 
 <code-switcher>
 ```js
@@ -130,9 +138,11 @@ By separating the toolbar from the editing area, you can integrate the editor in
 
 {@img assets/img/editor-type-document.png 800 Document editor type.}
 
-See an {@link examples/builds/document-editor example of the document editor} in action.
+<snippet-footer>
+	See an {@link examples/builds/document-editor example of the document editor} in action.
+</snippet-footer>
 
-Use the following import to put decoupled editor on your page:
+Use the following import to put the decoupled editor on your page:
 
 <code-switcher>
 ```js
@@ -165,7 +175,9 @@ The multi-root editor is an editor type that features multiple, separate editabl
 
 {@img assets/img/editor-type-multi-root.png 800 Multi-root editor type.}
 
-See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
+<snippet-footer>
+	See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
+</snippet-footer>
 
 <info-box>
 	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
