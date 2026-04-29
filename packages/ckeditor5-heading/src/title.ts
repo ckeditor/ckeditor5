@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor, type ElementApi } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
+import { first, logWarning, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import {
 	ViewDowncastWriter,
 	enableViewPlaceholder,
@@ -90,6 +90,7 @@ export class Title extends Plugin {
 		// the root accepting `$block` content, which is not guaranteed for custom or inline roots.
 		// Runtime codepaths below additionally guard on `schema.checkChild( root, 'title' )` so
 		// the plugin gracefully no-ops on roots where the schema does not allow the title element.
+		// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- registered only on the default `$root` by design
 		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
 		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
 		model.schema.extend( '$text', { allowIn: 'title-content' } );
@@ -138,6 +139,50 @@ export class Title extends Plugin {
 
 		// Attach Tab handling.
 		this._attachTabPressHandling();
+
+		this._warnIfNoSupportedRoot();
+	}
+
+	/**
+	 * Logs a single warning when none of the editor's roots can host the title structure. The Title feature
+	 * only operates on roots whose `modelElement` is the default `$root`; roots configured with a custom
+	 * `modelElement` are silently skipped at runtime. If no root supports the structure, the plugin is
+	 * effectively a no-op and the integrator likely wants to know.
+	 */
+	private _warnIfNoSupportedRoot(): void {
+		const model = this.editor.model;
+		let sawAnyRoot = false;
+
+		for ( const root of model.document.getRoots() ) {
+			if ( root.rootName === '$graveyard' ) {
+				continue;
+			}
+
+			sawAnyRoot = true;
+
+			if ( model.schema.checkChild( root, 'title' ) ) {
+				return;
+			}
+		}
+
+		// No non-graveyard roots present at init — the editor will receive its roots later (e.g. via `addRoot()`).
+		// Stay quiet; we cannot judge support without knowing what the configured roots will be.
+		if ( !sawAnyRoot ) {
+			return;
+		}
+
+		/**
+		 * The Title feature was loaded, but none of the editor's roots supports the `title` element. The feature
+		 * only operates on roots whose `modelElement` is the default `$root`; roots configured with a custom
+		 * `modelElement` (including `$inlineRoot`) are silently skipped, so `getTitle()` / `getBody()` fall back
+		 * to the regular data getter and no title structure is ever inserted.
+		 *
+		 * To use the Title feature, ensure at least one root uses the default `$root` model element. Otherwise,
+		 * remove the Title plugin from this editor's plugin list.
+		 *
+		 * @error title-no-supported-root
+		 */
+		logWarning( 'title-no-supported-root' );
 	}
 
 	/**
@@ -543,6 +588,9 @@ function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<View
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
+	// Testing against a literal `$root` is intentional: this converter must not fire on roots whose `modelElement`
+	// is customized, because the Title feature only registers its schema against `$root`.
+	// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- name-agnostic check would fire for unsupported custom roots
 	if ( !modelCursor.isAtStart || !modelCursor.parent.is( 'element', '$root' ) ) {
 		return;
 	}
