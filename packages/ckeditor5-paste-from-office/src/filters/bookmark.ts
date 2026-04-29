@@ -48,6 +48,17 @@ export function transformBookmarks(
 	}
 }
 
+/**
+ * Checks whether the given element is a hidden or auto-generated bookmark anchor.
+ *
+ * Editors like MS Word and Google Docs use the `name` attribute (rather than `id`)
+ * for bookmarks. Furthermore, they reserve `_`-prefixed bookmark names for
+ * auto-generated anchors (e.g., Table of Contents or internal hyperlinks) and
+ * do not allow users to manually create custom bookmarks starting with an underscore.
+ *
+ * @param element The element to check.
+ * @returns True if the element is a hidden bookmark anchor, false otherwise.
+ */
 function isHiddenBookmarkAnchor( element: ViewElement ) {
 	const name = element.getAttribute( 'name' );
 
