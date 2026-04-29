@@ -86,7 +86,7 @@ InlineEditor
 
 ## Balloon editor and balloon block editor
 
-Balloon editor is similar to inline editor. The difference between them is that the {@link getting-started/setup/toolbar#block-toolbar toolbar appears in a balloon} next to the selection (when the selection is not empty).
+T balloon editor is similar to inline editor. The difference between them is that the {@link getting-started/setup/toolbar#block-toolbar toolbar appears in a balloon} next to the selection (when the selection is not empty).
 
 {@img assets/img/editor-type-balloon.png 800 Balloon editor type.}
 
@@ -94,7 +94,7 @@ Balloon editor is similar to inline editor. The difference between them is that 
 	See an {@link examples/builds/balloon-editor example of the balloon editor} in action.
 </snippet-footer>
 
-Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
+Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar provides access to additional block-level editing features.
 
 {@img assets/img/editor-type-balloon-block.png 800 Balloon block editor type.}
 
@@ -171,7 +171,7 @@ DecoupledEditor
 
 ## Multi-root editor
 
-The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are "connected." All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.
+The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are “connected.” All editable areas of the same editor instance share the same configuration, toolbar, and undo stack. They produce one document.
 
 {@img assets/img/editor-type-multi-root.png 800 Multi-root editor type.}
 
