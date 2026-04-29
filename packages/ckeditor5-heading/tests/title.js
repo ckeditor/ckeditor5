@@ -1061,7 +1061,49 @@ describe( 'Title', () => {
 			expect( inlineEditor.getData() ).to.equal( 'Foo bar' );
 		} );
 	} );
+
+	describe( '_warnIfNoSupportedRoot()', () => {
+		const WARNING_ID = 'title-no-supported-root';
+
+		let warnStub, warnEditorElement, warnEditor;
+
+		beforeEach( () => {
+			warnStub = sinon.stub( console, 'warn' );
+			warnEditorElement = document.createElement( 'div' );
+			document.body.appendChild( warnEditorElement );
+		} );
+
+		afterEach( async () => {
+			if ( warnEditor ) {
+				await warnEditor.destroy();
+				warnEditor = null;
+			}
+			warnEditorElement.remove();
+			warnStub.restore();
+		} );
+
+		it( 'should not warn when at least one root supports the title element', async () => {
+			warnEditor = await ClassicTestEditor.create( warnEditorElement, {
+				plugins: [ Paragraph, Title, Heading ]
+			} );
+
+			expect( countWarnings( warnStub, WARNING_ID ) ).to.equal( 0 );
+		} );
+
+		it( 'should warn exactly once when no root supports the title element', async () => {
+			warnEditor = await ClassicTestEditor.create( warnEditorElement, {
+				plugins: [ Paragraph, Title, Heading ],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			expect( countWarnings( warnStub, WARNING_ID ) ).to.equal( 1 );
+		} );
+	} );
 } );
+
+function countWarnings( warnStub, id ) {
+	return warnStub.getCalls().filter( call => String( call.args[ 0 ] ).includes( id ) ).length;
+}
 
 function getEventData( keyCode, { shiftKey = false } = {} ) {
 	return {
