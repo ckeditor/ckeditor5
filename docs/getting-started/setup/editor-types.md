@@ -32,7 +32,14 @@ Use the following import to put the classic editor on your page:
 
 <code-switcher>
 ```js
-import { ClassicEditor } from 'ckeditor5';
+import {
+	ClassicEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} from 'ckeditor5';
 
 ClassicEditor
 	.create( {
@@ -64,7 +71,14 @@ Use the following import to put the inline editor on your page:
 
 <code-switcher>
 ```js
-import { InlineEditor } from 'ckeditor5';
+import {
+	InlineEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} from 'ckeditor5';
 
 InlineEditor
 	.create( {
@@ -106,7 +120,14 @@ Use one of the following imports to put the balloon editor on your page:
 
 <code-switcher>
 ```js
-import { BalloonEditor } from 'ckeditor5';
+import {
+	BalloonEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} from 'ckeditor5';
 
 BalloonEditor
 	.create( {
@@ -146,7 +167,14 @@ Use the following import to put the decoupled editor on your page:
 
 <code-switcher>
 ```js
-import { DecoupledEditor } from 'ckeditor5';
+import {
+	DecoupledEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} from 'ckeditor5';
 
 DecoupledEditor
 	.create( {
