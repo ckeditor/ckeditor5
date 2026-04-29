@@ -18,27 +18,6 @@ There are six ready-made editor types (see below) available for CKEditor&nbsp;5.
 
 Other custom-tailored editor types can be made using the {@link framework/external-ui CKEditor&nbsp;5 Framework}.
 
-For example, this code will import the classic editor type and some essential text formatting plugins. It also provides the configuration of the {@link getting-started/setup/toolbar main editor toolbar}.
-
-<code-switcher>
-```js
-import { ClassicEditor, Bold, Italic, Link } from 'ckeditor5'; // Imports.
-
-ClassicEditor // Editor type declaration.
-	.create( {
-		attachTo: document.querySelector( '#editor' ),
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Bold, Italic, Link ], // Plugins import.
-		toolbar: [ 'bold', 'italic', 'link' ], // Toolbar configuration.
-		root: {
-			placeholder: 'Type here...'
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-</code-switcher>
-
 ## Classic editor
 
 Classic editor is what most users traditionally learned to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
@@ -52,6 +31,20 @@ Use the following import to put classic editor on your page:
 <code-switcher>
 ```js
 import { ClassicEditor } from 'ckeditor5';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: [ 'bold', 'italic' ]
+	} )
+	.then( editor => {
+		console.log( 'Classic editor initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 </code-switcher>
 
@@ -68,6 +61,22 @@ Use the following import to put inline editor on your page:
 <code-switcher>
 ```js
 import { InlineEditor } from 'ckeditor5';
+
+InlineEditor
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: [ 'bold', 'italic' ]
+	} )
+	.then( editor => {
+		console.log( 'Inline editor initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 </code-switcher>
 
@@ -85,19 +94,29 @@ Balloon block is essentially the balloon editor with an extra block toolbar, whi
 
 See an {@link examples/builds/balloon-block-editor example of the balloon block editor} in action.
 
-Use one of the following imports to put balloon or balloon block editor on your page:
+Use one of the following imports to put balloon editor on your page:
 
 <code-switcher>
 ```js
 import { BalloonEditor } from 'ckeditor5';
-```
-</code-switcher>
 
-or
-
-<code-switcher>
-```js
-import { BalloonBlockEditor } from 'ckeditor5';
+BalloonEditor
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: [ 'bold', 'italic' ],
+		// The optional setting configures the side toolbar.
+		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
+	} )
+	.then( editor => {
+		console.log( 'Balloon editor initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 </code-switcher>
 
@@ -113,11 +132,30 @@ By separating the toolbar from the editing area, you can integrate the editor in
 
 See an {@link examples/builds/document-editor example of the document editor} in action.
 
-Use the following import to put classic editor on your page:
+Use the following import to put decoupled editor on your page:
 
 <code-switcher>
 ```js
-import { DocumentEditor } from 'ckeditor5';
+import { DecoupledEditor } from 'ckeditor5';
+
+DecoupledEditor
+	.create( {
+		root: {
+			element: document.querySelector( '#editor' )
+		},
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+		]
+	} )
+	.then( editor => {
+		console.log( 'Balloon editor initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 </code-switcher>
 
@@ -139,15 +177,16 @@ See an {@link examples/builds/multi-root-editor example of the multi-root editor
 
 Add all roots you need in the editor to the `.create` command. For example:
 
+<code-switcher>
 ```js
-const {
+import {
 	MultiRootEditor,
 	Essentials,
 	Bold,
 	Italic,
 	Font,
 	Paragraph
-} = CKEDITOR;
+} from 'ckeditor5';
 
 MultiRootEditor
 	.create( {
@@ -167,6 +206,7 @@ MultiRootEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 Then, use these roots to place editor windows in the document.
 
