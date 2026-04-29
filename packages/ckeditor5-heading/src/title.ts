@@ -151,24 +151,11 @@ export class Title extends Plugin {
 	 */
 	private _warnIfNoSupportedRoot(): void {
 		const model = this.editor.model;
-		let sawAnyRoot = false;
 
 		for ( const root of model.document.getRoots() ) {
-			if ( root.rootName === '$graveyard' ) {
-				continue;
-			}
-
-			sawAnyRoot = true;
-
 			if ( model.schema.checkChild( root, 'title' ) ) {
 				return;
 			}
-		}
-
-		// No non-graveyard roots present at init — the editor will receive its roots later (e.g. via `addRoot()`).
-		// Stay quiet; we cannot judge support without knowing what the configured roots will be.
-		if ( !sawAnyRoot ) {
-			return;
 		}
 
 		/**
