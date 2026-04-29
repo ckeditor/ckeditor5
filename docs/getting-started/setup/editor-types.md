@@ -86,7 +86,7 @@ InlineEditor
 
 ## Balloon editor and balloon block editor
 
-T balloon editor is similar to inline editor. The difference between them is that the {@link getting-started/setup/toolbar#block-toolbar toolbar appears in a balloon} next to the selection (when the selection is not empty).
+The balloon editor is similar to inline editor. The difference between them is that the {@link getting-started/setup/toolbar#block-toolbar toolbar appears in a balloon} next to the selection (when the selection is not empty).
 
 {@img assets/img/editor-type-balloon.png 800 Balloon editor type.}
 
