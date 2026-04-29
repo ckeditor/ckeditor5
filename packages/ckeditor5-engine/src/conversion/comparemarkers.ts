@@ -10,10 +10,42 @@
 import type { ModelRange } from '../model/range.js';
 
 /**
- * Sorts markers in a stable fashion so their addition order does not affect downcast output.
+ * Sorts markers so the downcast result is deterministic regardless of the order
+ * markers were added to the marker collection.
  *
- * Markers are ordered in reverse DOM order for non-intersecting ranges. For intersecting ranges,
- * the start position is the primary sort key and the end position is the secondary sort key.
+ * The sort key is the marker's range, ordered "right-to-left" through the document so that
+ * a marker's opening boundary is processed *after* any markers nested inside it. This way
+ * the outer marker wraps the inner ones at conversion time.
+ *
+ * Cases (positions shown as `0123456789`, sort result top-to-bottom):
+ *
+ * 1. Non-overlapping ranges — sorted by position, last range first:
+ *
+ *        a: [--]               →   c, b, a
+ *        b:     [--]
+ *        c:        [--]
+ *
+ * 2. Adjacent ranges (end === start) — treated as non-overlapping:
+ *
+ *        first:  [---]         →   third, second, first
+ *        second:    [---]
+ *        third:        [---]
+ *
+ * 3. Nested ranges (same start, different ends) — inner first, outer last:
+ *
+ *        shorter: [-]          →   shorter, longer
+ *        longer:  [---]
+ *
+ * 4. Partially overlapping ranges — sorted by start position:
+ *
+ *        earlier: [---]        →   later, earlier
+ *        later:     [---]
+ *
+ * 5. Identical ranges — fall back to reverse name comparison:
+ *
+ *        alpha:   [---]        →   charlie, bravo, alpha
+ *        bravo:   [---]
+ *        charlie: [---]
  *
  * @internal
  */
