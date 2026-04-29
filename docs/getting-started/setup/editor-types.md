@@ -42,7 +42,7 @@ ClassicEditor
 		toolbar: [ 'bold', 'italic' ]
 	} )
 	.then( editor => {
-		console.log( 'Classic editor initialized', editor );
+		console.log( 'The classic editor initialized', editor );
 	} )
 	.catch( error => {
 		console.error( error );
@@ -76,7 +76,7 @@ InlineEditor
 		toolbar: [ 'bold', 'italic' ]
 	} )
 	.then( editor => {
-		console.log( 'Inline editor initialized', editor );
+		console.log( 'The inline editor initialized', editor );
 	} )
 	.catch( error => {
 		console.error( error );
@@ -120,7 +120,7 @@ BalloonEditor
 		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
 	} )
 	.then( editor => {
-		console.log( 'Balloon editor initialized', editor );
+		console.log( 'The balloon editor initialized', editor );
 	} )
 	.catch( error => {
 		console.error( error );
@@ -161,7 +161,7 @@ DecoupledEditor
 		]
 	} )
 	.then( editor => {
-		console.log( 'Balloon editor initialized', editor );
+		console.log( 'The decoupled editor initialized', editor );
 	} )
 	.catch( error => {
 		console.error( error );
