@@ -1337,6 +1337,12 @@ export interface RootConfig {
 	label?: string;
 
 	/**
+	 * An optional, longer description of this editing area. It is intended as a stable, human-readable identifier
+	 * so features can match a root across sessions.
+	 */
+	description?: string;
+
+	/**
 	 * Initial root attributes for a root.
 	 *
 	 * **Note: You must provide full set of attributes for each root. If an attribute is not set on a root, set the value to `null`.
