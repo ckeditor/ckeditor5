@@ -2107,6 +2107,17 @@ export interface ModelAttributeProperties {
 	[ name: string ]: unknown;
 }
 
+/**
+ * Defines the mapping of block alignment options for a model element attribute.
+ *
+ * Each key represents a logical alignment name (e.g. `'left'`, `'center'`, `'right'`, `'justify'`),
+ * and the corresponding value describes how that alignment is represented in the model — including
+ * the actual attribute value and whether it should be treated as the default alignment for the element.
+ *
+ * Used by features that need to determine whether a model element supports block alignment
+ * and how to apply it. Can be provided as a static object or as a function receiving the element
+ * and returning the mapping dynamically, via {@link ~ModelAttributeProperties#blockAlignment}.
+ */
 export type ModelBlockAlignmentAttributesMapping = Record<string, {
 	isDefault?: boolean;
 	value: string;
