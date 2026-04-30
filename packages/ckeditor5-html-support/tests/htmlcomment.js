@@ -55,6 +55,75 @@ describe( 'HtmlComment', () => {
 				expect( editor.getData() ).to.equal( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
 			} );
 		} );
+
+		it( 'should declare the $comment attribute on $root so custom roots inheriting its attributes pick it up', () => {
+			model.schema.register( 'myRoot', {
+				inheritAllFrom: '$root'
+			} );
+
+			expect( model.schema.checkAttribute( [ 'myRoot' ], '$comment' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ 'myRoot' ], '$comment:abc123' ) ).to.be.true;
+		} );
+
+		it( 'should allow the per-comment attribute on a custom root that only opts into $root attributes', () => {
+			model.schema.register( 'myAttrRoot', {
+				allowAttributesOf: '$root'
+			} );
+
+			expect( model.schema.checkAttribute( [ 'myAttrRoot' ], '$comment' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ 'myAttrRoot' ], '$comment:abc123' ) ).to.be.true;
+		} );
+
+		it( 'should not allow the $comment attribute on a root that does not opt into $root attributes', () => {
+			model.schema.register( 'isolatedRoot', {
+				isLimit: true
+			} );
+
+			expect( model.schema.checkAttribute( [ 'isolatedRoot' ], '$comment' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ 'isolatedRoot' ], '$comment:abc123' ) ).to.be.false;
+		} );
+	} );
+
+	describe( '$inlineRoot editor', () => {
+		let inlineEditor, inlineRoot;
+
+		beforeEach( async () => {
+			inlineEditor = await VirtualTestEditor.create( {
+				plugins: [ HtmlComment ],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			inlineRoot = inlineEditor.model.document.getRoot();
+		} );
+
+		afterEach( () => {
+			return inlineEditor.destroy();
+		} );
+
+		it( 'should preserve HTML comments around inline text through a setData/getData round trip', () => {
+			inlineEditor.setData( '<!-- start -->Foo<!-- middle -->Bar<!-- end -->' );
+
+			expect( inlineEditor.getData() ).to.equal( '<!-- start -->Foo<!-- middle -->Bar<!-- end -->' );
+		} );
+
+		it( 'should store each HTML comment content as a $comment:<uid> attribute on the $inlineRoot', () => {
+			inlineEditor.setData( '<!-- alpha -->Foo<!-- beta -->' );
+
+			const commentAttributes = [ ...inlineRoot.getAttributeKeys() ]
+				.filter( attr => attr.startsWith( '$comment:' ) )
+				.map( attr => inlineRoot.getAttribute( attr ) );
+
+			expect( commentAttributes ).to.have.members( [ ' alpha ', ' beta ' ] );
+		} );
+
+		it( 'should create a $comment marker for each HTML comment upcast inside the $inlineRoot', () => {
+			inlineEditor.setData( 'Foo<!-- inline -->Bar' );
+
+			const commentMarkers = [ ...inlineEditor.model.markers ].filter( marker => marker.name.startsWith( '$comment:' ) );
+
+			expect( commentMarkers ).to.have.length( 1 );
+			expect( commentMarkers[ 0 ].getStart().root ).to.equal( inlineRoot );
+		} );
 	} );
 
 	describe( 'upcast conversion', () => {

@@ -227,6 +227,12 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * **Note:** do not use this method after the editor has been initialized! If you want to dynamically add a root, use
 	 * {@link module:engine/model/writer~ModelWriter#addRoot `model.Writer#addRoot`} instead.
 	 *
+	 * **Note:** The default `elementName` value is `'$root'`. When the editor uses a custom root
+	 * {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`}, pass the configured model element
+	 * name explicitly so the created root matches the schema the features expect.
+	 * See the {@glink framework/deep-dive/schema#custom-root-elements Custom root elements} section of the
+	 * {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
+	 *
 	 * @param elementName The element name. Defaults to `'$root'` which also has some basic schema defined
 	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
 	 * @param rootName A unique root name.

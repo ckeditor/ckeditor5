@@ -458,6 +458,13 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * Returns the data parsed by the {@link #processor data processor} and then converted by upcast converters
 	 * attached to the {@link #upcastDispatcher}.
 	 *
+	 * **Note:** The default `context` value is `'$root'`, which only matches the generic root. When the editor uses a
+	 * custom root {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`}, pass the target
+	 * {@link module:engine/model/rootelement~ModelRootElement root element} (or its configured model element name)
+	 * explicitly, otherwise the conversion result may be wrong.
+	 * See the {@glink framework/deep-dive/schema#custom-root-elements Custom root elements} section of the
+	 * {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
+	 *
 	 * @see #set
 	 * @param data Data to parse.
 	 * @param context Base context in which the view will be converted to the model.
@@ -479,6 +486,13 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * When marker elements were converted during the conversion process, it will be set as a document fragment's
 	 * {@link module:engine/model/documentfragment~ModelDocumentFragment#markers static markers map}.
+	 *
+	 * **Note:** The default `context` value is `'$root'`, which only matches the generic root. When the editor uses a
+	 * custom root {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`}, pass the target
+	 * {@link module:engine/model/rootelement~ModelRootElement root element} (or its configured model element name)
+	 * explicitly, otherwise the conversion result may be wrong.
+	 * See the {@glink framework/deep-dive/schema#custom-root-elements Custom root elements} section of the
+	 * {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 *
 	 * @fires toModel
 	 * @param viewElementOrFragment The element or document fragment whose content will be converted.

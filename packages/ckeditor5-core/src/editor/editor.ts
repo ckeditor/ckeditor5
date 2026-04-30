@@ -953,12 +953,18 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * Registers a given string as a root attribute key. Registered root attributes are added to
 	 * the {@link module:engine/model/schema~ModelSchema schema}.
 	 *
-	 * Note: Attributes passed in the configuration for multi-root editors
+	 * **Note:** Attributes passed in the configuration for multi-root editors
 	 * ({@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}) or
 	 * single-root editors ({@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`})
 	 * are automatically registered when the editor is initialized. However, registering the same attribute twice
 	 * does not have any negative impact, so it is recommended to use this method in any feature that uses
 	 * root attributes.
+	 *
+	 * **Note:** Registered attributes are attached only to the generic `$root` schema element. A custom root
+	 * {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`} must opt into the `$root`
+	 * attribute chain via `allowAttributesOf: '$root'` to inherit these attributes.
+	 * See the {@glink framework/deep-dive/schema#custom-root-elements Custom root elements} section of the
+	 * {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
 	public registerRootAttribute( key: string ): void {
 		if ( this._registeredRootsAttributesKeys.has( key ) ) {

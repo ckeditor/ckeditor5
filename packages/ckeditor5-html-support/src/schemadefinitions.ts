@@ -358,7 +358,7 @@ export const defaultConfig = {
 			model: 'htmlHgroup',
 			view: 'hgroup',
 			modelSchema: {
-				allowIn: [ '$root', '$container' ],
+				allowWhere: '$container',
 				allowChildren: [
 					'paragraph',
 					'htmlP',

@@ -369,6 +369,25 @@ describe( 'Title', () => {
 				'<paragraph></paragraph>'
 			);
 		} );
+
+		it( 'should keep the body placeholder paragraph once it has typed content', () => {
+			// On an empty editor the post-fixer creates a `<paragraph>` placeholder and remembers it.
+			// Typing into it gives the placeholder `childCount > 0`, which must short-circuit
+			// `shouldRemoveLastParagraph` so the paragraph is kept.
+			const root = model.document.getRoot();
+			const placeholderParagraph = root.getChild( 1 );
+
+			expect( placeholderParagraph.name ).to.equal( 'paragraph' );
+			expect( placeholderParagraph.childCount ).to.equal( 0 );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( placeholderParagraph, 0 ) );
+			} );
+
+			// The placeholder is still there with the typed content.
+			expect( root.getChild( 1 ) ).to.equal( placeholderParagraph );
+			expect( placeholderParagraph.childCount ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'getTitle()', () => {
@@ -944,7 +963,152 @@ describe( 'Title', () => {
 			);
 		} );
 	} );
+
+	describe( 'with an $inlineRoot modelElement', () => {
+		let inlineElement, inlineEditor, inlineModel, inlineRoot, titlePlugin, warnStub;
+
+		beforeEach( async () => {
+			// Title logs a single `title-no-supported-root` warning when no root accepts the title element;
+			// silence it here so the CI watchdog for unexpected console output does not fail the suite.
+			warnStub = sinon.stub( console, 'warn' );
+
+			inlineElement = document.createElement( 'div' );
+			document.body.appendChild( inlineElement );
+
+			inlineEditor = await ClassicTestEditor.create( inlineElement, {
+				plugins: [ Paragraph, Title, Heading, BlockQuote, Clipboard, Image, ImageUpload, Enter, Undo ],
+				root: { modelElement: '$inlineRoot' }
+			} );
+			inlineModel = inlineEditor.model;
+			inlineRoot = inlineModel.document.getRoot();
+			titlePlugin = inlineEditor.plugins.get( Title );
+		} );
+
+		afterEach( async () => {
+			await inlineEditor.destroy();
+			inlineElement.remove();
+			warnStub.restore();
+		} );
+
+		it( 'should not allow title as a child of $inlineRoot', () => {
+			expect( inlineModel.schema.checkChild( inlineRoot, 'title' ) ).to.equal( false );
+		} );
+
+		it( 'should not allow paragraph as a child of $inlineRoot', () => {
+			// Sanity check behind the `_fixBodyElement` schema guard.
+			expect( inlineModel.schema.checkChild( inlineRoot, 'paragraph' ) ).to.equal( false );
+		} );
+
+		it( 'should not insert a title element into $inlineRoot on load (model post-fixer no-op)', () => {
+			inlineEditor.setData( 'Foo' );
+
+			const hasTitle = Array.from( inlineRoot.getChildren() )
+				.some( child => child.is( 'element' ) && child.name === 'title' );
+
+			expect( hasTitle ).to.equal( false );
+		} );
+
+		it( 'should not insert a paragraph body placeholder into $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			const hasParagraph = Array.from( inlineRoot.getChildren() )
+				.some( child => child.is( 'element' ) && child.name === 'paragraph' );
+
+			expect( hasParagraph ).to.equal( false );
+		} );
+
+		it( 'should return an empty string from getTitle() for $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			expect( titlePlugin.getTitle() ).to.equal( '' );
+		} );
+
+		it( 'should fall back to the full root data from getBody() for $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			// No title structure exists, so the whole root IS the body.
+			expect( titlePlugin.getBody() ).to.equal( 'Foo' );
+		} );
+
+		it( 'should not upcast <h1> to title when the target root is $inlineRoot', () => {
+			inlineEditor.setData( '<h1>Foo</h1>' );
+
+			const hasTitle = Array.from( inlineRoot.getChildren() )
+				.some( child => child.is( 'element' ) && child.name === 'title' );
+
+			expect( hasTitle ).to.equal( false );
+		} );
+
+		it( 'should no-op on Shift+Tab when the root is $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			inlineModel.change( writer => {
+				writer.setSelection( inlineRoot, 0 );
+			} );
+
+			const eventData = getEventData( keyCodes.tab, { shiftKey: true } );
+
+			inlineEditor.keystrokes.press( eventData );
+
+			sinon.assert.notCalled( eventData.preventDefault );
+			sinon.assert.notCalled( eventData.stopPropagation );
+		} );
+
+		it( 'should not throw when the view post-fixer runs after a model change on $inlineRoot', () => {
+			inlineEditor.setData( 'Foo' );
+
+			expect( () => {
+				inlineModel.change( writer => {
+					writer.insertText( ' bar', writer.createPositionAt( inlineRoot, 'end' ) );
+				} );
+			} ).not.to.throw();
+
+			expect( inlineEditor.getData() ).to.equal( 'Foo bar' );
+		} );
+	} );
+
+	describe( '_warnIfNoSupportedRoot()', () => {
+		const WARNING_ID = 'title-no-supported-root';
+
+		let warnStub, warnEditorElement, warnEditor;
+
+		beforeEach( () => {
+			warnStub = sinon.stub( console, 'warn' );
+			warnEditorElement = document.createElement( 'div' );
+			document.body.appendChild( warnEditorElement );
+		} );
+
+		afterEach( async () => {
+			if ( warnEditor ) {
+				await warnEditor.destroy();
+				warnEditor = null;
+			}
+			warnEditorElement.remove();
+			warnStub.restore();
+		} );
+
+		it( 'should not warn when at least one root supports the title element', async () => {
+			warnEditor = await ClassicTestEditor.create( warnEditorElement, {
+				plugins: [ Paragraph, Title, Heading ]
+			} );
+
+			expect( countWarnings( warnStub, WARNING_ID ) ).to.equal( 0 );
+		} );
+
+		it( 'should warn exactly once when no root supports the title element', async () => {
+			warnEditor = await ClassicTestEditor.create( warnEditorElement, {
+				plugins: [ Paragraph, Title, Heading ],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			expect( countWarnings( warnStub, WARNING_ID ) ).to.equal( 1 );
+		} );
+	} );
 } );
+
+function countWarnings( warnStub, id ) {
+	return warnStub.getCalls().filter( call => String( call.args[ 0 ] ).includes( id ) ).length;
+}
 
 function getEventData( keyCode, { shiftKey = false } = {} ) {
 	return {

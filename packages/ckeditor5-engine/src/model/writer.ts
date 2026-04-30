@@ -1335,6 +1335,12 @@ export class ModelWriter {
 	 *
 	 * Throws an error, if trying to add a root that is already added and attached.
 	 *
+	 * **Note:** The default `elementName` value is `'$root'`. When the editor uses a custom root
+	 * {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`}, pass the configured model element
+	 * name explicitly so the added root matches the schema the features expect.
+	 * See the {@glink framework/deep-dive/schema#custom-root-elements Custom root elements} section of the
+	 * {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
+	 *
 	 * @param rootName Name of the added root.
 	 * @param elementName The element name. Defaults to `'$root'` which also has some basic schema defined
 	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.

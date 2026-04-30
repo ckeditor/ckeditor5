@@ -448,6 +448,7 @@ export class MultiRootEditor extends Editor {
 	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
 		const modelAttributes: EditorRootAttributes = options.modelAttributes || options.attributes || {};
+		// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- public API default for `addRoot()`
 		const modelElement: string = options.modelElement || options.elementName || '$root';
 
 		if ( !this.model.schema.isLimit( modelElement ) ) {
