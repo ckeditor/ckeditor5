@@ -1340,8 +1340,10 @@ export type EditorRootAttributes = Record<string, unknown>;
  * In case you intended to use the [LTS Edition](https://ckeditor.com/ckeditor-5-lts/),
  * but have not yet made a purchase, please [contact our sales team](https://ckeditor.com/contact-sales/)
  *
- * If you did not intend to use LTS, please switch to non-LTS edition, for example,
- * the [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html) build.
+ * If you did not intend to use LTS, please note that all releases in the v47.7 line are
+ * for LTS subscribers only. To use a non-LTS edition, either upgrade to v48 or newer,
+ * which is our standard [latest](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html)
+ * release line, or stay on a version 47.6.2 or earlier.
  *
  * @error license-key-lts-not-allowed
  */

@@ -603,11 +603,9 @@ describe( 'LegacyTodoListEditing', () => {
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
 						'<span class="todo-list__label__description">' +
-							'[]<span class="highlight">' +
-								'<element2></element2>' +
-								'<element1></element1>' +
-								'foo' +
-							'</span>' +
+							'[]<element2></element2>' +
+							'<element1></element1>' +
+							'<span class="highlight">foo</span>' +
 						'</span>' +
 					'</li>' +
 					'<li>' +
