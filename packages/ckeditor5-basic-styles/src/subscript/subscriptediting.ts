@@ -8,9 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { AttributeCommand } from '../attributecommand.js';
-
-const SUBSCRIPT = 'subscript';
+import { MutuallyExclusiveAttributeCommand } from '../mutuallyexclusiveattributecommand.js';
+import { SUBSCRIPT, SUPERSCRIPT } from '../constants.js';
 
 /**
  * The subscript editing feature.
@@ -38,6 +37,9 @@ export class SubscriptEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+
+		editor.config.define( 'basicStyles', { [ SUBSCRIPT ]: { allowNesting: false } } );
+
 		// Allow sub attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUBSCRIPT } );
 		editor.model.schema.setAttributeProperties( SUBSCRIPT, {
@@ -60,6 +62,6 @@ export class SubscriptEditing extends Plugin {
 		} );
 
 		// Create sub command.
-		editor.commands.add( SUBSCRIPT, new AttributeCommand( editor, SUBSCRIPT ) );
+		editor.commands.add( SUBSCRIPT, new MutuallyExclusiveAttributeCommand( editor, SUBSCRIPT, SUPERSCRIPT ) );
 	}
 }
