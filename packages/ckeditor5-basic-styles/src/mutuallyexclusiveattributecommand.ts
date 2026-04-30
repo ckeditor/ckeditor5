@@ -21,9 +21,8 @@ import { AttributeCommand } from './attributecommand.js';
  * undo step.
  *
  * The mutual exclusion can be disabled by setting either
- * {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig#allowNesting `config.superscript.allowNesting`}
- * or {@link module:basic-styles/subscriptconfig~BasicStyleSubscriptConfig#allowNesting `config.subscript.allowNesting`}
- * to `true`. In that case, the command behaves exactly the same as the plain
+ * `config.basicStyles.superscript.allowNesting` or `config.basicStyles.subscript.allowNesting` to `true`.
+ * In that case, the command behaves exactly the same as the plain
  * {@link module:basic-styles/attributecommand~AttributeCommand}.
  *
  * The exclusion only applies to command execution. Content set through the data pipeline
@@ -88,7 +87,7 @@ export class MutuallyExclusiveAttributeCommand extends AttributeCommand {
 
 function _isNestingAllowed( editor: Editor ): boolean {
 	return Boolean(
-		editor.config.get( 'superscript.allowNesting' ) ||
-		editor.config.get( 'subscript.allowNesting' )
+		editor.config.get( 'basicStyles.superscript.allowNesting' ) ||
+		editor.config.get( 'basicStyles.subscript.allowNesting' )
 	);
 }

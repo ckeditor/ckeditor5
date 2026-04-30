@@ -67,21 +67,23 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of code
 
 By default, the {@link module:basic-styles/subscript~Subscript subscript} and {@link module:basic-styles/superscript~Superscript superscript} features are mutually exclusive: applying one to text that already has the other replaces it, matching the behavior of common word processors. Toggling a style off does not affect the other style.
 
-To allow nesting, set the `allowNesting` option on either feature:
+To allow nesting, set the `allowNesting` option on either feature under the `basicStyles` configuration namespace:
 
 ```js
 ClassicEditor
 	.create( {
 		// ... Other configuration options ...
-		superscript: {
-			allowNesting: true
+		basicStyles: {
+			superscript: {
+				allowNesting: true
+			}
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
-The flag is symmetric: setting `superscript.allowNesting` or `subscript.allowNesting` to `true` disables the mutual exclusion for both commands.
+The flag is symmetric: setting `basicStyles.superscript.allowNesting` or `basicStyles.subscript.allowNesting` to `true` disables the mutual exclusion for both commands.
 
 <info-box info>
 	The mutual exclusion only applies to command execution. Loading content through the {@link module:core/editor/editor~Editor#setData data API} or pasting HTML such as `<sub><sup>x</sup></sub>` keeps both attributes on the same text regardless of this option.

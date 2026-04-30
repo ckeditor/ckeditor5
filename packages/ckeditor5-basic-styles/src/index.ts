@@ -23,6 +23,7 @@ export { Subscript } from './subscript.js';
 export { SubscriptEditing } from './subscript/subscriptediting.js';
 export { SubscriptUI } from './subscript/subscriptui.js';
 export type { BasicStyleSubscriptConfig } from './subscriptconfig.js';
+export type { BasicStylesConfig } from './basicstylesconfig.js';
 export { Superscript } from './superscript.js';
 export { SuperscriptEditing } from './superscript/superscriptediting.js';
 export { SuperscriptUI } from './superscript/superscriptui.js';

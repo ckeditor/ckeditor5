@@ -40,7 +40,7 @@ export class SuperscriptEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.config.define( SUPERSCRIPT, { allowNesting: false } );
+		editor.config.define( 'basicStyles', { [ SUPERSCRIPT ]: { allowNesting: false } } );
 
 		// Allow super attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUPERSCRIPT } );

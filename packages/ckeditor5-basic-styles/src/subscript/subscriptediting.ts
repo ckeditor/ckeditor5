@@ -40,7 +40,7 @@ export class SubscriptEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.config.define( SUBSCRIPT, { allowNesting: false } );
+		editor.config.define( 'basicStyles', { [ SUBSCRIPT ]: { allowNesting: false } } );
 
 		// Allow sub attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUBSCRIPT } );

@@ -52,8 +52,8 @@ describe( 'SuperscriptCommand', () => {
 	describe( 'config defaults', () => {
 		beforeEach( () => createEditor() );
 
-		it( 'sets superscript.allowNesting to false by default', () => {
-			expect( editor.config.get( 'superscript.allowNesting' ) ).to.be.false;
+		it( 'sets basicStyles.superscript.allowNesting to false by default', () => {
+			expect( editor.config.get( 'basicStyles.superscript.allowNesting' ) ).to.be.false;
 		} );
 	} );
 
@@ -171,7 +171,7 @@ describe( 'SuperscriptCommand', () => {
 	} );
 
 	describe( 'execute() with allowNesting on the superscript side', () => {
-		beforeEach( () => createEditor( { superscript: { allowNesting: true } } ) );
+		beforeEach( () => createEditor( { basicStyles: { superscript: { allowNesting: true } } } ) );
 
 		it( 'preserves subscript when applying superscript', () => {
 			_setModelData( model, '<paragraph>[<$text subscript="true">foo</$text>]</paragraph>' );
@@ -185,7 +185,7 @@ describe( 'SuperscriptCommand', () => {
 	} );
 
 	describe( 'execute() with allowNesting on the subscript side (OR semantics)', () => {
-		beforeEach( () => createEditor( { subscript: { allowNesting: true } } ) );
+		beforeEach( () => createEditor( { basicStyles: { subscript: { allowNesting: true } } } ) );
 
 		it( 'preserves subscript when applying superscript', () => {
 			_setModelData( model, '<paragraph>[<$text subscript="true">foo</$text>]</paragraph>' );

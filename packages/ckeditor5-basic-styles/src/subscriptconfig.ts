@@ -9,12 +9,15 @@
 
 /**
  * The configuration of the {@link module:basic-styles/subscript~Subscript subscript feature}.
+ * Nested under {@link module:basic-styles/basicstylesconfig~BasicStylesConfig#subscript `config.basicStyles.subscript`}.
  *
  * ```ts
  * ClassicEditor
  * 	.create( editorElement, {
- * 		subscript: {
- * 			allowNesting: true
+ * 		basicStyles: {
+ * 			subscript: {
+ * 				allowNesting: true
+ * 			}
  * 		}
  * 	} )
  * 	.then( ... )
@@ -35,7 +38,7 @@ export interface BasicStyleSubscriptConfig {
 	 * text. This is useful for content such as isotope notation (`¹⁴₆C`) or tensor indices (`T^i_j`).
 	 *
 	 * The flag is symmetric with
-	 * {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig#allowNesting `config.superscript.allowNesting`}:
+	 * {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig#allowNesting `config.basicStyles.superscript.allowNesting`}:
 	 * if either is set to `true`, both commands skip the mutual-exclusion step.
 	 *
 	 * The flag only affects command execution. Content set through the data pipeline (for example

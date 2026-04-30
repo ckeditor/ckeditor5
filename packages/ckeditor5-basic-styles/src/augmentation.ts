@@ -18,10 +18,9 @@ import type {
 	Strikethrough,
 	StrikethroughEditing,
 	StrikethroughUI,
-	BasicStyleSubscriptConfig,
+	BasicStylesConfig,
 	SubscriptEditing,
 	SubscriptUI,
-	BasicStyleSuperscriptConfig,
 	SuperscriptEditing,
 	SuperscriptUI,
 	Underline,
@@ -33,18 +32,11 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
 
 		/**
-		 * The configuration of the {@link module:basic-styles/superscript~Superscript superscript feature}.
+		 * The configuration of the {@link module:basic-styles basic styles features}.
 		 *
-		 * Read more in {@link module:basic-styles/superscriptconfig~BasicStyleSuperscriptConfig}.
+		 * Read more in {@link module:basic-styles/basicstylesconfig~BasicStylesConfig}.
 		 */
-		superscript?: BasicStyleSuperscriptConfig;
-
-		/**
-		 * The configuration of the {@link module:basic-styles/subscript~Subscript subscript feature}.
-		 *
-		 * Read more in {@link module:basic-styles/subscriptconfig~BasicStyleSubscriptConfig}.
-		 */
-		subscript?: BasicStyleSubscriptConfig;
+		basicStyles?: BasicStylesConfig;
 	}
 
 	interface PluginsMap {
