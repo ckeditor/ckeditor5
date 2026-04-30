@@ -8,7 +8,7 @@ import { SuperscriptEditing } from '../../src/superscript/superscriptediting.js'
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { AttributeCommand } from '../../src/attributecommand.js';
-import { SuperscriptCommand } from '../../src/superscript/superscriptcommand.js';
+import { MutuallyExclusiveAttributeCommand } from '../../src/mutuallyexclusiveattributecommand.js';
 
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
@@ -67,7 +67,7 @@ describe( 'SuperscriptEditing', () => {
 		it( 'should register superscript command', () => {
 			const command = editor.commands.get( 'superscript' );
 
-			expect( command ).to.be.instanceOf( SuperscriptCommand );
+			expect( command ).to.be.instanceOf( MutuallyExclusiveAttributeCommand );
 			expect( command ).to.be.instanceOf( AttributeCommand );
 			expect( command ).to.have.property( 'attributeKey', 'superscript' );
 		} );

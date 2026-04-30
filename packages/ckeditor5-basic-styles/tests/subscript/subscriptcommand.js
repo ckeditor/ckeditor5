@@ -5,7 +5,7 @@
 
 import { SubscriptEditing } from '../../src/subscript/subscriptediting.js';
 import { SuperscriptEditing } from '../../src/superscript/superscriptediting.js';
-import { SubscriptCommand } from '../../src/subscript/subscriptcommand.js';
+import { MutuallyExclusiveAttributeCommand } from '../../src/mutuallyexclusiveattributecommand.js';
 import { AttributeCommand } from '../../src/attributecommand.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -36,8 +36,8 @@ describe( 'SubscriptCommand', () => {
 	describe( 'instance', () => {
 		beforeEach( () => createEditor() );
 
-		it( 'is an instance of SubscriptCommand', () => {
-			expect( command ).to.be.instanceOf( SubscriptCommand );
+		it( 'is an instance of MutuallyExclusiveAttributeCommand', () => {
+			expect( command ).to.be.instanceOf( MutuallyExclusiveAttributeCommand );
 		} );
 
 		it( 'is an instance of AttributeCommand', () => {

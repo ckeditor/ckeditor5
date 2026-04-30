@@ -18,11 +18,9 @@ import type {
 	Strikethrough,
 	StrikethroughEditing,
 	StrikethroughUI,
-	SubscriptCommand,
 	BasicStyleSubscriptConfig,
 	SubscriptEditing,
 	SubscriptUI,
-	SuperscriptCommand,
 	BasicStyleSuperscriptConfig,
 	SuperscriptEditing,
 	SuperscriptUI,
@@ -79,8 +77,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		code: AttributeCommand;
 		italic: AttributeCommand;
 		strikethrough: AttributeCommand;
-		subscript: SubscriptCommand;
-		superscript: SuperscriptCommand;
+		subscript: AttributeCommand;
+		superscript: AttributeCommand;
 		underline: AttributeCommand;
 	}
 }

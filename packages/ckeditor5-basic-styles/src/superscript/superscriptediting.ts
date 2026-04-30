@@ -8,9 +8,10 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { SuperscriptCommand } from './superscriptcommand.js';
+import { MutuallyExclusiveAttributeCommand } from '../mutuallyexclusiveattributecommand.js';
 
 const SUPERSCRIPT = 'superscript';
+const SUBSCRIPT = 'subscript';
 
 /**
  * The superscript editing feature.
@@ -63,6 +64,6 @@ export class SuperscriptEditing extends Plugin {
 		} );
 
 		// Create super command.
-		editor.commands.add( SUPERSCRIPT, new SuperscriptCommand( editor ) );
+		editor.commands.add( SUPERSCRIPT, new MutuallyExclusiveAttributeCommand( editor, SUPERSCRIPT, SUBSCRIPT ) );
 	}
 }
