@@ -11,8 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconSubscript } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { getButtonCreator } from '../utils.js';
-
-const SUBSCRIPT = 'subscript';
+import { SUBSCRIPT } from '../constants.js';
 
 /**
  * The subscript UI feature. It introduces the Subscript button.

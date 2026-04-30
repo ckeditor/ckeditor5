@@ -11,8 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconSuperscript } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { getButtonCreator } from '../utils.js';
-
-const SUPERSCRIPT = 'superscript';
+import { SUPERSCRIPT } from '../constants.js';
 
 /**
  * The superscript UI feature. It introduces the Superscript button.

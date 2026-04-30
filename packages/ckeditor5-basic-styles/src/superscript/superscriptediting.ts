@@ -9,9 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { MutuallyExclusiveAttributeCommand } from '../mutuallyexclusiveattributecommand.js';
-
-const SUPERSCRIPT = 'superscript';
-const SUBSCRIPT = 'subscript';
+import { SUBSCRIPT, SUPERSCRIPT } from '../constants.js';
 
 /**
  * The superscript editing feature.
