@@ -376,7 +376,11 @@ export function outdentBlocksWithMerge(
 		}
 
 		// Merge with parent list item while outdenting and indent matches reference indent.
-		if ( block.getAttribute( 'listIndent' ) == referenceIndent ) {
+		// The parent block may be null if the block has no ancestor with a lower indent (e.g. when skip-level
+		// lists are enabled and the first item starts at indent > 0). In that case, skip the merge and just
+		// decrease the indent. Without skip-level lists, the post-fixer guarantees sequential indents, so
+		// a parent with a lower indent always exists and this guard has no effect.
+		if ( block.getAttribute( 'listIndent' ) == referenceIndent && parentBlocks.get( block ) ) {
 			const mergedBlocks = mergeListItemIfNotLast( block, parentBlocks.get( block ), writer );
 
 			// All list item blocks are updated while merging so add those to visited set.
@@ -598,18 +602,73 @@ export function isNumberedListType( listType: ListType ): boolean {
 }
 
 /**
- * Checks if the given list item is the first item in the list.
+ * Checks if the given list item block is the first block of the first item in its list at the given indent.
  *
- * This function checks if there's any other list item before the given list item
- * at the same indent level with the same list type.
+ * Walks back over previous siblings and returns:
+ * - `true` if it reaches a non-list block or a list block at a lower indent (a new list begins here),
+ * - `false` if it finds a same-indent block of the same `listItemId` (a continuation of the current item) or of the same
+ *   `listType` (the visible list already has earlier items),
+ * - `true` if it finds a same-indent block of a different `listType` and a different `listItemId` (a different list ends; ours
+ *   starts here),
+ * - `false` if the loop ends (it reaches the first non-list-item block, or no more previous siblings) while passing only
+ *   higher-indent blocks (those blocks live inside an intermediate skip-level `<li style="list-style-type:none">` wrapper
+ *   at our indent).
+ *
+ * For example, in the model:
+ *
+ * ```
+ * '  # aaa'
+ * '# bbb'
+ * ```
+ *
+ * `bbb` is preceded by a higher-indent block `aaa`, which in the view is rendered inside an intermediate
+ * skip-level wrapper at indent 0:
+ *
+ * ```html
+ * <ol>
+ *   <li style="list-style-type:none">
+ *     <ol>
+ *       <li>aaa</li>
+ *     </ol>
+ *   </li>
+ *   <li>bbb</li>
+ * </ol>
+ * ```
+ *
+ * So `bbb` is the second visible item in the outer list and the function returns `false`.
  */
 export function isFirstListItemInList( listItem: ModelElement ): boolean {
-	const previousItem = ListWalker.first( listItem, {
-		sameIndent: true,
-		sameAttributes: 'listType'
-	} );
+	const itemIndent = listItem.getAttribute( 'listIndent' ) as number;
+	const itemListType = listItem.getAttribute( 'listType' );
+	const itemListItemId = listItem.getAttribute( 'listItemId' );
 
-	return !previousItem;
+	let previous = listItem.previousSibling;
+	let sawHigherIndent = false;
+
+	while ( isListItemBlock( previous ) ) {
+		const previousIndent = previous.getAttribute( 'listIndent' ) as number;
+
+		if ( previousIndent < itemIndent ) {
+			return true;
+		}
+
+		if ( previousIndent === itemIndent ) {
+			// The previous block belongs to the current item — we are a continuation block, not the first block of
+			// the list item, so item-block indent should not apply (a normal list indent should fall through instead).
+			if ( previous.getAttribute( 'listItemId' ) === itemListItemId ) {
+				return false;
+			}
+
+			return previous.getAttribute( 'listType' ) !== itemListType;
+		}
+
+		sawHigherIndent = true;
+		previous = previous.previousSibling;
+	}
+
+	// Reached the first non-list-item block (or no more previous siblings). If only higher-indent blocks were on
+	// the way, they live inside an intermediate skip-level wrapper at our indent — we are not first.
+	return !sawHigherIndent;
 }
 
 /**

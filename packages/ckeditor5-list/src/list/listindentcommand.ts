@@ -142,6 +142,11 @@ export class ListIndentCommand extends Command {
 			return true;
 		}
 
+		// When skip levels are allowed, any list item can always be indented further.
+		if ( this.editor.config.get( 'list.allowSkipLevels' ) ) {
+			return true;
+		}
+
 		blocks = expandListBlocksToCompleteItems( blocks );
 		firstBlock = blocks[ 0 ];
 

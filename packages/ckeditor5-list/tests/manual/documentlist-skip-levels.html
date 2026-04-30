@@ -1,0 +1,56 @@
+<div id="controls">
+	<div class="col">
+		<label><input type="checkbox" id="skipLevels" checked>Skip Levels</label>
+		<label><input type="checkbox" id="indentBlock" checked>IndentBlock</label>
+		<label><input type="checkbox" id="ghs">GHS</label>
+	</div>
+	<div class="col">
+		<label><input type="checkbox" id="pfo">PasteFromOffice</label>
+		<label><input type="checkbox" id="listProperties" checked>ListProperties</label>
+	</div>
+</div>
+
+<style>
+	#controls {
+		display: flex;
+		gap: 24px;
+		margin-bottom: 12px;
+	}
+
+	.col {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+</style>
+
+<div id="editor">
+	<h3>Numbered list (try indenting multiple times)</h3>
+	<ol>
+		<li>Item at level 0</li>
+		<li>Item at level 0
+			<ol>
+				<li>Item at level 1
+					<ol>
+						<li>Item at level 2</li>
+					</ol>
+				</li>
+			</ol>
+		</li>
+		<li>Item at level 0</li>
+	</ol>
+
+	<h3>Bulleted list</h3>
+	<ul>
+		<li>Item at level 0</li>
+		<li>Item at level 0</li>
+		<li>Item at level 0</li>
+	</ul>
+
+	<h3>Mixed content</h3>
+	<ol style="list-style-type: lower-roman;" start="3">
+		<li>A numbered list with lower-roman numbering that starts at 3.</li>
+		<li>Item with multiple blocks...<hr>...and this is the 3rd block of it.</li>
+		<li><p>This is a list item with two paragraphs.</p><p>And here is the last one.</p></li>
+	</ol>
+</div>
