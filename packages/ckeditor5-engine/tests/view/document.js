@@ -96,6 +96,49 @@ describe( 'Document', () => {
 		} );
 	} );
 
+	describe( 'getRoots()', () => {
+		it( 'should return an empty array when no roots are registered', () => {
+			expect( viewDocument.getRoots() ).to.deep.equal( [] );
+		} );
+
+		it( 'should return all registered roots in registration order', () => {
+			const main = createViewRoot( viewDocument, 'div', 'main' );
+			const header = createViewRoot( viewDocument, 'h1', 'header' );
+			const footer = createViewRoot( viewDocument, 'div', 'footer' );
+
+			expect( viewDocument.getRoots() ).to.deep.equal( [ main, header, footer ] );
+		} );
+
+		it( 'should return a new array on every call (not a live reference to the collection)', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+
+			const first = viewDocument.getRoots();
+			const second = viewDocument.getRoots();
+
+			expect( first ).to.not.equal( second );
+			expect( first ).to.deep.equal( second );
+		} );
+
+		it( 'should not be affected by later modifications to the returned array', () => {
+			const main = createViewRoot( viewDocument, 'div', 'main' );
+			const roots = viewDocument.getRoots();
+
+			roots.pop();
+
+			expect( viewDocument.getRoots() ).to.deep.equal( [ main ] );
+		} );
+
+		it( 'should reflect roots added after a previous call', () => {
+			const main = createViewRoot( viewDocument, 'div', 'main' );
+
+			expect( viewDocument.getRoots() ).to.deep.equal( [ main ] );
+
+			const secondary = createViewRoot( viewDocument, 'div', 'secondary' );
+
+			expect( viewDocument.getRoots() ).to.deep.equal( [ main, secondary ] );
+		} );
+	} );
+
 	describe( 'post-fixers', () => {
 		it( 'should add a callback that is called on _callPostFixers', () => {
 			const spy1 = sinon.spy();
