@@ -60,10 +60,11 @@ export class MediaEmbedEditing extends Plugin {
 						const id = match[ 1 ];
 
 						return (
-							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+							'<div>' +
 								`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-									'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
+									'frameborder="0" allowfullscreen allow="autoplay">' +
 								'</iframe>' +
 							'</div>'
 						);
@@ -77,13 +78,17 @@ export class MediaEmbedEditing extends Plugin {
 						/^open\.spotify\.com\/(album\/\w+)/,
 						/^open\.spotify\.com\/(track\/\w+)/
 					],
+					// Resizing is disabled for Spotify because its player layout
+					// does not adapt well to being freely resized by the user.
+					isResizable: false,
 					html: match => {
 						const id = match[ 1 ];
 
 						return (
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+							'<div>' +
 								`<iframe src="https://open.spotify.com/embed/${ id }" ` +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="300" height="378" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
 									'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 								'</iframe>' +
 							'</div>'
@@ -105,9 +110,10 @@ export class MediaEmbedEditing extends Plugin {
 						const time = match[ 2 ];
 
 						return (
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+							'<div>' +
 								`<iframe src="https://www.youtube.com/embed/${ id }${ time ? `?start=${ time }` : '' }" ` +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" ' +
 									'allowfullscreen>' +
 								'</iframe>' +
@@ -131,9 +137,10 @@ export class MediaEmbedEditing extends Plugin {
 						const id = match[ 1 ];
 
 						return (
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+							'<div>' +
 								`<iframe src="https://player.vimeo.com/video/${ id }" ` +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
 									'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
 								'</iframe>' +
 							'</div>'

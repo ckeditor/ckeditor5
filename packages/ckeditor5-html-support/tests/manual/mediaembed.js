@@ -4,7 +4,7 @@
  */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { MediaEmbed, MediaEmbedToolbar } from '@ckeditor/ckeditor5-media-embed';
+import { MediaEmbed, MediaEmbedResize, MediaEmbedToolbar } from '@ckeditor/ckeditor5-media-embed';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -20,6 +20,7 @@ ClassicEditor
 			Paragraph,
 			SourceEditing,
 			MediaEmbed,
+			MediaEmbedResize,
 			MediaEmbedToolbar
 		],
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
@@ -66,6 +67,7 @@ ClassicEditor
 			Paragraph,
 			SourceEditing,
 			MediaEmbed,
+			MediaEmbedResize,
 			MediaEmbedToolbar
 		],
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
