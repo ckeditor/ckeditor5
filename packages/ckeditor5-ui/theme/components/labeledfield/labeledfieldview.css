@@ -4,15 +4,14 @@
  */
 
 :root {
-	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
-	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
-	--ck-labeled-field-label-default-position-x: var(--ck-spacing-medium);
-	--ck-labeled-field-label-default-position-y: calc(0.6 * var(--ck-font-size-base));
-	--ck-color-labeled-field-label-background: var(--ck-color-base-background);
+	/* Color */
+	--ck-labeled-field-label-background-color: var(--ck-color-base-background);
+	--ck-labeled-field-label-start-gap: var(--ck-spacing-control-icon-gap);
 }
 
 .ck.ck-labeled-field-view {
-	border-radius: var(--ck-rounded-corners-radius);
+	/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
+	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 
 	& .ck.ck-label {
 		display: block;
@@ -27,11 +26,12 @@
 			top: 0px;
 
 			pointer-events: none;
-
-			background: var(--ck-color-labeled-field-label-background);
-			padding: 0 calc(.5 * var(--ck-font-size-tiny));
+			/* Fallback to `--ck-color-labeled-field-label-background` for backward compatibility. */
+			background: var(--ck-color-labeled-field-label-background, var(--ck-labeled-field-label-background-color));
+			/* Backward compatibility: falls back to legacy --ck-font-size-tiny if overridden. */
+			padding: 0 calc(.5 * var(--ck-font-size-tiny, var(--ck-font-size-xs)));
 			line-height: initial;
-			font-weight: normal;
+			font-weight: var(--ck-font-weight-ui-muted);
 
 			/* Prevent overflow when the label is longer than the input */
 			text-overflow: ellipsis;
@@ -40,25 +40,25 @@
 			max-width: 100%;
 
 			transition:
-				transform var(--ck-labeled-field-view-transition),
-				padding var(--ck-labeled-field-view-transition),
-				background var(--ck-labeled-field-view-transition);
+				transform var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control-emphasized),
+				padding var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control-emphasized),
+				background var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control-emphasized);
 
 			[dir="ltr"] & {
 				left: 0px;
 				transform-origin: 0 0;
 				/* By default, display the label scaled down above the field. */
-				transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
+				transform: translate(var(--ck-labeled-field-label-start-gap), -6px) scale(.75);
 			}
 
 			[dir="rtl"] & {
 				right: 0px;
 				transform-origin: 100% 0;
-				transform: translate(calc(-1 * var(--ck-spacing-medium)), -6px) scale(.75);
+				transform: translate(calc(-1 * var(--ck-labeled-field-label-start-gap)), -6px) scale(.75);
 			}
 
 			@media (prefers-reduced-motion: reduce) {
-				transition: none;
+				transition: var(--ck-transition-none);
 			}
 		}
 		position: relative
@@ -75,8 +75,9 @@
 	}
 
 	& .ck-labeled-field-view__status {
-		font-size: var(--ck-font-size-small);
-		margin-top: var(--ck-spacing-small);
+		/* Backward compatibility: falls back to legacy --ck-font-size-small if overridden. */
+		font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
+		margin-top: var(--ck-spacing-surface-item-gap-inline);
 
 		/* Let the info wrap to the next line to avoid stretching the layout horizontally.
 		The status could be very long. */
@@ -90,7 +91,7 @@
 	/* Disabled fields and fields that have no focus should fade out. */
 	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		color: var(--ck-color-input-disabled-text);
+		color: var(--ck-input-disabled-text-color);
 	}
 
 	/* Fields that are disabled or not focused and without a placeholder should have full-sized labels. */
@@ -98,16 +99,16 @@
 	&.ck-disabled.ck-labeled-field-view_empty:not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder):not(.ck-error) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		[dir="ltr"] & {
-			transform: translate(var(--ck-labeled-field-label-default-position-x), var(--ck-labeled-field-label-default-position-y)) scale(1);
+			transform: translate(var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap)), calc(0.6 * var(--ck-font-size-base))) scale(1);
 		}
 
 		/* stylelint-disable-next-line no-descending-specificity */
 		[dir="rtl"] & {
-			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x)), var(--ck-labeled-field-label-default-position-y)) scale(1);
+			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x, var(--ck-labeled-field-label-start-gap))), calc(0.6 * var(--ck-font-size-base))) scale(1);
 		}
 
 		/* Compensate for the default translate position. */
-		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width));
+		max-width: var(--ck-labeled-field-empty-unfocused-max-width, calc(100% - 2 * var(--ck-labeled-field-label-start-gap)));
 
 		background: transparent;
 		padding: 0;
@@ -127,7 +128,7 @@
 
 	/* Make sure the label of the empty, unfocused input does not cover the dropdown arrow. */
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown + .ck-label {
-		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width) - var(--ck-dropdown-arrow-size) - var(--ck-spacing-standard));
+		max-width: var(--ck-labeled-field-empty-unfocused-max-width, calc(100% - 2 * var(--ck-labeled-field-label-start-gap) - var(--ck-dropdown-arrow-size) - var(--ck-spacing-control-padding-inline)));
 	}
 
 	&.ck-labeled-field-view_full-width {

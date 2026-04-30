@@ -4,56 +4,79 @@
  */
 
 :root {
+	/* Size */
 	--ck-input-width: 18em;
 
-	/* Backward compatibility. */
+	/* Spacing */
+	--ck-input-padding: var(--ck-spacing-control-padding-block-compact) var(--ck-spacing-control-padding-inline-compact);
+
+	/* Radius */
+	--ck-input-border-radius: var(--ck-border-radius-control);
+
+	/* Color */
+	--ck-input-background-color: var(--ck-color-surface-control);
+	--ck-input-border-color: var(--ck-color-border-control);
+	--ck-input-error-border-color: var(--ck-color-feedback-error);
+	--ck-input-text-color: var(--ck-color-text-primary);
+	--ck-input-disabled-background-color: hsl(0, 0%, 95%);
+	--ck-input-disabled-border-color: var(--ck-color-border-control);
+	--ck-input-disabled-text-color: var(--ck-color-text-disabled);
+
+	/* Border */
+	--ck-input-border: var(--ck-border-width-control) solid var(--ck-input-border-color);
+
+	/* State / meta */
+	--ck-input-focus-border-color: var(--ck-interactive-focus-border-color);
+
+	/* Compatibility */
 	--ck-input-text-width: var(--ck-input-width);
 }
 
 .ck.ck-input {
-	border-radius: var(--ck-rounded-corners-radius);
-	background: var(--ck-color-input-background);
-	border: 1px solid var(--ck-color-input-border);
-	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
+	border-radius: var(--ck-input-border-radius);
+	background: var(--ck-input-background-color);
+	border: var(--ck-input-border);
+	padding: var(--ck-input-padding);
 	min-width: var(--ck-input-width);
+	color: var(--ck-input-text-color);
 
 	/* This is important to stay of the same height as surrounding buttons */
-	min-height: var(--ck-ui-component-min-height);
+	min-height: var(--ck-size-control-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
+	transition: box-shadow var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control), border var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control);
 
 	@media (prefers-reduced-motion: reduce) {
-		transition: none;
+		transition: var(--ck-transition-none);
 	}
 
 	&:focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-focus-outer-shadow), 0 0;
+		border-color: var(--ck-input-focus-border-color);
+		box-shadow: var(--ck-interactive-focus-shadow), 0 0;
 	}
 
 	&[readonly] {
-		border: 1px solid var(--ck-color-input-disabled-border);
-		background: var(--ck-color-input-disabled-background);
-		color: var(--ck-color-input-disabled-text);
+		border: var(--ck-border-width-control) solid var(--ck-input-disabled-border-color);
+		background: var(--ck-input-disabled-background-color);
+		color: var(--ck-input-disabled-text-color);
 
 		&:focus {
 			/* The read-only input should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-focus-disabled-outer-shadow), 0 0;
+			box-shadow: var(--ck-interactive-focus-disabled-shadow), 0 0;
 		}
 	}
 
 	&.ck-error {
-		border-color: var(--ck-color-input-error-border);
-		animation: ck-input-shake .3s ease both;
+		border-color: var(--ck-input-error-border-color);
+		animation: ck-input-shake var(--ck-animation-duration-feedback) var(--ck-animation-timing-function-feedback) var(--ck-animation-fill-mode-feedback);
 
 		@media (prefers-reduced-motion: reduce) {
-			animation: none;
+			animation: var(--ck-animation-none);
 		}
 
 		&:focus {
-			box-shadow: var(--ck-focus-error-outer-shadow), 0 0;
+			box-shadow: var(--ck-interactive-focus-error-shadow), 0 0;
 		}
 	}
 }
@@ -73,5 +96,9 @@
 
 	80% {
 		transform: translateX(1px);
+	}
+
+	100% {
+		transform: translateX(0);
 	}
 }

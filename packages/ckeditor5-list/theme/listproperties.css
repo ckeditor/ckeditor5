@@ -6,13 +6,13 @@
 .ck.ck-list-properties {
 	/* When there are no list styles and there is no collapsible. */
 	&.ck-list-properties_without-styles {
-		padding: var(--ck-spacing-large);
+		padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 
 		& > * {
 			min-width: 14em;
 
 			& + * {
-				margin-top: var(--ck-spacing-standard);
+				margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 	}
@@ -28,14 +28,14 @@
 
 		/* When list styles are rendered and property fields are in a collapsible. */
 		& > .ck-collapsible {
-			border-top: 1px solid var(--ck-color-base-border);
+			border-top: var(--ck-border-width-thin) solid var(--ck-color-base-border);
 
 			& > .ck-collapsible__children {
 				& > * {
 					width: 100%;
 
 					& + * {
-						margin-top: var(--ck-spacing-standard);
+						margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 					}
 				}
 			}
@@ -51,7 +51,7 @@
 		background: transparent;
 		padding-left: 0;
 		padding-right: 0;
-		margin-bottom: calc(-1 * var(--ck-spacing-tiny));
+		margin-bottom: calc(-1 * var(--ck-spacing-tiny, var(--ck-spacing-xs)));
 
 		&:active, &:hover {
 			box-shadow: none;

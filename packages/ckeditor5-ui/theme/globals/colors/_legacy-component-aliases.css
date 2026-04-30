@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Backward-compatible aliases for legacy component color token names.
+ * These map old domain-first names (--ck-color-component-*) to new
+ * component-first names (--ck-component-*-color) defined in each component file.
+ */
+:root {
+	/* -- Buttons ------------------------------------------------------------------------------- */
+
+	--ck-color-button-default-background: var(--ck-button-default-background-color);
+	--ck-color-button-default-hover-background: var(--ck-button-default-hover-background-color);
+	--ck-color-button-default-active-background: var(--ck-button-default-active-background-color);
+	--ck-color-button-default-disabled-background: var(--ck-button-default-disabled-background-color);
+
+	--ck-color-button-on-background: var(--ck-button-on-background-color);
+	--ck-color-button-on-hover-background: var(--ck-button-on-hover-background-color);
+	--ck-color-button-on-active-background: var(--ck-button-on-active-background-color);
+	--ck-color-button-on-disabled-background: var(--ck-button-on-disabled-background-color);
+	--ck-color-button-on-color: var(--ck-button-on-text-color);
+
+	--ck-color-button-action-background: var(--ck-button-action-background-color);
+	--ck-color-button-action-hover-background: var(--ck-button-action-hover-background-color);
+	--ck-color-button-action-active-background: var(--ck-button-action-active-background-color);
+	--ck-color-button-action-disabled-background: var(--ck-button-action-disabled-background-color);
+	--ck-color-button-action-text: var(--ck-button-action-text-color);
+
+	--ck-color-button-save: var(--ck-button-save-color);
+	--ck-color-button-cancel: var(--ck-button-cancel-color);
+
+	--ck-color-switch-button-off-background: var(--ck-switch-button-off-background-color);
+	--ck-color-switch-button-off-hover-background: var(--ck-switch-button-off-hover-background-color);
+	--ck-color-switch-button-on-background: var(--ck-switch-button-on-background-color);
+	--ck-color-switch-button-on-hover-background: var(--ck-switch-button-on-hover-background-color);
+	--ck-color-switch-button-inner-background: var(--ck-switch-button-inner-background-color);
+
+	/* -- Dropdown ------------------------------------------------------------------------------ */
+
+	--ck-color-dropdown-panel-background: var(--ck-dropdown-panel-background-color);
+	--ck-color-dropdown-panel-border: var(--ck-dropdown-panel-border-color);
+
+	/* -- Dialog -------------------------------------------------------------------------------- */
+
+	--ck-color-dialog-background: var(--ck-dialog-background-color);
+
+	/* -- Input --------------------------------------------------------------------------------- */
+
+	--ck-color-input-background: var(--ck-input-background-color);
+	--ck-color-input-border: var(--ck-input-border-color);
+	--ck-color-input-error-border: var(--ck-input-error-border-color);
+	--ck-color-input-text: var(--ck-input-text-color);
+	--ck-color-input-disabled-background: var(--ck-input-disabled-background-color);
+	--ck-color-input-disabled-border: var(--ck-input-disabled-border-color);
+	--ck-color-input-disabled-text: var(--ck-input-disabled-text-color);
+
+	/* -- List ---------------------------------------------------------------------------------- */
+
+	--ck-color-list-background: var(--ck-list-background-color);
+	--ck-color-list-button-hover-background: var(--ck-list-button-hover-background-color);
+	--ck-color-list-button-on-background: var(--ck-list-button-on-background-color);
+	--ck-color-list-button-on-text: var(--ck-list-button-on-text-color);
+
+	/* -- Panel --------------------------------------------------------------------------------- */
+
+	--ck-color-panel-background: var(--ck-balloon-panel-background-color);
+	--ck-color-panel-border: var(--ck-balloon-panel-border-color);
+
+	/* -- Toolbar ------------------------------------------------------------------------------- */
+
+	--ck-color-toolbar-background: var(--ck-toolbar-background-color);
+	--ck-color-toolbar-border: var(--ck-toolbar-border-color);
+
+	/* -- Tooltip ------------------------------------------------------------------------------- */
+
+	--ck-color-tooltip-background: var(--ck-tooltip-background-color);
+	--ck-color-tooltip-text: var(--ck-tooltip-text-color);
+}

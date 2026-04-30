@@ -5,7 +5,9 @@
 
 :root {
 	--ck-widget-type-around-button-size: 20px;
-	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);
+	--ck-widget-type-around-button-border-radius: 100px;
+	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
+	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);
 	--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);
 	--ck-color-widget-type-around-button-radar-start-alpha: 0;
@@ -21,7 +23,7 @@
 		width: var(--ck-widget-type-around-button-size);
 		height: var(--ck-widget-type-around-button-size);
 		background: var(--ck-color-widget-type-around-button);
-		border-radius: 100px;
+		border-radius: var(--ck-widget-type-around-button-border-radius);
 		transition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 		opacity: 0;
@@ -29,7 +31,7 @@
 		display: block;
 		position: absolute;
 		overflow: hidden;
-		z-index: var(--ck-z-default);
+		z-index: var(--ck-z-default, var(--ck-z-base));
 
 		@media (prefers-reduced-motion: reduce) {
 			transition: none;
@@ -63,7 +65,7 @@
 			& line {
 				stroke-dasharray: 7;
 			}
-			z-index: calc(var(--ck-z-default) + 2)
+			z-index: calc(var(--ck-z-default, var(--ck-z-base)) + 2)
 		}
 
 		&:hover {
@@ -147,14 +149,14 @@
 		&::after {
 			width: calc(var(--ck-widget-type-around-button-size) - 2px);
 			height: calc(var(--ck-widget-type-around-button-size) - 2px);
-			border-radius: 100px;
+			border-radius: var(--ck-widget-type-around-button-border-radius);
 			background: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);
 			content: "";
 			display: block;
 			position: absolute;
 			top: 1px;
 			left: 1px;
-			z-index: calc(var(--ck-z-default) + 1);
+			z-index: calc(var(--ck-z-default, var(--ck-z-base)) + 1);
 		}
 	}
 
@@ -197,7 +199,7 @@
 		 * The semi-transparent-outline+background combo improves the contrast
 		 * when the background underneath the fake caret is dark.
 		 */
-		outline: solid 1px hsla(0, 0%, 100%, .5);
+		outline: var(--ck-outline-fake-caret);
 		background: var(--ck-color-base-text);
 	}
 
@@ -340,7 +342,7 @@
 	background: var(--ck-color-widget-type-around-button-blurred-editable);
 
 	& svg * {
-		stroke: hsl(0,0%,60%);
+		stroke: var(--ck-color-widget-blurred-border);
 	}
 }
 

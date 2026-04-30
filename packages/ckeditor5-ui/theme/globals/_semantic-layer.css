@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Backward compatibility: falls back to legacy --ck-z-default if overridden. */
+	--ck-layer-base: var(--ck-z-default, var(--ck-z-base));
+	--ck-layer-control-raised: calc(var(--ck-layer-base) + 1);
+
+	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+	--ck-layer-panel: var(--ck-z-panel, var(--ck-z-overlay));
+	--ck-layer-panel-above: calc(var(--ck-layer-panel) + 1);
+	--ck-layer-panel-below: calc(var(--ck-layer-panel) - 1);
+
+	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
+	--ck-layer-dialog: var(--ck-z-dialog, var(--ck-z-modal));
+	--ck-layer-tooltip: calc(var(--ck-layer-dialog) + 100);
+
+	--ck-layer-balloon-arrow-back: calc(var(--ck-layer-base) - 3);
+	--ck-layer-balloon-arrow-front: calc(var(--ck-layer-balloon-arrow-back) + 1);
+}

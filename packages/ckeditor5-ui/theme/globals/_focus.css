@@ -5,27 +5,43 @@
 
 :root {
 	/**
-	 * The geometry of the of focused element's outer shadow.
+	 * The geometry of the focus shadow.
 	 */
-	--ck-focus-outer-shadow-geometry: 0 0 0 3px;
+	--ck-focus-shadow-geometry: 0 0 0 3px;
 
 	/**
-	 * A visual style of focused element's outer shadow.
+	 * A visual style of focused element's shadow.
 	 */
-	--ck-focus-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-outer-shadow);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow-geometry if overridden. */
+	--ck-focus-shadow: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-outer-shadow);
 
 	/**
-	 * A visual style of focused element's outer shadow (when disabled).
+	 * A visual style of focused element's shadow (when disabled).
 	 */
-	--ck-focus-disabled-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-disabled-shadow);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow-geometry if overridden. */
+	--ck-focus-shadow-disabled: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-disabled-shadow);
 
 	/**
-	 * A visual style of focused element's outer shadow (when has errors).
+	 * A visual style of focused element's shadow (when has errors).
 	 */
-	--ck-focus-error-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-error-shadow);
+	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow-geometry if overridden. */
+	--ck-focus-shadow-error: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-error-shadow);
 
 	/**
 	 * A visual style of focused element's border or outline.
 	 */
 	--ck-focus-ring: 1px solid var(--ck-color-focus-border);
+
+	/**
+	 * The border color applied to focused elements.
+	 * Use this instead of --ck-focus-ring when the component has a customizable border-width,
+	 * to avoid overriding the width on focus.
+	 */
+	--ck-focus-border-color: var(--ck-color-focus-border);
+
+	/**
+	 * Contrast outline for fake collapsed selections and carets.
+	 * Used across link, widget, emoji, and bookmark packages.
+	 */
+	--ck-outline-fake-caret: solid 1px hsla(0, 0%, 100%, .5);
 }

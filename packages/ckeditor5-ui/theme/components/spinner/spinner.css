@@ -4,13 +4,14 @@
  */
 
 :root {
+	/* Size */
 	--ck-toolbar-spinner-size: 18px;
 }
 
 .ck.ck-spinner-container {
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
-	animation: 1.5s infinite ck-spinner-rotate linear;
+	animation: var(--ck-animation-duration-progress) var(--ck-animation-repeat-infinite) ck-spinner-rotate var(--ck-animation-timing-function-progress);
 	display: block;
 
 	@media (prefers-reduced-motion: reduce) {
@@ -22,8 +23,8 @@
 .ck.ck-spinner {
 	width: var(--ck-toolbar-spinner-size);
 	height: var(--ck-toolbar-spinner-size);
-	border-radius: 50%;
-	border: 2px solid var(--ck-color-text);
+	border-radius: var(--ck-radius-full);
+	border: var(--ck-border-width-emphasis) solid var(--ck-color-text);
 	border-top-color: transparent;
 	position: absolute;
 	top: 50%;
