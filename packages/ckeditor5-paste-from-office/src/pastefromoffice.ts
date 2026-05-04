@@ -107,6 +107,8 @@ export class PasteFromOffice extends Plugin {
 				return;
 			}
 
+			// The `htmlString` is used only to detect (match) the active normalizer.
+			// The actual content processing is happening on `data.content` below.
 			const htmlString = data.dataTransfer.getData( 'text/html' );
 			const activeNormalizer = this._normalizers.find( ( { normalizer } ) => normalizer.isActive( htmlString ) );
 
@@ -123,6 +125,7 @@ export class PasteFromOffice extends Plugin {
 				return;
 			}
 
+			// The `htmlString` is used only to detect (match) the active normalizers, not for processing.
 			const htmlString = data.dataTransfer.getData( 'text/html' );
 			const normalizers = this._normalizers.filter( ( { normalizer } ) => normalizer.isActive( htmlString ) );
 
