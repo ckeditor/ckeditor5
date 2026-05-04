@@ -8,7 +8,6 @@
  */
 
 import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
-import type { PasteOfficeHtmlParseResult } from './filters/parse.js';
 
 /**
  * Interface defining a content transformation pasted from an external editor.
@@ -27,10 +26,5 @@ export interface PasteFromOfficeNormalizer {
 	/**
 	 * Executes the normalization of a given data.
 	 */
-	execute( data: PasteFromOfficeNormalizerData ): void;
-}
-
-export interface PasteFromOfficeNormalizerData extends ClipboardInputTransformationData {
-	_isTransformedWithPasteFromOffice?: boolean;
-	_parsedData: PasteOfficeHtmlParseResult;
+	execute( data: ClipboardInputTransformationData ): void;
 }

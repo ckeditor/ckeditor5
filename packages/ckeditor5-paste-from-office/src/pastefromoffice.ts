@@ -8,15 +8,20 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { insertToPriorityArray, priorities, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import {
+	ClipboardPipeline,
+	type ClipboardInputTransformationEvent,
+	type ViewDocumentClipboardInputEvent
+} from '@ckeditor/ckeditor5-clipboard';
 
 import { PasteFromOfficeMSWordNormalizer } from './normalizers/mswordnormalizer.js';
 import { GoogleDocsNormalizer } from './normalizers/googledocsnormalizer.js';
 import { GoogleSheetsNormalizer } from './normalizers/googlesheetsnormalizer.js';
 
 import { parsePasteOfficeHtml } from './filters/parse.js';
-import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from './normalizer.js';
+import type { PasteFromOfficeNormalizer } from './normalizer.js';
 
 /**
  * The Paste from Office plugin.
@@ -32,6 +37,14 @@ import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '.
  * For more information about this feature check the {@glink api/paste-from-office package page}.
  */
 export class PasteFromOffice extends Plugin {
+	/**
+	 * The priority array of registered normalizers.
+	 */
+	private _normalizers = [] as Array<{
+		normalizer: PasteFromOfficeNormalizer;
+		priority: PriorityString;
+	}>;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -75,47 +88,64 @@ export class PasteFromOffice extends Plugin {
 		const editor = this.editor;
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
-		const normalizers: Array<PasteFromOfficeNormalizer> = [];
 		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelListEditing' );
 		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TablePropertiesEditing' );
 
-		normalizers.push(
+		this.registerNormalizer(
 			new PasteFromOfficeMSWordNormalizer(
 				viewDocument,
 				hasMultiLevelListPlugin,
 				hasTablePropertiesPlugin
 			)
 		);
-		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
-		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 
-		clipboardPipeline.on(
-			'inputTransformation',
-			( evt, data: PasteFromOfficeNormalizerData ) => {
-				if ( data._isTransformedWithPasteFromOffice ) {
-					return;
-				}
+		this.registerNormalizer( new GoogleDocsNormalizer( viewDocument ) );
+		this.registerNormalizer( new GoogleSheetsNormalizer( viewDocument ) );
 
-				const codeBlock = editor.model.document.selection.getFirstPosition()!.parent;
+		viewDocument.on<ViewDocumentClipboardInputEvent>( 'clipboardInput', ( evt, data ) => {
+			if ( typeof data.content != 'string' ) {
+				return;
+			}
 
-				if ( codeBlock.is( 'element', 'codeBlock' ) ) {
-					return;
-				}
+			// The `htmlString` is used only to detect (match) the active normalizer.
+			// The actual content processing is happening on `data.content` below.
+			const htmlString = data.dataTransfer.getData( 'text/html' );
+			const activeNormalizer = this._normalizers.find( ( { normalizer } ) => normalizer.isActive( htmlString ) );
 
-				const htmlString = data.dataTransfer.getData( 'text/html' );
-				const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
+			if ( activeNormalizer ) {
+				const parsedData = parsePasteOfficeHtml( data.content, viewDocument.stylesProcessor );
 
-				if ( activeNormalizer ) {
-					if ( !data._parsedData ) {
-						data._parsedData = parsePasteOfficeHtml( htmlString, viewDocument.stylesProcessor );
-					}
+				data.content = parsedData.body;
+				data.extraContent = { ...parsedData, isTransformedWithPasteFromOffice: true };
+			}
+		}, { priority: priorities.low + 10 } );
 
-					activeNormalizer.execute( data );
+		clipboardPipeline.on<ClipboardInputTransformationEvent>( 'inputTransformation', ( evt, data ) => {
+			if ( !data.extraContent || !( data.extraContent as any ).isTransformedWithPasteFromOffice ) {
+				return;
+			}
 
-					data._isTransformedWithPasteFromOffice = true;
-				}
-			},
-			{ priority: 'high' }
-		);
+			// The `htmlString` is used only to detect (match) the active normalizers, not for processing.
+			const htmlString = data.dataTransfer.getData( 'text/html' );
+			const normalizers = this._normalizers.filter( ( { normalizer } ) => normalizer.isActive( htmlString ) );
+
+			for ( const { normalizer } of normalizers ) {
+				normalizer.execute( data );
+			}
+		},
+		{ priority: 'high' } );
+	}
+
+	/**
+	 * Registers a normalizer with the given priority.
+	 */
+	public registerNormalizer(
+		normalizer: PasteFromOfficeNormalizer,
+		priority?: PriorityString
+	): void {
+		insertToPriorityArray( this._normalizers, {
+			normalizer,
+			priority: priorities.get( priority )
+		} );
 	}
 }

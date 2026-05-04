@@ -30,7 +30,6 @@ import {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver.js';
 
-import { plainTextToHtml } from './utils/plaintexttohtml.js';
 import { normalizeClipboardData } from './utils/normalizeclipboarddata.js';
 import { viewToPlainText } from './utils/viewtoplaintext.js';
 import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
@@ -219,30 +218,20 @@ export class ClipboardPipeline extends Plugin {
 
 		this.listenTo<ViewDocumentClipboardInputEvent>( viewDocument, 'clipboardInput', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
-			let content: ViewDocumentFragment;
-
-			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock).
-			if ( data.content ) {
-				content = data.content;
-			} else {
-				let contentData = '';
-
-				if ( dataTransfer.getData( 'text/html' ) ) {
-					contentData = normalizeClipboardData( dataTransfer.getData( 'text/html' ) );
-				} else if ( dataTransfer.getData( 'text/plain' ) ) {
-					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
-				}
-
-				content = this.editor.data.htmlProcessor.toView( contentData );
-			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
 			const sourceEditorId = dataTransfer.getData( 'application/ckeditor5-editor-id' ) || null;
+
+			// Some feature could already inject content in the higher priority event handler (i.e., codeBlock, paste from office).
+			const content = typeof data.content == 'string' ?
+				this.editor.data.htmlProcessor.toView( normalizeClipboardData( data.content ) ) :
+				data.content;
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
 				dataTransfer,
 				sourceEditorId,
+				extraContent: data.extraContent,
 				targetRanges: data.targetRanges,
 				method: data.method as 'paste' | 'drop'
 			} );
@@ -379,6 +368,11 @@ export interface ClipboardInputTransformationData {
 	 * the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
+
+	/**
+	 * Custom data stored by the `clipboardInput` event handlers. Content of this property is passed from the `clipboardInput` event.
+	 */
+	extraContent?: unknown;
 
 	/**
 	 * The data transfer instance.

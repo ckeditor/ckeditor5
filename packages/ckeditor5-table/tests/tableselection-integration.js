@@ -176,12 +176,15 @@ describe( 'TableSelection - integration', () => {
 			);
 
 			const dataTransferMock = {
-				getData: sinon.stub().withArgs( 'text/plain' ).returns( 'foo' )
+				getData: sinon.stub()
+					.withArgs( 'text/plain' ).returns( 'foo' )
+					.withArgs( 'text/html' ).returns( '<p>foo</p>' )
 			};
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
-				stop: sinon.spy()
+				stop: sinon.spy(),
+				content: dataTransferMock.getData( 'text/html' )
 			} );
 
 			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [

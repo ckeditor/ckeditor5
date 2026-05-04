@@ -7,6 +7,8 @@
  * @module paste-from-office/normalizers/mswordnormalizer
  */
 
+import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
+
 import { transformBookmarks } from '../filters/bookmark.js';
 import { transformListItemLikeElementsIntoLists } from '../filters/list.js';
 import { replaceImagesSourceWithBase64 } from '../filters/image.js';
@@ -15,7 +17,7 @@ import { transformTables } from '../filters/table.js';
 import { removeInvalidTableWidth } from '../filters/removeinvalidtablewidth.js';
 import { replaceMSFootnotes } from '../filters/replacemsfootnotes.js';
 import { ViewUpcastWriter, type ViewDocument } from '@ckeditor/ckeditor5-engine';
-import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
+import type { PasteFromOfficeNormalizer } from '../normalizer.js';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
@@ -55,18 +57,16 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: PasteFromOfficeNormalizerData ): void {
+	public execute( data: ClipboardInputTransformationData ): void {
 		const writer = new ViewUpcastWriter( this.document );
-		const { body: documentFragment, stylesString } = data._parsedData;
+		const stylesString = ( data.extraContent as { stylesString: string } ).stylesString;
 
-		transformBookmarks( documentFragment, writer );
-		transformListItemLikeElementsIntoLists( documentFragment, stylesString, this.hasMultiLevelListPlugin );
-		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
-		transformTables( documentFragment, writer, this.hasTablePropertiesPlugin );
-		removeInvalidTableWidth( documentFragment, writer );
-		replaceMSFootnotes( documentFragment, writer );
-		removeMSAttributes( documentFragment );
-
-		data.content = documentFragment;
+		transformBookmarks( data.content, writer );
+		transformListItemLikeElementsIntoLists( data.content, stylesString, this.hasMultiLevelListPlugin );
+		replaceImagesSourceWithBase64( data.content, data.dataTransfer.getData( 'text/rtf' ) );
+		transformTables( data.content, writer, this.hasTablePropertiesPlugin );
+		removeInvalidTableWidth( data.content, writer );
+		replaceMSFootnotes( data.content, writer );
+		removeMSAttributes( data.content );
 	}
 }

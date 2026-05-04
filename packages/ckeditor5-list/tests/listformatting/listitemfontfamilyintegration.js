@@ -544,7 +544,8 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			editor.editing.view.document.fire( 'clipboardInput', {
-				dataTransfer: dataTransferMock
+				dataTransfer: dataTransferMock,
+				content: dataTransferMock.getData( 'text/html' )
 			} );
 
 			sinon.assert.calledOnce( spy );

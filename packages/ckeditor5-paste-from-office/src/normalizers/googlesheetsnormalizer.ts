@@ -8,12 +8,13 @@
  */
 
 import { ViewUpcastWriter, type ViewDocument } from '@ckeditor/ckeditor5-engine';
+import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
 
 import { removeXmlns } from '../filters/removexmlns.js';
 import { removeGoogleSheetsTag } from '../filters/removegooglesheetstag.js';
 import { removeInvalidTableWidth } from '../filters/removeinvalidtablewidth.js';
 import { removeStyleBlock } from '../filters/removestyleblock.js';
-import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
+import type { PasteFromOfficeNormalizer } from '../normalizer.js';
 
 const googleSheetsMatch = /<google-sheets-html-origin/i;
 
@@ -44,15 +45,12 @@ export class GoogleSheetsNormalizer implements PasteFromOfficeNormalizer {
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: PasteFromOfficeNormalizerData ): void {
+	public execute( data: ClipboardInputTransformationData ): void {
 		const writer = new ViewUpcastWriter( this.document );
-		const { body: documentFragment } = data._parsedData;
 
-		removeGoogleSheetsTag( documentFragment, writer );
-		removeXmlns( documentFragment, writer );
-		removeInvalidTableWidth( documentFragment, writer );
-		removeStyleBlock( documentFragment, writer );
-
-		data.content = documentFragment;
+		removeGoogleSheetsTag( data.content, writer );
+		removeXmlns( data.content, writer );
+		removeInvalidTableWidth( data.content, writer );
+		removeStyleBlock( data.content, writer );
 	}
 }

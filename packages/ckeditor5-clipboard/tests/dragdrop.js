@@ -2579,6 +2579,7 @@ describe( 'Drag and Drop', () => {
 			...prepareEventData( modelPositionOrRange ),
 			method: 'dragging',
 			dataTransfer: dataTransferMock,
+			content: dataTransferMock.getData( 'text/html' ),
 			stopPropagation: () => {},
 			preventDefault: () => {}
 		} );
@@ -2589,6 +2590,7 @@ describe( 'Drag and Drop', () => {
 			...prepareEventData( modelPosition ),
 			method: 'drop',
 			dataTransfer: dataTransferMock,
+			content: dataTransferMock.getData( 'text/html' ),
 			stopPropagation: () => {},
 			preventDefault: () => {}
 		} );
