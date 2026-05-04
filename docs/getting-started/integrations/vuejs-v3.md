@@ -218,7 +218,7 @@ const disabled = ref( true );
 </script>
 ```
 
-### `disableTwoWayDataBinding`
+### `disable-two-way-data-binding`
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
 
@@ -227,7 +227,56 @@ The reason for introducing this option is performance issues in large documents.
 This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
 ```vue
-<ckeditor :editor="editor" :disableTwoWayDataBinding="true" />
+<ckeditor
+	:editor="editor"
+	:disable-two-way-data-binding="disableTwoWayDataBinding"
+/>
+```
+
+### `watchdog-config`
+
+Allows passing a configuration object to the underlying {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}. By default, the `<ckeditor>` component automatically wraps the editor with a watchdog that detects crashes and restarts the editor to recover lost content. Use this prop to customize the watchdog behavior, such as the number of allowed crashes before the watchdog gives up, or the minimum time between crashes.
+
+```vue
+<template>
+	<ckeditor
+		:editor="ClassicEditor"
+		:watchdog-config="watchdogConfig"
+	/>
+</template>
+
+<script setup>
+import { ClassicEditor } from 'ckeditor5';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+
+const watchdogConfig = {
+	crashNumberLimit: 5,
+	minimumNonErrorTimePeriod: 2000
+};
+</script>
+```
+
+See the {@link module:watchdog/watchdog~WatchdogConfig `WatchdogConfig` API} for the full list of available options.
+
+This prop has no effect when [`disable-watchdog`](#disable-watchdog) is set to `true`.
+
+### `disable-watchdog`
+
+Allows disabling the built-in watchdog. The default value is `false`.
+
+By default, the `<ckeditor>` component wraps the editor with CKEditor&nbsp;5's {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`}, which automatically detects and recovers from editor crashes. Setting `disable-watchdog` to `true` opts out of this behavior — the editor will run without crash recovery.
+
+When the watchdog is disabled, the [`ready`](#ready) and [`destroy`](#destroy) events will each fire at most once during the component's lifetime, and the [`error`](#error) event will never be emitted.
+
+```vue
+<template>
+	<ckeditor :editor="ClassicEditor" :disable-watchdog="true" />
+</template>
+
+<script setup>
+import { ClassicEditor } from 'ckeditor5';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+</script>
 ```
 
 ## Component events
@@ -239,6 +288,10 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 ```vue
 <ckeditor :editor="editor" @ready="onEditorReady" />
 ```
+
+<info-box note>
+When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime — once after the initial mount and again after each watchdog-triggered editor restart. If you need one-time initialization logic (for example, inserting a toolbar into the DOM for the Document editor type), make sure your handler is idempotent or guard it with a flag.
+</info-box>
 
 ### `focus`
 
@@ -264,15 +317,57 @@ Corresponds to the {@link module:engine/model/document~ModelDocument#event:chang
 <ckeditor :editor="editor" @input="onEditorInput" />
 ```
 
+### `error`
+
+Fired when an error is detected by the watchdog — either during editor initialization or at runtime.
+
+```vue
+<ckeditor :editor="editor" @error="onEditorError" />
+```
+
+The event handler receives two arguments:
+
+* `error` – the `Error` object describing what went wrong.
+* `details` – an object with the following properties:
+  * `phase: 'initialization' | 'runtime'` – `'initialization'` when the error occurred during `Editor.create()`, or `'runtime'` for errors caught during normal operation.
+  * `causesRestart: boolean` – whether the watchdog will attempt to restart the editor. When `false`, the editor has crashed permanently (the crash limit was exceeded) and will not recover automatically.
+
+```vue
+<template>
+	<ckeditor :editor="ClassicEditor" @error="onEditorError" />
+</template>
+
+<script setup>
+import { ClassicEditor } from 'ckeditor5';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+
+function onEditorError( error, { phase, causesRestart } ) {
+	if ( phase === 'runtime' && causesRestart ) {
+		console.warn( 'Editor crashed, watchdog is restarting it.', error );
+	} else {
+		console.error( 'Editor crashed permanently and will not recover.', error );
+	}
+}
+</script>
+```
+
+This event is not emitted when [`disable-watchdog`](#disable-watchdog) is set to `true`.
+
 ### `destroy`
 
 Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destroy`} editor event.
 
-**Note:** Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
-
 ```vue
 <ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
+
+<info-box note>
+Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
+</info-box>
+
+<info-box note>
+When the watchdog is active (the default), this event can fire **multiple times** during the component's lifetime — once for each editor instance destroyed during a watchdog restart. It is **not** fired when the component unmounts before the editor finishes initializing. If you need to react to component unmount, use Vue's `onBeforeUnmount` lifecycle hook instead.
+</info-box>
 
 ## How to?
 
