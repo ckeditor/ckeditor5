@@ -219,7 +219,7 @@ const disabled = ref( true );
 </script>
 ```
 
-### `disableTwoWayDataBinding`
+### `disable-two-way-data-binding`
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
 
@@ -229,7 +229,10 @@ This option allows the integrator to disable the default behavior and only call 
 
 ```vue
 <template>
-	<ckeditor :editor="editor" :disableTwoWayDataBinding="disableTwoWayDataBinding" />
+	<ckeditor
+		:editor="editor"
+		:disable-two-way-data-binding="disableTwoWayDataBinding"
+	/>
 </template>
 
 <script setup>
