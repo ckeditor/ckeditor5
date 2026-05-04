@@ -18,7 +18,7 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
-import { DEFAULT_OPTIONS } from './utils.js';
+import { DEFAULT_OPTIONS, getStyleDefinitionByName } from './utils.js';
 
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
@@ -143,15 +143,4 @@ function normalizeFloatToDefinitionStyle(
 
 	conversionApi.writer.setAttribute( 'imageStyle', floatStyleName, modelElement );
 	conversionApi.consumable.consume( viewElement, { styles: [ 'float' ] } );
-}
-
-/**
- * Returns the style with a given `name` from an array of styles.
- */
-function getStyleDefinitionByName( name: string, styles: Array<ImageStyleOptionDefinition> ): ImageStyleOptionDefinition | undefined {
-	for ( const style of styles ) {
-		if ( style.name === name ) {
-			return style;
-		}
-	}
 }
