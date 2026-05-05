@@ -125,7 +125,7 @@ This key grants access to your subscription features. It does not consume editor
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.
 * **Editor loads**: It does not consume editor loads, regardless of the plan type.
-  
+
 <info-box important>
 	While the development key is meant as a means to extensive testing, please remember that testing outside local environments in the Cloud set up requires the production key and consumes editor loads. If you intend to use top-level domain, you need a production license key or [contact us](https://ckeditor.com/contact/) to get a self-hosted plan without usage metering.
 </info-box>
@@ -173,7 +173,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-To use premium features, you need to add the relevant plugins to your CKEditor&nbsp;5. You can use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) to generate a CKEditor&nbsp;5 preset with the plugins enabled.
+To use premium features, you need to add the relevant plugins to your CKEditor&nbsp;5. You can use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs) to generate a CKEditor&nbsp;5 preset with the plugins enabled.
 
 Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link getting-started/setup/configuration installing plugins} and {@link getting-started/setup/toolbar toolbar configuration} in dedicated guides.
 

@@ -315,7 +315,7 @@ We removed the following helpers from the public API:
 
 The {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
+This decoupling does not have an impact on integrations using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs).
 
 However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
@@ -339,7 +339,7 @@ Check out the comprehensive {@link features/images-installation installation gui
 
 The {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
+This decoupling does not have an impact on integrations using the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs).
 
 However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
 
