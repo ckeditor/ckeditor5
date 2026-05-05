@@ -1,7 +1,7 @@
 ---
 type: Other
 scope:
-  - ckeditor5-engine
+  - ckeditor5-core
 closes:
   - 20119
 ---
