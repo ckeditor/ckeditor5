@@ -340,7 +340,7 @@ The event handler receives two arguments:
 * `error` – the `Error` object describing what went wrong.
 * `details` – an object with the following properties:
   * `phase: 'initialization' | 'runtime'` – `'initialization'` when the error occurred during `Editor.create()`, or `'runtime'` for errors caught during normal operation.
-  * `causesRestart: boolean` – whether the watchdog will attempt to restart the editor. When `false`, the editor has crashed permanently (the crash limit was exceeded) and will not recover automatically.
+  * `causesRestart: boolean` – whether the watchdog will attempt to restart the editor. When `false`, no automatic restart is scheduled (for example, the crash limit was reached, or restarting does not apply to this error).
 
 ```vue
 <template>
@@ -353,9 +353,9 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 function onEditorError( error, { phase, causesRestart } ) {
 	if ( phase === 'runtime' && causesRestart ) {
-		console.warn( 'Editor crashed, watchdog is restarting it.', error );
+		console.warn( 'Editor crashed: the watchdog is restarting it.', error );
 	} else {
-		console.error( 'Editor crashed permanently and will not recover.', error );
+		console.error( 'Editor error: the watchdog will not restart the editor automatically.', error );
 	}
 }
 </script>
