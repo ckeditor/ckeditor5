@@ -48,6 +48,7 @@
     "es-toolkit": "1.45.1"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "workspace:*",
     "@ckeditor/ckeditor5-adapter-ckfinder": "workspace:*",
     "@ckeditor/ckeditor5-autoformat": "workspace:*",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
