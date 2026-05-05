@@ -227,10 +227,20 @@ The reason for introducing this option is performance issues in large documents.
 This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
 ```vue
-<ckeditor
-	:editor="editor"
-	:disable-two-way-data-binding="disableTwoWayDataBinding"
-/>
+<template>
+	<ckeditor
+		:editor="ClassicEditor"
+		:disable-two-way-data-binding="disableTwoWayDataBinding"
+	/>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { ClassicEditor } from 'ckeditor5';
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+
+const disableTwoWayDataBinding = ref( true );
+</script>
 ```
 
 ### `watchdog-config`
