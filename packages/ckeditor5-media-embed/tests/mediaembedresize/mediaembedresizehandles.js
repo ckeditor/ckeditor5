@@ -21,7 +21,6 @@ import { MediaEmbedResizeEditing } from '../../src/mediaembedresize/mediaembedre
 import { MediaEmbedResizeHandles } from '../../src/mediaembedresize/mediaembedresizehandles.js';
 
 const YOUTUBE_URL = 'https://youtu.be/foo';
-const SPOTIFY_URL = 'https://open.spotify.com/track/foo';
 
 describe( 'MediaEmbedResizeHandles', () => {
 	let editor, editorElement, viewDocument;
@@ -94,26 +93,12 @@ describe( 'MediaEmbedResizeHandles', () => {
 			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
 
 			// Insert another paragraph — triggers a change:data with an element insert,
-			// which re-runs the sweep but should skip the already-attached media.
+			// but the change-listener should skip media that already have a resizer attached.
 			editor.model.change( writer => {
 				writer.insertElement( 'paragraph', editor.model.document.getRoot(), 'end' );
 			} );
 
 			expect( attachToSpy.called ).to.be.false;
-		} );
-
-		it( 'attaches a disabled resizer to a non-resizable provider (Spotify)', async () => {
-			editor = await createEditor();
-
-			_setModelData( editor.model, `[<media url="${ SPOTIFY_URL }"></media>]` );
-
-			const widgetResize = editor.plugins.get( WidgetResize );
-			const mediaModel = editor.model.document.getRoot().getChild( 0 );
-			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
-			const resizer = widgetResize.getResizerByViewElement( viewElement );
-
-			expect( resizer, 'resizer is attached' ).to.not.be.undefined;
-			expect( resizer.isEnabled, 'resizer is disabled' ).to.be.false;
 		} );
 
 		it( 'binds the plugin isEnabled state to the resizeMediaEmbed command', async () => {
@@ -135,7 +120,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			expect( plugin.isEnabled ).to.be.false;
 		} );
 
-		it( 'does not sweep for media on text-only changes (typing)', async () => {
+		it( 'does not iterate media on text-only changes (typing)', async () => {
 			editor = await createEditor();
 
 			_setModelData( editor.model, `<paragraph>x[]</paragraph><media url="${ YOUTUBE_URL }"></media>` );
@@ -150,57 +135,6 @@ describe( 'MediaEmbedResizeHandles', () => {
 			expect( attachToSpy.called ).to.be.false;
 		} );
 
-		it( 'disables the resizer when the URL changes to a non-resizable provider', async () => {
-			editor = await createEditor();
-
-			_setModelData( editor.model, `[<media url="${ YOUTUBE_URL }"></media>]` );
-
-			const widgetResize = editor.plugins.get( WidgetResize );
-			const mediaModel = editor.model.document.getRoot().getChild( 0 );
-			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
-			const resizer = widgetResize.getResizerByViewElement( viewElement );
-
-			expect( resizer.isEnabled, 'resizer enabled initially' ).to.be.true;
-
-			editor.model.change( writer => writer.setAttribute( 'url', SPOTIFY_URL, mediaModel ) );
-
-			expect( resizer.isEnabled, 'resizer disabled after switch' ).to.be.false;
-		} );
-
-		it( 'enables the resizer when the URL changes from a non-resizable to a resizable provider', async () => {
-			editor = await createEditor();
-
-			_setModelData( editor.model, `[<media url="${ SPOTIFY_URL }"></media>]` );
-
-			const widgetResize = editor.plugins.get( WidgetResize );
-			const mediaModel = editor.model.document.getRoot().getChild( 0 );
-			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
-			const resizer = widgetResize.getResizerByViewElement( viewElement );
-
-			expect( resizer.isEnabled, 'resizer disabled initially' ).to.be.false;
-
-			editor.model.change( writer => writer.setAttribute( 'url', YOUTUBE_URL, mediaModel ) );
-
-			expect( resizer.isEnabled, 'resizer enabled after switch' ).to.be.true;
-		} );
-
-		it( 'clears inline width and media_resized class from the figure after switching to a non-resizable provider', async () => {
-			editor = await createEditor();
-
-			_setModelData( editor.model, `[<media resizedWidth="50%" url="${ YOUTUBE_URL }"></media>]` );
-
-			const mediaModel = editor.model.document.getRoot().getChild( 0 );
-			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
-
-			expect( viewElement.getStyle( 'width' ), 'inline width set initially' ).to.equal( '50%' );
-			expect( viewElement.hasClass( 'media_resized' ), 'class set initially' ).to.be.true;
-
-			editor.model.change( writer => writer.setAttribute( 'url', SPOTIFY_URL, mediaModel ) );
-
-			expect( viewElement.getStyle( 'width' ), 'inline width cleared after switch' ).to.be.undefined;
-			expect( viewElement.hasClass( 'media_resized' ), 'class cleared after switch' ).to.be.false;
-		} );
-
 		it( 'propagates plugin.isEnabled=false to existing resizers', async () => {
 			editor = await createEditor();
 
@@ -213,7 +147,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 
 			expect( resizer.isEnabled, 'resizer enabled while command is enabled' ).to.be.true;
 
-			// Force the command off; plugin.isEnabled is bound to it and change:isEnabled should re-sync resizers.
+			// Force the command off. plugin.isEnabled is bound to it, and each resizer's isEnabled is bound to the plugin.
 			command.on( 'set:isEnabled', evt => {
 				evt.return = false;
 				evt.stop();
@@ -223,7 +157,7 @@ describe( 'MediaEmbedResizeHandles', () => {
 			expect( resizer.isEnabled, 'resizer disabled once command is disabled' ).to.be.false;
 		} );
 
-		it( 'keeps the same resizer when the URL changes between two resizable providers', async () => {
+		it( 'keeps the same resizer when the URL changes between providers', async () => {
 			editor = await createEditor();
 
 			_setModelData( editor.model, `[<media url="${ YOUTUBE_URL }"></media>]` );
@@ -238,12 +172,10 @@ describe( 'MediaEmbedResizeHandles', () => {
 			expect( widgetResize.getResizerByViewElement( viewElement ) ).to.equal( resizerBefore );
 		} );
 
-		it( 'falls back to an empty string when the url attribute is missing', async () => {
+		it( 'attaches a resizer even when the url attribute is missing', async () => {
 			editor = await createEditor();
 			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
 
-			// Insert a media element without a url attribute. isMediaResizable('') returns true,
-			// so a resizer should still be attached.
 			editor.model.change( writer => {
 				const media = writer.createElement( 'media' );
 				writer.append( media, editor.model.document.getRoot() );

@@ -43,23 +43,6 @@ When a media embed is resized, the editor saves a `media_resized` class and an i
 <figure class="media media_resized" style="width:50%;">...</figure>
 ```
 
-## Disabling resize for specific providers
-
-You can disable resizing for individual providers by setting `isResizable: false` on the provider definition. The default Spotify provider has this set, since its embed player does not work well with free-form resizing:
-
-```js
-mediaEmbed: {
-	extraProviders: [
-		{
-			name: 'myProvider',
-			url: /^example\.com\/media\/(\w+)/,
-			html: match => '...',
-			isResizable: false
-		}
-	]
-}
-```
-
 ## Common API
 
 The {@link module:media-embed/mediaembedresize~MediaEmbedResize} plugin registers:

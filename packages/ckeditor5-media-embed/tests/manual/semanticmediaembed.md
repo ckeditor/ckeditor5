@@ -64,10 +64,10 @@
 1. The embed should floor at the base `.media { min-width: 15em }` (~240px).
    Handles should remain reachable at that floor.
 
-### Spotify is not resizable (semantic mode)
+### Spotify default size and min-width (semantic mode)
 
-1. Click a Spotify embed,
-1. No resize handles should appear (Spotify is marked as non-resizable in the provider config).
+1. A freshly inserted (or pre-existing, never-resized) Spotify embed should render at its default 300px width (height ~378px from the 100/126 aspect ratio),
+1. The figure has `min-width: 300px` so the resize handles cannot drag it below the default width (Spotify's player breaks layout below ~280px).
 
 ### Resize upcast (semantic mode)
 

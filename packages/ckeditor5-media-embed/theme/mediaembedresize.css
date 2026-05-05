@@ -8,14 +8,6 @@
 	box-sizing: border-box;
 	max-width: 100%;
 
-	/*
-		Center the resized figure so both left and right resize handles
-		behave symmetrically. Without this, the figure stays left-aligned
-		and dragging the left handle produces unintuitive results.
-	*/
-	margin-left: auto;
-	margin-right: auto;
-
 	/* The wrapper should fill the figure when an explicit width is set. */
 	& > div[data-oembed-url] {
 		width: 100%;

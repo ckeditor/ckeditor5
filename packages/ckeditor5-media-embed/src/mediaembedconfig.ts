@@ -293,13 +293,4 @@ export interface MediaEmbedProvider {
 	 * is `true`, the rendering function **will always** be used for the media in the editor data output.
 	 */
 	html?: ( match: RegExpMatchArray ) => string;
-
-	/**
-	 * When set to `false`, media matched by this provider will not display resize handles.
-	 *
-	 * This option is used by the {@link module:media-embed/mediaembedresize~MediaEmbedResize} feature.
-	 *
-	 * @default true
-	 */
-	isResizable?: boolean;
 }

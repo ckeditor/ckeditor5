@@ -11,7 +11,7 @@
 	/* Make sure there is some space between the content and the media. */
 	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
 	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
-	margin: 0.9em 0;
+	margin: 0.9em auto;
 
 	/* Make sure media is not overriden with Bootstrap default `flex` value.
 	See: https://github.com/ckeditor/ckeditor5/issues/1373. */

@@ -10,7 +10,6 @@
 import type { ModelElement, ViewContainerElement } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { WidgetResize } from '@ckeditor/ckeditor5-widget';
-import { MediaEmbedEditing } from '../mediaembedediting.js';
 import type { ResizeMediaEmbedCommand } from './resizemediaembedcommand.js';
 import { RESIZED_MEDIA_CLASS } from './constants.js';
 
@@ -52,20 +51,24 @@ export class MediaEmbedResizeHandles extends Plugin {
 	}
 
 	/**
-	 * Attaches a resizer to every media widget and keeps each resizer's `isEnabled` in sync
-	 * with whether the current URL points to a resizable provider.
-	 *
-	 * Always-attach is intentional. Detaching a resizer after a URL change would trigger
-	 * `WidgetResizer._cleanup()`, which re-applies a stale `_initialViewWidth` captured at the
-	 * start of a prior drag — leaving an orphan `style="width: …"` on the figure. Toggling
-	 * `isEnabled` hides the handles without invoking destroy-time cleanup.
+	 * Attaches a resizer to every media widget on initial data load and after subsequent inserts.
+	 * Each resizer's `isEnabled` is bound to the plugin in {@link #_attachResizer}, so it
+	 * auto-tracks the resize command's state.
 	 */
 	private _setupResizerCreator(): void {
 		const editor = this.editor;
 		const widgetResize = editor.plugins.get( WidgetResize );
-		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		const syncResizers = () => {
+		// Skip text-only changes. Low priority ensures downcast has run before we look up view elements.
+		this.listenTo( editor.model.document, 'change:data', () => {
+			const hasInsert = editor.model.document.differ.getChanges().some( change =>
+				change.type === 'insert' && change.name !== '$text'
+			);
+
+			if ( !hasInsert ) {
+				return;
+			}
+
 			for ( const root of editor.model.document.getRoots() ) {
 				for ( const item of editor.model.createRangeIn( root ).getItems() ) {
 					if ( !item.is( 'element', 'media' ) ) {
@@ -79,41 +82,12 @@ export class MediaEmbedResizeHandles extends Plugin {
 						continue;
 					}
 
-					const resizer = widgetResize.getResizerByViewElement( viewElement ) ||
+					if ( !widgetResize.getResizerByViewElement( viewElement ) ) {
 						this._attachResizer( item, viewElement );
-
-					const isResizable = registry.isMediaResizable( item.getAttribute( 'url' ) as string || '' );
-					resizer.isEnabled = this.isEnabled && isResizable;
+					}
 				}
-			}
-		};
-
-		// Sync resizers after the initial render.
-		editor.ui.once( 'update', syncResizers );
-
-		// Sync after inserts (new media) and after URL changes (provider may have switched between
-		// resizable/non-resizable). Skip text-only changes. Low priority ensures downcast has run.
-		this.listenTo( editor.model.document, 'change:data', () => {
-			const hasRelevantChange = editor.model.document.differ.getChanges().some( change => {
-				if ( change.type === 'insert' && change.name !== '$text' ) {
-					return true;
-				}
-
-				if ( change.type === 'attribute' && change.attributeKey === 'url' ) {
-					return true;
-				}
-
-				return false;
-			} );
-
-			if ( hasRelevantChange ) {
-				syncResizers();
 			}
 		}, { priority: 'low' } );
-
-		// Plugin's own isEnabled (bound to the command) can flip independently of model changes —
-		// propagate those flips to every attached resizer.
-		this.on( 'change:isEnabled', syncResizers );
 	}
 
 	/**
@@ -138,6 +112,8 @@ export class MediaEmbedResizeHandles extends Plugin {
 			}
 		} );
 
+		resizer.bind( 'isEnabled' ).to( this );
+
 		resizer.on( 'updateSize', () => {
 			if ( !widgetView.hasClass( RESIZED_MEDIA_CLASS ) ) {
 				editingView.change( writer => writer.addClass( RESIZED_MEDIA_CLASS, widgetView ) );
@@ -148,7 +124,5 @@ export class MediaEmbedResizeHandles extends Plugin {
 		// UIElement has no inline styles and handles cluster at the top-left corner (visible
 		// after drag-and-drop until another event eventually triggers a redraw).
 		editingView.once( 'render', () => resizer.redraw() );
-
-		return resizer;
 	}
 }

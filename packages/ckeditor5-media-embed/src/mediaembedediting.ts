@@ -78,9 +78,6 @@ export class MediaEmbedEditing extends Plugin {
 						/^open\.spotify\.com\/(album\/\w+)/,
 						/^open\.spotify\.com\/(track\/\w+)/
 					],
-					// Resizing is disabled for Spotify because its player layout
-					// does not adapt well to being freely resized by the user.
-					isResizable: false,
 					html: match => {
 						const id = match[ 1 ];
 
