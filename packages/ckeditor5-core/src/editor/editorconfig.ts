@@ -1338,14 +1338,15 @@ export interface RootConfig {
 
 	/**
 	 * An optional, longer description of this editing area. It is intended as a stable, human-readable identifier
-	 * so features can match a root across sessions.
+	 * so features can match a root across sessions, for instance AI features interacting with multiple editor instances
+	 * and multi-root editors.
 	 *
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( {
 	 * 		attachTo: document.querySelector( '#editor' ),
 	 * 		root: {
-	 * 			description: ''
+	 * 			description: '...'
 	 * 		}
 	 * 	} )
 	 * 	.then( ... )
