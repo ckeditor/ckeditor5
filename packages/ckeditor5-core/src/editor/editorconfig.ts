@@ -1293,7 +1293,7 @@ export interface RootConfig {
 	 * to tell apart multiple editor instances (editing areas) on the page. If not set, a default
 	 * "Rich Text Editor. Editing area [name of the area]" is used instead.
 	 *
-	 * It can also be used by other features when referring to this editing area (e.g. AI features).
+	 * It can also be used by other features when referring to this editing area.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -1335,6 +1335,48 @@ export interface RootConfig {
 	 * ```
 	 */
 	label?: string;
+
+	/**
+	 * An optional, longer description of this editing area. It is intended as a stable, human-readable identifier
+	 * so features can match a root across sessions, for instance AI features interacting with multiple editor instances
+	 * and multi-root editors.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			description: '...'
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * If your editor implementation uses multiple roots, you should provide config for roots individually:
+	 *
+	 * ```ts
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		chapter1: {
+	 * 			element: document.querySelector( '#chapter1' ),
+	 * 			description: 'Editing root for the first chapter.'
+	 * 		},
+	 * 		chapter2: {
+	 * 			element: document.querySelector( '#chapter2' ),
+	 * 			description: 'Editing root for the second chapter.'
+	 * 		},
+	 * 		chapter3: {
+	 * 			element: document.querySelector( '#chapter3' ),
+	 * 			description: 'Editing root for the third chapter.'
+	 * 		}
+	 * 	}
+	 * } )
+	 * .then( ... )
+	 * .catch( ... );
+	 * ```
+	 */
+	description?: string;
 
 	/**
 	 * Initial root attributes for a root.
