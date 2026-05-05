@@ -1330,6 +1330,72 @@ describe( 'ListElementSupport', () => {
 		} );
 	} );
 
+	describe( 'definition list', () => {
+		beforeEach( () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+		} );
+
+		it( 'should be possible to properly upcast definition list inside list item', () => {
+			editor.setData(
+				'<ol>' +
+					'<li>Foo</li>' +
+					'<li>' +
+						'<dl>' +
+							'<dt>Title</dt>' +
+							'<dd>Definition</dd>' +
+						'</dl>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph htmlLiAttributes="{}" htmlOlAttributes="{}" listIndent="0" listItemId="a00" listType="numbered">' +
+					'Foo' +
+				'</paragraph>' +
+				'<htmlDl htmlLiAttributes="{}" htmlOlAttributes="{}" listIndent="0" listItemId="a01" listType="numbered">' +
+					'<htmlDt>' +
+				    	'<paragraph>Title</paragraph>' +
+				  	'</htmlDt>' +
+					'<htmlDd>' +
+						'<paragraph>Definition</paragraph>' +
+					'</htmlDd>' +
+				'</htmlDl>'
+			);
+		} );
+
+		it( 'should be possible to properly downcast definition list inside list item', () => {
+			editor.setData(
+				'<ol>' +
+					'<li>Foo</li>' +
+					'<li>' +
+						'<dl>' +
+							'<dt>Title</dt>' +
+							'<dd>Definition</dd>' +
+						'</dl>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ol>' +
+					'<li data-list-item-id="a00">Foo</li>' +
+					'<li data-list-item-id="a01">' +
+					'<dl>' +
+						'<dt>' +
+						'<p>Title</p>' +
+						'</dt>' +
+						'<dd>' +
+						'<p>Definition</p>' +
+						'</dd>' +
+					'</dl>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
+	} );
+
 	function paragraph( text, id, indent, type, listAttributes ) {
 		const attributeName = type === 'bulleted' ?
 			'htmlUlAttributes' :
