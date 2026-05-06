@@ -1439,7 +1439,7 @@ describe( 'MultiRootEditor', () => {
 
 				expect( root._isLoaded ).to.be.true;
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
-				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100 } );
+				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100, $rootEditableOptions: {} } );
 
 				expect( editor.registerRootAttribute.calledWithExactly( 'order' ) );
 			} );
@@ -1449,7 +1449,7 @@ describe( 'MultiRootEditor', () => {
 
 				expect( root._isLoaded ).to.be.true;
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '' );
-				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {} );
+				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { $rootEditableOptions: {} } );
 			} );
 
 			it( 'should log a warning and not do anything when a root is loaded for the second time', () => {
@@ -1464,7 +1464,7 @@ describe( 'MultiRootEditor', () => {
 
 				expect( root._isLoaded ).to.be.true;
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
-				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100 } );
+				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100, $rootEditableOptions: {} } );
 
 				expect( spy.notCalled ).to.be.true;
 			} );
@@ -1953,8 +1953,8 @@ describe( 'MultiRootEditor', () => {
 			} );
 
 			expect( editor.getRootsAttributes() ).to.deep.equal( {
-				foo: { order: 10, isLocked: null },
-				bar: { order: null, isLocked: false }
+				foo: { order: 10, isLocked: null, $rootEditableOptions: {} },
+				bar: { order: null, isLocked: false, $rootEditableOptions: {} }
 			} );
 
 			expect( editor.editing.model.schema.checkAttribute( '$root', 'order' ) ).to.be.true;
@@ -2003,12 +2003,14 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
 				isLocked: true,
-				order: 30
+				order: 30,
+				$rootEditableOptions: {}
 			} );
 
 			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
 				isLocked: true,
-				order: 20
+				order: 20,
+				$rootEditableOptions: {}
 			} );
 
 			await editor.destroy();
@@ -2034,12 +2036,14 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
 				isLocked: null,
-				order: 10
+				order: 10,
+				$rootEditableOptions: {}
 			} );
 
 			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
 				isLocked: true,
-				order: null
+				order: null,
+				$rootEditableOptions: {}
 			} );
 
 			await editor.destroy();
@@ -2064,12 +2068,14 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
 				isLocked: true,
-				order: 10
+				order: 10,
+				$rootEditableOptions: {}
 			} );
 
 			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
 				isLocked: false,
-				order: 20
+				order: 20,
+				$rootEditableOptions: {}
 			} );
 
 			await editor.destroy();
@@ -2093,18 +2099,20 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
 				isLocked: true,
-				order: 10
+				order: 10,
+				$rootEditableOptions: {}
 			} );
 
 			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
 				isLocked: false,
-				order: null
+				order: null,
+				$rootEditableOptions: {}
 			} );
 
 			await editor.destroy();
 		} );
 
-		it( 'should not include $rootEditableOptions', async () => {
+		it( 'should include $rootEditableOptions when placeholder or label are configured', async () => {
 			editor = await MultiRootEditor.create( { foo: '' }, {
 				roots: {
 					foo: {
@@ -2115,7 +2123,10 @@ describe( 'MultiRootEditor', () => {
 				}
 			} );
 
-			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 10 } );
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				order: 10,
+				$rootEditableOptions: { placeholder: 'Type here...', label: 'My label' }
+			} );
 
 			await editor.destroy();
 		} );
@@ -2133,12 +2144,14 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
 				isLocked: null,
-				order: 30
+				order: 30,
+				$rootEditableOptions: {}
 			} );
 
 			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
 				isLocked: true,
-				order: null
+				order: null,
+				$rootEditableOptions: {}
 			} );
 
 			await editor.destroy();
@@ -2168,11 +2181,13 @@ describe( 'MultiRootEditor', () => {
 			expect( editor.getRootsAttributes() ).to.deep.equal( {
 				bar: {
 					isLocked: true,
-					order: 20
+					order: 20,
+					$rootEditableOptions: {}
 				},
 				foo: {
 					isLocked: true,
-					order: 30
+					order: 30,
+					$rootEditableOptions: {}
 				}
 			} );
 
@@ -2207,11 +2222,13 @@ describe( 'MultiRootEditor', () => {
 			expect( editor.getRootsAttributes( 'foo' ) ).to.deep.equal( {
 				foo: {
 					isLocked: null,
-					order: 10
+					order: 10,
+					$rootEditableOptions: {}
 				},
 				bar: {
 					isLocked: true,
-					order: null
+					order: null,
+					$rootEditableOptions: {}
 				}
 			} );
 
@@ -2239,22 +2256,25 @@ describe( 'MultiRootEditor', () => {
 			expect( editor.getRootsAttributes() ).to.deep.equal( {
 				abc: {
 					isLocked: null,
-					order: 30
+					order: 30,
+					$rootEditableOptions: {}
 				},
 				foo: {
 					isLocked: true,
-					order: 10
+					order: 10,
+					$rootEditableOptions: {}
 				},
 				xxx: {
 					isLocked: false,
-					order: 40
+					order: 40,
+					$rootEditableOptions: {}
 				}
 			} );
 
 			await editor.destroy();
 		} );
 
-		it( 'should not include $rootEditableOptions', async () => {
+		it( 'should include $rootEditableOptions when placeholder or label are configured', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				roots: {
 					foo: {
@@ -2269,8 +2289,36 @@ describe( 'MultiRootEditor', () => {
 			} );
 
 			expect( editor.getRootsAttributes() ).to.deep.equal( {
-				foo: { order: 10 },
-				bar: { order: 20 }
+				foo: {
+					order: 10,
+					$rootEditableOptions: { placeholder: 'Foo placeholder', label: 'Foo label' }
+				},
+				bar: {
+					order: 20,
+					$rootEditableOptions: {}
+				}
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not overwrite $rootEditableOptions explicitly set via modelAttributes', async () => {
+			const explicitOptions = { placeholder: 'From modelAttributes', label: 'From modelAttributes' };
+
+			editor = await MultiRootEditor.create( { foo: '' }, {
+				roots: {
+					foo: {
+						modelAttributes: { $rootEditableOptions: explicitOptions },
+						placeholder: 'From config',
+						label: 'From config'
+					}
+				}
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				foo: {
+					$rootEditableOptions: explicitOptions
+				}
 			} );
 
 			await editor.destroy();
