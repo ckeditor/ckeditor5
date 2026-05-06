@@ -106,3 +106,47 @@
 1. Load the existing document (the "Media with previews" section uses the old `padding-bottom` wrapper format),
 1. The editor should render them correctly — upcast reads only the URL and regenerates the preview using the current provider HTML,
 1. Call `editor.getData()` — the iframe should carry inline `aspect-ratio` CSS directly, wrapped only in a plain `<div>` (no `padding-bottom` or `position` styles on the wrapper).
+
+### Default centering
+
+1. Insert a new media embed,
+1. An unresized YouTube/Vimeo figure spans the full editor width; an unresized Spotify figure stays at 300px and is centered horizontally,
+1. The data output `<figure>` should be `class="media"` only — no alignment class.
+
+### Alignment toolbar — buttons active on insert
+
+1. Insert a media embed and select it,
+1. The "Centered media" entry inside the **Break text** dropdown should be active by default,
+1. The data `<figure>` has no `media-style-*` class while the center button is on (default style is encoded as attribute-absence).
+
+### Block alignment
+
+1. Resize a media embed to ~50% (a full-width figure has no spare space to shift into),
+1. From the **Break text** dropdown, click "Left aligned media" — the figure should pin to the left edge of the content area,
+1. The data `<figure>` should include `media-style-block-align-left`,
+1. Repeat for "Right aligned media" — the figure should pin to the right edge, class becomes `media-style-block-align-right`,
+1. Click "Centered media" — both classes should be removed and the figure should re-center.
+
+### Text-wrap (float) alignment
+
+1. Below a paragraph of text, select a resized media (~50% width),
+1. From the **Wrap text** dropdown, click "Left aligned media" — the figure should float left and the surrounding paragraph text should wrap around it,
+1. The data `<figure>` should include `media-style-align-left` (no "block-"),
+1. Repeat with "Right aligned media" — the figure should float right with text wrapping on the left.
+
+### Side-by-side floats
+
+1. Insert two media embeds in a row,
+1. Float-align the first one left and the second one right,
+1. Both should sit on the same line (the `clear: none` override allows this) with text wrapping between or below.
+
+### Alignment + resize coexist
+
+1. Resize a media to ~50%,
+1. Apply each alignment in turn — the figure should keep its 50% width and reposition correctly,
+1. The data `<figure>` should include both `media_resized` (with `style="width: …"`) and the corresponding alignment class.
+
+### Alignment URL change
+
+1. Apply alignment to a media (e.g. `alignBlockLeft`),
+1. Change the URL to any other provider — alignment should be preserved across providers.
