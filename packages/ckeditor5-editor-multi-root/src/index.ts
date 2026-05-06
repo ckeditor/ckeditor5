@@ -12,7 +12,6 @@ export { MultiRootEditorUI } from './multirooteditorui.js';
 export { MultiRootEditorUIView } from './multirooteditoruiview.js';
 
 export type {
-	RootAttributes,
 	AddRootEvent,
 	DetachRootEvent,
 	LoadRootEvent,
@@ -21,5 +20,8 @@ export type {
 	AddRootRootConfig,
 	RootEditableOptions
 } from './multirooteditor.js';
+
+// Re-export for backward compatibility.
+export type { EditorRootAttributes as RootAttributes } from '@ckeditor/ckeditor5-core';
 
 import './augmentation.js';

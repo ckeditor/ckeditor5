@@ -36,6 +36,7 @@ import { ClassicEditor, Essentials } from 'ckeditor5';
 
 ClassicEditor
 	.create( {
+		attachTo: document.getElementById( 'editor' ),
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, /* ... */ ],
 	} )

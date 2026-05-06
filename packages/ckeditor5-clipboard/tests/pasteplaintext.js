@@ -243,8 +243,26 @@ describe( 'PastePlainText', () => {
 		expect( _getModelData( model ) ).to.equal( '<paragraph><$text test="true">Linked foo[].</$text></paragraph>' );
 	} );
 
-	it( 'should not preserve non formatting attribute if it was fully selected', () => {
+	it( 'should not preserve non formatting attribute if it was fully selected in a single paragraph', () => {
 		_setModelData( model, '<paragraph><$text test="true">[Linked text.]</$text></paragraph>' );
+
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer: createDataTransfer( {
+				'text/html': 'foo',
+				'text/plain': 'foo'
+			} ),
+			stopPropagation() {},
+			preventDefault() {}
+		} );
+
+		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+	} );
+
+	it( 'should not preserve non formatting attribute if the entire content was fully selected across multiple paragraphs', () => {
+		_setModelData(
+			model,
+			'<paragraph><$text test="true">[Linked text.</$text></paragraph><paragraph><$text test="true">Other text.]</$text></paragraph>'
+		);
 
 		viewDocument.fire( 'clipboardInput', {
 			dataTransfer: createDataTransfer( {

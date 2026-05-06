@@ -37,11 +37,9 @@ class MultirootEditor extends Editor {
 	* **Note:** Do not use the constructor to create editor instances. Use the static `MultirootEditor.create()` method instead.
 	*
 	* @protected
-	* @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
-	* for the created editor (on which the editor will be initialized).
 	* @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	*/
-	constructor( sourceElements, config ) {
+	constructor( config ) {
 		super( config );
 
 		// Populate missing initial data for roots from source elements while preserving
@@ -52,7 +50,7 @@ class MultirootEditor extends Editor {
 			roots[ rootName ] = roots[ rootName ] || {};
 
 			if ( roots[ rootName ].initialData === undefined ) {
-				roots[ rootName ].initialData = getDataFromElement( sourceElements[ rootName ] );
+				roots[ rootName ].initialData = getDataFromElement( roots[ rootName ].element );
 			}
 		}
 
@@ -95,14 +93,12 @@ class MultirootEditor extends Editor {
 	/**
 	* Creates a multi-root editor instance.
 	*
-	* @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
-	* for the created editor (on which the editor will be initialized).
 	* @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	* @returns {Promise} A promise resolved once the editor is ready. The promise returns the created multi-root editor instance.
 	*/
-	static create( sourceElements, config ) {
+	static create( config ) {
 		return new Promise( resolve => {
-			const editor = new this( sourceElements, config );
+			const editor = new this( config );
 
 			resolve(
 				editor.initPlugins()
@@ -428,7 +424,7 @@ MultirootEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
-			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
+			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
 			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
 		image: {

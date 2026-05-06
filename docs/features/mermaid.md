@@ -36,9 +36,9 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 ```js
 import { ClassicEditor } from 'ckeditor5';
-import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';
+import { Mermaid } from '@ckeditor/ckeditor5-mermaid';
 
-import '@ckeditor/ckeditor5-mermaid/dist/index.css';
+import '@ckeditor/ckeditor5-mermaid/index.css';
 
 ClassicEditor
 	.create( {

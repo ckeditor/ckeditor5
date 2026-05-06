@@ -19,7 +19,10 @@ function initEditor() {
 	DecoupledEditor
 		.create( {
 			root: {
-				initialData: editorData
+				initialData: editorData,
+				modelAttributes: {
+					section: 'intro'
+				}
 			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]

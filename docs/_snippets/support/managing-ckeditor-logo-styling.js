@@ -5,6 +5,7 @@
 
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	ClassicEditor,
 	getViewportTopOffsetConfig
 } from '@snippets/index.js';
@@ -13,6 +14,11 @@ ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-managing-ckeditor-logo-styling' ),
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		toolbar: {
 			items: [
 				'undo', 'redo',

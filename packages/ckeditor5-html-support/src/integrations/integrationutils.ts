@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { ViewDowncastWriter, ViewElement } from '@ckeditor/ckeditor5-engine';
-
 /**
  * @module html-support/integrations/integrationutils
  */
+
+import type { ViewDowncastWriter, ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Returns the first view element descendant matching the given view name.

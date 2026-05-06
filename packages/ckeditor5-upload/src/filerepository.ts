@@ -30,8 +30,7 @@ import { FileReader } from './filereader.js';
  *
  * To use it, first you need an upload adapter. Upload adapter's job is to handle communication with the server
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
- * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
- * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
+ * (e.g. {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
  * the {@glink framework/deep-dive/upload-adapter Custom image upload adapter deep-dive} guide.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
@@ -628,8 +627,7 @@ export interface UploadAdapter {
 	 * ```
 	 *
 	 * NOTE: When returning multiple images, the widest returned one should equal the default one. It is essential to
-	 * correctly set `width` attribute of the image. See this discussion:
-	 * https://github.com/ckeditor/ckeditor5-easy-image/issues/4 for more information.
+	 * correctly set `width` attribute of the image.
 	 *
 	 * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
 	 * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.

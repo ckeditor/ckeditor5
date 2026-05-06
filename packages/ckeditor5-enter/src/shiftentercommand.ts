@@ -98,12 +98,7 @@ function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDoc
 	const isContainedWithinOneElement = ( startElement == endElement );
 
 	if ( isSelectionEmpty ) {
-		const attributesToCopy = getCopyOnEnterAttributes( model.schema, selection.getAttributes() );
-
-		insertBreak( model, writer, range.end );
-
-		writer.removeSelectionAttribute( selection.getAttributeKeys() );
-		writer.setSelectionAttribute( attributesToCopy );
+		insertBreak( model, writer, range.end, selection.getAttributes() );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 
@@ -113,7 +108,7 @@ function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDoc
 		//
 		// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x<br>^x</h>
 		if ( isContainedWithinOneElement ) {
-			insertBreak( model, writer, selection.focus! );
+			insertBreak( model, writer, selection.focus!, selection.getAttributes() );
 		}
 		// Selection over multiple elements.
 		//
@@ -134,8 +129,17 @@ function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDoc
 	}
 }
 
-function insertBreak( model: Model, writer: ModelWriter, position: ModelPosition ): void {
-	const breakLineElement = writer.createElement( 'softBreak' );
+/**
+ * Inserts a softBreak with applicable attributes.
+ */
+function insertBreak(
+	model: Model,
+	writer: ModelWriter,
+	position: ModelPosition,
+	selectionAttributes: IterableIterator<[ string, unknown ]>
+): void {
+	const attributes = Array.from( getCopyOnEnterAttributes( model.schema, selectionAttributes ) );
+	const breakLineElement = writer.createElement( 'softBreak', attributes );
 
 	model.insertContent( breakLineElement, position );
 	writer.setSelection( breakLineElement, 'after' );

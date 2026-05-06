@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module image/imageupload/uploadimagecommand
+ */
+
 import { FileRepository } from '@ckeditor/ckeditor5-upload';
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import type { ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 import { type ImageUtils } from '../imageutils.js';
-
-/**
- * @module image/imageupload/uploadimagecommand
- */
 
 /**
  * The upload image command.

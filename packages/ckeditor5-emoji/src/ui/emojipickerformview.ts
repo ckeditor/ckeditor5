@@ -95,8 +95,7 @@ export class EmojiPickerFormView extends View {
 				class: [
 					'ck',
 					'ck-form',
-					'ck-emoji-picker-form',
-					'ck-responsive-form'
+					'ck-emoji-picker-form'
 				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90

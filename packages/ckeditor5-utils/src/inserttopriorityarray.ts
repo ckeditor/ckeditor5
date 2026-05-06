@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { priorities, type PriorityString } from './priorities.js';
-
 /**
  * @module utils/inserttopriorityarray
  */
+
+import { priorities, type PriorityString } from './priorities.js';
 
 /**
  * The priority object descriptor.

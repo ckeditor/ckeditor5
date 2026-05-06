@@ -164,7 +164,6 @@ import {
 	BlockQuote,
 	CKBox,
 	CKFinder,
-	EasyImage,
 	Heading,
 	Image,
 	ImageCaption,
@@ -205,7 +204,6 @@ ClassicEditor.create( {
 		CKBox,
 		CKFinder,
 		CloudServices,
-		EasyImage,
 		Heading,
 		Image,
 		ImageCaption,
@@ -276,7 +274,6 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/dist/index.js';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox/dist/index.js';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder/dist/index.js';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/dist/index.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/dist/index.js';
 import { Heading } from '@ckeditor/ckeditor5-heading/dist/index.js';
 import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image/dist/index.js';
 import { Indent } from '@ckeditor/ckeditor5-indent/dist/index.js';
@@ -336,7 +333,6 @@ import '@ckeditor/ckeditor5-block-quote/dist/index.css';
 import '@ckeditor/ckeditor5-ckbox/dist/index.css';
 import '@ckeditor/ckeditor5-ckfinder/dist/index.css';
 import '@ckeditor/ckeditor5-cloud-services/dist/index.css';
-import '@ckeditor/ckeditor5-easy-image/dist/index.css';
 import '@ckeditor/ckeditor5-heading/dist/index.css';
 import '@ckeditor/ckeditor5-image/dist/index.css';
 import '@ckeditor/ckeditor5-indent/dist/index.css';
@@ -361,7 +357,6 @@ ClassicEditor.create( {
 		CKBox,
 		CKFinder,
 		CloudServices,
-		EasyImage,
 		Heading,
 		Image,
 		ImageCaption,

@@ -634,6 +634,91 @@ describe( 'PasteFromOffice - filters', () => {
 					} );
 				}
 			} );
+
+			describe( 'interrupted nested lists', () => {
+				const level1 = 'style="mso-list:l1 level1 lfo2;margin-left:24px"';
+				const level2 = 'style="mso-list:l0 level2 lfo1"';
+				const para = 'style="margin-left:24px"';
+
+				it( 'places a non-list block after the nested list, not inside it', () => {
+					const html =
+						`<p ${ level1 }>Item 1</p>` +
+						`<p ${ level2 }>Item 2</p>` +
+						`<p ${ para }>Paragraph 1</p>` +
+						`<p ${ level2 }>Item 3</p>`;
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '' );
+
+					// margin-left is lifted from <p> to <ol> — Item 1's <p> no longer has it.
+					expect( _stringifyView( view ) ).to.equal(
+						'<ol style="margin-left:-16px">' +
+							'<li>' +
+								'<p style="mso-list:l1 level1 lfo2">Item 1</p>' +
+								'<ol>' +
+									`<li><p ${ level2 }>Item 2</p></li>` +
+								'</ol>' +
+								'<p>Paragraph 1</p>' +
+								'<ol start="2">' +
+									`<li><p ${ level2 }>Item 3</p></li>` +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'places multiple non-list blocks each after their respective nested list item', () => {
+					const html =
+						`<p ${ level1 }>Item 1</p>` +
+						`<p ${ level2 }>Item 2</p>` +
+						`<p ${ para }>Paragraph 1</p>` +
+						`<p ${ level2 }>Item 3</p>` +
+						`<p ${ para }>Paragraph 2</p>` +
+						`<p ${ level2 }>Item 4</p>` +
+						`<p ${ para }>Paragraph 3</p>`;
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '' );
+
+					// margin-left is lifted from <p> to <ol> — Item 1's <p> no longer has it.
+					expect( _stringifyView( view ) ).to.equal(
+						'<ol style="margin-left:-16px">' +
+							'<li>' +
+								'<p style="mso-list:l1 level1 lfo2">Item 1</p>' +
+								'<ol>' +
+									`<li><p ${ level2 }>Item 2</p></li>` +
+								'</ol>' +
+								'<p>Paragraph 1</p>' +
+								'<ol start="2">' +
+									`<li><p ${ level2 }>Item 3</p></li>` +
+								'</ol>' +
+								'<p>Paragraph 2</p>' +
+								'<ol start="3">' +
+									`<li><p ${ level2 }>Item 4</p></li>` +
+								'</ol>' +
+								'<p>Paragraph 3</p>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'does not carry over nested list numbering into a sibling top-level list item', () => {
+					const html =
+						`<p ${ level1 }>Item A</p>` +
+						`<p ${ level2 }>Item A.1</p>` +
+						`<p ${ level2 }>Item A.2</p>` +
+						`<p ${ level1 }>Item B</p>` +
+						`<p ${ level2 }>Item B.1</p>`;
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '' );
+
+					const result = _stringifyView( view );
+
+					// The nested list under Item B must start at 1, not continue from Item A's nested list.
+					expect( result ).to.contain( '<ol><li><p style="mso-list:l0 level2 lfo1">Item B.1</p></li></ol>' );
+				} );
+			} );
 		} );
 	} );
 

@@ -1037,6 +1037,34 @@ export default class Delete extends Plugin {
 }
 ```
 
+### Disallow TypeScript enums: `ckeditor5-rules/no-enum`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+TypeScript `enum` declarations are disallowed because they emit runtime code that is hard to tree-shake, behave inconsistently between numeric and string enums, and do not mix well with structural typing. Prefer a `const` object combined with a union type derived from its values, which produces a lighter and more predictable output.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+enum Direction {
+	Up = 'up',
+	Down = 'down'
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+const Direction = {
+	Up: 'up',
+	Down: 'down'
+} as const;
+
+type Direction = typeof Direction[ keyof typeof Direction ];
+```
+
 ### Imports within a package: `ckeditor5-rules/no-scoped-imports-within-package`
 
 All imports defined in every package, that point to a file from the same package, must be relative. You cannot use the scoped imports, if the target file is located in the same package as the import declaration. The resolved scoped import points to the package inside the `node_modules`, but not to the current working directory, and the source code in these two places may differ from each other.
@@ -1071,6 +1099,16 @@ As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/W
 The second case is common for the documentation files, because its pieces are located in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
+
+### Valid `@module` tags: `ckeditor5-rules/validate-module-tag`
+
+<info-box warning>
+	This rule should only be used on `.ts` files in package `src/` directories.
+</info-box>
+
+This rule requires a file-level `@module` JSDoc tag at the top of each TypeScript source file in `packages/*/src`. The tag value must match the file path.
+
+For example, `packages/ckeditor5-feature/src/featureediting.ts` should start with `@module feature/featureediting`. For `index.ts` files, both `@module feature` and `@module feature/index` are allowed. The `augmentation.ts` file is excluded from this rule.
 
 ### Require or disallow certain plugin flags: `ckeditor5-rules/ckeditor-plugin-flags`
 
@@ -1138,6 +1176,101 @@ This rule ensures that SVG files are imported and exported only in the `@ckedito
 ### Valid changelog entries
 
 This rule ensures that changelog entry files are populated with proper data and a clear description of the change. For a full guide on how to populate changelog entries, see the {@link framework/contributing/changelog-entries Changelog entries} guide.
+
+### Disallow hardcoded `$root` literals: `ckeditor5-rules/no-literal-dollar-root`
+
+This rule disallows the literal `'$root'` string anywhere it could be used as a schema context. Hardcoding `'$root'` is silently wrong when {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} is customized: the runtime root no longer matches the literal, and any schema check or upcast against it operates against the wrong element name.
+
+The rule also reports two specific patterns that have a name-agnostic replacement and provides an auto-fix for them:
+
+* `node.is( 'element', '$root' )` → `node.is( 'rootElement' )`
+* `node.name === '$root'` / `node.name !== '$root'` → `node.is( 'rootElement' )` / `!node.is( 'rootElement' )`
+
+Options:
+
+* `allowedPackages` &ndash; (optional) A list of package name fragments whose source files are exempt from the rule. Used for `ckeditor5-engine` and `ckeditor5-core` where `'$root'` is the canonical schema element name being defined.
+* `allowedCalls` &ndash; (optional) A list of method names where a `'$root'` literal argument is permitted (e.g. `is` so that `node.is( '$root' )` is allowed alongside the canonical `node.is( 'rootElement' )` form).
+
+The rule also has a narrow built-in exception: a `'$root'` literal under a `context` property of an options object passed to a view-event listener method (`listenTo()`, `on()`, `once()`, `off()`) is not flagged, because in that position `'$root'` is a view-tree bubbling target — not the schema element name.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+const ROOT_NAME = '$root';
+
+if ( node.is( 'element', '$root' ) ) { /* ... */ }
+
+if ( modelElement.name === '$root' ) { /* ... */ }
+
+writer.addRoot( newRoot, '$root' );
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+if ( node.is( 'rootElement' ) ) { /* ... */ }
+
+if ( modelElement.is( 'rootElement' ) ) { /* ... */ }
+
+// View-event listener `context` option — `'$root'` here is a view-tree bubbling target.
+this.listenTo( viewDocument, 'arrowKey', handler, { context: '$root' } );
+
+// Adding attributes to the default root element is the documented escape hatch.
+schema.extend( '$root', { allowAttributes: [ 'foo' ] } );
+```
+
+If the literal `'$root'` is the right value at a call site, opt out with an `// eslint-disable-next-line` comment that explains why. A common case is a feature that is intentionally scoped to roots whose `modelElement` is the default `$root` and is not meant to operate on roots configured with a custom `modelElement`. Such a feature may register its schema only against `$root` on purpose:
+
+```ts
+// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- feature is registered only on the default `$root` by design
+model.schema.register( 'myFeatureElement', { isBlock: true, allowIn: '$root' } );
+```
+
+### Require explicit schema context: `ckeditor5-rules/require-explicit-data-context`
+
+This rule flags calls to engine APIs whose schema-context argument silently defaults to `'$root'` when omitted. Like the rule above, the silent default is wrong as soon as a root is configured with a custom {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`}, and the failure is hard to diagnose because no error is raised.
+
+The rule reports calls to these APIs when their context argument is missing:
+
+* {@link module:engine/controller/datacontroller~DataController#parse `data.parse( data, context )`}
+* {@link module:engine/controller/datacontroller~DataController#toModel `data.toModel( view, context )`}
+* {@link module:engine/model/document~ModelDocument#createRoot `document.createRoot( elementName, rootName )`}
+* {@link module:engine/model/writer~ModelWriter#addRoot `writer.addRoot( rootName, elementName )`}
+* {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert `upcastDispatcher.convert( viewElementOrFragment, writer, context )`}
+
+The receiver patterns are matched syntactically (the receiver's final accessed property must be `data` / `document` / `upcastDispatcher`, or a bare identifier `writer` for `addRoot`). This intentionally excludes `MultiRootEditor#addRoot( rootName, options? )`, which has a different signature and resolves the model element name from its options object.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+const fragment = editor.data.parse( html );
+const fragment = editor.data.toModel( view );
+
+editor.model.document.createRoot();
+
+editor.model.change( writer => {
+	writer.addRoot( 'main' );
+} );
+
+editor.data.upcastDispatcher.convert( viewFragment, writer );
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+const fragment = editor.data.parse( html, '$documentFragment' );
+const fragment = editor.data.toModel( view, editor.model.document.getRoot()! );
+
+editor.model.document.createRoot( '$inlineRoot' );
+
+editor.model.change( writer => {
+	writer.addRoot( 'main', '$inlineRoot' );
+} );
+
+editor.data.upcastDispatcher.convert( viewFragment, writer, [ '$root' ] );
+```
+
+If the default `'$root'` context is intentional (for example, an internal editor whose only root always uses the default model element), opt out with an `// eslint-disable-next-line` comment that explains why.
 
 ## CKEditor&nbsp;5 custom Stylelint rules
 

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
-import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-
 /**
  * @module media-embed/mediaembedconfig
  */
+
+import type { ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
+import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The configuration of the media embed features.

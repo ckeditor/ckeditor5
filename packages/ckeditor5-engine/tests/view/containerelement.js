@@ -79,36 +79,87 @@ describe( 'ContainerElement', () => {
 
 		// Block filler is required after the `<br>` element if the element is the last child in the container. See #1422.
 		describe( 'for <br> elements in container', () => {
-			it( 'returns null because container does not need the block filler', () => {
+			it( 'should return null for a container with text content only', () => {
 				expect( _parseView( '<container:p>Foo.</container:p>' ).getFillerOffset() ).to.equals( null );
 			} );
 
-			it( 'returns offset of the last child which is the <br> element (1)', () => {
-				expect( _parseView( '<container:p><empty:br></empty:br></container:p>' ).getFillerOffset() ).to.equals( 1 );
+			it( 'should return offset after a <br> element that is the only child', () => {
+				expect( _parseView( '<container:p><empty:br/></container:p>' ).getFillerOffset() ).to.equals( 1 );
 			} );
 
-			it( 'returns offset of the last child which is the <br> element (2)', () => {
-				expect( _parseView( '<container:p>Foo.<empty:br></empty:br></container:p>' ).getFillerOffset() ).to.equals( 2 );
+			it( 'should return offset after a <br> element that follows text', () => {
+				expect( _parseView( '<container:p>Foo.<empty:br/></container:p>' ).getFillerOffset() ).to.equals( 2 );
 			} );
 
-			it( 'always returns the last <br> element in the container', () => {
-				expect( _parseView( '<container:p>Foo.<empty:br></empty:br><empty:br></empty:br></container:p>' ).getFillerOffset() )
+			it( 'should return offset after the last <br> element when there are consecutive <br> elements', () => {
+				expect( _parseView( '<container:p>Foo.<empty:br/><empty:br/></container:p>' ).getFillerOffset() )
 					.to.equals( 3 );
 			} );
 
-			it( 'works fine with non-empty container with multi <br> elements', () => {
-				expect( _parseView( '<container:p>Foo.<empty:br></empty:br>Bar.<empty:br></empty:br></container:p>' ).getFillerOffset() )
-					.to.equals( 4 );
+			it( 'should return offset after the last <br> element when text nodes are between <br> elements', () => {
+				expect( _parseView( '<container:p>Foo.<empty:br/>Bar.<empty:br/></container:p>' ).getFillerOffset() ).to.equals( 4 );
 			} );
 
-			it( 'ignores the ui elements', () => {
-				expect( _parseView( '<container:p><ui:span></ui:span><empty:br></empty:br></container:p>' ).getFillerOffset() )
-					.to.equals( 2 );
+			it( 'should return offset after a <br> element ignoring preceding ui elements', () => {
+				expect( _parseView( '<container:p><ui:span></ui:span><empty:br/></container:p>' ).getFillerOffset() ).to.equals( 2 );
 			} );
 
-			it( 'empty element must be the <br> element', () => {
-				expect( _parseView( '<container:p>Foo<empty:img></empty:img></container:p>' ).getFillerOffset() )
-					.to.equals( null );
+			it( 'should return null when the last empty element is not a <br> element', () => {
+				expect( _parseView( '<container:p>Foo<empty:img/></container:p>' ).getFillerOffset() ).to.equals( null );
+			} );
+		} );
+
+		// Block filler is required after the `<br>` element if the element is the last child in the container
+		// even when nested in an attribute element.
+		describe( 'for <br> elements in container inside an attribute element', () => {
+			it( 'should return null when the attribute element contains text only', () => {
+				expect(
+					_parseView( '<container:p><attribute:b>Foo.</attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( null );
+			} );
+
+			it( 'should return offset after the attribute element that contains only a <br> element', () => {
+				expect(
+					_parseView( '<container:p><attribute:b><empty:br/></attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( 1 );
+			} );
+
+			it( 'should return offset after the attribute element that ends with a <br> element', () => {
+				expect(
+					_parseView( '<container:p><attribute:b>Foo.<empty:br/></attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( 1 );
+			} );
+
+			it( 'should return offset after the attribute element with deeply nested <br> element', () => {
+				expect(
+					_parseView(
+						'<container:p><attribute:b><attribute:i>Foo.<empty:br/></attribute:i></attribute:b></container:p>'
+					).getFillerOffset()
+				).to.equals( 1 );
+			} );
+
+			it( 'should return offset after the attribute element that ends with consecutive <br> elements', () => {
+				expect(
+					_parseView( '<container:p><attribute:b>Foo.<empty:br/><empty:br/></attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( 1 );
+			} );
+
+			it( 'should return offset after the attribute element with text nodes between <br> elements', () => {
+				expect(
+					_parseView( '<container:p><attribute:b>Foo.<empty:br/>Bar.<empty:br/></attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( 1 );
+			} );
+
+			it( 'should return offset after the attribute element with a <br> element ignoring ui elements', () => {
+				expect(
+					_parseView( '<container:p><attribute:b><ui:span></ui:span><empty:br/></attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( 1 );
+			} );
+
+			it( 'should return null when the last empty element inside the attribute element is not a <br> element', () => {
+				expect(
+					_parseView( '<container:p><attribute:b>Foo<empty:img/></attribute:b></container:p>' ).getFillerOffset()
+				).to.equals( null );
 			} );
 		} );
 	} );

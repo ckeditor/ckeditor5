@@ -136,6 +136,13 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 	You can turn off the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
 </info-box>
 
+### Disabled features inside code blocks
+
+Code blocks are designed to contain plain code, so several editor features are automatically disabled when the cursor is inside a code block:
+
+* **Text formatting** &ndash; Attributes such as bold, italic, and other formatting styles cannot be applied.
+* **Mentions, slash commands, and emoji** &ndash; The {@link features/mentions mention} autocompletion (and features built on top of it, such as {@link features/slash-commands slash commands} and {@link features/emoji emoji}) will not trigger inside code blocks.
+
 ### Preserving line indentation
 
 To speed up the editing, when typing in a code block, the indentation of the current line is preserved when you hit <kbd>Enter</kbd> and create a new line. If you want to change the indentation of the new line, take a look at [some easy ways to do that](#changing-line-indentation).

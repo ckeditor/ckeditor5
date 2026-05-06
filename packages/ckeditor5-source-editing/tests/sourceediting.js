@@ -18,7 +18,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
-import { _getEmitterListenedTo, _getEmitterId, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { _getEmitterListenedTo, _getEmitterId, env, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'SourceEditing', () => {
@@ -398,6 +398,194 @@ describe( 'SourceEditing', () => {
 			textarea.dispatchEvent( new Event( 'input' ) );
 
 			expect( wrapper.dataset.value ).to.equal( '<p>Foo</p><p>bar</p>' );
+		} );
+
+		it( 'should not block native undo keystroke in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'z',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native redo keystroke in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'y',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native undo keystroke with meta key in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'z',
+				metaKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native undo keystroke with caps lock in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'Z',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not block native redo keystroke with caps lock in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'Y',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const spy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should trigger native redo on Cmd+Y in the textarea on macOS', () => {
+			const originalIsMac = env.isMac;
+			let execCommandSpy;
+
+			try {
+				env.isMac = true;
+				button.fire( 'execute' );
+
+				const domRoot = editor.editing.view.getDomRoot();
+				const textarea = domRoot.nextSibling.children[ 0 ];
+
+				const keydownEvent = new KeyboardEvent( 'keydown', {
+					key: 'y',
+					metaKey: true,
+					bubbles: true,
+					cancelable: true
+				} );
+
+				const preventDefaultSpy = sinon.spy( keydownEvent, 'preventDefault' );
+				execCommandSpy = sinon.spy( textarea.ownerDocument, 'execCommand' );
+
+				textarea.dispatchEvent( keydownEvent );
+
+				expect( preventDefaultSpy.calledOnce ).to.be.true;
+				expect( execCommandSpy.calledWith( 'redo' ) ).to.be.true;
+			} finally {
+				if ( execCommandSpy ) {
+					execCommandSpy.restore();
+				}
+
+				env.isMac = originalIsMac;
+			}
+		} );
+
+		it( 'should not trigger execCommand on Ctrl+Y in the textarea on non-macOS', () => {
+			const originalIsMac = env.isMac;
+			let execCommandSpy;
+
+			try {
+				env.isMac = false;
+				button.fire( 'execute' );
+
+				const domRoot = editor.editing.view.getDomRoot();
+				const textarea = domRoot.nextSibling.children[ 0 ];
+
+				const keydownEvent = new KeyboardEvent( 'keydown', {
+					key: 'y',
+					ctrlKey: true,
+					bubbles: true,
+					cancelable: true
+				} );
+
+				const preventDefaultSpy = sinon.spy( keydownEvent, 'preventDefault' );
+				execCommandSpy = sinon.spy( textarea.ownerDocument, 'execCommand' );
+
+				textarea.dispatchEvent( keydownEvent );
+
+				expect( preventDefaultSpy.called ).to.be.false;
+				expect( execCommandSpy.called ).to.be.false;
+			} finally {
+				if ( execCommandSpy ) {
+					execCommandSpy.restore();
+				}
+
+				env.isMac = originalIsMac;
+			}
+		} );
+
+		it( 'should not intercept other Ctrl keystrokes in the textarea', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			const keydownEvent = new KeyboardEvent( 'keydown', {
+				key: 'a',
+				ctrlKey: true,
+				bubbles: true,
+				cancelable: true
+			} );
+
+			const stopImmediatePropagationSpy = sinon.spy( keydownEvent, 'stopImmediatePropagation' );
+
+			textarea.dispatchEvent( keydownEvent );
+
+			expect( stopImmediatePropagationSpy.called ).to.be.false;
 		} );
 
 		it( 'should disable textarea if editor is in read-only mode', () => {

@@ -5,6 +5,7 @@
 
 import {
 	CS_CONFIG,
+	TOKEN_URL,
 	BalloonBlockEditor,
 	getViewportTopOffsetConfig,
 	setViewportTopOffsetDynamically
@@ -15,10 +16,12 @@ BalloonBlockEditor
 		root: {
 			element: document.querySelector( '#snippet-balloon-block-editor' )
 		},
-		removePlugins: [
-			'CKBox'
-		],
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

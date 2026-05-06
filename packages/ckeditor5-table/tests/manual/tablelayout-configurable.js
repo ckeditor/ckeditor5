@@ -499,7 +499,9 @@ const config = {
 	menuBar: {
 		isVisible: true
 	},
-	initialData: initialHTML
+	root: {
+		initialData: initialHTML
+	}
 };
 
 let editor = await ClassicEditor.create( {
@@ -528,7 +530,13 @@ const tableTypeSelect = document.querySelector( '#tableType' );
 tableTypeSelect.addEventListener( 'change', async () => {
 	await editor.destroy();
 
-	const newConfig = { ...config, initialData: initialHTML };
+	const newConfig = {
+		...config,
+		root: {
+			...config.root,
+			initialData: initialHTML
+		}
+	};
 
 	newConfig.table = {
 		...newConfig.table,

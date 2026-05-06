@@ -11,6 +11,8 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { ContextualBalloon } from '@ckeditor/ckeditor5-ui';
 
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+
 import { MentionUI, createRegExp } from '../src/mentionui.js';
 import { MentionEditing } from '../src/mentionediting.js';
 import { MentionsView } from '../src/ui/mentionsview.js';
@@ -696,6 +698,80 @@ describe( 'MentionUI', () => {
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( mentionsView.items ).to.have.length( 5 );
 					} );
+			} );
+
+			it( 'should not show panel for matched marker inside a code block', async () => {
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ Paragraph, CodeBlock, MentionEditing, MentionUI ],
+					mention: staticConfig
+				} );
+
+				const model = editor.model;
+				const panelView = editor.plugins.get( ContextualBalloon ).view;
+
+				_setModelData( model, '<codeBlock language="plaintext">foo []</codeBlock>' );
+
+				model.change( writer => {
+					writer.insertText( '@Ba', model.document.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				expect( panelView.isVisible ).to.be.false;
+				expect( model.markers.has( 'mention' ) ).to.be.false;
+
+				await editor.destroy();
+				editorElement.remove();
+			} );
+
+			it( 'should not show panel when feed response arrives after mention command was disabled', async () => {
+				let feedResolve;
+
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ Paragraph, CodeBlock, MentionEditing, MentionUI ],
+					mention: {
+						feeds: [ {
+							marker: '@',
+							feed: () => new Promise( resolve => {
+								feedResolve = resolve;
+							} )
+						} ]
+					}
+				} );
+
+				const model = editor.model;
+				const panelView = editor.plugins.get( ContextualBalloon ).view;
+				const mentionCommand = editor.commands.get( 'mention' );
+
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
+
+				// Type '@' in the paragraph — triggers an async feed request.
+				model.change( writer => {
+					writer.insertText( '@', model.document.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				// Disable the mention command while the feed is still pending.
+				mentionCommand.forceDisabled( 'test' );
+
+				// Resolve the feed — the command is disabled, so the panel should not appear.
+				feedResolve( [ '@Barney', '@Lily' ] );
+
+				await waitForDebounce();
+
+				expect( panelView.isVisible ).to.be.false;
+
+				mentionCommand.clearForceDisabled( 'test' );
+
+				await editor.destroy();
+				editorElement.remove();
 			} );
 
 			it( 'should show panel for matched marker at the beginning of paragraph', () => {

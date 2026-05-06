@@ -18,6 +18,11 @@ function initEditor() {
 	ClassicEditor
 		.create( {
 			attachTo: document.querySelector( '#editor' ),
+			root: {
+				modelAttributes: {
+					section: 'test'
+				}
+			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 			menuBar: { isVisible: true }

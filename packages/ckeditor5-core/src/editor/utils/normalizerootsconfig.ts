@@ -208,6 +208,9 @@ export function normalizeRootsConfig(
 		rootConfig.placeholder ??= getLegacyPlainConfigValue( config, 'placeholder', rootName );
 		rootConfig.label ??= getLegacyPlainConfigValue( config, 'label', rootName );
 
+		// Default model element to `$root` so all callers can rely on `rootConfig.modelElement` being a string.
+		rootConfig.modelElement ||= '$root';
+
 		rootsConfig[ rootName ] = rootConfig;
 	}
 

@@ -220,9 +220,9 @@ If your integration still relies on V1 configuration, migrate to V2. For migrati
 
 ### CSS nesting output now follows native specificity more closely
 
-As part of the preparation for a planned migration to native CSS nesting at the beginning of 2027, we updated the generated CSS output to behave more like native CSS nesting. We are not switching to native CSS nesting yet, but some compiled selectors are now stronger than in earlier releases. We are making this change now to reduce the number of changes needed later.
+As part of the preparation for a planned migration to native CSS nesting at the beginning of 2027, we updated the generated CSS output to behave more like native CSS nesting. We are not switching to native CSS nesting yet, but some compiled selectors may now have higher specificity than in earlier releases. We are making this change now to reduce the number of changes needed later.
 
-This mainly affects nested rules written under a list of selectors. In some cases, the final selector may now be stronger than before. Because of this, some custom CSS overrides that worked in earlier versions may no longer apply without changes.
+This mainly affects nested rules written under a list of selectors. In some cases, the final selector may now be more specific than before. Because of this, some custom CSS overrides that worked in earlier versions may no longer apply without changes.
 
 Most integrations should not be affected. However, if you override CKEditor&nbsp;5 styles with your own CSS, check whether any of your overrides stopped working after the update.
 
@@ -231,16 +231,19 @@ If needed, fix your custom styles by making your override selector more specific
 The following simplified example shows the kind of difference you may notice:
 
 ```css
-/* Before */
+/* Source code */
 .ck.ck-button, a.ck.ck-button {
 	&.ck-button_with-text {}
 }
+
+/* Before */
+.ck.ck-button.ck-button_with-text, a.ck.ck-button.ck-button_with-text {}
 
 /* After */
 :is(.ck.ck-button, a.ck.ck-button).ck-button_with-text {}
 ```
 
-These selectors look similar, but the second one can have a stronger effect in the cascade, which may change which rule wins.
+The "Before" and "After" selectors look similar, but the second may have higher specificity because `:is()` adopts the specificity of the most specific selector in its list, which can change which rule wins in the cascade.
 
 If you do not override the editor styles, no action is required.
 

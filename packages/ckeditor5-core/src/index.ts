@@ -21,7 +21,7 @@ export {
 export { Command, type CommandExecuteEvent } from './command.js';
 export { MultiCommand } from './multicommand.js';
 export { CommandCollection, type CommandsMap } from './commandcollection.js';
-export type { PluginsMap, PluginCollection, PluginEntry } from './plugincollection.js';
+export { type PluginsMap, PluginCollection, type PluginEntry } from './plugincollection.js';
 
 export { Context, type ContextConfig } from './context.js';
 export { ContextPlugin, type ContextInterface, type ContextPluginDependencies } from './contextplugin.js';
@@ -31,6 +31,7 @@ export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';
 
 export {
 	Editor,
+	type EditorRootAttributes,
 	type EditorCollectUsageDataEvent,
 	type EditorReadyEvent,
 	type EditorDestroyEvent,
@@ -51,11 +52,13 @@ export type {
 export { attachToForm } from './editor/utils/attachtoform.js';
 export { ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
 export { secureSourceElement } from './editor/utils/securesourceelement.js';
+export { registerAndInitializeRootConfigAttributes } from './editor/utils/registerandinitializerootconfigattributes.js';
 export {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
 	normalizeMultiRootEditorConstructorParams
 } from './editor/utils/normalizerootsconfig.js';
+export { verifyRootElements } from './editor/utils/verifyrootelements.js';
 
 export { PendingActions, type PendingAction, type PendingActionsAddEvent, type PendingActionsRemoveEvent } from './pendingactions.js';
 
