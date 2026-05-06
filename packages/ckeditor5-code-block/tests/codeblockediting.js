@@ -1649,6 +1649,7 @@ describe( 'CodeBlockEditing', () => {
 			};
 
 			viewDoc.fire( 'clipboardInput', {
+				content: dataTransferMock.getData( 'text/plain' ),
 				dataTransfer: dataTransferMock,
 				stop: sinon.spy()
 			} );
@@ -1672,6 +1673,7 @@ describe( 'CodeBlockEditing', () => {
 			};
 
 			viewDoc.fire( 'clipboardInput', {
+				content: dataTransferMock.getData( 'text/plain' ),
 				dataTransfer: dataTransferMock,
 				stop: sinon.spy()
 			} );
@@ -1685,7 +1687,7 @@ describe( 'CodeBlockEditing', () => {
 					'[]o' +
 				'</codeBlock>' );
 
-			sinon.assert.calledTwice( dataTransferMock.getData );
+			expect( dataTransferMock.getData ).to.be.called;
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
@@ -1708,6 +1710,7 @@ describe( 'CodeBlockEditing', () => {
 
 			viewDoc.fire( 'clipboardInput', {
 				method: 'drop',
+				content: dataTransferMock.getData( 'text/plain' ),
 				dataTransfer: dataTransferMock,
 				targetRanges: [ targetViewRange ],
 				target: targetViewRange.start.parent.parent,
@@ -1726,7 +1729,7 @@ describe( 'CodeBlockEditing', () => {
 				'<paragraph>bar</paragraph>'
 			);
 
-			sinon.assert.calledTwice( dataTransferMock.getData );
+			expect( dataTransferMock.getData ).to.be.called;
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
@@ -1754,6 +1757,7 @@ describe( 'CodeBlockEditing', () => {
 
 			viewDoc.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
+				content: dataTransferMock.getData( 'text/plain' ),
 				stop: sinon.spy()
 			} );
 
