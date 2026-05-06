@@ -1288,6 +1288,28 @@ describe( 'MultiRootEditor', () => {
 			} );
 		} );
 
+		it( 'should not overwrite $rootEditableOptions explicitly passed in attributes', () => {
+			const explicitOptions = { placeholder: 'From attributes', label: 'From attributes' };
+
+			editor.addRoot( 'bar', {
+				attributes: { $rootEditableOptions: explicitOptions },
+				placeholder: 'From options',
+				label: 'From options'
+			} );
+
+			const root = editor.model.document.getRoot( 'bar' );
+
+			expect( root.getAttribute( '$rootEditableOptions' ) ).to.deep.equal( explicitOptions );
+		} );
+
+		it( 'should not mutate the attributes object passed by the caller', () => {
+			const attributes = { order: 10 };
+
+			editor.addRoot( 'bar', { attributes, placeholder: 'Type here...' } );
+
+			expect( attributes ).to.deep.equal( { order: 10 } );
+		} );
+
 		it( 'should prefer initialData over data', () => {
 			editor.addRoot( 'bar', { initialData: '<p>New.</p>', data: '<p>Old.</p>' } );
 

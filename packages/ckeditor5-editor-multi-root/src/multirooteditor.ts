@@ -430,7 +430,7 @@ export class MultiRootEditor extends Editor {
 
 	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
-		const modelAttributes: EditorRootAttributes = options.modelAttributes || options.attributes || {};
+		const modelAttributes: EditorRootAttributes = { ...options.modelAttributes || options.attributes };
 		// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- public API default for `addRoot()`
 		const modelElement: string = options.modelElement || options.elementName || '$root';
 
@@ -457,6 +457,9 @@ export class MultiRootEditor extends Editor {
 			logWarning( 'multi-root-editor-add-root-element-option-ignored' );
 		}
 
+		// Storing editable options as a root attribute to make them available on other RTC clients.
+		ensureRootEditableOptions( modelAttributes, options );
+
 		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, modelElement );
 
@@ -468,14 +471,6 @@ export class MultiRootEditor extends Editor {
 				this.registerRootAttribute( key );
 				writer.setAttribute( key, modelAttributes[ key ], root );
 			}
-
-			// Storing editable options as a root attribute to make them available on other RTC clients.
-			const rootEditableOptions: RootEditableOptions = {
-				...options.placeholder && { placeholder: options.placeholder },
-				...options.label && { label: options.label }
-			};
-
-			writer.setAttribute( '$rootEditableOptions', rootEditableOptions, root );
 		};
 
 		if ( options.isUndoable ) {
@@ -1235,25 +1230,37 @@ function normalizeRootEditableOptionsConfig( config: Config<EditorConfig> ): voi
 	const rootsConfig = config.get( 'roots' )!;
 
 	for ( const [ rootName, rootConfig ] of Object.entries( rootsConfig ) ) {
-		const existing = rootConfig.modelAttributes || {};
+		const modelAttributes: EditorRootAttributes = { ...rootConfig.modelAttributes };
 
-		// If `$rootEditableOptions` is already set explicitly via `modelAttributes`, leave it untouched.
-		if ( '$rootEditableOptions' in existing ) {
+		if ( !ensureRootEditableOptions( modelAttributes, rootConfig ) ) {
 			continue;
 		}
 
-		const rootEditableOptions: RootEditableOptions = {
-			...rootConfig.placeholder && { placeholder: rootConfig.placeholder },
-			...rootConfig.label && { label: rootConfig.label }
-		};
-
-		const modelAttributes: EditorRootAttributes = {
-			...existing,
-			$rootEditableOptions: rootEditableOptions
-		};
-
 		config.set( `roots.${ rootName }.modelAttributes`, modelAttributes );
 	}
+}
+
+/**
+ * Mutates the given `modelAttributes` map by adding the `$rootEditableOptions` entry derived from `placeholder` and `label`.
+ * If `$rootEditableOptions` is already present, the map is left untouched.
+ *
+ * Returns `true` when the map was modified, `false` otherwise — useful to skip downstream work (e.g. `config.set`)
+ * when nothing changed.
+ */
+function ensureRootEditableOptions(
+	modelAttributes: EditorRootAttributes,
+	{ placeholder, label }: RootEditableOptions
+): boolean {
+	if ( '$rootEditableOptions' in modelAttributes ) {
+		return false;
+	}
+
+	modelAttributes.$rootEditableOptions = {
+		...placeholder && { placeholder },
+		...label && { label }
+	} satisfies RootEditableOptions;
+
+	return true;
 }
 
 function isElement( value: any ): value is Element {
