@@ -177,7 +177,7 @@ Apart from this, follow the matching guides covering the technology of your choi
 
 CKEditor 5 LTS Edition also has it own version of Online Builder. Same as its standard version it offers an easy-to-use user interface to help you configure, preview, and download the editor suited to your needs.
 
-[Check out our interactive Builder for LTS Edition.](https://ckeditor.com/ckeditor-5/builder/lts-v47/)
+[Check out our interactive Builder for LTS Edition.](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs)
 
 ## LTS additional warranties
 
