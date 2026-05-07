@@ -57,7 +57,7 @@ We have deprecated the Vite plugin, [`@ckeditor/vite-plugin-ckeditor5`](https://
 
 ### New Builder
 
-Along with the new release, we present you the brand new [CKEditor 5 Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/).
+Along with the new release, we present you the brand new [CKEditor 5 Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs).
 
 The new Builder allows you to start with one of the predefined presets, customize it by adding and removing features, and observe the changes live in an editor preview (and play with the editor!). Once you are happy with your custom setup, you get ready-to-use code snippets for React, Angular, Vue, and VanillaJS setups for both npm and CDN distributions.
 

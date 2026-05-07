@@ -37,7 +37,7 @@ npm start
 
 Now it is time to prepare a ZIP package with CKEditor&nbsp;5 that will be used inside your Electron app. CKEditor&nbsp;5 offers an Online Builder that allows you to configure your editor easily through a user-friendly interface. The Online Builder provides a convenient way to select features, plugins, and customize the toolbar according to your specific requirements without writing any code.
 
-To create your custom CKEditor&nbsp;5 build, visit the [CKEditor&nbsp;5 Online Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/). After choosing all desired features and settings for your editor, you will reach the final step where you can choose the preferred technology and integration method. For Electron integration, select "Vanilla JavaScript" and "Self-hosted (ZIP)". In the last step, download the ZIP archive containing the editor.
+To create your custom CKEditor&nbsp;5 build, visit the [CKEditor&nbsp;5 Online Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs). After choosing all desired features and settings for your editor, you will reach the final step where you can choose the preferred technology and integration method. For Electron integration, select "Vanilla JavaScript" and "Self-hosted (ZIP)". In the last step, download the ZIP archive containing the editor.
 
 The downloaded ZIP archive includes all files necessary for integrating CKEditor&nbsp;5 into your Electron app, including the main JavaScript file, stylesheets, and sample implementation code. This package is ready for integration and does not require any additional build steps. Once you have your custom CKEditor&nbsp;5 package, you can add it to your main Electron app folder.
 
@@ -62,7 +62,7 @@ After following all the steps described so far, your app's structure should rese
 └── vite.renderer.config.mjs
 ```
 
-With `ckeditor5-builder` being the unzipped folder downloaded from the [Online Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/).
+With `ckeditor5-builder` being the unzipped folder downloaded from the [Online Builder](https://ckeditor.com/ckeditor-5/builder/lts-v47/?redirect=docs).
 
 ### Implementing the editor
 
