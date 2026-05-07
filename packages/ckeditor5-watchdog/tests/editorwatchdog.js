@@ -1723,8 +1723,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				content: { order: 2 }
+				header: { order: 1, $rootEditableOptions: {} },
+				content: { order: 2, $rootEditableOptions: {} }
 			} );
 
 			await watchdog.destroy();
@@ -1775,8 +1775,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				new: { order: 3 }
+				header: { order: 1, $rootEditableOptions: {} },
+				new: { order: 3, $rootEditableOptions: {} }
 			} );
 
 			await watchdog.destroy();
@@ -1920,8 +1920,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					content: { order: 2 }
+					header: { order: 1, $rootEditableOptions: {} },
+					content: { order: 2, $rootEditableOptions: {} }
 				} );
 			} );
 
@@ -1947,8 +1947,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					new: { order: 3 }
+					header: { order: 1, $rootEditableOptions: {} },
+					new: { order: 3, $rootEditableOptions: {} }
 				} );
 			} );
 
@@ -1974,9 +1974,9 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					content: { order: 2 },
-					lazyTwo: { order: 5 }
+					header: { order: 1, $rootEditableOptions: {} },
+					content: { order: 2, $rootEditableOptions: {} },
+					lazyTwo: { order: 5, $rootEditableOptions: {} }
 				} );
 			} );
 		} );
@@ -2081,8 +2081,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					new: { order: 3 }
+					header: { order: 1, $rootEditableOptions: {} },
+					new: { order: 3, $rootEditableOptions: {} }
 				} );
 			} );
 
@@ -2108,9 +2108,9 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					content: { order: 2 },
-					lazyTwo: { order: 5 }
+					header: { order: 1, $rootEditableOptions: {} },
+					content: { order: 2, $rootEditableOptions: {} },
+					lazyTwo: { order: 5, $rootEditableOptions: {} }
 				} );
 			} );
 		} );
@@ -2148,8 +2148,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				content: { order: 2 }
+				header: { order: 1, $rootEditableOptions: { placeholder: 'Type in header' } },
+				content: { order: 2, $rootEditableOptions: { placeholder: 'Type in content' } }
 			} );
 
 			const editables = watchdog.editor.ui.view.editables;
@@ -2188,8 +2188,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				content: { order: 2 }
+				header: { order: 1, $rootEditableOptions: { placeholder: 'Type in some content' } },
+				content: { order: 2, $rootEditableOptions: { placeholder: 'Type in some content' } }
 			} );
 
 			const editables = watchdog.editor.ui.view.editables;
