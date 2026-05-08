@@ -1,0 +1,196 @@
+<head>
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<instructions>
+	<h1>Object elements support</h1>
+</instructions>
+
+<button id="init-editor">Create the editor instance</button>
+<br><br>
+
+<textarea id="editor">
+	<p>
+	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
+		<param name="allowFullScreen" value="true" />
+		<param name="quality" value="high" />
+		<param name="movie" value="https://example.com" />
+		<embed allowfullscreen="true" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" src="https://example.com" type="application/x-shockwave-flash"></embed>
+	</object>
+	</p>
+	<p><iframe frameborder="0" scrolling="no" src="https://example.com"></iframe></p>
+	<form action="controller/register" method="post" name="foobar">
+		<p><input name="checkbox" type="checkbox" value="10" /></p>
+
+		<p><input name="radio" type="radio" value="10" /></p>
+
+		<p><input name="text field" type="text" value="10" /></p>
+
+		<p><textarea name="textarea">10&lt;/textarea></p>
+
+		<p><select name="selection field"><option value="1">a1</option><option selected="selected" value="2">a2</option><option value="3">a3</option></select></p>
+
+		<p><input name="button" type="button" value="click me" /></p>
+
+		<p><button>Click me!</button></p>
+
+		<p><input alt="" src="https://placehold.co/100" type="image" /></p>
+
+		<p>some custom text</p>
+
+		<table border="1" cellpadding="1" cellspacing="1" style="width:500px;">
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>looks like form can include anything</p>
+	</form>
+	<p><input name="checkbox" type="checkbox" value="10" /></p>
+
+	<p><input name="radio" type="radio" value="10" /></p>
+
+	<p><input name="text field" type="text" value="10" /></p>
+
+	<p><input name="button" type="button" value="click me" /></p>
+
+	<p><input alt="" src="https://placehold.co/100" type="image" /></p>
+
+	<p><textarea name="textarea">some text in textarea&lt;/textarea></p>
+
+	<p><select name="selection field"><option value="1">a1</option><option selected="selected" value="2">a2</option><option value="3">a3</option></select></p>
+
+	<p><video controls="" height="240" width="320"><source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" /> Your browser does not support the video tag.</video></p>
+
+	<p><audio controls=""><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" /> Your browser does not support the audio element.</audio></p>
+
+	<p><label><input> text</label></p>
+
+	<p><xyz data-foo="foo">Hello, world!</xyz></p>
+</textarea>
+
+<script type="module">
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic, Strikethrough, Underline, Subscript, Superscript, Code } from '@ckeditor/ckeditor5-basic-styles';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
+
+/**
+ * Client custom plugin extending HTML support for compatibility.
+ */
+class ExtendHTMLSupport extends Plugin {
+	static get requires() {
+		return [ GeneralHtmlSupport ];
+	}
+
+	init() {
+		const dataFilter = this.editor.plugins.get( 'DataFilter' );
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
+
+		dataSchema.registerBlockElement( { model: 'htmlXyz',
+			view: 'xyz',
+			isObject: true,
+			modelSchema: {
+				inheritAllFrom: '$blockObject'
+			}
+		} );
+
+		const definitions = [
+			{ name: 'object', attributes: [ 'classid', 'codebase' ] },
+			{ name: 'embed', attributes: [ 'allowfullscreen', 'pluginspage', 'quality', 'src', 'type' ] },
+			{ name: 'iframe', attributes: [ 'frameborder', 'scrolling', 'src' ] },
+			{ name: 'form', attributes: [ 'action', 'method', 'name' ] },
+			{ name: 'input', attributes: [ 'name', 'type', 'value', 'alt', 'src' ] },
+			{ name: 'textarea', attributes: [ 'name' ] },
+			{ name: 'select', attributes: [ 'name' ] },
+			{ name: 'video', attributes: [ 'height', 'width', 'controls' ] },
+			{ name: 'audio', attributes: [ 'controls' ] },
+			{ name: 'button' },
+			{ name: 'label' },
+			{ name: 'xyz', attributes: [ 'data-foo' ] }
+		];
+
+		for ( const definition of definitions ) {
+			dataFilter.allowElement( definition.name );
+
+			for ( const key of ( definition.attributes || [] ) ) {
+				const attributes = {};
+				attributes[ key ] = true;
+
+				dataFilter.allowAttributes( { name: definition.name, attributes } );
+			}
+		}
+	}
+}
+
+// The editor cannot be created automatically to avoid the manual test crawler
+// occasionally throwing on network issues due to the content inside the editor.
+document.getElementById( 'init-editor' ).addEventListener( 'click', () => {
+	ClassicEditor
+		.create( {
+			attachTo: document.querySelector( '#editor' ),
+			plugins: [
+				BlockQuote,
+				Bold,
+				Code,
+				Essentials,
+				ExtendHTMLSupport,
+				Highlight,
+				Italic,
+				Link,
+				List,
+				Paragraph,
+				Strikethrough,
+				Subscript,
+				Superscript,
+				Table,
+				Underline
+			],
+			toolbar: [
+				'bold',
+				'italic',
+				'strikethrough',
+				'underline',
+				'code',
+				'subscript',
+				'superscript',
+				'highlight',
+				'|',
+				'numberedList',
+				'bulletedList',
+				'|',
+				'blockquote'
+			]
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+} );
+</script>

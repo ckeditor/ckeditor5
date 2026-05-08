@@ -1,0 +1,107 @@
+<instructions>
+	<h2>HTML comment</h2>
+	<ol>
+		<li>Toggle the source editing mode and verify that all comments are present. There should be 10 comments: from <code>C1</code> to <code>C10</code>.</li>
+		<li>In source editing mode add and remove some comments. Please note that, currently, the comment support is on a basic level. See the <strong>Known limitations</strong> section below containing missing functionalities.</li>
+		<li>Copy and paste some content from Word and Google Docs. Content should be parsed without errors and displayed correctly.</li>
+	</ol>
+	<h3>Known limitations</h3>
+	<ol>
+		<li><a href="https://github.com/ckeditor/ckeditor5/issues/10118">Issue #10118</a>: comments located between some HTML tags are repositioned or lost.</li>
+		<li><a href="https://github.com/ckeditor/ckeditor5/issues/10119">Issue #10119</a>: comments can be easily repositioned during editing the document.</li>
+		<li><a href="https://github.com/ckeditor/ckeditor5/issues/10127">Issue #10127</a>: comments are not handled in copy and paste or drag and drop.</li>
+	</ol>
+</instructions>
+
+<div id="editor">
+	<!-- C1 -->
+	<p><!-- C2 -->Paragraph<!-- C3 --></p>
+	<!-- C4 -->
+	<table>
+		<tr>
+			<td><!-- C5 -->Table cell #1<!-- C6 --></td>
+			<td>Table cell #2</td>
+			<td>Table cell #3</td>
+		</tr>
+	</table>
+	<ol>
+		<li><!-- C7 -->Item #1<!-- C8 --></li>
+		<li>Item #2</li>
+		<li>Item #3
+			<ul>
+				<li><!-- C9 -->Nested item #3.1<!-- C10 --></li>
+				<li>Nested item #3.2</li>
+				<li>Nested item #3.3</li>
+			</ul>
+		</li>
+	</ol>
+</div>
+
+<script type="module">
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { TodoList } from '@ckeditor/ckeditor5-list';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+
+import { HtmlComment } from '../../src/htmlcomment.js';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [
+			ArticlePluginSet,
+			CloudServices,
+			EasyImage,
+			ImageUpload,
+			PasteFromOffice,
+			SourceEditing,
+			Table,
+			TableToolbar,
+			TodoList,
+			HtmlComment
+		],
+		cloudServices: CS_CONFIG,
+		toolbar: [
+			'heading', '|', 'bold', 'italic', 'link', '|',
+			'bulletedList', 'numberedList', 'todoList', '|',
+			'blockQuote', 'uploadImage', 'insertTable', '|',
+			'sourceEditing', '|',
+			'undo', 'redo'
+		],
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:wrapText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+</script>

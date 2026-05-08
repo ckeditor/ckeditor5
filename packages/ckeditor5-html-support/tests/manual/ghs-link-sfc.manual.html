@@ -1,0 +1,68 @@
+<head>
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<style>
+		.link {
+			display: inline-block;
+			padding: 1em;
+			outline: 1px solid rgba(255, 0, 0, 0.3);
+		}
+	</style>
+</head>
+
+<instructions>
+	<h2>GHS Link handling</h2>
+</instructions>
+
+<div id="editor">
+	<p>foo <a href="#bar" class="link">bar</a></p>
+	<p>foo <a href="#bar" class="link">bar</a> baz</p>
+	<p><a href="#bar" class="link">bar</a> baz</p>
+	<p><a href="#bar" class="link">bar</a></p>
+	<p><a href="#foo" class="link">foo</a><a href="#bar" class="link">bar</a></p>
+</div>
+
+<script type="module">
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		plugins: [
+			ArticlePluginSet, SourceEditing, GeneralHtmlSupport
+		],
+		toolbar: [
+			'sourceEditing',
+			'|',
+			'heading',
+			'|',
+			'bold', 'italic', 'link',
+			'|',
+			'undo', 'redo'
+		],
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+</script>
