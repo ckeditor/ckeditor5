@@ -51,26 +51,31 @@ export class MediaEmbedResizeHandles extends Plugin {
 	}
 
 	/**
-	 * Attaches a resizer to every media widget on initial data load and after subsequent inserts.
-	 * Each resizer's `isEnabled` is bound to the plugin in {@link #_attachResizer}, so it
-	 * auto-tracks the resize command's state.
+	 * Attaches a resizer to every newly inserted media widget. Walks only the ranges
+	 * reported by the differ — never the whole document — so unrelated inserts (e.g.
+	 * pressing Enter to create a paragraph) cost only the differ check.
+	 *
+	 * Each resizer's `isEnabled` is bound to the plugin in {@link #_attachResizer},
+	 * so it auto-tracks the resize command's state.
 	 */
 	private _setupResizerCreator(): void {
 		const editor = this.editor;
+		const model = editor.model;
 		const widgetResize = editor.plugins.get( WidgetResize );
 
-		// Skip text-only changes. Low priority ensures downcast has run before we look up view elements.
-		this.listenTo( editor.model.document, 'change:data', () => {
-			const hasInsert = editor.model.document.differ.getChanges().some( change =>
-				change.type === 'insert' && change.name !== '$text'
-			);
+		// Low priority ensures downcast has run before we look up view elements.
+		this.listenTo( model.document, 'change:data', () => {
+			for ( const change of model.document.differ.getChanges() ) {
+				if ( change.type !== 'insert' || change.name === '$text' ) {
+					continue;
+				}
 
-			if ( !hasInsert ) {
-				return;
-			}
+				const insertedRange = model.createRange(
+					change.position,
+					change.position.getShiftedBy( change.length )
+				);
 
-			for ( const root of editor.model.document.getRoots() ) {
-				for ( const item of editor.model.createRangeIn( root ).getItems() ) {
+				for ( const item of insertedRange.getItems() ) {
 					if ( !item.is( 'element', 'media' ) ) {
 						continue;
 					}
