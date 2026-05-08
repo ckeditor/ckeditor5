@@ -936,7 +936,7 @@ export class FullscreenAbstractEditorHandler {
 
 		// Adjust the visible elements when the transition (changing the size of the AI tabs) ends. Earlier we do not have the
 		// correct sizes of elements.
-		aiTabs.view.element.addEventListener( 'transitionend', ( evt: TransitionEvent ) => this._handleAISidebarTransitions( evt ) );
+		aiTabs.view.element.addEventListener( 'transitionend', this._aiTabsTransitionEndCallback );
 	}
 
 	/**
@@ -965,7 +965,7 @@ export class FullscreenAbstractEditorHandler {
 
 		this._aiTabsData = null;
 
-		aiTabs.view.element.removeEventListener( 'transitionend', this._handleAISidebarTransitions );
+		aiTabs.view.element.removeEventListener( 'transitionend', this._aiTabsTransitionEndCallback );
 	}
 
 	/**
@@ -1117,4 +1117,11 @@ export class FullscreenAbstractEditorHandler {
 			this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.classList.remove( 'ck-fullscreen__right-sidebar--collapsed' );
 		}
 	}
+
+	/**
+	 * Handler for AI tabs `transitionend`; must be the same reference in `addEventListener` / `removeEventListener`.
+	 */
+	private _aiTabsTransitionEndCallback = ( evt: Event ): void => {
+		this._handleAISidebarTransitions( evt as TransitionEvent );
+	};
 }

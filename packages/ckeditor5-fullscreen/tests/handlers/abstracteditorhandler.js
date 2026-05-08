@@ -1050,6 +1050,24 @@ describe( 'AbstractHandler', () => {
 			expect( adjustVisibleElementsStub ).to.have.been.called;
 		} );
 	} );
+
+	describe( '_aiTabsTransitionEndCallback', () => {
+		afterEach( () => {
+			sinon.restore();
+		} );
+
+		it( 'should forward the transition event to _handleAISidebarTransitions', () => {
+			const handleAISidebarTransitionsStub = sinon.stub( abstractHandler, '_handleAISidebarTransitions' );
+			const evt = new TransitionEvent( 'transitionend', {
+				propertyName: 'width'
+			} );
+
+			abstractHandler._aiTabsTransitionEndCallback( evt );
+
+			expect( handleAISidebarTransitionsStub ).to.have.been.calledOnce;
+			expect( handleAISidebarTransitionsStub.firstCall.args[ 0 ] ).to.equal( evt );
+		} );
+	} );
 } );
 
 function wait( time ) {
