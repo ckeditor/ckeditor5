@@ -85,6 +85,31 @@ describe( 'MediaEmbedResizeHandles', () => {
 			expect( widgetResize.getResizerByViewElement( viewElement ) ).to.not.be.undefined;
 		} );
 
+		it( 'attaches a resizer to media nested inside an inserted block container', async () => {
+			editor = await createEditor();
+
+			// Make blockQuote allow media (default schema does, but be explicit for the test).
+			editor.model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
+			editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
+
+			const root = editor.model.document.getRoot();
+			const widgetResize = editor.plugins.get( WidgetResize );
+
+			editor.model.change( writer => {
+				const blockQuote = writer.createElement( 'blockQuote' );
+				const media = writer.createElement( 'media', { url: YOUTUBE_URL } );
+
+				writer.append( media, blockQuote );
+				writer.append( blockQuote, root );
+			} );
+
+			const insertedBlockQuote = root.getChild( 1 );
+			const mediaModel = insertedBlockQuote.getChild( 0 );
+			const viewElement = editor.editing.mapper.toViewElement( mediaModel );
+
+			expect( widgetResize.getResizerByViewElement( viewElement ) ).to.not.be.undefined;
+		} );
+
 		it( 'does not attach a duplicate resizer when another element is inserted', async () => {
 			editor = await createEditor();
 

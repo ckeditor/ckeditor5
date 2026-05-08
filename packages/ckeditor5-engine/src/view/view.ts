@@ -22,6 +22,7 @@ import {
 
 import type { Observer, ObserverConstructor } from './observer/observer.js';
 import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
+import type { ViewDocumentFragment } from './documentfragment.js';
 import type { StylesProcessor } from './stylesmap.js';
 import { type ViewElement } from './element.js';
 import type { ViewNode, ViewNodeChangeEvent } from './node.js';
@@ -682,7 +683,7 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: ViewElement ): ViewRange {
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): ViewRange {
 		return ViewRange._createIn( element );
 	}
 
