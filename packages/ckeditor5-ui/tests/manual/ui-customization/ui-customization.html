@@ -1,0 +1,456 @@
+<style>
+	/* * {
+		box-sizing: border-box;
+	} */
+
+	.ck-test-layout {
+		display: flex;
+		height: calc(100vh - 40px - 30px);
+		overflow: hidden;
+	}
+
+	.ck-test-editor {
+		flex: 1;
+		overflow: auto;
+		padding: 0 20px;
+	}
+
+	.ck-test-panel {
+		width: 700px;
+		min-width: 700px;
+		min-height: 0;
+		overflow-y: auto;
+		border-left: 1px solid #ddd;
+		padding: 12px 16px;
+		background: #fafafa;
+		font-family: system-ui, -apple-system, sans-serif;
+		font-size: 13px;
+		color: #333;
+	}
+
+	.ck-test-panel h2 {
+		margin: 0 0 8px;
+		font-size: 16px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.ck-test-panel .reset-all-btn {
+		font-size: 11px;
+		padding: 3px 10px;
+		cursor: pointer;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background: #fff;
+	}
+
+	.ck-test-panel .reset-all-btn:hover {
+		background: #eee;
+	}
+
+	/* Tier-level details */
+	.ck-test-panel > details {
+		margin-bottom: 6px;
+		border: 1px solid #ddd;
+		border-radius: 6px;
+		background: #fff;
+	}
+
+	.ck-test-panel > details > summary {
+		padding: 8px 12px;
+		font-weight: 600;
+		font-size: 14px;
+		cursor: pointer;
+		user-select: none;
+		list-style: none;
+	}
+
+	.ck-test-panel > details > summary::before {
+		content: '\25B8 ';
+	}
+
+	.ck-test-panel > details[open] > summary::before {
+		content: '\25BE ';
+	}
+
+	/* Category-level details */
+	.ck-test-panel details details {
+		margin: 0 8px 4px;
+		border: 1px solid #eee;
+		border-radius: 4px;
+	}
+
+	.ck-test-panel details details > summary {
+		padding: 5px 10px;
+		font-weight: 500;
+		font-size: 12px;
+		cursor: pointer;
+		user-select: none;
+		background: #f5f5f5;
+		border-radius: 4px;
+		list-style: none;
+	}
+
+	.ck-test-panel details details > summary::before {
+		content: '\25B8 ';
+	}
+
+	.ck-test-panel details details[open] > summary::before {
+		content: '\25BE ';
+	}
+
+	.ck-test-panel details details[open] > summary {
+		border-radius: 4px 4px 0 0;
+	}
+
+	/* Token row */
+	.token-row {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 4px 10px;
+		border-bottom: 1px solid #f0f0f0;
+		min-height: 32px;
+	}
+
+	.token-row:last-child {
+		border-bottom: none;
+	}
+
+	.token-name {
+		flex: 1;
+		font-size: 11px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+		color: #555;
+		min-width: 0;
+	}
+
+	.token-name .token-description {
+		display: block;
+		font-size: 9px;
+		font-family: system-ui, -apple-system, sans-serif;
+		color: #999;
+		margin-top: 1px;
+		white-space: normal;
+		line-height: 1.3;
+	}
+
+	.token-name .token-ref {
+		display: block;
+		font-size: 9px;
+		color: #999;
+		margin-top: 1px;
+		cursor: pointer;
+	}
+
+	.token-name .token-ref:hover {
+		color: #4ba3f5;
+		text-decoration: underline;
+	}
+
+	@keyframes token-blink {
+		0%, 100% { background-color: transparent; }
+		25%, 75% { background-color: hsl(210, 80%, 90%); }
+	}
+
+	.token-row--blink {
+		animation: token-blink 1s ease;
+	}
+
+	.token-input {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		flex-shrink: 0;
+	}
+
+	.token-input input[type="color"] {
+		width: 28px;
+		height: 22px;
+		padding: 0;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		cursor: pointer;
+	}
+
+	.token-input input[type="text"],
+	.token-input input[type="number"] {
+		width: 160px;
+		font-size: 11px;
+		padding: 2px 4px;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+	}
+
+	.token-input input[type="range"] {
+		width: 60px;
+	}
+
+	.token-input select {
+		font-size: 11px;
+		padding: 2px;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+	}
+
+	.token-reset {
+		width: 20px;
+		height: 20px;
+		font-size: 12px;
+		padding: 0;
+		border: none;
+		background: none;
+		cursor: pointer;
+		color: #999;
+		flex-shrink: 0;
+		border-radius: 3px;
+	}
+
+	.token-reset:hover {
+		background: #eee;
+		color: #333;
+	}
+
+	.token-row.is-overridden .token-name {
+		color: #0066cc;
+		font-weight: 600;
+	}
+
+	.token-row.is-overridden .token-reset {
+		color: #0066cc;
+	}
+
+	summary.has-overrides {
+		color: #0066cc;
+	}
+
+	/* Toggle button for the token panel */
+	.ck-test-panel-toggle {
+		font-size: 11px;
+		padding: 3px 10px;
+		cursor: pointer;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background: #fff;
+		position: fixed;
+		top: 8px;
+		right: 8px;
+		z-index: 10;
+	}
+
+	.ck-test-panel-toggle:hover {
+		background: #eee;
+	}
+
+	.ck-test-layout.ck-test-layout--panel-hidden .ck-test-panel {
+		display: none;
+	}
+
+	/* Stylesheet presets — visually distinct from token tiers */
+	.ck-test-panel > details.stylesheet-presets {
+		background: #f0f4ff;
+		border-color: #b3c6ff;
+		border-left: 3px solid #4285f4;
+		margin-bottom: 12px;
+	}
+
+	.ck-test-panel > details.stylesheet-presets > summary {
+		color: #1a56db;
+	}
+
+	/* Stylesheet manager */
+	.stylesheet-manager {
+		padding: 8px 10px;
+	}
+
+	.stylesheet-manager textarea {
+		width: 100%;
+		height: 80px;
+		font-size: 11px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+		padding: 6px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		resize: vertical;
+		box-sizing: border-box;
+	}
+
+	.stylesheet-manager textarea:focus {
+		outline: none;
+		border-color: #80b3ff;
+	}
+
+	.stylesheet-controls {
+		display: flex;
+		gap: 6px;
+		margin-top: 6px;
+		align-items: center;
+	}
+
+	.stylesheet-controls input[type="text"] {
+		flex: 1;
+		font-size: 11px;
+		padding: 3px 6px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+
+	.stylesheet-controls button {
+		font-size: 11px;
+		padding: 3px 10px;
+		cursor: pointer;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background: #fff;
+		white-space: nowrap;
+	}
+
+	.stylesheet-controls button:hover {
+		background: #eee;
+	}
+
+	.stylesheet-clear-option {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		margin-top: 6px;
+		font-size: 11px;
+		color: #666;
+		cursor: pointer;
+	}
+
+	.stylesheet-list {
+		margin-top: 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.stylesheet-entry {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 3px 6px;
+		border-radius: 4px;
+		font-size: 11px;
+		cursor: pointer;
+	}
+
+	.stylesheet-entry:hover {
+		background: #f0f0f0;
+	}
+
+	.stylesheet-entry.is-active {
+		background: #e8f0fe;
+		border-left: 2px solid #4285f4;
+		padding-left: 4px;
+	}
+
+	.stylesheet-entry label {
+		flex: 1;
+		cursor: pointer;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.stylesheet-entry .stylesheet-remove {
+		width: 18px;
+		height: 18px;
+		font-size: 11px;
+		padding: 0;
+		border: none;
+		background: none;
+		cursor: pointer;
+		color: #999;
+		border-radius: 3px;
+		line-height: 18px;
+		text-align: center;
+		flex-shrink: 0;
+	}
+
+	.stylesheet-entry .stylesheet-remove:hover {
+		background: #fdd;
+		color: #c00;
+	}
+
+	/* Export overrides */
+	.token-export {
+		margin-top: 8px;
+		padding: 10px;
+		border-top: 1px solid #ddd;
+	}
+
+	.token-export-btn {
+		width: 100%;
+		font-size: 11px;
+		padding: 6px 10px;
+		cursor: pointer;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background: #fff;
+	}
+
+	.token-export-btn:hover {
+		background: #eee;
+	}
+
+	.token-export-output {
+		width: 100%;
+		margin-top: 8px;
+		height: 120px;
+		font-size: 11px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+		padding: 6px;
+		border: 1px solid #b3c6ff;
+		border-radius: 4px;
+		background: #f8f9ff;
+		resize: vertical;
+		box-sizing: border-box;
+	}
+</style>
+
+<button class="ck-test-panel-toggle" id="toggle-panel">Hide tokens panel</button>
+
+<div class="ck-test-layout">
+	<div class="ck-test-editor">
+		<div id="editor-to-customize">
+			<h2>The three greatest things you learn from traveling</h2>
+			<p>Like all the great things on earth traveling teaches us by example. Here are some of the most precious lessons I've
+				learned over the years of traveling.</p>
+
+			<blockquote>
+				<p>The real voyage of discovery consists not in seeking new landscapes, but having new eyes.</p>
+				<p><strong>Marcel Proust</strong></p>
+			</blockquote>
+			<h3>Improvisation</h3>
+			<p>Life doesn't allow us to execute every single plan perfectly. This especially seems to be the case when you travel.
+				You plan it down to every minute with a big checklist. But when it comes to executing it, something always comes up
+				and you're left with your improvising skills. You learn to adapt as you go. Here's how my travel checklist looks
+				now:</p>
+			<ul>
+				<li>buy the ticket</li>
+				<li>start your adventure</li>
+			</ul>
+			<figure class="image image-style-side"><img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/umbrellas.jpg"
+					alt="Three monks ascending the stairs of an ancient temple."
+					srcset="https://ckeditor.com/docs/ckeditor5/latest/assets/img/umbrellas.jpg, https://ckeditor.com/docs/ckeditor5/latest/assets/img/umbrellas_2x.jpg 2x"
+					sizes="100vw">
+				<figcaption>Three monks ascending the stairs of an ancient temple.</figcaption>
+			</figure>
+			<h3>Confidence</h3>
+			<p>Going to a new place can be quite terrifying. While change and uncertainty make us scared, traveling teaches us how
+				ridiculous it is to be afraid of something before it happens. The moment you face your fear and see there is nothing
+				to be afraid of, is the moment you discover bliss.</p>
+		</div>
+	</div>
+	<div class="ck-test-panel" id="token-panel">
+		<h2>
+			Design Tokens
+			<button class="reset-all-btn" id="reset-all">Reset All</button>
+		</h2>
+		<!-- Generated by JS -->
+	</div>
+</div>
