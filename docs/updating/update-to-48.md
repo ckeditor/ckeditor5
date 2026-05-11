@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 48.x | CKEditor 5 Documentation
 menu-title: Update to v48.x
 order: 76
-modified_at: 2026-03-30
+modified_at: 2026-05-13
 ---
 
 # Update to CKEditor&nbsp;5 v48.x
@@ -13,6 +13,27 @@ modified_at: 2026-03-30
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v48.1.0
+
+Released on 13 May, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.1.0))
+
+### AI Chat feed items align to the bottom by default
+
+The AI Chat feed items are now aligned to the bottom of the feed by default. This keeps the most recent messages in view as the conversation grows, in line with common chat interface conventions.
+
+If you want to revert to the previous top-aligned behavior, add the following CSS to your integration:
+
+```css
+.ck.ck-ai-chat__feed__items {
+	margin-top: 0;
+}
+```
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Chat feed items are now aligned to the bottom of the feed by default. To revert to the previous top-aligned behavior, override the relevant CSS in your integration.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: To reduce visual strain on the user, suggestions proposed by the agent in the AI Chat feed are now always displayed in full when ready (previously streamed word-by-word).
 
 ## Update to CKEditor&nbsp;5 v48.0.0
 
