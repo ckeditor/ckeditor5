@@ -2679,7 +2679,35 @@ export function generatePanel( presets ) {
 
 		const tierSummary = document.createElement( 'summary' );
 		const tokenCount = Object.values( tier.data ).reduce( ( sum, arr ) => sum + arr.length, 0 );
-		tierSummary.textContent = tier.label + ' (' + tokenCount + ')';
+		tierSummary.textContent = tier.label + ' (' + tokenCount + ') ';
+
+		const expandAllBtn = document.createElement( 'button' );
+		expandAllBtn.className = 'tier-expand-all';
+		expandAllBtn.textContent = 'Expand all';
+		expandAllBtn.addEventListener( 'click', e => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			const allOpen = tierDetails.open &&
+				[ ...tierDetails.querySelectorAll( ':scope > details' ) ]
+					.every( d => d.open );
+
+			if ( !allOpen ) {
+				tierDetails.open = true;
+
+				for ( const d of tierDetails.querySelectorAll( ':scope > details' ) ) {
+					d.open = true;
+				}
+			} else {
+				for ( const d of tierDetails.querySelectorAll( ':scope > details' ) ) {
+					d.open = false;
+				}
+			}
+
+			expandAllBtn.textContent = allOpen ? 'Expand all' : 'Collapse all';
+		} );
+
+		tierSummary.appendChild( expandAllBtn );
 		tierDetails.appendChild( tierSummary );
 
 		for ( const [ category, tokens ] of Object.entries( tier.data ) ) {
