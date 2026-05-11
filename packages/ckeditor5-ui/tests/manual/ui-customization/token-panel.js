@@ -2516,6 +2516,82 @@ export function generatePanel( presets ) {
 		}
 	} );
 
+	// Search/filter tokens.
+	const searchInput = document.getElementById( 'token-search' );
+	const searchClearBtn = document.getElementById( 'token-search-clear' );
+	let savedOpenState = null;
+
+	searchClearBtn.addEventListener( 'click', () => {
+		searchInput.value = '';
+		searchInput.dispatchEvent( new Event( 'input' ) );
+		searchInput.focus();
+	} );
+
+	searchInput.addEventListener( 'input', () => {
+		searchClearBtn.hidden = !searchInput.value;
+		const query = searchInput.value.toLowerCase().trim();
+
+		// Save open state when starting to filter.
+		if ( query && !savedOpenState ) {
+			savedOpenState = new Map();
+
+			for ( const d of panel.querySelectorAll( 'details' ) ) {
+				savedOpenState.set( d, d.open );
+			}
+		}
+
+		// Restore open state when clearing the filter.
+		if ( !query && savedOpenState ) {
+			for ( const [ d, wasOpen ] of savedOpenState ) {
+				d.open = wasOpen;
+				d.hidden = false;
+			}
+
+			for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+				row.hidden = false;
+			}
+
+			savedOpenState = null;
+
+			return;
+		}
+
+		for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+			const token = row.dataset.token.toLowerCase();
+			const desc = ( TOKEN_DESCRIPTIONS[ row.dataset.token ] || '' )
+				.toLowerCase();
+
+			row.hidden = !token.includes( query ) && !desc.includes( query );
+		}
+
+		// Auto-open categories/tiers that have visible matches; hide empty ones.
+		for ( const catDetails of panel.querySelectorAll( 'details details' ) ) {
+			const hasVisible = catDetails
+				.querySelector( '.token-row:not([hidden])' ) !== null;
+
+			catDetails.hidden = !hasVisible;
+
+			if ( hasVisible ) {
+				catDetails.open = true;
+			}
+		}
+
+		for ( const tierDetails of panel.querySelectorAll( ':scope > details' ) ) {
+			if ( tierDetails.classList.contains( 'stylesheet-presets' ) ) {
+				continue;
+			}
+
+			const hasVisible = tierDetails
+				.querySelector( '.token-row:not([hidden])' ) !== null;
+
+			tierDetails.hidden = !hasVisible;
+
+			if ( hasVisible ) {
+				tierDetails.open = true;
+			}
+		}
+	} );
+
 	// Toggle all diagrams.
 	let diagramsVisible = false;
 	const toggleDiagramsBtn = document.getElementById( 'toggle-diagrams' );

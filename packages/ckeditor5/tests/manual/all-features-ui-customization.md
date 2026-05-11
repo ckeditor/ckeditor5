@@ -11,10 +11,11 @@ Interactive test combining the full-featured editor with the Design Token Explor
 
 ### Token panel
 
-1. Expand a tier (Foundation / Semantic / Component) to see categories.
-2. Expand a category to see individual tokens.
-3. Each token shows a short description of what it controls.
-4. Click a token name to copy its full `--ck-*` name to clipboard (turns green with a ✓ on success).
+1. Use the search input at the top to filter tokens by name or description. Matching sections auto-expand; clearing restores the previous state.
+2. Expand a tier (Foundation / Semantic / Component) to see categories.
+3. Expand a category to see individual tokens.
+4. Each token shows a short description of what it controls.
+5. Click a token name to copy its full `--ck-*` name to clipboard (turns green with a ✓ on success).
 5. Tokens with a 🖼 icon have a visual diagram — click to toggle. Click "Show Diagrams" in the header to toggle all at once.
 6. Use the input controls to override token values live:
    - **Color tokens**: color picker + text input (supports hsl, hex, rgb)
