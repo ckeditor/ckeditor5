@@ -1705,7 +1705,14 @@ function createTokenRow( name ) {
 	nameEl.title = name;
 
 	const nameText = document.createElement( 'span' );
+	nameText.className = 'token-name-text';
 	nameText.textContent = name.replace( /^--ck-/, '' );
+	nameText.title = 'Click to copy: ' + name;
+	nameText.addEventListener( 'click', () => {
+		navigator.clipboard.writeText( name );
+		nameText.classList.add( 'token-name-copied' );
+		setTimeout( () => nameText.classList.remove( 'token-name-copied' ), 800 );
+	} );
 	nameEl.appendChild( nameText );
 
 	const description = TOKEN_DESCRIPTIONS[ name ];
@@ -2522,6 +2529,63 @@ export function generatePanel( presets ) {
 
 		toggleDiagramsBtn.textContent = diagramsVisible ? 'Hide Diagrams' : 'Show Diagrams';
 	} );
+
+	// Copy link — encode overrides into URL hash.
+	const copyLinkBtn = document.getElementById( 'copy-link' );
+
+	copyLinkBtn.addEventListener( 'click', () => {
+		const overrides = {};
+
+		for ( const row of panel.querySelectorAll( '.token-row.is-overridden' ) ) {
+			const token = row.dataset.token;
+			const value = document.documentElement.style
+				.getPropertyValue( token ).trim();
+
+			if ( value ) {
+				overrides[ token ] = value;
+			}
+		}
+
+		const hash = Object.keys( overrides ).length ?
+			'#overrides=' + btoa( JSON.stringify( overrides ) ) :
+			'';
+
+		const url = window.location.origin +
+			window.location.pathname + hash;
+
+		navigator.clipboard.writeText( url );
+
+		copyLinkBtn.textContent = 'Copied!';
+		setTimeout( () => {
+			copyLinkBtn.textContent = 'Share Link';
+		}, 1200 );
+	} );
+
+	// Restore overrides from URL hash on load.
+	try {
+		const hash = window.location.hash;
+
+		if ( hash.startsWith( '#overrides=' ) ) {
+			const encoded = hash.slice( '#overrides='.length );
+			const overrides = JSON.parse( atob( encoded ) );
+
+			for ( const [ token, value ] of Object.entries( overrides ) ) {
+				document.documentElement.style.setProperty( token, value );
+
+				const row = panel.querySelector(
+					`.token-row[data-token="${ token }"]`
+				);
+
+				if ( row ) {
+					row.classList.add( 'is-overridden' );
+					refreshRow( row );
+				}
+			}
+		}
+		updateSummaryHighlights( panel );
+	} catch {
+		// Ignore malformed hash.
+	}
 
 	// Highlight ancestor <summary> elements when any child token is overridden.
 	// Uses a MutationObserver on class changes so every override/reset path is covered automatically.

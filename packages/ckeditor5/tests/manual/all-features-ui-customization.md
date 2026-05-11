@@ -14,8 +14,9 @@ Interactive test combining the full-featured editor with the Design Token Explor
 1. Expand a tier (Foundation / Semantic / Component) to see categories.
 2. Expand a category to see individual tokens.
 3. Each token shows a short description of what it controls.
-4. Tokens with a 🖼 icon have a visual diagram — click to toggle. Click "Show Diagrams" in the header to toggle all at once.
-5. Use the input controls to override token values live:
+4. Click a token name to copy its full `--ck-*` name to clipboard (turns green with a ✓ on success).
+5. Tokens with a 🖼 icon have a visual diagram — click to toggle. Click "Show Diagrams" in the header to toggle all at once.
+6. Use the input controls to override token values live:
    - **Color tokens**: color picker + text input (supports hsl, hex, rgb)
    - **Spacing/size**: text input (px, em, calc values)
    - **Font weight**: dropdown (100-900)
@@ -49,6 +50,12 @@ The all-features test loads built-in presets from `presets/` directory on startu
 1. Tweak tokens using the panel inputs.
 2. Click "Generate Stylesheet from Overrides" at the bottom of the panel.
 3. A `:root { ... }` block with all manually changed tokens appears in a read-only textarea, ready to copy.
+
+### Share via link
+
+1. Override some tokens, then click "Copy Link" in the header.
+2. The URL with encoded overrides is copied to clipboard.
+3. Open the link in another browser/tab — overrides are restored automatically.
 
 ## What to verify
 

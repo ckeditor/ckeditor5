@@ -129,6 +129,23 @@
 		min-width: 0;
 	}
 
+	.token-name-text {
+		cursor: pointer;
+	}
+
+	.token-name-text:hover {
+		color: #0066cc;
+	}
+
+	.token-name-text.token-name-copied {
+		color: #2e7d32;
+	}
+
+	.token-name-text.token-name-copied::after {
+		content: ' \2713';
+		font-size: 10px;
+	}
+
 	.token-name .token-description {
 		display: block;
 		font-size: 9px;
@@ -708,6 +725,7 @@ p {
 		<h2>
 			Design Tokens
 			<span style="display:flex;gap:4px">
+				<button class="reset-all-btn" id="copy-link">Share Link</button>
 				<button class="reset-all-btn" id="toggle-diagrams">Show Diagrams</button>
 				<button class="reset-all-btn" id="reset-all">Reset All</button>
 			</span>
