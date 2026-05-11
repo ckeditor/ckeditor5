@@ -1148,6 +1148,7 @@ function createTokenRow( name ) {
 			document.documentElement.style.setProperty( name, colorInput.value );
 			textInput.value = colorInput.value;
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1161,6 +1162,7 @@ function createTokenRow( name ) {
 			}
 
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1182,6 +1184,7 @@ function createTokenRow( name ) {
 			document.documentElement.style.setProperty( name, range.value );
 			textInput.value = range.value;
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1189,6 +1192,7 @@ function createTokenRow( name ) {
 			document.documentElement.style.setProperty( name, textInput.value );
 			range.value = parseFloat( textInput.value ) || 0;
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1211,6 +1215,7 @@ function createTokenRow( name ) {
 			document.documentElement.style.setProperty( name, val );
 			textInput.value = val;
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1218,6 +1223,7 @@ function createTokenRow( name ) {
 			document.documentElement.style.setProperty( name, textInput.value );
 			range.value = parseFloat( textInput.value ) || 0;
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1241,6 +1247,7 @@ function createTokenRow( name ) {
 		select.addEventListener( 'change', () => {
 			document.documentElement.style.setProperty( name, select.value );
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1264,6 +1271,7 @@ function createTokenRow( name ) {
 		select.addEventListener( 'change', () => {
 			document.documentElement.style.setProperty( name, select.value );
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1276,6 +1284,7 @@ function createTokenRow( name ) {
 		numInput.addEventListener( 'change', () => {
 			document.documentElement.style.setProperty( name, numInput.value );
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1288,6 +1297,7 @@ function createTokenRow( name ) {
 		textInput.addEventListener( 'change', () => {
 			document.documentElement.style.setProperty( name, textInput.value );
 			row.classList.add( 'is-overridden' );
+			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
 		} );
 
@@ -1306,6 +1316,9 @@ function createTokenRow( name ) {
 		row.classList.remove( 'is-overridden' );
 		refreshRow( row );
 		refreshDependents( name );
+
+		// If a preset is active and affects this token, restore the amber highlight.
+		row.classList.toggle( 'is-preset-changed', isTokenChangedByPreset( name ) );
 	} );
 
 	row.appendChild( resetBtn );
@@ -1381,12 +1394,21 @@ function refreshAllNonOverriddenRows() {
 }
 
 function activateStylesheet( id ) {
+	const panel = document.getElementById( 'token-panel' );
+
+	// Snapshot current computed values before switching.
+	const valuesBefore = {};
+
+	for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+		valuesBefore[ row.dataset.token ] = getComputedTokenValue( row.dataset.token );
+	}
+
 	// Deactivate current.
 	if ( stylesheetActiveId !== null ) {
 		const current = stylesheetEntries.find( e => e.id === stylesheetActiveId );
 
 		if ( current ) {
-			current.styleEl.disabled = true;
+			current.styleEl.media = 'not all';
 		}
 	}
 
@@ -1402,16 +1424,28 @@ function activateStylesheet( id ) {
 		const entry = stylesheetEntries.find( e => e.id === id );
 
 		if ( entry ) {
-			entry.styleEl.disabled = false;
+			entry.styleEl.removeAttribute( 'media' );
 		}
 	}
 
-	// Wait for style recalculation, then refresh token inputs.
+	// Wait for style recalculation, then refresh and mark changed rows.
 	requestAnimationFrame( () => {
 		if ( clearOverridesOnSwitch ) {
 			refreshAllRows();
 		} else {
 			refreshAllNonOverriddenRows();
+		}
+
+		// Mark tokens whose value changed due to the stylesheet switch.
+		for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+			const token = row.dataset.token;
+			const newValue = getComputedTokenValue( token );
+
+			if ( newValue !== valuesBefore[ token ] && !row.classList.contains( 'is-overridden' ) ) {
+				row.classList.add( 'is-preset-changed' );
+			} else {
+				row.classList.remove( 'is-preset-changed' );
+			}
 		}
 	} );
 }
@@ -1531,7 +1565,7 @@ function renderStylesheetList( listContainer, refs ) {
 	}
 }
 
-function generateStylesheetManagerSection() {
+function generateStylesheetManagerSection( presets ) {
 	const details = document.createElement( 'details' );
 	details.className = 'stylesheet-presets';
 	const summary = document.createElement( 'summary' );
@@ -1611,6 +1645,14 @@ function generateStylesheetManagerSection() {
 				active.cssText = cssText;
 				active.name = nameInput.value.trim() || active.name;
 
+				// Snapshot before update.
+				const panel = document.getElementById( 'token-panel' );
+				const valuesBefore = {};
+
+				for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+					valuesBefore[ row.dataset.token ] = getComputedTokenValue( row.dataset.token );
+				}
+
 				if ( clearOverridesOnSwitch ) {
 					clearAllInlineOverrides();
 				}
@@ -1622,6 +1664,18 @@ function generateStylesheetManagerSection() {
 						refreshAllRows();
 					} else {
 						refreshAllNonOverriddenRows();
+					}
+
+					// Mark tokens changed by the update.
+					for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+						const token = row.dataset.token;
+						const newValue = getComputedTokenValue( token );
+
+						if ( newValue !== valuesBefore[ token ] && !row.classList.contains( 'is-overridden' ) ) {
+							row.classList.add( 'is-preset-changed' );
+						} else {
+							row.classList.remove( 'is-preset-changed' );
+						}
 					}
 				} );
 
@@ -1643,7 +1697,7 @@ function generateStylesheetManagerSection() {
 
 		entry.styleEl.dataset.ckPreset = entry.id;
 		entry.styleEl.textContent = cssText;
-		entry.styleEl.disabled = true;
+		entry.styleEl.media = 'not all';
 		document.head.appendChild( entry.styleEl );
 
 		stylesheetEntries.push( entry );
@@ -1675,7 +1729,7 @@ function generateStylesheetManagerSection() {
 
 		entry.styleEl.dataset.ckPreset = entry.id;
 		entry.styleEl.textContent = cssText;
-		entry.styleEl.disabled = true;
+		entry.styleEl.media = 'not all';
 		document.head.appendChild( entry.styleEl );
 
 		stylesheetEntries.push( entry );
@@ -1698,12 +1752,57 @@ function generateStylesheetManagerSection() {
 		renderStylesheetList( listContainer, refs );
 	} );
 
-	// Initial render (just "None" radio).
+	// Load built-in presets (if any).
+	if ( presets && presets.length ) {
+		for ( const preset of presets ) {
+			const entry = {
+				id: stylesheetNextId++,
+				name: preset.name,
+				cssText: preset.css,
+				styleEl: document.createElement( 'style' )
+			};
+
+			entry.styleEl.dataset.ckPreset = entry.id;
+			entry.styleEl.textContent = preset.css;
+			entry.styleEl.media = 'not all';
+			document.head.appendChild( entry.styleEl );
+
+			stylesheetEntries.push( entry );
+		}
+	}
+
+	// Initial render.
 	renderStylesheetList( listContainer, refs );
 
 	details.appendChild( manager );
 
 	return details;
+}
+
+/**
+ * Checks if the active stylesheet preset changes the given token's value
+ * compared to the default (no stylesheet). Returns true if the token
+ * value with the preset differs from the value without it.
+ */
+function isTokenChangedByPreset( token ) {
+	if ( stylesheetActiveId === null ) {
+		return false;
+	}
+
+	const active = stylesheetEntries.find( e => e.id === stylesheetActiveId );
+
+	if ( !active ) {
+		return false;
+	}
+
+	const withPreset = getComputedTokenValue( token );
+
+	// Temporarily disable preset to read the default value.
+	active.styleEl.media = 'not all';
+	const withoutPreset = getComputedTokenValue( token );
+	active.styleEl.removeAttribute( 'media' );
+
+	return withPreset !== withoutPreset;
 }
 
 function updateSummaryHighlights( panel ) {
@@ -1715,16 +1814,21 @@ function updateSummaryHighlights( panel ) {
 		}
 
 		const hasOverrides = details.querySelector( '.token-row.is-overridden' ) !== null;
+		const hasPresetChanges = details.querySelector( '.token-row.is-preset-changed' ) !== null;
 
 		summary.classList.toggle( 'has-overrides', hasOverrides );
+		summary.classList.toggle( 'has-preset-changes', hasPresetChanges );
 	}
 }
 
-export function generatePanel() {
+/**
+ * @param {Array<{name: string, css: string}>} [presets] Optional array of built-in stylesheet presets.
+ */
+export function generatePanel( presets ) {
 	const panel = document.getElementById( 'token-panel' );
 
 	// Stylesheet preset manager (paste & compare).
-	panel.appendChild( generateStylesheetManagerSection() );
+	panel.appendChild( generateStylesheetManagerSection( presets ) );
 
 	const tiers = [
 		{ key: 'foundation', label: 'Foundation Tokens', data: FOUNDATION, open: true },

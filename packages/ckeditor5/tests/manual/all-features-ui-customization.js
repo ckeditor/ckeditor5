@@ -39,6 +39,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 // eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
 import { generatePanel } from '@ckeditor/ckeditor5-ui/tests/manual/ui-customization/token-panel.js';
 
+import { presetFiles } from './presets/index.js';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -216,7 +218,21 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		generatePanel();
+		// Load preset CSS files, then generate the token panel.
+		const sortedFiles = [ ...presetFiles ].sort();
+
+		Promise.all(
+			sortedFiles.map( file =>
+				fetch( `presets/${ file }` )
+					.then( res => res.ok ? res.text() : '' )
+					.then( css => ( {
+						name: file.replace( /\.css$/, '' ),
+						css
+					} ) )
+			)
+		).then( presets => {
+			generatePanel( presets.filter( p => p.css ) );
+		} );
 
 		// Word count logging.
 		editor.plugins.get( 'WordCount' ).on( 'update', ( evt, stats ) => {

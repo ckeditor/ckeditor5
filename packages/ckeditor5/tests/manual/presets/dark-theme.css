@@ -1,0 +1,224 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Dark theme — comprehensive dark mode with WCAG-aware contrast.
+ *
+ * Palette:
+ *   Surface 1 (base):      hsl(240, 6%, 14%)   — main background
+ *   Surface 2 (raised):    hsl(240, 5%, 18%)   — cards, panels
+ *   Surface 3 (elevated):  hsl(240, 4%, 22%)   — hover, raised elements
+ *   Surface 4 (borders):   hsl(240, 4%, 30%)   — borders, dividers
+ *   Text primary:          hsl(0, 0%, 93%)     — main text (~14:1 on surface-1)
+ *   Text secondary:        hsl(0, 0%, 70%)     — secondary text (~7:1)
+ *   Text disabled:         hsl(0, 0%, 50%)     — disabled text (~3.5:1)
+ *   Brand (teal):          hsl(168, 72%, 44%)  — primary action
+ *   Focus (blue):          hsl(210, 90%, 62%)  — focus rings
+ */
+
+:root {
+	/* ---- App palette ---- */
+	--app-surface-1: hsl(240, 6%, 14%);
+	--app-surface-2: hsl(240, 5%, 18%);
+	--app-surface-3: hsl(240, 4%, 22%);
+	--app-surface-4: hsl(240, 4%, 30%);
+	--app-text-1: hsl(0, 0%, 93%);
+	--app-text-2: hsl(0, 0%, 70%);
+	--app-text-3: hsl(0, 0%, 50%);
+	--app-focus-hsl: 210, 90%, 62%;
+	--app-brand: hsl(168, 72%, 44%);
+	--app-brand-hover: hsl(168, 72%, 38%);
+	--app-brand-contrast: hsl(0, 0%, 100%);
+
+	/* ---- Foundation ---- */
+	--ck-font-size-base: 14px;
+	--ck-spacing-unit: 0.65em;
+	--ck-radius-base: 6px;
+
+	/* Base colors */
+	--ck-color-base-background: var(--app-surface-1);
+	--ck-color-base-foreground: var(--app-surface-2);
+	--ck-color-base-border: var(--app-surface-4);
+	--ck-color-base-border-light: hsl(240, 4%, 26%);
+	--ck-color-base-text: var(--app-text-1);
+	--ck-color-base-text-light: var(--app-text-2);
+
+	/* Interactive base */
+	--ck-color-base-hover: var(--app-surface-3);
+	--ck-color-base-active: hsl(210, 60%, 50%);
+	--ck-color-base-active-focus: hsl(210, 65%, 45%);
+	--ck-color-base-selected: hsl(210, 40%, 22%);
+	--ck-color-base-selected-hover: hsl(210, 42%, 26%);
+	--ck-color-base-focus: hsl(210, 80%, 58%);
+	--ck-color-base-focus-shadow: hsla(210, 90%, 50%, .35);
+	--ck-color-base-focus-shadow-faded: hsla(210, 90%, 50%, .15);
+
+	/* Action (teal) */
+	--ck-color-base-action: var(--app-brand);
+	--ck-color-base-action-hover: var(--app-brand-hover);
+
+	/* Feedback */
+	--ck-color-base-error: hsl(0, 80%, 62%);
+	--ck-color-base-error-shadow: hsla(0, 80%, 50%, .3);
+	--ck-color-base-warning: hsl(35, 90%, 55%);
+	--ck-color-base-success: hsl(145, 60%, 42%);
+	--ck-color-base-highlight: hsl(50, 90%, 50%);
+	--ck-color-base-attention: hsl(43, 90%, 55%);
+
+	/* Shadows — stronger for dark backgrounds */
+	--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.4);
+	--ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.55);
+	--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.3);
+
+	/* ---- Semantic — surfaces ---- */
+	--ck-color-surface-canvas: var(--app-surface-1);
+	--ck-color-surface-control: var(--app-surface-2);
+	--ck-color-surface-container: var(--app-surface-2);
+	--ck-color-surface-inverse: hsl(0, 0%, 90%);
+
+	/* ---- Semantic — borders ---- */
+	--ck-color-border-control: var(--app-surface-4);
+	--ck-color-border-container: var(--app-surface-4);
+	--ck-color-divider: hsl(240, 4%, 26%);
+
+	/* ---- Semantic — text ---- */
+	--ck-color-text-primary: var(--app-text-1);
+	--ck-color-text-secondary: var(--app-text-2);
+	--ck-color-text-disabled: var(--app-text-3);
+	--ck-color-text-inverse: hsl(240, 6%, 14%);
+	--ck-color-text-error: hsl(0, 80%, 65%);
+
+	/* ---- Semantic — feedback ---- */
+	--ck-color-feedback-error: hsl(0, 80%, 62%);
+	--ck-color-feedback-warning: hsl(35, 90%, 55%);
+	--ck-color-feedback-success: hsl(145, 60%, 42%);
+	--ck-color-feedback-highlight: hsl(50, 90%, 50%);
+
+	/* ---- Semantic — interactive ---- */
+	--ck-color-interactive-hover-surface: var(--app-surface-3);
+	--ck-color-interactive-active-surface: hsl(240, 5%, 12%);
+	--ck-color-interactive-selected-surface: hsl(210, 40%, 22%);
+	--ck-color-interactive-selected-surface-hover: hsl(210, 42%, 26%);
+	--ck-color-interactive-selected-text: hsl(205, 100%, 74%);
+	--ck-color-interactive-primary-surface: var(--app-brand);
+	--ck-color-interactive-primary-surface-hover: var(--app-brand-hover);
+	--ck-color-interactive-primary-text: var(--app-brand-contrast);
+	--ck-color-interactive-focus-border-coordinates: var(--app-focus-hsl);
+	--ck-color-interactive-focus-shadow: hsla(210, 90%, 62%, .3);
+	--ck-color-interactive-focus-disabled-shadow: hsla(210, 90%, 62%, .12);
+	--ck-color-interactive-focus-error-shadow: hsla(0, 80%, 50%, .3);
+
+	/* ---- Semantic — shape ---- */
+	--ck-border-radius-control: 6px;
+	--ck-border-radius-surface: 8px;
+	--ck-shadow-surface-floating: 0 6px 20px 2px hsla(0, 0%, 0%, .5), 0 0 3px hsla(0, 0%, 0%, .25);
+
+	/* ---- Component — button ---- */
+	--ck-button-default-background-color: transparent;
+	--ck-button-default-hover-background-color: var(--app-surface-3);
+	--ck-button-default-active-background-color: hsl(240, 5%, 12%);
+	--ck-button-default-disabled-background-color: transparent;
+	--ck-button-on-background-color: hsl(210, 40%, 22%);
+	--ck-button-on-hover-background-color: hsl(210, 42%, 26%);
+	--ck-button-on-active-background-color: hsl(210, 42%, 26%);
+	--ck-button-on-disabled-background-color: hsl(240, 4%, 22%);
+	--ck-button-on-text-color: hsl(205, 100%, 74%);
+	--ck-button-action-background-color: var(--app-brand);
+	--ck-button-action-hover-background-color: var(--app-brand-hover);
+	--ck-button-action-active-background-color: hsl(168, 72%, 34%);
+	--ck-button-action-disabled-background-color: hsl(168, 30%, 30%);
+	--ck-button-action-text-color: var(--app-brand-contrast);
+	--ck-button-save-color: hsl(145, 60%, 50%);
+	--ck-button-cancel-color: hsl(0, 80%, 62%);
+	--ck-button-border-radius: var(--ck-border-radius-control);
+
+	/* ---- Component — input ---- */
+	--ck-input-background-color: var(--app-surface-1);
+	--ck-input-border-color: var(--app-surface-4);
+	--ck-input-text-color: var(--app-text-1);
+	--ck-input-disabled-background-color: hsl(240, 4%, 16%);
+	--ck-input-disabled-border-color: hsl(240, 4%, 24%);
+	--ck-input-disabled-text-color: var(--app-text-3);
+	--ck-input-error-border-color: hsl(0, 80%, 50%);
+	--ck-input-border-radius: var(--ck-border-radius-control);
+
+	/* ---- Component — toolbar ---- */
+	--ck-toolbar-background-color: var(--app-surface-2);
+	--ck-toolbar-border-color: var(--app-surface-4);
+	--ck-toolbar-border-radius: var(--ck-border-radius-surface);
+
+	/* ---- Component — dropdown ---- */
+	--ck-dropdown-panel-background-color: var(--app-surface-2);
+	--ck-dropdown-panel-border-color: var(--app-surface-4);
+
+	/* ---- Component — list ---- */
+	--ck-list-background-color: transparent;
+	--ck-list-button-hover-background-color: var(--app-surface-3);
+	--ck-list-button-on-background-color: hsl(210, 40%, 22%);
+	--ck-list-button-on-text-color: hsl(205, 100%, 74%);
+	--ck-list-divider-color: hsl(240, 4%, 26%);
+
+	/* ---- Component — switch button ---- */
+	--ck-switch-button-off-background-color: hsl(240, 4%, 30%);
+	--ck-switch-button-off-hover-background-color: hsl(240, 4%, 35%);
+	--ck-switch-button-on-background-color: var(--app-brand);
+	--ck-switch-button-on-hover-background-color: var(--app-brand-hover);
+	--ck-switch-button-inner-background-color: hsl(0, 0%, 95%);
+
+	/* ---- Component — dialog ---- */
+	--ck-dialog-background-color: var(--app-surface-2);
+	--ck-dialog-border-radius: var(--ck-border-radius-surface);
+	--ck-dialog-overlay-background-color: hsla(0, 0%, 0%, 0.6);
+	--ck-dialog-drop-shadow: 0 10px 24px 2px hsla(0, 0%, 0%, .5);
+
+	/* ---- Component — balloon panel ---- */
+	--ck-balloon-panel-background-color: var(--app-surface-2);
+	--ck-balloon-panel-border-color: var(--app-surface-4);
+
+	/* ---- Component — tooltip ---- */
+	--ck-tooltip-background-color: hsl(0, 0%, 90%);
+	--ck-tooltip-text-color: hsl(240, 6%, 14%);
+
+	/* ---- Component — labeled field ---- */
+	--ck-labeled-field-label-background-color: var(--app-surface-2);
+
+	/* ---- Misc / content ---- */
+	--ck-color-widget-blurred-border: hsl(240, 4%, 35%);
+	--ck-color-widget-hover-border: hsl(43, 80%, 55%);
+	--ck-color-widget-editable-focus-background: var(--app-surface-1);
+	--ck-color-link-default: hsl(210, 100%, 70%);
+}
+
+/* Content area */
+.ck.ck-editor__editable {
+	background: var(--app-surface-1);
+	color: var(--app-text-1);
+}
+
+.ck.ck-editor__editable a {
+	color: hsl(210, 100%, 70%);
+}
+
+.ck-content pre {
+	background: hsl(240, 6%, 12%);
+	color: hsl(0, 0%, 91%);
+	border-color: hsl(240, 4%, 26%);
+}
+
+.ck-content blockquote {
+	border-left-color: var(--app-surface-4);
+}
+
+.ck-content hr {
+	border-color: var(--app-surface-4);
+}
+
+.ck-content table, .ck-content th, .ck-content td {
+	border-color: var(--app-surface-4);
+}
+
+.ck-content th {
+	background: var(--app-surface-3);
+}

@@ -229,6 +229,19 @@
 		color: #0066cc;
 	}
 
+	.token-row.is-preset-changed .token-name {
+		color: #b45309;
+	}
+
+	summary.has-preset-changes {
+		color: #b45309;
+	}
+
+	/* Manual overrides take visual priority over preset changes. */
+	summary.has-overrides.has-preset-changes {
+		color: #0066cc;
+	}
+
 	/* Toggle button for the token panel */
 	.ck-test-panel-toggle {
 		font-size: 11px;
