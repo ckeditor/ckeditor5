@@ -55,7 +55,7 @@ Foreground color tokens (e.g. `--ck-color-text-primary`, `--ck-button-action-tex
 - **Green** `AAA` (≥ 7:1) or `AA` (≥ 4.5:1) — passes WCAG
 - **Red** `Fail` (< 4.5:1) — fails WCAG AA for normal text
 
-Badges update dynamically when either the foreground or background token changes. Hover the badge to see which background token it compares against.
+Badges show two color swatches (foreground + background) and update dynamically when either token changes. Click a badge to scroll to the paired background token. Hover for details.
 
 ### Share via link
 

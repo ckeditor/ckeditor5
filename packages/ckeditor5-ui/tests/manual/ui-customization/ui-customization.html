@@ -196,6 +196,13 @@
 		min-width: 0;
 	}
 
+	.token-name mark, .token-description mark {
+		background: #fff59d;
+		color: inherit;
+		padding: 0 1px;
+		border-radius: 2px;
+	}
+
 	.token-name-text {
 		cursor: pointer;
 	}
@@ -312,10 +319,23 @@
 	.token-contrast {
 		font-size: 9px;
 		font-family: system-ui, -apple-system, sans-serif;
-		padding: 1px 5px;
+		padding: 3px 5px;
+		border: 1px solid #ddd;
 		border-radius: 3px;
 		white-space: nowrap;
 		flex-shrink: 0;
+		width: 86px;
+		text-align: center;
+	}
+
+	.token-contrast-swatch {
+		display: inline-block;
+		width: 10px;
+		height: 10px;
+		border-radius: 2px;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		vertical-align: middle;
+		margin-right: 2px;
 	}
 
 	.token-contrast-pass {

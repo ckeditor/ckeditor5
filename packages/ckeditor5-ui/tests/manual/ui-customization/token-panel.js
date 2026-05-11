@@ -1816,13 +1816,27 @@ function updateContrastBadge( row ) {
 		return;
 	}
 
+	const swatches = badge.querySelectorAll( '.token-contrast-swatch' );
+	const ratioLabel = badge.lastElementChild;
+
 	const fgValue = getComputedTokenValue( token );
 	const bgValue = getComputedTokenValue( bgToken );
+
+	// Update swatches.
+	if ( swatches[ 0 ] ) {
+		swatches[ 0 ].style.background = fgValue;
+	}
+
+	if ( swatches[ 1 ] ) {
+		swatches[ 1 ].style.background = bgValue;
+	}
+
 	const ratio = contrastRatio( fgValue, bgValue );
 
 	if ( ratio === null ) {
-		badge.textContent = '';
+		ratioLabel.textContent = '';
 		badge.className = 'token-contrast';
+		badge.style.cursor = 'pointer';
 
 		return;
 	}
@@ -1841,10 +1855,11 @@ function updateContrastBadge( row ) {
 		label = 'Fail';
 	}
 
-	badge.textContent = ratioStr + ' ' + label;
+	ratioLabel.textContent = ratioStr + ' ' + label;
 	badge.className = 'token-contrast';
+	badge.style.cursor = 'pointer';
 	badge.classList.add( passAA ? 'token-contrast-pass' : 'token-contrast-fail' );
-	badge.title = 'Contrast vs ' + bgToken +
+	badge.title = 'Click to scroll to ' + bgToken +
 		' — WCAG AA requires 4.5:1 for normal text';
 }
 
@@ -2115,8 +2130,28 @@ function createTokenRow( name ) {
 
 	// Contrast badge (only for foreground tokens in CONTRAST_PAIRS).
 	if ( CONTRAST_PAIRS[ name ] ) {
+		const bgToken = CONTRAST_PAIRS[ name ];
 		const badge = document.createElement( 'span' );
 		badge.className = 'token-contrast';
+		badge.style.cursor = 'pointer';
+		badge.title = 'Click to scroll to ' + bgToken;
+
+		const fgSwatch = document.createElement( 'span' );
+		fgSwatch.className = 'token-contrast-swatch';
+
+		const bgSwatch = document.createElement( 'span' );
+		bgSwatch.className = 'token-contrast-swatch';
+
+		const ratioLabel = document.createElement( 'span' );
+
+		badge.appendChild( fgSwatch );
+		badge.appendChild( bgSwatch );
+		badge.appendChild( ratioLabel );
+
+		badge.addEventListener( 'click', () => {
+			scrollToAndHighlightToken( bgToken );
+		} );
+
 		row.appendChild( badge );
 	}
 
@@ -2742,6 +2777,67 @@ export function generatePanel( presets ) {
 	const overridesOnlyCheckbox = document.getElementById( 'filter-overrides-only' );
 	let savedOpenState = null;
 
+	function highlightText( el, query ) {
+		const text = el.textContent;
+		const lower = text.toLowerCase();
+		const idx = lower.indexOf( query );
+
+		if ( idx === -1 || !query ) {
+			return;
+		}
+
+		const before = text.slice( 0, idx );
+		const match = text.slice( idx, idx + query.length );
+		const after = text.slice( idx + query.length );
+
+		el.innerHTML = '';
+		el.append(
+			before,
+			Object.assign( document.createElement( 'mark' ), { textContent: match } ),
+			after
+		);
+	}
+
+	function stripMarks( el ) {
+		const plain = el.textContent;
+		el.innerHTML = '';
+		el.append( plain );
+	}
+
+	function highlightMatches( row, query ) {
+		const nameEl = row.querySelector( '.token-name-text' );
+		const descEl = row.querySelector( '.token-description' );
+
+		if ( nameEl ) {
+			stripMarks( nameEl );
+
+			if ( query ) {
+				highlightText( nameEl, query );
+			}
+		}
+
+		if ( descEl ) {
+			stripMarks( descEl );
+
+			if ( query ) {
+				highlightText( descEl, query );
+			}
+		}
+	}
+
+	function clearHighlights( row ) {
+		const nameEl = row.querySelector( '.token-name-text' );
+		const descEl = row.querySelector( '.token-description' );
+
+		if ( nameEl ) {
+			stripMarks( nameEl );
+		}
+
+		if ( descEl ) {
+			stripMarks( descEl );
+		}
+	}
+
 	function applyFilters() {
 		const query = searchInput.value.toLowerCase().trim();
 		const onlyOverridden = overridesOnlyCheckbox.checked;
@@ -2767,6 +2863,7 @@ export function generatePanel( presets ) {
 
 			for ( const row of panel.querySelectorAll( '.token-row' ) ) {
 				row.hidden = false;
+				clearHighlights( row );
 			}
 
 			savedOpenState = null;
@@ -2784,6 +2881,8 @@ export function generatePanel( presets ) {
 
 				visible = token.includes( query ) || desc.includes( query );
 			}
+
+			highlightMatches( row, query );
 
 			if ( visible && onlyOverridden ) {
 				visible = row.classList.contains( 'is-overridden' ) ||

@@ -1,0 +1,235 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* ---- Foundation ---- */
+	--ck-radius-base: 5px;
+	--ck-spacing-sm: 5px;
+
+	/* ---- Semantic layer overrides ---- */
+
+	/* Note: --ck-border-radius-control and --ck-border-radius-surface inherit from
+	 * --ck-radius-base automatically — no need to override them separately. */
+
+	/* Spacing — override semantic spacing roles instead of foundation scale.
+	 * Controls get more breathing room. */
+	--ck-spacing-control-padding-block: 3px;
+	--ck-spacing-control-padding-inline: 8px;
+	--ck-spacing-control-padding-inline-compact: var(--ck-spacing-sm);
+	--ck-spacing-surface-padding-inline: var(--ck-spacing-sm);
+	--ck-spacing-surface-padding-block: var(--ck-spacing-sm);
+	--ck-spacing-surface-item-gap-inline: var(--ck-spacing-sm);
+
+	/* Surface colors. */
+	--ck-color-border-control: hsl(220, 8%, 85%);
+	--ck-color-border-container: hsl(220, 8%, 85%);
+	--ck-color-text-primary: hsl(0, 0%, 25%);
+
+	/* Surface shadow — override the semantic floating shadow. */
+	--ck-shadow-surface-floating: 3px 3px 17px hsla(0, 0%, 0%, 0.2), 0 0 3px hsla(0, 0%, 0%, 0.1);
+
+	/* ---- Component layer overrides ---- */
+
+	/* Color grid: smaller tiles, tight gap, no tile radius, zoom on hover. */
+	--ck-color-grid-tile-size: 20px;
+	--ck-color-grid-gap: 1px;
+	--ck-color-grid-tile-border-radius: 0;
+	--ck-color-grid-tile-hover-transform: scale(1.3);
+	--ck-color-grid-tile-hover-layer: 1;
+	--ck-color-grid-margin: var(--ck-spacing-sm);
+	--ck-color-grid-padding: 0;
+
+	/* Color selector: add inner spacing, remove color-picker divider border. */
+	--ck-color-selector-padding: var(--ck-spacing-sm);
+	--ck-color-selector-color-picker-border-top: none;
+
+	/* Toolbar: custom horizontal padding and item gap. */
+	--ck-toolbar-padding: 0 7px;
+	--ck-toolbar-item-gap-inline: 7px;
+
+	/* No arrows for balloon panels. */
+	--ck-balloon-panel-arrow-display: none;
+
+	/* Wider list items and spacier lists/dropdowns. */
+	--ck-list-item-min-width: 17em;
+	--ck-list-padding: var(--ck-spacing-sm);
+	--ck-list-item-button-border-radius: var(--ck-radius-base);
+	--ck-dropdown-panel-padding: 0;
+
+	/* Disable attached-corner behavior — uniform radius on all panels. */
+	--ck-border-radius-uniform: var(--ck-radius-base);
+
+	/* Dropdown list background — transparent to respect panel corners. */
+	--ck-dropdown-list-background-color: transparent;
+
+	/* Vertical toolbar buttons and menu bar items — allow radius. */
+	--ck-toolbar-vertical-button-border-radius: var(--ck-radius-base);
+	--ck-menu-bar-button-border-radius: var(--ck-radius-base);
+	--ck-menu-bar-list-item-button-border-radius: var(--ck-radius-base);
+
+	/* Menu bar item width. */
+	--ck-menu-bar-menu-item-min-width: 20em;
+
+	/* Form header — auto height with custom padding. */
+	--ck-form-header-padding-block: 7.1px;
+
+	/* Switch button toggle inner radius. */
+	--ck-switch-button-toggle-inner-border-radius: calc(0.9 * var(--ck-radius-base));
+
+	/* Font family. */
+	--ck-font-family: -apply-system, system-ui, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";;
+
+	/* Input fields. */
+	--ck-input-padding: var(--ck-spacing-control-padding-block-compact) calc(var(--ck-spacing-unit) * .8);
+
+	/* Other packages (not ckeditor5-ui). */
+	--ck-image-insert-form-padding: var(--ck-spacing-sm);
+	--ck-insert-table-dropdown-box-width: 15px;
+	--ck-insert-table-dropdown-box-height: 15px;
+	--ck-ai-chat-font-family: var(--ck-font-family);
+	--ck-user-avatar-size: 35px;
+	--ck-color-link-default: var(--ck-content-link-color);
+	--ck-link-panel-width: 400px;
+
+	/* ---- Comments ---- */
+	--ck-color-annotation-wrapper-drop-shadow: 0 0 3px hsla(0, 0%, 0%, 0.1);
+	--ck-color-comment-background: hsl(0, 0%, 100%);
+}
+
+/* ------------------------------------------------------------------------------------------------
+	Remaining overrides that still require CSS selectors.
+*/
+
+/* TODO: What's this supposed to do? I inherited it from some earlier prototype. */
+.ck-mentions .mention__item {
+	display: block;
+}
+
+.ck-mentions .mention__item img {
+	border-radius: 100%;
+	height: 30px;
+}
+
+.ck-mentions .mention__item span {
+	margin-left: .5em;
+}
+
+.ck-mentions .mention__item.ck-on span {
+	color: var(--ck-color-base-background);
+}
+
+.ck-mentions .mention__item .mention__item__full-name {
+	color: hsl(0, 0%, 45%);
+}
+
+.ck-mentions .mention__item:hover:not(.ck-on) .mention__item__full-name {
+	color: hsl(0, 0%, 40%);
+}
+
+/* ------------------------------------------------------------------------------------------------
+	Overrides for other packages (AI, comments, link, etc.) — not part of ckeditor5-ui tokens.
+*/
+
+/* Fix: AI sidebar should not be rounded. */
+.ai-integration__sidebar .ck-tab-panel,
+.ai-integration__sidebar .ck-ai-tabs,
+.ai-integration__sidebar .ck-ai-chat,
+.ai-integration__sidebar .ck-ai-header_chat {
+	border-radius: 0 !important;
+}
+
+/* Attach context dropdown. */
+.ck.ck-ai-chat-context-controls__add-context-balloon-panel {
+	padding: var(--ck-spacing-sm);
+}
+
+/* Fix the uneven height of toolbar vs chat header. */
+.ck-form__header.ck-ai-header {
+	height: auto;
+	padding-top: 7.1px;
+	padding-bottom: 7.1px;
+}
+
+/* Moaaaar radius for AI :D. */
+.ck-ai-chat-controls .ck-textarea.ck-input {
+	border-radius: var(--ck-ai-border-radius);
+	padding-left: 15px;
+	line-height: 1
+}
+.ck-ai-chat-controls .ck-ai-chat__prompt-submit-button {
+	border-radius: var(--ck-ai-border-radius) !important;
+}
+
+/* ------------------------------------------------------------------------------------------------
+	Comments
+*/
+
+/* Hide the vertical line connecting comments. */
+.ck .ck-comment::after {
+	display: none;
+}
+
+/* Tune down inactive comments. */
+.ck.ck-annotation-wrapper {
+	filter: grayscale(0.2);
+	opacity: 0.9;
+}
+
+.ck.ck-annotation-wrapper--active {
+	filter: none;
+	opacity: 1;
+}
+
+.ck .ck-annotation__info-name, .ck .ck-annotation__info-time {
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.ck .ck-annotation__info-name {
+	font-weight: 600;
+	color: var(--ck-color-text-primary);
+}
+
+/* It's completely unstyled by default by the editor. */
+.ck .ck-suggestion-type {
+	color: var(--ck-color-text-primary);
+}
+.ck-annotation .ck.ck-user {
+	--ck-user-avatar-size: 25px;
+}
+.ck.ck-user.ck-user_me {
+	border-width: 1px;
+	outline-width: 1px;
+	/* stylelint-disable-next-line declaration-property-value-disallowed-list */
+	border-color: color-mix(in srgb, var(--ck-user-avatar-background), hsl(0, 0%, 100%) 60%);
+}
+
+.ck-annotation__info {
+	line-height: 34px;
+}
+.ck-annotation__content-wrapper {
+	padding: var(--ck-spacing-sm) 0;
+}
+.ck-comment__input .ck-content * {
+	font-family: var(--ck-font-family);
+	font-size: var(--ck-comment-content-font-size);
+}
+
+.ck .ck-thread__comment-count {
+	font-weight: 600;
+}
+.ck .ck-comment__wrapper:focus {
+	background-color: hsl(0, 0%, 96%);
+}
+
+/* Remove minimize/maximize button from AI chat */
+.ck-ai-tabs__resize {
+	display: none !important;
+}
+
+/* Fix trimmed thread header in comments archive */
+.ck-context-wrapper {
+	height: 30px !important;
+}

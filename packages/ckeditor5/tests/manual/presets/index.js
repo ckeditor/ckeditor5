@@ -14,6 +14,5 @@
  * (e.g. "dark-theme.css" → "dark-theme").
  */
 export const presetFiles = [
-	'compact-rounded.css',
-	'dark-theme.css'
+	'ai-demo.css'
 ];
