@@ -49,6 +49,14 @@ Interactive test for exploring and customizing the three-tier CSS design token s
 2. Click "Generate Stylesheet from Overrides" at the bottom of the panel.
 3. A `:root { ... }` block with all manually changed tokens appears in a read-only textarea, ready to copy.
 
+### WCAG contrast checking
+
+Foreground color tokens (e.g. `--ck-color-text-primary`, `--ck-button-action-text-color`) show a live contrast ratio badge next to their input. The badge compares against the paired background token and displays:
+- **Green** `AAA` (≥ 7:1) or `AA` (≥ 4.5:1) — passes WCAG
+- **Red** `Fail` (< 4.5:1) — fails WCAG AA for normal text
+
+Badges update dynamically when either the foreground or background token changes. Hover the badge to see which background token it compares against.
+
 ### Share via link
 
 1. Override some tokens, then click "Copy Link" in the header.
@@ -69,3 +77,4 @@ Interactive test for exploring and customizing the three-tier CSS design token s
 - Manual overrides (blue) visually override preset changes (amber) on the same token.
 - Section headers turn blue for manual overrides and amber for preset changes.
 - "Show Diagrams" toggles all diagrams at once; individual 🖼 icons toggle one at a time.
+- Contrast badges on foreground color tokens update when either the foreground or background token changes.

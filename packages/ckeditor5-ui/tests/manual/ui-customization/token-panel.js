@@ -1690,6 +1690,165 @@ function getComputedTokenValue( name ) {
 }
 
 // ---------------------------------------------------------------------------
+// WCAG contrast checking
+// ---------------------------------------------------------------------------
+
+/**
+ * Map of foreground token → background token for contrast ratio calculation.
+ * The badge is shown on the foreground token's row.
+ */
+/* eslint-disable max-len */
+const CONTRAST_PAIRS = {
+	// Semantic — text on surfaces
+	'--ck-color-text-primary': '--ck-color-surface-canvas',
+	'--ck-color-text-secondary': '--ck-color-surface-canvas',
+	'--ck-color-text-disabled': '--ck-color-surface-canvas',
+	'--ck-color-text-inverse': '--ck-color-surface-inverse',
+	'--ck-color-text-error': '--ck-color-surface-canvas',
+	'--ck-color-interactive-selected-text': '--ck-color-interactive-selected-surface',
+	'--ck-color-interactive-primary-text': '--ck-color-interactive-primary-surface',
+
+	// Button
+	'--ck-button-on-text-color': '--ck-button-on-background-color',
+	'--ck-button-action-text-color': '--ck-button-action-background-color',
+	'--ck-button-save-color': '--ck-color-surface-control',
+	'--ck-button-cancel-color': '--ck-color-surface-control',
+
+	// Input
+	'--ck-input-text-color': '--ck-input-background-color',
+	'--ck-input-disabled-text-color': '--ck-input-disabled-background-color',
+
+	// List
+	'--ck-list-button-on-text-color': '--ck-list-button-on-background-color',
+
+	// Tooltip
+	'--ck-tooltip-text-color': '--ck-tooltip-background-color',
+
+	// Containers — text on component backgrounds
+	'--ck-color-text': '--ck-color-surface-control'
+};
+/* eslint-enable max-len */
+
+/**
+ * Build a reverse map: background token → [ foreground tokens ].
+ * Used to refresh contrast badges when a background token changes.
+ */
+const CONTRAST_REVERSE = {};
+
+for ( const [ fg, bg ] of Object.entries( CONTRAST_PAIRS ) ) {
+	if ( !CONTRAST_REVERSE[ bg ] ) {
+		CONTRAST_REVERSE[ bg ] = [];
+	}
+
+	CONTRAST_REVERSE[ bg ].push( fg );
+}
+
+/**
+ * Parse a computed color string (rgb/rgba) to { r, g, b } (0-255).
+ */
+function parseColor( colorStr ) {
+	const temp = document.createElement( 'div' );
+	temp.style.color = colorStr;
+	document.body.appendChild( temp );
+	const computed = getComputedStyle( temp ).color;
+	document.body.removeChild( temp );
+
+	const match = computed.match( /(\d+),\s*(\d+),\s*(\d+)/ );
+
+	if ( !match ) {
+		return null;
+	}
+
+	return {
+		r: parseInt( match[ 1 ] ),
+		g: parseInt( match[ 2 ] ),
+		b: parseInt( match[ 3 ] )
+	};
+}
+
+/**
+ * Calculate relative luminance per WCAG 2.1.
+ */
+function relativeLuminance( { r, g, b } ) {
+	const [ rs, gs, bs ] = [ r, g, b ].map( c => {
+		const s = c / 255;
+
+		return s <= 0.03928 ? s / 12.92 : Math.pow( ( s + 0.055 ) / 1.055, 2.4 );
+	} );
+
+	return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+/**
+ * Calculate WCAG contrast ratio between two colors.
+ * Returns a number >= 1.
+ */
+function contrastRatio( fg, bg ) {
+	const fgColor = parseColor( fg );
+	const bgColor = parseColor( bg );
+
+	if ( !fgColor || !bgColor ) {
+		return null;
+	}
+
+	const l1 = relativeLuminance( fgColor );
+	const l2 = relativeLuminance( bgColor );
+	const lighter = Math.max( l1, l2 );
+	const darker = Math.min( l1, l2 );
+
+	return ( lighter + 0.05 ) / ( darker + 0.05 );
+}
+
+/**
+ * Update the contrast badge on a foreground token row.
+ */
+function updateContrastBadge( row ) {
+	const token = row.dataset.token;
+	const bgToken = CONTRAST_PAIRS[ token ];
+
+	if ( !bgToken ) {
+		return;
+	}
+
+	const badge = row.querySelector( '.token-contrast' );
+
+	if ( !badge ) {
+		return;
+	}
+
+	const fgValue = getComputedTokenValue( token );
+	const bgValue = getComputedTokenValue( bgToken );
+	const ratio = contrastRatio( fgValue, bgValue );
+
+	if ( ratio === null ) {
+		badge.textContent = '';
+		badge.className = 'token-contrast';
+
+		return;
+	}
+
+	const ratioStr = ratio.toFixed( 1 ) + ':1';
+	const passAA = ratio >= 4.5;
+	const passAAA = ratio >= 7;
+
+	let label;
+
+	if ( passAAA ) {
+		label = 'AAA';
+	} else if ( passAA ) {
+		label = 'AA';
+	} else {
+		label = 'Fail';
+	}
+
+	badge.textContent = ratioStr + ' ' + label;
+	badge.className = 'token-contrast';
+	badge.classList.add( passAA ? 'token-contrast-pass' : 'token-contrast-fail' );
+	badge.title = 'Contrast vs ' + bgToken +
+		' — WCAG AA requires 4.5:1 for normal text';
+}
+
+// ---------------------------------------------------------------------------
 // UI generation
 // ---------------------------------------------------------------------------
 
@@ -1788,6 +1947,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		textInput.addEventListener( 'change', () => {
@@ -1802,6 +1962,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( colorInput );
@@ -1824,6 +1985,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		textInput.addEventListener( 'change', () => {
@@ -1832,6 +1994,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( range );
@@ -1855,6 +2018,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		textInput.addEventListener( 'change', () => {
@@ -1863,6 +2027,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( range );
@@ -1887,6 +2052,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( select );
@@ -1911,6 +2077,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( select );
@@ -1924,6 +2091,7 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( numInput );
@@ -1937,12 +2105,20 @@ function createTokenRow( name ) {
 			row.classList.add( 'is-overridden' );
 			row.classList.remove( 'is-preset-changed' );
 			refreshDependents( name );
+			updateContrastBadge( row );
 		} );
 
 		inputWrap.appendChild( textInput );
 	}
 
 	row.appendChild( inputWrap );
+
+	// Contrast badge (only for foreground tokens in CONTRAST_PAIRS).
+	if ( CONTRAST_PAIRS[ name ] ) {
+		const badge = document.createElement( 'span' );
+		badge.className = 'token-contrast';
+		row.appendChild( badge );
+	}
 
 	// Reset button
 	const resetBtn = document.createElement( 'button' );
@@ -1985,6 +2161,26 @@ function refreshRow( row ) {
 			input.value = newVal.trim();
 		} else {
 			input.value = newVal;
+		}
+	}
+
+	// Update contrast badge on this row (if it's a foreground token).
+	updateContrastBadge( row );
+
+	// If this token is a background in a contrast pair, update the foreground row's badge.
+	const affectedForegrounds = CONTRAST_REVERSE[ tokenName ];
+
+	if ( affectedForegrounds ) {
+		const panel = document.getElementById( 'token-panel' );
+
+		for ( const fgToken of affectedForegrounds ) {
+			const fgRow = panel.querySelector(
+				`.token-row[data-token="${ fgToken }"]`
+			);
+
+			if ( fgRow ) {
+				updateContrastBadge( fgRow );
+			}
 		}
 	}
 }
@@ -2661,6 +2857,11 @@ export function generatePanel( presets ) {
 		updateSummaryHighlights( panel );
 	} catch {
 		// Ignore malformed hash.
+	}
+
+	// Initial contrast badge calculation.
+	for ( const row of panel.querySelectorAll( '.token-row' ) ) {
+		updateContrastBadge( row );
 	}
 
 	// Highlight ancestor <summary> elements when any child token is overridden.

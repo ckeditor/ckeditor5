@@ -52,9 +52,17 @@ The all-features test loads built-in presets from `presets/` directory on startu
 2. Click "Generate Stylesheet from Overrides" at the bottom of the panel.
 3. A `:root { ... }` block with all manually changed tokens appears in a read-only textarea, ready to copy.
 
+### WCAG contrast checking
+
+Foreground color tokens (e.g. `--ck-color-text-primary`, `--ck-button-action-text-color`) show a live contrast ratio badge next to their input. The badge compares against the paired background token and displays:
+- **Green** `AAA` (≥ 7:1) or `AA` (≥ 4.5:1) — passes WCAG
+- **Red** `Fail` (< 4.5:1) — fails WCAG AA for normal text
+
+Badges update dynamically when either the foreground or background token changes. Hover the badge to see which background token it compares against.
+
 ### Share via link
 
-1. Override some tokens, then click "Copy Link" in the header.
+1. Override some tokens, then click "Share Link" in the header.
 2. The URL with encoded overrides is copied to clipboard.
 3. Open the link in another browser/tab — overrides are restored automatically.
 
@@ -75,3 +83,4 @@ The all-features test loads built-in presets from `presets/` directory on startu
 - Section headers turn blue for manual overrides and amber for preset changes.
 - "Show Diagrams" toggles all diagrams at once; individual 🖼 icons toggle one at a time.
 - Built-in presets from `presets/` directory load on startup and appear in the radio list.
+- Contrast badges on foreground color tokens update when either the foreground or background token changes.
