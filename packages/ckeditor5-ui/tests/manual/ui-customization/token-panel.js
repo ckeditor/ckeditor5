@@ -744,6 +744,616 @@ const TOKEN_DESCRIPTIONS = {
 /* eslint-enable max-len */
 
 // ---------------------------------------------------------------------------
+// Token diagrams — inline SVGs showing where a token applies visually.
+// Only tokens that benefit from a visual explanation are listed.
+// ---------------------------------------------------------------------------
+
+/* eslint-disable max-len */
+const TOKEN_DIAGRAMS = {
+	// ---- Semantic — Spacing ----
+	'--ck-spacing-control-padding-block': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="8" width="160" height="56" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="120" y="42" text-anchor="middle" font-size="11" fill="#555">Button</text>
+		<line x1="120" y1="8" x2="120" y2="20" stroke="#e65100" stroke-width="1.5" marker-start="url(#ah)" marker-end="url(#ah)"/>
+		<line x1="120" y1="52" x2="120" y2="64" stroke="#e65100" stroke-width="1.5" marker-start="url(#ah)" marker-end="url(#ah)"/>
+		<rect x="41" y="9" width="158" height="12" fill="#fff3e0" opacity="0.7"/>
+		<rect x="41" y="51" width="158" height="12" fill="#fff3e0" opacity="0.7"/>
+		<defs><marker id="ah" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4"
+		orient="auto"><path d="M0,0 L6,3 L0,6" fill="#e65100"/></marker></defs>
+	</svg>`,
+
+	'--ck-spacing-control-padding-inline': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="120" y="34" text-anchor="middle" font-size="11" fill="#555">Button</text>
+		<line x1="40" y1="28" x2="62" y2="28" stroke="#e65100" stroke-width="1.5" marker-start="url(#ai)" marker-end="url(#ai)"/>
+		<line x1="178" y1="28" x2="200" y2="28" stroke="#e65100" stroke-width="1.5" marker-start="url(#ai)" marker-end="url(#ai)"/>
+		<rect x="41" y="5" width="20" height="46" fill="#fff3e0" opacity="0.7"/>
+		<rect x="179" y="5" width="20" height="46" fill="#fff3e0" opacity="0.7"/>
+		<defs><marker id="ai" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4"
+		orient="auto"><path d="M0,0 L6,3 L0,6" fill="#e65100"/></marker></defs>
+	</svg>`,
+
+	'--ck-spacing-surface-padding-inline': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="56" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="30" y="16" width="50" height="32" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="86" y="16" width="50" height="32" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="55" y="36" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<text x="111" y="36" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<rect x="11" y="5" width="18" height="54" fill="#fff3e0" opacity="0.7"/>
+		<rect x="211" y="5" width="18" height="54" fill="#fff3e0" opacity="0.7"/>
+		<text x="180" y="36" font-size="8" fill="#e65100">padding</text>
+	</svg>`,
+
+	'--ck-spacing-surface-item-gap-inline': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="48" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="24" y="12" width="56" height="32" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="102" y="12" width="56" height="32" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="52" y="32" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<text x="130" y="32" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<rect x="80" y="12" width="22" height="32" fill="#fff3e0" opacity="0.7" rx="2"/>
+		<line x1="80" y1="28" x2="102" y2="28" stroke="#e65100" stroke-width="1.5" marker-start="url(#ag)" marker-end="url(#ag)"/>
+		<text x="91" y="50" text-anchor="middle" font-size="7" fill="#e65100">gap</text>
+		<defs><marker id="ag" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4"
+		orient="auto"><path d="M0,0 L6,3 L0,6" fill="#e65100"/></marker></defs>
+	</svg>`,
+
+	// ---- Semantic — Shape ----
+	'--ck-border-radius-control': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="12" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="120" y="34" text-anchor="middle" font-size="11" fill="#555">Button</text>
+		<path d="M40,16 L40,4 Q40,4 52,4" fill="none" stroke="#e65100" stroke-width="2"/>
+		<circle cx="40" cy="16" r="2" fill="#e65100"/>
+		<circle cx="52" cy="4" r="2" fill="#e65100"/>
+		<text x="26" y="28" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	'--ck-border-radius-surface': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="64" rx="12" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<text x="120" y="24" text-anchor="middle" font-size="10" fill="#777">Panel / Dropdown</text>
+		<rect x="36" y="34" width="72" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="72" y="50" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<path d="M20,20 L20,4 Q20,4 36,4" fill="none" stroke="#e65100" stroke-width="2"/>
+		<circle cx="20" cy="20" r="2" fill="#e65100"/>
+		<circle cx="36" cy="4" r="2" fill="#e65100"/>
+		<text x="6" y="30" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	// ---- Semantic — Colors ----
+	'--ck-color-surface-container': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="64" rx="6" fill="#bbdefb" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="4 2"/>
+		<text x="120" y="24" text-anchor="middle" font-size="10" fill="#1565c0">container surface</text>
+		<rect x="36" y="34" width="72" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="116" y="34" width="72" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="72" y="50" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<text x="152" y="50" text-anchor="middle" font-size="9" fill="#555">Item</text>
+	</svg>`,
+
+	'--ck-color-border-control': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="4" fill="#e8e8e8" stroke="#e65100" stroke-width="2.5" stroke-dasharray="6 2"/>
+		<text x="120" y="22" text-anchor="middle" font-size="11" fill="#555">Input</text>
+		<text x="120" y="42" text-anchor="middle" font-size="8" fill="#e65100">border-color</text>
+	</svg>`,
+
+	'--ck-color-interactive-hover-surface': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="68" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="54" y="32" text-anchor="middle" font-size="9" fill="#555">Normal</text>
+		<rect x="100" y="4" width="68" height="48" rx="4" fill="#bbdefb" stroke="#999" stroke-width="1"/>
+		<text x="134" y="26" text-anchor="middle" font-size="9" fill="#1565c0">Hovered</text>
+		<text x="134" y="42" text-anchor="middle" font-size="7" fill="#1565c0">← this color</text>
+		<text x="202" y="32" font-size="16" fill="#777">☝</text>
+	</svg>`,
+
+	'--ck-color-interactive-selected-surface': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="12" y="4" width="52" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="38" y="32" text-anchor="middle" font-size="9" fill="#555">Off</text>
+		<rect x="72" y="4" width="52" height="48" rx="4" fill="#bbdefb" stroke="#1976d2" stroke-width="1.5"/>
+		<text x="98" y="26" text-anchor="middle" font-size="9" fill="#1565c0">On</text>
+		<text x="98" y="42" text-anchor="middle" font-size="7" fill="#1565c0">selected</text>
+		<rect x="132" y="4" width="52" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="158" y="32" text-anchor="middle" font-size="9" fill="#555">Off</text>
+	</svg>`,
+
+	// ---- Semantic — Shadow ----
+	'--ck-shadow-surface-floating': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="60" y="8" width="120" height="20" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="120" y="22" text-anchor="middle" font-size="9" fill="#555">Toolbar</text>
+		<rect x="48" y="32" width="144" height="44" rx="6" fill="white" stroke="#ccc" stroke-width="1" filter="url(#ds)"/>
+		<text x="120" y="50" text-anchor="middle" font-size="9" fill="#555">Floating panel</text>
+		<text x="120" y="66" text-anchor="middle" font-size="7" fill="#e65100">↑ shadow applied here</text>
+		<defs><filter id="ds" x="-10%" y="-10%" width="130%" height="140%">
+		<feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.2"/></filter></defs>
+	</svg>`,
+
+	// ---- Semantic — Border width ----
+	'--ck-border-width-control': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="90" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="65" y="22" text-anchor="middle" font-size="9" fill="#555">1px border</text>
+		<text x="65" y="38" text-anchor="middle" font-size="8" fill="#999">thin</text>
+		<rect x="130" y="4" width="90" height="48" rx="4" fill="#e8e8e8" stroke="#e65100" stroke-width="3"/>
+		<text x="175" y="22" text-anchor="middle" font-size="9" fill="#555">3px border</text>
+		<text x="175" y="38" text-anchor="middle" font-size="8" fill="#e65100">thick</text>
+	</svg>`,
+
+	// ---- Semantic — Divider ----
+	'--ck-color-divider': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="48" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="24" y="12" width="56" height="32" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="52" y="32" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<line x1="94" y1="10" x2="94" y2="46" stroke="#e65100" stroke-width="2"/>
+		<rect x="108" y="12" width="56" height="32" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="136" y="32" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<text x="94" y="54" text-anchor="middle" font-size="7" fill="#e65100">divider</text>
+	</svg>`,
+
+	// ---- Semantic — Spacing (additional) ----
+	'--ck-spacing-control-icon-gap': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="40" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<rect x="40" y="12" width="20" height="24" rx="2" fill="#bbb"/>
+		<text x="50" y="28" text-anchor="middle" font-size="7" fill="#fff">ic</text>
+		<text x="120" y="30" text-anchor="middle" font-size="10" fill="#555">Label</text>
+		<rect x="60" y="12" width="18" height="24" fill="#fff3e0" opacity="0.7" rx="2"/>
+		<line x1="60" y1="24" x2="78" y2="24" stroke="#e65100" stroke-width="1.5"/>
+		<text x="69" y="44" text-anchor="middle" font-size="7" fill="#e65100">gap</text>
+	</svg>`,
+
+	'--ck-spacing-control-meta-gap': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="40" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="80" y="30" text-anchor="middle" font-size="10" fill="#555">Label</text>
+		<text x="170" y="30" text-anchor="middle" font-size="9" fill="#999">Ctrl+B</text>
+		<rect x="118" y="12" width="20" height="24" fill="#fff3e0" opacity="0.7" rx="2"/>
+		<line x1="118" y1="24" x2="138" y2="24" stroke="#e65100" stroke-width="1.5"/>
+		<text x="128" y="44" text-anchor="middle" font-size="7" fill="#e65100">meta gap</text>
+	</svg>`,
+
+	'--ck-spacing-surface-padding-block': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="72" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="36" y="20" width="168" height="14" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="36" y="40" width="168" height="14" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="21" y="5" width="198" height="14" fill="#fff3e0" opacity="0.6"/>
+		<rect x="21" y="57" width="198" height="18" fill="#fff3e0" opacity="0.6"/>
+		<line x1="120" y1="4" x2="120" y2="18" stroke="#e65100" stroke-width="1.5"/>
+		<line x1="120" y1="58" x2="120" y2="76" stroke="#e65100" stroke-width="1.5"/>
+	</svg>`,
+
+	'--ck-spacing-surface-item-gap-block': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="72" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="36" y="12" width="168" height="18" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="120" y="25" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<rect x="36" y="48" width="168" height="18" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="120" y="61" text-anchor="middle" font-size="9" fill="#555">Item</text>
+		<rect x="36" y="30" width="168" height="18" fill="#fff3e0" opacity="0.6" rx="2"/>
+		<line x1="120" y1="30" x2="120" y2="48" stroke="#e65100" stroke-width="1.5"/>
+		<text x="120" y="43" text-anchor="middle" font-size="7" fill="#e65100">gap</text>
+	</svg>`,
+
+	'--ck-spacing-surface-section-gap-block': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="64" rx="4" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="20" y="10" width="30" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="54" y="10" width="30" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="100" y="10" width="30" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="134" y="10" width="30" height="24" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<line x1="88" y1="8" x2="88" y2="36" stroke="#bbb" stroke-width="1"/>
+		<rect x="84" y="38" width="8" height="12" fill="#fff3e0" opacity="0.8" rx="1"/>
+		<text x="88" y="48" text-anchor="middle" font-size="6" fill="#e65100">|</text>
+		<text x="88" y="64" text-anchor="middle" font-size="7" fill="#e65100">section gap</text>
+	</svg>`,
+
+	'--ck-spacing-region-padding-inline': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="4" y="4" width="232" height="56" rx="0" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<rect x="24" y="12" width="192" height="40" rx="6" fill="#f5f5f5" stroke="#bbb" stroke-width="1"/>
+		<text x="120" y="36" text-anchor="middle" font-size="10" fill="#555">Editor region</text>
+		<rect x="5" y="5" width="18" height="54" fill="#fff3e0" opacity="0.7"/>
+		<rect x="217" y="5" width="18" height="54" fill="#fff3e0" opacity="0.7"/>
+		<text x="120" y="58" text-anchor="middle" font-size="7" fill="#e65100">region padding inline</text>
+	</svg>`,
+
+	'--ck-spacing-region-padding-block': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="64" rx="0" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<rect x="30" y="18" width="180" height="32" rx="6" fill="#f5f5f5" stroke="#bbb" stroke-width="1"/>
+		<text x="120" y="38" text-anchor="middle" font-size="10" fill="#555">Editor region</text>
+		<rect x="21" y="5" width="198" height="12" fill="#fff3e0" opacity="0.7"/>
+		<rect x="21" y="55" width="198" height="12" fill="#fff3e0" opacity="0.7"/>
+		<line x1="120" y1="4" x2="120" y2="16" stroke="#e65100" stroke-width="1.5"/>
+		<line x1="120" y1="56" x2="120" y2="68" stroke="#e65100" stroke-width="1.5"/>
+	</svg>`,
+
+	'--ck-size-control-min-height': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="30" y="4" width="44" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<rect x="40" y="16" width="24" height="24" rx="2" fill="#bbb"/>
+		<rect x="100" y="4" width="110" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="155" y="32" text-anchor="middle" font-size="10" fill="#555">With label</text>
+		<line x1="14" y1="4" x2="14" y2="52" stroke="#e65100" stroke-width="1.5"/>
+		<text x="10" y="32" text-anchor="middle" font-size="6" fill="#e65100" transform="rotate(-90 10 32)">min-height</text>
+	</svg>`,
+
+	// ---- Semantic — Spacing (compact variants, shared) ----
+	'--ck-spacing-control-padding-inline-compact': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="100" height="40" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="60" y="28" text-anchor="middle" font-size="9" fill="#555">Regular</text>
+		<rect x="11" y="5" width="20" height="38" fill="#c8e6c9" opacity="0.6"/>
+		<rect x="89" y="5" width="20" height="38" fill="#c8e6c9" opacity="0.6"/>
+		<rect x="130" y="4" width="80" height="40" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="170" y="28" text-anchor="middle" font-size="9" fill="#555">Compact</text>
+		<rect x="131" y="5" width="12" height="38" fill="#fff3e0" opacity="0.7"/>
+		<rect x="197" y="5" width="12" height="38" fill="#fff3e0" opacity="0.7"/>
+		<text x="170" y="48" text-anchor="middle" font-size="7" fill="#e65100">← narrower</text>
+	</svg>`,
+
+	'--ck-spacing-control-padding-block-regular': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="100" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="60" y="32" text-anchor="middle" font-size="9" fill="#555">Regular</text>
+		<rect x="11" y="5" width="98" height="10" fill="#fff3e0" opacity="0.7"/>
+		<rect x="11" y="41" width="98" height="10" fill="#fff3e0" opacity="0.7"/>
+		<rect x="130" y="8" width="100" height="40" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="180" y="32" text-anchor="middle" font-size="9" fill="#555">Compact</text>
+		<rect x="131" y="9" width="98" height="6" fill="#c8e6c9" opacity="0.6"/>
+		<rect x="131" y="41" width="98" height="6" fill="#c8e6c9" opacity="0.6"/>
+	</svg>`,
+
+	'--ck-spacing-control-padding-block-compact': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="100" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="60" y="32" text-anchor="middle" font-size="9" fill="#555">Regular</text>
+		<rect x="11" y="5" width="98" height="10" fill="#c8e6c9" opacity="0.6"/>
+		<rect x="11" y="41" width="98" height="10" fill="#c8e6c9" opacity="0.6"/>
+		<rect x="130" y="8" width="100" height="40" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="180" y="32" text-anchor="middle" font-size="9" fill="#555">Compact</text>
+		<rect x="131" y="9" width="98" height="6" fill="#fff3e0" opacity="0.7"/>
+		<rect x="131" y="41" width="98" height="6" fill="#fff3e0" opacity="0.7"/>
+		<text x="180" y="54" text-anchor="middle" font-size="7" fill="#e65100">← shorter</text>
+	</svg>`,
+
+	// ---- Semantic — Shape (additional) ----
+	'--ck-border-radius-uniform': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="100" height="28" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="60" y="22" text-anchor="middle" font-size="8" fill="#555">Trigger</text>
+		<rect x="10" y="30" width="100" height="46" rx="0" ry="0" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<text x="60" y="50" text-anchor="middle" font-size="8" fill="#999">Attached</text>
+		<text x="60" y="62" text-anchor="middle" font-size="7" fill="#999">corners cut</text>
+		<rect x="130" y="4" width="100" height="28" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="180" y="22" text-anchor="middle" font-size="8" fill="#555">Trigger</text>
+		<rect x="130" y="30" width="100" height="46" rx="6" fill="#f5f5f5" stroke="#e65100" stroke-width="1.5"/>
+		<text x="180" y="50" text-anchor="middle" font-size="8" fill="#e65100">Uniform</text>
+		<text x="180" y="62" text-anchor="middle" font-size="7" fill="#e65100">all corners</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-attached': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="70" y="4" width="100" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="120" y="20" text-anchor="middle" font-size="9" fill="#555">Trigger ▾</text>
+		<rect x="50" y="28" width="140" height="48" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<text x="120" y="52" text-anchor="middle" font-size="9" fill="#555">Panel</text>
+		<path d="M70,28 Q70,28 50,28" fill="none" stroke="#e65100" stroke-width="2"/>
+		<text x="30" y="36" font-size="7" fill="#e65100">attached</text>
+		<text x="30" y="46" font-size="7" fill="#e65100">radius</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-attached-top': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="50" y="4" width="140" height="36" rx="6" fill="#f5f5f5" stroke="#e65100" stroke-width="1.5"/>
+		<text x="120" y="26" text-anchor="middle" font-size="9" fill="#555">Panel (above)</text>
+		<rect x="70" y="44" width="100" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="120" y="60" text-anchor="middle" font-size="9" fill="#555">Trigger</text>
+		<text x="120" y="78" text-anchor="middle" font-size="7" fill="#e65100">attached at top — bottom corners adjusted</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-attached-bottom': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="70" y="4" width="100" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="120" y="20" text-anchor="middle" font-size="9" fill="#555">Trigger</text>
+		<rect x="50" y="32" width="140" height="36" rx="6" fill="#f5f5f5" stroke="#e65100" stroke-width="1.5"/>
+		<text x="120" y="54" text-anchor="middle" font-size="9" fill="#555">Panel (below)</text>
+		<text x="120" y="78" text-anchor="middle" font-size="7" fill="#e65100">attached at bottom — top corners adjusted</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-cut-top-left': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="60" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<rect x="82" y="4" width="30" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="50" y="20" text-anchor="middle" font-size="8" fill="#555">Action</text>
+		<text x="97" y="20" text-anchor="middle" font-size="8" fill="#555">▾</text>
+		<rect x="20" y="30" width="92" height="38" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="20" y="30" width="6" height="6" fill="#fff3e0" stroke="#e65100" stroke-width="1"/>
+		<text x="40" y="54" font-size="8" fill="#e65100">cut corner</text>
+		<text x="160" y="40" font-size="8" fill="#777">Split button open:</text>
+		<text x="160" y="52" font-size="8" fill="#777">top-left corner cut</text>
+		<text x="160" y="64" font-size="8" fill="#777">to match trigger</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-cut-top-right': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="60" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<rect x="82" y="4" width="30" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<rect x="20" y="30" width="92" height="38" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="106" y="30" width="6" height="6" fill="#fff3e0" stroke="#e65100" stroke-width="1"/>
+		<text x="40" y="54" font-size="8" fill="#e65100">top-right cut</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-cut-bottom-right': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="30" width="92" height="38" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="106" y="62" width="6" height="6" fill="#fff3e0" stroke="#e65100" stroke-width="1"/>
+		<text x="66" y="54" text-anchor="middle" font-size="8" fill="#e65100">bottom-right cut</text>
+	</svg>`,
+
+	'--ck-border-radius-surface-cut-bottom-left': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="30" width="92" height="38" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="20" y="62" width="6" height="6" fill="#fff3e0" stroke="#e65100" stroke-width="1"/>
+		<text x="66" y="54" text-anchor="middle" font-size="8" fill="#e65100">bottom-left cut</text>
+	</svg>`,
+
+	'--ck-border-width-surface': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="56" rx="6" fill="#f5f5f5" stroke="#e65100" stroke-width="2.5"/>
+		<text x="120" y="28" text-anchor="middle" font-size="10" fill="#555">Panel</text>
+		<text x="120" y="46" text-anchor="middle" font-size="8" fill="#e65100">border-width on surfaces</text>
+	</svg>`,
+
+	'--ck-border-width-divider': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="90" height="40" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="55" y="28" text-anchor="middle" font-size="9" fill="#555">Section</text>
+		<line x1="112" y1="8" x2="112" y2="40" stroke="#e65100" stroke-width="2.5"/>
+		<rect x="124" y="4" width="90" height="40" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<text x="169" y="28" text-anchor="middle" font-size="9" fill="#555">Section</text>
+		<text x="112" y="48" text-anchor="middle" font-size="7" fill="#e65100">divider width</text>
+	</svg>`,
+
+	// ---- Semantic — Focus ----
+	'--ck-interactive-focus-ring': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="4" fill="#e8e8e8" stroke="#1976d2" stroke-width="2"/>
+		<text x="120" y="32" text-anchor="middle" font-size="10" fill="#555">Focused Button</text>
+		<text x="120" y="48" text-anchor="middle" font-size="7" fill="#1976d2">← focus ring (border)</text>
+	</svg>`,
+
+	'--ck-interactive-focus-shadow': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="4" fill="#e8e8e8" stroke="#1976d2" stroke-width="2" filter="url(#fs)"/>
+		<text x="120" y="26" text-anchor="middle" font-size="10" fill="#555">Focused</text>
+		<text x="120" y="42" text-anchor="middle" font-size="7" fill="#1976d2">outer glow = focus shadow</text>
+		<defs><filter id="fs" x="-15%" y="-15%" width="130%" height="140%">
+		<feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#1976d2" flood-opacity="0.4"/></filter></defs>
+	</svg>`,
+
+	// ---- Semantic — Surfaces comparison ----
+	'--ck-color-surface-canvas': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="4" y="4" width="232" height="72" rx="0" fill="#bbdefb" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="4 2"/>
+		<text x="120" y="16" text-anchor="middle" font-size="8" fill="#1565c0">canvas (outermost)</text>
+		<rect x="16" y="22" width="208" height="48" rx="4" fill="#e3f2fd" stroke="#999" stroke-width="1"/>
+		<text x="60" y="40" font-size="8" fill="#555">control</text>
+		<rect x="120" y="28" width="96" height="36" rx="4" fill="#e8eaf6" stroke="#999" stroke-width="1"/>
+		<text x="168" y="50" text-anchor="middle" font-size="8" fill="#555">container</text>
+	</svg>`,
+
+	'--ck-color-surface-control': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="48" rx="4" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="24" y="12" width="80" height="32" rx="4" fill="#bbdefb" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="4 2"/>
+		<text x="64" y="32" text-anchor="middle" font-size="9" fill="#1565c0">control</text>
+		<rect x="118" y="12" width="80" height="32" rx="4" fill="#bbdefb" stroke="#1976d2" stroke-width="1.5" stroke-dasharray="4 2"/>
+		<text x="158" y="32" text-anchor="middle" font-size="9" fill="#1565c0">control</text>
+	</svg>`,
+
+	'--ck-color-surface-inverse': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="60" y="4" width="120" height="40" rx="4" fill="#424242" stroke="#616161" stroke-width="1"/>
+		<text x="120" y="22" text-anchor="middle" font-size="9" fill="#fff">Tooltip text</text>
+		<text x="120" y="38" text-anchor="middle" font-size="7" fill="#bbb">inverted surface</text>
+	</svg>`,
+
+	'--ck-color-border-container': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="56" rx="6" fill="#f5f5f5" stroke="#e65100" stroke-width="2" stroke-dasharray="6 2"/>
+		<text x="120" y="28" text-anchor="middle" font-size="10" fill="#555">Container</text>
+		<text x="120" y="46" text-anchor="middle" font-size="8" fill="#e65100">container border color</text>
+	</svg>`,
+
+	// ---- Semantic — Interactive (additional) ----
+	'--ck-color-interactive-active-surface': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="68" height="48" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="54" y="32" text-anchor="middle" font-size="9" fill="#555">Normal</text>
+		<rect x="100" y="6" width="68" height="48" rx="4" fill="#90caf9" stroke="#999" stroke-width="1"/>
+		<text x="134" y="26" text-anchor="middle" font-size="9" fill="#1565c0">Pressed</text>
+		<text x="134" y="42" text-anchor="middle" font-size="7" fill="#1565c0">active surface</text>
+	</svg>`,
+
+	'--ck-color-interactive-primary-surface': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="60" y="4" width="120" height="48" rx="4" fill="#26a69a" stroke="#00897b" stroke-width="1"/>
+		<text x="120" y="26" text-anchor="middle" font-size="11" fill="#fff">Save</text>
+		<text x="120" y="42" text-anchor="middle" font-size="7" fill="hsla(0,0%,100%,.8)">primary action surface</text>
+	</svg>`,
+
+	// ---- Semantic — Balloon arrow ----
+	'--ck-balloon-panel-arrow-display': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="20" width="100" height="44" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<polygon points="50,20 58,8 66,20" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<text x="60" y="46" text-anchor="middle" font-size="9" fill="#555">Arrow</text>
+		<rect x="130" y="20" width="100" height="44" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<text x="180" y="46" text-anchor="middle" font-size="9" fill="#555">No arrow</text>
+		<text x="180" y="12" text-anchor="middle" font-size="8" fill="#e65100">display: none</text>
+	</svg>`,
+
+	// ---- Component — Button anatomy ----
+	'--ck-button-padding': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="56" rx="4" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<rect x="44" y="16" width="20" height="28" rx="2" fill="#bbb"/>
+		<text x="54" y="34" text-anchor="middle" font-size="7" fill="#fff">ic</text>
+		<text x="130" y="36" text-anchor="middle" font-size="11" fill="#555">Label</text>
+		<rect x="21" y="5" width="22" height="54" fill="#fff3e0" opacity="0.6"/>
+		<rect x="197" y="5" width="22" height="54" fill="#fff3e0" opacity="0.6"/>
+		<rect x="21" y="5" width="198" height="10" fill="#fff3e0" opacity="0.4"/>
+		<rect x="21" y="49" width="198" height="10" fill="#fff3e0" opacity="0.4"/>
+		<text x="120" y="64" text-anchor="middle" font-size="7" fill="#e65100">button padding (all sides)</text>
+	</svg>`,
+
+	'--ck-button-border-radius': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="12" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+		<text x="120" y="34" text-anchor="middle" font-size="11" fill="#555">Button</text>
+		<path d="M40,16 L40,4 Q40,4 52,4" fill="none" stroke="#e65100" stroke-width="2"/>
+		<circle cx="40" cy="16" r="2" fill="#e65100"/>
+		<circle cx="52" cy="4" r="2" fill="#e65100"/>
+		<text x="26" y="28" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	'--ck-button-border': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="48" rx="4" fill="#e8e8e8" stroke="#e65100" stroke-width="2.5" stroke-dasharray="6 2"/>
+		<text x="120" y="28" text-anchor="middle" font-size="11" fill="#555">Button</text>
+		<text x="120" y="44" text-anchor="middle" font-size="8" fill="#e65100">border shorthand</text>
+	</svg>`,
+
+	// ---- Component — Input anatomy ----
+	'--ck-input-padding': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="48" rx="4" fill="#fff" stroke="#999" stroke-width="1"/>
+		<text x="80" y="32" text-anchor="middle" font-size="10" fill="#555">Input text...</text>
+		<rect x="21" y="5" width="16" height="46" fill="#fff3e0" opacity="0.7"/>
+		<rect x="203" y="5" width="16" height="46" fill="#fff3e0" opacity="0.7"/>
+		<rect x="21" y="5" width="198" height="8" fill="#fff3e0" opacity="0.4"/>
+		<rect x="21" y="43" width="198" height="8" fill="#fff3e0" opacity="0.4"/>
+	</svg>`,
+
+	'--ck-input-border-radius': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="48" rx="10" fill="#fff" stroke="#999" stroke-width="1"/>
+		<text x="120" y="32" text-anchor="middle" font-size="10" fill="#555">Input field</text>
+		<path d="M20,14 L20,4 Q20,4 30,4" fill="none" stroke="#e65100" stroke-width="2"/>
+		<text x="10" y="26" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	'--ck-input-border': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="48" rx="4" fill="#fff" stroke="#e65100" stroke-width="2.5" stroke-dasharray="6 2"/>
+		<text x="120" y="28" text-anchor="middle" font-size="10" fill="#555">Input field</text>
+		<text x="120" y="44" text-anchor="middle" font-size="8" fill="#e65100">border shorthand</text>
+	</svg>`,
+
+	// ---- Component — Toolbar anatomy ----
+	'--ck-toolbar-item-gap-inline': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="40" rx="4" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="20" y="10" width="36" height="28" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="72" y="10" width="36" height="28" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="56" y="10" width="16" height="28" fill="#fff3e0" opacity="0.7" rx="2"/>
+		<line x1="56" y1="24" x2="72" y2="24" stroke="#e65100" stroke-width="1.5"/>
+		<text x="64" y="44" text-anchor="middle" font-size="7" fill="#e65100">item gap</text>
+	</svg>`,
+
+	'--ck-toolbar-padding': `<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="48" rx="4" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="28" y="14" width="32" height="28" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="66" y="14" width="32" height="28" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="11" y="5" width="16" height="46" fill="#fff3e0" opacity="0.7"/>
+		<rect x="213" y="5" width="16" height="46" fill="#fff3e0" opacity="0.7"/>
+		<rect x="11" y="5" width="218" height="8" fill="#fff3e0" opacity="0.4"/>
+		<rect x="11" y="43" width="218" height="8" fill="#fff3e0" opacity="0.4"/>
+		<text x="160" y="32" font-size="8" fill="#e65100">toolbar padding</text>
+	</svg>`,
+
+	// ---- Component — Dropdown anatomy ----
+	'--ck-dropdown-panel-padding': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="100" height="24" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="90" y="20" text-anchor="middle" font-size="9" fill="#555">Trigger ▾</text>
+		<rect x="40" y="30" width="160" height="46" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="48" y="38" width="144" height="14" rx="3" fill="#e0e0e0"/>
+		<rect x="48" y="56" width="144" height="14" rx="3" fill="#e0e0e0"/>
+		<rect x="41" y="31" width="6" height="44" fill="#fff3e0" opacity="0.7"/>
+		<rect x="193" y="31" width="6" height="44" fill="#fff3e0" opacity="0.7"/>
+		<text x="170" y="78" font-size="7" fill="#e65100">panel padding</text>
+	</svg>`,
+
+	// ---- Component — List anatomy ----
+	'--ck-list-padding': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="72" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="34" y="16" width="172" height="16" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="34" y="38" width="172" height="16" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="34" y="60" width="172" height="10" rx="3" fill="#e0e0e0" stroke="#bbb" stroke-width="1"/>
+		<rect x="21" y="5" width="12" height="70" fill="#fff3e0" opacity="0.7"/>
+		<rect x="207" y="5" width="12" height="70" fill="#fff3e0" opacity="0.7"/>
+		<rect x="21" y="5" width="198" height="10" fill="#fff3e0" opacity="0.4"/>
+	</svg>`,
+
+	// ---- Component — Switch anatomy ----
+	'--ck-switch-button-toggle-border-radius': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="8" width="48" height="28" rx="14" fill="#bbb" stroke="#999" stroke-width="1"/>
+		<circle cx="36" cy="22" r="10" fill="#fff" stroke="#999" stroke-width="1"/>
+		<text x="44" y="46" text-anchor="middle" font-size="7" fill="#999">Off</text>
+		<rect x="100" y="8" width="48" height="28" rx="14" fill="#26a69a" stroke="#00897b" stroke-width="1"/>
+		<circle cx="132" cy="22" r="10" fill="#fff" stroke="#00897b" stroke-width="1"/>
+		<text x="124" y="46" text-anchor="middle" font-size="7" fill="#26a69a">On</text>
+		<path d="M100,22 Q100,8 114,8" fill="none" stroke="#e65100" stroke-width="1.5"/>
+		<text x="176" y="26" font-size="8" fill="#e65100">track radius</text>
+	</svg>`,
+
+	'--ck-switch-button-toggle-inner-border-radius': `<svg viewBox="0 0 240 48" xmlns="http://www.w3.org/2000/svg">
+		<rect x="80" y="6" width="48" height="32" rx="16" fill="#26a69a" stroke="#00897b" stroke-width="1"/>
+		<circle cx="112" cy="22" r="11" fill="#fff" stroke="#e65100" stroke-width="2"/>
+		<text x="112" y="26" text-anchor="middle" font-size="7" fill="#e65100">r</text>
+		<text x="112" y="46" text-anchor="middle" font-size="7" fill="#e65100">handle radius</text>
+	</svg>`,
+
+	// ---- Component — Dialog anatomy ----
+	'--ck-dialog-border-radius': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="4" y="4" width="232" height="72" fill="hsla(0,0%,0%,.15)" rx="0"/>
+		<rect x="40" y="12" width="160" height="56" rx="10" fill="#fff" stroke="#999" stroke-width="1"/>
+		<text x="120" y="36" text-anchor="middle" font-size="10" fill="#555">Dialog</text>
+		<text x="120" y="52" text-anchor="middle" font-size="8" fill="#999">content area</text>
+		<path d="M40,24 L40,12 Q40,12 52,12" fill="none" stroke="#e65100" stroke-width="2"/>
+		<text x="28" y="30" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	// ---- Component — Balloon panel anatomy ----
+	'--ck-balloon-panel-border-radius': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="16" width="160" height="48" rx="8" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<polygon points="110,16 118,4 126,16" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<text x="120" y="44" text-anchor="middle" font-size="10" fill="#555">Balloon panel</text>
+		<path d="M40,26 L40,16 Q40,16 48,16" fill="none" stroke="#e65100" stroke-width="2"/>
+		<text x="28" y="30" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	// ---- Component — Color grid anatomy ----
+	'--ck-color-grid-tile-size': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="8" width="24" height="24" rx="2" fill="#f44336"/>
+		<rect x="48" y="8" width="24" height="24" rx="2" fill="#e91e63"/>
+		<rect x="76" y="8" width="24" height="24" rx="2" fill="#9c27b0"/>
+		<rect x="104" y="8" width="24" height="24" rx="2" fill="#2196f3"/>
+		<rect x="20" y="36" width="24" height="24" rx="2" fill="#4caf50"/>
+		<rect x="48" y="36" width="24" height="24" rx="2" fill="#ff9800"/>
+		<rect x="76" y="36" width="24" height="24" rx="2" fill="#795548"/>
+		<rect x="104" y="36" width="24" height="24" rx="2" fill="#607d8b"/>
+		<line x1="140" y1="8" x2="140" y2="32" stroke="#e65100" stroke-width="1.5"/>
+		<text x="160" y="24" font-size="8" fill="#e65100">tile size</text>
+	</svg>`,
+
+	'--ck-color-grid-gap': `<svg viewBox="0 0 240 64" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="8" width="24" height="24" rx="2" fill="#f44336"/>
+		<rect x="50" y="8" width="24" height="24" rx="2" fill="#e91e63"/>
+		<rect x="80" y="8" width="24" height="24" rx="2" fill="#9c27b0"/>
+		<rect x="20" y="38" width="24" height="24" rx="2" fill="#4caf50"/>
+		<rect x="50" y="38" width="24" height="24" rx="2" fill="#ff9800"/>
+		<rect x="80" y="38" width="24" height="24" rx="2" fill="#795548"/>
+		<rect x="44" y="8" width="6" height="24" fill="#fff3e0" opacity="0.8" rx="1"/>
+		<rect x="74" y="8" width="6" height="24" fill="#fff3e0" opacity="0.8" rx="1"/>
+		<line x1="44" y1="20" x2="50" y2="20" stroke="#e65100" stroke-width="1.5"/>
+		<text x="140" y="28" font-size="8" fill="#e65100">gap between tiles</text>
+	</svg>`,
+
+	// ---- Component — Editor UI anatomy ----
+	'--ck-editor-editable-padding': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="10" y="4" width="220" height="72" rx="4" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="10" y="4" width="220" height="20" rx="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="120" y="18" text-anchor="middle" font-size="9" fill="#555">Toolbar</text>
+		<rect x="10" y="24" width="220" height="52" fill="#fff" stroke="#999" stroke-width="1"/>
+		<text x="60" y="52" font-size="10" fill="#555">Content...</text>
+		<rect x="11" y="25" width="18" height="50" fill="#fff3e0" opacity="0.7"/>
+		<rect x="211" y="25" width="18" height="50" fill="#fff3e0" opacity="0.7"/>
+		<rect x="11" y="25" width="218" height="10" fill="#fff3e0" opacity="0.4"/>
+		<rect x="11" y="65" width="218" height="10" fill="#fff3e0" opacity="0.4"/>
+	</svg>`,
+
+	'--ck-editor-frame-border-radius': `<svg viewBox="0 0 240 72" xmlns="http://www.w3.org/2000/svg">
+		<rect x="20" y="4" width="200" height="64" rx="10" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="20" y="4" width="200" height="22" rx="10" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+		<text x="120" y="20" text-anchor="middle" font-size="9" fill="#555">Toolbar</text>
+		<text x="120" y="48" text-anchor="middle" font-size="10" fill="#555">Editor</text>
+		<path d="M20,16 L20,4 Q20,4 30,4" fill="none" stroke="#e65100" stroke-width="2"/>
+		<text x="10" y="26" font-size="8" fill="#e65100">r</text>
+	</svg>`,
+
+	// ---- Component — Dropdown list background ----
+	'--ck-dropdown-list-background-color': `<svg viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+		<rect x="40" y="4" width="160" height="72" rx="8" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+		<rect x="48" y="12" width="144" height="56" fill="#bbdefb" opacity="0.4" rx="0"/>
+		<text x="120" y="36" text-anchor="middle" font-size="8" fill="#1565c0">list background</text>
+		<text x="120" y="50" text-anchor="middle" font-size="7" fill="#1565c0">transparent = panel</text>
+		<text x="120" y="60" text-anchor="middle" font-size="7" fill="#1565c0">corners show through</text>
+	</svg>`
+};
+/* eslint-enable max-len */
+
+// ---------------------------------------------------------------------------
 // Token reference map — shows which foundation/semantic token a token uses.
 // Only tokens that reference other --ck-* tokens via var() are listed.
 // ---------------------------------------------------------------------------
@@ -1105,6 +1715,27 @@ function createTokenRow( name ) {
 		descEl.className = 'token-description';
 		descEl.textContent = description;
 		nameEl.appendChild( descEl );
+	}
+
+	const diagram = TOKEN_DIAGRAMS[ name ];
+
+	if ( diagram ) {
+		const diagramBtn = document.createElement( 'span' );
+		diagramBtn.className = 'token-diagram-toggle';
+		diagramBtn.textContent = '\uD83D\uDDBC';
+		diagramBtn.title = 'Show diagram';
+
+		const diagramEl = document.createElement( 'div' );
+		diagramEl.className = 'token-diagram';
+		diagramEl.innerHTML = diagram;
+		diagramEl.hidden = true;
+
+		diagramBtn.addEventListener( 'click', () => {
+			diagramEl.hidden = !diagramEl.hidden;
+		} );
+
+		nameEl.appendChild( diagramBtn );
+		nameEl.appendChild( diagramEl );
 	}
 
 	const ref = TOKEN_REFS[ name ];
@@ -1876,6 +2507,20 @@ export function generatePanel( presets ) {
 			row.classList.remove( 'is-overridden' );
 			refreshRow( row );
 		}
+	} );
+
+	// Toggle all diagrams.
+	let diagramsVisible = false;
+	const toggleDiagramsBtn = document.getElementById( 'toggle-diagrams' );
+
+	toggleDiagramsBtn.addEventListener( 'click', () => {
+		diagramsVisible = !diagramsVisible;
+
+		for ( const diagram of panel.querySelectorAll( '.token-diagram' ) ) {
+			diagram.hidden = !diagramsVisible;
+		}
+
+		toggleDiagramsBtn.textContent = diagramsVisible ? 'Hide Diagrams' : 'Show Diagrams';
 	} );
 
 	// Highlight ancestor <summary> elements when any child token is overridden.

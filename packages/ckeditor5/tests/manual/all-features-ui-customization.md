@@ -14,20 +14,24 @@ Interactive test combining the full-featured editor with the Design Token Explor
 1. Expand a tier (Foundation / Semantic / Component) to see categories.
 2. Expand a category to see individual tokens.
 3. Each token shows a short description of what it controls.
-4. Use the input controls to override token values live:
+4. Tokens with a 🖼 icon have a visual diagram — click to toggle. Click "Show Diagrams" in the header to toggle all at once.
+5. Use the input controls to override token values live:
    - **Color tokens**: color picker + text input (supports hsl, hex, rgb)
    - **Spacing/size**: text input (px, em, calc values)
    - **Font weight**: dropdown (100-900)
    - **Duration**: range slider + text input
    - **Easing**: dropdown with presets
    - **Opacity**: range slider (0-1)
-5. Overridden tokens are highlighted in blue.
-6. Dependent tokens update automatically — e.g., changing `--ck-spacing-unit` refreshes all spacing tokens that reference it. Manually overridden dependents are not affected.
-7. Click the "↺" button on any row to reset that token to its default.
-8. Click "Reset All" to clear all overrides.
-9. Click a greyed-out reference (← token-name) to scroll to and highlight the source token.
+6. Overridden tokens are highlighted in blue. Tokens changed by an active stylesheet preset are highlighted in amber.
+7. Section headers inherit the highlight color so you can see overrides even when collapsed.
+8. Dependent tokens update automatically — e.g., changing `--ck-spacing-unit` refreshes all spacing tokens that reference it. Manually overridden dependents are not affected.
+9. Click the "↺" button on any row to reset that token to its default.
+10. Click "Reset All" to clear all overrides.
+11. Click a greyed-out reference (← token-name) to scroll to and highlight the source token.
 
 ### Stylesheet presets (paste & compare)
+
+The all-features test loads built-in presets from `presets/` directory on startup. To add a new preset: drop a `.css` file into `presets/` and add its filename to `presets/index.js`.
 
 1. Open the "Stylesheet Presets" section at the top of the panel (blue accent).
 2. Paste a CSS block (e.g. `:root { --ck-radius-base: 10px; }`) into the textarea.
@@ -36,8 +40,9 @@ Interactive test combining the full-featured editor with the Design Token Explor
 5. Add more stylesheets to compare. Use the radio buttons to switch between them.
 6. Select "None (default)" to go back to the framework defaults.
 7. Clicking a stylesheet entry loads its CSS into the textarea for editing. Click "Update Stylesheet" to apply changes.
-8. Use the "Reset" button to deselect the active stylesheet and clear the textarea.
-9. Check "Clear manual overrides on switch" to reset all per-token tweaks when switching between stylesheets. This gives a clean comparison between presets.
+8. Click "Add New" to fork the current textarea content into a new preset without modifying the selected one.
+9. Use the "Reset" button to deselect the active stylesheet and clear the textarea.
+10. Check "Clear manual overrides on switch" to reset all per-token tweaks when switching between stylesheets. This gives a clean comparison between presets.
 
 ### Export overrides
 
@@ -58,3 +63,7 @@ Interactive test combining the full-featured editor with the Design Token Explor
 - Switching between stylesheet presets refreshes all non-overridden token inputs.
 - Updating an active stylesheet re-applies the CSS and refreshes token inputs.
 - The export button captures only manually overridden tokens, not stylesheet preset values.
+- Manual overrides (blue) visually override preset changes (amber) on the same token.
+- Section headers turn blue for manual overrides and amber for preset changes.
+- "Show Diagrams" toggles all diagrams at once; individual 🖼 icons toggle one at a time.
+- Built-in presets from `presets/` directory load on startup and appear in the radio list.
