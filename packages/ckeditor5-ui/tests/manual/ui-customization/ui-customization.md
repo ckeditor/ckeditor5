@@ -12,23 +12,23 @@ Interactive test for exploring and customizing the three-tier CSS design token s
 ### Token panel
 
 1. Use the search input at the top to filter tokens by name or description. Matching sections auto-expand; clearing restores the previous state.
-2. Expand a tier (Foundation / Semantic / Component) to see categories.
-3. Expand a category to see individual tokens.
+2. Check "Show only overridden" to hide all tokens that haven't been changed (works with search).
+3. Expand a tier (Foundation / Semantic / Component) to see categories. Use "Expand all" / "Collapse all" per tier.
 4. Each token shows a short description of what it controls.
 5. Click a token name to copy its full `--ck-*` name to clipboard (turns green with a ✓ on success).
-5. Tokens with a 🖼 icon have a visual diagram — click to toggle. Click "Show Diagrams" in the header to toggle all at once.
-6. Use the input controls to override token values live:
+6. Tokens with a 🖼 icon have a visual diagram — click to toggle. Click "Show Diagrams" in the header to toggle all at once.
+7. Use the input controls to override token values live:
    - **Color tokens**: color picker + text input (supports hsl, hex, rgb)
    - **Spacing/size**: text input (px, em, calc values)
    - **Font weight**: dropdown (100-900)
    - **Duration**: range slider + text input
    - **Easing**: dropdown with presets
    - **Opacity**: range slider (0-1)
-6. Overridden tokens are highlighted in blue. Tokens changed by an active stylesheet preset are highlighted in amber.
-7. Section headers inherit the highlight color so you can see overrides even when collapsed.
-8. Dependent tokens update automatically — e.g., changing `--ck-spacing-unit` refreshes all spacing tokens that reference it. Manually overridden dependents are not affected.
-7. Click the "↺" button on any row to reset that token to its default.
-8. Click "Reset All" to clear all overrides.
+8. Overridden tokens are highlighted in blue. Tokens changed by an active stylesheet preset are highlighted in amber.
+9. Section headers inherit the highlight color so you can see overrides even when collapsed.
+10. Dependent tokens update automatically — e.g., changing `--ck-spacing-unit` refreshes all spacing tokens that reference it. Manually overridden dependents are not affected.
+11. Click the "↺" button on any row to reset that token to its default.
+12. Click "Reset All" to clear all overrides.
 
 ### Stylesheet presets (paste & compare)
 

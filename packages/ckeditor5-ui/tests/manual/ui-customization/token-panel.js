@@ -2227,15 +2227,23 @@ function refreshAllNonOverriddenRows() {
 	}
 }
 
+/**
+ * Parse CSS text and return a Set of --ck-* token names that are declared.
+ */
+function parseTokensFromCss( cssText ) {
+	const tokens = new Set();
+	const re = /(--ck-[\w-]+)\s*:/g;
+	let match;
+
+	while ( ( match = re.exec( cssText ) ) !== null ) {
+		tokens.add( match[ 1 ] );
+	}
+
+	return tokens;
+}
+
 function activateStylesheet( id ) {
 	const panel = document.getElementById( 'token-panel' );
-
-	// Snapshot current computed values before switching.
-	const valuesBefore = {};
-
-	for ( const row of panel.querySelectorAll( '.token-row' ) ) {
-		valuesBefore[ row.dataset.token ] = getComputedTokenValue( row.dataset.token );
-	}
 
 	// Deactivate current.
 	if ( stylesheetActiveId !== null ) {
@@ -2253,12 +2261,15 @@ function activateStylesheet( id ) {
 
 	stylesheetActiveId = id;
 
-	// Activate new (null means "None").
+	// Determine which tokens the new stylesheet explicitly declares.
+	let declaredTokens = new Set();
+
 	if ( id !== null ) {
 		const entry = stylesheetEntries.find( e => e.id === id );
 
 		if ( entry ) {
 			entry.styleEl.removeAttribute( 'media' );
+			declaredTokens = parseTokensFromCss( entry.cssText );
 		}
 	}
 
@@ -2270,12 +2281,11 @@ function activateStylesheet( id ) {
 			refreshAllNonOverriddenRows();
 		}
 
-		// Mark tokens whose value changed due to the stylesheet switch.
+		// Mark tokens that the stylesheet explicitly declares.
 		for ( const row of panel.querySelectorAll( '.token-row' ) ) {
 			const token = row.dataset.token;
-			const newValue = getComputedTokenValue( token );
 
-			if ( newValue !== valuesBefore[ token ] && !row.classList.contains( 'is-overridden' ) ) {
+			if ( declaredTokens.has( token ) && !row.classList.contains( 'is-overridden' ) ) {
 				row.classList.add( 'is-preset-changed' );
 			} else {
 				row.classList.remove( 'is-preset-changed' );
@@ -2479,19 +2489,14 @@ function generateStylesheetManagerSection( presets ) {
 				active.cssText = cssText;
 				active.name = nameInput.value.trim() || active.name;
 
-				// Snapshot before update.
 				const panel = document.getElementById( 'token-panel' );
-				const valuesBefore = {};
-
-				for ( const row of panel.querySelectorAll( '.token-row' ) ) {
-					valuesBefore[ row.dataset.token ] = getComputedTokenValue( row.dataset.token );
-				}
 
 				if ( clearOverridesOnSwitch ) {
 					clearAllInlineOverrides();
 				}
 
 				active.styleEl.textContent = cssText;
+				const declaredTokens = parseTokensFromCss( cssText );
 
 				requestAnimationFrame( () => {
 					if ( clearOverridesOnSwitch ) {
@@ -2500,12 +2505,10 @@ function generateStylesheetManagerSection( presets ) {
 						refreshAllNonOverriddenRows();
 					}
 
-					// Mark tokens changed by the update.
 					for ( const row of panel.querySelectorAll( '.token-row' ) ) {
 						const token = row.dataset.token;
-						const newValue = getComputedTokenValue( token );
 
-						if ( newValue !== valuesBefore[ token ] && !row.classList.contains( 'is-overridden' ) ) {
+						if ( declaredTokens.has( token ) && !row.classList.contains( 'is-overridden' ) ) {
 							row.classList.add( 'is-preset-changed' );
 						} else {
 							row.classList.remove( 'is-preset-changed' );
@@ -2629,14 +2632,7 @@ function isTokenChangedByPreset( token ) {
 		return false;
 	}
 
-	const withPreset = getComputedTokenValue( token );
-
-	// Temporarily disable preset to read the default value.
-	active.styleEl.media = 'not all';
-	const withoutPreset = getComputedTokenValue( token );
-	active.styleEl.removeAttribute( 'media' );
-
-	return withPreset !== withoutPreset;
+	return parseTokensFromCss( active.cssText ).has( token );
 }
 
 function updateSummaryHighlights( panel ) {
@@ -2743,20 +2739,18 @@ export function generatePanel( presets ) {
 	// Search/filter tokens.
 	const searchInput = document.getElementById( 'token-search' );
 	const searchClearBtn = document.getElementById( 'token-search-clear' );
+	const overridesOnlyCheckbox = document.getElementById( 'filter-overrides-only' );
 	let savedOpenState = null;
 
-	searchClearBtn.addEventListener( 'click', () => {
-		searchInput.value = '';
-		searchInput.dispatchEvent( new Event( 'input' ) );
-		searchInput.focus();
-	} );
-
-	searchInput.addEventListener( 'input', () => {
-		searchClearBtn.hidden = !searchInput.value;
+	function applyFilters() {
 		const query = searchInput.value.toLowerCase().trim();
+		const onlyOverridden = overridesOnlyCheckbox.checked;
+		const isFiltering = query || onlyOverridden;
+
+		searchClearBtn.hidden = !searchInput.value;
 
 		// Save open state when starting to filter.
-		if ( query && !savedOpenState ) {
+		if ( isFiltering && !savedOpenState ) {
 			savedOpenState = new Map();
 
 			for ( const d of panel.querySelectorAll( 'details' ) ) {
@@ -2764,8 +2758,8 @@ export function generatePanel( presets ) {
 			}
 		}
 
-		// Restore open state when clearing the filter.
-		if ( !query && savedOpenState ) {
+		// Restore open state when no filters are active.
+		if ( !isFiltering && savedOpenState ) {
 			for ( const [ d, wasOpen ] of savedOpenState ) {
 				d.open = wasOpen;
 				d.hidden = false;
@@ -2781,11 +2775,22 @@ export function generatePanel( presets ) {
 		}
 
 		for ( const row of panel.querySelectorAll( '.token-row' ) ) {
-			const token = row.dataset.token.toLowerCase();
-			const desc = ( TOKEN_DESCRIPTIONS[ row.dataset.token ] || '' )
-				.toLowerCase();
+			let visible = true;
 
-			row.hidden = !token.includes( query ) && !desc.includes( query );
+			if ( query ) {
+				const token = row.dataset.token.toLowerCase();
+				const desc = ( TOKEN_DESCRIPTIONS[ row.dataset.token ] || '' )
+					.toLowerCase();
+
+				visible = token.includes( query ) || desc.includes( query );
+			}
+
+			if ( visible && onlyOverridden ) {
+				visible = row.classList.contains( 'is-overridden' ) ||
+					row.classList.contains( 'is-preset-changed' );
+			}
+
+			row.hidden = !visible;
 		}
 
 		// Auto-open categories/tiers that have visible matches; hide empty ones.
@@ -2814,7 +2819,16 @@ export function generatePanel( presets ) {
 				tierDetails.open = true;
 			}
 		}
+	}
+
+	searchClearBtn.addEventListener( 'click', () => {
+		searchInput.value = '';
+		applyFilters();
+		searchInput.focus();
 	} );
+
+	searchInput.addEventListener( 'input', applyFilters );
+	overridesOnlyCheckbox.addEventListener( 'change', applyFilters );
 
 	// Toggle all diagrams.
 	let diagramsVisible = false;
