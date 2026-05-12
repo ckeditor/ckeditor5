@@ -135,6 +135,10 @@ jobs:
           command: pnpm run test:scripts
       - run:
           when: always
+          name: Execute TypeScript type checks
+          command: pnpm run typecheck
+      - run:
+          when: always
           name: Validate versions of CKEditor 5 dependencies
           command: pnpm run check-dependencies:versions-match
       - run:

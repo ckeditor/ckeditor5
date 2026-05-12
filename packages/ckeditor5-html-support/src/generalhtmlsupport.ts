@@ -7,7 +7,7 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import type { RemoveFormatCommand } from '@ckeditor/ckeditor5-remove-format';
 
@@ -54,7 +54,21 @@ export class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
+	public static get requires(): PluginDependenciesOf<[
+		DataFilter,
+		CodeBlockElementSupport,
+		DualContentModelElementSupport,
+		HeadingElementSupport,
+		ImageElementSupport,
+		MediaEmbedElementSupport,
+		ScriptElementSupport,
+		TableElementSupport,
+		StyleElementSupport,
+		ListElementSupport,
+		HorizontalLineElementSupport,
+		IframeElementSupport,
+		CustomElementSupport
+	]> {
 		return [
 			DataFilter,
 			CodeBlockElementSupport,
@@ -69,7 +83,7 @@ export class GeneralHtmlSupport extends Plugin {
 			HorizontalLineElementSupport,
 			IframeElementSupport,
 			CustomElementSupport
-		] as const;
+		];
 	}
 
 	/**

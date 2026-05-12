@@ -7,7 +7,7 @@
 * @module easy-image/cloudservicesuploadadapter
 */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { FileRepository, type FileLoader, type UploadAdapter } from '@ckeditor/ckeditor5-upload';
 import { CloudServices, type CloudServicesCore, type UploadGateway, type FileUploader } from '@ckeditor/ckeditor5-cloud-services';
 
@@ -39,8 +39,8 @@ export class CloudServicesUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ CloudServices, FileRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ CloudServices, FileRepository ]> {
+		return [ CloudServices, FileRepository ];
 	}
 
 	/**

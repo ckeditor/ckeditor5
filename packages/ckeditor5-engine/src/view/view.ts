@@ -44,7 +44,8 @@ import {
 	ObservableMixin,
 	scrollViewportToShowTarget,
 	type ObservableChangeEvent,
-	type IfTrue
+	type IfTrue,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
@@ -87,7 +88,9 @@ type DomRange = globalThis.Range;
  * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
  * instead.
  */
-export class EditingView extends /* #__PURE__ */ ObservableMixin() {
+const EditingViewBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+export class EditingView extends EditingViewBase {
 	/**
 	 * Instance of the {@link module:engine/view/document~ViewDocument} associated with this view controller.
 	 */

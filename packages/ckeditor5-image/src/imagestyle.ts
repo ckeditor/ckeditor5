@@ -7,7 +7,7 @@
  * @module image/imagestyle
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageStyleEditing } from './imagestyle/imagestyleediting.js';
 import { ImageStyleUI } from './imagestyle/imagestyleui.js';
 
@@ -27,8 +27,8 @@ export class ImageStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageStyleEditing, ImageStyleUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageStyleEditing, ImageStyleUI ]> {
+		return [ ImageStyleEditing, ImageStyleUI ];
 	}
 
 	/**

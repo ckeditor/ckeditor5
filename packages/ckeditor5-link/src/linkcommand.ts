@@ -35,13 +35,13 @@ export class LinkCommand extends Command {
 	 *
 	 * You can consider it a model with states of manual decorators added to the currently selected link.
 	 */
-	public readonly manualDecorators = new Collection<LinkManualDecorator>();
+	public readonly manualDecorators: Collection<LinkManualDecorator> = new Collection<LinkManualDecorator>();
 
 	/**
 	 * An instance of the helper that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition}
 	 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
 	 */
-	public readonly automaticDecorators = new AutomaticLinkDecorators();
+	public readonly automaticDecorators: AutomaticLinkDecorators = new AutomaticLinkDecorators();
 
 	/**
 	 * Synchronizes the state of {@link #manualDecorators} with the currently present elements in the model.

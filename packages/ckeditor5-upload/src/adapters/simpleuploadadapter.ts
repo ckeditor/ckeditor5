@@ -7,7 +7,7 @@
  * @module upload/adapters/simpleuploadadapter
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { FileRepository, type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
 import type { SimpleUploadConfig } from '../uploadconfig.js';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
@@ -41,8 +41,8 @@ export class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FileRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ FileRepository ]> {
+		return [ FileRepository ];
 	}
 
 	/**

@@ -106,6 +106,11 @@ export function _getViewData(
 		_getViewData._stringify( root, document.selection, stringifyOptions );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace _getViewData {
+	export let _stringify: typeof _stringifyView;
+}
+
 // Set stringify as getData private method - needed for testing/spying.
 _getViewData._stringify = _stringifyView;
 
@@ -136,6 +141,11 @@ export function _setViewData(
 			writer.setSelection( result.selection );
 		}
 	} );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace _setViewData {
+	export let _parse: typeof _parseView;
 }
 
 // Set _parseView as _setViewData private method - needed for testing/spying.

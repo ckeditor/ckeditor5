@@ -36,7 +36,8 @@ import {
 	CKEditorError,
 	ObservableMixin,
 	type DecoratedMethodEvent,
-	type Config
+	type Config,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import type { EngineConfig } from '../engineconfig.js';
@@ -48,7 +49,9 @@ import type { EngineConfig } from '../engineconfig.js';
  * Editor's data model. Read about the model in the
  * {@glink framework/architecture/editing-engine engine architecture} guide.
  */
-export class Model extends /* #__PURE__ */ ObservableMixin() {
+const ModelBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+export class Model extends ModelBase {
 	/**
 	 * Model's marker collection.
 	 */

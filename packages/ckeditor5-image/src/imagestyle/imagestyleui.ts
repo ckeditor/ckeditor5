@@ -7,7 +7,7 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { isObject, identity } from 'es-toolkit/compat';
 import { ImageStyleEditing } from './imagestyleediting.js';
@@ -28,8 +28,8 @@ export class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageStyleEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageStyleEditing ]> {
+		return [ ImageStyleEditing ];
 	}
 
 	/**

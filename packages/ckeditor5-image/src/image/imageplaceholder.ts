@@ -7,7 +7,7 @@
  * @module image/image/imageplaceholder
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type {
 	DowncastAttributeEvent,
 	ModelElement,
@@ -26,8 +26,8 @@ export class ImagePlaceholder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageUtils ]> {
+		return [ ImageUtils ];
 	}
 
 	/**

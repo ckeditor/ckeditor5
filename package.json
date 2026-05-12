@@ -95,6 +95,7 @@
     "wait-on": "^9.0.4"
   },
   "scripts": {
+    "typecheck": "tsc --emitDeclarationOnly --outDir build/tmp",
     "nice": "ckeditor5-dev-changelog-create-entry",
     "postinstall": "husky",
     "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=4",

@@ -7,7 +7,7 @@
  * @module block-quote/blockquote
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { BlockQuoteEditing } from './blockquoteediting.js';
 import { BlockQuoteUI } from './blockquoteui.js';
@@ -26,8 +26,8 @@ export class BlockQuote extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ BlockQuoteEditing, BlockQuoteUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ BlockQuoteEditing, BlockQuoteUI ]> {
+		return [ BlockQuoteEditing, BlockQuoteUI ];
 	}
 
 	/**

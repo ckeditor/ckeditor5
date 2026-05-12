@@ -7,10 +7,7 @@
  * @module typing/texttransformation
  */
 
-import {
-	Plugin,
-	type Editor
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import type { ModelPosition } from '@ckeditor/ckeditor5-engine';
 
@@ -85,8 +82,8 @@ export class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Delete, Input ] as const;
+	public static get requires(): PluginDependenciesOf<[ Delete, Input ]> {
+		return [ Delete, Input ];
 	}
 
 	/**

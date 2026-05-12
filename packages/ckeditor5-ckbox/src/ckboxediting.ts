@@ -7,7 +7,7 @@
  * @module ckbox/ckboxediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	ModelRange,
 	type ModelDocumentSelection,
@@ -56,8 +56,8 @@ export class CKBoxEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ]> {
+		return [ LinkEditing, PictureEditing, CKBoxUploadAdapter, CKBoxUtils ];
 	}
 
 	/**

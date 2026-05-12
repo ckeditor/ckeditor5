@@ -8,7 +8,7 @@
  */
 
 import type { LinksProviderDetailedItem, LinksProviderListItem } from '@ckeditor/ckeditor5-link';
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -60,8 +60,8 @@ export class BookmarkUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ]> {
+		return [ BookmarkEditing, ContextualBalloon, WidgetToolbarRepository ];
 	}
 
 	/**

@@ -15,7 +15,9 @@ import { type ModelItem } from './item.js';
 import { type Operation } from './operation/operation.js';
 import { type ModelRootElement } from './rootelement.js';
 
-import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin,
+	type EmitterMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 /**
  * `ModelLivePosition` is a type of {@link module:engine/model/position~ModelPosition Position}
@@ -30,7 +32,9 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * have to be unbound.
  * Use {@link module:engine/model/liveposition~ModelLivePosition#detach} whenever you don't need `ModelLivePosition` anymore.
  */
-export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPosition ) {
+const ModelLivePositionBase: EmitterMixinConstructor<typeof ModelPosition> = /* #__PURE__ */ EmitterMixin( ModelPosition );
+
+export class ModelLivePosition extends ModelLivePositionBase {
 	/**
 	 * Root of the position path.
 	 */

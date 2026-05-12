@@ -829,7 +829,7 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Stores a bound reference to the _updateDialogPosition method, allowing it to be attached and detached from change event.
 	 */
-	public updateDialogPositionCallback = this._updateDialogPosition.bind( this );
+	public updateDialogPositionCallback: typeof this._updateDialogPosition = this._updateDialogPosition.bind( this );
 
 	/**
 	 * If dialog is open, adjust its positioning.

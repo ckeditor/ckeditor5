@@ -9,14 +9,16 @@
 
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 
-import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, type ObservableSetEvent, type EventInfo, type ObservableMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import { type Editor } from './editor/editor.js';
 
 /**
  * The base class for CKEditor plugin classes.
  */
-export class Plugin extends /* #__PURE__ */ ObservableMixin() implements PluginInterface {
+const PluginBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+export class Plugin extends PluginBase implements PluginInterface {
 	/**
 	 * The editor instance.
 	 *
@@ -293,7 +295,7 @@ export interface PluginStaticMembers<TContext = Editor> {
 	 * import { Image } from './image.js';
 	 *
 	 * export class ImageCaption {
-	 * 	static get requires() {
+	 * 	static get requires(): PluginDependenciesOf<[ Image ]> {
 	 * 		return [ Image ];
 	 * 	}
 	 * }
@@ -354,6 +356,18 @@ export interface PluginStaticMembers<TContext = Editor> {
 }
 
 export type PluginDependencies<TContext = Editor> = ReadonlyArray<PluginConstructor<TContext> | string>;
+
+/**
+ * Maps plugin instances and plugin names to plugin dependency constructors and literal plugin names.
+ */
+export type PluginDependenciesOf<
+	TDependencies extends ReadonlyArray<PluginInterface | string>,
+	TContext = Editor
+> = Readonly<{
+	[ K in keyof TDependencies ]: TDependencies[ K ] extends string ?
+		TDependencies[ K ] :
+		PluginConstructor<TContext> & ( new ( context: TContext ) => TDependencies[ K ] )
+}>;
 
 /**
  * An array of loaded plugins.

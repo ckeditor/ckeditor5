@@ -7,7 +7,7 @@
  * @module link/linkimage
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { LinkImageEditing } from './linkimageediting.js';
 import { LinkImageUI } from './linkimageui.js';
 
@@ -23,8 +23,8 @@ export class LinkImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LinkImageEditing, LinkImageUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ LinkImageEditing, LinkImageUI ]> {
+		return [ LinkImageEditing, LinkImageUI ];
 	}
 
 	/**

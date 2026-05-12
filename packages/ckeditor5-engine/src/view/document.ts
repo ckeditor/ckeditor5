@@ -8,9 +8,13 @@
  */
 
 import { ViewDocumentSelection } from './documentselection.js';
-import { BubblingEmitterMixin } from './observer/bubblingemittermixin.js';
+import { BubblingEmitterMixin,
+	type BubblingEmitterMixinConstructor
+} from './observer/bubblingemittermixin.js';
 
-import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import { Collection, ObservableMixin,
+	type ObservableMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 import type { StylesProcessor } from './stylesmap.js';
 import { type ViewRootEditableElement } from './rooteditableelement.js';
@@ -22,7 +26,10 @@ import { type ViewDowncastWriter } from './downcastwriter.js';
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
  * {@link module:engine/view/documentselection~ViewDocumentSelection view selection} associated with this document.
  */
-export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
+const ViewDocumentBase: BubblingEmitterMixinConstructor<ObservableMixinConstructor> =
+	/* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() );
+
+export class ViewDocument extends ViewDocumentBase {
 	/**
 	 * Selection done on this document.
 	 */

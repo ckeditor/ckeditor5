@@ -21,8 +21,17 @@ export {
 } from './arialiveannouncer.js';
 
 export { clickOutsideHandler } from './bindings/clickoutsidehandler.js';
-export { CssTransitionDisablerMixin, type ViewWithCssTransitionDisabler } from './bindings/csstransitiondisablermixin.js';
-export { DraggableViewMixin, type DraggableView, type DraggableViewDragEvent } from './bindings/draggableviewmixin.js';
+export {
+	CssTransitionDisablerMixin,
+	type CssTransitionDisablerMixinConstructor,
+	type ViewWithCssTransitionDisabler
+} from './bindings/csstransitiondisablermixin.js';
+export {
+	DraggableViewMixin,
+	type DraggableView,
+	type DraggableViewMixinConstructor,
+	type DraggableViewDragEvent
+} from './bindings/draggableviewmixin.js';
 export { submitHandler, type SubmitHandlerEvent } from './bindings/submithandler.js';
 export { addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid.js';
 
@@ -45,6 +54,7 @@ export {
 	FileDialogListItemButtonView,
 	FileDialogViewMixin,
 	type FileDialogButtonViewBase,
+	type FileDialogViewMixinConstructor,
 	type FileInputViewDoneEvent
 } from './button/filedialogbuttonview.js';
 

@@ -7,7 +7,7 @@
  * @module basic-styles/strikethrough
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { StrikethroughEditing } from './strikethrough/strikethroughediting.js';
 import { StrikethroughUI } from './strikethrough/strikethroughui.js';
 
@@ -24,8 +24,8 @@ export class Strikethrough extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ StrikethroughEditing, StrikethroughUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ StrikethroughEditing, StrikethroughUI ]> {
+		return [ StrikethroughEditing, StrikethroughUI ];
 	}
 
 	/**

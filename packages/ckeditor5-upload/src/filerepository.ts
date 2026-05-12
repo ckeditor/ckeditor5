@@ -7,11 +7,7 @@
  * @module upload/filerepository
  */
 
-import {
-	Plugin,
-	PendingActions,
-	type PendingAction
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, PendingActions, type PendingAction, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	CKEditorError,
@@ -20,7 +16,8 @@ import {
 	logWarning,
 	uid,
 	type ObservableChangeEvent,
-	type CollectionChangeEvent
+	type CollectionChangeEvent,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { FileReader } from './filereader.js';
@@ -40,7 +37,7 @@ export class FileRepository extends Plugin {
 	/**
 	 * Collection of loaders associated with this repository.
 	 */
-	public loaders = new Collection<FileLoader>();
+	public loaders: Collection<FileLoader> = new Collection<FileLoader>();
 
 	/**
 	 * A factory function which should be defined before using `FileRepository`.
@@ -109,8 +106,8 @@ export class FileRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ PendingActions ] as const;
+	public static get requires(): PluginDependenciesOf<[ PendingActions ]> {
+		return [ PendingActions ];
 	}
 
 	/**
@@ -265,7 +262,9 @@ export class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-class FileLoader extends /* #__PURE__ */ ObservableMixin() {
+const FileLoaderBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+class FileLoader extends FileLoaderBase {
 	/**
 	 * Unique id of FileLoader instance.
 	 *

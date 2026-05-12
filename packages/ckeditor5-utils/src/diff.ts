@@ -7,7 +7,7 @@
  * @module utils/diff
  */
 
-import { fastDiff } from './fastdiff.js';
+import { fastDiff as fastDiffFunction } from './fastdiff.js';
 
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
@@ -139,9 +139,14 @@ export function diff<T>(
 	return es[ delta ].slice( 1 );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace diff {
+	export let fastDiff: typeof fastDiffFunction;
+}
+
 // Store the API in static property to easily overwrite it in tests.
 // Too bad dependency injection does not work in Webpack + ES 6 (const) + Babel.
-diff.fastDiff = fastDiff;
+diff.fastDiff = fastDiffFunction;
 
 /**
  * The element of the result of {@link module:utils/diff~diff} function.

@@ -12,7 +12,8 @@ import {
 	type EventInfo,
 	type ObservableChangeEvent,
 	type DecoratedMethodEvent,
-	type ObservableSetEvent
+	type ObservableSetEvent,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { type Editor } from './editor/editor.js';
@@ -30,7 +31,9 @@ import { type Editor } from './editor/editor.js';
  * By default, commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
  * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
  */
-export class Command extends /* #__PURE__ */ ObservableMixin() {
+const CommandBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+export class Command extends CommandBase {
 	/**
 	 * The editor on which this command will be used.
 	 */

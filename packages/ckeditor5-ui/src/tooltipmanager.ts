@@ -17,7 +17,8 @@ import {
 	global,
 	isVisible,
 	type EventInfo,
-	type PositioningFunction
+	type PositioningFunction,
+	type DomEmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
@@ -90,7 +91,9 @@ const BALLOON_CLASS = 'ck-tooltip';
  * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
  * {@link module:ui/editorui/editorui~EditorUI} of the first editor.
  */
-export class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
+const TooltipManagerBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
+export class TooltipManager extends TooltipManagerBase {
 	/**
 	 * The view rendering text of the tooltip.
 	 */
@@ -105,7 +108,7 @@ export class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * A set of default {@link module:utils/dom/position~PositioningFunction positioning functions} used by the `TooltipManager`
 	 * to pin tooltips in different positions.
 	 */
-	public static defaultBalloonPositions = /* #__PURE__ */ BalloonPanelView.generatePositions( {
+	public static defaultBalloonPositions: Record<string, PositioningFunction> = /* #__PURE__ */ BalloonPanelView.generatePositions( {
 		heightOffset: 5,
 		sideOffset: 13
 	} );

@@ -7,7 +7,7 @@
  * @module special-characters/specialcharacters
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { IconSpecialCharacters } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from '@ckeditor/ckeditor5-ui';
@@ -50,8 +50,8 @@ export class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Typing, Dialog ] as const;
+	public static get requires(): PluginDependenciesOf<[ Typing, Dialog ]> {
+		return [ Typing, Dialog ];
 	}
 
 	/**

@@ -18,7 +18,9 @@ import {
 import { type ModelPosition } from './position.js';
 import { type ModelRange } from './range.js';
 
-import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin,
+	type EmitterMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 /**
  * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.
@@ -34,7 +36,9 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  *
  * @see module:engine/model/markercollection~Marker
  */
-export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements Iterable<Marker> {
+const MarkerCollectionBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
+export class MarkerCollection extends MarkerCollectionBase implements Iterable<Marker> {
 	/**
 	 * Stores {@link ~Marker markers} added to the collection.
 	 */
@@ -349,7 +353,9 @@ export interface MarkerData {
  *
  * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */
-class Marker extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
+const MarkerBase: EmitterMixinConstructor<typeof ModelTypeCheckable> = /* #__PURE__ */ EmitterMixin( ModelTypeCheckable );
+
+class Marker extends MarkerBase {
 	/**
 	 * Marker's name.
 	 */

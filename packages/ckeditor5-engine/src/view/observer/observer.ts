@@ -7,7 +7,7 @@
  * @module engine/view/observer/observer
  */
 
-import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { DomEmitterMixin, type DomEmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from '../document.js';
 import { type EditingView } from '../view.js';
@@ -18,7 +18,9 @@ import { type EditingView } from '../view.js';
  * Observers can also add features to the view, for instance by updating its status or marking elements
  * which need a refresh on DOM events.
  */
-export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
+const ObserverBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
+export abstract class Observer extends ObserverBase {
 	/**
 	 * An instance of the view controller.
 	 */

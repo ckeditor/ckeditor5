@@ -9,7 +9,7 @@
 
 import { CloudServices, type InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import { CKEditorError, logError } from '@ckeditor/ckeditor5-utils';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	convertMimeTypeToExtension,
 	getContentTypeOfUrl,
@@ -46,8 +46,8 @@ export class CKBoxUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ CloudServices ] as const;
+	public static get requires(): PluginDependenciesOf<[ CloudServices ]> {
+		return [ CloudServices ];
 	}
 
 	/**

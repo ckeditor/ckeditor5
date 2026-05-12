@@ -7,7 +7,7 @@
  * @module ckfinder/ckfinder
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Link } from '@ckeditor/ckeditor5-link';
 
@@ -48,7 +48,7 @@ export class CKFinder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Link, CKFinderUploadAdapter, CKFinderEditing, CKFinderUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ Link, CKFinderUploadAdapter, CKFinderEditing, CKFinderUI ]> {
+		return [ Link, CKFinderUploadAdapter, CKFinderEditing, CKFinderUI ];
 	}
 }

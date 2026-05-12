@@ -99,7 +99,7 @@ export class ListPropertiesView extends View {
 	/**
 	 * A collection of views that can be focused in the properties view.
 	 */
-	public readonly focusables = new ViewCollection<FocusableView>();
+	public readonly focusables: ViewCollection<FocusableView> = new ViewCollection<FocusableView>();
 
 	/**
 	 * Helps cycling over {@link #focusables} in the view.

@@ -11,6 +11,17 @@ import { type View } from '../view.js';
 import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
+ * Constructor returned by {@link ~DraggableViewMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```ts
+ * const MyDraggableViewBase: DraggableViewMixinConstructor<typeof BaseClass> = DraggableViewMixin( BaseClass );
+ *
+ * class MyDraggableView extends MyDraggableViewBase {}
+ * ```
+ */
+export type DraggableViewMixinConstructor<Base extends Constructor<View>> = Mixed<Base, DraggableView>;
+
+/**
  * A mixin that brings the possibility to observe dragging of the view element.
  * The view has to implement the {@link ~DraggableView} interface to use it:
  *
@@ -28,7 +39,7 @@ import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/
  * The mixin itself does not provide a visual feedback (that is, the dragged element does not change its position) -
  * it is up to the developer to implement it.
  */
-export function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
+export function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): DraggableViewMixinConstructor<Base> {
 	abstract class DraggableMixin extends view implements DraggableView {
 		/**
 		 * A flag indicating whether the view is currently being dragged.

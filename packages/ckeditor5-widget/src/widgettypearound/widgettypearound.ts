@@ -7,7 +7,7 @@
  * @module widget/widgettypearound/widgettypearound
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconReturnArrow } from '@ckeditor/ckeditor5-icons';
 import { Template } from '@ckeditor/ckeditor5-ui';
 
@@ -111,8 +111,8 @@ export class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Enter, Delete ] as const;
+	public static get requires(): PluginDependenciesOf<[ Enter, Delete ]> {
+		return [ Enter, Delete ];
 	}
 
 	/**

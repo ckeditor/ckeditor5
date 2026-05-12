@@ -17,7 +17,8 @@ import {
 	CKEditorError,
 	EmitterMixin,
 	count,
-	isIterable
+	isIterable,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewElement } from './element.js';
@@ -36,7 +37,9 @@ import { type ViewEditableElement } from './editableelement.js';
  * A selection can consist of {@link module:engine/view/range~ViewRange ranges} that can be set by using
  * the {@link module:engine/view/selection~ViewSelection#setTo `Selection#setTo()`} method.
  */
-export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
+const ViewSelectionBase: EmitterMixinConstructor<typeof ViewTypeCheckable> = /* #__PURE__ */ EmitterMixin( ViewTypeCheckable );
+
+export class ViewSelection extends ViewSelectionBase {
 	/**
 	 * Stores all ranges that are selected.
 	 */

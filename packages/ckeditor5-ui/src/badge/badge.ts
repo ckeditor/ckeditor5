@@ -12,7 +12,8 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	Rect,
 	DomEmitterMixin,
-	type DomOptimalPositionOptions
+	type DomOptimalPositionOptions,
+	type DomEmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { type View } from '../view.js';
@@ -31,7 +32,9 @@ const NARROW_ROOT_WIDTH_THRESHOLD = 350;
  *
  * @private
  */
-export abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
+const BadgeBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
+export abstract class Badge extends BadgeBase {
 	/**
 	 * Editor instance the helper was created for.
 	 */

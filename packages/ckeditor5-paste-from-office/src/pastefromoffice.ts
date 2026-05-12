@@ -7,7 +7,7 @@
  * @module paste-from-office/pastefromoffice
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { insertToPriorityArray, priorities, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
 import {
@@ -77,8 +77,8 @@ export class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ClipboardPipeline ] as const;
+	public static get requires(): PluginDependenciesOf<[ ClipboardPipeline ]> {
+		return [ ClipboardPipeline ];
 	}
 
 	/**

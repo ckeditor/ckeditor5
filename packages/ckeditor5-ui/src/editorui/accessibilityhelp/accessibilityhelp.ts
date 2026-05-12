@@ -7,7 +7,7 @@
  * @module ui/editorui/accessibilityhelp/accessibilityhelp
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconAccessibility } from '@ckeditor/ckeditor5-icons';
 import { ButtonView } from '../../button/buttonview.js';
 import { Dialog } from '../../dialog/dialog.js';
@@ -38,8 +38,8 @@ export class AccessibilityHelp extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Dialog ] as const;
+	public static get requires(): PluginDependenciesOf<[ Dialog ]> {
+		return [ Dialog ];
 	}
 
 	/**

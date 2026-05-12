@@ -9,7 +9,8 @@
 
 import {
 	CKEditorError,
-	ObservableMixin
+	ObservableMixin,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { ViewRootEditableElement } from '../view/rooteditableelement.js';
@@ -49,7 +50,9 @@ import type { ViewDocumentObserverSelectionChangeEvent } from '../view/observer/
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  */
-export class EditingController extends /* #__PURE__ */ ObservableMixin() {
+const EditingControllerBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+export class EditingController extends EditingControllerBase {
 	/**
 	 * Editor model.
 	 */

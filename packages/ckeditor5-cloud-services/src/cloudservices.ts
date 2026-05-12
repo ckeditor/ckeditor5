@@ -7,7 +7,7 @@
  * @module cloud-services/cloudservices
  */
 
-import { ContextPlugin } from '@ckeditor/ckeditor5-core';
+import { ContextPlugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { CloudServicesCore } from './cloudservicescore.js';
 import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig.js';
@@ -84,8 +84,8 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ CloudServicesCore ] as const;
+	public static get requires(): PluginDependenciesOf<[ CloudServicesCore ]> {
+		return [ CloudServicesCore ];
 	}
 
 	/**

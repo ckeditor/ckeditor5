@@ -7,7 +7,7 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	logWarning,
 	type Locale,
@@ -61,8 +61,8 @@ export class ImageInsertUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageUtils ]> {
+		return [ ImageUtils ];
 	}
 
 	/**

@@ -116,6 +116,11 @@ export function _getModelData(
 	);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace _getModelData {
+	export let _stringify: typeof _stringifyModel;
+}
+
 // Set stringify as getData private method - needed for testing/spying.
 _getModelData._stringify = _stringifyModel;
 
@@ -213,6 +218,11 @@ export function _setModelData(
 			}
 		}
 	}
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace _setModelData {
+	export let _parse: typeof _parseModel;
 }
 
 // Set parse as setData private method - needed for testing/spying.

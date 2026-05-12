@@ -13,7 +13,8 @@ import {
 	type ArrayOrItem,
 	type FocusTracker,
 	type KeystrokeHandler,
-	type KeystrokeHandlerOptions
+	type KeystrokeHandlerOptions,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { type View } from './view.js';
@@ -71,7 +72,9 @@ import { type ViewCollection } from './viewcollection.js';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export class FocusCycler extends /* #__PURE__ */ EmitterMixin() {
+const FocusCyclerBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
+export class FocusCycler extends FocusCyclerBase {
 	/**
 	 * A {@link module:ui/focuscycler~FocusableView focusable views} collection that the cycler operates on.
 	 */

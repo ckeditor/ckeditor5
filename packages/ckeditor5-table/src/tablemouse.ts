@@ -7,7 +7,7 @@
  * @module table/tablemouse
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { TableSelection } from './tableselection.js';
 import { MouseEventsObserver } from './tablemouse/mouseeventsobserver.js';
@@ -36,8 +36,8 @@ export class TableMouse extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableSelection, TableUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableSelection, TableUtils ]> {
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**

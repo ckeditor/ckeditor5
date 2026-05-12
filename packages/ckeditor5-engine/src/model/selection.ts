@@ -17,7 +17,9 @@ import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
 
-import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, isIterable,
+	type EmitterMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 /**
  * Selection is a set of {@link module:engine/model/range~ModelRange ranges}. It has a direction specified by its
@@ -26,7 +28,9 @@ import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-uti
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
  * should have those attributes – e.g. whether you type a bolded text).
  */
-export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
+const ModelSelectionBase: EmitterMixinConstructor<typeof ModelTypeCheckable> = /* #__PURE__ */ EmitterMixin( ModelTypeCheckable );
+
+export class ModelSelection extends ModelSelectionBase {
 	/**
 	 * Specifies whether the last added range was added as a backward or forward range.
 	 */

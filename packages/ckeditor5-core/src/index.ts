@@ -9,6 +9,7 @@
 
 export {
 	Plugin,
+	type PluginDependenciesOf,
 	type PluginDependencies,
 	type PluginConstructor,
 	type PluginInterface,
@@ -50,7 +51,7 @@ export type {
 } from './editor/editorconfig.js';
 
 export { attachToForm } from './editor/utils/attachtoform.js';
-export { ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
+export { ElementApiMixin, type ElementApi, type ElementApiMixinConstructor } from './editor/utils/elementapimixin.js';
 export { secureSourceElement } from './editor/utils/securesourceelement.js';
 export { registerAndInitializeRootConfigAttributes } from './editor/utils/registerandinitializerootconfigattributes.js';
 export {

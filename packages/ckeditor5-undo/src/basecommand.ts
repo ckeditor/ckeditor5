@@ -35,7 +35,7 @@ export abstract class UndoRedoBaseCommand extends Command {
 	 *
 	 * @internal
 	 */
-	public _createdBatches = new WeakSet<Batch>();
+	public _createdBatches: WeakSet<Batch> = new WeakSet<Batch>();
 
 	/**
 	 * @inheritDoc

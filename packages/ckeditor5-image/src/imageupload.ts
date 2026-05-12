@@ -7,7 +7,7 @@
  * @module image/imageupload
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ImageUploadUI } from './imageupload/imageuploadui.js';
 import { ImageUploadProgress } from './imageupload/imageuploadprogress.js';
 import { ImageUploadEditing } from './imageupload/imageuploadediting.js';
@@ -41,7 +41,7 @@ export class ImageUpload extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageUploadEditing, ImageUploadUI, ImageUploadProgress ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageUploadEditing, ImageUploadUI, ImageUploadProgress ]> {
+		return [ ImageUploadEditing, ImageUploadUI, ImageUploadProgress ];
 	}
 }

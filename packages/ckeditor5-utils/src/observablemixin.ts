@@ -22,6 +22,22 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
 const decoratedMethods = Symbol( 'decoratedMethods' );
 const decoratedOriginal = Symbol( 'decoratedOriginal' );
 
+/**
+ * Constructor returned by {@link ~ObservableMixin}. Use it to name a mixin base class before extending it.
+ *
+ * ```ts
+ * const MyObservableBase: ObservableMixinConstructor<typeof BaseClass> = ObservableMixin( BaseClass );
+ *
+ * class MyObservable extends MyObservableBase {}
+ * ```
+ */
+export type ObservableMixinConstructor<Base extends Constructor<Emitter> | undefined = undefined> = Base extends Constructor<Emitter> ?
+	Mixed<Base, Observable> :
+	{
+		new (): Observable;
+		prototype: Observable;
+	};
+
 const defaultObservableClass = /* #__PURE__ */ ObservableMixin( /* #__PURE__ */ EmitterMixin() );
 
 /**
@@ -45,7 +61,7 @@ const defaultObservableClass = /* #__PURE__ */ ObservableMixin( /* #__PURE__ */ 
  *
  * @label EXTENDS
  */
-export function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, Observable>;
+export function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): ObservableMixinConstructor<Base>;
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
@@ -66,10 +82,7 @@ export function ObservableMixin<Base extends Constructor<Emitter>>( base: Base )
  *
  * @label NO_ARGUMENTS
  */
-export function ObservableMixin(): {
-	new (): Observable;
-	prototype: Observable;
-};
+export function ObservableMixin(): ObservableMixinConstructor;
 
 export function ObservableMixin( base?: Constructor<Emitter> ): unknown {
 	if ( !base ) {

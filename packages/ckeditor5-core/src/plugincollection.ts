@@ -7,14 +7,16 @@
  * @module core/plugincollection
  */
 
-import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginInterface } from './plugin.js';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  */
+const PluginCollectionBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 export class PluginCollection<TContext extends object>
-	extends /* #__PURE__ */ EmitterMixin()
+	extends PluginCollectionBase
 	implements Iterable<PluginEntry<TContext>> {
 	private _context: TContext;
 

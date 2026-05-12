@@ -7,7 +7,7 @@
  * @module style/styleediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { GeneralHtmlSupport, type DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import { StyleCommand } from './stylecommand.js';
@@ -43,8 +43,20 @@ export class StyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ GeneralHtmlSupport, StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport ] as const;
+	public static get requires(): PluginDependenciesOf<[
+		GeneralHtmlSupport,
+		StyleUtils,
+		ListStyleSupport,
+		TableStyleSupport,
+		LinkStyleSupport
+	]> {
+		return [
+			GeneralHtmlSupport,
+			StyleUtils,
+			ListStyleSupport,
+			TableStyleSupport,
+			LinkStyleSupport
+		];
 	}
 
 	/**

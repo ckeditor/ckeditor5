@@ -23,7 +23,8 @@ import {
 	type Locale,
 	type LocaleTranslate,
 	type ObservableChangeEvent,
-	type CRCData
+	type CRCData,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import {
@@ -72,7 +73,9 @@ declare global {
  * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
-export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
+const EditorBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
+export abstract class Editor extends EditorBase {
 	/**
 	 * A required name of the editor class. The name should reflect the constructor name.
 	 */
@@ -301,7 +304,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots.<rootName>.modelAttributes`}
 	 *  or {@link module:core/editor/editorconfig~EditorConfig#root `config.root.modelAttributes`}.
 	 */
-	protected readonly _registeredRootsAttributesKeys = new Set<string>();
+	protected readonly _registeredRootsAttributesKeys: Set<string> = new Set<string>();
 
 	/**
 	 * `Editor` class is commonly put in `config.plugins` array.
@@ -1020,21 +1023,21 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
-	public static Context = Context;
+	public static Context: typeof Context = Context;
 
 	/**
 	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
 	 *
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
-	public static EditorWatchdog = EditorWatchdog;
+	public static EditorWatchdog: typeof EditorWatchdog = EditorWatchdog;
 
 	/**
 	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
 	 *
 	 * Exposed as static editor field for easier access in editor builds.
 	 */
-	public static ContextWatchdog = ContextWatchdog;
+	public static ContextWatchdog: typeof ContextWatchdog = ContextWatchdog;
 
 	protected _showLicenseError( reason: LicenseErrorReason, name?: string ): void {
 		setTimeout( () => {

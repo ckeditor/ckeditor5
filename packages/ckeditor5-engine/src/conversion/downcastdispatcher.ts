@@ -11,7 +11,9 @@ import { ModelConsumable } from './modelconsumable.js';
 import { compareMarkersForDowncast } from './comparemarkers.js';
 import { ModelRange } from '../model/range.js';
 
-import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin,
+	type EmitterMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 import type { Differ, DifferItem, DifferItemReinsert } from '../model/differ.js';
 import type { MarkerCollection, Marker } from '../model/markercollection.js';
@@ -118,7 +120,9 @@ import { type ViewElement } from '../view/element.js';
  * } );
  * ```
  */
-export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
+const DowncastDispatcherBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
+export class DowncastDispatcher extends DowncastDispatcherBase {
 	/**
 	 * A template for an interface passed by the dispatcher to the event callbacks.
 	 *
