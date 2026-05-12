@@ -57,7 +57,7 @@ This release also includes several improvements for content editing, Office cont
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: [AI Chat and AI Chat History](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-chat.html) now support [multi-root editors](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-types.html#multi-root-editor) and multi-editor-instance [contexts](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html).
 * **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: Added the `tableOfContents.headings` option that lets integrators choose which heading levels appear in the Table of Contents widget independently from the Document Outline sidebar.
 * **[email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)**: Added support for restoring the `align` attribute on table cells during email transformations when all child elements of a cell share the same alignment. This produces more compact HTML and improves compatibility with legacy email clients. See [ckeditor/ckeditor5#19883](https://github.com/ckeditor/ckeditor5/issues/19883).
-* **[export-inline-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-inline-styles)**: Added the `runAfterDocumentTransformation` and `runAfterChildrenTransformation` callbacks. They allow integrations to defer transforming selected elements until their children or the full document have been processed and their styles inlined.
+* **[export-inline-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-inline-styles)**: Added the `runAfterDocumentTransformation` and `runAfterChildrenTransformation` callbacks. They allow integrations to defer transforming selected elements until their children or the full document has been processed and their styles inlined.
 * **[format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter)**: Added an ARIA live announcement when the user cancels format painting by pressing the Escape key.
 
 ### Bug fixes
@@ -89,7 +89,7 @@ This release also includes several improvements for content editing, Office cont
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI components now fall back to default styles when the `container.type: 'custom'` configuration option is used.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Wide content, such as tables, inside AI suggestions no longer overflows its container. The container is now horizontally scrollable.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed a stray ellipsis (`…`) artifact that remained painted next to the rename input when editing a long chat name in the AI Chat history.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed annotation ordering when creating a comment while the target text is scrolled out of view. Previously, the sidebar could break and other annotations could flicker due to stale position data used for ordering.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed annotation ordering when creating a comment while the target text is scrolled out of view. Previously, the sidebar could break, and other annotations could flicker due to stale position data used for ordering.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed a regression where the editor lost focus after resolving a comment thread from the narrow sidebar.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Pressing Tab to confirm a mention suggestion in a comment editor no longer shifts focus to the Submit/Reply button.
 * **[editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)**: The classic editor no longer throws an unclear error when initialized with a source element that is not attached to the DOM. A dedicated `editor-source-element-not-attached` error is thrown instead. Closes [#20017](https://github.com/ckeditor/ckeditor5/issues/20017).
@@ -383,9 +383,9 @@ We are introducing table alignment, giving users and integrators much more contr
 
 [Table alignment](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-alignment) now uses CSS margin-based positioning by default, producing cleaner output. With a configuration option, teams which are migrating from CKEditor 4 can switch the output back to inlinse styles if needed.
 
-We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (`<th>`) and data (`<td>`) in the Cell Properties panel. 
+We are also introducing the [ability to switch table cell types](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-type) between header (`<th>`) and data (`<td>`) in the Cell Properties panel.
 
-Additionally header cells can be associated with related row or column with the [`scope` attribute](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-scope) using the “Row header” or “Column header” options. These options help screen readers understand the table structure.
+Additionally header cells can be associated with related row or column with the [`scope` attribute](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables.html#table-cell-scope) using the "Row header" or "Column header" options. These options help screen readers understand the table structure.
 
 The editor now recognizes legacy HTML table attributes during upcasting, preserving styling from older HTML content and improving compatibility with CKEditor 4.
 
