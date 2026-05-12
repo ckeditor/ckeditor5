@@ -8,12 +8,13 @@
  */
 
 import { ViewUpcastWriter, type ViewDocument } from '@ckeditor/ckeditor5-engine';
+import type { ClipboardInputTransformationData } from '@ckeditor/ckeditor5-clipboard';
 
 import { removeBoldWrapper } from '../filters/removeboldwrapper.js';
 import { transformBlockBrsToParagraphs } from '../filters/br.js';
 import { unwrapParagraphInListItem } from '../filters/list.js';
 import { replaceTabsWithinPreWithSpaces } from '../filters/replacetabswithinprewithspaces.js';
-import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
+import type { PasteFromOfficeNormalizer } from '../normalizer.js';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 
@@ -44,15 +45,12 @@ export class GoogleDocsNormalizer implements PasteFromOfficeNormalizer {
 	/**
 	 * @inheritDoc
 	 */
-	public execute( data: PasteFromOfficeNormalizerData ): void {
+	public execute( data: ClipboardInputTransformationData ): void {
 		const writer = new ViewUpcastWriter( this.document );
-		const { body: documentFragment } = data._parsedData;
 
-		removeBoldWrapper( documentFragment, writer );
-		unwrapParagraphInListItem( documentFragment, writer );
-		transformBlockBrsToParagraphs( documentFragment, writer );
-		replaceTabsWithinPreWithSpaces( documentFragment, writer, 8 );
-
-		data.content = documentFragment;
+		removeBoldWrapper( data.content, writer );
+		unwrapParagraphInListItem( data.content, writer );
+		transformBlockBrsToParagraphs( data.content, writer );
+		replaceTabsWithinPreWithSpaces( data.content, writer, 8 );
 	}
 }
