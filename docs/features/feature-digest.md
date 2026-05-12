@@ -1253,7 +1253,7 @@ By integrating AI writing assistance directly into the editing experience, CKEdi
 			Experimental support for AI Chat, Review, and Translate across multi-root editors and across multiple editors sharing a Context. Suggestions, translations, and chat history stay scoped to the right surface.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-multi}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-multi-root-multi-editor-support}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
