@@ -18,6 +18,25 @@ modified_at: 2026-05-13
 
 Released on 13 May, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v48.1.0))
 
+This release improves AI Chat formatting and rendering, introduces experimental AI support for multi-root and multiple editor setups, and strengthens compatibility with structured content pasted from Office and exported for email.
+
+### AI Chat: better formatting and rendering (⭐)
+
+{@link features/ckeditor-ai-chat AI Chat} now handles raw, unformatted content more reliably. Asking AI Chat to format a pasted transcript, add headings, or convert content into a list produces cleaner and more predictable results.
+
+The AI Chat feed also renders generated content differently. Proposed changes now appear in full when they are ready, while plain assistant text continues to stream at a faster pace.
+
+### Experimental: AI in multi-root and multiple editor setups (⭐)
+
+AI features now {@link features/ckeditor-ai-multi-root-multi-editor-support support multi-root editors and multiple editor instances} that share a {@link module:core/context~Context `Context`}. This helps integrations that use several editor areas on one page, such as a title, body, sidebar, or document sections split into independent roots.
+
+With this release:
+
+* AI Review and AI Translate run across all roots in a multi-root editor and across all editors that share a `Context`. Changes are applied to the related root or editor.
+* AI Chat uses content from the focused root or editor, applies suggestions to the related destination, and keeps separate conversation history for each editor in a `Context`.
+
+This feature is experimental and ready for testing in multi-root and multiple editor integrations.
+
 ### AI Chat feed items align to the bottom by default
 
 The AI Chat feed items are now aligned to the bottom of the feed by default. This keeps the most recent messages in view as the conversation grows, in line with common chat interface conventions.
@@ -29,6 +48,16 @@ If you want to revert to the previous top-aligned behavior, add the following CS
 	margin-top: 0;
 }
 ```
+
+### Other improvements and fixes
+
+This release also includes several improvements for content editing, Office content compatibility, and email output:
+
+* Marker boundary elements registered with `markerToElement()` now render in the same order as in the model when two markers meet at the same position. This affects features that rely on markers, including comments, suggestions, mentions, find and replace, and restricted editing.
+* Inline formatting such as bold, italic, font size, font family, font color, and background color is now retained after pressing <kbd>Shift</kbd>+<kbd>Enter</kbd> twice or after deleting all text inside a block and continuing to type.
+* {@link features/source-editing Source editing} now supports native undo and redo keystrokes in the source editing textarea.
+* The editor now handles {@link features/tables#table-alignment alignment attributes} on `<td>` elements that wrap nested tables or images. This improves compatibility with content from Outlook and other sources that use `td[align]` for block layout.
+* Tables now preserve their alignment and inline styles after the {@link features/email#email-specific-style-transformations email export transformation}, improving rendering in Outlook, Gmail, and other major email clients.
 
 ### Minor breaking changes in this release
 
