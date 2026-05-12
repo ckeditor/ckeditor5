@@ -3021,6 +3021,80 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				);
 			} );
 
+			it( 'should upcast an empty <li style="list-style-type:none"> as a regular list item', () => {
+				skipEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;"></li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered"></paragraph>'
+				);
+			} );
+
+			it( 'should upcast <li style="list-style-type:none"> with text-only content as a regular list item', () => {
+				skipEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;">foobar</li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered">foobar</paragraph>'
+				);
+			} );
+
+			it( 'should upcast <li style="list-style-type:none"> with a paragraph child (no nested list) as a regular list item', () => {
+				skipEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;"><p>foobar</p></li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered">foobar</paragraph>'
+				);
+			} );
+
+			it( 'should still treat <li style="list-style-type:none"> with only whitespace around a nested list as a wrapper', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li>A' +
+							'<ul>' +
+								'<li style="list-style-type:none;">   \n   ' +
+									'<ul>' +
+										'<li>B</li>' +
+									'</ul>' +
+								'   </li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
+
+			it( 'should upcast <li style="list-style-type:none"> with text mixed with a nested list as a regular list item', () => {
+				skipEditor.setData(
+					'<ul>' +
+						'<li style="list-style-type:none;">leading text' +
+							'<ul>' +
+								'<li>B</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">leading text</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">B</paragraph>'
+				);
+			} );
+
 			it( 'should roundtrip a single skipped level (model -> data -> model)', () => {
 				_setModelData( skipModel,
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
@@ -3180,6 +3254,117 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph htmlLiAttributes="{"styles":{"list-style-type":"none"}}" htmlOlAttributes="{}" ' +
 					'listIndent="1" listItemId="a00" listType="numbered">foobar</paragraph>'
+				);
+			} );
+
+			it( 'should preserve attributes/classes on an empty <li style="list-style-type:none">', () => {
+				ghsEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;" data-foo="foo" class="some-class"></li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph ' +
+						'htmlLiAttributes="{' +
+							'"attributes":{"data-foo":"foo"},' +
+							'"classes":["some-class"],' +
+							'"styles":{"list-style-type":"none"}' +
+						'}" ' +
+						'htmlOlAttributes="{}" ' +
+						'listIndent="0" listItemId="a00" listType="numbered">' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should preserve attributes on <li style="list-style-type:none"> with text-only content', () => {
+				ghsEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;" data-foo="foo">foobar</li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph ' +
+						'htmlLiAttributes="{' +
+							'"attributes":{"data-foo":"foo"},' +
+							'"styles":{"list-style-type":"none"}' +
+						'}" ' +
+						'htmlOlAttributes="{}" ' +
+						'listIndent="0" listItemId="a00" listType="numbered">' +
+						'foobar' +
+					'</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'upcast with GeneralHtmlSupport without allowSkipLevels', () => {
+			let ghsEditor, ghsModel, ghsElement;
+
+			beforeEach( async () => {
+				ghsElement = document.createElement( 'div' );
+				document.body.appendChild( ghsElement );
+
+				ghsEditor = await ClassicTestEditor.create( ghsElement, {
+					plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing,
+						BlockQuoteEditing, TableEditing, HeadingEditing, CodeBlockEditing, GeneralHtmlSupport ],
+					htmlSupport: {
+						allow: [
+							{
+								name: /./,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					}
+				} );
+
+				ghsModel = ghsEditor.model;
+			} );
+
+			afterEach( async () => {
+				ghsElement.remove();
+				await ghsEditor.destroy();
+			} );
+
+			it( 'should preserve attributes/classes on an empty <li style="list-style-type:none">', () => {
+				ghsEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;" data-foo="foo" class="some-class"></li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph ' +
+						'htmlLiAttributes="{' +
+							'"attributes":{"data-foo":"foo"},' +
+							'"classes":["some-class"],' +
+							'"styles":{"list-style-type":"none"}' +
+						'}" ' +
+						'htmlOlAttributes="{}" ' +
+						'listIndent="0" listItemId="a00" listType="numbered">' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should preserve attributes on <li style="list-style-type:none"> with text-only content', () => {
+				ghsEditor.setData(
+					'<ol>' +
+						'<li style="list-style-type:none;" data-foo="foo">foobar</li>' +
+					'</ol>'
+				);
+
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph ' +
+						'htmlLiAttributes="{' +
+							'"attributes":{"data-foo":"foo"},' +
+							'"styles":{"list-style-type":"none"}' +
+						'}" ' +
+						'htmlOlAttributes="{}" ' +
+						'listIndent="0" listItemId="a00" listType="numbered">' +
+						'foobar' +
+					'</paragraph>'
 				);
 			} );
 		} );
