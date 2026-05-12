@@ -2692,6 +2692,12 @@ function updateSummaryHighlights( panel ) {
 export function generatePanel( presets ) {
 	const panel = document.getElementById( 'token-panel' );
 
+	// Collapsed strip — visible only when panel is collapsed.
+	const strip = document.createElement( 'div' );
+	strip.className = 'token-panel-strip';
+	strip.textContent = 'Design Tokens';
+	panel.appendChild( strip );
+
 	// Stylesheet preset manager (paste & compare).
 	panel.appendChild( generateStylesheetManagerSection( presets ) );
 
@@ -2775,6 +2781,8 @@ export function generatePanel( presets ) {
 	const searchInput = document.getElementById( 'token-search' );
 	const searchClearBtn = document.getElementById( 'token-search-clear' );
 	const overridesOnlyCheckbox = document.getElementById( 'filter-overrides-only' );
+	const tokenCountEl = document.getElementById( 'token-count' );
+	const totalTokens = panel.querySelectorAll( '.token-row' ).length;
 	let savedOpenState = null;
 
 	function highlightText( el, query ) {
@@ -2867,6 +2875,7 @@ export function generatePanel( presets ) {
 			}
 
 			savedOpenState = null;
+			tokenCountEl.textContent = '';
 
 			return;
 		}
@@ -2918,6 +2927,10 @@ export function generatePanel( presets ) {
 				tierDetails.open = true;
 			}
 		}
+
+		// Update token count.
+		const visibleCount = panel.querySelectorAll( '.token-row:not([hidden])' ).length;
+		tokenCountEl.textContent = visibleCount + ' of ' + totalTokens;
 	}
 
 	searchClearBtn.addEventListener( 'click', () => {
@@ -2928,6 +2941,20 @@ export function generatePanel( presets ) {
 
 	searchInput.addEventListener( 'input', applyFilters );
 	overridesOnlyCheckbox.addEventListener( 'change', applyFilters );
+
+	// Collapse/expand panel strip.
+	const collapseBtn = document.getElementById( 'collapse-panel' );
+
+	collapseBtn.addEventListener( 'click', () => {
+		panel.classList.add( 'ck-test-panel--collapsed' );
+	} );
+
+	strip.addEventListener( 'click', () => {
+		panel.classList.remove( 'ck-test-panel--collapsed' );
+		requestAnimationFrame( () => {
+			panel.scrollIntoView( { behavior: 'smooth', block: 'nearest', inline: 'end' } );
+		} );
+	} );
 
 	// Toggle all diagrams.
 	let diagramsVisible = false;
@@ -2999,6 +3026,15 @@ export function generatePanel( presets ) {
 	} catch {
 		// Ignore malformed hash.
 	}
+
+	// Warn before leaving the page if there are unsaved overrides.
+	window.addEventListener( 'beforeunload', event => {
+		const hasOverrides = panel.querySelector( '.token-row.is-overridden' ) !== null;
+
+		if ( hasOverrides ) {
+			event.preventDefault();
+		}
+	} );
 
 	// Initial contrast badge calculation.
 	for ( const row of panel.querySelectorAll( '.token-row' ) ) {
