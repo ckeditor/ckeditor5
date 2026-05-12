@@ -17,7 +17,7 @@ The AI Chat feed also renders generated content differently. Proposed changes no
 
 #### ⭐ Experimental: AI in multi-root and multiple editor setups
 
-AI features now [support multi-root editors and multiple editor instances](http://link-to-be-added/) that share a [`Context`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html). This helps integrations that use several editor areas on one page, such as a title, body, sidebar, or document sections split into independent roots.
+AI features now [support multi-root editors and multiple editor instances](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-multi-root-multi-editor-support.html) that share a [`Context`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html). This helps integrations that use several editor areas on one page, such as a title, body, sidebar, or document sections split into independent roots.
 
 With this release:
 
