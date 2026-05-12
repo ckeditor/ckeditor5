@@ -1074,6 +1074,14 @@ Use the insert media button in the toolbar to embed media. Pasting a media URL d
 	Feature page
 </ck:button-link>
 
+<ck:heading-badge heading-id='media-embed-resize' badge='premium'>Media embed resize</ck:heading-badge>
+
+The media embed resize feature lets you change the width of media embeds in your content. It is implemented by the MediaEmbedResize plugin.
+
+<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-resize}'>
+	Feature page
+</ck:button-link>
+
 <ck:heading-badge heading-id='paste-markdown' badge='experiment'>Paste Markdown</ck:heading-badge>
 
 The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
