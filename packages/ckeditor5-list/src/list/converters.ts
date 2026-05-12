@@ -98,9 +98,9 @@ export function listItemSkipLevelConsumer(): GetCallback<UpcastElementEvent> {
 }
 
 /**
- * Checks whether a `<li>` view element is a skip-level intermediate wrapper, i.e. its only meaningful content
- * is a nested `<ul>`/`<ol>`. Whitespace-only text nodes are ignored. Any other content (real text, `<br>`,
- * `<p>`, custom elements, etc.) disqualifies the element, so it is upcast as a regular list item.
+ * Checks whether a `<li>` view element is a skip-level intermediate wrapper, i.e. its only child is a nested
+ * `<ul>`/`<ol>`. Any other content (text, `<br>`, `<p>`, custom elements, NBSP, etc.) disqualifies the element,
+ * so it is upcast as a regular list item.
  */
 function isSkipLevelWrapper( viewItem: ViewElement ): boolean {
 	let hasNestedList = false;
@@ -108,10 +108,6 @@ function isSkipLevelWrapper( viewItem: ViewElement ): boolean {
 	for ( const child of viewItem.getChildren() ) {
 		if ( child.is( 'element', 'ul' ) || child.is( 'element', 'ol' ) ) {
 			hasNestedList = true;
-			continue;
-		}
-
-		if ( child.is( '$text' ) && !child.data.trim() ) {
 			continue;
 		}
 

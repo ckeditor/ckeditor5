@@ -3057,27 +3057,6 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				);
 			} );
 
-			it( 'should still treat <li style="list-style-type:none"> with only whitespace around a nested list as a wrapper', () => {
-				skipEditor.setData(
-					'<ul>' +
-						'<li>A' +
-							'<ul>' +
-								'<li style="list-style-type:none;">   \n   ' +
-									'<ul>' +
-										'<li>B</li>' +
-									'</ul>' +
-								'   </li>' +
-							'</ul>' +
-						'</li>' +
-					'</ul>'
-				);
-
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">A</paragraph>' +
-					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
-				);
-			} );
-
 			it( 'should upcast <li style="list-style-type:none"> with text mixed with a nested list as a regular list item', () => {
 				skipEditor.setData(
 					'<ul>' +
@@ -3268,8 +3247,8 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'<paragraph ' +
 						'htmlLiAttributes="{' +
 							'"attributes":{"data-foo":"foo"},' +
-							'"classes":["some-class"],' +
-							'"styles":{"list-style-type":"none"}' +
+							'"styles":{"list-style-type":"none"},' +
+							'"classes":["some-class"]' +
 						'}" ' +
 						'htmlOlAttributes="{}" ' +
 						'listIndent="0" listItemId="a00" listType="numbered">' +
@@ -3339,8 +3318,8 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'<paragraph ' +
 						'htmlLiAttributes="{' +
 							'"attributes":{"data-foo":"foo"},' +
-							'"classes":["some-class"],' +
-							'"styles":{"list-style-type":"none"}' +
+							'"styles":{"list-style-type":"none"},' +
+							'"classes":["some-class"]' +
 						'}" ' +
 						'htmlOlAttributes="{}" ' +
 						'listIndent="0" listItemId="a00" listType="numbered">' +
