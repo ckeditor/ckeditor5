@@ -10,6 +10,7 @@
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import {
+	Matcher,
 	addBorderStylesRules,
 	addPaddingStylesRules,
 	addBackgroundStylesRules,
@@ -167,6 +168,8 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment! );
+		enableLegacyHorizontalAlignmentAttribute( conversion );
+
 		editor.commands.add(
 			'tableCellHorizontalAlignment',
 			new TableCellHorizontalAlignmentCommand( editor, defaultTableCellProperties.horizontalAlignment! )
@@ -269,30 +272,81 @@ function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Con
 					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
 				}
 			}
-		} )
-		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
-		.attributeToAttribute( {
-			view: {
-				name: /^(td|th)$/,
-				attributes: {
-					align: ALIGN_VALUES_REG_EXP
-				}
-			},
-			model: {
-				key: 'tableCellHorizontalAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
-					const align = viewElement.getAttribute( 'align' );
+		} );
+}
 
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
-				}
+/**
+ * Upcasts legacy `td[align]` property to proper block alignment attributes in child elements.
+ * If there is no block alignment property supported on the element, then the `alignment` fallback will be used.
+ *
+ * See: https://github.com/ckeditor/ckeditor5/issues/20042
+ */
+function enableLegacyHorizontalAlignmentAttribute( conversion: Conversion ) {
+	conversion.for( 'upcast' ).add( dispatcher => {
+		const matcher = new Matcher( {
+			name: /^(td|th)$/,
+			attributes: {
+				align: ALIGN_VALUES_REG_EXP
 			}
 		} );
+
+		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
+			const matcherResult = matcher.match( data.viewItem );
+
+			if ( !matcherResult ) {
+				return;
+			}
+
+			const modelElement = data.modelRange?.start.nodeAfter;
+
+			/* istanbul ignore if -- @preserve */
+			if ( !modelElement?.is( 'element' ) ) {
+				return;
+			}
+
+			const alignValue = data.viewItem.getAttribute( 'align' )!;
+
+			if ( !conversionApi.consumable.consume( data.viewItem, { attributes: [ 'align' ] } ) ) {
+				return;
+			}
+
+			for ( const child of modelElement.getChildren() ) {
+				if ( child.is( 'element' ) ) {
+					applyAlignmentToChild( child, alignValue, conversionApi );
+				}
+			}
+		}, { priority: 'low' } );
+	} );
+
+	function applyAlignmentToChild( child: ModelElement, alignValue: string, { schema, writer }: UpcastConversionApi ): void {
+		const definition = schema.getDefinition( child );
+
+		if ( definition ) {
+			for ( const attrName of definition.allowAttributes ) {
+				if ( child.hasAttribute( attrName ) ) {
+					continue;
+				}
+
+				const { blockAlignment } = schema.getAttributeProperties( attrName );
+
+				if ( !blockAlignment ) {
+					continue;
+				}
+
+				const blockAlignmentMapping = typeof blockAlignment === 'function' ?
+					blockAlignment( child ) :
+					blockAlignment;
+
+				const mappedValue = blockAlignmentMapping[ alignValue ];
+
+				if ( mappedValue && !mappedValue.isDefault ) {
+					writer.setAttribute( attrName, mappedValue.value, child );
+				}
+
+				return;
+			}
+		}
+	}
 }
 
 /**

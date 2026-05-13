@@ -1,0 +1,117 @@
+<div id="editor">
+	<table>
+		<tr>
+			<td align="center">
+				<p>Content table should NOT have `tableAlignment` attribute</p>
+				<figure class="table">
+					<table>
+						<tbody>
+							<tr>
+								<td>
+									&nbsp;
+								</td>
+								<td>
+									&nbsp;
+								</td>
+								<td>
+									&nbsp;
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</figure>
+
+				<p>Layout table should have `center` `tableAlignment` attribute/p>
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">
+				Single raw text
+			</td>
+		</tr>
+		<tr>
+			<td align="right" style="width: 400px">
+				<p>
+					td[align=right]
+				</p>
+				<table style="width: 200px; border: 1px solid black;">
+					<tr>
+						<td>a</td>
+					</tr>
+				</table>
+				<figure class="image">
+					<img style="aspect-ratio:800/376;" src="sample.jpg" alt="" width="200">
+				</figure>
+			</td>
+		</tr>
+	</table>
+
+	<table>
+		<tr>
+			<td align="center" style="width: 400px">
+				<p>
+					td[align=center]
+				</p>
+				<table style="width: 200px; border: 1px solid black;">
+					<tr>
+						<td>a</td>
+					</tr>
+				</table>
+				<figure class="image">
+					<img style="aspect-ratio:800/376;" src="sample.jpg" alt="" width="200">
+				</figure>
+			</td>
+		</tr>
+	</table>
+
+	<table>
+		<tr>
+			<td align="left" style="width: 400px">
+				<p>
+					td[align=left]
+				</p>
+				<table style="width: 200px; border: 1px solid black;">
+					<tr>
+						<td>a</td>
+					</tr>
+				</table>
+				<figure class="image">
+					<img style="aspect-ratio:800/376;" src="sample.jpg" alt="" width="200">
+				</figure>
+			</td>
+		</tr>
+	</table>
+
+	<table>
+		<tr>
+			<td align="left" style="width: 400px">
+				<p style="text-align: right">
+					td[align=left] (forced text and image to right)
+				</p>
+				<table style="width: 200px; border: 1px solid black;">
+					<tr>
+						<td>a</td>
+					</tr>
+				</table>
+				<figure class="image-style-block-align-right image">
+					<img style="aspect-ratio:800/376;" src="sample.jpg" alt="" width="200">
+				</figure>
+			</td>
+		</tr>
+	</table>
+</div>

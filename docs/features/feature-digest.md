@@ -1074,6 +1074,14 @@ Use the insert media button in the toolbar to embed media. Pasting a media URL d
 	Feature page
 </ck:button-link>
 
+<ck:heading-badge heading-id='media-embed-resize' badge='premium'>Media embed resize</ck:heading-badge>
+
+The media embed resize feature lets you change the width of media embeds in your content. It is implemented by the MediaEmbedResize plugin.
+
+<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-resize}'>
+	Feature page
+</ck:button-link>
+
 <ck:heading-badge heading-id='paste-markdown' badge='experiment'>Paste Markdown</ck:heading-badge>
 
 The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
@@ -1240,6 +1248,20 @@ By integrating AI writing assistance directly into the editing experience, CKEdi
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-translate}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='ai-multi-root'>
+			AI in multi-root and multi-editor setups <ck:badge variant='premium' /> <ck:badge variant='experiment' />
+		</ck:card-title>
+		<ck:card-description>
+			Experimental support for AI Chat, Review, and Translate across multi-root editors and across multiple editors sharing a Context. Suggestions, translations, and chat history stay scoped to the right surface.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-multi-root-multi-editor-support}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>

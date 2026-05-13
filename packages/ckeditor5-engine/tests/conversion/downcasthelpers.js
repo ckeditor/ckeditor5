@@ -424,14 +424,14 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should properly re-bind mapper mappings and retain markers', () => {
 				downcastHelpers.elementToElement( {
-					model: 'simpleBlock',
+					model: {
+						name: 'simpleBlock',
+						attributes: [ 'toStyle', 'toClass' ]
+					},
 					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
 						return toWidget( viewElement, writer );
-					},
-					triggerBy: {
-						attributes: [ 'toStyle', 'toClass' ]
 					},
 					converterPriority: 'high'
 				} );
@@ -1287,14 +1287,14 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should properly re-bind mapper mappings and retain markers', () => {
 				downcastHelpers.elementToElement( {
-					model: 'simpleBlock',
+					model: {
+						name: 'simpleBlock',
+						attributes: [ 'toStyle', 'toClass' ]
+					},
 					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
 						return toWidget( viewElement, writer );
-					},
-					triggerBy: {
-						attributes: [ 'toStyle', 'toClass' ]
 					},
 					converterPriority: 'high'
 				} );
@@ -4160,6 +4160,431 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should keep adjacent marker boundaries in model order when markers are added together', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</p></div>'
+				);
+			} );
+
+			it( 'should keep adjacent marker boundaries in model order when the second marker is added later', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</p></div>'
+				);
+			} );
+
+			it( 'adjacent markers do not overlap regardless of creation order', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				const rangeA = model.createRange( model.createPositionAt( modelElement, 0 ), model.createPositionAt( modelElement, 3 ) );
+				const rangeB = model.createRange( model.createPositionAt( modelElement, 3 ), model.createPositionAt( modelElement, 6 ) );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:a', { range: rangeA, usingOperation: false } );
+					writer.addMarker( 'marker:b', { range: rangeB, usingOperation: false } );
+				} );
+
+				const expected =
+					'<div><p>' +
+					'<span class="marker:a-start"></span>foo<span class="marker:a-end"></span>' +
+					'<span class="marker:b-start"></span>bar<span class="marker:b-end"></span>' +
+					'</p></div>';
+
+				expect( viewToString( viewRoot ) ).to.equal( expected );
+
+				// Remove all markers.
+				model.change( writer => {
+					writer.removeMarker( 'marker:a' );
+					writer.removeMarker( 'marker:b' );
+				} );
+
+				// Re-add in reversed order in a fresh change block so the differ
+				// processes them in the new order.
+				model.change( writer => {
+					writer.addMarker( 'marker:b', { range: rangeB, usingOperation: false } );
+					writer.addMarker( 'marker:a', { range: rangeA, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( expected );
+			} );
+
+			it( 'nested markers sharing the same start position preserve outer-first nesting order', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				// "foobar" — marker:outer spans [0,6], marker:inner spans [0,3].
+				// Both share the same start position but differ in end position.
+				const outerRange = model.createRange(
+					model.createPositionAt( modelElement, 0 ),
+					model.createPositionAt( modelElement, 6 )
+				);
+				const innerRange = model.createRange(
+					model.createPositionAt( modelElement, 0 ),
+					model.createPositionAt( modelElement, 3 )
+				);
+
+				model.change( writer => {
+					writer.addMarker( 'marker:outer', { range: outerRange, usingOperation: false } );
+					writer.addMarker( 'marker:inner', { range: innerRange, usingOperation: false } );
+				} );
+
+				const expected =
+					'<div><p>' +
+					'<span class="marker:outer-start"></span>' +
+					'<span class="marker:inner-start"></span>' +
+					'foo' +
+					'<span class="marker:inner-end"></span>' +
+					'bar' +
+					'<span class="marker:outer-end"></span>' +
+					'</p></div>';
+
+				expect( viewToString( viewRoot ) ).to.equal( expected );
+
+				// Remove all markers.
+				model.change( writer => {
+					writer.removeMarker( 'marker:outer' );
+					writer.removeMarker( 'marker:inner' );
+				} );
+
+				// Re-add in reversed order to verify stability.
+				model.change( writer => {
+					writer.addMarker( 'marker:inner', { range: innerRange, usingOperation: false } );
+					writer.addMarker( 'marker:outer', { range: outerRange, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( expected );
+			} );
+
+			it( 'intersecting markers downcast consistently regardless of creation order', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				function r( start, end ) {
+					return model.createRange( model.createPositionAt( modelElement, start ), model.createPositionAt( modelElement, end ) );
+				}
+
+				// "foobar" — offsets 0..6
+				const markerRanges = {
+					base: r( 1, 5 ),
+					equal: r( 1, 5 ),
+					outsideStart: r( 0, 1 ),
+					overlapStart: r( 0, 2 ),
+					insideStart: r( 1, 3 ),
+					inside: r( 2, 4 ),
+					insideEnd: r( 4, 5 ),
+					overlapEnd: r( 4, 6 ),
+					outsideEnd: r( 5, 6 )
+				};
+
+				model.change( writer => {
+					for ( const [ name, range ] of Object.entries( markerRanges ) ) {
+						writer.addMarker( `marker:${ name }`, { range, usingOperation: false } );
+					}
+				} );
+
+				const result = viewToString( viewRoot );
+
+				// Remove all markers.
+				model.change( writer => {
+					for ( const name of Object.keys( markerRanges ) ) {
+						writer.removeMarker( `marker:${ name }` );
+					}
+				} );
+
+				// Re-add in reversed order in a fresh change block so the differ
+				// processes them in the new order.
+				model.change( writer => {
+					for ( const [ name, range ] of Object.entries( markerRanges ).reverse() ) {
+						writer.addMarker( `marker:${ name }`, { range, usingOperation: false } );
+					}
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( result );
+			} );
+
+			it( 'should not change adjacent marker positions when text spanning the boundary is wrapped with bold', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				// Wrap text spanning the marker boundary (positions 1-5) with bold.
+				model.change( writer => {
+					writer.setAttribute(
+						'bold', true,
+						writer.createRange( writer.createPositionAt( modelElement, 1 ), writer.createPositionAt( modelElement, 5 ) )
+					);
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>f<strong>o' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>a</strong>r</p></div>'
+				);
+			} );
+
+			it( 'should not change adjacent marker positions when bold is removed from text spanning the boundary', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+				// Insert bold text and markers.
+				model.change( writer => {
+					writer.setAttribute(
+						'bold', true,
+						writer.createRange( writer.createPositionAt( modelElement, 1 ), writer.createPositionAt( modelElement, 5 ) )
+					);
+
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>f<strong>o' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>a</strong>r</p></div>'
+				);
+
+				// Remove bold from the same range.
+				model.change( writer => {
+					writer.removeAttribute(
+						'bold',
+						writer.createRange( writer.createPositionAt( modelElement, 1 ), writer.createPositionAt( modelElement, 5 ) )
+					);
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</p></div>'
+				);
+			} );
+
+			it( 'should keep adjacent marker boundary order when one marker is inside bold and the other is not', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+				// Make "foo" bold: <paragraph><$text bold>foo</$text>bar</paragraph>
+				model.change( writer => {
+					writer.setAttribute(
+						'bold', true,
+						writer.createRange( writer.createPositionAt( modelElement, 0 ), writer.createPositionAt( modelElement, 3 ) )
+					);
+				} );
+
+				// marker:1 at [1, 3) — inside the bold text.
+				// marker:2 at [3, 5) — outside the bold text.
+				// Adjacent at offset 3 (the bold boundary).
+				model.change( writer => {
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 1 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 5 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p><strong>f' +
+					'<span class="marker:1-start"></span>oo</strong>' +
+					'<span class="marker:1-end"></span><span class="marker:2-start"></span>' +
+					'ba<span class="marker:2-end"></span>r</p></div>'
+				);
+			} );
+
+			it( 'should keep adjacent marker boundary order when the second marker is inside bold and the first is not', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+				// Make "bar" bold: <paragraph>foo<$text bold>bar</$text></paragraph>
+				model.change( writer => {
+					writer.setAttribute(
+						'bold', true,
+						writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 6 ) )
+					);
+				} );
+
+				// marker:1 at [1, 3) — outside the bold text.
+				// marker:2 at [3, 5) — inside the bold text.
+				// Adjacent at offset 3 (the bold boundary).
+				model.change( writer => {
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 1 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 5 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>f' +
+					'<span class="marker:1-start"></span>oo' +
+					'<span class="marker:1-end"></span><span class="marker:2-start"></span>' +
+					'<strong>ba<span class="marker:2-end"></span>r</strong></p></div>'
+				);
+			} );
+
+			it( 'should preserve adjacent marker positions when container element is renamed', () => {
+				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				downcastHelpers.elementToElement( { model: 'heading1', view: 'h1' } );
+
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, { writer } ) => {
+						return writer.createUIElement( 'span', {
+							class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+						} );
+					}
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker:1', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 3 ) ),
+						usingOperation: false
+					} );
+					writer.addMarker( 'marker:2', {
+						range: writer.createRange( writer.createPositionAt( modelElement, 3 ), writer.createPositionAt( modelElement, 4 ) ),
+						usingOperation: false
+					} );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</p></div>'
+				);
+
+				// Rename paragraph to heading1 — triggers reconversion of the container element.
+				model.change( writer => {
+					writer.rename( modelElement, 'heading1' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><h1>fo' +
+					'<span class="marker:1-start"></span>o<span class="marker:1-end"></span><span class="marker:2-start"></span>b' +
+					'<span class="marker:2-end"></span>ar</h1></div>'
+				);
 			} );
 
 			it( 'should not convert if consumable was consumed', () => {

@@ -176,6 +176,22 @@ export const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> =
 } ];
 
 /**
+ * Returns the style with a given `name` from an array of styles.
+ *
+ * @internal
+ */
+export function getStyleDefinitionByName(
+	name: string,
+	styles: Array<ImageStyleOptionDefinition>
+): ImageStyleOptionDefinition | undefined {
+	for ( const style of styles ) {
+		if ( style.name === name ) {
+			return style;
+		}
+	}
+}
+
+/**
  * Returns a list of the normalized and validated image style options.
  *
  * @param config

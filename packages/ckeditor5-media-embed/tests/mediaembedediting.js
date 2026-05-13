@@ -156,10 +156,11 @@ describe( 'MediaEmbedEditing', () => {
 								'https://dai.ly/foo',
 								'dai.ly/foo'
 							],
-							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+							'<div>' +
 								'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-									'frameborder="0" width="480" height="270" allowfullscreen="" allow="autoplay">' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
+									'frameborder="0" allowfullscreen="" allow="autoplay">' +
 								'</iframe>' +
 							'</div>' );
 						} );
@@ -171,9 +172,10 @@ describe( 'MediaEmbedEditing', () => {
 									'www.open.spotify.com/artist/foo',
 									'open.spotify.com/artist/foo'
 								],
-								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+								'<div>' +
 									'<iframe src="https://open.spotify.com/embed/artist/foo" ' +
-										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+										'width="300" height="378" ' +
+										'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
 										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 									'</iframe>' +
 								'</div>' );
@@ -185,9 +187,10 @@ describe( 'MediaEmbedEditing', () => {
 									'www.open.spotify.com/album/foo',
 									'open.spotify.com/album/foo'
 								],
-								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+								'<div>' +
 									'<iframe src="https://open.spotify.com/embed/album/foo" ' +
-										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+										'width="300" height="378" ' +
+										'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
 										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 									'</iframe>' +
 								'</div>' );
@@ -199,9 +202,10 @@ describe( 'MediaEmbedEditing', () => {
 									'www.open.spotify.com/track/foo',
 									'open.spotify.com/track/foo'
 								],
-								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+								'<div>' +
 									'<iframe src="https://open.spotify.com/embed/track/foo" ' +
-										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+										'width="300" height="378" ' +
+										'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
 										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 									'</iframe>' +
 								'</div>' );
@@ -233,9 +237,10 @@ describe( 'MediaEmbedEditing', () => {
 								'https://youtu.be/foo',
 								'youtu.be/foo'
 							],
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+							'<div>' +
 								'<iframe src="https://www.youtube.com/embed/foo" ' +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" ' +
 									'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="">' +
 								'</iframe>' +
@@ -247,9 +252,10 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.youtube.com/watch?v=euqbMkM-QQk'
 							],
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+							'<div>' +
 								'<iframe src="https://www.youtube.com/embed/euqbMkM-QQk" ' +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" ' +
 									'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="">' +
 								'</iframe>' +
@@ -260,9 +266,10 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://youtu.be/aEZw6KFTm6s?t=93'
 							],
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+							'<div>' +
 								'<iframe src="https://www.youtube.com/embed/aEZw6KFTm6s?start=93" ' +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" ' +
 									'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="">' +
 								'</iframe>' +
@@ -299,9 +306,10 @@ describe( 'MediaEmbedEditing', () => {
 								'www.player.vimeo.com/video/1234',
 								'player.vimeo.com/video/1234'
 							],
-							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+							'<div>' +
 								'<iframe src="https://player.vimeo.com/video/1234" ' +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'width="1280" height="720" ' +
+									'style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ' +
 									'frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">' +
 								'</iframe>' +
 							'</div>' );

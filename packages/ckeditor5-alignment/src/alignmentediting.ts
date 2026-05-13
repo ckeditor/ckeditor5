@@ -8,7 +8,8 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import type { DowncastAttributeDescriptor } from '@ckeditor/ckeditor5-engine';
+import type { DowncastAttributeDescriptor, ModelBlockAlignmentAttributesMapping } from '@ckeditor/ckeditor5-engine';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { AlignmentCommand } from './alignmentcommand.js';
 import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils.js';
@@ -64,7 +65,10 @@ export class AlignmentEditing extends Plugin {
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
-		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
+		editor.model.schema.setAttributeProperties( 'alignment', {
+			isFormatting: true,
+			blockAlignment: getBlockAlignmentAttributeProperty( locale )
+		} );
 
 		if ( shouldUseClasses ) {
 			editor.conversion.attributeToAttribute( buildClassDefinition( optionsToConvert ) );
@@ -89,6 +93,24 @@ export class AlignmentEditing extends Plugin {
 
 		editor.commands.add( 'alignment', new AlignmentCommand( editor ) );
 	}
+}
+
+/**
+ * Prepare block alignment mapping for all possible alignment options.
+ */
+function getBlockAlignmentAttributeProperty( locale: Locale ) {
+	const blockAlignment: ModelBlockAlignmentAttributesMapping = {
+		left: { value: 'left' },
+		right: { value: 'right' },
+		center: { value: 'center' },
+		justify: { value: 'justify' }
+	} satisfies Record<AlignmentSupportedOption, unknown>;
+
+	const defaultDirection = locale.contentLanguageDirection == 'rtl' ? 'right' : 'left';
+
+	blockAlignment[ defaultDirection ]!.isDefault = true;
+
+	return blockAlignment;
 }
 
 /**

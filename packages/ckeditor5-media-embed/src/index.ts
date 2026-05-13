@@ -13,6 +13,10 @@ export { MediaEmbedUI } from './mediaembedui.js';
 export { AutoMediaEmbed } from './automediaembed.js';
 export { MediaEmbedToolbar } from './mediaembedtoolbar.js';
 export { MediaEmbedCommand } from './mediaembedcommand.js';
+export { MediaEmbedResize } from './mediaembedresize.js';
+export { MediaEmbedResizeEditing } from './mediaembedresize/mediaembedresizeediting.js';
+export { MediaEmbedResizeHandles } from './mediaembedresize/mediaembedresizehandles.js';
+export { ResizeMediaEmbedCommand } from './mediaembedresize/resizemediaembedcommand.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
 

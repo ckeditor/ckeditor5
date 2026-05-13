@@ -221,6 +221,46 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 		);
 	} );
 
+	it( 'should extract text and remove the <a> element completely if its name starts with an underscore (hidden bookmark)', () => {
+		performTest(
+			'<a name="_GoBack">' +
+				'<span>text</span>' +
+			'</a>',
+
+			'<span>text</span>'
+		);
+	} );
+
+	it( 'should completely remove an empty <a> element if its name starts with an underscore', () => {
+		performTest(
+			'<p>paragraph</p>' +
+			'<a name="_Toc12345"></a>',
+
+			'<p>paragraph</p>'
+		);
+	} );
+
+	it( 'should remove the <a> element but keep content when both id and name are present and name starts with an underscore', () => {
+		performTest(
+			'<a id="some-id" name="_hiddenBookmark">' +
+				'<span>text</span>' +
+			'</a>',
+
+			'<span>text</span>'
+		);
+	} );
+
+	it( 'should NOT remove the <a> element if only its id starts with an underscore (since Word/GDocs use name)', () => {
+		performTest(
+			'<a id="_GoBack">' +
+				'<span>text</span>' +
+			'</a>',
+
+			'<a id="_GoBack"></a>' +
+			'<span>text</span>'
+		);
+	} );
+
 	function performTest( inputData, expectedData ) {
 		const documentFragment = htmlDataProcessor.toView( inputData );
 

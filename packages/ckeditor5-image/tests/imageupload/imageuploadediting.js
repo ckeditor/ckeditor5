@@ -170,7 +170,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert image when is dropped', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => '' } );
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -188,14 +188,18 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert image at optimized position when is pasted', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => '' } );
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const paragraph = doc.getRoot().getChild( 0 );
 		const targetRange = model.createRange( model.createPositionAt( paragraph, 1 ), model.createPositionAt( paragraph, 1 ) ); // f[]oo
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( _getModelData( model ) ).to.equal(
@@ -205,7 +209,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert multiple image files when are pasted (inline image type)', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
-		const dataTransfer = new ViewDataTransfer( { files, types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files, types: [ 'Files' ], getData: () => '' } );
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = model.createRange(
@@ -214,7 +218,11 @@ describe( 'ImageUploadEditing', () => {
 		);
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
@@ -336,7 +344,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( eventInfo, {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 		expect( eventInfo.stop.called ).to.be.undefined;
@@ -360,7 +372,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
-		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( eventInfo, {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 		expect( eventInfo.stop.called ).to.be.undefined;
@@ -368,14 +384,18 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not insert image when file is null', () => {
 		const viewDocument = editor.editing.view.document;
-		const dataTransfer = new ViewDataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => null } );
+		const dataTransfer = new ViewDataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => '' } );
 
 		_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 		const targetRange = doc.selection.getFirstRange();
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 	} );
@@ -392,7 +412,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
@@ -461,7 +485,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = doc.selection.getFirstRange();
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		// Well, there's no clipboard plugin, so nothing happens.
 		expect( _getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
@@ -555,7 +583,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		await new Promise( res => {
 			model.document.once( 'change', res );
@@ -583,7 +615,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		await new Promise( res => {
 			model.document.once( 'change', res );
@@ -1069,8 +1105,11 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
 		const spy = sinon.spy();
+		const dataTransfer = mockDataTransfer( '' );
 
 		editor.editing.view.document.fire( 'dragover', {
+			dataTransfer,
+			content: dataTransfer.getData( 'text/html' ),
 			preventDefault: spy
 		} );
 
@@ -1086,7 +1125,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		const id = adapterMocks[ 0 ].loader.id;
 		const expected =
@@ -1104,7 +1147,10 @@ describe( 'ImageUploadEditing', () => {
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		const id = adapterMocks[ 0 ].loader.id;
 		const expected =
@@ -1123,7 +1169,10 @@ describe( 'ImageUploadEditing', () => {
 		const clipboardHtml = `<img src=${ base64Sample } />`;
 		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		const expected = `<paragraph><imageInline src="${ base64Sample }"></imageInline>[]foo</paragraph>`;
 
@@ -1153,7 +1202,10 @@ describe( 'ImageUploadEditing', () => {
 			content = data.content;
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expectData(
 			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
@@ -1215,7 +1267,11 @@ describe( 'ImageUploadEditing', () => {
 			content = data.content;
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expectData(
 			'',
@@ -1251,7 +1307,11 @@ describe( 'ImageUploadEditing', () => {
 			content = data.content;
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expectData(
 			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
@@ -1291,7 +1351,11 @@ describe( 'ImageUploadEditing', () => {
 			content = data.content;
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		expectData(
 			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
@@ -1322,7 +1386,11 @@ describe( 'ImageUploadEditing', () => {
 			} ) );
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		tryExpect( done, () => {
 			loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
@@ -1347,7 +1415,11 @@ describe( 'ImageUploadEditing', () => {
 			} ) );
 		} );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		tryExpect( done, () => {
 			loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
@@ -1375,7 +1447,11 @@ describe( 'ImageUploadEditing', () => {
 		// Stub `fetch` in a way that it always fails.
 		sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		viewDocument.fire( 'clipboardInput', {
+			dataTransfer,
+			targetRanges: [ targetViewRange ],
+			content: dataTransfer.getData( 'text/html' )
+		} );
 
 		adapterMocks[ 0 ].loader.file.then( () => {
 			expect.fail( 'Promise should be rejected.' );
@@ -1484,7 +1560,11 @@ describe( 'ImageUploadEditing', () => {
 			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				targetRanges: [ targetViewRange ],
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			adapterMocks[ 0 ].loader.file.then( () => {
 				setTimeout( () => {
@@ -1512,7 +1592,10 @@ describe( 'ImageUploadEditing', () => {
 				content = data.content;
 			} );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			expectData(
 				'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
@@ -1541,7 +1624,11 @@ describe( 'ImageUploadEditing', () => {
 			const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 			const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				targetRanges: [ targetViewRange ],
+				content: dataTransfer.getData( 'text/html' )
+			} );
 
 			adapterMocks[ 0 ].loader.file.then( () => {
 				expect.fail( 'Promise should be rejected.' );
