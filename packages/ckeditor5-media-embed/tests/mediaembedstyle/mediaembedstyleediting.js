@@ -192,6 +192,14 @@ describe( 'MediaEmbedStyleEditing', () => {
 				expect( widget.name ).to.equal( 'customWidget' );
 				expect( widget.hasAttribute( 'mediaStyle' ) ).to.be.false;
 			} );
+
+			it( 'returns early when no upcast produces a model range for the figure', () => {
+				// A <figure> without `class="media"` - the main media upcast doesn't claim it,
+				// so `data.modelRange` is never set when our low-priority listener fires.
+				editor.setData( '<figure></figure>' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).not.to.contain( '<media' );
+			} );
 		} );
 
 		describe( 'round-trip', () => {

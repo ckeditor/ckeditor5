@@ -82,13 +82,7 @@ export class MediaEmbedStyleEditing extends Plugin {
 					return;
 				}
 
-				const figure = conversionApi.mapper.toViewElement( data.item );
-
-				/* istanbul ignore if: paranoid check — the figure is always mapped here -- @preserve */
-				if ( !figure ) {
-					return;
-				}
-
+				const figure = conversionApi.mapper.toViewElement( data.item )!;
 				const viewWriter = conversionApi.writer;
 				const oldClass = MEDIA_STYLE_CLASSES.get( data.attributeOldValue as MediaStyleName );
 				const newClass = MEDIA_STYLE_CLASSES.get( data.attributeNewValue as MediaStyleName );
@@ -107,7 +101,6 @@ export class MediaEmbedStyleEditing extends Plugin {
 		// priority so the main media upcast creates the `media` model element first.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on<UpcastElementEvent>( 'element:figure', ( _evt, data, conversionApi ) => {
-				/* istanbul ignore if: paranoid check — modelRange is set when conversion produces a model -- @preserve */
 				if ( !data.modelRange ) {
 					return;
 				}
