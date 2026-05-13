@@ -57,7 +57,7 @@ export interface HighlightOption {
  * The configuration of the {@link module:highlight/highlight~Highlight highlight feature}.
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		highlight:  ... // Highlight feature configuration.
  * 	} )
  * 	.then( ... )
@@ -152,7 +152,7 @@ export interface HighlightConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		highlight: {
 	 * 			options: [
 	 * 				{

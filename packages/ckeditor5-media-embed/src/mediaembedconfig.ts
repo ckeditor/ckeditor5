@@ -17,7 +17,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 			mediaEmbed: ... // Media embed feature options.
  * 	} )
  * 	.then( ... )
@@ -65,7 +65,7 @@ export interface MediaEmbedConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ MediaEmbed, ... ],
 	 * 		mediaEmbed: {
 	 * 			providers: [
@@ -99,7 +99,7 @@ export interface MediaEmbedConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ MediaEmbed, ... ],
 	 * 		mediaEmbed: {
 	 * 			extraProviders: [

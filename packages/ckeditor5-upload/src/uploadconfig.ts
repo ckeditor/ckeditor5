@@ -12,7 +12,7 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		simpleUpload: {
  * 			// The URL the images are uploaded to.
  * 			uploadUrl: 'http://example.com',
@@ -52,7 +52,7 @@ export interface SimpleUploadConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		simpleUpload: {
 	 * 			// Set headers statically:
 	 * 			headers: {
@@ -85,7 +85,7 @@ export interface SimpleUploadConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		simpleUpload: {
 	 * 			withCredentials: true
 	 * 		}
