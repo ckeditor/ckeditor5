@@ -30,6 +30,14 @@ Interactive test for exploring and customizing the three-tier CSS design token s
 11. Click the "↺" button on any row to reset that token to its default.
 12. Click "Reset All" to clear all overrides.
 
+### Token dependencies (cascade tree)
+
+1. Open the "Token Dependencies" section (green accent).
+2. Type a token name in the search input — suggestions appear as you type.
+3. Press Enter or click a suggestion to view the dependency tree.
+4. The tree shows: ancestor chain (what the token inherits from), the selected token with its tier and computed value, and all dependents (what inherits from it).
+5. Click any token in the tree to scroll to its row in the panel.
+
 ### Stylesheet presets (paste & compare)
 
 1. Open the "Stylesheet Presets" section at the top of the panel (blue accent).
