@@ -2700,8 +2700,273 @@ function updateSummaryHighlights( panel ) {
 /**
  * @param {Array<{name: string, css: string}>} [presets] Optional array of built-in stylesheet presets.
  */
+// ---------------------------------------------------------------------------
+// Token dependency tree — interactive cascade visualizer.
+// ---------------------------------------------------------------------------
+
+/**
+ * Get the full ancestor chain for a token (walking up via TOKEN_REFS).
+ */
+function getAncestors( token ) {
+	const chain = [];
+	let current = TOKEN_REFS[ token ];
+
+	while ( current ) {
+		chain.unshift( current );
+		current = TOKEN_REFS[ current ];
+	}
+
+	return chain;
+}
+
+/**
+ * Build a nested tree of all dependents (walking down via DEPENDENTS).
+ */
+function getDependentTree( token ) {
+	const children = DEPENDENTS[ token ] || [];
+
+	return children.map( child => ( {
+		token: child,
+		children: getDependentTree( child )
+	} ) );
+}
+
+/**
+ * Determine the tier label for a token.
+ */
+function getTokenTier( token ) {
+	for ( const [ , tokens ] of Object.entries( FOUNDATION ) ) {
+		if ( tokens.includes( token ) ) {
+			return 'foundation';
+		}
+	}
+
+	for ( const [ , tokens ] of Object.entries( SEMANTIC ) ) {
+		if ( tokens.includes( token ) ) {
+			return 'semantic';
+		}
+	}
+
+	for ( const [ , tokens ] of Object.entries( COMPONENT ) ) {
+		if ( tokens.includes( token ) ) {
+			return 'component';
+		}
+	}
+
+	return '';
+}
+
+function generateDependencyTreeSection() {
+	const details = document.createElement( 'details' );
+	details.className = 'dep-tree-section';
+
+	const summary = document.createElement( 'summary' );
+	summary.textContent = 'Token Dependencies';
+	details.appendChild( summary );
+
+	const container = document.createElement( 'div' );
+	container.className = 'dep-tree-container';
+
+	// Token selector input.
+	const input = document.createElement( 'input' );
+	input.type = 'text';
+	input.className = 'dep-tree-input';
+	input.placeholder = 'Type a token name (e.g. radius-base)...';
+	container.appendChild( input );
+
+	// Suggestions dropdown.
+	const suggestions = document.createElement( 'div' );
+	suggestions.className = 'dep-tree-suggestions';
+	suggestions.hidden = true;
+	container.appendChild( suggestions );
+
+	// Tree output.
+	const treeOutput = document.createElement( 'div' );
+	treeOutput.className = 'dep-tree-output';
+	container.appendChild( treeOutput );
+
+	// All token names for autocomplete.
+	const allTokens = [
+		...Object.values( FOUNDATION ),
+		...Object.values( SEMANTIC ),
+		...Object.values( COMPONENT )
+	].flat();
+
+	input.addEventListener( 'input', () => {
+		const query = input.value.toLowerCase().trim();
+
+		if ( !query || query.length < 2 ) {
+			suggestions.hidden = true;
+
+			return;
+		}
+
+		const matches = allTokens
+			.filter( t => t.toLowerCase().includes( query ) )
+			.slice( 0, 10 );
+
+		suggestions.innerHTML = '';
+
+		if ( matches.length === 0 ) {
+			suggestions.hidden = true;
+
+			return;
+		}
+
+		for ( const match of matches ) {
+			const item = document.createElement( 'div' );
+			item.className = 'dep-tree-suggestion';
+			item.textContent = match.replace( /^--ck-/, '' );
+			item.dataset.token = match;
+
+			item.addEventListener( 'click', () => {
+				input.value = match.replace( /^--ck-/, '' );
+				suggestions.hidden = true;
+				renderTree( match, treeOutput );
+			} );
+
+			suggestions.appendChild( item );
+		}
+
+		suggestions.hidden = false;
+	} );
+
+	// Hide suggestions on blur (with delay for click).
+	input.addEventListener( 'blur', () => {
+		setTimeout( () => {
+			suggestions.hidden = true;
+		}, 200 );
+	} );
+
+	// Enter key selects first match.
+	input.addEventListener( 'keydown', e => {
+		if ( e.key === 'Enter' ) {
+			const first = suggestions.querySelector( '.dep-tree-suggestion' );
+
+			if ( first ) {
+				input.value = first.textContent;
+				suggestions.hidden = true;
+				renderTree( first.dataset.token, treeOutput );
+			}
+		}
+	} );
+
+	function renderTree( token, output ) {
+		output.innerHTML = '';
+
+		const ancestors = getAncestors( token );
+		const dependents = getDependentTree( token );
+		const tier = getTokenTier( token );
+
+		// Ancestors (walking up).
+		if ( ancestors.length ) {
+			const ancestorLabel = document.createElement( 'div' );
+			ancestorLabel.className = 'dep-tree-label';
+			ancestorLabel.textContent = 'Inherits from:';
+			output.appendChild( ancestorLabel );
+
+			const ancestorList = document.createElement( 'div' );
+			ancestorList.className = 'dep-tree-chain';
+
+			for ( let i = 0; i < ancestors.length; i++ ) {
+				const node = createTreeNode( ancestors[ i ], i );
+				ancestorList.appendChild( node );
+			}
+
+			output.appendChild( ancestorList );
+		}
+
+		// Selected token.
+		const selectedNode = document.createElement( 'div' );
+		selectedNode.className = 'dep-tree-selected';
+
+		const selectedName = document.createElement( 'span' );
+		selectedName.className = 'dep-tree-node-name';
+		selectedName.textContent = token.replace( /^--ck-/, '' );
+
+		const tierBadge = document.createElement( 'span' );
+		tierBadge.className = 'dep-tree-tier dep-tree-tier--' + tier;
+		tierBadge.textContent = tier;
+
+		const value = document.createElement( 'span' );
+		value.className = 'dep-tree-value';
+		value.textContent = getComputedTokenValue( token );
+
+		selectedNode.appendChild( selectedName );
+		selectedNode.appendChild( tierBadge );
+		selectedNode.appendChild( value );
+		output.appendChild( selectedNode );
+
+		// Dependents (walking down).
+		if ( dependents.length ) {
+			const depLabel = document.createElement( 'div' );
+			depLabel.className = 'dep-tree-label';
+			depLabel.textContent = 'Depended on by:';
+			output.appendChild( depLabel );
+
+			const depList = document.createElement( 'div' );
+			depList.className = 'dep-tree-children';
+			renderDependentNodes( dependents, depList, 0 );
+			output.appendChild( depList );
+		}
+
+		if ( !ancestors.length && !dependents.length ) {
+			const noDepMsg = document.createElement( 'div' );
+			noDepMsg.className = 'dep-tree-empty';
+			noDepMsg.textContent = 'No dependencies or dependents.';
+			output.appendChild( noDepMsg );
+		}
+	}
+
+	function createTreeNode( token, depth ) {
+		const node = document.createElement( 'div' );
+		node.className = 'dep-tree-node';
+		node.style.paddingLeft = ( depth * 16 ) + 'px';
+
+		const arrow = document.createElement( 'span' );
+		arrow.className = 'dep-tree-arrow';
+		arrow.textContent = depth > 0 ? '\u2514\u2500 ' : '';
+
+		const name = document.createElement( 'span' );
+		name.className = 'dep-tree-node-name dep-tree-node-clickable';
+		name.textContent = token.replace( /^--ck-/, '' );
+		name.addEventListener( 'click', () => {
+			scrollToAndHighlightToken( token );
+		} );
+
+		const tier = document.createElement( 'span' );
+		tier.className = 'dep-tree-tier dep-tree-tier--' + getTokenTier( token );
+		tier.textContent = getTokenTier( token );
+
+		node.appendChild( arrow );
+		node.appendChild( name );
+		node.appendChild( tier );
+
+		return node;
+	}
+
+	function renderDependentNodes( nodes, container, depth ) {
+		for ( const item of nodes ) {
+			const node = createTreeNode( item.token, depth );
+			container.appendChild( node );
+
+			if ( item.children.length ) {
+				renderDependentNodes( item.children, container, depth + 1 );
+			}
+		}
+	}
+
+	details.appendChild( container );
+
+	return details;
+}
+
 export function generatePanel( presets ) {
 	const panel = document.getElementById( 'token-panel' );
+
+	// Token dependency tree section.
+	const depSection = generateDependencyTreeSection();
+	panel.appendChild( depSection );
 
 	// Collapsed strip — visible only when panel is collapsed.
 	const strip = document.createElement( 'div' );

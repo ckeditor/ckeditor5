@@ -479,6 +479,154 @@
 		background: #eee;
 	}
 
+	/* Dependency tree section */
+	.ck-test-panel > details.dep-tree-section {
+		background: #f5fff5;
+		border-color: #a5d6a7;
+		border-left: 3px solid #4caf50;
+		margin-bottom: 12px;
+	}
+
+	.ck-test-panel > details.dep-tree-section > summary {
+		color: #2e7d32;
+	}
+
+	.dep-tree-container {
+		padding: 8px 10px;
+	}
+
+	.dep-tree-input {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 5px 10px;
+		font-size: 12px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		margin-bottom: 4px;
+	}
+
+	.dep-tree-input:focus {
+		outline: none;
+		border-color: #4caf50;
+	}
+
+	.dep-tree-suggestions {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #fff;
+		max-height: 180px;
+		overflow-y: auto;
+		margin-bottom: 8px;
+	}
+
+	.dep-tree-suggestion {
+		padding: 4px 8px;
+		font-size: 11px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+		cursor: pointer;
+	}
+
+	.dep-tree-suggestion:hover {
+		background: #e8f5e9;
+	}
+
+	.dep-tree-output {
+		font-size: 11px;
+	}
+
+	.dep-tree-label {
+		font-size: 10px;
+		font-weight: 600;
+		color: #666;
+		margin: 8px 0 4px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.dep-tree-node {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 2px 0;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+	}
+
+	.dep-tree-arrow {
+		color: #999;
+		font-size: 10px;
+		white-space: pre;
+	}
+
+	.dep-tree-node-name {
+		font-size: 11px;
+		color: #555;
+	}
+
+	.dep-tree-node-clickable {
+		cursor: pointer;
+	}
+
+	.dep-tree-node-clickable:hover {
+		color: #0066cc;
+		text-decoration: underline;
+	}
+
+	.dep-tree-selected {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 8px;
+		margin: 6px 0;
+		background: #e8f5e9;
+		border: 1px solid #a5d6a7;
+		border-radius: 4px;
+		font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+	}
+
+	.dep-tree-selected .dep-tree-node-name {
+		font-weight: 600;
+		color: #2e7d32;
+	}
+
+	.dep-tree-value {
+		font-size: 10px;
+		color: #777;
+		margin-left: auto;
+	}
+
+	.dep-tree-tier {
+		font-size: 8px;
+		padding: 1px 4px;
+		border-radius: 3px;
+		text-transform: uppercase;
+		font-family: system-ui, -apple-system, sans-serif;
+		font-weight: 600;
+		letter-spacing: 0.3px;
+	}
+
+	.dep-tree-tier--foundation {
+		background: #fff3e0;
+		color: #e65100;
+	}
+
+	.dep-tree-tier--semantic {
+		background: #e3f2fd;
+		color: #1565c0;
+	}
+
+	.dep-tree-tier--component {
+		background: #f3e5f5;
+		color: #7b1fa2;
+	}
+
+	.dep-tree-empty {
+		font-size: 11px;
+		color: #999;
+		font-style: italic;
+		margin-top: 8px;
+	}
+
 	/* Stylesheet presets — visually distinct from token tiers */
 	.ck-test-panel > details.stylesheet-presets {
 		background: #f0f4ff;
