@@ -18,7 +18,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		ckbox: {
  * 			tokenUrl: 'https://example.com/cs-token-endpoint'
  * 		}
@@ -31,7 +31,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		ckbox: {
  * 			defaultUploadCategories: {
  * 				Bitmaps: [ 'bmp' ],
