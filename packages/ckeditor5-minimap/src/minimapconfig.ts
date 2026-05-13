@@ -78,7 +78,7 @@ export interface MinimapConfig {
 	 * ```ts
 	 * ClassicEditor
 	 * 	.create( {
-	 * 		attachTo: document.getElementById( 'editor' )!,
+	 * 		attachTo: document.getElementById( 'editor' ),
 	 * 		minimap: {
 	 * 			extraClasses: 'website styled-container'
 	 * 		}
