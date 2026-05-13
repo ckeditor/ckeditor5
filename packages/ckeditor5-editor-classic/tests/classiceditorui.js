@@ -1085,7 +1085,9 @@ class VirtualClassicTestEditor extends VirtualTestEditor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		normalizeRootsConfig( sourceElementOrData, this.config );
+		// Match real `ClassicEditor`: `separateAttachTo = true` so a DOM source element is routed to
+		// `config.attachTo` rather than `rootConfig.element`.
+		normalizeRootsConfig( sourceElementOrData, this.config, 'main', true );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
