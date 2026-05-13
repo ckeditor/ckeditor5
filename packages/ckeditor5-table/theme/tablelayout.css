@@ -97,7 +97,7 @@
 				outline-offset: -1px;
 
 				&:focus {
-					outline: var(--ck-color-focus-border) 1px solid;
+					outline: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border)) 1px solid;
 				}
 			}
 
@@ -177,7 +177,7 @@
 			&:hover {
 				/* To prevent the widget outline from being cut off at the bottom
 				when the next cell or table has a background color, for example. */
-				z-index: var(--ck-z-default);
+				z-index: var(--ck-z-default, var(--ck-z-base));
 			}
 
 			&:hover > .ck-widget__selection-handle {
@@ -200,7 +200,7 @@
 			&.ck-widget_selected {
 				/* To prevent the widget outline from being cut off at the bottom
 				when the next cell or table has a background color, for example. */
-				z-index: var(--ck-z-default);
+				z-index: var(--ck-z-default, var(--ck-z-base));
 			}
 		}
 		display: table;
@@ -211,7 +211,7 @@
 	&.ck-editor__editable_inline {
 		& > .ck-widget.ck-widget_with-selection-handle.layout-table {
 			&:first-child {
-				margin-top: var(--ck-spacing-large);
+				margin-top: var(--ck-spacing-large, var(--ck-spacing-lg));
 			}
 			/*
 			* This value should match with the default margins of the block elements (like .media, .image or .table)
@@ -220,7 +220,7 @@
 			&:last-child,
 			/* Fallback for hidden fake selection div */
 			&:nth-last-child(2):has( + .ck-fake-selection-container) {
-				margin-bottom: var(--ck-spacing-large);
+				margin-bottom: var(--ck-spacing-large, var(--ck-spacing-lg));
 			}
 		}
 	}

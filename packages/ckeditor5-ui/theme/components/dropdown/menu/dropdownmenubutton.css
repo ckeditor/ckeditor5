@@ -6,7 +6,7 @@
 
 .ck.ck-button.ck-dropdown-menu-list__nested-menu__button {
 	width: 100%;
-	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+	padding: var(--ck-spacing-control-padding-block) calc(2 * var(--ck-spacing-control-padding-inline));
 	border-radius: 0;
 
 	&:focus {
@@ -14,7 +14,7 @@
 		box-shadow: none;
 
 		&:not(.ck-on) {
-			background: var(--ck-color-button-default-hover-background);
+			background: var(--ck-button-default-hover-background-color);
 		}
 	}
 
@@ -25,55 +25,58 @@
 	}
 
 	&.ck-disabled > .ck-button__label {
-		opacity: var(--ck-disabled-opacity);
+		/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 
 	/* Spacing in buttons that miss the icon. */
 	&.ck-icon-spacing:not(:has(.ck-button__icon)) > .ck-button__label {
-		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-control-padding-inline-compact));
 	}
 
 	& > .ck-dropdown-menu-list__nested-menu__button__arrow {
 		width: var(--ck-dropdown-arrow-size);
 		pointer-events: none;
-		z-index: var(--ck-z-default);
+		/* Backward compatibility: falls back to legacy --ck-z-default if overridden. */
+		z-index: var(--ck-z-default, var(--ck-z-base));
 
 		[dir="ltr"] & {
 			transform: rotate(-90deg);
-			right: var(--ck-spacing-standard);
+			right: var(--ck-spacing-control-padding-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-spacing-control-padding-inline);
 
 			/* Nudge the arrow gently to the right because its center of gravity is to the left */
-			margin-right: calc(-1 * var(--ck-spacing-small));
+			margin-right: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
 		}
 
 		[dir="rtl"] & {
 			transform: rotate(90deg);
-			left: var(--ck-spacing-standard);
+			left: var(--ck-spacing-control-padding-inline);
 
 			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-spacing-control-padding-inline-compact);
 
 			/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
-			margin-left: calc(-1 * var(--ck-spacing-small));
+			margin-left: calc(-1 * var(--ck-spacing-control-padding-inline-compact));
 		}
 	}
 
 	&.ck-disabled > .ck-dropdown-menu-list__nested-menu__button__arrow {
-		opacity: var(--ck-disabled-opacity);
+		/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 
 	[dir="ltr"] & {
 		&:not(.ck-button_with-text) {
-			padding-left: var(--ck-spacing-small);
+			padding-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 
 	[dir="rtl"] & {
 		&:not(.ck-button_with-text) {
-			padding-right: var(--ck-spacing-small);
+			padding-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 }

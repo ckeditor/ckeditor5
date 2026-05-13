@@ -15,7 +15,7 @@
 		&.ck-table-form__border-row {
 			& .ck-labeled-field-view {
 				& > .ck-label {
-					font-size: var(--ck-font-size-tiny);
+					font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
 					text-align: center;
 				}
 			}
@@ -29,7 +29,7 @@
 		}
 
 		&.ck-table-form__dimensions-row {
-			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large));
+			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large, var(--ck-spacing-lg)));
 
 			width: var(--ck-table-form-dimensions-input-width);
 			max-width: var(--ck-table-form-dimensions-input-width);
@@ -51,9 +51,9 @@
 				overflow: visible;
 				align-self: flex-end;
 				display: inline-block;
-				height: var(--ck-ui-component-min-height);
-				line-height: var(--ck-ui-component-min-height);
-				margin: 0 var(--ck-spacing-small);
+				height: var(--ck-ui-component-min-height, var(--ck-size-min-height));
+				line-height: var(--ck-ui-component-min-height, var(--ck-size-min-height));
+				margin: 0 var(--ck-spacing-small, var(--ck-spacing-sm));
 			}
 		}
 		&.ck-table-form__border-row,
@@ -86,13 +86,13 @@
 	}
 
 	& .ck.ck-labeled-field-view {
-		padding-top: var(--ck-spacing-standard);
+		padding-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 
 		& .ck.ck-labeled-field-view__status {
-			border-radius: var(--ck-rounded-corners-radius);
+			border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 			background: var(--ck-color-base-error);
 			color: var(--ck-color-base-background);
-			padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+			padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-medium, var(--ck-spacing-md));
 			min-width: var(--ck-table-properties-min-error-width);
 			text-align: center;
 

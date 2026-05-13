@@ -5,6 +5,7 @@
 
 
 :root {
+	/* content-layer: pending color palette */
 	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
 	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
 	--ck-color-image-caption-highlighted-background: hsl(52deg 100% 50%);

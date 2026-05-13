@@ -4,18 +4,26 @@
  */
 
 :root {
-	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
-	--ck-dialog-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
-	--ck-dialog-max-width: 100vw;
+	/* Size */
 	--ck-dialog-max-height: 90vh;
-	--ck-color-dialog-background: var(--ck-color-base-background);
-	--ck-color-dialog-form-header-border: var(--ck-color-base-border);
+	--ck-dialog-max-width: 100vw;
+
+	/* Radius */
+	--ck-dialog-border-radius: var(--ck-border-radius-surface);
+
+	/* Border */
+	--ck-dialog-border: var(--ck-border-width-surface) solid var(--ck-color-border-container);
+
+	/* Color */
+	--ck-dialog-background-color: var(--ck-custom-background, var(--ck-color-surface-container));
+	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
 }
 
 .ck.ck-dialog-overlay {
-	animation: ck-dialog-fade-in .3s;
+	animation: ck-dialog-fade-in var(--ck-animation-duration-surface-entrance);
 	background: var(--ck-dialog-overlay-background-color);
-	z-index: var(--ck-z-dialog);
+	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
+	z-index: var(--ck-z-dialog, var(--ck-z-modal));
 	user-select: none;
 	overscroll-behavior: none;
 
@@ -27,28 +35,28 @@
 
 	&.ck-dialog-overlay__transparent {
 		pointer-events: none;
-		animation: none;
+		animation: var(--ck-animation-none);
 		background: none;
 	}
 }
 
 .ck.ck-dialog {
-	border-radius: var(--ck-rounded-corners-radius);
-	box-shadow: var(--ck-drop-shadow), 0 0;
+	border-radius: var(--ck-dialog-border-radius);
+	/* Backward compatibility: falls back to legacy --ck-dialog-drop-shadow if overridden. */
+	box-shadow: var(--ck-dialog-drop-shadow, 0px 0px 6px 2px hsl(0deg 0% 0% / 15%)), 0 0;
 
-	--ck-drop-shadow: var(--ck-dialog-drop-shadow);
-
-	background: var(--ck-color-dialog-background);
+	background: var(--ck-dialog-background-color);
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
-	border: 1px solid var(--ck-color-base-border);
+	border: var(--ck-dialog-border);
 	overscroll-behavior: contain;
 	overscroll-behavior: none;
 	width: fit-content;
 	position: absolute;
 
 	& .ck.ck-form__header {
-		border-bottom: 1px solid var(--ck-color-dialog-form-header-border);
+		/* Backward compatibility: falls back to legacy --ck-color-dialog-form-header-border if overridden. */
+		border-bottom: var(--ck-color-dialog-form-header-border, var(--ck-border-width-surface) solid var(--ck-custom-border, var(--ck-color-border-container)));
 		flex-shrink: 0;
 	}
 

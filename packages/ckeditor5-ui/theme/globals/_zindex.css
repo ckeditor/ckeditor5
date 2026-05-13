@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-z-default: 1;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
-	--ck-z-dialog: 9999;
+	--ck-z-base: 1;
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
+	--ck-z-modal: 9999;
 }

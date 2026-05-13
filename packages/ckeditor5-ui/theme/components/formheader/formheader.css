@@ -4,14 +4,21 @@
  */
 
 :root {
+	/* Size */
 	--ck-form-header-height: 3.384em;
+
+	/* Spacing */
+	--ck-form-header-padding-block: var(--ck-spacing-surface-padding-block);
+
+	/* Typography */
+	--ck-form-header-label-font-size: 1.153em;
 }
 
 .ck.ck-form__header {
-	padding: var(--ck-spacing-small) var(--ck-spacing-large);
+	padding: var(--ck-form-header-padding-block) var(--ck-spacing-control-meta-gap);
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
-	border-bottom: 1px solid var(--ck-color-base-border);
+	border-bottom: var(--ck-border-width-divider) solid var(--ck-color-base-border);
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
 	display: flex;
@@ -21,29 +28,28 @@
 	justify-content: space-between;
 
 	& > .ck-icon {
-		margin-inline-end: var(--ck-spacing-medium);
+		margin-inline-end: var(--ck-spacing-control-icon-gap);
 		flex-shrink: 0;
 	}
 
 	& .ck-form__header__label {
 		/* Defaults to 15px. */
-		--ck-font-size-base: 1.153em;
-
-		font-weight: bold;
+		--ck-font-size-base: var(--ck-form-header-label-font-size);
+		font-weight: var(--ck-font-weight-ui-heading);
 	}
 
 	/* Padding when back button is hidden */
 	&:has(.ck-button-back.ck-hidden) {
-		padding-inline: var(--ck-spacing-large) var(--ck-spacing-large);
+		padding-inline: var(--ck-spacing-control-meta-gap) var(--ck-spacing-control-meta-gap);
 	}
 
 	/* Padding when back button is visible */
 	&:has(.ck-button-back:not(.ck-hidden)) {
-		padding-inline: var(--ck-spacing-small) var(--ck-spacing-small);
+		padding-inline: var(--ck-spacing-surface-padding-inline) var(--ck-spacing-surface-padding-inline);
 	}
 
 	& > .ck-button-back {
-		margin-inline-end: var(--ck-spacing-small);
+		margin-inline-end: var(--ck-spacing-surface-item-gap-inline);
 	}
 
 	& > .ck.ck-button {

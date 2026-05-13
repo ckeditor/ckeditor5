@@ -4,22 +4,30 @@
  */
 
 
+:root {
+	/* Spacing */
+	--ck-list-item-button-padding: var(--ck-spacing-control-padding-block) calc(2 * var(--ck-spacing-control-padding-inline));
+
+	/* Radius */
+	--ck-list-item-button-border-radius: 0;
+}
+
 .ck.ck-button.ck-list-item-button {
-	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+	padding: var(--ck-list-item-button-padding);
 
 	&,
 	&.ck-on {
-		background: var(--ck-color-list-background);
+		background: var(--ck-list-background-color);
 		color: var(--ck-color-text);
 	}
 
 	&:has(.ck-list-item-button__check-holder) {
 		[dir="ltr"] & {
-			padding-left: var(--ck-spacing-small);
+			padding-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			padding-right: var(--ck-spacing-small);
+			padding-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 
@@ -32,7 +40,7 @@
 	&.ck-button.ck-on:hover,
 	&.ck-on:not(.ck-list-item-button_toggleable),
 	&.ck-on:hover {
-		background: var(--ck-color-list-button-hover-background);
+		background: var(--ck-list-button-hover-background-color);
 
 		&:not(.ck-disabled) {
 			color: var(--ck-color-text);
@@ -43,7 +51,7 @@
 .ck.ck-list-item-button {
 	min-height: unset;
 	width: 100%;
-	border-radius: 0;
+	border-radius: var(--ck-list-item-button-border-radius);
 
 	[dir="ltr"] & {
 		text-align: left;
@@ -55,11 +63,11 @@
 
 	&.ck-list-item-button_toggleable {
 		[dir="ltr"] & {
-			padding-left: var(--ck-spacing-small);
+			padding-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			padding-right: var(--ck-spacing-small);
+			padding-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 
@@ -69,11 +77,11 @@
 		height: .9em;
 
 		[dir="ltr"] & {
-			margin-right: var(--ck-spacing-small);
+			margin-right: var(--ck-spacing-control-padding-inline-compact);
 		}
 
 		[dir="rtl"] & {
-			margin-left: var(--ck-spacing-small);
+			margin-left: var(--ck-spacing-control-padding-inline-compact);
 		}
 	}
 

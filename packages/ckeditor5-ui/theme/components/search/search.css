@@ -5,7 +5,8 @@
 
 
 :root {
-	--ck-search-field-view-horizontal-spacing: calc(var(--ck-icon-size) + var(--ck-spacing-medium));
+	/* Spacing */
+	--ck-search-results-info-padding: var(--ck-spacing-surface-section-gap-block) var(--ck-spacing-control-meta-gap);
 }
 
 .ck.ck-search {
@@ -20,11 +21,11 @@
 			transform: translateY(-50%);
 
 			[dir="ltr"] & {
-				left: var(--ck-spacing-medium);
+				left: var(--ck-spacing-control-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				right: var(--ck-spacing-medium);
+				right: var(--ck-spacing-control-icon-gap);
 			}
 		}
 
@@ -35,7 +36,8 @@
 		}
 
 		&.ck-search__query_with-icon {
-			--ck-labeled-field-label-default-position-x: var(--ck-search-field-view-horizontal-spacing);
+			/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+			--ck-labeled-field-label-default-position-x: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md))));
 
 			& > .ck-labeled-field-view__input-wrapper > .ck-icon {
 				opacity: .5;
@@ -46,22 +48,26 @@
 				width: 100%;
 
 				[dir="ltr"] & {
-					padding-left: var(--ck-search-field-view-horizontal-spacing);
+					/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+					padding-left: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md))));
 				}
 
 				[dir="rtl"] & {
 					&:not(.ck-input-text_empty) {
-						padding-left: var(--ck-search-field-view-horizontal-spacing);
+						/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+						padding-left: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md))));
 					}
 				}
 			}
 		}
 
 		&.ck-search__query_with-reset {
-			--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-search-field-view-horizontal-spacing);
+			/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+			--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md))));
 
 			&.ck-labeled-field-view_empty {
-				--ck-labeled-field-empty-unfocused-max-width: 100% - var(--ck-search-field-view-horizontal-spacing) - var(--ck-spacing-medium);
+				/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+				--ck-labeled-field-empty-unfocused-max-width: 100% - var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md)))) - var(--ck-spacing-control-icon-gap);
 			}
 
 			& .ck-search__reset {
@@ -73,11 +79,11 @@
 				padding: 0;
 
 				[dir="ltr"] & {
-					right: var(--ck-spacing-medium);
+					right: var(--ck-spacing-control-icon-gap);
 				}
 
 				[dir="rtl"] & {
-					left: var(--ck-spacing-medium);
+					left: var(--ck-spacing-control-icon-gap);
 				}
 
 				&:hover {
@@ -91,13 +97,15 @@
 
 				[dir="ltr"] & {
 					&:not(.ck-input-text_empty) {
-						padding-right: var(--ck-search-field-view-horizontal-spacing);
+						/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+						padding-right: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md))));
 					}
 				}
 
 				/* stylelint-disable-next-line no-descending-specificity */
 				[dir="rtl"] & {
-					padding-right: var(--ck-search-field-view-horizontal-spacing);
+					/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+					padding-right: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-md))));
 				}
 			}
 		}
@@ -108,19 +116,19 @@
 
 		& > .ck-search__info {
 			width: 100%;
-			padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+			padding: var(--ck-search-results-info-padding);
 
 			& * {
 				white-space: normal;
 			}
 
 			& > span:first-child {
-				font-weight: bold;
+				font-weight: var(--ck-font-weight-ui-heading);
 				display: block;
 			}
 
 			& > span:last-child {
-				margin-top: var(--ck-spacing-medium);
+				margin-top: var(--ck-spacing-surface-section-gap-block);
 			}
 
 			/* Hide the filtered view when nothing was found */

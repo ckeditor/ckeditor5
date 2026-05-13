@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-transition-duration-control-fast: var(--ck-duration-fast);
+	--ck-transition-duration-control: var(--ck-duration-base);
+	--ck-transition-duration-control-emphasized: var(--ck-duration-slow);
+	--ck-transition-duration-surface: var(--ck-duration-slower);
+
+	--ck-transition-timing-function-control: var(--ck-ease-interactive);
+	--ck-transition-timing-function-control-emphasized: var(--ck-ease-emphasized);
+	--ck-transition-timing-function-surface: var(--ck-ease-standard);
+
+	--ck-animation-duration-feedback: var(--ck-animation-duration-slow);
+	--ck-animation-duration-surface-entrance: var(--ck-animation-duration-slow);
+	--ck-animation-duration-progress: var(--ck-animation-duration-emphasis);
+	--ck-animation-duration-progress-reduced: var(--ck-animation-duration-reduced);
+
+	--ck-animation-timing-function-feedback: var(--ck-animation-ease-standard);
+	--ck-animation-timing-function-progress: var(--ck-animation-ease-linear);
+	--ck-animation-fill-mode-feedback: var(--ck-animation-fill-both);
+}

@@ -8,7 +8,7 @@
 	is never smaller than a button with icon, additionally making sure that text-less buttons
 	are perfect squares. The value is also shared by other components which should stay "in-line"
 	with buttons. */
-	--ck-ui-component-min-height: 2.3em;
+	--ck-size-min-height: 2.3em;
 }
 
 /**
@@ -42,7 +42,8 @@
 .ck-reset_all *:not(.ck-reset_all-excluded, .ck-reset_all-excluded *) {
 	/* These are rule inherited by all children elements. */
 	border-collapse: collapse;
-	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
+	/* Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face, var(--ck-font-family));
 	color: var(--ck-color-text);
 	text-align: left;
 	white-space: nowrap;

@@ -3,13 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Radius */
+	--ck-menu-bar-list-item-button-border-radius: 0;
+}
 
 .ck.ck-menu-bar__menu {
 	/*
 	 * List item buttons.
 	 */
 	& .ck-button.ck-menu-bar__menu__item__button {
-		border-radius: 0;
+		border-radius: var(--ck-menu-bar-list-item-button-border-radius);
 
 		& > .ck-spinner-container,
 		& > .ck-spinner-container .ck-spinner {
@@ -19,14 +23,14 @@
 
 		& > .ck-spinner-container {
 			/* This ensures margins corresponding to the .ck-icon. */
-			font-size: var(--ck-icon-font-size);
+			font-size: .8333350694em;
 
 			[dir="ltr"] & {
-				margin-right: var(--ck-spacing-medium);
+				margin-right: var(--ck-spacing-control-icon-gap);
 			}
 
 			[dir="rtl"] & {
-				margin-left: var(--ck-spacing-medium);
+				margin-left: var(--ck-spacing-control-icon-gap);
 			}
 		}
 	}

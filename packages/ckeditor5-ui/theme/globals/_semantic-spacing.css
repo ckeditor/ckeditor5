@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Spacing used by controls like buttons and inputs. */
+	/* Backward compatibility: falls back to legacy --ck-spacing-tiny if overridden. */
+	--ck-spacing-control-padding-block: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+	/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+	--ck-spacing-control-padding-inline: var(--ck-spacing-standard, var(--ck-spacing-base));
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-control-padding-inline-compact: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-tiny if overridden. */
+	--ck-spacing-control-padding-inline-start-compact: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-control-padding-block-regular: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-extra-tiny if overridden. */
+	--ck-spacing-control-padding-block-compact: var(--ck-spacing-extra-tiny, var(--ck-spacing-2xs));
+	/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+	--ck-spacing-control-icon-gap: var(--ck-spacing-medium, var(--ck-spacing-md));
+	/* Backward compatibility: falls back to legacy --ck-spacing-large if overridden. */
+	--ck-spacing-control-meta-gap: var(--ck-spacing-large, var(--ck-spacing-lg));
+
+	/* Spacing used by grouped surfaces like toolbars and lists. */
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-surface-padding-inline: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-surface-padding-block: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-surface-item-gap-inline: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	--ck-spacing-surface-item-gap-block: var(--ck-spacing-small, var(--ck-spacing-sm));
+	/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+	--ck-spacing-surface-section-gap-block: var(--ck-spacing-medium, var(--ck-spacing-md));
+
+	/*
+	 * Naming note: `region` is a provisional term for UI container spacing.
+	 * The namespace may be refined in a future iteration.
+	 * TODO(#19910): Revisit `region` naming.
+	 */
+	/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+	--ck-spacing-region-padding-inline: var(--ck-spacing-standard, var(--ck-spacing-base));
+	/* Backward compatibility: falls back to legacy --ck-spacing-large if overridden. */
+	--ck-spacing-region-padding-inline-wide: var(--ck-spacing-large, var(--ck-spacing-lg));
+	/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+	--ck-spacing-region-padding-block: var(--ck-spacing-standard, var(--ck-spacing-base));
+	/* Backward compatibility: falls back to legacy --ck-spacing-large if overridden. */
+	--ck-spacing-region-edge-margin-block: var(--ck-spacing-large, var(--ck-spacing-lg));
+}

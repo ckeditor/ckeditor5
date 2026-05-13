@@ -6,15 +6,15 @@
 :root {
 	--ck-style-panel-button-width: 120px;
 	--ck-style-panel-button-height: 80px;
-	--ck-style-panel-button-label-background: hsl(0, 0%, 94.1%);
+	--ck-style-panel-button-label-background: var(--ck-color-base-hover);
 	--ck-style-panel-button-hover-label-background: hsl(0, 0%, 92.1%);
 	--ck-style-panel-button-hover-border-color: hsl(0, 0%, 70%);
 	--ck-style-panel-columns: 3;
 }
 
 .ck.ck-style-panel .ck-style-grid {
-	row-gap: var(--ck-spacing-large);
-	column-gap: var(--ck-spacing-large);
+	row-gap: var(--ck-spacing-large, var(--ck-spacing-lg));
+	column-gap: var(--ck-spacing-large, var(--ck-spacing-lg));
 	display: grid;
 	grid-template-columns: repeat(var(--ck-style-panel-columns),auto);
 
@@ -37,7 +37,7 @@
 			height: 22px;
 			line-height: 22px;
 			width: 100%;
-			padding: 0 var(--ck-spacing-medium);
+			padding: 0 var(--ck-spacing-medium, var(--ck-spacing-md));
 			overflow: hidden;
 			text-overflow: ellipsis;
 			flex-shrink: 0;
@@ -48,7 +48,7 @@
 			overflow: hidden;
 			opacity: .9;
 
-			padding: var(--ck-spacing-medium);
+			padding: var(--ck-spacing-medium, var(--ck-spacing-md));
 			background: var(--ck-color-base-background);
 			border: 2px solid var(--ck-color-base-background);
 			display: flex;

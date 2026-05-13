@@ -26,7 +26,7 @@
 		align-items: center;
 		align-content: stretch;
 
-		padding: var(--ck-spacing-large);
+		padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 		margin: 0;
 
 		& > .ck-button {
@@ -35,13 +35,13 @@
 
 		[dir="ltr"] & {
 			& > * + * {
-				margin-left: var(--ck-spacing-standard);
+				margin-left: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 
 		[dir="rtl"] & {
 			& > * + * {
-				margin-right: var(--ck-spacing-standard);
+				margin-right: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 
@@ -77,17 +77,17 @@
 			color: var(--ck-color-base-border);
 
 			[dir="ltr"] & {
-				right: var(--ck-spacing-standard);
+				right: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 
 			[dir="rtl"] & {
-				left: var(--ck-spacing-standard);
+				left: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 
 		& > .ck-labeled-field-replace {
 			flex: 0 0 100%;
-			padding-top: var(--ck-spacing-standard);
+			padding-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 
 			[dir="ltr"] & {
 				margin-left: 0;
@@ -103,15 +103,15 @@
 	& .ck-find-and-replace-form__actions {
 		flex-wrap: wrap;
 		justify-content: flex-end;
-		margin-top: calc( -1 * var(--ck-spacing-large) );
+		margin-top: calc( -1 * var(--ck-spacing-large, var(--ck-spacing-lg)) );
 
 		& > .ck-button-find {
 			font-weight: bold;
 
 			/* Beef the find button up a little. It's the main action button in the form */
 			& .ck-button__label {
-				padding-left: var(--ck-spacing-large);
-				padding-right: var(--ck-spacing-large);
+				padding-left: var(--ck-spacing-large, var(--ck-spacing-lg));
+				padding-right: var(--ck-spacing-large, var(--ck-spacing-lg));
 			}
 		}
 	}
@@ -140,7 +140,7 @@
 			& .ck-labeled-field-view {
 				flex: 1 0 auto;
 				width: 100%;
-				margin-bottom: var(--ck-spacing-standard);
+				margin-bottom: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 
 			& > .ck-button {

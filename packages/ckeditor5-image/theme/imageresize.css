@@ -41,11 +41,11 @@
 }
 
 [dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
-	margin-right: var(--ck-spacing-standard);
+	margin-right: var(--ck-spacing-standard, var(--ck-spacing-base));
 }
 
 [dir="rtl"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
-	margin-left: var(--ck-spacing-standard);
+	margin-left: var(--ck-spacing-standard, var(--ck-spacing-base));
 }
 
 .ck.ck-dropdown .ck-button.ck-resize-image-button .ck-button__label {

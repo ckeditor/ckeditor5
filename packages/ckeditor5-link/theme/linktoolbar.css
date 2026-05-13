@@ -15,7 +15,7 @@
 }
 
 a.ck.ck-button.ck-link-toolbar__preview {
-	padding: 0 var(--ck-spacing-medium);
+	padding: 0 var(--ck-spacing-medium, var(--ck-spacing-md));
 	color: var(--ck-color-link-default);
 	cursor: pointer;
 	justify-content: center;
@@ -49,18 +49,18 @@ a.ck.ck-button.ck-link-toolbar__preview {
 		height: var(--ck-link-bookmark-icon-size);
 
 		[dir="ltr"] & {
-			margin-right: var(--ck-spacing-tiny);
-			margin-left: var(--ck-spacing-small);
+			margin-right: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+			margin-left: var(--ck-spacing-small, var(--ck-spacing-sm));
 		}
 
 		[dir="rtl"] & {
-			margin-left: var(--ck-spacing-tiny);
-			margin-right: var(--ck-spacing-small);
+			margin-left: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+			margin-right: var(--ck-spacing-small, var(--ck-spacing-sm));
 		}
 	}
 
 	&:has( .ck-icon ) {
-		padding-left: var(--ck-spacing-extra-tiny );
+		padding-left: var(--ck-spacing-extra-tiny, var(--ck-spacing-2xs));
 	}
 }
 

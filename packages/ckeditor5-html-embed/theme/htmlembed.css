@@ -7,10 +7,10 @@
 	--ck-html-embed-content-width: calc(100% - 1.5 * var(--ck-icon-size));
 	--ck-html-embed-source-height: 10em;
 	--ck-html-embed-unfocused-outline-width: 1px;
-	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard));
+	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard, var(--ck-spacing-base)));
 
 	--ck-html-embed-source-disabled-background: var(--ck-color-base-foreground);
-	--ck-html-embed-source-disabled-color: hsl(0deg 0% 45%);
+	--ck-html-embed-source-disabled-color: var(--ck-color-text-disabled);
 }
 
 /* The feature container. */
@@ -47,14 +47,14 @@
 	&::before {
 		content: attr(data-html-embed-label);
 		top: calc(-1 * var(--ck-html-embed-unfocused-outline-width));
-		left: var(--ck-spacing-standard);
-		background: hsl(0deg 0% 60%);
+		left: var(--ck-spacing-standard, var(--ck-spacing-base));
+		background: var(--ck-color-base-text-light);
 		transition: background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
-		padding: calc(var(--ck-spacing-tiny) + var(--ck-html-embed-unfocused-outline-width)) var(--ck-spacing-small) var(--ck-spacing-tiny);
-		border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+		padding: calc(var(--ck-spacing-tiny, var(--ck-spacing-xs)) + var(--ck-html-embed-unfocused-outline-width)) var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-tiny, var(--ck-spacing-xs));
+		border-radius: 0 0 var(--ck-border-radius, var(--ck-radius-base)) var(--ck-border-radius, var(--ck-radius-base));
 		color: var(--ck-color-base-background);
-		font-size: var(--ck-font-size-tiny);
-		font-family: var(--ck-font-face);
+		font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
+		font-family: var(--ck-font-face, var(--ck-font-family));
 		position: absolute;
 
 		/* Make sure the content does not cover the label. */
@@ -63,7 +63,7 @@
 
 	&[dir="rtl"]::before {
 		left: auto;
-		right: var(--ck-spacing-standard);
+		right: var(--ck-spacing-standard, var(--ck-spacing-base));
 	}
 
 	/* Make space for label but it only collides in LTR languages */
@@ -73,30 +73,30 @@
 
 	.ck.ck-editor__editable.ck-blurred &.ck-widget_selected::before {
 		top: 0px;
-		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
+		padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-small, var(--ck-spacing-sm));
 	}
 
 	.ck.ck-editor__editable:not(.ck-blurred) &.ck-widget_selected::before {
 		top: 0;
-		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
-		background: var(--ck-color-focus-border);
+		padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-small, var(--ck-spacing-sm));
+		background: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 	}
 
 	.ck.ck-editor__editable &:not(.ck-widget_selected):hover::before {
 		top: 0px;
-		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
+		padding: var(--ck-spacing-tiny, var(--ck-spacing-xs)) var(--ck-spacing-small, var(--ck-spacing-sm));
 	}
 
 	/* ----- Emebed internals --------------------------------------------------------------------- */
 
 	& .raw-html-embed__content-wrapper {
-		padding: var(--ck-spacing-standard);
+		padding: var(--ck-spacing-standard, var(--ck-spacing-base));
 	}
 
 	/* The switch mode button wrapper. */
 	& .raw-html-embed__buttons-wrapper {
-		top: var(--ck-spacing-standard);
-		right: var(--ck-spacing-standard);
+		top: var(--ck-spacing-standard, var(--ck-spacing-base));
+		right: var(--ck-spacing-standard, var(--ck-spacing-base));
 		position: absolute;
 		display: flex;
 
@@ -109,13 +109,13 @@
 		}
 
 		& .ck-button:not(:first-child) {
-			margin-top: var(--ck-spacing-small);
+			margin-top: var(--ck-spacing-small, var(--ck-spacing-sm));
 		}
 		flex-direction: column
 	}
 
 	&[dir="rtl"] .raw-html-embed__buttons-wrapper {
-		left: var(--ck-spacing-standard);
+		left: var(--ck-spacing-standard, var(--ck-spacing-base));
 		right: auto;
 	}
 
@@ -126,7 +126,7 @@
 		width: var(--ck-html-embed-content-width);
 		resize: none;
 		min-width: 0;
-		padding: var(--ck-spacing-standard);
+		padding: var(--ck-spacing-standard, var(--ck-spacing-base));
 
 		font-family: monospace;
 		tab-size: 4;

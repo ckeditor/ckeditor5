@@ -3,6 +3,32 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-duration-fast: .1s;
+	--ck-duration-base: .2s;
+	--ck-duration-slow: .3s;
+	--ck-duration-slower: .4s;
+
+	--ck-animation-duration-fast: var(--ck-duration-fast);
+	--ck-animation-duration-base: var(--ck-duration-base);
+	--ck-animation-duration-slow: var(--ck-duration-slow);
+	--ck-animation-duration-emphasis: 1.5s;
+	--ck-animation-duration-reduced: 0s;
+
+	--ck-transition-none: none;
+
+	--ck-ease-standard: ease;
+	--ck-ease-interactive: ease-in-out;
+	--ck-ease-emphasized: cubic-bezier(0, 0, 0.24, 0.95);
+	--ck-animation-ease-standard: var(--ck-ease-standard);
+	--ck-animation-ease-interactive: var(--ck-ease-interactive);
+	--ck-animation-ease-linear: linear;
+
+	--ck-animation-fill-both: both;
+	--ck-animation-repeat-infinite: infinite;
+	--ck-animation-none: var(--ck-transition-none);
+}
+
 /**
  * A class that disables all transitions of the element and its children.
  */

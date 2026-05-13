@@ -10,11 +10,11 @@
 
 .ck-source-editing-area::after,
 .ck-source-editing-area textarea {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 	margin: 0;
 	border: 1px solid transparent;
 	line-height: var(--ck-line-height-base);
-	font-size: var(--ck-font-size-normal);
+	font-size: var(--ck-font-size-normal, var(--ck-font-size-md));
 	font-family: monospace;
 	white-space: pre-wrap;
 }
@@ -34,13 +34,13 @@
 	overflow: hidden;
 	box-sizing: border-box;
 	border-color: var(--ck-color-base-border);
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 
 	&:not([readonly]):focus {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-inner-shadow), 0 0;
+		border: var(--ck-focus-ring, var(--ck-interactive-focus-ring));
+		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 	}
 }

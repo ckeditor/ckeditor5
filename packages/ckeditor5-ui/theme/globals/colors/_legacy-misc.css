@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* -- Engine -------------------------------------------------------------------------------- */
+
+	--ck-color-engine-placeholder-text: hsl(0, 0%, 44%);
+
+	/* -- Upload -------------------------------------------------------------------------------- */
+
+	--ck-color-upload-bar-background: var(--ck-color-base-focus);
+
+	/* -- Link ---------------------------------------------------------------------------------- */
+
+	--ck-color-link-default: hsl(240, 100%, 47%);
+	--ck-color-link-selected-background: hsla(201, 100%, 56%, 0.1);
+	--ck-color-link-fake-selection: hsla(201, 100%, 56%, 0.3);
+
+	/* -- Search result highlight --------------------------------------------------------------- */
+
+	--ck-color-highlight-background: var(--ck-color-feedback-highlight);
+
+	/* -- Generic colors ----------------------------------------------------------------------- */
+
+	--ck-color-light-red: hsl(0, 100%, 90%);
+}

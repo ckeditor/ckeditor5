@@ -12,8 +12,12 @@
 	--ck-powered-by-letter-spacing: calc(var(--ck-font-size-base) * -0.2 / 13);
 	--ck-powered-by-padding-vertical: 2px;
 	--ck-powered-by-padding-horizontal: 4px;
+	--ck-powered-by-label-padding-inline-start: 2px;
+	--ck-powered-by-label-margin-inline-end: 4px;
+	--ck-powered-by-label-font-weight: var(--ck-font-weight-bold);
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
-	--ck-powered-by-border-radius: var(--ck-border-radius);
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-powered-by-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-powered-by-background: hsl(0, 0%, 100%);
 	--ck-powered-by-border-color: var(--ck-color-focus-border);
 
@@ -24,12 +28,13 @@
 }
 
 .ck.ck-balloon-panel.ck-powered-by-balloon {
-	--ck-border-radius: var(--ck-powered-by-border-radius);
+	border-radius: var(--ck-powered-by-border-radius);
 
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
-	z-index: calc( var(--ck-z-panel) - 1 );
+	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+	z-index: calc( var(--ck-z-panel, var(--ck-z-overlay)) - 1 );
 
 	& .ck.ck-powered-by {
 		line-height: var(--ck-powered-by-line-height);
@@ -47,10 +52,10 @@
 		& .ck-powered-by__label {
 			font-size: var(--ck-powered-by-font-size);
 			letter-spacing: var(--ck-powered-by-letter-spacing);
-			padding-left: 2px;
+			padding-left: var(--ck-powered-by-label-padding-inline-start);
 			text-transform: uppercase;
-			font-weight: bold;
-			margin-right: 4px;
+			font-weight: var(--ck-powered-by-label-font-weight);
+			margin-right: var(--ck-powered-by-label-margin-inline-end);
 			cursor: pointer;
 			line-height: normal;
 			color: var(--ck-powered-by-text-color);
@@ -81,4 +86,3 @@
 		border-color: var(--ck-powered-by-border-color);
 	}
 }
-

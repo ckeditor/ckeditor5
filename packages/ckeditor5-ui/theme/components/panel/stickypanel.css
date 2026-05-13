@@ -4,14 +4,18 @@
  */
 
 
+:root {
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-sticky-panel-uniform-border-radius: var(--ck-border-radius-uniform);
+}
+
 .ck.ck-sticky-panel {
 	& .ck-sticky-panel__content_sticky {
-		box-shadow: var(--ck-drop-shadow), 0 0;
+		box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
-		border-width: 0 1px 1px;
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-		z-index: var(--ck-z-panel); /* #315 */
+		border-width: 0 var(--ck-border-width-surface) var(--ck-border-width-surface);
+		border-radius: var(--ck-sticky-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-top));
+		z-index: var(--ck-layer-panel); /* #315 */
 		position: fixed;
 		top: 0;
 	}

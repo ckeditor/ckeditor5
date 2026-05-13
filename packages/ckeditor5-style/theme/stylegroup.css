@@ -5,7 +5,7 @@
 
 .ck.ck-style-panel .ck-style-panel__style-group {
 	& > .ck-label {
-		margin: var(--ck-spacing-large) 0;
+		margin: var(--ck-spacing-large, var(--ck-spacing-lg)) 0;
 	}
 
 	&:first-child {

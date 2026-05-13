@@ -27,5 +27,6 @@
 }
 
 div.ck.ck-balloon-panel.ck-mention-balloon {
-	z-index: calc( var( --ck-z-dialog ) + 1 );
+	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
+	z-index: calc( var( --ck-z-dialog, var(--ck-z-modal) ) + 1 );
 }

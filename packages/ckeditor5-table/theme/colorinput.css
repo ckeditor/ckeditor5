@@ -53,7 +53,8 @@
 			}
 
 			& > .ck.ck-input-color__button__preview {
-				border-radius: var(--ck-rounded-corners-radius);
+				/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
+				border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 				width: 20px;
 				height: 20px;
 				border: 1px solid var(--ck-color-input-border);
@@ -78,7 +79,7 @@
 
 	& .ck.ck-input-color__remove-color {
 		width: 100%;
-		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
+		padding: calc(var(--ck-spacing-standard, var(--ck-spacing-base)) / 2) var(--ck-spacing-standard, var(--ck-spacing-base));
 
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
@@ -96,11 +97,11 @@
 		}
 
 		& .ck.ck-icon {
-			margin-right: var(--ck-spacing-standard);
+			margin-right: var(--ck-spacing-standard, var(--ck-spacing-base));
 
 			[dir="rtl"] & {
 				margin-right: 0;
-				margin-left: var(--ck-spacing-standard);
+				margin-left: var(--ck-spacing-standard, var(--ck-spacing-base));
 			}
 		}
 	}

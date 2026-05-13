@@ -4,26 +4,38 @@
  */
 
 :root {
-	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
+	/* Spacing */
+	--ck-editor-editable-padding: 0 var(--ck-spacing-region-padding-inline);
+
+	/* Radius */
+	--ck-editor-frame-border-radius: var(--ck-border-radius-surface);
+	--ck-editor-sticky-panel-border-radius: var(--ck-editor-frame-border-radius) var(--ck-editor-frame-border-radius) 0 0;
+
+	/* Border */
+	--ck-editor-frame-border: var(--ck-border-width-surface) solid var(--ck-editor-frame-border-color);
+
+	/* Color */
+	--ck-editor-frame-border-color: var(--ck-color-border-container);
+
+	/* State / meta */
+	--ck-editor-editable-focus-border-color: var(--ck-interactive-focus-border-color);
 }
 
 .ck.ck-editor__top {
 	& .ck-sticky-panel {
 		& .ck-sticky-panel__content {
-			border-radius: var(--ck-rounded-corners-radius);
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
+			border-radius: var(--ck-sticky-panel-uniform-border-radius, var(--ck-editor-sticky-panel-border-radius));
 
-			border: 1px solid var(--ck-color-base-border);
+			border: var(--ck-editor-frame-border);
 			border-bottom-width: 0;
 
 			&.ck-sticky-panel__content_sticky {
-				border-bottom-width: 1px;
+				border-bottom-width: var(--ck-border-width-surface);
 			}
 
 			& .ck-menu-bar {
 				border: 0;
-				border-bottom: 1px solid var(--ck-color-base-border);
+				border-bottom: var(--ck-editor-frame-border);
 			}
 
 			& .ck-toolbar {
@@ -34,19 +46,20 @@
 }
 
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
-	border-radius: var(--ck-rounded-corners-radius);
+	border-radius: var(--ck-editor-frame-border-radius);
 
 	&.ck-focused {
 		outline: none;
-		border: var(--ck-focus-ring);
-		box-shadow: var(--ck-inner-shadow), 0 0;
+		border-color: var(--ck-editor-editable-focus-border-color);
+		/* Backward compatibility: falls back to legacy --ck-inner-shadow if overridden. */
+		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 	}
 }
 
 .ck.ck-editor__editable_inline {
 	overflow: auto;
-	padding: 0 var(--ck-spacing-standard);
-	border: 1px solid transparent;
+	padding: var(--ck-editor-editable-padding);
+	border: var(--ck-border-width-control) solid transparent;
 
 	&[dir="ltr"] {
 		text-align: left;
@@ -58,7 +71,7 @@
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3385 */
 	& > *:first-child {
-		margin-top: var(--ck-spacing-large);
+		margin-top: var(--ck-spacing-region-edge-margin-block);
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/847 */
@@ -67,12 +80,13 @@
 		 * This value should match with the default margins of the block elements (like .media or .image)
 		 * to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
 		 */
-		margin-bottom: var(--ck-spacing-large);
+		margin-bottom: var(--ck-spacing-region-edge-margin-block);
 	}
 
 	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
 	&.ck-blurred ::selection {
-		background: var(--ck-color-editable-blur-selection);
+		/* Fallback to `--ck-color-editable-blur-selection` for backward compatibility. */
+		background: var(--ck-color-editable-blur-selection, hsl(0, 0%, 85%));
 	}
 }
 
@@ -80,12 +94,12 @@
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-color-panel-background);
+		border-bottom-color: var(--ck-balloon-panel-background-color);
 	}
 }
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-color-panel-background);
+		border-top-color: var(--ck-balloon-panel-background-color);
 	}
 }

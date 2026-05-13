@@ -8,8 +8,8 @@
 	flex-wrap: wrap;
 	justify-content: flex-start;
 	background: var(--ck-color-base-background);
-	padding: var(--ck-spacing-small);
-	gap: var(--ck-spacing-small);
-	border: 1px solid var(--ck-color-toolbar-border);
+	padding: var(--ck-spacing-surface-padding-inline);
+	gap: var(--ck-spacing-surface-item-gap-inline);
+	border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
 	width: 100%;
 }

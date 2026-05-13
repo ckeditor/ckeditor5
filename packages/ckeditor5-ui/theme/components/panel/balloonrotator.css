@@ -4,25 +4,25 @@
  */
 
 .ck .ck-balloon-rotator__navigation {
-	background: var(--ck-color-toolbar-background);
-	border-bottom: 1px solid var(--ck-color-toolbar-border);
-	padding: 0 var(--ck-spacing-small);
+	background: var(--ck-toolbar-background-color);
+	border-bottom: var(--ck-border-width-divider) solid var(--ck-toolbar-border-color);
+	padding: 0 var(--ck-spacing-surface-padding-inline);
 	display: flex;
 	align-items: center;
 
 	/* Let's keep similar appearance to `ck-toolbar`. */
 	& > * {
-		margin-right: var(--ck-spacing-small);
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
+		margin-right: var(--ck-spacing-surface-item-gap-inline);
+		margin-top: var(--ck-spacing-surface-item-gap-block);
+		margin-bottom: var(--ck-spacing-surface-item-gap-block);
 	}
 
 	/* Gives counter more breath than buttons. */
 	& .ck-balloon-rotator__counter {
-		margin-right: var(--ck-spacing-standard);
+		margin-right: var(--ck-spacing-control-padding-inline);
 
 		/* We need to use smaller margin because of previous button's right margin. */
-		margin-left: var(--ck-spacing-small);
+		margin-left: var(--ck-spacing-surface-item-gap-inline);
 	}
 	justify-content: center
 }

@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-border-width-control: var(--ck-border-width-thin);
+	--ck-border-width-surface: var(--ck-border-width-thin);
+	--ck-border-width-divider: var(--ck-border-width-thin);
+	--ck-border-width-emphasis: var(--ck-border-width-thick);
+
+	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-border-radius-control: var(--ck-border-radius, var(--ck-radius-base));
+
+	/* Semantic radii for elevated surfaces (dropdowns, panels, dialogs, toolbars). */
+	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	--ck-border-radius-surface: var(--ck-border-radius, var(--ck-radius-base));
+
+	/* Uniform radius opt-out for attached surfaces. Set to a radius value
+	 * (e.g. var(--ck-radius-base)) to disable cut-corner / attached-edge behavior
+	 * on all panels, dropdowns, menus, and toolbars at once. Defaults to `initial`
+	 * (no override — each surface keeps its positional corners). */
+	--ck-border-radius-uniform: initial;
+
+	/* Radius for attached surfaces where one edge touches trigger/control. */
+	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);
+	--ck-border-radius-surface-attached-top: 0 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-attached-bottom: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 0;
+
+	/* Radius with one corner cut for positioned attached surfaces. */
+	--ck-border-radius-surface-cut-top-left: 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-top-right: var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-bottom-right: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached);
+	--ck-border-radius-surface-cut-bottom-left: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0;
+}

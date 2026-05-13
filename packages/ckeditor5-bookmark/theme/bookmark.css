@@ -5,7 +5,8 @@
 
 :root {
 	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
-	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
+	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
+	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
 	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
 }
@@ -66,5 +67,5 @@
 	height: 100%;
 	border-right: 1px solid var(--ck-color-base-text);
 	margin-right: -1px;
-	outline: solid 1px hsla(0, 0%, 100%, .5);
+	outline: var(--ck-outline-fake-caret);
 }

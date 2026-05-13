@@ -5,19 +5,27 @@
 
 
 :root {
-	--ck-dropdown-menu-menu-panel-max-width: 75vw;
+	/* Size */
+	--ck-dropdown-menu-panel-max-height: 314px;
+
+	/* Radius */
+	/* Set to a radius value (e.g. var(--ck-radius-base)) to disable attached-corner behavior and use uniform corners. */
+	--ck-dropdown-menu-panel-uniform-border-radius: var(--ck-border-radius-uniform);
+	--ck-dropdown-menu-panel-border-radius: var(--ck-border-radius-surface-attached);
 }
 
 .ck.ck-balloon-panel.ck-dropdown-menu__nested-menu__panel {
-	box-shadow: var(--ck-drop-shadow), 0 0;
+	border-radius: var(--ck-dropdown-menu-panel-border-radius);
+	box-shadow: var(--ck-shadow-surface-floating), 0 0;
 
-	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
+	background: var(--ck-dropdown-panel-background-color);
+	border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 	bottom: 0;
 	height: fit-content;
-	max-width: var(--ck-dropdown-menu-menu-panel-max-width);
+	/* Backward compatibility: falls back to legacy --ck-dropdown-menu-menu-panel-max-width if overridden. */
+	max-width: var(--ck-dropdown-menu-menu-panel-max-width, 75vw);
 	position: absolute;
-	max-height: 314px; /* With the default settings, this is equal to 10 menu items. */
+	max-height: var(--ck-dropdown-menu-panel-max-height); /* With the default settings, this is equal to 10 menu items. */
 	overflow-y: auto;
 
 	/* Reset balloon styling */
@@ -29,26 +37,26 @@
 	/* Corner border radius consistent with the button. */
 	&.ck-balloon-panel_es,
 	&.ck-balloon-panel_se {
-		border-top-left-radius: 0;
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-left));
 	}
 
 	&.ck-balloon-panel_ws,
 	&.ck-balloon-panel_sw {
-		border-top-right-radius: 0;
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-top-right));
 	}
 
 	&.ck-balloon-panel_en,
 	&.ck-balloon-panel_ne {
-		border-bottom-left-radius: 0;
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-left));
 	}
 
 	&.ck-balloon-panel_wn,
 	&.ck-balloon-panel_nw {
-		border-bottom-right-radius: 0;
+		border-radius: var(--ck-dropdown-menu-panel-uniform-border-radius, var(--ck-border-radius-surface-cut-bottom-right));
 	}
 
 	&:focus {
 		outline: none;
 	}
-	z-index: calc(var(--ck-z-panel) + 1)
+	z-index: var(--ck-layer-panel-above)
 }

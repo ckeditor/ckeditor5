@@ -46,7 +46,7 @@
 	}
 
 	& .ck-link__empty-list-info {
-		padding: calc( 2 * var(--ck-spacing-large) ) var(--ck-spacing-medium);
+		padding: calc( 2 * var(--ck-spacing-large, var(--ck-spacing-lg)) ) var(--ck-spacing-medium, var(--ck-spacing-md));
 		text-align: center;
 		font-style: italic;
 	}

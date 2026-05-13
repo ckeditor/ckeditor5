@@ -8,7 +8,7 @@
 }
 
 .ck.ck-style-panel {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 	overflow-y: auto;
 	max-height: var(--ck-style-panel-max-height);
 }

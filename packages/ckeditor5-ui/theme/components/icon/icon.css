@@ -4,8 +4,9 @@
  */
 
 :root {
-	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
-	--ck-icon-font-size: .8333350694em;
+	/* Size */
+	/* Backward compatibility: falls back to legacy --ck-font-size-normal if overridden. */
+	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal, var(--ck-font-size-md)));
 }
 
 .ck.ck-icon {
@@ -13,7 +14,8 @@
 	height: var(--ck-icon-size);
 
 	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */
-	font-size: var(--ck-icon-font-size);
+	/* Backward compatibility: falls back to legacy --ck-icon-font-size if overridden. */
+	font-size: var(--ck-icon-font-size, .8333350694em);
 
 	/* Inherit cursor style (#5). */
 	cursor: inherit;

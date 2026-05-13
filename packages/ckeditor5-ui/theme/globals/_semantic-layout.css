@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Semantic sizing for shared cross-component layout constraints.
+	 * This layer will expand as more components adopt the token system. */
+	/* Backward compatibility: falls back to legacy --ck-ui-component-min-height if overridden. */
+	--ck-size-control-min-height: var(--ck-ui-component-min-height, var(--ck-size-min-height));
+}

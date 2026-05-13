@@ -4,13 +4,17 @@
  */
 
 :root {
-	--ck-collapsible-arrow-size: calc(0.5 * var(--ck-icon-size));
+	/* Spacing */
+	--ck-collapsible-children-padding: var(--ck-spacing-surface-section-gap-block) var(--ck-spacing-control-meta-gap) var(--ck-spacing-region-edge-margin-block);
+
+	/* Typography */
+	--ck-collapsible-button-font-weight: var(--ck-font-weight-ui-strong);
 }
 
 .ck.ck-collapsible {
 	& > .ck.ck-button {
 		width: 100%;
-		font-weight: bold;
+		font-weight: var(--ck-collapsible-button-font-weight);
 		border-radius: 0;
 		color: inherit;
 
@@ -25,13 +29,14 @@
 		}
 
 		& > .ck-icon {
-			margin-right: var(--ck-spacing-medium);
-			width: var(--ck-collapsible-arrow-size);
+			margin-right: var(--ck-spacing-control-icon-gap);
+			/* Backward compatibility: falls back to legacy --ck-collapsible-arrow-size if overridden. */
+			width: var(--ck-collapsible-arrow-size, calc(0.5 * var(--ck-icon-size)));
 		}
 	}
 
 	& > .ck-collapsible__children {
-		padding: var(--ck-spacing-medium) var(--ck-spacing-large) var(--ck-spacing-large);
+		padding: var(--ck-collapsible-children-padding);
 	}
 
 	&.ck-collapsible_collapsed {

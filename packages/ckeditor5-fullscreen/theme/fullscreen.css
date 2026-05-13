@@ -11,9 +11,13 @@ body.ck-fullscreen {
 
 	overflow: hidden;
 
-	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
-	--ck-z-panel: calc(var(--ck-z-default) + 999);
-	--ck-z-dialog: 100000;
+	/* Override both legacy and new z-index tokens for fullscreen mode. */
+	--ck-z-default: calc(var(--ck-z-fullscreen) + 1); /* legacy */
+	--ck-z-base: calc(var(--ck-z-fullscreen) + 1);
+	--ck-z-panel: calc(var(--ck-z-default) + 999); /* legacy */
+	--ck-z-overlay: calc(var(--ck-z-default) + 999);
+	--ck-z-dialog: 100000; /* legacy */
+	--ck-z-modal: 100000;
 
 	/* CKBox wrappers have z-index of 9999, let's bump them over the dialog's to ensure visibility like outside fullscreen mode. */
 	& .ckbox:not(#n) {
@@ -87,7 +91,8 @@ Fullscreen layout:
 		border-top: 1px solid var(--ck-color-base-border);
 		border-left: 1px solid var(--ck-color-base-border);
 		border-right: 1px solid var(--ck-color-base-border);
-		border-radius: var(--ck-border-radius) 0;
+		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+		border-radius: var(--ck-border-radius, var(--ck-radius-base)) 0;
 	}
 }
 
@@ -134,8 +139,8 @@ Fullscreen layout:
 	margin: 0;
 	padding: 20mm 12mm;
 	border: 1px var(--ck-color-base-border) solid;
-	background: hsl(0, 0%, 100%);
-	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+	background: var(--ck-color-base-background);
+	box-shadow: var(--ck-shadow-md);
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck-source-editing-area {
@@ -165,11 +170,12 @@ Fullscreen layout:
 	& .ck-button.ck-fullscreen__left-sidebar-toggle-button {
 		--ck-icon-size: 20px;
 		--ck-ui-component-min-height: 0px;
+		--ck-size-min-height: 0px;
 
 		align-self: flex-start;
 		padding-top: 0;
 		margin-top: var(--ck-fullscreen-editor-top-margin);
-		margin-bottom: var(--ck-spacing-large);
+		margin-bottom: var(--ck-spacing-large, var(--ck-spacing-lg));
 		opacity: 0.5;
 		border-radius: 100%;
 	}
@@ -205,8 +211,8 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar-item {
-	padding: var(--ck-spacing-medium);
-	margin-bottom: var(--ck-spacing-medium);
+	padding: var(--ck-spacing-medium, var(--ck-spacing-md));
+	margin-bottom: var(--ck-spacing-medium, var(--ck-spacing-md));
 
 	/* First header should not have top padding. */
 	&:first-child {
@@ -238,7 +244,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__presence-list {
-	margin-top: var(--ck-spacing-medium);
+	margin-top: var(--ck-spacing-medium, var(--ck-spacing-md));
 }
 
 .ck-fullscreen__left-sidebar-item--no-margin {

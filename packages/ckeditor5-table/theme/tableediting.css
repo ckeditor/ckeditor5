@@ -8,7 +8,7 @@
 	--ck-table-content-default-border-color: hsl(0, 0%, 83%);
 	--ck-table-border-none-helper-line-color: hsl(0, 0%, 83%);
 	--ck-table-border-none-helper-line-style: dashed;
-	--ck-table-border-none-helper-line-width: 1px;
+	--ck-table-border-none-helper-line-width: var(--ck-border-width-thin);
 }
 
 .ck-widget.table {
@@ -36,7 +36,7 @@
 				&:focus {
 					/* A very slight background to highlight the focused cell */
 					background: var(--ck-color-table-focused-cell-background);
-					outline: 1px solid var(--ck-color-focus-border);
+					outline: 1px solid var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 					outline-offset: -1px; /* progressive enhancement - no IE support */
 				}
 			}

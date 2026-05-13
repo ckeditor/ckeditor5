@@ -3,9 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	/* Spacing */
+	--ck-responsive-form-padding: var(--ck-spacing-region-edge-margin-block);
+
+	/* Border */
+	--ck-responsive-form-divider-border: var(--ck-border-width-divider) solid var(--ck-color-base-border);
+}
 
 .ck.ck-responsive-form {
-	padding: var(--ck-spacing-large);
+	padding: var(--ck-responsive-form-padding);
 
 	&:focus {
 		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
@@ -14,13 +21,13 @@
 
 	[dir="ltr"] & {
 		& > :not(:first-child) {
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-spacing-region-padding-inline);
 		}
 	}
 
 	[dir="rtl"] & {
 		& > :not(:last-child) {
-			margin-left: var(--ck-spacing-standard);
+			margin-left: var(--ck-spacing-region-padding-inline);
 		}
 	}
 
@@ -29,7 +36,7 @@
 		width: calc(.8 * var(--ck-input-width));
 
 		& .ck-labeled-field-view {
-			margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+			margin: var(--ck-spacing-region-edge-margin-block) var(--ck-spacing-region-edge-margin-block) 0;
 
 			& .ck-input-text,
 			& .ck-input-number {
@@ -45,12 +52,12 @@
 
 		& > .ck-button:nth-last-child(1),
 		& > .ck-button:nth-last-child(2) {
-			padding: var(--ck-spacing-standard);
-			margin-top: var(--ck-spacing-large);
+			padding: var(--ck-spacing-control-padding-inline);
+			margin-top: var(--ck-spacing-region-edge-margin-block);
 			border-radius: 0;
 
 			&:not(:focus) {
-				border-top: 1px solid var(--ck-color-base-border);
+				border-top: var(--ck-responsive-form-divider-border);
 			}
 
 			[dir="ltr"] & {
@@ -61,7 +68,7 @@
 				margin-left: 0;
 
 				&:last-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
+					border-right: var(--ck-responsive-form-divider-border);
 				}
 			}
 		}
@@ -70,14 +77,14 @@
 				content: "";
 				width: 0;
 				position: absolute;
-				right: -1px;
-				top: -1px;
-				bottom: -1px;
+				right: calc(-1 * var(--ck-border-width-divider));
+				top: calc(-1 * var(--ck-border-width-divider));
+				bottom: calc(-1 * var(--ck-border-width-divider));
 				z-index: 1;
 			}
 
 			&:nth-last-child(2)::after {
-				border-right: 1px solid var(--ck-color-base-border);
+				border-right: var(--ck-responsive-form-divider-border);
 			}
 
 			&:focus::after {
@@ -88,7 +95,7 @@
 }
 
 .ck-vertical-form > .ck-button:nth-last-child(2)::after {
-	border-right: 1px solid var(--ck-color-base-border);
+	border-right: var(--ck-responsive-form-divider-border);
 }
 
 .ck-vertical-form .ck-button {
@@ -96,9 +103,9 @@
 		content: "";
 		width: 0;
 		position: absolute;
-		right: -1px;
-		top: -1px;
-		bottom: -1px;
+		right: calc(-1 * var(--ck-border-width-divider));
+		top: calc(-1 * var(--ck-border-width-divider));
+		bottom: calc(-1 * var(--ck-border-width-divider));
 		z-index: 1;
 	}
 
