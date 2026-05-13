@@ -42,11 +42,11 @@ import type {
 } from '../menubar/menubarview.js';
 import { normalizeMenuBarConfig } from '../menubar/utils.js';
 
+const EditorUIBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  */
-const EditorUIBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export abstract class EditorUI extends EditorUIBase {
 	/**
 	 * The editor that the UI belongs to.

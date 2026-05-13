@@ -17,11 +17,11 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import type { FindResultType } from './findandreplace.js';
 
+const FindAndReplaceStateBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The object storing find and replace plugin state for a given editor instance.
  */
-const FindAndReplaceStateBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class FindAndReplaceState extends FindAndReplaceStateBase {
 	/**
 	 * A collection of find matches.

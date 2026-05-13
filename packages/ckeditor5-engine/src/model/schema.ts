@@ -20,9 +20,14 @@ import { type ModelNode } from './node.js';
 import { type ModelSelection } from './selection.js';
 import { type ModelWriter } from './writer.js';
 
-import { CKEditorError, first, ObservableMixin,
+import {
+	CKEditorError,
+	first,
+	ObservableMixin,
 	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
+
+const ModelSchemaBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
 
 /**
  * The model's schema. It defines the allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -37,8 +42,6 @@ import { CKEditorError, first, ObservableMixin,
  * {@glink framework/architecture/editing-engine Introduction to the Editing engine architecture} guide.
  * * The {@glink framework/deep-dive/schema Schema deep-dive} guide.
  */
-const ModelSchemaBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class ModelSchema extends ModelSchemaBase {
 	private readonly _sourceDefinitions: Record<string, Array<ModelSchemaItemDefinition>> = {};
 

@@ -18,6 +18,8 @@ import type {
 	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
+const TextWatcherBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The text watcher feature.
  *
@@ -25,8 +27,6 @@ import type {
  * {@link module:typing/textwatcher~TextWatcher#event:matched:selection `matched:selection`} and
  * {@link module:typing/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
  */
-const TextWatcherBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class TextWatcher extends TextWatcherBase {
 	/**
 	 * The editor's model.

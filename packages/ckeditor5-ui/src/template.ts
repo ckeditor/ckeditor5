@@ -26,6 +26,8 @@ import { isObject, cloneDeepWith } from 'es-toolkit/compat';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
+const TemplateBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * A basic Template class. It renders a DOM HTML element or text from a
  * {@link module:ui/template~TemplateDefinition definition} and supports element attributes, children,
@@ -64,8 +66,6 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex
  * template definitions.
  */
-const TemplateBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class Template extends TemplateBase {
 	public ns?: string;
 

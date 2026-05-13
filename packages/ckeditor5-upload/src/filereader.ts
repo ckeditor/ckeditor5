@@ -11,11 +11,11 @@ import { ObservableMixin, type ObservableMixinConstructor } from '@ckeditor/cked
 
 type DomFileReader = globalThis.FileReader;
 
+const FileReaderBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * Wrapper over the native `FileReader`.
  */
-const FileReaderBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class FileReader extends FileReaderBase {
 	public total!: number;
 

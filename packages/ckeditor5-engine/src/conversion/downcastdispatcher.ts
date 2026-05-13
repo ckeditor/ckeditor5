@@ -29,6 +29,8 @@ import { type ModelSchema } from '../model/schema.js';
 import { type ModelSelection } from '../model/selection.js';
 import { type ViewElement } from '../view/element.js';
 
+const DowncastDispatcherBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
  * to changes in the model and firing a set of events. The callbacks listening to these events are called converters. The
@@ -120,8 +122,6 @@ import { type ViewElement } from '../view/element.js';
  * } );
  * ```
  */
-const DowncastDispatcherBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class DowncastDispatcher extends DowncastDispatcherBase {
 	/**
 	 * A template for an interface passed by the dispatcher to the event callbacks.

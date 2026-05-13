@@ -23,9 +23,9 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import { type ViewItem } from '../view/item.js';
 
-import { CKEditorError, EmitterMixin,
-	type EmitterMixinConstructor
-} from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
+
+const UpcastDispatcherBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of
@@ -123,8 +123,6 @@ import { CKEditorError, EmitterMixin,
  * @fires text
  * @fires documentFragment
  */
-const UpcastDispatcherBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class UpcastDispatcher extends UpcastDispatcherBase {
 	/**
 	 * An interface passed by the dispatcher to the event callbacks.

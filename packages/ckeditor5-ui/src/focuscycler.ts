@@ -20,6 +20,8 @@ import {
 import { type View } from './view.js';
 import { type ViewCollection } from './viewcollection.js';
 
+const FocusCyclerBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * A utility class that helps cycling over {@link module:ui/focuscycler~FocusableView focusable views} in a
  * {@link module:ui/viewcollection~ViewCollection} when the focus is tracked by the
@@ -72,8 +74,6 @@ import { type ViewCollection } from './viewcollection.js';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-const FocusCyclerBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class FocusCycler extends FocusCyclerBase {
 	/**
 	 * A {@link module:ui/focuscycler~FocusableView focusable views} collection that the cycler operates on.

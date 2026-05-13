@@ -22,6 +22,8 @@ import { CKEditorError, EmitterMixin,
 	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
+const MarkerCollectionBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.
  * It lets you {@link module:engine/model/markercollection~MarkerCollection#get get} markers or track them using
@@ -36,8 +38,6 @@ import { CKEditorError, EmitterMixin,
  *
  * @see module:engine/model/markercollection~Marker
  */
-const MarkerCollectionBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class MarkerCollection extends MarkerCollectionBase implements Iterable<Marker> {
 	/**
 	 * Stores {@link ~Marker markers} added to the collection.

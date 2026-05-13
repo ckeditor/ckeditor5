@@ -29,6 +29,8 @@ import '../theme/components/tooltip/tooltip.css';
 
 const BALLOON_CLASS = 'ck-tooltip';
 
+const TooltipManagerBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
 /**
  * A tooltip manager class for the UI of the editor.
  *
@@ -91,8 +93,6 @@ const BALLOON_CLASS = 'ck-tooltip';
  * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
  * {@link module:ui/editorui/editorui~EditorUI} of the first editor.
  */
-const TooltipManagerBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
-
 export class TooltipManager extends TooltipManagerBase {
 	/**
 	 * The view rendering text of the tooltip.

@@ -13,11 +13,11 @@ import { ObservableMixin, type ObservableSetEvent, type EventInfo, type Observab
 
 import { type Editor } from './editor/editor.js';
 
+const PluginBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The base class for CKEditor plugin classes.
  */
-const PluginBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class Plugin extends PluginBase implements PluginInterface {
 	/**
 	 * The editor instance.

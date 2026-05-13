@@ -55,6 +55,8 @@ declare global {
 	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;
 }
 
+const EditorBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The class representing a basic, generic editor.
  *
@@ -73,8 +75,6 @@ declare global {
  * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
-const EditorBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export abstract class Editor extends EditorBase {
 	/**
 	 * A required name of the editor class. The name should reflect the constructor name.

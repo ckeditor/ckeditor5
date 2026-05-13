@@ -44,6 +44,8 @@ type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
 type DomSelection = globalThis.Selection;
 
+const ViewRendererBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
  * the {@link module:engine/view/renderer~ViewRenderer#markToSync information about updated view nodes}.
@@ -57,8 +59,6 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~ViewDomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-const ViewRendererBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class ViewRenderer extends ViewRendererBase {
 	/**
 	 * Set of DOM Documents instances.

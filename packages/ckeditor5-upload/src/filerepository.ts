@@ -22,6 +22,8 @@ import {
 
 import { FileReader } from './filereader.js';
 
+const FileLoaderBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * File repository plugin. A central point for managing file upload.
  *
@@ -262,8 +264,6 @@ export class FileRepository extends Plugin {
  *
  * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
-const FileLoaderBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 class FileLoader extends FileLoaderBase {
 	/**
 	 * Unique id of FileLoader instance.

@@ -26,14 +26,14 @@ import { throttle } from 'es-toolkit/compat';
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
 
+const BadgeBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
 /**
  * A helper that enables the badge feature in the editor and renders a custom view next to the bottom of the editable element
  * (editor root, source editing area, etc.) when the editor is focused.
  *
  * @private
  */
-const BadgeBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
-
 export abstract class Badge extends BadgeBase {
 	/**
 	 * Editor instance the helper was created for.

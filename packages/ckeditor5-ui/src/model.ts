@@ -10,11 +10,11 @@
 import { ObservableMixin, type ObservableMixinConstructor } from '@ckeditor/ckeditor5-utils';
 import { extend } from 'es-toolkit/compat';
 
+const UIModelBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * The base MVC model class.
  */
-const UIModelBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
-
 export class UIModel extends UIModelBase {
 	[ x: string ]: unknown;
 

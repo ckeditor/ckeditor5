@@ -24,6 +24,9 @@ import { type ModelElement } from '../model/element.js';
 import { type ModelDocumentFragment } from '../model/documentfragment.js';
 import type { ViewNode, ViewNodeChangeEvent } from '../view/node.js';
 
+const MapperBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+const MapperCacheBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * Maps elements, positions and markers between the {@link module:engine/view/document~ViewDocument view} and
  * the {@link module:engine/model/model model}.
@@ -43,8 +46,6 @@ import type { ViewNode, ViewNodeChangeEvent } from '../view/node.js';
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
  */
-const MapperBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class Mapper extends MapperBase {
 	/**
 	 * Model element to view element mapping.
@@ -879,8 +880,6 @@ export class Mapper extends MapperBase {
  *
  * @internal
  */
-const MapperCacheBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 export class MapperCache extends MapperCacheBase {
 	/**
 	 * For every view element or document fragment tracked by `MapperCache`, it holds currently cached data, or more precisely,

@@ -48,9 +48,6 @@ import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing.js';
 import { HtmlDataProcessor } from '../dataprocessor/htmldataprocessor.js';
 import { type DataProcessor } from '../dataprocessor/dataprocessor.js';
 
-/**
- * @internal
- */
 const DataControllerBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**

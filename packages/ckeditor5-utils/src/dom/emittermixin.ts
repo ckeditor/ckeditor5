@@ -41,6 +41,7 @@ export type DomEmitterMixinConstructor<Base extends Constructor<Emitter> | undef
 	};
 
 const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ EmitterMixin() );
+const ProxyEmitterBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -214,8 +215,6 @@ export function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  */
-const ProxyEmitterBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
-
 class ProxyEmitter extends ProxyEmitterBase {
 	private readonly _domNode: Node | Window | EventTarget;
 	private readonly _options: { capture: boolean; passive: boolean };

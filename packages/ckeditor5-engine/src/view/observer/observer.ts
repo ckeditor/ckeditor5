@@ -12,14 +12,14 @@ import { DomEmitterMixin, type DomEmitterMixinConstructor } from '@ckeditor/cked
 import { type ViewDocument } from '../document.js';
 import { type EditingView } from '../view.js';
 
+const ObserverBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
 /**
  * Abstract base observer class. Observers are classes which listen to DOM events, do the preliminary
  * processing and fire events on the {@link module:engine/view/document~ViewDocument} objects.
  * Observers can also add features to the view, for instance by updating its status or marking elements
  * which need a refresh on DOM events.
  */
-const ObserverBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
-
 export abstract class Observer extends ObserverBase {
 	/**
 	 * An instance of the view controller.
