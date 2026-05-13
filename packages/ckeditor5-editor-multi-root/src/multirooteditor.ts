@@ -12,12 +12,14 @@ import {
 	secureSourceElement,
 	normalizeRootsConfig,
 	normalizeMultiRootEditorConstructorParams,
+	normalizeViewRootElementDefinition,
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
 	type EditorReadyEvent,
 	type RootConfig,
-	type EditorRootAttributes
+	type EditorRootAttributes,
+	type ViewRootElementDefinition
 } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -132,17 +134,21 @@ export class MultiRootEditor extends Editor {
 
 		this.sourceElements = {};
 
-		for ( const [ rootName, { element } ] of rootsConfig ) {
-			if ( isElement( element ) ) {
-				if ( element.tagName === 'TEXTAREA' ) {
-					// Documented in core/editor/editor.js
-					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-					throw new CKEditorError( 'editor-wrong-element', null );
-				}
+		const editableElements: Record<string, HTMLElement | ViewRootElementDefinition> = {};
 
-				this.sourceElements[ rootName ] = element;
-				secureSourceElement( this, element );
+		for ( const [ rootName, rootConfig ] of rootsConfig ) {
+			const editableElement = getRootEditableElement( rootConfig );
+
+			if ( !editableElement ) {
+				continue;
 			}
+
+			if ( isElement( editableElement ) ) {
+				this.sourceElements[ rootName ] = editableElement;
+				secureSourceElement( this, editableElement );
+			}
+
+			editableElements[ rootName ] = editableElement;
 		}
 
 		this.editing.view.document.roots.on<CollectionAddEvent<ViewRootEditableElement>>( 'add', ( evt, viewRoot ) => {
@@ -185,7 +191,7 @@ export class MultiRootEditor extends Editor {
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
-			editableElements: this.sourceElements,
+			editableElements,
 			label: extractRootsConfigField( this.config.get( 'roots' )!, 'label' )
 		};
 
@@ -452,13 +458,22 @@ export class MultiRootEditor extends Editor {
 
 		if ( isElement( options.element ) ) {
 			/**
-			 * The `element` option is not supported in {@link #addRoot `addRoot()`} method, and will be ignored.
+			 * Passing an existing DOM element as the `element` option of
+			 * {@link ~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot()`} is not supported and will be ignored. The
+			 * `addRoot()` method only registers the model root; the DOM editable is created later by
+			 * {@link ~MultiRootEditor#createEditable `createEditable()`}.
+			 *
+			 * Pass a tag name string (e.g. `'h1'`) or a
+			 * {@link module:engine/view/elementdefinition~ViewElementDefinition view element definition}
+			 * instead, or omit the option to create a default `<div>`.
+			 *
+			 * @error multi-root-editor-add-root-element-option-ignored
 			 */
 			logWarning( 'multi-root-editor-add-root-element-option-ignored' );
 		}
 
-		// Storing editable options as a root attribute to make them available on other RTC clients.
-		ensureRootEditableOptions( modelAttributes, options );
+		// Persist editable options as a root attribute so they are available on other RTC clients.
+		setRootEditableOptions( modelAttributes, options );
 
 		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, modelElement );
@@ -576,16 +591,27 @@ export class MultiRootEditor extends Editor {
 
 	public createEditable( root: ModelRootElement, optionsOrPlaceholder?: RootEditableOptions | string, label?: string ): HTMLElement {
 		let placeholder: string | undefined;
+		let element: string | ViewRootElementDefinition | undefined;
 
 		if ( !optionsOrPlaceholder || typeof optionsOrPlaceholder === 'string' ) {
 			placeholder = optionsOrPlaceholder;
 		} else {
 			placeholder = optionsOrPlaceholder?.placeholder;
 			label = optionsOrPlaceholder?.label;
+			element = optionsOrPlaceholder?.element;
 		}
 
 		const rootEditableConfig: RootEditableOptions = root.getAttribute( '$rootEditableOptions' ) || {};
-		const editable = this.ui.view.createEditable( root.rootName, undefined, label || rootEditableConfig.label );
+		// `element` comes from user input and needs normalization; `rootEditableConfig.element` is already canonical.
+		const editableElement: HTMLElement | ViewRootElementDefinition | undefined = element ?
+			normalizeViewRootElementDefinition( element ) :
+			rootEditableConfig.element as HTMLElement | ViewRootElementDefinition | undefined;
+
+		const editable = this.ui.view.createEditable(
+			root.rootName,
+			editableElement,
+			label || rootEditableConfig.label
+		);
 
 		this.ui.addEditable( editable, placeholder || rootEditableConfig.placeholder );
 
@@ -1230,41 +1256,67 @@ function normalizeRootEditableOptionsConfig( config: Config<EditorConfig> ): voi
 	const rootsConfig = config.get( 'roots' )!;
 
 	for ( const [ rootName, rootConfig ] of Object.entries( rootsConfig ) ) {
-		const modelAttributes: EditorRootAttributes = { ...rootConfig.modelAttributes };
-
-		if ( !ensureRootEditableOptions( modelAttributes, rootConfig ) ) {
+		if ( rootConfig.modelAttributes?.$rootEditableOptions ) {
 			continue;
 		}
+
+		const modelAttributes: EditorRootAttributes = { ...rootConfig.modelAttributes };
+
+		setRootEditableOptions( modelAttributes, rootConfig );
 
 		config.set( `roots.${ rootName }.modelAttributes`, modelAttributes );
 	}
 }
 
 /**
- * Mutates the given `modelAttributes` map by adding the `$rootEditableOptions` entry derived from `placeholder` and `label`.
- * If `$rootEditableOptions` is already present, the map is left untouched.
+ * Mutates the given `modelAttributes` map by adding the `$rootEditableOptions` entry derived from `placeholder`, `label`
+ * and `element`. If `$rootEditableOptions` is already present, the map is left untouched.
  *
- * Returns `true` when the map was modified, `false` otherwise — useful to skip downstream work (e.g. `config.set`)
- * when nothing changed.
+ * The `element` is normalized into canonical form ({@link module:core/editor/editorconfig~ViewRootElementDefinition})
+ * before being persisted. A raw DOM element is local to this editor instance &mdash; it cannot be replicated through
+ * RTC, so it is silently dropped here. Callers that want to surface a warning (e.g. `addRoot()`) should do so before
+ * invoking this function.
  */
-function ensureRootEditableOptions(
+function setRootEditableOptions(
 	modelAttributes: EditorRootAttributes,
-	{ placeholder, label }: RootEditableOptions
-): boolean {
-	if ( '$rootEditableOptions' in modelAttributes ) {
-		return false;
+	{ placeholder, label, element }: {
+		placeholder?: string;
+		label?: string;
+		element?: HTMLElement | string | ViewRootElementDefinition;
 	}
+): void {
+	if ( '$rootEditableOptions' in modelAttributes ) {
+		return;
+	}
+
+	// In the `else` branch `element` cannot be an `HTMLElement`, but the normalizer's return type still
+	// includes it — the cast narrows it back to the canonical descriptor form.
+	const storageElement = isElement( element ) ?
+		undefined :
+		normalizeViewRootElementDefinition( element ) as ViewRootElementDefinition | undefined;
 
 	modelAttributes.$rootEditableOptions = {
 		...placeholder && { placeholder },
-		...label && { label }
+		...label && { label },
+		...storageElement && { element: storageElement }
 	} satisfies RootEditableOptions;
-
-	return true;
 }
 
 function isElement( value: any ): value is Element {
 	return _isElement( value );
+}
+
+/**
+ * Returns the canonical editable element descriptor for the given (already normalized) root config.
+ *
+ * Falls back to `$rootEditableOptions.element` so remote RTC clients &mdash; which do not see the originator's
+ * `config.roots.<name>.element` &mdash; can recreate the configured editable shape from the model attributes
+ * they receive. The attribute is always persisted in canonical form, so no further normalization is needed.
+ */
+function getRootEditableElement( rootConfig: RootConfig ): HTMLElement | ViewRootElementDefinition | undefined {
+	const rootEditableOptions = rootConfig.modelAttributes?.$rootEditableOptions as RootEditableOptions | undefined;
+
+	return ( rootConfig.element || rootEditableOptions?.element ) as HTMLElement | ViewRootElementDefinition | undefined;
 }
 
 /**
@@ -1346,9 +1398,13 @@ export type AddRootOptions = {
 export interface AddRootRootConfig extends RootConfig {
 
 	/**
-	 * Passing a DOM element to {@link ~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot( rootName, options )`} is not supported.
+	 * A description of the editable root element to create. May be a tag name string (e.g. `'h1'`) or a
+	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} object.
+	 *
+	 * Passing an existing DOM element is not supported &mdash; `addRoot()` only registers the model root;
+	 * the DOM editable is created later by {@link ~MultiRootEditor#createEditable `createEditable()`}.
 	 */
-	element?: undefined;
+	element?: string | ViewRootElementDefinition;
 
 	/**
 	 * Whether creating the root can be undone (using the undo feature) or not.
@@ -1376,4 +1432,14 @@ export interface RootEditableOptions {
 	 * The accessible label text describing the editable to the assistive technologies.
 	 */
 	label?: string;
+
+	/**
+	 * A description of the editable root element to create. May be a tag name string (e.g. `'h1'`) or a
+	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} object. When omitted, a default `<div>`
+	 * is created.
+	 *
+	 * Passing an existing DOM element is not supported &mdash;
+	 * {@link ~MultiRootEditor#createEditable `createEditable()`} always creates a fresh DOM element.
+	 */
+	element?: string | ViewRootElementDefinition;
 }
