@@ -2648,7 +2648,18 @@ function generateStylesheetManagerSection( presets ) {
 
 	details.appendChild( manager );
 
-	return details;
+	return {
+		element: details,
+		rerender() {
+			renderStylesheetList( listContainer, refs );
+		},
+		loadEntry( entry ) {
+			refs.textarea.value = entry.cssText;
+			refs.nameInput.value = entry.name;
+			refs.addBtn.textContent = 'Update Stylesheet';
+			refs.addNewBtn.hidden = false;
+		}
+	};
 }
 
 /**
@@ -2699,7 +2710,8 @@ export function generatePanel( presets ) {
 	panel.appendChild( strip );
 
 	// Stylesheet preset manager (paste & compare).
-	panel.appendChild( generateStylesheetManagerSection( presets ) );
+	const stylesheetManager = generateStylesheetManagerSection( presets );
+	panel.appendChild( stylesheetManager.element );
 
 	const tiers = [
 		{ key: 'foundation', label: 'Foundation Tokens', data: FOUNDATION, open: true },
@@ -2986,8 +2998,24 @@ export function generatePanel( presets ) {
 			}
 		}
 
-		const hash = Object.keys( overrides ).length ?
-			'#overrides=' + btoa( JSON.stringify( overrides ) ) :
+		const state = {};
+
+		if ( Object.keys( overrides ).length ) {
+			state.overrides = overrides;
+		}
+
+		// Include active stylesheet (name + CSS content).
+		if ( stylesheetActiveId !== null ) {
+			const active = stylesheetEntries.find( e => e.id === stylesheetActiveId );
+
+			if ( active ) {
+				state.preset = active.name;
+				state.presetCss = active.cssText;
+			}
+		}
+
+		const hash = Object.keys( state ).length ?
+			'#state=' + btoa( JSON.stringify( state ) ) :
 			'';
 
 		const url = window.location.origin +
@@ -3001,27 +3029,62 @@ export function generatePanel( presets ) {
 		}, 1200 );
 	} );
 
-	// Restore overrides from URL hash on load.
+	// Restore state from URL hash on load.
 	try {
 		const hash = window.location.hash;
+		let state = null;
 
-		if ( hash.startsWith( '#overrides=' ) ) {
-			const encoded = hash.slice( '#overrides='.length );
-			const overrides = JSON.parse( atob( encoded ) );
+		// New format: #state=...
+		if ( hash.startsWith( '#state=' ) ) {
+			state = JSON.parse( atob( hash.slice( '#state='.length ) ) );
+		// Legacy format: #overrides=...
+		} else if ( hash.startsWith( '#overrides=' ) ) {
+			state = {
+				overrides: JSON.parse( atob( hash.slice( '#overrides='.length ) ) )
+			};
+		}
 
-			for ( const [ token, value ] of Object.entries( overrides ) ) {
-				document.documentElement.style.setProperty( token, value );
+		if ( state ) {
+			// Build a combined "Loaded from link" preset from preset CSS + overrides.
+			const combinedLines = [];
 
-				const row = panel.querySelector(
-					`.token-row[data-token="${ token }"]`
-				);
+			if ( state.presetCss ) {
+				combinedLines.push( state.presetCss.trim() );
+			}
 
-				if ( row ) {
-					row.classList.add( 'is-overridden' );
-					refreshRow( row );
-				}
+			if ( state.overrides && Object.keys( state.overrides ).length ) {
+				const overrideDecls = Object.entries( state.overrides )
+					.map( ( [ t, v ] ) => '\t' + t + ': ' + v + ';' )
+					.join( '\n' );
+
+				combinedLines.push( ':root {\n' + overrideDecls + '\n}' );
+			}
+
+			if ( combinedLines.length ) {
+				const combinedCss = combinedLines.join( '\n\n' );
+				const linkEntry = {
+					id: stylesheetNextId++,
+					name: 'Loaded from link',
+					cssText: combinedCss,
+					styleEl: document.createElement( 'style' )
+				};
+
+				linkEntry.styleEl.dataset.ckPreset = linkEntry.id;
+				linkEntry.styleEl.textContent = combinedCss;
+				linkEntry.styleEl.media = 'not all';
+				document.head.appendChild( linkEntry.styleEl );
+
+				stylesheetEntries.push( linkEntry );
+				activateStylesheet( linkEntry.id );
+
+				// Load the CSS into the textarea and open the presets section.
+				stylesheetManager.loadEntry( linkEntry );
+				stylesheetManager.element.open = true;
 			}
 		}
+
+		// Re-render the stylesheet list to show restored/created entries.
+		stylesheetManager.rerender();
 		updateSummaryHighlights( panel );
 	} catch {
 		// Ignore malformed hash.
@@ -3057,9 +3120,26 @@ export function generatePanel( presets ) {
 	const exportSection = document.createElement( 'div' );
 	exportSection.className = 'token-export';
 
+	const exportControls = document.createElement( 'div' );
+	exportControls.style.cssText = 'display:flex;gap:6px;align-items:center';
+
 	const exportBtn = document.createElement( 'button' );
 	exportBtn.className = 'token-export-btn';
-	exportBtn.textContent = 'Generate Stylesheet from Overrides';
+	exportBtn.textContent = 'Generate Stylesheet';
+
+	const includePresetLabel = document.createElement( 'label' );
+	includePresetLabel.style.cssText = 'font-size:11px;color:#666;cursor:pointer;display:flex;' +
+		'align-items:center;gap:4px;white-space:nowrap';
+
+	const includePresetCheckbox = document.createElement( 'input' );
+	includePresetCheckbox.type = 'checkbox';
+	includePresetCheckbox.checked = true;
+
+	includePresetLabel.appendChild( includePresetCheckbox );
+	includePresetLabel.append( 'Include active preset' );
+
+	exportControls.appendChild( exportBtn );
+	exportControls.appendChild( includePresetLabel );
 
 	const exportOutput = document.createElement( 'textarea' );
 	exportOutput.className = 'token-export-output';
@@ -3067,29 +3147,44 @@ export function generatePanel( presets ) {
 	exportOutput.hidden = true;
 
 	exportBtn.addEventListener( 'click', () => {
-		const overriddenRows = panel.querySelectorAll( '.token-row.is-overridden' );
 		const lines = [];
 
-		for ( const row of overriddenRows ) {
+		// Include active preset CSS if checkbox is checked.
+		if ( includePresetCheckbox.checked && stylesheetActiveId !== null ) {
+			const active = stylesheetEntries.find( e => e.id === stylesheetActiveId );
+
+			if ( active ) {
+				lines.push( '/* Preset: ' + active.name + ' */\n' + active.cssText.trim() );
+			}
+		}
+
+		// Collect manual overrides.
+		const overrideLines = [];
+
+		for ( const row of panel.querySelectorAll( '.token-row.is-overridden' ) ) {
 			const token = row.dataset.token;
 			const value = document.documentElement.style.getPropertyValue( token ).trim();
 
 			if ( value ) {
-				lines.push( '\t' + token + ': ' + value + ';' );
+				overrideLines.push( '\t' + token + ': ' + value + ';' );
 			}
 		}
 
+		if ( overrideLines.length ) {
+			lines.push( '/* Manual overrides */\n:root {\n' + overrideLines.join( '\n' ) + '\n}' );
+		}
+
 		if ( lines.length === 0 ) {
-			exportOutput.value = '/* No overrides — tweak some tokens first. */';
+			exportOutput.value = '/* No changes — tweak some tokens or activate a preset first. */';
 		} else {
-			exportOutput.value = ':root {\n' + lines.join( '\n' ) + '\n}';
+			exportOutput.value = lines.join( '\n\n' );
 		}
 
 		exportOutput.hidden = false;
 		exportOutput.select();
 	} );
 
-	exportSection.appendChild( exportBtn );
+	exportSection.appendChild( exportControls );
 	exportSection.appendChild( exportOutput );
 	panel.appendChild( exportSection );
 }

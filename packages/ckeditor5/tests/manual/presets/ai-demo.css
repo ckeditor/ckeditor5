@@ -96,6 +96,23 @@
 	/* ---- Comments ---- */
 	--ck-color-annotation-wrapper-drop-shadow: 0 0 3px hsla(0, 0%, 0%, 0.1);
 	--ck-color-comment-background: hsl(0, 0%, 100%);
+
+	--ai-demo-container-width: clamp( 1100px, calc( 100vw - 40px), 1500px);
+	--ai-demo-container-min-height: 500px;
+	--ai-demo-container-max-height: min(85vh, 800px);
+	/* Layout spacing */
+	--ai-demo-spacing-large: calc(2 * var(--ck-spacing-large));
+	--ai-editor-padding: 20mm 12mm;
+	/* Editor dimensions */
+	--ai-editor-max-width: 210mm;
+	--ai-editor-min-height: 300px;
+	/* Sidebar dimensions */
+	--ai-sidebar-width: 400px;
+	/* Colors and shadows */
+	--ai-shadow-medium: 0 2px 15px hsla(0, 0%, 0%, 0.08), 0 2px 3px hsla(0, 0%, 0%, 0.078);
+	--ai-border-color: var(--ck-color-base-border);
+	--ai-content-bg: hsl(0, 0%, 100%);
+	--ck-sidebar-width: 325px;
 }
 
 /* ------------------------------------------------------------------------------------------------

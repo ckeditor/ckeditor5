@@ -59,9 +59,9 @@ Badges show two color swatches (foreground + background) and update dynamically 
 
 ### Share via link
 
-1. Override some tokens, then click "Copy Link" in the header.
-2. The URL with encoded overrides is copied to clipboard.
-3. Open the link in another browser/tab — overrides are restored automatically.
+1. Override some tokens and/or activate a preset, then click "Share Link" in the header.
+2. The URL with encoded state (preset CSS + manual overrides) is copied to clipboard.
+3. Open the link in another browser/tab — a "Loaded from link" preset is created in the Stylesheet Presets section, activated automatically, and the section opens to show it.
 
 ## What to verify
 

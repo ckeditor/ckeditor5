@@ -8,6 +8,7 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { AutoImage, ImageResize, ImageInsert } from '@ckeditor/ckeditor5-image';
 import { AutoLink, LinkImage } from '@ckeditor/ckeditor5-link';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 import { Code, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
@@ -49,7 +50,7 @@ ClassicEditor
 			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
-			Alignment, IndentBlock, Bookmark,
+			Alignment, IndentBlock, Bookmark, BalloonToolbar,
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen
@@ -76,6 +77,10 @@ ClassicEditor
 			'sourceEditing', 'showBlocks',
 			'|',
 			'undo', 'redo', 'findAndReplace', 'fullscreen'
+		],
+		balloonToolbar: [
+			'bold', 'italic', 'underline', '|', 'link', 'insertImage', '|',
+			'fontColor', 'fontBackgroundColor', '|', 'bulletedList', 'numberedList'
 		],
 		cloudServices: CS_CONFIG,
 		table: {
