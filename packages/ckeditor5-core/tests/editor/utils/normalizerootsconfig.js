@@ -6,7 +6,8 @@
 import {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
-	normalizeMultiRootEditorConstructorParams
+	normalizeMultiRootEditorConstructorParams,
+	normalizeViewRootElementDefinition
 } from '../../../src/index.ts';
 import { Config } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -354,6 +355,297 @@ describe( 'normalizeRootsConfig()', () => {
 		} );
 	} );
 
+	describe( 'rootConfig.element normalization', () => {
+		it( 'should leave an HTMLElement as-is', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>data</p>';
+
+			config.set( 'roots', { main: { element: el } } );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element ).to.equal( el );
+		} );
+
+		it( 'should turn a tag-name string into a canonical descriptor', () => {
+			config.set( 'roots', { main: { element: 'h1' } } );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'h1' } );
+		} );
+
+		it( 'should normalize a view element definition object', () => {
+			config.set( 'roots', {
+				main: {
+					element: {
+						name: 'section',
+						classes: 'foo bar',
+						styles: { color: 'red' },
+						attributes: { 'data-id': '123' }
+					}
+				}
+			} );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element ).to.deep.equal( {
+				name: 'section',
+				classes: [ 'foo bar' ],
+				styles: { color: 'red' },
+				attributes: { 'data-id': '123' }
+			} );
+		} );
+
+		it( 'should lift attributes.class into the classes array', () => {
+			config.set( 'roots', {
+				main: {
+					element: {
+						name: 'section',
+						classes: [ 'a' ],
+						attributes: { class: 'b' }
+					}
+				}
+			} );
+
+			normalizeRootsConfig( '', config );
+
+			const element = config.get( 'roots' ).main.element;
+
+			expect( element.classes ).to.deep.equal( [ 'a', 'b' ] );
+			// `class` is moved into `classes` and replaced with an empty-string sentinel so the deep-merge in
+			// `Config.set()` does not preserve the user-provided value.
+			expect( element.attributes ).to.deep.equal( { class: '' } );
+		} );
+
+		it( 'should keep attributes.style as a string when no styles object is provided', () => {
+			config.set( 'roots', {
+				main: {
+					element: {
+						name: 'section',
+						attributes: { style: 'color: red' }
+					}
+				}
+			} );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element.attributes ).to.deep.equal( { style: 'color: red' } );
+		} );
+
+		it( 'should prefer styles object over attributes.style string and warn', () => {
+			config.set( 'roots', {
+				main: {
+					element: {
+						name: 'section',
+						styles: { color: 'blue' },
+						attributes: { style: 'color: red' }
+					}
+				}
+			} );
+
+			const stub = sinon.stub( console, 'warn' );
+
+			try {
+				normalizeRootsConfig( '', config );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-root-element-styles-overspecified' );
+
+				const element = config.get( 'roots' ).main.element;
+
+				expect( element.styles ).to.deep.equal( { color: 'blue' } );
+				// `style` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does not
+				// preserve the user-provided value.
+				expect( element.attributes ).to.deep.equal( { style: '' } );
+			} finally {
+				stub.restore();
+			}
+		} );
+
+		it( 'should throw when the element is an HTMLTextAreaElement', () => {
+			config.set( 'roots', { main: { element: document.createElement( 'textarea' ) } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should throw when the tag-name string is `textarea`', () => {
+			config.set( 'roots', { main: { element: 'textarea' } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should throw when the definition name is `textarea`', () => {
+			config.set( 'roots', { main: { element: { name: 'textarea' } } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should not extract initial data from a non-HTMLElement element', () => {
+			config.set( 'roots', { main: { element: 'h1' } } );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.initialData ).to.equal( '' );
+		} );
+	} );
+
+	describe( 'normalizeViewRootElementDefinition()', () => {
+		it( 'should return undefined for undefined input', () => {
+			expect( normalizeViewRootElementDefinition( undefined ) ).to.be.undefined;
+		} );
+
+		it( 'should return undefined for null input', () => {
+			expect( normalizeViewRootElementDefinition( null ) ).to.be.undefined;
+		} );
+
+		it( 'should return an HTMLElement as-is', () => {
+			const el = document.createElement( 'div' );
+
+			expect( normalizeViewRootElementDefinition( el ) ).to.equal( el );
+		} );
+
+		it( 'should turn a tag-name string into `{ name: <string> }`', () => {
+			expect( normalizeViewRootElementDefinition( 'h1' ) ).to.deep.equal( { name: 'h1' } );
+		} );
+
+		it( 'should not include undefined fields in the output for a tag-name string', () => {
+			const result = normalizeViewRootElementDefinition( 'h1' );
+
+			expect( Object.keys( result ) ).to.deep.equal( [ 'name' ] );
+		} );
+
+		it( 'should keep the existing `name` for an object input', () => {
+			expect( normalizeViewRootElementDefinition( { name: 'section' } ) ).to.deep.equal( { name: 'section' } );
+		} );
+
+		it( 'should leave a canonical descriptor unchanged when passed back in', () => {
+			const canonical = normalizeViewRootElementDefinition( {
+				name: 'section',
+				classes: [ 'foo' ],
+				attributes: { 'data-id': '123' }
+			} );
+
+			expect( normalizeViewRootElementDefinition( canonical ) ).to.deep.equal( canonical );
+		} );
+
+		it( 'should normalize `classes` from string to array', () => {
+			const result = normalizeViewRootElementDefinition( { name: 'section', classes: 'foo bar' } );
+
+			expect( result.classes ).to.deep.equal( [ 'foo bar' ] );
+		} );
+
+		it( 'should keep `classes` as an array when already an array', () => {
+			const result = normalizeViewRootElementDefinition( { name: 'section', classes: [ 'foo', 'bar' ] } );
+
+			expect( result.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+		} );
+
+		it( 'should lift `attributes.class` into `classes`', () => {
+			const result = normalizeViewRootElementDefinition( {
+				name: 'section',
+				attributes: { class: 'foo' }
+			} );
+
+			expect( result.classes ).to.deep.equal( [ 'foo' ] );
+			// `class` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does not preserve
+			// the user-provided value.
+			expect( result.attributes ).to.deep.equal( { class: '' } );
+		} );
+
+		it( 'should concatenate `classes` with `attributes.class`', () => {
+			const result = normalizeViewRootElementDefinition( {
+				name: 'section',
+				classes: [ 'a' ],
+				attributes: { class: 'b' }
+			} );
+
+			expect( result.classes ).to.deep.equal( [ 'a', 'b' ] );
+		} );
+
+		it( 'should keep `attributes.style` as a string when no `styles` object is provided', () => {
+			const result = normalizeViewRootElementDefinition( {
+				name: 'section',
+				attributes: { style: 'color: red' }
+			} );
+
+			expect( result.attributes ).to.deep.equal( { style: 'color: red' } );
+		} );
+
+		it( 'should keep `styles` as an object', () => {
+			const result = normalizeViewRootElementDefinition( {
+				name: 'section',
+				styles: { color: 'red' }
+			} );
+
+			expect( result.styles ).to.deep.equal( { color: 'red' } );
+		} );
+
+		it( 'should prefer `styles` object over `attributes.style` and log a warning', () => {
+			const stub = sinon.stub( console, 'warn' );
+
+			try {
+				const result = normalizeViewRootElementDefinition( {
+					name: 'section',
+					styles: { color: 'blue' },
+					attributes: { style: 'color: red' }
+				} );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-root-element-styles-overspecified' );
+				expect( result.styles ).to.deep.equal( { color: 'blue' } );
+				// `style` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does not
+				// preserve the user-provided value.
+				expect( result.attributes ).to.deep.equal( { style: '' } );
+			} finally {
+				stub.restore();
+			}
+		} );
+
+		it( 'should preserve unrelated attributes', () => {
+			const result = normalizeViewRootElementDefinition( {
+				name: 'section',
+				attributes: { 'data-id': '123', 'data-role': 'editor' }
+			} );
+
+			expect( result.attributes ).to.deep.equal( { 'data-id': '123', 'data-role': 'editor' } );
+		} );
+
+		it( 'should throw on `<textarea>` HTMLElement input', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( document.createElement( 'textarea' ) );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should throw on `\'textarea\'` tag-name string', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( 'textarea' );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should throw on definition with `name: \'textarea\'`', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( { name: 'textarea' } );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should match the tag name case-insensitively', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( 'TEXTAREA' );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should ignore the `priority` field from ViewElementDefinition', () => {
+			const result = normalizeViewRootElementDefinition( { name: 'section', priority: 5 } );
+
+			expect( result ).to.not.have.property( 'priority' );
+		} );
+	} );
+
 	describe( 'separateAttachTo parameter', () => {
 		it( 'should assign source element to rootConfig.element by default', () => {
 			const sourceElement = document.createElement( 'div' );
@@ -477,11 +769,42 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const stub = sinon.stub( console, 'warn' );
 
+			try {
+				normalizeRootsConfig( '', config, 'main', true );
+
+				sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
+			} finally {
+				stub.restore();
+			}
+		} );
+
+		it( 'should drop the unsupported DOM element from rootConfig.element when separateAttachTo is true', () => {
+			const el = document.createElement( 'div' );
+			el.innerHTML = '<p>data</p>';
+
+			config.set( 'roots', { main: { element: el } } );
+
+			const stub = sinon.stub( console, 'warn' );
+
+			try {
+				normalizeRootsConfig( '', config, 'main', true );
+
+				const roots = config.get( 'roots' );
+
+				expect( roots.main.element ).to.be.undefined;
+			} finally {
+				stub.restore();
+			}
+		} );
+
+		it( 'should keep a tag-name string in rootConfig.element when separateAttachTo is true', () => {
+			config.set( 'roots', { main: { element: 'h1' } } );
+
 			normalizeRootsConfig( '', config, 'main', true );
 
-			sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
+			const roots = config.get( 'roots' );
 
-			stub.restore();
+			expect( roots.main.element ).to.deep.equal( { name: 'h1' } );
 		} );
 
 		it( 'should throw when config.attachTo is set without separateAttachTo', () => {
