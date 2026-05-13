@@ -374,6 +374,300 @@ describe( 'InlineEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-wrong-element' );
 			} );
 		} );
+
+		describe( 'config.root.element', () => {
+			describe( 'as a tag name string', () => {
+				it( 'should create the editable element with the given tag name', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should reflect the tag name on the view root', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+
+					expect( newEditor.editing.view.document.getRoot( 'main' ).name ).to.equal( 'h1' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should leave editor.sourceElement undefined', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should not treat the tag name as initial data', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+
+					expect( newEditor.getData() ).to.equal( '' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should keep initial data from the constructor argument', async () => {
+					const newEditor = await InlineEditor.create( '<p>Hello</p>', {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+
+					expect( newEditor.getData() ).to.equal( '<p>Hello</p>' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should throw when the tag name is `textarea`', () => {
+					expect( () => {
+						// eslint-disable-next-line no-new
+						new InlineEditor( { root: { element: 'textarea' } } );
+					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+				} );
+
+				it( 'should allow two editors with the same tag name', async () => {
+					const a = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+					const b = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: 'h1' }
+					} );
+
+					expect( a.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
+					expect( b.ui.getEditableElement( 'main' ).tagName ).to.equal( 'H1' );
+					expect( a.ui.getEditableElement( 'main' ) ).to.not.equal( b.ui.getEditableElement( 'main' ) );
+
+					await a.destroy();
+					await b.destroy();
+				} );
+			} );
+
+			describe( 'as a view element definition object', () => {
+				it( 'should create the editable element with the given tag name', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: { name: 'section' } }
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'SECTION' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should reflect the element shape on the view root', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								classes: [ 'foo' ],
+								attributes: { 'data-id': '123' }
+							}
+						}
+					} );
+
+					const viewRoot = newEditor.editing.view.document.getRoot( 'main' );
+
+					expect( viewRoot.name ).to.equal( 'section' );
+					expect( viewRoot.hasClass( 'foo' ) ).to.be.true;
+					expect( viewRoot.getAttribute( 'data-id' ) ).to.equal( '123' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should apply the `classes` array on top of the editor classes', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: { name: 'section', classes: [ 'foo', 'bar' ] } }
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.classList.contains( 'ck' ) ).to.be.true;
+					expect( editable.classList.contains( 'ck-content' ) ).to.be.true;
+					expect( editable.classList.contains( 'foo' ) ).to.be.true;
+					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should accept `classes` as a string', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: { name: 'section', classes: 'foo bar' } }
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.classList.contains( 'foo' ) ).to.be.true;
+					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should apply the `styles` object', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								styles: { color: 'rgb(255, 0, 0)', 'font-weight': 'bold' }
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
+					expect( editable.style.fontWeight ).to.equal( 'bold' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should apply arbitrary attributes', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								attributes: { 'data-id': '123', 'data-role': 'editor' }
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.getAttribute( 'data-id' ) ).to.equal( '123' );
+					expect( editable.getAttribute( 'data-role' ) ).to.equal( 'editor' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should support `class` shorthand inside `attributes`', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								attributes: { class: 'foo bar' }
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.classList.contains( 'foo' ) ).to.be.true;
+					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should support `style` shorthand inside `attributes`', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								attributes: { style: 'color: rgb(255, 0, 0); font-weight: bold' }
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
+					expect( editable.style.fontWeight ).to.equal( 'bold' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should concatenate `classes` with `attributes.class`', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								classes: [ 'foo' ],
+								attributes: { class: 'bar' }
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.classList.contains( 'foo' ) ).to.be.true;
+					expect( editable.classList.contains( 'bar' ) ).to.be.true;
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should prefer `styles` object over `attributes.style` string when both are set', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: {
+							element: {
+								name: 'section',
+								styles: { color: 'rgb(0, 128, 0)' },
+								attributes: { style: 'color: rgb(255, 0, 0)' }
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'main' );
+
+					expect( editable.style.color ).to.equal( 'rgb(0, 128, 0)' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should throw when the name is `textarea`', () => {
+					expect( () => {
+						// eslint-disable-next-line no-new
+						new InlineEditor( { root: { element: { name: 'textarea' } } } );
+					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+				} );
+
+				it( 'should leave editor.sourceElement undefined', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { element: { name: 'section' } }
+					} );
+
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					await newEditor.destroy();
+				} );
+			} );
+
+			describe( 'omitted', () => {
+				it( 'should default to a `<div>` editable when no element is provided', async () => {
+					const newEditor = await InlineEditor.create( {
+						plugins: [ Paragraph ],
+						root: { initialData: '<p>Foo</p>' }
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'main' ).tagName ).to.equal( 'DIV' );
+
+					await newEditor.destroy();
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'create()', () => {
