@@ -2701,6 +2701,215 @@ function updateSummaryHighlights( panel ) {
  * @param {Array<{name: string, css: string}>} [presets] Optional array of built-in stylesheet presets.
  */
 // ---------------------------------------------------------------------------
+// Color palette overview — all color tokens as swatches in a grid.
+// ---------------------------------------------------------------------------
+
+/* eslint-disable max-len */
+const COLOR_PALETTE_TIERS = [
+	{
+		tier: 'Foundation',
+		groups: {
+			'Base': [
+				'--ck-color-base-background', '--ck-color-base-foreground', '--ck-color-base-border',
+				'--ck-color-base-border-light', '--ck-color-base-text', '--ck-color-base-text-light'
+			],
+			'States': [
+				'--ck-color-base-hover', '--ck-color-base-active', '--ck-color-base-active-focus',
+				'--ck-color-base-selected', '--ck-color-base-selected-hover',
+				'--ck-color-base-focus', '--ck-color-base-focus-shadow', '--ck-color-base-focus-shadow-faded'
+			],
+			'Action & Feedback': [
+				'--ck-color-base-action', '--ck-color-base-action-hover',
+				'--ck-color-base-error', '--ck-color-base-warning', '--ck-color-base-success',
+				'--ck-color-base-highlight', '--ck-color-base-attention'
+			]
+		}
+	},
+	{
+		tier: 'Semantic',
+		groups: {
+			'Surfaces': [
+				'--ck-color-surface-canvas', '--ck-color-surface-control',
+				'--ck-color-surface-container', '--ck-color-surface-inverse'
+			],
+			'Borders': [
+				'--ck-color-border-control', '--ck-color-border-container', '--ck-color-divider'
+			],
+			'Text': [
+				'--ck-color-text-primary', '--ck-color-text-secondary',
+				'--ck-color-text-disabled', '--ck-color-text-inverse', '--ck-color-text-error'
+			],
+			'Feedback': [
+				'--ck-color-feedback-error', '--ck-color-feedback-warning',
+				'--ck-color-feedback-success', '--ck-color-feedback-highlight'
+			],
+			'Interactive': [
+				'--ck-color-interactive-hover-surface', '--ck-color-interactive-active-surface',
+				'--ck-color-interactive-selected-surface', '--ck-color-interactive-selected-surface-hover',
+				'--ck-color-interactive-selected-text',
+				'--ck-color-interactive-primary-surface', '--ck-color-interactive-primary-surface-hover',
+				'--ck-color-interactive-primary-text'
+			]
+		}
+	},
+	{
+		tier: 'Component',
+		groups: {
+			'Button': [
+				'--ck-button-default-background-color', '--ck-button-default-hover-background-color',
+				'--ck-button-on-background-color', '--ck-button-on-hover-background-color',
+				'--ck-button-on-text-color',
+				'--ck-button-action-background-color', '--ck-button-action-hover-background-color',
+				'--ck-button-action-text-color',
+				'--ck-button-save-color', '--ck-button-cancel-color'
+			],
+			'Input': [
+				'--ck-input-background-color', '--ck-input-border-color',
+				'--ck-input-text-color', '--ck-input-error-border-color',
+				'--ck-input-disabled-background-color', '--ck-input-disabled-text-color'
+			],
+			'Containers': [
+				'--ck-toolbar-background-color', '--ck-toolbar-border-color',
+				'--ck-dropdown-panel-background-color', '--ck-dropdown-panel-border-color',
+				'--ck-balloon-panel-background-color', '--ck-balloon-panel-border-color',
+				'--ck-dialog-background-color',
+				'--ck-tooltip-background-color', '--ck-tooltip-text-color'
+			]
+		}
+	}
+];
+/* eslint-enable max-len */
+
+function generateColorPaletteSection() {
+	const details = document.createElement( 'details' );
+	details.className = 'color-palette-section';
+
+	const summary = document.createElement( 'summary' );
+	summary.textContent = 'Color Palette Overview';
+	details.appendChild( summary );
+
+	const container = document.createElement( 'div' );
+	container.className = 'color-palette-container';
+
+	const allSwatches = [];
+
+	for ( let i = 0; i < COLOR_PALETTE_TIERS.length; i++ ) {
+		const { tier, groups } = COLOR_PALETTE_TIERS[ i ];
+
+		// Tier separator (between tiers, not before the first).
+		if ( i > 0 ) {
+			const separator = document.createElement( 'div' );
+			separator.className = 'color-palette-separator';
+			container.appendChild( separator );
+		}
+
+		// Tier heading.
+		const tierHeading = document.createElement( 'div' );
+		tierHeading.className = 'color-palette-tier-heading';
+		tierHeading.textContent = tier;
+		container.appendChild( tierHeading );
+
+		for ( const [ groupName, tokens ] of Object.entries( groups ) ) {
+			const group = document.createElement( 'div' );
+			group.className = 'color-palette-group';
+
+			const label = document.createElement( 'div' );
+			label.className = 'color-palette-group-label';
+			label.textContent = groupName;
+			group.appendChild( label );
+
+			const grid = document.createElement( 'div' );
+			grid.className = 'color-palette-grid';
+
+			for ( const token of tokens ) {
+				const cell = document.createElement( 'div' );
+				cell.className = 'color-palette-cell';
+				cell.dataset.token = token;
+
+				// Hidden color input for the picker.
+				const colorInput = document.createElement( 'input' );
+				colorInput.type = 'color';
+				colorInput.className = 'color-palette-picker';
+
+				const swatch = document.createElement( 'div' );
+				swatch.className = 'color-palette-swatch';
+				swatch.title = 'Click to change color';
+
+				// Click swatch → open color picker.
+				swatch.addEventListener( 'click', () => {
+					try {
+						colorInput.value = colorToHex(
+							getComputedTokenValue( token )
+						);
+					} catch {
+						colorInput.value = '#000000';
+					}
+
+					colorInput.click();
+				} );
+
+				// Color picker change → update token.
+				colorInput.addEventListener( 'input', () => {
+					document.documentElement.style.setProperty(
+						token, colorInput.value
+					);
+
+					swatch.style.background = colorInput.value;
+
+					// Update the token row too.
+					const panel = document.getElementById( 'token-panel' );
+					const row = panel.querySelector(
+						`.token-row[data-token="${ token }"]`
+					);
+
+					if ( row ) {
+						row.classList.add( 'is-overridden' );
+						row.classList.remove( 'is-preset-changed' );
+						refreshRow( row );
+						refreshDependents( token );
+						updateContrastBadge( row );
+					}
+				} );
+
+				const name = document.createElement( 'div' );
+				name.className = 'color-palette-name';
+				name.title = 'Click to scroll to ' + token;
+				name.textContent = token
+					.replace( /^--ck-color-/, '' )
+					.replace( /^--ck-/, '' )
+					.replace( /-/g, '\u2011' );
+
+				// Click name → scroll to token row.
+				name.addEventListener( 'click', () => {
+					scrollToAndHighlightToken( token );
+				} );
+
+				cell.appendChild( colorInput );
+				cell.appendChild( swatch );
+				cell.appendChild( name );
+				grid.appendChild( cell );
+
+				allSwatches.push( { swatch, token } );
+			}
+
+			group.appendChild( grid );
+			container.appendChild( group );
+		}
+	}
+
+	details.appendChild( container );
+
+	// Refresh function to update all swatches.
+	function refreshSwatches() {
+		for ( const { swatch, token } of allSwatches ) {
+			swatch.style.background = getComputedTokenValue( token );
+		}
+	}
+
+	return { element: details, refreshSwatches };
+}
+
+// ---------------------------------------------------------------------------
 // Token dependency tree — interactive cascade visualizer.
 // ---------------------------------------------------------------------------
 
@@ -2963,6 +3172,10 @@ function generateDependencyTreeSection() {
 
 export function generatePanel( presets ) {
 	const panel = document.getElementById( 'token-panel' );
+
+	// Color palette overview section.
+	const colorPalette = generateColorPaletteSection();
+	panel.appendChild( colorPalette.element );
 
 	// Token dependency tree section.
 	const depSection = generateDependencyTreeSection();
@@ -3369,10 +3582,14 @@ export function generatePanel( presets ) {
 		updateContrastBadge( row );
 	}
 
+	// Initial palette swatch render.
+	colorPalette.refreshSwatches();
+
 	// Highlight ancestor <summary> elements when any child token is overridden.
 	// Uses a MutationObserver on class changes so every override/reset path is covered automatically.
 	const observer = new MutationObserver( () => {
 		updateSummaryHighlights( panel );
+		colorPalette.refreshSwatches();
 	} );
 
 	observer.observe( panel, {

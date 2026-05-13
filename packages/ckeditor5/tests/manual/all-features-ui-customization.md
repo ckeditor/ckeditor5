@@ -39,6 +39,14 @@ Interactive test combining the full-featured editor with the Design Token Explor
 4. The tree shows: ancestor chain (what the token inherits from), the selected token with its tier and computed value, and all dependents (what inherits from it).
 5. Click any token in the tree to scroll to its row in the panel.
 
+### Color palette overview
+
+1. Open the "Color Palette Overview" section (orange accent).
+2. All color tokens are displayed as swatches, grouped by tier (Foundation, Semantic, Component) with visual separators.
+3. Swatches update live when tokens change or presets switch.
+4. Click a swatch to open the color picker and change the value directly.
+5. Click the token name below a swatch to scroll to its row in the panel.
+
 ### Stylesheet presets (paste & compare)
 
 The all-features test loads built-in presets from `presets/` directory on startup. To add a new preset: drop a `.css` file into `presets/` and add its filename to `presets/index.js`.
