@@ -10,7 +10,10 @@
 import { View } from '../view.js';
 
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
-import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { toArray, type Locale, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
+
+import { isElement as _isElement } from 'es-toolkit/compat';
 
 /**
  * The editable UI view class.
@@ -54,25 +57,32 @@ export class EditableUIView extends View {
 	 *
 	 * @param locale The locale instance.
 	 * @param editingView The editing view instance the editable is related to.
-	 * @param editableElement The editable element. If not specified, this view
-	 * should create it. Otherwise, the existing element should be used.
+	 * @param editableElement The editable element. If an existing `HTMLElement` is passed, the view applies its
+	 * template to it; otherwise the view creates a fresh element (a `<div>` by default, or one matching the given
+	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition}).
 	 */
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement
+		editableElement?: HTMLElement | ViewRootElementDefinition
 	) {
 		super( locale );
 
+		const elementDefinition = isElement( editableElement ) ? undefined : editableElement;
+		const { name, classes, styles, attributes } = elementDefinition || {};
+
 		this.setTemplate( {
-			tag: 'div',
+			tag: name || 'div',
 			attributes: {
+				...attributes,
 				class: [
 					'ck',
 					'ck-content',
 					'ck-editor__editable',
-					'ck-rounded-corners'
+					'ck-rounded-corners',
+					...( classes ? toArray( classes ) : [] )
 				],
+				...( styles && { style: styles } ),
 				lang: locale.contentLanguage,
 				dir: locale.contentLanguageDirection
 			}
@@ -80,7 +90,7 @@ export class EditableUIView extends View {
 
 		this.set( 'isFocused', false );
 
-		this._editableElement = editableElement;
+		this._editableElement = isElement( editableElement ) ? editableElement : undefined;
 		this._hasExternalElement = !!this._editableElement;
 		this._editingView = editingView;
 	}
@@ -159,4 +169,11 @@ export class EditableUIView extends View {
 			} );
 		}
 	}
+}
+
+/**
+ * An alias for `isElement` from `es-toolkit/compat` with additional type guard.
+ */
+function isElement( value: any ): value is HTMLElement {
+	return _isElement( value );
 }
