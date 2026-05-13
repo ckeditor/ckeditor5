@@ -10,6 +10,7 @@
 import { EditorUIView, InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
 /**
  * Contextual editor UI view. Uses the {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}.
@@ -38,7 +39,7 @@ export class BalloonEditorUIView extends EditorUIView {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement,
+		editableElement?: HTMLElement | ViewRootElementDefinition,
 		label?: string | Record<string, string>
 	) {
 		super( locale );
