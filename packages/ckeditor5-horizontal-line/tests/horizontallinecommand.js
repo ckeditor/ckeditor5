@@ -46,6 +46,26 @@ describe( 'HorizontalLineCommand', () => {
 			} );
 		} );
 
+		it( 'should be true when the selection is directly in a root that has a non-$root element name', () => {
+			model.schema.register( 'customRoot', {
+				isLimit: true
+			} );
+			model.schema.extend( 'horizontalLine', {
+				allowIn: 'customRoot'
+			} );
+
+			const root = model.document.createRoot( 'customRoot', 'custom' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( root, 0 )
+				) );
+			} );
+
+			command.refresh();
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be true when the selection is in empty block', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 

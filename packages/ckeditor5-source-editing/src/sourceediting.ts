@@ -10,7 +10,7 @@
 import { Plugin, PendingActions, type Editor } from '@ckeditor/ckeditor5-core';
 import { IconSource } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from '@ckeditor/ckeditor5-ui';
-import { CKEditorError, createElement, ElementReplacer, formatHtml } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, createElement, ElementReplacer, env, formatHtml } from '@ckeditor/ckeditor5-utils';
 
 import '../theme/sourceediting.css';
 
@@ -264,6 +264,29 @@ export class SourceEditing extends Plugin {
 				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
 
 				editor.ui.update();
+			} );
+
+			// Allow native undo/redo in the textarea. The editor's keystroke handler (attached via
+			// setEditableElement()) intercepts Ctrl+Z/Y and calls preventDefault(), blocking browser
+			// undo/redo while editor commands are force-disabled in source editing mode.
+			// See: https://github.com/ckeditor/ckeditor5/issues/13700
+			domSourceEditingElementTextarea.addEventListener( 'keydown', evt => {
+				// Normalize the key to lowercase because `evt.key` reflects the Caps Lock state
+				// (e.g. returns 'Z' instead of 'z' when Caps Lock is on), which would otherwise
+				// bypass the comparison below and let the editor's keystroke handler block undo/redo.
+				const key = evt.key.toLowerCase();
+
+				if ( ( evt.ctrlKey || evt.metaKey ) && !evt.altKey && ( key === 'z' || key === 'y' ) ) {
+					evt.stopImmediatePropagation();
+
+					// macOS does not natively map Cmd+Y to redo in textareas (the platform convention is
+					// Cmd+Shift+Z). CKEditor accepts both keystrokes for redo, so users expect Cmd+Y to
+					// work here too. Manually invoke the browser's redo on the focused textarea.
+					if ( env.isMac && key === 'y' ) {
+						evt.preventDefault();
+						domRootElement.ownerDocument.execCommand( 'redo' );
+					}
+				}
 			} );
 
 			editingView.change( writer => {

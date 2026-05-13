@@ -27,7 +27,9 @@ import { _getModelData } from 'ckeditor5';
 // ...
 
 ClassicEditor
-	.create( '<p>Hello <b>world</b>!</p>' )
+	.create( {
+		root: { initialData: '<p>Hello <b>world</b>!</p>' }
+	} )
 	.then( editor => {
 		console.log( _getModelData( editor.model ) );
 		// -> '<paragraph>[]Hello <$text bold="true">world</$text>!</paragraph>'

@@ -92,6 +92,7 @@ export default defineConfig( [
 		},
 
 		rules: {
+			'ckeditor5-rules/validate-module-tag': 'error',
 			'ckeditor5-rules/no-default-export': 'error',
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
 			'ckeditor5-rules/ckeditor-plugin-flags': [ 'error', {

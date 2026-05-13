@@ -94,9 +94,9 @@ export {
 	isNumberedListType as _isNumberedListType
 } from './list/utils/model.js';
 
-export type {
+export {
 	ListItemUid as _ListItemUid,
-	ListElement as _ListElement
+	type ListElement as _ListElement
 } from './list/utils/model.js';
 
 export {

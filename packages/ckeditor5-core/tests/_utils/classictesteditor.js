@@ -37,7 +37,7 @@ export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 		}
 
 		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
+		this.model.document.createRoot( this.config.get( 'roots' ).main.modelElement );
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 

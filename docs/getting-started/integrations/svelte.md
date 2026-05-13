@@ -99,14 +99,16 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 
 		editorInstance = await ClassicEditor.create( {
 			attachTo: editorContainer,
+			root: {
+				initialData
+			},
 			licenseKey: '<YOUR_LICENSE_KEY>', // Replace with your license key
 			plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
 			toolbar: [
 				'undo', 'redo', '|', 'bold', 'italic', '|',
 				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
 				'formatPainter'
-			],
-			initialData
+			]
 		} );
 
 		// Prevent memory leaks if unmounted during creation.

@@ -113,7 +113,7 @@ describe( 'BlockQuoteCommand', () => {
 
 		it(
 			'is false when selection is in an element which cannot be wrapped with blockQuote' +
-			'(because mQ is not allowed in its parent)',
+			'(because bQ is not allowed in its parent)',
 			() => {
 				model.schema.addChildCheck( ( ctx, childDef ) => {
 					if ( childDef.name == 'blockQuote' ) {
@@ -126,6 +126,62 @@ describe( 'BlockQuoteCommand', () => {
 				expect( command ).to.have.property( 'isEnabled', false );
 			}
 		);
+
+		it( 'is true when the custom root element does allow blockQuote', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ BlockQuoteEditing ],
+				root: {
+					modelElement: 'customRoot'
+				},
+				extraPlugins: [
+					function( editor ) {
+						editor.model.schema.register( 'customRoot', {
+							isLimit: true,
+							allowContentOf: '$container'
+						} );
+					}
+				]
+			} );
+
+			const model = editor.model;
+			const command = editor.commands.get( 'blockQuote' );
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+
+			_setModelData( model, '<paragraph>x[]x</paragraph>' );
+			expect( command ).to.have.property( 'isEnabled', true );
+
+			await editor.destroy();
+		} );
+
+		it( 'is false when the root element does not allow blockQuote', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ BlockQuoteEditing ],
+				root: {
+					modelElement: 'customRoot'
+				},
+				extraPlugins: [
+					function( editor ) {
+						editor.model.schema.register( 'customRoot', {
+							isLimit: true,
+							allowChildren: 'paragraph'
+						} );
+					}
+				]
+			} );
+
+			const model = editor.model;
+			const command = editor.commands.get( 'blockQuote' );
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+
+			_setModelData( model, '<paragraph>x[]x</paragraph>' );
+			expect( command ).to.have.property( 'isEnabled', false );
+
+			await editor.destroy();
+		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/826
 		// it( 'is false when selection starts in an element which cannot be wrapped with blockQuote', () => {

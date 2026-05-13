@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-emoji",
-  "version": "48.0.1",
+  "version": "48.1.0",
   "description": "Emoji feature for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
+    "@ckeditor/ckeditor5-code-block": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",

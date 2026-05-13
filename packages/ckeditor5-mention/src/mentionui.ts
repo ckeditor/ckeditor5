@@ -440,6 +440,16 @@ export class MentionUI extends Plugin {
 			return;
 		}
 
+		// Do not show the mention UI if the mention command is disabled
+		// (e.g. the cursor was moved into a code block after the feed was requested).
+		const mentionCommand = this.editor.commands.get( 'mention' )!;
+
+		if ( !mentionCommand.isEnabled ) {
+			this._hideUIAndRemoveMarker();
+
+			return;
+		}
+
 		// Reset the view.
 		this._items.clear();
 

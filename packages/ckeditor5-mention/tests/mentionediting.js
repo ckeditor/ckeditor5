@@ -56,6 +56,24 @@ describe( 'MentionEditing', () => {
 			} );
 	} );
 
+	it( 'should disallow mention attribute on text inside code blocks', () => {
+		return createTestEditor()
+			.then( newEditor => {
+				model = newEditor.model;
+
+				model.schema.register( 'codeBlock', {
+					allowWhere: '$block',
+					allowChildren: '$text',
+					isBlock: true
+				} );
+
+				expect( model.schema.checkAttribute( [ '$root', 'codeBlock', '$text' ], 'mention' ) ).to.be.false;
+
+				// Mention should still be allowed on text outside code blocks.
+				expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'mention' ) ).to.be.true;
+			} );
+	} );
+
 	it( 'should register mention command', () => {
 		return createTestEditor()
 			.then( newEditor => {

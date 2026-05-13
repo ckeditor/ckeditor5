@@ -46,16 +46,20 @@ Before we start, let us explain the meaning of terms that are crucial for the tr
 
 ## Writing a localizable UI
 
-All *messages* that need localization should be passed to the special CKEditor&nbsp;5's {@link module:utils/locale~Locale#t `t()` function}. This function can be retrieved either from the editor's {@link module:utils/locale~Locale} instance: `const { t } = editor.locale;` or from any view method: `const t = this.t;`.
+All *messages* that need localization should be passed to the special CKEditor&nbsp;5's {@link module:utils/locale~Locale#t `t()` function}.
+
+In JavaScript files, retrieve it as a standalone function, for example from the editor's {@link module:utils/locale~Locale} instance (`const { t } = editor.locale;`) or from any view method (`const t = this.t;`).
+
+In TypeScript files, the translation tools can also detect direct `Locale#t()` calls based on type information, so `editor.t()`, `editor.locale.t()`, `locale.t()`, and `this.t()` are supported as well.
 
 As the first argument, the `t()` function accepts either a string literal or an object literal containing the `id`, `string` and `plural` (optional) properties. The string literal will serve as both the *message ID* and the *message string*.
 
 As the second argument, the translation function accepts a value or an array of values. These values will be used to fill the placeholders in more advanced translation scenarios. If the `plural` property is specified, the first value will be used as the quantity determining the plural form.
 
 <info-box warning>
-    Due to the fact that a static code analyzer is used in the translation process, you must use a function named exactly `t()`. It should not be called on a `Locale` instance and it cannot have a different name. The code analyzer looks for *localizable messages* only in `t()` function calls.
+	Due to the fact that a static code analyzer is used in the translation process, the supported call patterns depend on the source file type. In JavaScript files, the analyzer looks for a function named exactly `t()`, so it should not be called on a `Locale` instance and it cannot have a different name. In TypeScript files, the analyzer also recognizes direct `Locale#t()` calls based on type information.
 
-    For the same reason, the first argument can only be a string literal or an object literal. Variables cannot be passed.
+	For the same reason, the first argument can only be a string literal or an object literal. Variables cannot be passed.
 </info-box>
 
 When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor&nbsp;5 packages that your project depends on. In the case of reusing *messages*, you will not need to worry about translating them as all the work will be done by the CKEditor&nbsp;5 team. Obviously, {@link framework/contributing/contributing#translating your help in translating} will still be appreciated!
@@ -86,7 +90,7 @@ t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'ACTION_N_EMOJIS' }, [ q
 
 This example shows how to create a localizable user interface of a plugin. Here is how you can create a button that will insert a smiling face emoji. The button will have a localizable tooltip.
 
-```js
+```ts
 // Custom plugin configuration, including necessary imports.
 // The code below should be put into a custom plugin class extending the Plugin class.
 // ...
@@ -94,11 +98,8 @@ This example shows how to create a localizable user interface of a plugin. Here 
 editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 	const buttonView = new ButtonView( locale );
 
-	// The translation function.
-	const { t } = editor.locale;
-
 	// The localized label.
-	const label = t( 'Insert smiling face emoji' );
+	const label = editor.locale.t( 'Insert smiling face emoji' );
 
 	buttonView.set( {
 		label,
@@ -246,7 +247,7 @@ To build and configure a localized editor, follow the steps from the {@link gett
 
 ## Re-using translations from other packages
 
-If you want to re-use a *message* that already exists in another package, you should use the method `t()` on a `Locale` instance with a changed name instead of [using `t()` as a function](#writing-a-localizable-ui). This is because using `t()` as a method on the `Locale` is not processed by a static code analyzer. Therefore, it allows to use *messages* already translated in other packages.
+If you want to re-use a *message* that already exists in another package, you should call the translation function through an alias with a different name instead of [using `t()` as a function](#writing-a-localizable-ui). This prevents the static code analyzer from treating it as a new source message.
 
 We use this approach already in the {@link features/collaboration collaboration features} and the {@link features/slash-commands slash commands feature}. You can find an example from the {@link module:slash-command/slashcommandconfig~SlashCommandConfig#getDefaultCommands list of default commands} that we used in the slash commands feature below. Please note the difference between using `t()` and `translateVariableKey()`. `translateVariableKey( 'Block quote' )` will re-use a translation from another package whilst `t( 'Create a block quote' )` will be processed by a static code analyzer. As a result we make sure that the translation for the `title` is taken from the {@link features/block-quote block quote} feature where the *message* "Block quote" is already translated. But for the `description` we create a new translation.
 

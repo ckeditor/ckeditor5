@@ -228,7 +228,7 @@ The latest On-Premises CKEditor Cloud Services support CKEditor 5 versions **up 
 
 The CKEditor&nbsp;5&nbsp;LTS Edition follows the same compatibility guarantees as regular releases, with the added benefit of **extended maintenance**:
 
-* **Supported environments:** All browsers, operating systems, and mobile platforms officially listed in the {@link support/browser-compatibility Browser compatibility} guide.
+* **Supported environments:** All browsers, operating systems, and mobile platforms officially listed in the {@link updating/technology-upgrades-policy Technology upgrades policy} article.
 * **Assurance period:** Critical/high-severity regressions caused by updates in these environments will be fixed for the full 3-year LTS lifecycle. See [Third-party API changes assurance](#3-year-security-warranty) for details.
 
 It ensures that CKEditor 5 remains stable and reliable in evolving ecosystems, while minimizing disruption in long-term projects.

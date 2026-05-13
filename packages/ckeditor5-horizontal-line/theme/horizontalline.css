@@ -10,8 +10,11 @@
 }
 
 .ck-content hr {
+	display: inline-block;
+	width: 100%;
 	margin: 15px 0;
 	height: 4px;
 	background: hsl(0, 0%, 87%);
 	border: 0;
+	vertical-align: middle;
 }

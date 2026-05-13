@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CKEditorError, logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
-import type { AlignmentFormat, AlignmentSupportedOption } from './alignmentconfig.js';
-
 /**
  * @module alignment/utils
  */
+
+import { CKEditorError, logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
+import type { AlignmentFormat, AlignmentSupportedOption } from './alignmentconfig.js';
 
 /**
  * The list of supported alignment options:

@@ -14,6 +14,7 @@ export class Declaration {
 		type,
 		internal,
 		explicitInternal = false,
+		ambient = false,
 		fileName,
 		lineNumber,
 		baseClasses = []
@@ -24,6 +25,7 @@ export class Declaration {
 
 		this.internal = internal;
 		this.explicitInternal = explicitInternal;
+		this.ambient = ambient;
 
 		this.fileName = fileName;
 		this.lineNumber = lineNumber;
@@ -38,6 +40,7 @@ export class Declaration {
 			type: Declaration.declarationTypes[ type ] || type,
 			internal: internal || explicitInternal,
 			explicitInternal,
+			ambient: node.declare === true,
 			fileName: node.loc.filename,
 			lineNumber: node.loc.start.line,
 			baseClasses

@@ -32,7 +32,8 @@ function parseArguments( args ) {
 			'depth',
 			'exclusions',
 			'concurrency',
-			'timeout'
+			'timeout',
+			'port'
 		],
 
 		boolean: [
@@ -68,7 +69,7 @@ function parseArguments( args ) {
 	], config );
 
 	const defaultOptionsForManual = minimist( [
-		'-u', 'http://localhost:8125/',
+		'-u', `http://localhost:${ parsedOptions.port || '8125' }/`,
 		'-d', 1
 	], config );
 

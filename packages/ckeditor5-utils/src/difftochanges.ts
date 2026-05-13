@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DiffResult } from './diff.js';
-
 /**
  * @module utils/difftochanges
  */
+
+import type { DiffResult } from './diff.js';
 
 /**
  * Creates a set of changes which need to be applied to the input in order to transform

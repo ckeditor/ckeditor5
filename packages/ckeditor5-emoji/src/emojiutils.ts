@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module emoji/emojiutils
+ */
+
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { EmojiCdnResource, EmojiEntry } from './emojirepository.js';
 import type { EmojiSkinToneId } from './emojiconfig.js';
 import { isEmojiSupported } from './utils/isemojisupported.js';
-
-/**
- * @module emoji/emojiutils
- */
 
 const SKIN_TONE_MAP: Record<number, EmojiSkinToneId> = {
 	0: 'default',

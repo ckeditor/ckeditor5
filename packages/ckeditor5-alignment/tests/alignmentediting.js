@@ -49,9 +49,42 @@ describe( 'AlignmentEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block' ], 'alignment' ) ).to.be.true;
 	} );
 
-	it( 'its attribute is marked with a formatting property', () => {
+	it( 'its attribute is marked with a formatting property with blockAttributes', () => {
 		expect( model.schema.getAttributeProperties( 'alignment' ) ).to.deep.equal( {
-			isFormatting: true
+			isFormatting: true,
+			blockAlignment: {
+				left: {
+					value: 'left',
+					isDefault: true
+				},
+				right: { value: 'right' },
+				center: { value: 'center' },
+				justify: { value: 'justify' }
+			}
+		} );
+	} );
+
+	it( 'its attribute is marked with a formatting property with blockAttributes [RTL]', async () => {
+		await editor.destroy();
+
+		editor = await VirtualTestEditor.create( {
+			plugins: [ AlignmentEditing, Paragraph ],
+			language: {
+				content: 'ar'
+			}
+		} );
+
+		expect( editor.model.schema.getAttributeProperties( 'alignment' ) ).to.deep.equal( {
+			isFormatting: true,
+			blockAlignment: {
+				left: { value: 'left' },
+				right: {
+					value: 'right',
+					isDefault: true
+				},
+				center: { value: 'center' },
+				justify: { value: 'justify' }
+			}
 		} );
 	} );
 

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import { type ImageUtils } from '../imageutils.js';
-import type { ModelWriter, ModelElement } from '@ckeditor/ckeditor5-engine';
-
 /**
  * @module image/image/replaceimagesourcecommand
  */
+
+import { Command, type Editor } from '@ckeditor/ckeditor5-core';
+import { type ImageUtils } from '../imageutils.js';
+import type { ModelWriter, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Replace image source command.

@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model } from '@ckeditor/ckeditor5-engine';
-
 /**
  * @module restricted-editing/restrictededitingmode/utils
  */
 
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model } from '@ckeditor/ckeditor5-engine';
+
 /**
  * Returns a single "restricted-editing-exception" marker at a given position. Contrary to
- * {@link module:engine/model/markercollection~MarkerCollection#getMarkersAtPosition}, it returnd a marker also when the postion is
+ * {@link module:engine/model/markercollection~MarkerCollection#getMarkersAtPosition}, it returns a marker also when the position is
  * equal to one of the marker's start or end positions.
  *
  * @internal

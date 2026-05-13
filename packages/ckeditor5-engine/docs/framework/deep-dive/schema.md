@@ -231,6 +231,15 @@ Here is a table listing various model elements and their properties registered i
 			<td>❌</td>
 		</tr>
 		<tr>
+			<td><code>$inlineRoot</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+		</tr>
+		<tr>
 			<td><code>$text</code></td>
 			<td>❌</td>
 			<td>❌</td>
@@ -578,10 +587,16 @@ At the same time, elements like paragraphs, list items, or headings **are not** 
 
 ## Generic items
 
-There are several generic items (classes of elements) available: `$root`, `$container`, `$block`, `$blockObject`, `$inlineObject`, and `$text`. They are defined as follows:
+There are several generic items (classes of elements) available: `$root`, `$inlineRoot`, `$container`, `$block`, `$blockObject`, `$inlineObject`, and `$text`. They are defined as follows:
 
 ```js
 schema.register( '$root', {
+	isLimit: true
+} );
+
+schema.register( '$inlineRoot', {
+	allowContentOf: '$block',
+	allowAttributesOf: '$root',
 	isLimit: true
 } );
 
@@ -614,7 +629,11 @@ schema.register( '$text', {
 } );
 ```
 
-These definitions can then be reused by features to create their own definitions in a more extensible way. For example, the {@link module:paragraph/paragraph~Paragraph} feature will define its item as:
+These definitions can then be reused by features to create their own definitions in a more extensible way.
+
+The `$inlineRoot` element is an alternative to `$root` for roots that should only contain inline content (text and inline objects) rather than block content. It inherits attributes from `$root` so that features that set attributes on the root (for example, to track document-level metadata) work the same way regardless of root type. You can use it via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option.
+
+For example, the {@link module:paragraph/paragraph~Paragraph} feature will define its item as:
 
 ```js
 schema.register( 'paragraph', {
@@ -673,6 +692,11 @@ Relations between generic items (which one can be used where) can be visualized 
 		<$blockObject/>
 	</$container>
 </$root>
+
+<$inlineRoot>				<!-- like $root but for inline content only -->
+	<$text/>
+	<$inlineObject/>
+</$inlineRoot>
 ```
 
 The above rules will be met for instance by such a model content:

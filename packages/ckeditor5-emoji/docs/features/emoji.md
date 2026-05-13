@@ -59,6 +59,10 @@ The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
 
 You can freely choose how to load the feature: either as a whole (as shown in the example above) or select one of the sub-plugins if you need only one of the ways of inserting emojis into the document.
 
+## Unsupported contexts
+
+The emoji autocompletion triggered by the `:` marker is automatically disabled inside {@link features/code-blocks code blocks}. Typing `:` inside a code block will insert the character as plain text without triggering the emoji suggestions. The toolbar emoji picker button remains available regardless of the cursor position.
+
 ## Configuration
 
 The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfig `config.emoji`} object.

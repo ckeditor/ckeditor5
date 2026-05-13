@@ -120,6 +120,13 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	}
 
 	/**
+	 * Returns an array with all roots added to the document.
+	 */
+	public getRoots(): Array<ViewRootEditableElement> {
+		return Array.from( this.roots );
+	}
+
+	/**
 	 * Allows registering post-fixer callbacks. A post-fixers mechanism allows to update the view tree just before it is rendered
 	 * to the DOM.
 	 *

@@ -30,7 +30,6 @@ describe( 'EmojiPickerFormView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-form' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-emoji-picker-form' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.be.true;
 		} );
 
 		it( 'should create child views', () => {

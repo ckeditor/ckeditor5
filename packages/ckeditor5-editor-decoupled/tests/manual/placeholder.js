@@ -17,11 +17,11 @@ function initEditor( element, placeholder ) {
 	DecoupledEditor
 		.create( {
 			root: {
-				element
+				element,
+				placeholder
 			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
-			placeholder
+			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
@@ -36,4 +36,4 @@ function initEditor( element, placeholder ) {
 }
 
 initEditor( document.querySelector( '#editor-1' ) );
-initEditor( document.querySelector( '#editor-2' ), 'The placeholder from editor.config.placeholder' );
+initEditor( document.querySelector( '#editor-2' ), 'The placeholder from editor.config.root.placeholder' );
