@@ -12,11 +12,11 @@ modified_at: 2026-05-13
 
 Each editing area in CKEditor&nbsp;5 is backed by a model root element. The type of that model element determines what content is allowed in that area. By default, roots use the `$root` model element, which accepts block-level content such as paragraphs, headings, lists, and tables.
 
-You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only — text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields.
+You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only - text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields.
 
 ## Block root
 
-The default root type is `$root`. It accepts the full range of block-level content: paragraphs, headings, lists, tables, block images, and any other block elements that the enabled plugins support. This is the standard editing experience for most use cases — articles, documents, comments, and similar rich-text areas.
+The default root type is `$root`. It accepts the full range of block-level content: paragraphs, headings, lists, tables, block images, and any other block elements that the enabled plugins support. This is the standard editing experience for most use cases - articles, documents, comments, and similar rich-text areas.
 
 ### Configuration
 
@@ -57,7 +57,7 @@ ClassicEditor
 
 ### Allowed content in a block root
 
-A block root accepts the full range of content that the enabled plugins register in the schema: paragraphs, headings, lists, tables, block images, code blocks, and similar block elements. It also allows all inline content within those blocks — text, formatting, links, mentions, and inline objects.
+A block root accepts the full range of content that the enabled plugins register in the schema: paragraphs, headings, lists, tables, block images, code blocks, and similar block elements. It also allows all inline content within those blocks - text, formatting, links, mentions, and inline objects.
 
 ## Inline root
 
@@ -105,7 +105,7 @@ The `$inlineRoot` model element allows the same content as a paragraph: text nod
 | Tables                                                    | No      |
 | Block images                                              | No      |
 
-Plugins that only produce block-level output will have no effect inside an `$inlineRoot` root. You can still include such plugins in your editor setup — they will be inactive when the cursor is inside an inline root, and toolbar items for block-only features will be disabled.
+Plugins that only produce block-level output will have no effect inside an `$inlineRoot` root. You can still include such plugins in your editor setup - they will be inactive when the cursor is inside an inline root, and toolbar items for block-only features will be disabled.
 
 ## Mixed root types in multi-root editor
 
