@@ -105,7 +105,7 @@ Plugins that only produce block-level output will have no effect inside an `$inl
 
 ## Mixed root types in multi-root editor
 
-In a multi-root editor, you can configure each root independently. A common pattern is to use an inline root for the title and a standard block root for the body:
+Mixing root types lets different parts of the same document use different content models. In a multi-root editor, you can configure each root independently. For example, a common pattern is to use an inline root for the title and a standard block root for the body:
 
 <code-switcher>
 ```js
