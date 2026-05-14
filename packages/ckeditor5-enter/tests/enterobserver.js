@@ -33,7 +33,7 @@ describe( 'EnterObserver', () => {
 		view.destroy();
 	} );
 
-	// See #10.
+	// See https://github.com/ckeditor/ckeditor5-enter/issues/10.
 	it( 'can be initialized', () => {
 		expect( () => {
 			view = new EditingView();

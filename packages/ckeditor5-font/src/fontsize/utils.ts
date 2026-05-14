@@ -137,7 +137,7 @@ function generatePixelPreset( definition: string | FontSizeOption ): FontSizeOpt
 }
 
 /**
- * Adds the priority to the view element definition if missing. It's required due to ckeditor/ckeditor5#2291
+ * Adds the priority to the view element definition if missing. It's required due to https://github.com/ckeditor/ckeditor5/issues/2291
  */
 function attachPriority( definition: FontSizeOption ): FontSizeOption {
 	if ( definition.view && typeof definition.view !== 'string' && !definition.view.priority ) {

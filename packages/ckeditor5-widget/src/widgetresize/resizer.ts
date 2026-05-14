@@ -95,7 +95,7 @@ export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 
 		this.on( 'commit', event => {
 			// State might not be initialized yet. In this case, prevent further handling and make sure that the resizer is
-			// cleaned up (#5195).
+			// cleaned up (https://github.com/ckeditor/ckeditor5/issues/5195).
 			if ( !this.state.proposedWidth && !this.state.proposedWidthPercents ) {
 				this._cleanup();
 				event.stop();

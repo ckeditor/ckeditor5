@@ -171,7 +171,7 @@ export function upcastBorderStyles(
 		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
 			const { modelRange, viewItem } = data;
 			// If the element was not converted by element-to-element converter,
-			// we should not try to convert the style. See #8393.
+			// we should not try to convert the style. See https://github.com/ckeditor/ckeditor5/issues/8393.
 			if ( !modelRange ) {
 				return;
 			}
@@ -417,7 +417,7 @@ export function upcastTableCellPaddingAttribute(
 		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
 			const { modelRange, viewItem } = data;
 			// If the element was not converted by element-to-element converter,
-			// we should not try to convert the style. See #8393.
+			// we should not try to convert the style. See https://github.com/ckeditor/ckeditor5/issues/8393.
 			if ( !modelRange ) {
 				return;
 			}
