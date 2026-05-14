@@ -12,7 +12,7 @@ modified_at: 2026-05-13
 
 Each editing area in CKEditor&nbsp;5 is backed by a model root element. The type of that model element determines what content is allowed in that area. By default, roots use the `$root` model element, which accepts block-level content such as paragraphs, headings, lists, and tables.
 
-You can configure a root to use a different model element. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only — text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields.
+You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only — text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields.
 
 ## Block root
 
@@ -65,7 +65,7 @@ A root configured with `$inlineRoot` behaves like a single paragraph: pressing <
 
 ### Configuration
 
-To configure any single-root editor type as inline-only, set `modelElement: '$inlineRoot'` in the `root` config:
+To configure any single-root editor type as inline-only, set {@link module:core/editor/editorconfig~RootConfig#modelElement `modelElement`} to `'$inlineRoot'` in the `root` config:
 
 <code-switcher>
 ```js
@@ -87,7 +87,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-The `modelElement` option works with all single-root editor types: `ClassicEditor`, `InlineEditor`, `BalloonEditor`, `BalloonBlockEditor`, and `DecoupledEditor`.
+The `modelElement` option works with all single-root editor types: `ClassicEditor`, `InlineEditor`, `BalloonEditor`, `BalloonBlockEditor`, and `DecoupledEditor`. You can also set initial attributes on a root using the {@link module:core/editor/editorconfig~RootConfig#modelAttributes `modelAttributes`} option.
 
 ### Allowed content in an inline root
 
