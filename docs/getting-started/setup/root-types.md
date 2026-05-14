@@ -53,7 +53,7 @@ ClassicEditor
 
 ### Allowed content in a block root
 
-A block root accepts the full range of content that the enabled plugins register in the schema: paragraphs, headings, lists, tables, block images, code blocks, and similar block elements. It also allows all inline content within those blocks - text, formatting, links, mentions, and inline objects.
+A block root imposes no schema-level content restrictions. It accepts whatever the enabled plugins register: paragraphs, headings, lists, tables, block images, code blocks, and any other block elements, as well as all inline content within those blocks.
 
 ## Inline root
 
