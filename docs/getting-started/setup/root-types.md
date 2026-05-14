@@ -22,7 +22,6 @@ The default root type is `$root`. It accepts the full range of block-level conte
 
 You do not need to set `modelElement` explicitly to get this behavior. The following two configurations are equivalent:
 
-<code-switcher>
 ```js
 ClassicEditor
 	.create( {
@@ -36,9 +35,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-</code-switcher>
 
-<code-switcher>
 ```js
 ClassicEditor
 	.create( {
@@ -53,7 +50,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-</code-switcher>
 
 ### Allowed content in a block root
 
