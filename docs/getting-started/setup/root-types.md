@@ -1,4 +1,3 @@
-
 ---
 category: setup
 menu-title: Root types
