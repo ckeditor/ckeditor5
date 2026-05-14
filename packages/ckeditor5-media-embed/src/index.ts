@@ -17,6 +17,10 @@ export { MediaEmbedResize } from './mediaembedresize.js';
 export { MediaEmbedResizeEditing } from './mediaembedresize/mediaembedresizeediting.js';
 export { MediaEmbedResizeHandles } from './mediaembedresize/mediaembedresizehandles.js';
 export { ResizeMediaEmbedCommand } from './mediaembedresize/resizemediaembedcommand.js';
+export { MediaEmbedStyle } from './mediaembedstyle.js';
+export { MediaEmbedStyleEditing } from './mediaembedstyle/mediaembedstyleediting.js';
+export { MediaEmbedStyleUI } from './mediaembedstyle/mediaembedstyleui.js';
+export { MediaEmbedStyleCommand } from './mediaembedstyle/mediaembedstylecommand.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
 

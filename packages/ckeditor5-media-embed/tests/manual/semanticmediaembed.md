@@ -92,3 +92,21 @@
 1. The iframe should be wrapped in a plain `<div>` (no `padding-bottom` or `position` styles on the wrapper),
 1. The iframe's inline CSS should include `aspect-ratio: 16 / 9` and `height: auto`,
 1. Resizing the embed should preserve the 16:9 proportion.
+
+### Alignment classes survive in semantic data output
+
+1. Insert a media embed and apply each alignment in turn (use the **Wrap text** and **Break text** dropdowns),
+1. Call `editor.getData()` after each application,
+1. Output `<figure>` should include the matching class for `alignLeft`/`alignBlockLeft`/`alignBlockRight`/`alignRight`:
+   - `media-style-align-left` (float)
+   - `media-style-block-align-left` (block)
+   - `media-style-block-align-right` (block)
+   - `media-style-align-right` (float)
+1. For `alignCenter` (default), the output `<figure>` should be `class="media"` only — no alignment class.
+1. The inner element should remain `<oembed url="…">` — alignment changes the figure class, not the inner element.
+
+### Resize + alignment in semantic mode
+
+1. Resize a media to ~50% then apply `alignLeft` from the **Wrap text** dropdown,
+1. Output `<figure>` should include both `media_resized` (with `style="width: 50%"`) and `media-style-align-left`,
+1. The inner `<oembed>` is unchanged.

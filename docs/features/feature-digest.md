@@ -1068,19 +1068,51 @@ Enable Markdown as the default output format instead of HTML with the Markdown p
 
 ### Media embed
 
-Use the insert media button in the toolbar to embed media. Pasting a media URL directly into the editor content automatically embeds the media.
+Embed media such as YouTube or Vimeo videos and other rich content directly in your editor &ndash; either via the insert media button in the toolbar or by pasting a URL straight into the editor.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed}'>
-	Feature page
-</ck:button-link>
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='media-embed'>
+			Media embed
+		</ck:card-title>
+		<ck:card-description>
+			Use the insert media button in the toolbar to embed media. Pasting a media URL directly into the editor content automatically embeds the media.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 
-<ck:heading-badge heading-id='media-embed-resize' badge='premium'>Media embed resize</ck:heading-badge>
+	<ck:card>
+		<ck:card-title level='4' heading-id='media-embed-resize'>
+			Media embed resize <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			The media embed resize feature lets you change the width of media embeds in your content.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-resize}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
 
-The media embed resize feature lets you change the width of media embeds in your content. It is implemented by the MediaEmbedResize plugin.
-
-<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-resize}'>
-	Feature page
-</ck:button-link>
+	<ck:card>
+		<ck:card-title level='4' heading-id='media-embed-alignment'>
+			Media embed alignment
+		</ck:card-title>
+		<ck:card-description>
+			The media embed alignment feature lets you align media embeds within the surrounding content, with optional text wrapping.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-alignment}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+</ck:columns>
 
 <ck:heading-badge heading-id='paste-markdown' badge='experiment'>Paste Markdown</ck:heading-badge>
 
