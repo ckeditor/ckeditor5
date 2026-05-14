@@ -67,6 +67,11 @@ import type {
  * counts all ancestor `<li>` elements (including the consumed wrapper), nested items receive the correct indent
  * values that reflect the skip-level gap.
  *
+ * Only `<li>` elements whose sole meaningful content is a nested `<ul>`/`<ol>` are treated as intermediate wrappers.
+ * Anything else (text, paragraphs, custom elements, even an empty `<li>` with `list-style-type:none` carrying only
+ * attributes) falls through to the regular list item upcast, so its data and attributes can be preserved by GHS
+ * or other plugins.
+ *
  * @internal
  */
 export function listItemSkipLevelConsumer(): GetCallback<UpcastElementEvent> {
@@ -74,6 +79,10 @@ export function listItemSkipLevelConsumer(): GetCallback<UpcastElementEvent> {
 		const viewItem = data.viewItem;
 
 		if ( viewItem.getStyle( 'list-style-type' ) !== 'none' ) {
+			return;
+		}
+
+		if ( !isSkipLevelWrapper( viewItem ) ) {
 			return;
 		}
 
@@ -86,6 +95,26 @@ export function listItemSkipLevelConsumer(): GetCallback<UpcastElementEvent> {
 		data.modelRange = modelRange;
 		data.modelCursor = modelCursor;
 	};
+}
+
+/**
+ * Checks whether a `<li>` view element is a skip-level intermediate wrapper, i.e. its only child is a nested
+ * `<ul>`/`<ol>`. Any other content (text, `<br>`, `<p>`, custom elements, NBSP, etc.) disqualifies the element,
+ * so it is upcast as a regular list item.
+ */
+function isSkipLevelWrapper( viewItem: ViewElement ): boolean {
+	let hasNestedList = false;
+
+	for ( const child of viewItem.getChildren() ) {
+		if ( child.is( 'element', 'ul' ) || child.is( 'element', 'ol' ) ) {
+			hasNestedList = true;
+			continue;
+		}
+
+		return false;
+	}
+
+	return hasNestedList;
 }
 
 /**
