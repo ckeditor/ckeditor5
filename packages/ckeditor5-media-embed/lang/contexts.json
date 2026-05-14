@@ -12,7 +12,5 @@
 	"Open media in new tab": "A tooltip displayed when the user hovers a non-previewable media URL in the editor content.",
 	"Left aligned media": "The label for the left aligned media option.",
 	"Centered media": "The label for the centered media option.",
-	"Right aligned media": "The label for the right aligned media option.",
-	"Wrap text": "The label for the media embed style button that wraps text around the media.",
-	"Break text": "The label for the media embed style button that breaks the text around the media."
+	"Right aligned media": "The label for the right aligned media option."
 }
