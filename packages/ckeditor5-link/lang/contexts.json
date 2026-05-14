@@ -12,5 +12,6 @@
 	"Create link": "Keystroke description for assistive technologies: keystroke for creating a link.",
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link.",
 	"Displayed text": "The label of the input field for the displayed text of the link.",
-	"No links available": "Placeholder shown when placeholder items view is empty."
+	"No links available": "Placeholder shown when placeholder items view is empty.",
+	"This link has no URL": "The label of the switch button shown when link has empty href attribute."
 }

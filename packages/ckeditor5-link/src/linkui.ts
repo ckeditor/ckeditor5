@@ -536,6 +536,13 @@ export class LinkUI extends Plugin {
 			} );
 
 			const setHref = ( href: string | undefined ) => {
+				if ( href === '' ) {
+					button.label = t( 'This link has no URL' );
+					button.icon = undefined;
+					button.tooltip = false;
+					return;
+				}
+
 				if ( !href ) {
 					button.label = undefined;
 					button.icon = undefined;
@@ -812,7 +819,7 @@ export class LinkUI extends Plugin {
 
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
-		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && !!linkCommand.value;
+		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && linkCommand.value !== undefined;
 
 		this._balloon.add( {
 			view: this.formView!,
