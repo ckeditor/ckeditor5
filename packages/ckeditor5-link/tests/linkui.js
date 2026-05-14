@@ -256,7 +256,7 @@ describe( 'LinkUI', () => {
 				linkCommand.value = '';
 				expect( button.icon ).to.be.undefined;
 				expect( button.label ).to.equal( 'This link has no URL' );
-				expect( button.tooltip ).to.equal( 'Open link in new tab' );
+				expect( button.tooltip ).to.be.false;
 			} );
 		} );
 
