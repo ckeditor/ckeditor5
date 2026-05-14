@@ -537,7 +537,7 @@ export class LinkUI extends Plugin {
 
 			const setHref = ( href: string | undefined ) => {
 				if ( !href ) {
-					button.label = undefined;
+					button.label = href === '' ? t( 'This link has no URL' ) : undefined;
 					button.icon = undefined;
 					button.tooltip = t( 'Open link in new tab' );
 					return;
@@ -812,7 +812,7 @@ export class LinkUI extends Plugin {
 
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
-		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && !!linkCommand.value;
+		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && linkCommand.value !== undefined;
 
 		this._balloon.add( {
 			view: this.formView!,

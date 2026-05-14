@@ -235,15 +235,27 @@ describe( 'LinkUI', () => {
 				expect( button.icon ).to.equal( undefined );
 			} );
 
-			it( 'should reset button labels when command is empty', () => {
+			it( 'should reset button labels when command is blank', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.icon ).to.equal( undefined );
+
+				linkCommand.value = undefined;
+				expect( button.icon ).to.equal( undefined );
+				expect( button.label ).to.be.undefined;
+				expect( button.tooltip ).to.equal( 'Open link in new tab' );
+			} );
+
+			it( 'should set no URL label when command returns empty link', () => {
 				const linkCommand = editor.commands.get( 'link' );
 
 				linkCommand.value = 'foo';
 				expect( button.icon ).to.equal( undefined );
 
 				linkCommand.value = '';
-				expect( button.icon ).to.equal( undefined );
-				expect( button.label ).to.be.undefined;
+				expect( button.icon ).to.be.undefined;
+				expect( button.label ).to.equal( 'This link has no URL' );
 				expect( button.tooltip ).to.equal( 'Open link in new tab' );
 			} );
 		} );
@@ -328,6 +340,18 @@ describe( 'LinkUI', () => {
 				// Simulate link selection.
 				linkCommand.isEnabled = true;
 				linkCommand.value = 'http://ckeditor.com';
+
+				button.fire( 'execute' );
+
+				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.true;
+			} );
+
+			it( 'should open link form view with back button (empty link)', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				// Simulate link selection.
+				linkCommand.isEnabled = true;
+				linkCommand.value = '';
 
 				button.fire( 'execute' );
 
