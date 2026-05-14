@@ -1,6 +1,8 @@
 {
 	"Cancel": "Label for the Cancel button.",
 	"Clear": "Label for the Clear button.",
+	"Wrap text": "The label for the object (e.g. image, media) style button that wraps text around the object.",
+	"Break text": "The label for the object (e.g. image, media) style button that breaks the text around the object.",
 	"Remove color": "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties).",
 	"Restore default": "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified.",
 	"Save": "Label for the Save button.",
