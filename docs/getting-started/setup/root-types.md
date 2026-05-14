@@ -10,7 +10,7 @@ modified_at: 2026-05-13
 
 # Root types
 
-Each editing area in CKEditor&nbsp;5 is backed by a model root element. The type of that model element determines what content is allowed in that area. By default, roots use the `$root` model element, which accepts block-level content such as paragraphs, headings, lists, and tables.
+In CKEditor&nbsp;5, a root is the top-level container element in the document model - every editable area has exactly one. The type of that root element determines what content is allowed in that area. By default, roots use the `$root` model element, which accepts block-level content such as paragraphs, headings, lists, and tables.
 
 You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only - text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields.
 
