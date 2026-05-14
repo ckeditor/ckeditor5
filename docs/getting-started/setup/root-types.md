@@ -134,6 +134,31 @@ MultiRootEditor
 
 The `title` root only accepts inline content, while the `body` root accepts the full range of block elements. The toolbar and undo stack are shared between both roots. See {@link getting-started/setup/editor-types#multi-root-editor Editor types} for a broader overview of the multi-root editor.
 
+### Adding roots dynamically
+
+In a multi-root editor, you can add roots at runtime using {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot `editor.addRoot()`}. The `modelElement` option sets the root type, the same way as in the static configuration:
+
+```js
+editor.on( 'addRoot', ( evt, root ) => {
+	const editableElement = editor.createEditable( root );
+
+	document.querySelector( '#editors' ).appendChild( editableElement );
+} );
+
+// Add a block root.
+editor.addRoot( 'section', {
+	initialData: '<p>Section content.</p>'
+} );
+
+// Add an inline root.
+editor.addRoot( 'sectionTitle', {
+	modelElement: '$inlineRoot',
+	initialData: 'Section title'
+} );
+```
+
+The root type is fixed at creation time and cannot be changed afterward.
+
 ## Styling the host element
 
 When you mount an inline root on a non-block HTML element such as a `<span>`, the browser may render the editable area with unexpected line breaks or sizing. This happens because block-filler mechanisms used by the editor can interact poorly with inline host elements.
