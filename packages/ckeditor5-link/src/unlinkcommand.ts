@@ -26,7 +26,8 @@ export class UnlinkCommand extends Command {
 		const selectedElement = selection.getSelectedElement();
 
 		// A check for any integration that allows linking elements (e.g. `LinkImage`).
-		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
+		// Currently the selection reads attributes from text nodes only.
+		// See https://github.com/ckeditor/ckeditor5/issues/7429 and https://github.com/ckeditor/ckeditor5/issues/7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {

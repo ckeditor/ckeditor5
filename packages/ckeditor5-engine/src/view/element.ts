@@ -1217,7 +1217,7 @@ export class ViewElement extends ViewNode {
 ViewElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'element' || type === 'view:element' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'node' || type === 'view:node';
 	} else {
 		return name === this.name && ( type === 'element' || type === 'view:element' );

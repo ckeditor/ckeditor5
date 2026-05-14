@@ -45,7 +45,8 @@ export function getChangedResizedTables( model: Model ): Set<ModelElement> {
 				break;
 
 			case 'remove':
-				// If the whole table is removed, there's no need to update its column widths (#12201).
+				// If the whole table is removed, there's no need to update its column widths.
+				// See https://github.com/ckeditor/ckeditor5/issues/12201.
 				referencePosition = [ 'tableRow', 'tableCell' ].includes( change.name ) ?
 					change.position :
 					null;
@@ -109,7 +110,7 @@ export function getColumnMinWidthAsPercentage( modelTable: ModelElement, editor:
  * @returns The width of the table in pixels.
  */
 export function getTableWidthInPixels( modelTable: ModelElement, editor: Editor ): number {
-	// It is possible for a table to not have a <tbody> element - see #11878.
+	// It is possible for a table to not have a <tbody> element - see https://github.com/ckeditor/ckeditor5/issues/11878.
 	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
 	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! )!;
 
@@ -143,7 +144,7 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
 	const styles = global.window.getComputedStyle( domElement );
 
 	// In the 'border-box' box sizing algorithm, the element's width
-	// already includes the padding and border width (#12335).
+	// already includes the padding and border width (https://github.com/ckeditor/ckeditor5/issues/12335).
 	if ( styles.boxSizing === 'border-box' ) {
 		return parseFloat( styles.width ) -
 			parseFloat( styles.paddingLeft ) -
@@ -324,7 +325,7 @@ export function getDomCellOuterWidth( domCell: HTMLElement ): number {
 	const styles = global.window.getComputedStyle( domCell );
 
 	// In the 'border-box' box sizing algorithm, the element's width
-	// already includes the padding and border width (#12335).
+	// already includes the padding and border width (https://github.com/ckeditor/ckeditor5/issues/12335).
 	if ( styles.boxSizing === 'border-box' ) {
 		return parseInt( styles.width );
 	} else {

@@ -608,7 +608,8 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'getTableWidthInPixels()', () => {
 		// Because the `window.getComputedStyle()` for colgroup will always return 0px on Safari, we needed to change the calculations
-		// to be based on tbody element instead - which works ok in all main browsers. See #1466 for reference.
+		// to be based on tbody element instead - which works ok in all main browsers.
+		// See https://github.com/ckeditor/ckeditor5/issues/1466 for reference.
 		it( 'returns a correct value on Safari', () => {
 			editor.setData(
 				`<figure class="table">

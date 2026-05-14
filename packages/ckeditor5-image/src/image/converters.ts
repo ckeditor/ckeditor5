@@ -244,7 +244,7 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 
 			const hasPictureElement = imgElement.parent!.is( 'element', 'picture' );
 
-			// Reuse existing <picture> element (ckeditor5#17192) or create a new one.
+			// Reuse existing <picture> element (https://github.com/ckeditor/ckeditor5/issues/17192) or create a new one.
 			const pictureElement = hasPictureElement ? imgElement.parent : viewWriter.createContainerElement( 'picture', null );
 
 			if ( !hasPictureElement ) {

@@ -5,7 +5,7 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
-/* See ckeditor/ckeditor5#936. */
+/* See https://github.com/ckeditor/ckeditor5/issues/936. */
 .ck.ck-placeholder, .ck .ck-placeholder {
 	@mixin ck-media-forced-colors {
 		/*

@@ -245,7 +245,8 @@ export class HighlightUI extends Plugin {
 			} );
 
 			// Focus the editable after executing the command.
-			// It overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			// It overrides a default behaviour where the focus is moved to the dropdown button.
+			// See https://github.com/ckeditor/ckeditor5/issues/12125.
 			this.listenTo( dropdownView, 'execute', () => {
 				editor.editing.view.focus();
 			} );

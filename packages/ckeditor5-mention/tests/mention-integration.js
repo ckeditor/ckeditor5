@@ -48,7 +48,7 @@ describe( 'Mention feature - integration', () => {
 				} );
 		} );
 
-		// Failing test. See ckeditor/ckeditor5#1645.
+		// Failing test. See https://github.com/ckeditor/ckeditor5/issues/1645.
 		it( 'should restore removed mention on adding a text inside mention', () => {
 			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
@@ -72,7 +72,7 @@ describe( 'Mention feature - integration', () => {
 				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
-		// Failing test. See ckeditor/ckeditor5#1645.
+		// Failing test. See https://github.com/ckeditor/ckeditor5/issues/1645.
 		it( 'should restore removed mention on removing a text inside mention', () => {
 			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
@@ -304,7 +304,8 @@ describe( 'Mention feature - integration', () => {
 
 					// Show link UI
 					editor.execute( 'link', '@' );
-					// The link is not being selected after inserting it. We need to put the selection manually. See #1016.
+					// The link is not being selected after inserting it. We need to put the selection manually.
+					// See https://github.com/ckeditor/ckeditor5/issues/1016.
 					model.change( writer => {
 						writer.setSelection( writer.createRangeOn( model.document.getRoot().getChild( 0 ).getChild( 0 ) ) );
 					} );

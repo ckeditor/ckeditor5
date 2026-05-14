@@ -3310,7 +3310,7 @@ describe( 'Renderer', () => {
 
 				// There is a case in Safari that during accent panel navigation on macOS our 'BR_FILLER' is replaced with
 				// just '<br>' element which breaks accent composition in an empty paragraph. It also throws an error while
-				// refreshing mappings in a renderer. Simulate such behaviour (#1354).
+				// refreshing mappings in a renderer. Simulate such behaviour (https://github.com/ckeditor/ckeditor5-engine/issues/1354).
 				domRoot.childNodes[ 1 ].innerHTML = '<br>';
 
 				viewRoot._removeChildren( 1 );

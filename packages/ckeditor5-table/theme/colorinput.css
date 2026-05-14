@@ -23,7 +23,7 @@
 	}
 
 	& .ck.ck-input-color__button {
-		/* Resolving issue with misaligned buttons on Safari (see #10589) */
+		/* Resolving issue with misaligned buttons on Safari (see https://github.com/ckeditor/ckeditor5/issues/10589) */
 		display: flex;
 
 		& .ck.ck-input-color__button__preview {

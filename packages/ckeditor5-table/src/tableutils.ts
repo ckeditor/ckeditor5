@@ -1521,7 +1521,7 @@ function moveCellsToRow( table: ModelElement, targetRowIndex: number, cellsToMov
 
 			previousCell = cellToMove;
 		} else if ( isAnchor ) {
-			// If cell is spanned then `cell` holds reference to overlapping cell. See ckeditor/ckeditor5#6502.
+			// If cell is spanned then `cell` holds reference to overlapping cell. See https://github.com/ckeditor/ckeditor5/issues/6502.
 			previousCell = cell;
 		}
 	}

@@ -360,7 +360,7 @@ describe( 'ViewDomConverter', () => {
 							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
 						} );
 
-						// SPECIAL CASE (see ckeditor5#5564).
+						// SPECIAL CASE (see https://github.com/ckeditor/ckeditor5/issues/5564).
 						it( 'should return true for a <br> element which is the only child of its block parent', () => {
 							const context = document.createElement( elementName );
 							context.innerHTML = '<br>';

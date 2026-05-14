@@ -355,7 +355,7 @@ function isListContinuation( currentItem: ListLikeElement ) {
 		return isList( parent ) && ( !parent.previousSibling || isList( parent.previousSibling ) );
 	}
 
-	// Even with the same id the list does not have to be continuous (#43).
+	// Even with the same id the list does not have to be continuous (https://github.com/ckeditor/ckeditor5/issues/43).
 	return isList( previousSibling );
 }
 
@@ -578,7 +578,7 @@ function createNewEmptyList(
  * where:
  *
  * ```
- * * `l1` is a list id (however it does not mean this is a continuous list - see #43),
+ * * `l1` is a list id (however it does not mean this is a continuous list - see https://github.com/ckeditor/ckeditor5/issues/43),
  * * `level1` is a list item indentation level,
  * * `lfo1` is a list insertion order in a document.
  * ```

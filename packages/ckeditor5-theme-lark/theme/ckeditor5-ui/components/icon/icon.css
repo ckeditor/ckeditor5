@@ -15,11 +15,11 @@
 	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */
 	font-size: var(--ck-icon-font-size);
 
-	/* Inherit cursor style (#5). */
+	/* Inherit cursor style (https://github.com/ckeditor/ckeditor5/issues/5). */
 	cursor: inherit;
 
 	& * {
-		/* Inherit cursor style (#5). */
+		/* Inherit cursor style (https://github.com/ckeditor/ckeditor5/issues/5). */
 		cursor: inherit;
 	}
 

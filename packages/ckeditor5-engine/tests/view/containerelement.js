@@ -77,7 +77,8 @@ describe( 'ContainerElement', () => {
 			expect( _parseView( '<container:p>foo</container:p>' ).getFillerOffset() ).to.be.null;
 		} );
 
-		// Block filler is required after the `<br>` element if the element is the last child in the container. See #1422.
+		// Block filler is required after the `<br>` element if the element is the last child in the container.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/1422.
 		describe( 'for <br> elements in container', () => {
 			it( 'returns null because container does not need the block filler', () => {
 				expect( _parseView( '<container:p>Foo.</container:p>' ).getFillerOffset() ).to.equals( null );
