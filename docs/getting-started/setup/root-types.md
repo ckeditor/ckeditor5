@@ -4,7 +4,7 @@ menu-title: Root types
 meta-title: Root types | CKEditor 5 Documentation
 meta-description: Learn how to configure CKEditor 5 root types to control whether a root accepts block content, inline-only content, or a mix of both.
 order: 27
-modified_at: 2026-05-13
+modified_at: 2026-05-15
 ---
 
 # Root types
