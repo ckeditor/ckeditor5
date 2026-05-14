@@ -137,7 +137,7 @@ MultiRootEditor
 ```
 </code-switcher>
 
-The `title` root only accepts inline content, while the `body` root accepts the full range of block elements. The toolbar and undo stack are shared between both roots.
+The `title` root only accepts inline content, while the `body` root accepts the full range of block elements. The toolbar and undo stack are shared between both roots. See {@link getting-started/setup/editor-types#multi-root-editor Editor types} for a broader overview of the multi-root editor.
 
 ## Styling the host element
 
@@ -152,7 +152,7 @@ To avoid this, apply the following CSS to the editable element:
 }
 ```
 
-This ensures the editing area does not collapse or stretch beyond its content. Mounting on a block element like a `<div>` does not require any extra CSS.
+This ensures the editing area does not collapse or stretch beyond its content. Mounting on a block element like a `<div>` does not require any extra CSS. See the {@link getting-started/setup/css Editor and content styles} guide for broader CSS customization options.
 
 <info-box>
 	When using a `<span>` as the host element, also set `display: inline-block` on the `<span>` itself, since block-level children are not valid inside an inline element.
