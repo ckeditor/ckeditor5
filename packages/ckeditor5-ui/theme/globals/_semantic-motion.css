@@ -13,6 +13,14 @@
 	--ck-transition-timing-function-control-emphasized: var(--ck-ease-emphasized);
 	--ck-transition-timing-function-surface: var(--ck-ease-standard);
 
+	/* Transition shorthands for controls (box-shadow + border). */
+	--ck-transition-control:
+		box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-control),
+		border var(--ck-transition-duration-control) var(--ck-transition-timing-function-control);
+	--ck-transition-control-fast:
+		box-shadow var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control),
+		border var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control);
+
 	--ck-animation-duration-feedback: var(--ck-animation-duration-slow);
 	--ck-animation-duration-surface-entrance: var(--ck-animation-duration-slow);
 	--ck-animation-duration-progress: var(--ck-animation-duration-emphasis);

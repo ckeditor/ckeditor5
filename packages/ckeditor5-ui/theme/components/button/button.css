@@ -81,7 +81,7 @@
 	border: var(--ck-button-border);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-control), border var(--ck-transition-duration-control) var(--ck-transition-timing-function-control);
+	transition: var(--ck-transition-control);
 
 	/* https://github.com/ckeditor/ckeditor5/issues/3414 */
 	-webkit-appearance: none;

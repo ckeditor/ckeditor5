@@ -9,6 +9,11 @@
 	--ck-border-width-divider: var(--ck-border-width-thin);
 	--ck-border-width-emphasis: var(--ck-border-width-thick);
 
+	/* Border shorthands (width + style + color). */
+	--ck-border-control: var(--ck-border-width-control) solid var(--ck-color-border-control);
+	--ck-border-surface: var(--ck-border-width-surface) solid var(--ck-color-border-container);
+	--ck-border-divider: var(--ck-border-width-divider) solid var(--ck-color-divider);
+
 	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
 	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
 	--ck-border-radius-control: var(--ck-border-radius, var(--ck-radius-base));

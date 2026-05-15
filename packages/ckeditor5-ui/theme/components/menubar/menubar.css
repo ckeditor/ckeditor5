@@ -10,6 +10,6 @@
 	background: var(--ck-color-surface-canvas);
 	padding: var(--ck-spacing-surface-padding-inline);
 	gap: var(--ck-spacing-surface-item-gap-inline);
-	border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
+	border: var(--ck-toolbar-border);
 	width: 100%;
 }

@@ -44,7 +44,7 @@
 	min-height: var(--ck-size-control-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control), border var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control);
+	transition: var(--ck-transition-control-fast);
 
 	@media (prefers-reduced-motion: reduce) {
 		transition: var(--ck-transition-none);

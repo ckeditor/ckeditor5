@@ -122,6 +122,8 @@ const SEMANTIC = {
 		// Border widths (base → derived)
 		'--ck-border-width-control', '--ck-border-width-surface',
 		'--ck-border-width-divider', '--ck-border-width-emphasis',
+		// Border shorthands (width + style + color)
+		'--ck-border-control', '--ck-border-surface', '--ck-border-divider',
 		// Radius: base roles first
 		'--ck-border-radius-control', '--ck-border-radius-surface',
 		// Radius: uniform opt-out (set to disable attached-corner behavior globally)
@@ -161,6 +163,8 @@ const SEMANTIC = {
 		// Transition easing
 		'--ck-transition-timing-function-control', '--ck-transition-timing-function-control-emphasized',
 		'--ck-transition-timing-function-surface',
+		// Transition shorthands (property + duration + easing)
+		'--ck-transition-control', '--ck-transition-control-fast',
 		// Animation
 		'--ck-animation-duration-feedback', '--ck-animation-duration-surface-entrance',
 		'--ck-animation-duration-progress', '--ck-animation-duration-progress-reduced',
@@ -473,6 +477,9 @@ const TOKEN_DESCRIPTIONS = {
 	'--ck-border-width-surface': 'Border width for surface/panel elements.',
 	'--ck-border-width-divider': 'Border width for divider lines.',
 	'--ck-border-width-emphasis': 'Thicker border width for emphasis.',
+	'--ck-border-control': 'Border shorthand for controls (width + solid + color). Used by buttons, inputs.',
+	'--ck-border-surface': 'Border shorthand for surfaces (width + solid + color). Used by panels, dropdowns.',
+	'--ck-border-divider': 'Border shorthand for dividers (width + solid + color). Used by form headers, separators.',
 	'--ck-border-radius-control': 'Border radius for interactive controls (buttons, inputs). Inherits from radius-base.',
 	'--ck-border-radius-surface': 'Border radius for elevated surfaces (panels, dropdowns). Inherits from radius-base.',
 	'--ck-border-radius-uniform': 'Set to a radius value to disable attached-corner behavior on all panels at once.',
@@ -526,6 +533,8 @@ const TOKEN_DESCRIPTIONS = {
 	'--ck-transition-timing-function-control': 'Easing function for control transitions.',
 	'--ck-transition-timing-function-control-emphasized': 'Easing for emphasized control transitions.',
 	'--ck-transition-timing-function-surface': 'Easing function for surface transitions.',
+	'--ck-transition-control': 'Transition shorthand for controls (box-shadow + border with standard timing).',
+	'--ck-transition-control-fast': 'Fast transition shorthand for controls (box-shadow + border with fast timing).',
 	'--ck-animation-duration-feedback': 'Duration for feedback animations (e.g. success/error).',
 	'--ck-animation-duration-surface-entrance': 'Duration for surface entrance animations.',
 	'--ck-animation-duration-progress': 'Duration for progress/loading animations.',
