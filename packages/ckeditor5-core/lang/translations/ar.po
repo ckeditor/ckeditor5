@@ -154,3 +154,11 @@ msgstr "تحديث"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "الرجوع"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "التفاف النص"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "اعتراض النص"

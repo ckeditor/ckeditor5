@@ -154,3 +154,11 @@ msgstr "Aggiornamento"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "Indietro"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "Testo a capo"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "Interrompi testo"

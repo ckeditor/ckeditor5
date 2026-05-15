@@ -154,3 +154,11 @@ msgstr "Actualitzar"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "Enrere"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "Embolcallar el text"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "Parteix el text"

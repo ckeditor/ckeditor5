@@ -154,3 +154,11 @@ msgstr "Aktualizovať"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "Naspäť"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "Obtekanie textu"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "Zalomenie textu"

@@ -154,3 +154,11 @@ msgstr "अपडेट"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "वापस जाएँ"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "टेक्स्ट रैप करें"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "टेक्स्ट तोड़ें"

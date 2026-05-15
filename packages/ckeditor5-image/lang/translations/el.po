@@ -15,14 +15,6 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "Γραφικό στοιχείο εικόνας"
 
-msgctxt "The label for the image style button that wraps text around the image."
-msgid "Wrap text"
-msgstr "Αναδίπλωση κειμένου"
-
-msgctxt "The label for the image style button that breaks the text around the image."
-msgid "Break text"
-msgstr "Κατάτμηση κειμένου"
-
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
 msgstr "Εντός γραμμής"

@@ -154,3 +154,11 @@ msgstr "Ενημέρωση"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "Πίσω"
+
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr "Αναδίπλωση κειμένου"
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr "Κατάτμηση κειμένου"
