@@ -154,3 +154,11 @@ msgstr "PErbarui"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "Kembali"
+
+msgctxt "The label for the object (e.g. image, media) style button that wraps text around the object."
+msgid "Wrap text"
+msgstr "Bungkus teks"
+
+msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
+msgid "Break text"
+msgstr "Pecahkan teks"

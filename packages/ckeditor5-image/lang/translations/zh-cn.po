@@ -15,14 +15,6 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "图片组件"
 
-msgctxt "The label for the image style button that wraps text around the image."
-msgid "Wrap text"
-msgstr "文字环绕"
-
-msgctxt "The label for the image style button that breaks the text around the image."
-msgid "Break text"
-msgstr "文字断行"
-
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
 msgstr "行内"
