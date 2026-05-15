@@ -32,38 +32,38 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.46.2)(yaml@2.8.3)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(postcss@8.5.10)(tslib@2.8.1)(typescript@5.5.4)
+        specifier: ^55.6.0
+        version: 55.6.0(postcss@8.5.10)(tslib@2.8.1)(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0
+        specifier: ^55.6.0
+        version: 55.6.0
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+        specifier: ^55.6.0
+        version: 55.6.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-ci':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0
+        specifier: ^55.6.0
+        version: 55.6.0
       '@ckeditor/ckeditor5-dev-dependency-checker':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+        specifier: ^55.6.0
+        version: 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(typescript@5.5.4)
+        specifier: ^55.6.0
+        version: 55.6.0(typescript@5.5.4)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0
+        specifier: ^55.6.0
+        version: 55.6.0
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+        specifier: ^55.6.0
+        version: 55.6.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-stale-bot':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+        specifier: ^55.6.0
+        version: 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(@swc/core@1.15.33)(esbuild@0.25.10)
+        specifier: ^55.6.0
+        version: 55.6.0(@swc/core@1.15.33)(esbuild@0.25.10)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^55.6.0-alpha.0
-        version: 55.6.0-alpha.0(typescript@5.5.4)
+        specifier: ^55.6.0
+        version: 55.6.0(typescript@5.5.4)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.0
         version: 5.0.0
@@ -4359,62 +4359,62 @@ packages:
   '@ckbox/uploader@2.11.0':
     resolution: {integrity: sha512-joskUAalQIBDF0bvRpDBQDxQteVqUrU7Fvx+peQy+0Al/Cj5bzkSZlkChMBPAPsc6HqZyuNfaAN+CSO5sCHt0A==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@55.6.0-alpha.0':
-    resolution: {integrity: sha512-HTUTpooECf5S+zDnit+5RPsuN8gJPfacYZ8rz+U8y/KVsxz/wTGzhY6AtkDteez1gArVgo95ulL3ySn8npiykA==}
+  '@ckeditor/ckeditor5-dev-build-tools@55.6.0':
+    resolution: {integrity: sha512-173ImoZg+LhhU+CvWBNvJ8fXu7X34zh5hsdn2ZSnF8t+YVvCyir4uzpPDHfZF+PJVbFqcVCI/FHOVtgPUzTmLA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@55.6.0-alpha.0':
-    resolution: {integrity: sha512-sQ6mgVFfGKlH13s6vX4aJ2Vsd/iREKW02zY9AXeFNiKacNyZd8dvhTvSI2//iM5HMR4QTPPyt/PfQaa9E3LF2g==}
+  '@ckeditor/ckeditor5-dev-bump-year@55.6.0':
+    resolution: {integrity: sha512-Wnb7ULev/aQvTH+wYFqYvQvD/mvVgqRiUQlBTsxkiQoaTSBzbE3SjX0BL64vYVV/mVVh4RX+2H/9k14yiUPGNA==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@55.6.0-alpha.0':
-    resolution: {integrity: sha512-lrJfzz2b3y9HNKOb8kxy76JjnaXEhTb0O4AITUr/JY8gm6g3FgfmXuzqpEP7OGzbcVw770RAhIRBU2BbTwOcpA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-    hasBin: true
-
-  '@ckeditor/ckeditor5-dev-ci@55.6.0-alpha.0':
-    resolution: {integrity: sha512-LY+aB+itg+wxhVXyespk+DkaXVIG62LYnShgo8xTRqhiucfg5+x/DTNysM8CJ09UqvvA7798lINepz4K7qLy1g==}
+  '@ckeditor/ckeditor5-dev-changelog@55.6.0':
+    resolution: {integrity: sha512-xskkqz4/7Ty3iUKoP9qS1AxNfSypTYS7UYfP8s2pGDmjhfKwUiu0IoXMulHgFiKaJUmVO2qXLRFrHQNfh4AhTQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@55.6.0-alpha.0':
-    resolution: {integrity: sha512-OMBQHqMQ+KKIHI/3loEGDc8R8UVSTUm5fZP7iDC1EbzQvXmjVN6iCed1Ki2nQUDU9+nQL6fJacdxp29DUWoI2w==}
+  '@ckeditor/ckeditor5-dev-ci@55.6.0':
+    resolution: {integrity: sha512-XCuwtHGY3riVmzl5CNG98Wo2T6TD0+T3a9j7kFLhS6o2V+to868cuy0jcLGu/i22YHOuf+uD9qWcGVUPUbcqOQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@55.6.0-alpha.0':
-    resolution: {integrity: sha512-XQA0jn5lmlUd1wapp8NmsN3qjSNt8PUxkl/ApajnwD+gWmodbPOfNYDblykBctkDkfTR2EK9tJQ6W7Ik80yl4A==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-license-checker@55.6.0-alpha.0':
-    resolution: {integrity: sha512-ziYdaXmRN5ViWO86jhuDjjygX2SB5+MZYQfFU4MtquufHX8Q5JbCPdPNcjKgWFNQThyZblj3VE0IW2cStiDj5Q==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-release-tools@55.6.0-alpha.0':
-    resolution: {integrity: sha512-5ADezCu8mxGioVjkjGf15Yf5IQCK3smhhV4oBX2YWg/eU2D8klJpj1cons3NfTbj7qgFIlKtvt3xpfIqsq7W2Q==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
-
-  '@ckeditor/ckeditor5-dev-stale-bot@55.6.0-alpha.0':
-    resolution: {integrity: sha512-R6+Etm7lDjY2q79x91FkL8WhsXts6yeeWZMD0yJTlf8h8Ih1OOEofniA9TXZCkwmsOL/2vwjfN4PBLqDFLhhQQ==}
+  '@ckeditor/ckeditor5-dev-dependency-checker@55.6.0':
+    resolution: {integrity: sha512-r3oGCyhiHAr0HPBZnCMM9E37q9QYdLvzdrq6R0RGXNdfc7xgOB/YEoFk7o/E/KHHZT7tlpx+QxtujkdbkZn7Vw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@55.6.0-alpha.0':
-    resolution: {integrity: sha512-3tZ7e5tJGOrd7aVmS2/f6kiHGiEfhs5MZ7Ct3QHN5bL1ZfxsOxCeQwNGzQoP8P8GYZ3AYYNCn1NPlfJAWIlhgg==}
+  '@ckeditor/ckeditor5-dev-docs@55.6.0':
+    resolution: {integrity: sha512-PNrjGal03UiqY01DHVxfu9CwhCZcTYp6PEzrObLn8DVbZ6TKbvOJDmnfhfpUA+Wz1hV4fbiquZ2lfhFyOAYW9Q==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-license-checker@55.6.0':
+    resolution: {integrity: sha512-sTP1qP2fiEnaVrax/8ZFgbjAnKyT8cOLYR06af8AQn5hwAnREu4JR0MH+/ohv4Nvce3abYT1eX3Xr++8VWbdxg==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-release-tools@55.6.0':
+    resolution: {integrity: sha512-eNr05o8mMBnofBt7c8g4Udeu/oo7wZqLgzZHEy3B8kd+XUGXy5b1VTyPNksKLEy2CQOvRCp9k3mol4s3MKzp1A==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+
+  '@ckeditor/ckeditor5-dev-stale-bot@55.6.0':
+    resolution: {integrity: sha512-JlVEgqKIl3Lqy9pQbzssYgqvtm4qZu28n/yVdsO6GY8F2+8WYR2aewcH3KZ5RbYaaMhaSeFbXrdqlUEkdr+5kw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-translations@55.6.0-alpha.0':
-    resolution: {integrity: sha512-wCiZ+n1/X8Z2jM2UYohsQxnJc6hw9eFIPu83zyKOetPsbWJ59zh5vLUs0WHZLm9bse4+izMhu1bGhF6z+eAtmQ==}
+  '@ckeditor/ckeditor5-dev-tests@55.6.0':
+    resolution: {integrity: sha512-e5Fees15iZup/O4BEA73hrGb3LOZ1GxvwBIOaq0sZok1+7ACTSaMwmGoI8ZuIC/fNNeakt6AoCrEQbUvRLe0JA==}
+    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+    hasBin: true
+
+  '@ckeditor/ckeditor5-dev-translations@55.6.0':
+    resolution: {integrity: sha512-WKPx8NhVopMnVDDIFmkePAsXulg0aLoJCURbfiWDRm3wQKmnQlPY7ovmWrLPvQ/dcJOCAyTqhPGPILT1yc76ew==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@55.6.0-alpha.0':
-    resolution: {integrity: sha512-h8oxhZDR1RBkvd/g3wHxYRm+soOBalCOUuYuWC49ntTVQ09cMqd5EooD7smfUbn+P/flh5MrTXpyAiiOi+R4Jw==}
+  '@ckeditor/ckeditor5-dev-utils@55.6.0':
+    resolution: {integrity: sha512-ogTB9FVB+bctHppFPG7wjaAexdWfP+tsSP6PC8OGW/EQKgmGa3Wg7CHremTjbn9Eo7sAWFxOZMo8RfhxNsDZyg==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@55.6.0-alpha.0':
-    resolution: {integrity: sha512-gn/U8k/5bWmKwOxetn5uVvZ0D2iCTAQZf9bTY0dXtVulQHuiN6nYRP17kh6Zsbu5nWq6WW7KW6Q0pLsojb7wNw==}
+  '@ckeditor/ckeditor5-dev-web-crawler@55.6.0':
+    resolution: {integrity: sha512-YFz3ktEBScJhAu6C8Zap3fcFdj0vDlar6f7yWgEmnlSNEODr77uThAK0N+92HqBRbDIYR0JcfAvWZR2BzzYDcw==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.0':
@@ -4441,8 +4441,8 @@ packages:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@55.6.0-alpha.0':
-    resolution: {integrity: sha512-xNqLVl+6dpPWdmbJoZGX5J5NqhxPqXyWmUzUxgLckJJ8+H7+sAkkU4LmIr5Xg4t/8gK05fs/uoavCKKF2cUjPg==}
+  '@ckeditor/typedoc-plugins@55.6.0':
+    resolution: {integrity: sha512-eCD12l+Z/YZwIfFQKdhgUt0ube89U9GsmFvH+Rrf3HQMB/hCBVTki/QUrnI76+8MsM0ljNKTlmt6PNIYVfngJQ==}
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.14
@@ -5819,19 +5819,9 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/rollup-android-arm-eabi@4.59.0':
-    resolution: {integrity: sha512-upnNBkA6ZH2VKGcBj9Fyl9IGNPULcjXRlg0LLeaioQWueH30p6IXtJEbKAgvyv+mJaMxSm1l6xwDXYjpEMiLMg==}
-    cpu: [arm]
-    os: [android]
-
   '@rollup/rollup-android-arm-eabi@4.60.3':
     resolution: {integrity: sha512-x35CNW/ANXG3hE/EZpRU8MXX1JDN86hBb2wMGAtltkz7pc6cxgjpy1OMMfDosOQ+2hWqIkag/fGok1Yady9nGw==}
     cpu: [arm]
-    os: [android]
-
-  '@rollup/rollup-android-arm64@4.59.0':
-    resolution: {integrity: sha512-hZ+Zxj3SySm4A/DylsDKZAeVg0mvi++0PYVceVyX7hemkw7OreKdCvW2oQ3T1FMZvCaQXqOTHb8qmBShoqk69Q==}
-    cpu: [arm64]
     os: [android]
 
   '@rollup/rollup-android-arm64@4.60.3':
@@ -5839,19 +5829,9 @@ packages:
     cpu: [arm64]
     os: [android]
 
-  '@rollup/rollup-darwin-arm64@4.59.0':
-    resolution: {integrity: sha512-W2Psnbh1J8ZJw0xKAd8zdNgF9HRLkdWwwdWqubSVk0pUuQkoHnv7rx4GiF9rT4t5DIZGAsConRE3AxCdJ4m8rg==}
-    cpu: [arm64]
-    os: [darwin]
-
   '@rollup/rollup-darwin-arm64@4.60.3':
     resolution: {integrity: sha512-vo6Y5Qfpx7/5EaamIwi0WqW2+zfiusVihKatLvtN1VFVy3D13uERk/6gZLU1UiHRL6fDXqj/ELIeVRGnvcTE1g==}
     cpu: [arm64]
-    os: [darwin]
-
-  '@rollup/rollup-darwin-x64@4.59.0':
-    resolution: {integrity: sha512-ZW2KkwlS4lwTv7ZVsYDiARfFCnSGhzYPdiOU4IM2fDbL+QGlyAbjgSFuqNRbSthybLbIJ915UtZBtmuLrQAT/w==}
-    cpu: [x64]
     os: [darwin]
 
   '@rollup/rollup-darwin-x64@4.60.3':
@@ -5859,19 +5839,9 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@rollup/rollup-freebsd-arm64@4.59.0':
-    resolution: {integrity: sha512-EsKaJ5ytAu9jI3lonzn3BgG8iRBjV4LxZexygcQbpiU0wU0ATxhNVEpXKfUa0pS05gTcSDMKpn3Sx+QB9RlTTA==}
-    cpu: [arm64]
-    os: [freebsd]
-
   '@rollup/rollup-freebsd-arm64@4.60.3':
     resolution: {integrity: sha512-6HnvHCT7fDyj6R0Ph7A6x8dQS/S38MClRWeDLqc0MdfWkxjiu1HSDYrdPhqSILzjTIC/pnXbbJbo+ft+gy/9hQ==}
     cpu: [arm64]
-    os: [freebsd]
-
-  '@rollup/rollup-freebsd-x64@4.59.0':
-    resolution: {integrity: sha512-d3DuZi2KzTMjImrxoHIAODUZYoUUMsuUiY4SRRcJy6NJoZ6iIqWnJu9IScV9jXysyGMVuW+KNzZvBLOcpdl3Vg==}
-    cpu: [x64]
     os: [freebsd]
 
   '@rollup/rollup-freebsd-x64@4.60.3':
@@ -5879,23 +5849,11 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.59.0':
-    resolution: {integrity: sha512-t4ONHboXi/3E0rT6OZl1pKbl2Vgxf9vJfWgmUoCEVQVxhW6Cw/c8I6hbbu7DAvgp82RKiH7TpLwxnJeKv2pbsw==}
-    cpu: [arm]
-    os: [linux]
-    libc: [glibc]
-
   '@rollup/rollup-linux-arm-gnueabihf@4.60.3':
     resolution: {integrity: sha512-DV6fJoxEYWJOvaZIsok7KrYl0tPvga5OZ2yvKHNNYyk/2roMLqQAbGhr78EQ5YhHpnhLKJD3S1WFusAkmUuV5g==}
     cpu: [arm]
     os: [linux]
     libc: [glibc]
-
-  '@rollup/rollup-linux-arm-musleabihf@4.59.0':
-    resolution: {integrity: sha512-CikFT7aYPA2ufMD086cVORBYGHffBo4K8MQ4uPS/ZnY54GKj36i196u8U+aDVT2LX4eSMbyHtyOh7D7Zvk2VvA==}
-    cpu: [arm]
-    os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm-musleabihf@4.60.3':
     resolution: {integrity: sha512-mQKoJAzvuOs6F+TZybQO4GOTSMUu7v0WdxEk24krQ/uUxXoPTtHjuaUuPmFhtBcM4K0ons8nrE3JyhTuCFtT/w==}
@@ -5903,23 +5861,11 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-arm64-gnu@4.59.0':
-    resolution: {integrity: sha512-jYgUGk5aLd1nUb1CtQ8E+t5JhLc9x5WdBKew9ZgAXg7DBk0ZHErLHdXM24rfX+bKrFe+Xp5YuJo54I5HFjGDAA==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
   '@rollup/rollup-linux-arm64-gnu@4.60.3':
     resolution: {integrity: sha512-Whjj2qoiJ6+OOJMGptTYazaJvjOJm+iKHpXQM1P3LzGjt7Ff++Tp7nH4N8J/BUA7R9IHfDyx4DJIflifwnbmIA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
-
-  '@rollup/rollup-linux-arm64-musl@4.59.0':
-    resolution: {integrity: sha512-peZRVEdnFWZ5Bh2KeumKG9ty7aCXzzEsHShOZEFiCQlDEepP1dpUl/SrUNXNg13UmZl+gzVDPsiCwnV1uI0RUA==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-musl@4.60.3':
     resolution: {integrity: sha512-4YTNHKqGng5+yiZt3mg77nmyuCfmNfX4fPmyUapBcIk+BdwSwmCWGXOUxhXbBEkFHtoN5boLj/5NON+u5QC9tg==}
@@ -5927,23 +5873,11 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-loong64-gnu@4.59.0':
-    resolution: {integrity: sha512-gbUSW/97f7+r4gHy3Jlup8zDG190AuodsWnNiXErp9mT90iCy9NKKU0Xwx5k8VlRAIV2uU9CsMnEFg/xXaOfXg==}
-    cpu: [loong64]
-    os: [linux]
-    libc: [glibc]
-
   '@rollup/rollup-linux-loong64-gnu@4.60.3':
     resolution: {integrity: sha512-SU3kNlhkpI4UqlUc2VXPGK9o886ZsSeGfMAX2ba2b8DKmMXq4AL7KUrkSWVbb7koVqx41Yczx6dx5PNargIrEA==}
     cpu: [loong64]
     os: [linux]
     libc: [glibc]
-
-  '@rollup/rollup-linux-loong64-musl@4.59.0':
-    resolution: {integrity: sha512-yTRONe79E+o0FWFijasoTjtzG9EBedFXJMl888NBEDCDV9I2wGbFFfJQQe63OijbFCUZqxpHz1GzpbtSFikJ4Q==}
-    cpu: [loong64]
-    os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-loong64-musl@4.60.3':
     resolution: {integrity: sha512-6lDLl5h4TXpB1mTf2rQWnAk/LcXrx9vBfu/DT5TIPhvMhRWaZ5MxkIc8u4lJAmBo6klTe1ywXIUHFjylW505sg==}
@@ -5951,23 +5885,11 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-ppc64-gnu@4.59.0':
-    resolution: {integrity: sha512-sw1o3tfyk12k3OEpRddF68a1unZ5VCN7zoTNtSn2KndUE+ea3m3ROOKRCZxEpmT9nsGnogpFP9x6mnLTCaoLkA==}
-    cpu: [ppc64]
-    os: [linux]
-    libc: [glibc]
-
   '@rollup/rollup-linux-ppc64-gnu@4.60.3':
     resolution: {integrity: sha512-BMo8bOw8evlup/8G+cj5xWtPyp93xPdyoSN16Zy90Q2QZ0ZYRhCt6ZJSwbrRzG9HApFabjwj2p25TUPDWrhzqQ==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
-
-  '@rollup/rollup-linux-ppc64-musl@4.59.0':
-    resolution: {integrity: sha512-+2kLtQ4xT3AiIxkzFVFXfsmlZiG5FXYW7ZyIIvGA7Bdeuh9Z0aN4hVyXS/G1E9bTP/vqszNIN/pUKCk/BTHsKA==}
-    cpu: [ppc64]
-    os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-musl@4.60.3':
     resolution: {integrity: sha512-E0L8X1dZN1/Rph+5VPF6Xj2G7JJvMACVXtamTJIDrVI44Y3K+G8gQaMEAavbqCGTa16InptiVrX6eM6pmJ+7qA==}
@@ -5975,23 +5897,11 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-riscv64-gnu@4.59.0':
-    resolution: {integrity: sha512-NDYMpsXYJJaj+I7UdwIuHHNxXZ/b/N2hR15NyH3m2qAtb/hHPA4g4SuuvrdxetTdndfj9b1WOmy73kcPRoERUg==}
-    cpu: [riscv64]
-    os: [linux]
-    libc: [glibc]
-
   '@rollup/rollup-linux-riscv64-gnu@4.60.3':
     resolution: {integrity: sha512-oZJ/WHaVfHUiRAtmTAeo3DcevNsVvH8mbvodjZy7D5QKvCefO371SiKRpxoDcCxB3PTRTLayWBkvmDQKTcX/sw==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
-
-  '@rollup/rollup-linux-riscv64-musl@4.59.0':
-    resolution: {integrity: sha512-nLckB8WOqHIf1bhymk+oHxvM9D3tyPndZH8i8+35p/1YiVoVswPid2yLzgX7ZJP0KQvnkhM4H6QZ5m0LzbyIAg==}
-    cpu: [riscv64]
-    os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-musl@4.60.3':
     resolution: {integrity: sha512-Dhbyh7j9FybM3YaTgaHmVALwA8AkUwTPccyCQ79TG9AJUsMQqgN1DDEZNr4+QUfwiWvLDumW5vdwzoeUF+TNxQ==}
@@ -5999,21 +5909,9 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-s390x-gnu@4.59.0':
-    resolution: {integrity: sha512-oF87Ie3uAIvORFBpwnCvUzdeYUqi2wY6jRFWJAy1qus/udHFYIkplYRW+wo+GRUP4sKzYdmE1Y3+rY5Gc4ZO+w==}
-    cpu: [s390x]
-    os: [linux]
-    libc: [glibc]
-
   '@rollup/rollup-linux-s390x-gnu@4.60.3':
     resolution: {integrity: sha512-cJd1X5XhHHlltkaypz1UcWLA8AcoIi1aWhsvaWDskD1oz2eKCypnqvTQ8ykMNI0RSmm7NkTdSqSSD7zM0xa6Ig==}
     cpu: [s390x]
-    os: [linux]
-    libc: [glibc]
-
-  '@rollup/rollup-linux-x64-gnu@4.59.0':
-    resolution: {integrity: sha512-3AHmtQq/ppNuUspKAlvA8HtLybkDflkMuLK4DPo77DfthRb71V84/c4MlWJXixZz4uruIH4uaa07IqoAkG64fg==}
-    cpu: [x64]
     os: [linux]
     libc: [glibc]
 
@@ -6023,51 +5921,25 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-x64-musl@4.59.0':
-    resolution: {integrity: sha512-2UdiwS/9cTAx7qIUZB/fWtToJwvt0Vbo0zmnYt7ED35KPg13Q0ym1g442THLC7VyI6JfYTP4PiSOWyoMdV2/xg==}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-
   '@rollup/rollup-linux-x64-musl@4.60.3':
     resolution: {integrity: sha512-cRxsE8c13mZOh3vP+wLDxpQBRrOHDIGOWyDL93Sy0Ga8y515fBcC2pjUfFwUe5T7tqvTvWbCpg1URM/AXdWIXA==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-openbsd-x64@4.59.0':
-    resolution: {integrity: sha512-M3bLRAVk6GOwFlPTIxVBSYKUaqfLrn8l0psKinkCFxl4lQvOSz8ZrKDz2gxcBwHFpci0B6rttydI4IpS4IS/jQ==}
-    cpu: [x64]
-    os: [openbsd]
-
   '@rollup/rollup-openbsd-x64@4.60.3':
     resolution: {integrity: sha512-QaWcIgRxqEdQdhJqW4DJctsH6HCmo5vHxY0krHSX4jMtOqfzC+dqDGuHM87bu4H8JBeibWx7jFz+h6/4C8wA5Q==}
     cpu: [x64]
     os: [openbsd]
-
-  '@rollup/rollup-openharmony-arm64@4.59.0':
-    resolution: {integrity: sha512-tt9KBJqaqp5i5HUZzoafHZX8b5Q2Fe7UjYERADll83O4fGqJ49O1FsL6LpdzVFQcpwvnyd0i+K/VSwu/o/nWlA==}
-    cpu: [arm64]
-    os: [openharmony]
 
   '@rollup/rollup-openharmony-arm64@4.60.3':
     resolution: {integrity: sha512-AaXwSvUi3QIPtroAUw1t5yHGIyqKEXwH54WUocFolZhpGDruJcs8c+xPNDRn4XiQsS7MEwnYsHW2l0MBLDMkWg==}
     cpu: [arm64]
     os: [openharmony]
 
-  '@rollup/rollup-win32-arm64-msvc@4.59.0':
-    resolution: {integrity: sha512-V5B6mG7OrGTwnxaNUzZTDTjDS7F75PO1ae6MJYdiMu60sq0CqN5CVeVsbhPxalupvTX8gXVSU9gq+Rx1/hvu6A==}
-    cpu: [arm64]
-    os: [win32]
-
   '@rollup/rollup-win32-arm64-msvc@4.60.3':
     resolution: {integrity: sha512-65LAKM/bAWDqKNEelHlcHvm2V+Vfb8C6INFxQXRHCvaVN1rJfwr4NvdP4FyzUaLqWfaCGaadf6UbTm8xJeYfEg==}
     cpu: [arm64]
-    os: [win32]
-
-  '@rollup/rollup-win32-ia32-msvc@4.59.0':
-    resolution: {integrity: sha512-UKFMHPuM9R0iBegwzKF4y0C4J9u8C6MEJgFuXTBerMk7EJ92GFVFYBfOZaSGLu6COf7FxpQNqhNS4c4icUPqxA==}
-    cpu: [ia32]
     os: [win32]
 
   '@rollup/rollup-win32-ia32-msvc@4.60.3':
@@ -6075,18 +5947,8 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@rollup/rollup-win32-x64-gnu@4.59.0':
-    resolution: {integrity: sha512-laBkYlSS1n2L8fSo1thDNGrCTQMmxjYY5G0WFWjFFYZkKPjsMBsgJfGf4TLxXrF6RyhI60L8TMOjBMvXiTcxeA==}
-    cpu: [x64]
-    os: [win32]
-
   '@rollup/rollup-win32-x64-gnu@4.60.3':
     resolution: {integrity: sha512-E5Eb5H/DpxaoXH++Qkv28RcUJboMopmdDUALBczvHMf7hNIxaDZqwY5lK12UK1BHacSmvupoEWGu+n993Z0y1A==}
-    cpu: [x64]
-    os: [win32]
-
-  '@rollup/rollup-win32-x64-msvc@4.59.0':
-    resolution: {integrity: sha512-2HRCml6OztYXyJXAvdDXPKcawukWY2GpR5/nxKp4iBgiO3wcoEGkAaqctIbZcNB6KlUQBIqt8VYkNSj2397EfA==}
     cpu: [x64]
     os: [win32]
 
@@ -7538,12 +7400,6 @@ packages:
     peerDependencies:
       postcss: ^8.4.32
 
-  cssnano-utils@5.0.1:
-    resolution: {integrity: sha512-ZIP71eQgG9JwjVZsTPSqhc6GHgEr53uJ7tK5///VfyWj6Xp2DBmixWHqJgPno+PqATzn48pL42ww9x5SSGmhZg==}
-    engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
-    peerDependencies:
-      postcss: ^8.4.32
-
   cssnano-utils@5.0.3:
     resolution: {integrity: sha512-ynIREMICLxkxm7e9bCR9sh75s4Q5drICi0ua1yxo5jH2XPBqSKkl4dOh4EbFqtUmnTMhRffHgYL0EKKkMjtJTg==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
@@ -7893,10 +7749,6 @@ packages:
 
   diff@4.0.4:
     resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
-    engines: {node: '>=0.3.1'}
-
-  diff@8.0.3:
-    resolution: {integrity: sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ==}
     engines: {node: '>=0.3.1'}
 
   diff@8.0.4:
@@ -10461,12 +10313,6 @@ packages:
     peerDependencies:
       postcss: ^8.5.13
 
-  postcss-discard-comments@7.0.6:
-    resolution: {integrity: sha512-Sq+Fzj1Eg5/CPf1ERb0wS1Im5cvE2gDXCE+si4HCn1sf+jpQZxDI4DXEp8t77B/ImzDceWE2ebJQFXdqZ6GRJw==}
-    engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
-    peerDependencies:
-      postcss: ^8.4.32
-
   postcss-discard-comments@7.0.8:
     resolution: {integrity: sha512-CvvS5S9WrXblFXCEJ9nVo+4z+eA7zSC7Z88V1HEJuwlQhlFnYTIjg1xJY+BCUiG2bvICap2tXii4mP22BD108Q==}
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
@@ -10478,12 +10324,6 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
       postcss: ^8.5.13
-
-  postcss-discard-empty@7.0.1:
-    resolution: {integrity: sha512-cFrJKZvcg/uxB6Ijr4l6qmn3pXQBna9zyrPC+sK0zjbkDUZew+6xDltSF7OeB7rAtzaaMVYSdbod+sZOCWnMOg==}
-    engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
-    peerDependencies:
-      postcss: ^8.4.32
 
   postcss-discard-empty@7.0.3:
     resolution: {integrity: sha512-M2pyjQCU+/7cMHVtL6bKTHjv0lZnPLMpicgr67Dlth7AbuV9gjVTtUqaRwn6Pp6BwSDspUzhz8SaUrRykJU5Dw==}
@@ -10617,12 +10457,6 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
       postcss: ^8.5.13
-
-  postcss-normalize-whitespace@7.0.1:
-    resolution: {integrity: sha512-vsbgFHMFQrJBJKrUFJNZ2pgBeBkC2IvvoHjz1to0/0Xk7sII24T0qFOiJzG6Fu3zJoq/0yI4rKWi7WhApW+EFA==}
-    engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
-    peerDependencies:
-      postcss: ^8.4.32
 
   postcss-normalize-whitespace@7.0.3:
     resolution: {integrity: sha512-FdHjjn+Ht5Z2ZRjNOmeCbNq6lq09sUYKpmlF/Aq0XjVNSLTL6fmHlA/3swN2wP2caY9GV/tjSDcIIyS7aN7W0A==}
@@ -11134,11 +10968,6 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       rollup: ^3.0.0||^4.0.0
-
-  rollup@4.59.0:
-    resolution: {integrity: sha512-2oMpl67a3zCH9H79LeMcbDhXW/UmWG/y2zuqnF2jQq5uq9TbM9TVyXvA4+t+ne2IIkBdrLpAaRQAvo7YI/Yyeg==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    hasBin: true
 
   rollup@4.60.3:
     resolution: {integrity: sha512-pAQK9HalE84QSm4Po3EmWIZPd3FnjkShVkiMlz1iligWYkWQ7wHYd1PF/T7QZ5TVSD6uSTon5gBVMSM4JfBV+A==}
@@ -13180,7 +13009,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@ckeditor/ckeditor5-dev-build-tools@55.6.0-alpha.0(postcss@8.5.10)(tslib@2.8.1)(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-build-tools@55.6.0(postcss@8.5.10)(tslib@2.8.1)(typescript@5.5.4)':
     dependencies:
       '@rollup/plugin-commonjs': 28.0.9(rollup@4.60.3)
       '@rollup/plugin-json': 6.1.0(rollup@4.60.3)
@@ -13209,13 +13038,13 @@ snapshots:
       - tslib
       - typescript
 
-  '@ckeditor/ckeditor5-dev-bump-year@55.6.0-alpha.0':
+  '@ckeditor/ckeditor5-dev-bump-year@55.6.0':
     dependencies:
       glob: 13.0.6
 
-  '@ckeditor/ckeditor5-dev-changelog@55.6.0-alpha.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-changelog@55.6.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       cac: 7.0.0
       date-fns: 4.1.0
       glob: 13.0.6
@@ -13230,15 +13059,15 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-ci@55.6.0-alpha.0':
+  '@ckeditor/ckeditor5-dev-ci@55.6.0':
     dependencies:
       '@octokit/rest': 22.0.1
       slack-notify: 2.0.7
       snyk: 1.1303.2
 
-  '@ckeditor/ckeditor5-dev-dependency-checker@55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-dependency-checker@55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       depcheck: 1.4.7
       glob: 13.0.6
       minimist: 1.2.8
@@ -13251,9 +13080,9 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-docs@55.6.0-alpha.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-docs@55.6.0(typescript@5.5.4)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 55.6.0-alpha.0(typedoc@0.28.19(typescript@5.5.4))
+      '@ckeditor/typedoc-plugins': 55.6.0(typedoc@0.28.19(typescript@5.5.4))
       glob: 13.0.6
       typedoc: 0.28.19(typescript@5.5.4)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.19(typescript@5.5.4))
@@ -13261,14 +13090,14 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@55.6.0-alpha.0':
+  '@ckeditor/ckeditor5-dev-license-checker@55.6.0':
     dependencies:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-release-tools@55.6.0-alpha.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-release-tools@55.6.0(@babel/core@7.29.0)(@types/node@25.6.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
       glob: 13.0.6
@@ -13284,9 +13113,9 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-stale-bot@55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-stale-bot@55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       date-fns: 4.1.0
       graphql: 16.14.0
       graphql-request: 7.4.0(graphql@16.14.0)
@@ -13299,11 +13128,11 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@55.6.0-alpha.0(@swc/core@1.15.33)(esbuild@0.25.10)':
+  '@ckeditor/ckeditor5-dev-tests@55.6.0(@swc/core@1.15.33)(esbuild@0.25.10)':
     dependencies:
       '@babel/core': 7.29.0
-      '@ckeditor/ckeditor5-dev-translations': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
-      '@ckeditor/ckeditor5-dev-utils': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-translations': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       '@ckeditor/ckeditor5-inspector': 5.0.0
       '@types/chai': 4.3.20
       '@types/karma-sinon-chai': 2.0.6
@@ -13355,11 +13184,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-translations@55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
     dependencies:
       '@babel/parser': 7.29.3
       '@babel/traverse': 7.29.0
-      '@ckeditor/ckeditor5-dev-utils': 55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
+      '@ckeditor/ckeditor5-dev-utils': 55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
       glob: 13.0.6
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -13373,7 +13202,7 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@55.6.0-alpha.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
+  '@ckeditor/ckeditor5-dev-utils@55.6.0(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))':
     dependencies:
       '@types/through2': 2.0.41
       babel-loader: 10.1.1(@babel/core@7.29.0)(webpack@5.106.2(@swc/core@1.15.33)(esbuild@0.25.10))
@@ -13399,7 +13228,7 @@ snapshots:
       - supports-color
       - webpack
 
-  '@ckeditor/ckeditor5-dev-web-crawler@55.6.0-alpha.0(typescript@5.5.4)':
+  '@ckeditor/ckeditor5-dev-web-crawler@55.6.0(typescript@5.5.4)':
     dependencies:
       puppeteer: 24.43.1(typescript@5.5.4)
       puppeteer-cluster: 0.24.0(puppeteer@24.43.1(typescript@5.5.4))
@@ -13432,7 +13261,7 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@55.6.0-alpha.0(typedoc@0.28.19(typescript@5.5.4))':
+  '@ckeditor/typedoc-plugins@55.6.0(typedoc@0.28.19(typescript@5.5.4))':
     dependencies:
       typedoc: 0.28.19(typescript@5.5.4)
       upath: 2.0.1
@@ -14573,151 +14402,76 @@ snapshots:
     optionalDependencies:
       rollup: 4.60.3
 
-  '@rollup/rollup-android-arm-eabi@4.59.0':
-    optional: true
-
   '@rollup/rollup-android-arm-eabi@4.60.3':
-    optional: true
-
-  '@rollup/rollup-android-arm64@4.59.0':
     optional: true
 
   '@rollup/rollup-android-arm64@4.60.3':
     optional: true
 
-  '@rollup/rollup-darwin-arm64@4.59.0':
-    optional: true
-
   '@rollup/rollup-darwin-arm64@4.60.3':
-    optional: true
-
-  '@rollup/rollup-darwin-x64@4.59.0':
     optional: true
 
   '@rollup/rollup-darwin-x64@4.60.3':
     optional: true
 
-  '@rollup/rollup-freebsd-arm64@4.59.0':
-    optional: true
-
   '@rollup/rollup-freebsd-arm64@4.60.3':
-    optional: true
-
-  '@rollup/rollup-freebsd-x64@4.59.0':
     optional: true
 
   '@rollup/rollup-freebsd-x64@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-arm-gnueabihf@4.60.3':
-    optional: true
-
-  '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-arm-musleabihf@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-arm64-gnu@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-arm64-gnu@4.60.3':
-    optional: true
-
-  '@rollup/rollup-linux-arm64-musl@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-arm64-musl@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-loong64-gnu@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-loong64-gnu@4.60.3':
-    optional: true
-
-  '@rollup/rollup-linux-loong64-musl@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-loong64-musl@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-ppc64-gnu@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-ppc64-gnu@4.60.3':
-    optional: true
-
-  '@rollup/rollup-linux-ppc64-musl@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-ppc64-musl@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-riscv64-gnu@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-riscv64-gnu@4.60.3':
-    optional: true
-
-  '@rollup/rollup-linux-riscv64-musl@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-riscv64-musl@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-s390x-gnu@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-s390x-gnu@4.60.3':
-    optional: true
-
-  '@rollup/rollup-linux-x64-gnu@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.60.3':
     optional: true
 
-  '@rollup/rollup-linux-x64-musl@4.59.0':
-    optional: true
-
   '@rollup/rollup-linux-x64-musl@4.60.3':
-    optional: true
-
-  '@rollup/rollup-openbsd-x64@4.59.0':
     optional: true
 
   '@rollup/rollup-openbsd-x64@4.60.3':
     optional: true
 
-  '@rollup/rollup-openharmony-arm64@4.59.0':
-    optional: true
-
   '@rollup/rollup-openharmony-arm64@4.60.3':
-    optional: true
-
-  '@rollup/rollup-win32-arm64-msvc@4.59.0':
     optional: true
 
   '@rollup/rollup-win32-arm64-msvc@4.60.3':
     optional: true
 
-  '@rollup/rollup-win32-ia32-msvc@4.59.0':
-    optional: true
-
   '@rollup/rollup-win32-ia32-msvc@4.60.3':
     optional: true
 
-  '@rollup/rollup-win32-x64-gnu@4.59.0':
-    optional: true
-
   '@rollup/rollup-win32-x64-gnu@4.60.3':
-    optional: true
-
-  '@rollup/rollup-win32-x64-msvc@4.59.0':
     optional: true
 
   '@rollup/rollup-win32-x64-msvc@4.60.3':
@@ -16357,15 +16111,11 @@ snapshots:
 
   cssnano-preset-lite@4.0.4(postcss@8.5.10):
     dependencies:
-      cssnano-utils: 5.0.1(postcss@8.5.10)
+      cssnano-utils: 5.0.3(postcss@8.5.10)
       postcss: 8.5.10
-      postcss-discard-comments: 7.0.6(postcss@8.5.10)
-      postcss-discard-empty: 7.0.1(postcss@8.5.10)
-      postcss-normalize-whitespace: 7.0.1(postcss@8.5.10)
-
-  cssnano-utils@5.0.1(postcss@8.5.10):
-    dependencies:
-      postcss: 8.5.10
+      postcss-discard-comments: 7.0.8(postcss@8.5.10)
+      postcss-discard-empty: 7.0.3(postcss@8.5.10)
+      postcss-normalize-whitespace: 7.0.3(postcss@8.5.10)
 
   cssnano-utils@5.0.3(postcss@8.5.10):
     dependencies:
@@ -16718,8 +16468,6 @@ snapshots:
   di@0.0.1: {}
 
   diff@4.0.4: {}
-
-  diff@8.0.3: {}
 
   diff@8.0.4: {}
 
@@ -19379,7 +19127,7 @@ snapshots:
       browser-stdout: 1.3.1
       chokidar: 4.0.3
       debug: 4.4.3(supports-color@8.1.1)
-      diff: 8.0.3
+      diff: 8.0.4
       escape-string-regexp: 4.0.0
       find-up: 5.0.0
       glob: 10.5.0
@@ -19910,21 +19658,12 @@ snapshots:
       postcss: 8.5.10
       postcss-value-parser: 4.2.0
 
-  postcss-discard-comments@7.0.6(postcss@8.5.10):
-    dependencies:
-      postcss: 8.5.10
-      postcss-selector-parser: 7.1.1
-
   postcss-discard-comments@7.0.8(postcss@8.5.10):
     dependencies:
       postcss: 8.5.10
       postcss-selector-parser: 7.1.1
 
   postcss-discard-duplicates@7.0.4(postcss@8.5.10):
-    dependencies:
-      postcss: 8.5.10
-
-  postcss-discard-empty@7.0.1(postcss@8.5.10):
     dependencies:
       postcss: 8.5.10
 
@@ -20045,11 +19784,6 @@ snapshots:
       postcss-value-parser: 4.2.0
 
   postcss-normalize-url@7.0.3(postcss@8.5.10):
-    dependencies:
-      postcss: 8.5.10
-      postcss-value-parser: 4.2.0
-
-  postcss-normalize-whitespace@7.0.1(postcss@8.5.10):
     dependencies:
       postcss: 8.5.10
       postcss-value-parser: 4.2.0
@@ -20658,37 +20392,6 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.60.3)
       rollup: 4.60.3
-
-  rollup@4.59.0:
-    dependencies:
-      '@types/estree': 1.0.8
-    optionalDependencies:
-      '@rollup/rollup-android-arm-eabi': 4.59.0
-      '@rollup/rollup-android-arm64': 4.59.0
-      '@rollup/rollup-darwin-arm64': 4.59.0
-      '@rollup/rollup-darwin-x64': 4.59.0
-      '@rollup/rollup-freebsd-arm64': 4.59.0
-      '@rollup/rollup-freebsd-x64': 4.59.0
-      '@rollup/rollup-linux-arm-gnueabihf': 4.59.0
-      '@rollup/rollup-linux-arm-musleabihf': 4.59.0
-      '@rollup/rollup-linux-arm64-gnu': 4.59.0
-      '@rollup/rollup-linux-arm64-musl': 4.59.0
-      '@rollup/rollup-linux-loong64-gnu': 4.59.0
-      '@rollup/rollup-linux-loong64-musl': 4.59.0
-      '@rollup/rollup-linux-ppc64-gnu': 4.59.0
-      '@rollup/rollup-linux-ppc64-musl': 4.59.0
-      '@rollup/rollup-linux-riscv64-gnu': 4.59.0
-      '@rollup/rollup-linux-riscv64-musl': 4.59.0
-      '@rollup/rollup-linux-s390x-gnu': 4.59.0
-      '@rollup/rollup-linux-x64-gnu': 4.59.0
-      '@rollup/rollup-linux-x64-musl': 4.59.0
-      '@rollup/rollup-openbsd-x64': 4.59.0
-      '@rollup/rollup-openharmony-arm64': 4.59.0
-      '@rollup/rollup-win32-arm64-msvc': 4.59.0
-      '@rollup/rollup-win32-ia32-msvc': 4.59.0
-      '@rollup/rollup-win32-x64-gnu': 4.59.0
-      '@rollup/rollup-win32-x64-msvc': 4.59.0
-      fsevents: 2.3.3
 
   rollup@4.60.3:
     dependencies:
@@ -21730,7 +21433,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
       postcss: 8.5.10
-      rollup: 4.59.0
+      rollup: 4.60.3
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 25.6.0
