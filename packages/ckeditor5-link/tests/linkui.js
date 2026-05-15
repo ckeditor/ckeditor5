@@ -487,7 +487,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
-			// (#7926)
+			// (https://github.com/ckeditor/ckeditor5/issues/7926)
 			_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
@@ -1764,7 +1764,7 @@ describe( 'LinkUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			// See: #9607.
+			// See: https://github.com/ckeditor/ckeditor5/issues/9607.
 			it( 'should show the UI when clicking on the linked inline widget', () => {
 				editor.model.schema.register( 'inlineWidget', {
 					allowWhere: '$text',

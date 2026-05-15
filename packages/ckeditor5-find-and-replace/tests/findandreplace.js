@@ -224,7 +224,7 @@ describe( 'FindAndReplace', () => {
 				} );
 
 				it( 'shows counter with 0 of 0 when no results were found', () => {
-					// (#10014).
+					// (https://github.com/ckeditor/ckeditor5/issues/10014).
 					newEditor.setData( LONG_TEXT );
 
 					toolbarDropdownView.buttonView.fire( 'execute' );
@@ -336,7 +336,7 @@ describe( 'FindAndReplace', () => {
 				} );
 
 				it( 'shows counter with 0 of 0 when no results were found', async () => {
-					// (#10014).
+					// (https://github.com/ckeditor/ckeditor5/issues/10014).
 					editor.setData( LONG_TEXT );
 
 					toolbarButtonView.fire( 'execute' );
@@ -522,7 +522,7 @@ describe( 'FindAndReplace', () => {
 
 		describe( 'undo', () => {
 			it( 'doesn\'t bring back highlighted content', () => {
-				// (#9974)
+				// (https://github.com/ckeditor/ckeditor5/issues/9974)
 				editor.setData( FOO_BAR_PARAGRAPH );
 
 				const { results } = editor.execute( 'find', 'bar' );

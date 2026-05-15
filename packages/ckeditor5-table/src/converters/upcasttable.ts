@@ -253,7 +253,7 @@ function scanTable( viewTable: ViewElement ) {
 		}
 
 		// There might be some extra empty text nodes between the `<tr>`s.
-		// Make sure further code operates on `tr`s only. (#145)
+		// Make sure further code operates on `tr`s only. (https://github.com/ckeditor/ckeditor5/issues/145)
 		const trs = Array.from( tableChild.getChildren() ).filter(
 			( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
 		);

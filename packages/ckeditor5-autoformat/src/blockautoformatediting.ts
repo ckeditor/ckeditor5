@@ -115,7 +115,7 @@ export function blockAutoformatEditing(
 
 		const blockToFormat = entry.position.parent;
 
-		// Block formatting should be disabled in codeBlocks (#5800).
+		// Block formatting should be disabled in codeBlocks (https://github.com/ckeditor/ckeditor5/issues/5800).
 		if ( blockToFormat.is( 'element', 'codeBlock' ) ) {
 			return;
 		}

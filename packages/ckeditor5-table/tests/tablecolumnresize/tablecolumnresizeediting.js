@@ -3323,7 +3323,7 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 
 			it( 'should save and load data correctly', () => {
-				// (#12191)
+				// (https://github.com/ckeditor/ckeditor5/issues/12191)
 				_setModelData( ghsEditor.model, modelTable( [
 					[ '[00', '01', '02]' ]
 				], { tableWidth: '80%', columnWidths: '25%,25%,50%' } ) );

@@ -11,7 +11,9 @@
  * Replaces last space preceding elements closing tag with `&nbsp;`. Such operation prevents spaces from being removed
  * during further DOM/View processing (see especially {@link module:engine/view/domconverter~ViewDomConverter#_processDomInlineNodes}).
  * This method also takes into account Word specific `<o:p></o:p>` empty tags.
- * Additionally multiline sequences of spaces and new lines between tags are removed (see #39 and #40).
+ * Additionally multiline sequences of spaces and new lines between tags are removed (see
+ * https://github.com/ckeditor/ckeditor5-paste-from-office/issues/39
+ * and https://github.com/ckeditor/ckeditor5-paste-from-office/issues/40).
  *
  * @param htmlString HTML string in which spacing should be normalized.
  * @returns Input HTML with spaces normalized.

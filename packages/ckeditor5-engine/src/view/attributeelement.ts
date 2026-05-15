@@ -217,13 +217,13 @@ export class ViewAttributeElement extends ViewElement {
 ViewAttributeElement.prototype.is = function( this: ViewAttributeElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'attributeElement' || type === 'view:attributeElement' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'element' || type === 'view:element' ||
 			type === 'node' || type === 'view:node';
 	} else {
 		return name === this.name && (
 			type === 'attributeElement' || type === 'view:attributeElement' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'element' || type === 'view:element'
 		);
 	}

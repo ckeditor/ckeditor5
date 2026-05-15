@@ -208,7 +208,7 @@ describe( 'PastePlainText', () => {
 	} );
 
 	it( 'should work if the insertContent event is cancelled', () => {
-		// (#7887).
+		// (https://github.com/ckeditor/ckeditor5/issues/7887).
 		_setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
 
 		const dataTransferMock = createDataTransfer( {
