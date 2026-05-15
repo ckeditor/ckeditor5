@@ -6,10 +6,14 @@
 
 :root {
 	--ck-radius-xs: 1px;
+	--ck-radius-sm: 2px;
 	/**
 	* Default border-radius value.
 	*/
 	--ck-radius-base: 2px;
+	--ck-radius-md: 4px;
+	--ck-radius-lg: 6px;
+	--ck-radius-xl: 8px;
 	--ck-radius-full: 50%;
 
 	/**

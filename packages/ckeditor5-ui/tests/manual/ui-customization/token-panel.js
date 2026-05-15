@@ -29,7 +29,8 @@ const FOUNDATION = {
 		'--ck-color-shadow-drop', '--ck-color-shadow-drop-active', '--ck-color-shadow-inner'
 	],
 	'Border & Radius': [
-		'--ck-radius-xs', '--ck-radius-base', '--ck-radius-full', '--ck-radius-corners',
+		'--ck-radius-xs', '--ck-radius-sm', '--ck-radius-base', '--ck-radius-md', '--ck-radius-lg', '--ck-radius-xl',
+		'--ck-radius-full', '--ck-radius-corners',
 		'--ck-border-width-thin', '--ck-border-width-thick'
 	],
 	'Spacing': [
@@ -343,7 +344,11 @@ const TOKEN_DESCRIPTIONS = {
 
 	// ---- Foundation — Border & Radius ----
 	'--ck-radius-xs': 'Extra-small border-radius for tight corners.',
+	'--ck-radius-sm': 'Small border-radius. \u26A0 Not yet used by any semantic or component token.',
 	'--ck-radius-base': 'Default border-radius for the entire UI. Cascades to all semantic and component radius tokens.',
+	'--ck-radius-md': 'Medium border-radius. \u26A0 Not yet used by any semantic or component token.',
+	'--ck-radius-lg': 'Large border-radius. \u26A0 Not yet used by any semantic or component token.',
+	'--ck-radius-xl': 'Extra-large border-radius. \u26A0 Not yet used by any semantic or component token.',
 	'--ck-radius-full': 'Full circle radius (50%). Used for round elements like spinners.',
 	'--ck-radius-corners': 'Active only when .ck-rounded-corners class is present on the editor root. Maps to radius-base.',
 	'--ck-border-width-thin': 'Thin border width (e.g. 1px).',
@@ -1894,7 +1899,19 @@ function createTokenRow( name ) {
 	if ( description ) {
 		const descEl = document.createElement( 'span' );
 		descEl.className = 'token-description';
-		descEl.textContent = description;
+
+		if ( description.includes( '\u26A0' ) ) {
+			const parts = description.split( '\u26A0' );
+			descEl.append( parts[ 0 ] );
+
+			const warn = document.createElement( 'span' );
+			warn.className = 'token-description-warning';
+			warn.textContent = '\u26A0' + parts[ 1 ];
+			descEl.appendChild( warn );
+		} else {
+			descEl.textContent = description;
+		}
+
 		nameEl.appendChild( descEl );
 	}
 
