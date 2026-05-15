@@ -68,3 +68,7 @@ msgstr "প্রদর্শিত টেক্সট"
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
 msgstr "কোনো লিঙ্ক উপলব্ধ নেই"
+
+msgctxt "The label of the switch button shown when link has empty href attribute."
+msgid "This link has no URL"
+msgstr ""

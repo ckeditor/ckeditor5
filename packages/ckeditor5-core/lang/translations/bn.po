@@ -155,10 +155,10 @@ msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "ফিরে যান"
 
-msgctxt "The label for the image style button that wraps text around the image."
+msgctxt "The label for the object (e.g. image, media) style button that wraps text around the object."
 msgid "Wrap text"
 msgstr "টেক্সট মোড়ানো"
 
-msgctxt "The label for the image style button that breaks the text around the image."
+msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "টেক্সট ভেঙ্গে ফেলুন"
