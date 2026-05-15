@@ -34,7 +34,7 @@
 
 		& .ck-dropdown__button {
 			&:not(:focus) {
-				border: var(--ck-border-width-control) solid var(--ck-color-base-border);
+				border: var(--ck-border-width-control) solid var(--ck-color-border-control);
 			}
 
 			& .ck-button__label {

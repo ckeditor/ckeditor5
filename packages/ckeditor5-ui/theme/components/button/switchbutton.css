@@ -103,7 +103,7 @@
 		box-shadow: none;
 
 		& .ck-button__toggle {
-			box-shadow: 0 0 0 1px var(--ck-color-base-background), 0 0 0 5px var(--ck-color-interactive-focus-shadow);
+			box-shadow: 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 5px var(--ck-color-interactive-focus-shadow);
 			outline-offset: 1px;
 			outline: var(--ck-interactive-focus-ring);
 		}

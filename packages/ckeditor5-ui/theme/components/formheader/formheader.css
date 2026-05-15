@@ -18,7 +18,7 @@
 	padding: var(--ck-form-header-padding-block) var(--ck-spacing-control-meta-gap);
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
-	border-bottom: var(--ck-border-width-divider) solid var(--ck-color-base-border);
+	border-bottom: var(--ck-border-width-divider) solid var(--ck-color-divider);
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
 	display: flex;

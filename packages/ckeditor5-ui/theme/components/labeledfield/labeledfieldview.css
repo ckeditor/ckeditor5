@@ -5,7 +5,7 @@
 
 :root {
 	/* Color */
-	--ck-labeled-field-label-background-color: var(--ck-color-base-background);
+	--ck-labeled-field-label-background-color: var(--ck-color-surface-control);
 	--ck-labeled-field-label-start-gap: var(--ck-spacing-control-icon-gap);
 }
 
@@ -66,11 +66,11 @@
 
 	&.ck-error {
 		& > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-			color: var(--ck-color-base-error);
+			color: var(--ck-color-feedback-error);
 		}
 
 		& .ck-input:not([readonly]) + .ck.ck-label {
-			color: var(--ck-color-base-error);
+			color: var(--ck-color-feedback-error);
 		}
 	}
 
@@ -84,7 +84,7 @@
 		white-space: normal;
 
 		&.ck-labeled-field-view__status_error {
-			color: var(--ck-color-base-error);
+			color: var(--ck-color-feedback-error);
 		}
 	}
 

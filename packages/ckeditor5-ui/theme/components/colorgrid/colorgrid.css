@@ -50,22 +50,22 @@
 		}
 
 		&.ck-color-selector__color-tile_bordered {
-			box-shadow: 0 0 0 1px var(--ck-color-base-border);
+			box-shadow: 0 0 0 1px var(--ck-color-border-control);
 		}
 
 		&.ck-on {
-			box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
+			box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-text-primary);
 		}
 
 		&:hover:not( .ck-disabled ) {
 			z-index: var(--ck-color-grid-tile-hover-layer);
-			box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-interactive-focus-border);
+			box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-interactive-focus-border);
 			transform: var(--ck-color-grid-tile-hover-transform);
 		}
 
 		&:focus:not( .ck-disabled ) {
 			z-index: var(--ck-color-grid-tile-hover-layer);
-			box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-interactive-focus-border);
+			box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-interactive-focus-border);
 			transform: var(--ck-color-grid-tile-hover-transform);
 		}
 	}

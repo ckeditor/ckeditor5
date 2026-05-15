@@ -56,7 +56,7 @@
 
 	& .ck.ck-form__header {
 		/* Backward compatibility: falls back to legacy --ck-color-dialog-form-header-border if overridden. */
-		border-bottom: var(--ck-color-dialog-form-header-border, var(--ck-border-width-surface) solid var(--ck-custom-border, var(--ck-color-border-container)));
+		border-bottom: var(--ck-color-dialog-form-header-border, var(--ck-border-width-divider) solid var(--ck-custom-border, var(--ck-color-border-container)));
 		flex-shrink: 0;
 	}
 

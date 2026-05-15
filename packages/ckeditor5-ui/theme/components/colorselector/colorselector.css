@@ -12,7 +12,7 @@
 	--ck-color-selector-uniform-border-radius: var(--ck-border-radius-uniform);
 
 	/* Border */
-	--ck-color-selector-color-picker-border-top: var(--ck-border-width-divider) solid var(--ck-color-base-border);
+	--ck-color-selector-color-picker-border-top: var(--ck-border-width-divider) solid var(--ck-color-border-container);
 }
 
 .ck.ck-color-selector {

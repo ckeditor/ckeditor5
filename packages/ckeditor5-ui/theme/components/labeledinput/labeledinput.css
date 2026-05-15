@@ -14,5 +14,5 @@
 }
 
 .ck.ck-labeled-input .ck-labeled-input__status_error {
-	color: var(--ck-color-base-error);
+	color: var(--ck-color-feedback-error);
 }
