@@ -211,7 +211,7 @@ describe( 'Range', () => {
 
 		// Other results may theoretically be correct too. It is not decided whether the trimmed range should
 		// be collapsed in attribute element, at its start or its end. This is one of possible correct results
-		// and we won't know for sure unless we have more cases. See #1058.
+		// and we won't know for sure unless we have more cases. See https://github.com/ckeditor/ckeditor5-engine/issues/1058.
 		it( 'case 8', () => {
 			expect( trim( '<p>[<b></b>]</p>' ) )
 				.to.equal( '<p><b></b>[]</p>' );

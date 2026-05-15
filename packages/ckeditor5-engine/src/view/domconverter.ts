@@ -418,7 +418,7 @@ export class ViewDomConverter {
 				if ( viewElementOrFragment.name === '$comment' ) {
 					domElement = this._domDocument.createComment( viewElementOrFragment.getCustomProperty( '$rawContent' ) as string );
 				} else {
-					// UIElement has its own render() method (see #799).
+					// UIElement has its own render() method (see https://github.com/ckeditor/ckeditor5/issues/799).
 					domElement = viewElementOrFragment.render( this._domDocument, this );
 				}
 
@@ -1566,7 +1566,8 @@ export class ViewDomConverter {
 				// Change all consecutive whitespace characters (from the [ \n\t\r] set –
 				// see https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249) to a single space character.
 				// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
-				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
+				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters.
+				// See https://github.com/ckeditor/ckeditor5/issues/822.
 				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
 				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
 
@@ -1593,7 +1594,8 @@ export class ViewDomConverter {
 				// At the beginning and end of a block element, Firefox inserts normal space + <br> instead of non-breaking space.
 				// This means that the text node starts/end with normal space instead of non-breaking space.
 				// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
-				// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
+				// the inline filler is removed only after the data is initially processed (by the `.replace` above).
+				// See https://github.com/ckeditor/ckeditor5/issues/692.
 				data = getDataWithoutFiller( data );
 
 				// Block filler handling.

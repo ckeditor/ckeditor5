@@ -219,7 +219,7 @@ export class MentionUI extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		// Destroy created UI components as they are not automatically destroyed (see https://github.com/ckeditor/ckeditor5/issues/1341).
 		this._mentionsView.destroy();
 	}
 
@@ -244,7 +244,7 @@ export class MentionUI extends Plugin {
 
 			const { dropdownLimit: markerDropdownLimit } = this._mentionsConfigurations.get( marker )!;
 
-			// Set to 10 by default for backwards compatibility. See: #10479
+			// Set to 10 by default for backwards compatibility. See: https://github.com/ckeditor/ckeditor5/issues/10479
 			const dropdownLimit = markerDropdownLimit || this.editor.config.get( 'mention.dropdownLimit' ) || 10;
 
 			if ( mentionsView.items.length >= dropdownLimit ) {

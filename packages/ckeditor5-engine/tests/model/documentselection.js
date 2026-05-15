@@ -1019,7 +1019,7 @@ describe( 'DocumentSelection', () => {
 			expect( spy.called ).to.be.true;
 		} );
 
-		// See #630.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/630.
 		it( 'should refresh attributes – integration test for #630', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 

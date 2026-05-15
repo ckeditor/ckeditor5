@@ -446,7 +446,7 @@ describe( 'EmojiPicker', () => {
 			} ).to.not.throw();
 		} );
 
-		// See #17819.
+		// See https://github.com/ckeditor/ckeditor5/issues/17819.
 		it( 'should not change the selection after opening the UI', async () => {
 			_setModelData(
 				editor.model,
@@ -460,7 +460,7 @@ describe( 'EmojiPicker', () => {
 			);
 		} );
 
-		// See #17964
+		// See https://github.com/ckeditor/ckeditor5/issues/17964
 		it( 'should have the ck-emoji-picker-balloon class to make sure z-index does not conflict with the dialog system', () => {
 			emojiPicker.showUI();
 

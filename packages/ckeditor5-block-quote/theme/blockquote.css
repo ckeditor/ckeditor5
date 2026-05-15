@@ -4,7 +4,7 @@
  */
 
 .ck-content blockquote {
-	/* See #12 */
+	/* See https://github.com/ckeditor/ckeditor5-block-quote/issues/12 */
 	overflow: hidden;
 
 	/* https://github.com/ckeditor/ckeditor5-block-quote/issues/15 */
