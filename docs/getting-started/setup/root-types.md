@@ -11,7 +11,7 @@ modified_at: 2026-05-15
 
 In CKEditor&nbsp;5, a root is the top-level container element in the document model - every editable area has exactly one. The type of that root element determines what content is allowed in that area. By default, roots use the `$root` model element, which accepts block-level content such as paragraphs, headings, lists, and tables.
 
-You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only - text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields. For the technical background behind this feature, see the [paragraph-like editor RFC](https://github.com/ckeditor/ckeditor5/issues/19921).
+You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option, and set initial root attributes via {@link module:core/editor/editorconfig~RootConfig#modelAttributes `config.root.modelAttributes`}. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only - text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields. For the technical background behind this feature, see the [paragraph-like editor RFC](https://github.com/ckeditor/ckeditor5/issues/19921).
 
 ## Block root
 
@@ -28,7 +28,7 @@ ClassicEditor
 		root: {
 			initialData: '<p>Start writing here.</p>'
 		},
-		licenseKey: '<YOUR_LICENSE_KEY>'
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		// ...
 	} )
 	.then( /* ... */ )
@@ -43,7 +43,7 @@ ClassicEditor
 			initialData: '<p>Start writing here.</p>',
 			modelElement: '$root'
 		},
-		licenseKey: '<YOUR_LICENSE_KEY>'
+		licenseKey: '<YOUR_LICENSE_KEY>',
 		// ...
 	} )
 	.then( /* ... */ )
@@ -82,7 +82,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-The `modelElement` option works with all single-root editor types: `ClassicEditor`, `InlineEditor`, `BalloonEditor`, `BalloonBlockEditor`, and `DecoupledEditor`. You can also set initial attributes on a root using the {@link module:core/editor/editorconfig~RootConfig#modelAttributes `modelAttributes`} option.
+The `modelElement` option works with all single-root editor types: `ClassicEditor`, `InlineEditor`, `BalloonEditor`, `BalloonBlockEditor`, and `DecoupledEditor`.
 
 ### Allowed content in an inline root
 
