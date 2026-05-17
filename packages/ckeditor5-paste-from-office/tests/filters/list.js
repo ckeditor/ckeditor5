@@ -386,6 +386,207 @@ describe( 'PasteFromOffice - filters', () => {
 				} );
 			} );
 
+			describe( 'skip-level lists', () => {
+				const level1 = 'style="mso-list:l0 level1 lfo0"';
+				const level2 = 'style="mso-list:l0 level2 lfo0"';
+				const level3 = 'style="mso-list:l0 level3 lfo0"';
+				const level4 = 'style="mso-list:l0 level4 lfo0"';
+
+				describe( 'with `allowSkipLevels` enabled', () => {
+					it( 'wraps a single skipped level in <li style="list-style-type:none">', () => {
+						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						expect( _stringifyView( view ) ).to.equal(
+							`<ol><li><p ${ level1 }>Foo</p>` +
+								'<ol><li style="list-style-type:none">' +
+									`<ol><li><p ${ level3 }>Bar</p></li></ol>` +
+								'</li></ol>' +
+							'</li></ol>'
+						);
+					} );
+
+					it( 'wraps multiple consecutively skipped levels with stacked wrappers', () => {
+						const html = `<p ${ level1 }>Foo</p><p ${ level4 }>Bar</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						expect( _stringifyView( view ) ).to.equal(
+							`<ol><li><p ${ level1 }>Foo</p>` +
+								'<ol><li style="list-style-type:none">' +
+									'<ol><li style="list-style-type:none">' +
+										`<ol><li><p ${ level4 }>Bar</p></li></ol>` +
+									'</li></ol>' +
+								'</li></ol>' +
+							'</li></ol>'
+						);
+					} );
+
+					it( 'wraps a skip from indent 0 when the first item starts deeper than level 1', () => {
+						const html = `<p ${ level2 }>Foo</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						expect( _stringifyView( view ) ).to.equal(
+							'<ol><li style="list-style-type:none">' +
+								`<ol><li><p ${ level2 }>Foo</p></li></ol>` +
+							'</li></ol>'
+						);
+					} );
+
+					it( 'reclaims an intermediate wrapper for a later same-type sibling at the skipped indent', () => {
+						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						expect( _stringifyView( view ) ).to.equal(
+							`<ol><li><p ${ level1 }>Foo</p>` +
+								'<ol>' +
+									'<li style="list-style-type:none">' +
+										`<ol><li><p ${ level3 }>Bar</p></li></ol>` +
+									'</li>' +
+									`<li><p ${ level2 }>Baz</p></li>` +
+								'</ol>' +
+							'</li></ol>'
+						);
+					} );
+
+					it( 'creates a sibling list of the correct type when the intermediate type does not match', () => {
+						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view,
+							'@list l0:level1 { mso-level-number-format: bullet; }' +
+							'@list l0:level2 { mso-level-number-format: bullet; }',
+							false, true
+						);
+
+						expect( _stringifyView( view ) ).to.equal(
+							`<ul><li><p ${ level1 }>Foo</p>` +
+								'<ol><li style="list-style-type:none">' +
+									`<ol><li><p ${ level3 }>Bar</p></li></ol>` +
+								'</li></ol>' +
+								`<ul><li><p ${ level2 }>Baz</p></li></ul>` +
+							'</li></ul>'
+						);
+					} );
+
+					it( 'attaches a non-list block to the deepest matching list item, not to the intermediate wrapper', () => {
+						const html =
+							'<p style="mso-list:l0 level1 lfo0">Aaa</p>' +
+							'<p style="margin-left:144px;mso-list:l0 level3 lfo0">Bbb</p>' +
+							'<p style="margin-left:144px">cont</p>';
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						// The non-list paragraph should land inside Bbb's `<li>`, not inside the
+						// intermediate `<li style="list-style-type:none">` wrapper.
+						const out = _stringifyView( view );
+						expect( out ).to.contain(
+							'<li style="margin-left:24px"><p style="mso-list:l0 level3 lfo0">Bbb</p><p>cont</p></li>'
+						);
+					} );
+
+					it( 'updates a claimed intermediate wrapper so its marginLeft reflects the claiming item', () => {
+						const html =
+							'<p style="mso-list:l0 level1 lfo0">Aaa</p>' +
+							'<p style="margin-left:144px;mso-list:l0 level3 lfo0">Bbb</p>' +
+							'<p style="margin-left:72px;mso-list:l0 level2 lfo0">Ccc</p>' +
+							'<p style="margin-left:72px">cont</p>';
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						// The non-list paragraph should land inside Ccc's `<li>` (multi-block continuation),
+						// not end up outside the list because the claimed frame still carried Bbb's margin.
+						const out = _stringifyView( view );
+						expect( out ).to.contain( '<p style="mso-list:l0 level2 lfo0">Ccc</p><p>cont</p></li>' );
+					} );
+
+					it( 'creates a sibling root list when the root-level intermediate type does not match', () => {
+						// First item starts at level 2 (skip from indent 0 — intermediate placed at the
+						// document root). The second item at level 1 of a different type cannot merge into
+						// that root intermediate, so it must be inserted as a sibling list in the same parent
+						// instead of being appended under a non-existent `stack[indent - 1]`.
+						const html = `<p ${ level2 }>Foo</p><p ${ level1 }>Bar</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view,
+							'@list l0:level2 { mso-level-number-format: bullet; }',
+							false, true
+						);
+
+						expect( _stringifyView( view ) ).to.equal(
+							'<ul><li style="list-style-type:none">' +
+								`<ul><li><p ${ level2 }>Foo</p></li></ul>` +
+							'</li></ul>' +
+							`<ol><li><p ${ level1 }>Bar</p></li></ol>`
+						);
+					} );
+				} );
+
+				describe( 'with `allowSkipLevels` disabled (default)', () => {
+					it( 'clamps non-linear indentation to sequential nesting without emitting wrappers', () => {
+						// Regression guard for the config gate: same input as the first "with enabled" test
+						// must produce the pre-skip-level clamped structure (no `<li style="list-style-type:none">`).
+						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '' );
+
+						expect( _stringifyView( view ) ).to.equal(
+							`<ol><li><p ${ level1 }>Foo</p>` +
+								`<ol><li><p ${ level3 }>Bar</p></li></ol>` +
+							'</li></ol>'
+						);
+					} );
+				} );
+			} );
+
+			describe( 'list item margin-left', () => {
+				it( 'subtracts every ancestor `<li>` margin, not only the immediate parent', () => {
+					const html =
+						'<p style="margin-left:72px;mso-list:l0 level1 lfo1">A</p>' +
+						'<p style="margin-left:144px;mso-list:l0 level2 lfo1">B</p>' +
+						'<p style="margin-left:216px;mso-list:l0 level3 lfo1">C</p>';
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '' );
+
+					const out = _stringifyView( view );
+
+					expect( out ).to.contain( '<ol style="margin-left:32px">' );
+					expect( out ).to.contain( '<li style="margin-left:32px"><p style="mso-list:l0 level2 lfo1">B</p>' );
+					expect( out ).to.contain( '<li style="margin-left:32px"><p style="mso-list:l0 level3 lfo1">C</p>' );
+				} );
+
+				it( 'skips intermediate skip-level wrappers (margin 0) when summing ancestor margins', () => {
+					// l1 with margin 72 and l3 with margin 216, allowSkipLevels=true. The intermediate
+					// wrapper at indent 1 carries no margin, so the deepest item's relative margin is
+					// computed against the real ancestor (A) only.
+					const html =
+						'<p style="margin-left:72px;mso-list:l0 level1 lfo1">A</p>' +
+						'<p style="margin-left:216px;mso-list:l0 level3 lfo1">C</p>';
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '', false, true );
+
+					const out = _stringifyView( view );
+					// A's 32px relative margin is lifted to the outer <ol>.
+					expect( out ).to.contain( '<ol style="margin-left:32px">' );
+					// Intermediate wrapper contributes 0 to the sum.
+					expect( out ).to.contain( '<li style="list-style-type:none">' );
+					// C's <li> margin = 216 - (A.margin 32 + wrapper.margin 0 + 3*40) = 216 - 152 = 64.
+					expect( out ).to.contain( '<li style="margin-left:64px"><p style="mso-list:l0 level3 lfo1">C</p>' );
+				} );
+			} );
+
 			describe( 'list styles', () => {
 				const level1 = 'style="mso-list:l0 level1 lfo0"';
 
