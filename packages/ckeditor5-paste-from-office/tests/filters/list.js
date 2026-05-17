@@ -438,7 +438,7 @@ describe( 'PasteFromOffice - filters', () => {
 						);
 					} );
 
-					it( 'reclaims a placeholder wrapper for a later same-type sibling at the skipped indent', () => {
+					it( 'reclaims an intermediate wrapper for a later same-type sibling at the skipped indent', () => {
 						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
 						const view = htmlDataProcessor.toView( html );
 
@@ -456,7 +456,7 @@ describe( 'PasteFromOffice - filters', () => {
 						);
 					} );
 
-					it( 'creates a sibling list of the correct type when the placeholder type does not match', () => {
+					it( 'creates a sibling list of the correct type when the intermediate type does not match', () => {
 						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
 						const view = htmlDataProcessor.toView( html );
 
@@ -476,10 +476,43 @@ describe( 'PasteFromOffice - filters', () => {
 						);
 					} );
 
-					it( 'creates a sibling root list when the root-level placeholder type does not match', () => {
+					it( 'attaches a non-list block to the deepest matching list item, not to the intermediate wrapper', () => {
+						const html =
+							'<p style="mso-list:l0 level1 lfo0">Aaa</p>' +
+							'<p style="margin-left:144px;mso-list:l0 level3 lfo0">Bbb</p>' +
+							'<p style="margin-left:144px">cont</p>';
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						// The non-list paragraph should land inside Bbb's `<li>`, not inside the
+						// intermediate `<li style="list-style-type:none">` wrapper.
+						const out = _stringifyView( view );
+						expect( out ).to.contain(
+							'<li style="margin-left:24px"><p style="mso-list:l0 level3 lfo0">Bbb</p><p>cont</p></li>'
+						);
+					} );
+
+					it( 'updates a claimed intermediate wrapper so its marginLeft reflects the claiming item', () => {
+						const html =
+							'<p style="mso-list:l0 level1 lfo0">Aaa</p>' +
+							'<p style="margin-left:144px;mso-list:l0 level3 lfo0">Bbb</p>' +
+							'<p style="margin-left:72px;mso-list:l0 level2 lfo0">Ccc</p>' +
+							'<p style="margin-left:72px">cont</p>';
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						// The non-list paragraph should land inside Ccc's `<li>` (multi-block continuation),
+						// not end up outside the list because the claimed frame still carried Bbb's margin.
+						const out = _stringifyView( view );
+						expect( out ).to.contain( '<p style="mso-list:l0 level2 lfo0">Ccc</p><p>cont</p></li>' );
+					} );
+
+					it( 'creates a sibling root list when the root-level intermediate type does not match', () => {
 						// First item starts at level 2 (skip from indent 0 — intermediate placed at the
 						// document root). The second item at level 1 of a different type cannot merge into
-						// that root placeholder, so it must be inserted as a sibling list in the same parent
+						// that root intermediate, so it must be inserted as a sibling list in the same parent
 						// instead of being appended under a non-existent `stack[indent - 1]`.
 						const html = `<p ${ level2 }>Foo</p><p ${ level1 }>Bar</p>`;
 						const view = htmlDataProcessor.toView( html );

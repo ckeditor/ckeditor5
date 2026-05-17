@@ -135,7 +135,11 @@ export function transformListItemLikeElementsIntoLists(
 					...itemLikeElement,
 					listElement: intermediateList,
 					listItemElements: [ intermediateListItem ],
-					isIntermediate: true
+					isIntermediate: true,
+					// Intermediate wrappers hold no real list item, so they must not pretend to "own" the
+					// deep item's `margin-left` — otherwise `stack.find` (matching non-list multi-block
+					// continuations by margin) returns the shallower intermediate before the real item.
+					marginLeft: undefined
 				} );
 			}
 
@@ -164,9 +168,9 @@ export function transformListItemLikeElementsIntoLists(
 
 					writer.insertChild( index, listElement, parent );
 				} else if ( indent == 0 ) {
-					// A real list at root indent while an intermediate skip-level placeholder of a
-					// different type already sits there — insert the new list as a sibling of the
-					// placeholder in the same parent (can't merge two lists of different types).
+					// A real list at root indent while a skip-level intermediate of a different type
+					// already sits there — insert the new list as a sibling of the intermediate in the
+					// same parent (can't merge two lists of different types).
 					const existingList = stack[ 0 ].listElement;
 					const listParent = existingList.parent!;
 					const insertIndex = listParent.getChildIndex( existingList ) + 1;
@@ -196,8 +200,14 @@ export function transformListItemLikeElementsIntoLists(
 					encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
 				}
 			} else if ( stack[ indent ].isIntermediate ) {
-				// Same type as the placeholder — reuse its `<ol>`/`<ul>` and unmark it.
-				stack[ indent ].isIntermediate = false;
+				// Same type as the intermediate — reuse its `<ol>`/`<ul>` and update the frame to
+				// represent the claiming item (id, marginLeft, …) so later lookups don't see stale
+				// data from the deep item that originally seeded the intermediate.
+				stack[ indent ] = {
+					...itemLikeElement,
+					listElement: stack[ indent ].listElement,
+					listItemElements: stack[ indent ].listItemElements
+				};
 			}
 
 			// Use LI if it is already it or create a new LI element.
@@ -767,7 +777,7 @@ type ListStack = Array<ListLikeElement & {
 	listItemElements: Array<ViewElement>;
 
 	/**
-	 * Set on frames created by the skip-level fill loop to mark them as placeholder wrappers
+	 * Set on frames created by the skip-level fill loop to mark them as intermediate wrappers
 	 * for indent levels Word jumped over. A real list item arriving at this indent (e.g. after
 	 * a deeper item) replaces the frame with a real one of the correct type.
 	 */
