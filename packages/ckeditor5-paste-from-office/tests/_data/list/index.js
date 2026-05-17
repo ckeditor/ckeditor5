@@ -24,6 +24,7 @@ import multiBlockBlockAfter from './multi-block-block-after/input.word.html';
 import listContinuation from './list-continuation/input.word2016.html';
 import indentBlockList from './indent-block-list/input.word.html';
 import nestedContinued from './nested-continued/input.word.html';
+import manualIndent from './manual-indent/input.word.html';
 
 import simpleNormalized from './simple/normalized.word2016.html';
 import styledNormalized from './styled/normalized.word2016.html';
@@ -45,6 +46,7 @@ import multiBlockBlockAfterNormalized from './multi-block-block-after/normalized
 import listContinuationNormalized from './list-continuation/normalized.word2016.html';
 import indentBlockListNormalized from './indent-block-list/normalized.word.html';
 import nestedContinuedNormalized from './nested-continued/normalized.word.html';
+import manualIndentNormalized from './manual-indent/normalized.word.html';
 
 import simpleModel from './simple/model.word2016.html';
 import styledModel from './styled/model.word2016.html';
@@ -66,6 +68,14 @@ import multiBlockBlockAfterModel from './multi-block-block-after/model.word.html
 import listContinuationModel from './list-continuation/model.word2016.html';
 import indentBlockListModel from './indent-block-list/model.word.html';
 import nestedContinuedModel from './nested-continued/model.word.html';
+import manualIndentModel from './manual-indent/model.word.html';
+
+// Skip-level list models — same inputs as the matching default-config fixtures above, but the
+// expected model differs because `allowSkipLevels: true` lets the post-fixer keep the indent gaps.
+import nestedSkipLevelModel from './nested/model.skipLevel.word2016.html';
+import nestedMixedSkipLevelModel from './nested-mixed/model.skipLevel.word2016.html';
+import nestedMultipleSkipLevelModel from './nested-multiple/model.skipLevel.word2016.html';
+import indentBlockListSkipLevelModel from './indent-block-list/model.skipLevel.word.html';
 
 export const fixtures = {
 	input: {
@@ -88,7 +98,8 @@ export const fixtures = {
 		multiBlockBlockAfter,
 		listContinuation,
 		indentBlockList,
-		nestedContinued
+		nestedContinued,
+		manualIndent
 	},
 	normalized: {
 		simple: simpleNormalized,
@@ -110,7 +121,8 @@ export const fixtures = {
 		multiBlockBlockAfter: multiBlockBlockAfterNormalized,
 		listContinuation: listContinuationNormalized,
 		indentBlockList: indentBlockListNormalized,
-		nestedContinued: nestedContinuedNormalized
+		nestedContinued: nestedContinuedNormalized,
+		manualIndent: manualIndentNormalized
 	},
 	model: {
 		simple: simpleModel,
@@ -132,7 +144,26 @@ export const fixtures = {
 		multiBlockBlockAfter: multiBlockBlockAfterModel,
 		listContinuation: listContinuationModel,
 		indentBlockList: indentBlockListModel,
-		nestedContinued: nestedContinuedModel
+		nestedContinued: nestedContinuedModel,
+		manualIndent: manualIndentModel
+	}
+};
+
+// Fixture group exercising the same Word inputs but in `allowSkipLevels: true` mode. Only the four
+// inputs that contain a Word level skip are included — for them, the resulting model preserves the
+// skip indent gaps instead of filling them with empty paragraph fillers.
+export const skipLevelFixtures = {
+	input: {
+		nested,
+		nestedMixed,
+		nestedMultiple,
+		indentBlockList
+	},
+	model: {
+		nested: nestedSkipLevelModel,
+		nestedMixed: nestedMixedSkipLevelModel,
+		nestedMultiple: nestedMultipleSkipLevelModel,
+		indentBlockList: indentBlockListSkipLevelModel
 	}
 };
 
