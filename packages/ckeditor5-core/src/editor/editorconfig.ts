@@ -1125,7 +1125,7 @@ export interface RootConfig {
 	 *   {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 *   option is set to `true`.
 	 *
-	 *   Not accepted by {@link module:editor-classic/classiceditor~ClassicEditor} &mdash; use
+	 *   Not accepted by {@link module:editor-classic/classiceditor~ClassicEditor} - use
 	 *   {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`} instead.
 	 *
 	 * * A tag name string, e.g. `'h1'`. The editor creates a fresh element with that tag and uses it as the editable.

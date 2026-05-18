@@ -141,7 +141,7 @@ export function normalizeRootsConfig(
 			 *
 			 * A tag name string (e.g. `'h1'`) or a
 			 * {@link module:engine/view/elementdefinition~ViewElementDefinition view element definition} are still
-			 * accepted &mdash; they describe the editable root element the classic editor creates inside its UI box.
+			 * accepted - they describe the editable root element the classic editor creates inside its UI box.
 			 *
 			 * @error editor-create-root-element-not-supported
 			 */
@@ -396,9 +396,9 @@ function getLegacyPlainConfigValue(
  *
  * Accepts:
  *
- * * an existing `HTMLElement` &mdash; returned as is, so the editor wraps it in place,
- * * a tag name string (e.g. `'h1'`) &mdash; turned into `{ name: 'h1' }`,
- * * a {@link module:core/editor/editorconfig~ViewRootElementDefinition} object &mdash; reshaped so `classes` becomes an
+ * * an existing `HTMLElement` - returned as is, so the editor wraps it in place,
+ * * a tag name string (e.g. `'h1'`) - turned into `{ name: 'h1' }`,
+ * * a {@link module:core/editor/editorconfig~ViewRootElementDefinition} object - reshaped so `classes` becomes an
  * array and `attributes.class` is lifted into it.
  *
  * The `class` attribute may be passed either as the dedicated `classes` field (string or array of strings) or as a
@@ -447,7 +447,7 @@ export function normalizeViewRootElementDefinition(
 		 * Both the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition#styles `styles`} object
 		 * and the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition#attributes `attributes.style`}
 		 * string were provided in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}.
-		 * Provide one or the other &mdash; the object form takes precedence.
+		 * Provide one or the other -; the object form takes precedence.
 		 *
 		 * @error editor-root-element-styles-overspecified
 		 */

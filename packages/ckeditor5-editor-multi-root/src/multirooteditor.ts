@@ -1273,7 +1273,7 @@ function normalizeRootEditableOptionsConfig( config: Config<EditorConfig> ): voi
  * and `element`. If `$rootEditableOptions` is already present, the map is left untouched.
  *
  * The `element` is normalized into canonical form ({@link module:core/editor/editorconfig~ViewRootElementDefinition})
- * before being persisted. A raw DOM element is local to this editor instance &mdash; it cannot be replicated through
+ * before being persisted. A raw DOM element is local to this editor instance - it cannot be replicated through
  * RTC, so it is silently dropped here. Callers that want to surface a warning (e.g. `addRoot()`) should do so before
  * invoking this function.
  */
@@ -1309,8 +1309,8 @@ function isElement( value: any ): value is Element {
 /**
  * Returns the canonical editable element descriptor for the given (already normalized) root config.
  *
- * Falls back to `$rootEditableOptions.element` so remote RTC clients &mdash; which do not see the originator's
- * `config.roots.<name>.element` &mdash; can recreate the configured editable shape from the model attributes
+ * Falls back to `$rootEditableOptions.element` so remote RTC clients - which do not see the originator's
+ * `config.roots.<name>.element` - can recreate the configured editable shape from the model attributes
  * they receive. The attribute is always persisted in canonical form, so no further normalization is needed.
  */
 function getRootEditableElement( rootConfig: RootConfig ): HTMLElement | ViewRootElementDefinition | undefined {
@@ -1401,7 +1401,7 @@ export interface AddRootRootConfig extends RootConfig {
 	 * A description of the editable root element to create. May be a tag name string (e.g. `'h1'`) or a
 	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} object.
 	 *
-	 * Passing an existing DOM element is not supported &mdash; `addRoot()` only registers the model root;
+	 * Passing an existing DOM element is not supported - `addRoot()` only registers the model root;
 	 * the DOM editable is created later by {@link ~MultiRootEditor#createEditable `createEditable()`}.
 	 */
 	element?: string | ViewRootElementDefinition;
@@ -1438,7 +1438,7 @@ export interface RootEditableOptions {
 	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} object. When omitted, a default `<div>`
 	 * is created.
 	 *
-	 * Passing an existing DOM element is not supported &mdash;
+	 * Passing an existing DOM element is not supported -
 	 * {@link ~MultiRootEditor#createEditable `createEditable()`} always creates a fresh DOM element.
 	 */
 	element?: string | ViewRootElementDefinition;
