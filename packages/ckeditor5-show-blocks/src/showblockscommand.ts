@@ -16,29 +16,35 @@ const CLASS_NAME = 'ck-show-blocks';
 
 const TEXT_PLACEHOLDER = '__TEXT__';
 
-const SHOW_BLOCKS_LABELS = /* #__PURE__ */ ( () => [
-	[ 'address', 'ADDRESS' ],
-	[ 'aside', 'ASIDE' ],
-	[ 'blockquote', 'BLOCKQUOTE' ],
-	[ 'details', 'DETAILS' ],
-	[ 'div', 'DIV' ],
-	[ 'footer', 'FOOTER' ],
-	[ 'h1', 'H1' ],
-	[ 'h2', 'H2' ],
-	[ 'h3', 'H3' ],
-	[ 'h4', 'H4' ],
-	[ 'h5', 'H5' ],
-	[ 'h6', 'H6' ],
-	[ 'header', 'HEADER' ],
-	[ 'main', 'MAIN' ],
-	[ 'nav', 'NAV' ],
-	[ 'pre', 'PRE' ],
-	[ 'ol', 'OL' ],
-	[ 'ul', 'UL' ],
-	[ 'p', 'P' ],
-	[ 'section', 'SECTION' ],
-	[ 'figcaption', 'FIGCAPTION' ]
-] as const )();
+const SHOW_BLOCKS_LABELS = /* #__PURE__ */ ( () => {
+	const data = [];
+
+	data.push(
+		[ 'address', 'ADDRESS' ],
+		[ 'aside', 'ASIDE' ],
+		[ 'blockquote', 'BLOCKQUOTE' ],
+		[ 'details', 'DETAILS' ],
+		[ 'div', 'DIV' ],
+		[ 'footer', 'FOOTER' ],
+		[ 'h1', 'H1' ],
+		[ 'h2', 'H2' ],
+		[ 'h3', 'H3' ],
+		[ 'h4', 'H4' ],
+		[ 'h5', 'H5' ],
+		[ 'h6', 'H6' ],
+		[ 'header', 'HEADER' ],
+		[ 'main', 'MAIN' ],
+		[ 'nav', 'NAV' ],
+		[ 'pre', 'PRE' ],
+		[ 'ol', 'OL' ],
+		[ 'ul', 'UL' ],
+		[ 'p', 'P' ],
+		[ 'section', 'SECTION' ],
+		[ 'figcaption', 'FIGCAPTION' ]
+	);
+
+	return data;
+} )();
 
 const SHOW_BLOCKS_LABEL_SVG_TEMPLATE: Record<ShowBlocksLabelDirection, string> = /* #__PURE__ */ ( () => ( {
 	// eslint-disable-next-line @stylistic/max-len
