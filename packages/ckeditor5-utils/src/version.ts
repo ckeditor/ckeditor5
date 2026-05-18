@@ -9,10 +9,10 @@
 
 import { CKEditorError } from './ckeditorerror.js';
 
-export const version = '48.1.0';
+export const version = '48.1.1';
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2026, 4, 13 );
+export const releaseDate = new Date( 2026, 4, 18 );
 
 declare global {
 	var CKEDITOR_VERSION: string;
