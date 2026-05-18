@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor, type ElementApi } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
+import { first, logWarning, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import {
 	ViewDowncastWriter,
 	enableViewPlaceholder,
@@ -83,6 +83,14 @@ export class Title extends Plugin {
 		// </title>
 		//
 		// See: https://github.com/ckeditor/ckeditor5/issues/2005.
+		//
+		// Title is scoped to roots whose `modelElement` is the generic `$root`. Custom root
+		// `modelElement` names (including `$inlineRoot`) are intentionally not supported:
+		// the title structure (`title` + `title-content` + paragraph body placeholder) relies on
+		// the root accepting `$block` content, which is not guaranteed for custom or inline roots.
+		// Runtime codepaths below additionally guard on `schema.checkChild( root, 'title' )` so
+		// the plugin gracefully no-ops on roots where the schema does not allow the title element.
+		// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- registered only on the default `$root` by design
 		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
 		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
 		model.schema.extend( '$text', { allowIn: 'title-content' } );
@@ -131,6 +139,37 @@ export class Title extends Plugin {
 
 		// Attach Tab handling.
 		this._attachTabPressHandling();
+
+		this._warnIfNoSupportedRoot();
+	}
+
+	/**
+	 * Logs a single warning when none of the editor's roots can host the title structure. The Title feature
+	 * only operates on roots whose `modelElement` is the default `$root`; roots configured with a custom
+	 * `modelElement` are silently skipped at runtime. If no root supports the structure, the plugin is
+	 * effectively a no-op and the integrator likely wants to know.
+	 */
+	private _warnIfNoSupportedRoot(): void {
+		const model = this.editor.model;
+
+		for ( const root of model.document.getRoots() ) {
+			if ( model.schema.checkChild( root, 'title' ) ) {
+				return;
+			}
+		}
+
+		/**
+		 * The Title feature was loaded, but none of the editor's roots supports the `title` element. The feature
+		 * only operates on roots whose `modelElement` is the default `$root`; roots configured with a custom
+		 * `modelElement` (including `$inlineRoot`) are silently skipped, so `getTitle()` / `getBody()` fall back
+		 * to the regular data getter and no title structure is ever inserted.
+		 *
+		 * To use the Title feature, ensure at least one root uses the default `$root` model element. Otherwise,
+		 * remove the Title plugin from this editor's plugin list.
+		 *
+		 * @error title-no-supported-root
+		 */
+		logWarning( 'title-no-supported-root' );
 	}
 
 	/**
@@ -148,7 +187,13 @@ export class Title extends Plugin {
 	public getTitle( options: Record<string, unknown> = {} ): string {
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const titleElement = this._getTitleElement( rootName );
-		const titleContentElement = titleElement!.getChild( 0 ) as ModelElement;
+
+		// Root does not support the title structure (custom/inline root) — nothing to stringify.
+		if ( !titleElement ) {
+			return '';
+		}
+
+		const titleContentElement = titleElement.getChild( 0 ) as ModelElement;
 
 		return this.editor.data.stringify( titleContentElement, options );
 	}
@@ -170,6 +215,20 @@ export class Title extends Plugin {
 		const model = editor.model;
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const root = editor.model.document.getRoot( rootName )!;
+
+		// Root does not support the title structure (custom/inline root) — the whole root is the body.
+		// Delegate to the regular data getter so mixed-root callers receive useful content.
+		if ( !model.schema.checkChild( root, 'title' ) ) {
+			return data.get( { ...options, rootName: root.rootName } );
+		}
+
+		// Root is empty / missing the expected title element (e.g. detached root or transient state) — no body to stringify.
+		const firstChild = root.getChild( 0 );
+
+		if ( !firstChild || !firstChild.is( 'element', 'title' ) ) {
+			return '';
+		}
+
 		const view = editor.editing.view;
 		const viewWriter = new ViewDowncastWriter( view.document );
 
@@ -177,7 +236,7 @@ export class Title extends Plugin {
 		const viewDocumentFragment = viewWriter.createDocumentFragment();
 
 		// Find all markers that intersects with body.
-		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 )! );
+		const bodyStartPosition = model.createPositionAfter( firstChild );
 		const bodyRange = model.createRange( bodyStartPosition, model.createPositionAt( root, 'end' ) );
 
 		const markers = new Map();
@@ -206,7 +265,13 @@ export class Title extends Plugin {
 	 * Returns the `title` element when it is in the document. Returns `undefined` otherwise.
 	 */
 	private _getTitleElement( rootName?: string ): ModelElement | undefined {
-		const root = this.editor.model.document.getRoot( rootName )!;
+		const model = this.editor.model;
+		const root = model.document.getRoot( rootName )!;
+
+		// Root does not support the title structure (custom/inline root).
+		if ( !model.schema.checkChild( root, 'title' ) ) {
+			return;
+		}
 
 		for ( const child of root.getChildren() as IterableIterator<ModelElement> ) {
 			if ( isTitle( child ) ) {
@@ -256,6 +321,11 @@ export class Title extends Plugin {
 		const model = this.editor.model;
 
 		for ( const modelRoot of this.editor.model.document.getRoots() ) {
+			// Skip roots that do not support the title structure (custom/inline root).
+			if ( !model.schema.checkChild( modelRoot, 'title' ) ) {
+				continue;
+			}
+
 			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<ModelElement> ).filter( isTitle );
 			const firstTitleElement = titleElements[ 0 ];
 			const firstRootChild = modelRoot.getChild( 0 ) as ModelElement;
@@ -305,12 +375,15 @@ export class Title extends Plugin {
 	 * when it is needed for the placeholder purposes.
 	 */
 	private _fixBodyElement( writer: ModelWriter ) {
+		const schema = this.editor.model.schema;
 		let changed = false;
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
 			const modelRoot = this.editor.model.document.getRoot( rootName )!;
 
-			if ( modelRoot.childCount < 2 ) {
+			// Only insert the paragraph body placeholder when the root actually accepts `paragraph`.
+			// Custom/inline roots that do not accept `$block` are intentionally skipped.
+			if ( modelRoot.childCount < 2 && schema.checkChild( modelRoot, 'paragraph' ) ) {
 				const placeholder = writer.createElement( 'paragraph' );
 
 				writer.insert( placeholder, modelRoot, 1 );
@@ -332,7 +405,12 @@ export class Title extends Plugin {
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
 			const root = this.editor.model.document.getRoot( rootName )!;
-			const placeholder = this._bodyPlaceholder.get( rootName )!;
+			const placeholder = this._bodyPlaceholder.get( rootName );
+
+			// Roots that do not support the title structure never had a body placeholder created.
+			if ( !placeholder ) {
+				continue;
+			}
 
 			if ( shouldRemoveLastParagraph( placeholder, root ) ) {
 				this._bodyPlaceholder.delete( rootName );
@@ -383,7 +461,16 @@ export class Title extends Plugin {
 					continue;
 				}
 
-				// If `viewRoot` is not empty, then we can expect at least two elements in it.
+				// Skip roots whose schema does not support the title structure (custom/inline root).
+				// Their view root won't have the expected title+body layout.
+				// A title-allowed root always has a paragraph body placeholder created by `_fixBodyElement`,
+				// so the second view child is guaranteed to exist once this guard passes.
+				const modelRoot = editor.editing.mapper.toModelElement( viewRoot )!;
+
+				if ( !editor.model.schema.checkChild( modelRoot, 'title' ) ) {
+					continue;
+				}
+
 				const body = viewRoot!.getChild( 1 ) as ViewElement;
 				const oldBody = bodyViewElements.get( viewRoot.rootName );
 
@@ -455,6 +542,11 @@ export class Title extends Plugin {
 				const selectionPosition = selection.getFirstPosition()!;
 				const root = editor.model.document.getRoot( selectionPosition.root.rootName! )!;
 
+				// Root does not support the title structure (custom/inline root) — no title to jump to.
+				if ( !model.schema.checkChild( root, 'title' ) ) {
+					return;
+				}
+
 				const title = root.getChild( 0 ) as ModelElement;
 				const body = root.getChild( 1 );
 
@@ -471,6 +563,9 @@ export class Title extends Plugin {
 /**
  * A view-to-model converter for the h1 that appears at the beginning of the document (a title element).
  *
+ * Matches only the synthetic upcast parent named `$root` (the default generic root element). Title is not supported
+ * for roots whose `modelElement` is customized, so this converter intentionally does not fire on them.
+ *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param evt An object containing information about the fired event.
  * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
@@ -480,6 +575,9 @@ function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<View
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
+	// Testing against a literal `$root` is intentional: this converter must not fire on roots whose `modelElement`
+	// is customized, because the Title feature only registers its schema against `$root`.
+	// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- name-agnostic check would fire for unsupported custom roots
 	if ( !modelCursor.isAtStart || !modelCursor.parent.is( 'element', '$root' ) ) {
 		return;
 	}
@@ -587,7 +685,7 @@ function fixTitleElement( title: ModelElement, writer: ModelWriter, model: Model
  * purpose and it's not needed anymore. Returns false otherwise.
  */
 function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootElement ) {
-	if ( !placeholder || !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
+	if ( !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
 		return false;
 	}
 

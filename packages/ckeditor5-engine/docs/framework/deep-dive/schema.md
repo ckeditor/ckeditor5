@@ -765,6 +765,37 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 </$root>
 ```
 
+### Custom root elements
+
+The generic `$root` / `$container` / `$block` chain described above is keyed on the element name `$root`. By default, a root is created as `<$root>`, so every rule of the form `allowIn: '$root'` or `allowAttributesOf: '$root'` applies to it automatically.
+
+You can change the element name used for a root via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} (or `config.roots.<rootName>.modelElement` for the {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root editor}) option. When you do, the created root is `<myRoot>` instead of `<$root>`, and **it does not automatically inherit the `$root` chain**. Features that define their elements as `allowIn: '$root'`, `allowContentOf: '$root'`, or `allowAttributesOf: '$root'` will not apply to the custom root unless you opt in.
+
+Declare the custom root in the schema and pick which parts of the `$root` chain you want:
+
+```js
+// Inherit everything $root provides - allowed children, attributes, and is* flags.
+schema.register( 'myRoot', {
+	inheritAllFrom: '$root',
+	allowChildren: [ '$container', '$block' ]
+} );
+
+// Or opt in selectively - e.g. only inherit attributes (the `$inlineRoot` pattern).
+schema.register( 'myInlineRoot', {
+	allowContentOf: '$block',
+	allowAttributesOf: '$root',
+	isLimit: true
+} );
+```
+
+Key rules to remember for custom roots:
+
+* **Block / container content.** If the root should accept the generic block chain, declare `allowChildren: [ '$container', '$block' ]` (or `inheritAllFrom: '$root'`). Otherwise `$block`-based elements like `<paragraph>` and `$container`-based elements like `<blockQuote>` will not be allowed inside it.
+* **Root attributes.** Attributes registered via {@link module:core/editor/editor~Editor#registerRootAttribute `editor.registerRootAttribute()`} are attached only to the `$root` schema element. Custom roots must opt into this chain via `allowAttributesOf: '$root'` to receive them.
+* **Data conversion context.** When calling {@link module:engine/controller/datacontroller~DataController#parse `editor.data.parse()`} or {@link module:engine/controller/datacontroller~DataController#toModel `editor.data.toModel()`} against a custom root, pass the target root element (or its configured model element name) as the `context` argument. The default `'$root'` only matches the generic root and can produce wrong conversion results.
+
+The engine ships with one ready-made custom root definition - `$inlineRoot` - for roots that should only contain inline content. You can use it out of the box via `config.root.modelElement: '$inlineRoot'` without adding your own schema registration.
+
 ## Defining advanced rules using callbacks
 
 The base {@link module:engine/model/schema~ModelSchemaItemDefinition declarative `SchemaItemDefinition` API} is by its nature limited, and some custom rules might not be possible to be implemented this way.
