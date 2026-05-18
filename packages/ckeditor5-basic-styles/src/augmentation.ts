@@ -18,6 +18,7 @@ import type {
 	Strikethrough,
 	StrikethroughEditing,
 	StrikethroughUI,
+	BasicStylesConfig,
 	SubscriptEditing,
 	SubscriptUI,
 	SuperscriptEditing,
@@ -28,6 +29,16 @@ import type {
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:basic-styles basic styles features}.
+		 *
+		 * Read more in {@link module:basic-styles/basicstylesconfig~BasicStylesConfig}.
+		 */
+		basicStyles?: BasicStylesConfig;
+	}
+
 	interface PluginsMap {
 		[ Superscript.pluginName ]: Superscript;
 		[ Subscript.pluginName ]: Subscript;
