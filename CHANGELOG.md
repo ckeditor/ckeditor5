@@ -1,9 +1,9 @@
 Changelog
 =========
 
-## [47.7.2](https://github.com/ckeditor/ckeditor5/compare/v47.7.1...v47.7.2) (May 15, 2026)
+## [47.7.2](https://github.com/ckeditor/ckeditor5/compare/v47.7.1...v47.7.2) (May 18, 2026)
 
-We are happy to announce the release of CKEditor 5 v47.1.2.
+We are happy to announce the release of CKEditor 5 v47.7.2.
 
 > **ℹ️ Long Term Support Edition release:** This is a [CKEditor 5 Long Term Support (LTS) Edition](https://ckeditor.com/ckeditor-5-lts/) release, available only to LTS subscribers. It delivers security and critical maintenance fixes for the v47 line. [Visit documentation](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html) to learn more.
 
