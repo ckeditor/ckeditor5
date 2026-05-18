@@ -12,20 +12,9 @@ import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { MediaEmbedEditing } from '../mediaembedediting.js';
 import { MediaEmbedStyleCommand } from './mediaembedstylecommand.js';
-import type { MediaStyleName } from './constants.js';
-
-/**
- * Style name → view class for the four class-bearing alignment options. `alignCenter` is
- * absent because the default style encodes as attribute-absence (no class). Iteration
- * order is load-bearing for the upcast — when multiple alignment classes are present on
- * a single figure, the last consumed wins.
- */
-const MEDIA_STYLE_CLASSES = new Map<MediaStyleName, string>( [
-	[ 'alignLeft', 'media-style-align-left' ],
-	[ 'alignBlockLeft', 'media-style-block-align-left' ],
-	[ 'alignBlockRight', 'media-style-block-align-right' ],
-	[ 'alignRight', 'media-style-align-right' ]
-] );
+import type { MediaStyleOptionDefinition } from '../mediaembedconfig.js';
+import { DEFAULT_OPTIONS } from './constants.js';
+import { normalizeStyles } from './utils.js';
 
 /**
  * The media embed style engine plugin. It extends the schema with the `mediaStyle` attribute,
@@ -33,6 +22,16 @@ const MEDIA_STYLE_CLASSES = new Map<MediaStyleName, string>( [
  * and adds the converters that apply alignment CSS classes to the figure.
  */
 export class MediaEmbedStyleEditing extends Plugin {
+	/**
+	 * The resolved list of media style options. Built once from
+	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles `config.mediaEmbed.styles`}
+	 * during {@link #init} and consumed by both the command and the UI plugin (single source of truth).
+	 *
+	 * @internal
+	 * @readonly
+	 */
+	public normalizedStyles?: Array<MediaStyleOptionDefinition>;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -61,10 +60,14 @@ export class MediaEmbedStyleEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
+		editor.config.define( 'mediaEmbed.styles', { options: Object.keys( DEFAULT_OPTIONS ) } );
+
+		this.normalizedStyles = normalizeStyles( editor.config.get( 'mediaEmbed.styles' )! );
+
 		schema.extend( 'media', { allowAttributes: [ 'mediaStyle' ] } );
 		schema.setAttributeProperties( 'mediaStyle', { isFormatting: true } );
 
-		editor.commands.add( 'mediaStyle', new MediaEmbedStyleCommand( editor ) );
+		editor.commands.add( 'mediaStyle', new MediaEmbedStyleCommand( editor, this.normalizedStyles ) );
 
 		this._registerConverters();
 	}
@@ -75,6 +78,16 @@ export class MediaEmbedStyleEditing extends Plugin {
 	private _registerConverters(): void {
 		const editor = this.editor;
 
+		// Runtime lookup of style `name` → CSS `className`. Excludes the default style, which is
+		// encoded as the absence of the attribute (no class). Iteration order follows the configured
+		// options order — the upcast relies on this so the last matching class wins on a figure
+		// that has multiple alignment classes.
+		const styleClassMap = new Map(
+			this.normalizedStyles!
+				.filter( style => !style.isDefault && style.className )
+				.map( style => [ style.name, style.className! ] )
+		);
+
 		// Downcast: `mediaStyle` → CSS class on the <figure>. Covers both editing and data pipelines.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
 			dispatcher.on( 'attribute:mediaStyle:media', ( evt, data, conversionApi ) => {
@@ -84,8 +97,8 @@ export class MediaEmbedStyleEditing extends Plugin {
 
 				const figure = conversionApi.mapper.toViewElement( data.item )!;
 				const viewWriter = conversionApi.writer;
-				const oldClass = MEDIA_STYLE_CLASSES.get( data.attributeOldValue as MediaStyleName );
-				const newClass = MEDIA_STYLE_CLASSES.get( data.attributeNewValue as MediaStyleName );
+				const oldClass = styleClassMap.get( data.attributeOldValue as string );
+				const newClass = styleClassMap.get( data.attributeNewValue as string );
 
 				if ( oldClass ) {
 					viewWriter.removeClass( oldClass, figure );
@@ -113,7 +126,7 @@ export class MediaEmbedStyleEditing extends Plugin {
 
 				// Iterate in insertion order — last consumed class wins when multiple
 				// alignment classes are present on the same figure.
-				for ( const [ styleName, className ] of MEDIA_STYLE_CLASSES ) {
+				for ( const [ styleName, className ] of styleClassMap ) {
 					if ( conversionApi.consumable.consume( data.viewItem, { classes: className } ) ) {
 						conversionApi.writer.setAttribute( 'mediaStyle', styleName, modelElement );
 					}

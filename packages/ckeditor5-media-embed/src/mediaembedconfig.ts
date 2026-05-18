@@ -7,7 +7,6 @@
  * @module media-embed/mediaembedconfig
  */
 
-import type { ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -203,9 +202,230 @@ export interface MediaEmbedConfig {
 	 * Items to be placed in the media embed toolbar.
 	 * This option requires adding {@link module:media-embed/mediaembedtoolbar~MediaEmbedToolbar} to the plugin list.
 	 *
+	 * Each entry is either a component name (string) or a split-button media style dropdown
+	 * definition (object) following the
+	 * {@link module:media-embed/mediaembedconfig~MediaStyleDropdownDefinition} shape.
+	 * Custom dropdowns are registered alongside the built-in `mediaEmbed:wrapText` and
+	 * `mediaEmbed:breakText` dropdowns and inherit the same auto-skip / fallback-defaultItem
+	 * behavior.
+	 *
+	 * ```ts
+	 * mediaEmbed: {
+	 * 	toolbar: [
+	 * 		'mediaEmbed:alignCenter',
+	 * 		{
+	 * 			name: 'mediaEmbed:myAlignments',
+	 * 			title: 'Alignment',
+	 * 			items: [ 'mediaEmbed:alignBlockLeft', 'mediaEmbed:alignBlockRight' ],
+	 * 			defaultItem: 'mediaEmbed:alignBlockLeft'
+	 * 		}
+	 * 	]
+	 * }
+	 * ```
+	 *
 	 * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 	 */
-	toolbar?: Array<ToolbarConfigItem>;
+	toolbar?: Array<string | MediaStyleDropdownDefinition>;
+
+	/**
+	 * The {@link module:media-embed/mediaembedstyle~MediaEmbedStyle media embed style} feature configuration.
+	 *
+	 * Available out of the box: five built-in alignment styles — `'alignLeft'`, `'alignBlockLeft'`,
+	 * `'alignCenter'` (default), `'alignBlockRight'`, `'alignRight'`.
+	 *
+	 * Restrict the set to a subset of built-ins:
+	 *
+	 * ```ts
+	 * mediaEmbed: {
+	 * 	styles: {
+	 * 		options: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * Override fields of a built-in by re-declaring with the same `name`:
+	 *
+	 * ```ts
+	 * mediaEmbed: {
+	 * 	styles: {
+	 * 		options: [
+	 * 			{ name: 'alignCenter', title: 'Center' },
+	 * 			'alignLeft',
+	 * 			'alignRight'
+	 * 		]
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * Register a custom (e.g. semantical) style by supplying a complete definition:
+	 *
+	 * ```ts
+	 * import sideIcon from 'path/to/icon.svg';
+	 *
+	 * mediaEmbed: {
+	 * 	styles: {
+	 * 		options: [
+	 * 			'alignCenter',
+	 * 			{
+	 * 				name: 'side',
+	 * 				title: 'Side media',
+	 * 				icon: sideIcon,
+	 * 				className: 'media-style-side'
+	 * 			}
+	 * 		]
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * When omitted, all five built-in styles are available.
+	 */
+	styles?: MediaStyleConfig;
+}
+
+/**
+ * The configuration for the {@link module:media-embed/mediaembedstyle~MediaEmbedStyle} feature.
+ *
+ * See {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles `config.mediaEmbed.styles`}
+ * for details and examples.
+ */
+export interface MediaStyleConfig {
+
+	/**
+	 * A list of media style options. Each entry is either:
+	 *
+	 * * a string referencing a built-in style by name (`'alignLeft'`, `'alignBlockLeft'`,
+	 *   `'alignCenter'`, `'alignBlockRight'`, `'alignRight'`),
+	 * * an object overriding fields of a built-in (matched by `name`),
+	 * * an object defining a new custom style.
+	 *
+	 * Defaults to all five built-in styles when omitted.
+	 */
+	options?: Array<string | MediaStyleOptionDefinition>;
+}
+
+/**
+ * The definition of a single media style option used by the
+ * {@link module:media-embed/mediaembedstyle~MediaEmbedStyle media embed style} feature.
+ *
+ * To customize a built-in style, re-declare it with the same `name` — only the fields
+ * you set will be replaced; the rest are inherited from the built-in. To register a
+ * brand-new style, provide a fresh `name` and a complete definition (`title`, `icon`,
+ * and — unless `isDefault: true` — `className`).
+ *
+ * ```ts
+ * import sideIcon from 'path/to/icon.svg';
+ *
+ * const sideStyle = {
+ * 	name: 'side',
+ * 	title: 'Side media',
+ * 	icon: sideIcon,
+ * 	className: 'media-style-side'
+ * };
+ * ```
+ *
+ * Each option registers a toggle button under the name `'mediaEmbed:{name}'` in the
+ * {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ */
+export interface MediaStyleOptionDefinition {
+
+	/**
+	 * The unique style name. It is used to:
+	 *
+	 * * reference a built-in style or define a custom one,
+	 * * store the chosen style in the model as the `mediaStyle` attribute,
+	 * * register the toolbar button under `'mediaEmbed:{name}'`.
+	 */
+	name: string;
+
+	/**
+	 * The button title. The title is wrapped in `editor.t()` at button creation,
+	 * so titles that match keys in the official translation set will be localized
+	 * automatically.
+	 *
+	 * Inherited from the built-in style with the matching `name` when not set.
+	 */
+	title: string;
+
+	/**
+	 * The button icon. Either an SVG XML source string, or one of the keys in
+	 * `DEFAULT_ICONS` (`'inlineLeft'`, `'left'`, `'center'`, `'right'`, `'inlineRight'`)
+	 * to use one of the icons shipped with the plugin.
+	 *
+	 * Inherited from the built-in style with the matching `name` when not set.
+	 */
+	icon: string;
+
+	/**
+	 * The CSS class added to the view `<figure>` when this style is applied. Required
+	 * for every non-default style — default styles are encoded as the absence of the
+	 * `mediaStyle` attribute, so they intentionally have no class.
+	 *
+	 * Inherited from the built-in style with the matching `name` when not set.
+	 */
+	className?: string;
+
+	/**
+	 * When `true`, this style is the default state — applying it removes the
+	 * `mediaStyle` attribute from the model element (no class is written to the view).
+	 * Default styles must not define a `className`.
+	 *
+	 * Inherited from the built-in style with the matching `name` when not set.
+	 */
+	isDefault?: boolean;
+}
+
+/**
+ * The definition of a split-button dropdown that groups several media style buttons.
+ *
+ * Integrators can declare custom dropdowns inline in
+ * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#toolbar `config.mediaEmbed.toolbar`}
+ * alongside button-name strings; `defaultItem` is the discriminator that distinguishes a
+ * split-button media style dropdown from a generic toolbar grouping.
+ *
+ * ```ts
+ * mediaEmbed: {
+ * 	toolbar: [
+ * 		'mediaEmbed:alignCenter',
+ * 		{
+ * 			name: 'mediaEmbed:myAlignments',
+ * 			title: 'Alignment',
+ * 			items: [ 'mediaEmbed:alignBlockLeft', 'mediaEmbed:alignBlockRight' ],
+ * 			defaultItem: 'mediaEmbed:alignBlockLeft'
+ * 		}
+ * 	]
+ * }
+ * ```
+ *
+ * All names (`name`, `items[]`, `defaultItem`) use the full prefixed component-factory form.
+ * Items referencing styles that are not in the resolved
+ * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles `config.mediaEmbed.styles`} list
+ * are filtered out at registration time. A dropdown that ends up with fewer than two items is
+ * skipped. If the configured `defaultItem` was filtered out, the first surviving item is used.
+ */
+export interface MediaStyleDropdownDefinition {
+
+	/**
+	 * The dropdown name. Registered as-is in the UI component factory, so it must use the
+	 * `mediaEmbed:` prefix (for example, `'mediaEmbed:myAlignments'`).
+	 */
+	name: string;
+
+	/**
+	 * The dropdown title, used both for the split-button label and the dropdown arrow tooltip.
+	 */
+	title: string;
+
+	/**
+	 * Prefixed style names included in the dropdown (for example,
+	 * `[ 'mediaEmbed:alignBlockLeft', 'mediaEmbed:alignBlockRight' ]`).
+	 */
+	items: Array<string>;
+
+	/**
+	 * The default child whose icon and label the split button mirrors when no child is active.
+	 * Must be one of the `items`.
+	 */
+	defaultItem: string;
 }
 
 /**
