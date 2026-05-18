@@ -220,7 +220,7 @@ export class BlockToolbar extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		// Destroy created UI components as they are not automatically destroyed (see https://github.com/ckeditor/ckeditor5/issues/1341).
 		this.panelView.destroy();
 		this.buttonView.destroy();
 		this.toolbarView.destroy();

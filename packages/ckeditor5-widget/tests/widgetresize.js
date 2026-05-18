@@ -532,7 +532,8 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount, 'call count' ).to.be.eql( 0 );
 		} );
 
-		// Note that ultimately width should be changed, but through a model converter, not with direct view changes (#6060).
+		// Note that ultimately width should be changed, but through a model converter, not with direct view changes.
+		// See https://github.com/ckeditor/ckeditor5/issues/6060.
 		it( 'restores the original view width after resize is done', () => {
 			createResizer();
 
@@ -772,7 +773,7 @@ describe( 'WidgetResize', () => {
 
 			resizer.cancel();
 
-			// Value should be restored to the initial value (#6060).
+			// Value should be restored to the initial value (https://github.com/ckeditor/ckeditor5/issues/6060).
 			expect( widget.getStyle( 'width' ) ).to.equal( INITIAL_WIDGET_WIDTH );
 		} );
 	} );

@@ -374,7 +374,8 @@ export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
 					const deleteIndex = counter.equal + counter.delete;
 					const viewChild = viewElement.getChild( insertIndex );
 
-					// UIElement and RawElement are special cases. Their children are not stored in a view (#799)
+					// UIElement and RawElement are special cases. Their children are not stored in a view.
+					// See https://github.com/ckeditor/ckeditor5/issues/799.
 					// so we cannot use them with replacing flow (since they use view children during rendering
 					// which will always result in rendering empty elements).
 					if ( viewChild && !viewChild.is( 'uiElement' ) && !viewChild.is( 'rawElement' ) ) {
@@ -407,12 +408,13 @@ export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
 		// Because we replace new view element mapping with the existing one, the corresponding DOM element
 		// will not be rerendered. The new view element may have different attributes than the previous one.
 		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
-		// to the DOM, so we need to mark it here to make sure its attributes gets updated. See #1427 for more
-		// detailed case study.
+		// to the DOM, so we need to mark it here to make sure its attributes gets updated.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/1427 for more detailed case study.
 		// Also there are cases where replaced element is removed from the view structure and then has
 		// its attributes changed or removed. In such cases the element will not be present in `markedAttributes`
 		// and also may be the same (`element.isSimilar()`) as the reused element not having its attributes updated.
-		// To prevent such situations we always mark reused element to have its attributes rerenderd (#1560).
+		// To prevent such situations we always mark reused element to have its attributes rerenderd.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/1560.
 		this.markedAttributes.add( viewElement );
 	}
 
@@ -760,7 +762,8 @@ export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
 				this._updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				i++;
 			} else if ( action === 'equal' ) {
-				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
+				// Force updating text nodes inside elements which did not change and do not need to be re-rendered.
+				// See https://github.com/ckeditor/ckeditor5-engine/issues/1125.
 				// Do it here (not in the loop above) because only after insertions the `i` index is correct.
 				this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) as any );
 				i++;

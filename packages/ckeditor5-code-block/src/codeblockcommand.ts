@@ -129,7 +129,7 @@ export class CodeBlockCommand extends Command {
 			writer.setAttribute( 'language', language, block );
 			schema.removeDisallowedAttributes( [ block ], writer );
 
-			// Remove children of the  `codeBlock` element that are not allowed. See #9567.
+			// Remove children of the  `codeBlock` element that are not allowed. See https://github.com/ckeditor/ckeditor5/issues/9567.
 			Array.from( block.getChildren() )
 				.filter( child => !schema.checkChild( block, child ) )
 				.forEach( child => writer.remove( child ) );

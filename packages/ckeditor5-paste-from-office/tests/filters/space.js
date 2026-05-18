@@ -80,7 +80,7 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 
-			// ckeditor5#2095
+			// https://github.com/ckeditor/ckeditor5/issues/2095
 			it( 'should detect space spans which are split into multiple lines', () => {
 				const input =
 					'<p><span style=\'font-size:13.0pt;line-height:150%;\n' +
@@ -131,7 +131,7 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
 
-			// ckeditor5#5645
+			// https://github.com/ckeditor/ckeditor5/issues/5645
 			it( 'should normalize spaces inside special "span.spacerun" elements that contain no data', () => {
 				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
 					'<p> Baz <span style=\'mso-spacerun:yes\'></span></p>';

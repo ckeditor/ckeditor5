@@ -857,7 +857,7 @@ describe( 'CodeBlockEditing', () => {
 				} );
 		} );
 
-		// See #5910.
+		// See https://github.com/ckeditor/ckeditor5/issues/5910.
 		it( 'should allow to indent an entire code block with at least two lines', () => {
 			const element = document.createElement( 'div' );
 			document.body.appendChild( element );

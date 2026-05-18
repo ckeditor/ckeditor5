@@ -250,7 +250,7 @@ export class WidgetToolbarRepository extends Plugin {
 				// Many toolbars can express willingness to be displayed but they do not know about
 				// each other. Figure out which toolbar is deepest in the view tree to decide which
 				// should be displayed. For instance, if a selected image is inside a table cell, display
-				// the ImageToolbar rather than the TableToolbar (#60).
+				// the ImageToolbar rather than the TableToolbar (https://github.com/ckeditor/ckeditor5-widget/issues/60).
 				if ( relatedElementDepth > maxRelatedElementDepth ) {
 					maxRelatedElementDepth = relatedElementDepth;
 					deepestRelatedElement = relatedElement;

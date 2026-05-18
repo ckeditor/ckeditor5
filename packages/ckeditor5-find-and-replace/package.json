@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-find-and-replace",
-  "version": "47.7.1",
+  "version": "47.7.2",
   "description": "Find and replace feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -21,7 +21,7 @@
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^54.7.0",
+    "@ckeditor/ckeditor5-dev-utils": "^54.7.2",
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",

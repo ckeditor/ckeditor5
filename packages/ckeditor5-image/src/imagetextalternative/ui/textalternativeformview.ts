@@ -25,7 +25,7 @@ import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 import '../../../theme/textalternativeform.css';
 
-// See: #8833.
+// See: https://github.com/ckeditor/ckeditor5/issues/8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports

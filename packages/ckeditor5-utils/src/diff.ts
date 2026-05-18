@@ -43,7 +43,7 @@ export function diff<T>(
 	const aLength = a.length;
 	const bLength = b.length;
 
-	// Perform `fastDiff` for longer strings/arrays (see #269).
+	// Perform `fastDiff` for longer strings/arrays (see https://github.com/ckeditor/ckeditor5-utils/issues/269).
 	if ( aLength > 200 || bLength > 200 || aLength + bLength > 300 ) {
 		return diff.fastDiff( a, b, cmp, true );
 	}

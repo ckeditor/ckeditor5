@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* See ckeditor/ckeditor5#936. */
+/* See https://github.com/ckeditor/ckeditor5/issues/936. */
 .ck.ck-placeholder,
 .ck .ck-placeholder {
 	position: relative;
@@ -14,12 +14,12 @@
 		right: 0;
 		content: attr(data-placeholder);
 
-		/* See ckeditor/ckeditor5#469. */
+		/* See https://github.com/ckeditor/ckeditor5/issues/469. */
 		pointer-events: none;
 	}
 }
 
-/* See ckeditor/ckeditor5#1987. */
+/* See https://github.com/ckeditor/ckeditor5/issues/1987. */
 .ck.ck-read-only .ck-placeholder {
 	&::before {
 		display: none;

@@ -132,7 +132,7 @@ describe( 'FindAndReplaceUI', () => {
 				function testButton() {
 					describe( 'upon dialog open', () => {
 						it( 'CSS transitions should be disabled to avoid unnecessary animations (and then enable them again)', () => {
-							// (#10008)
+							// (https://github.com/ckeditor/ckeditor5/issues/10008)
 							const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
 							const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
 							const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );
@@ -558,7 +558,7 @@ describe( 'FindAndReplaceUI', () => {
 
 				describe( 'upon dropdown open', () => {
 					it( 'CSS transitions should be disabled to avoid unnecessary animations (and then enable them again)', () => {
-						// (#10008)
+						// (https://github.com/ckeditor/ckeditor5/issues/10008)
 						const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
 						const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
 						const selectSpy = sinon.spy( form._findInputView.fieldView, 'select' );

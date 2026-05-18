@@ -695,7 +695,7 @@ export function modelChangePostFixer( model: Model, writer: ModelWriter ): boole
 			}
 
 			for (
-				// Cache previousSibling and reuse for performance reasons. See #6581.
+				// Cache previousSibling and reuse for performance reasons. See https://github.com/ckeditor/ckeditor5/issues/6581.
 				let previousSibling = listHead.previousSibling;
 				previousSibling && previousSibling.is( 'element', 'listItem' );
 				previousSibling = listHead.previousSibling

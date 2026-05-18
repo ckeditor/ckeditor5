@@ -1649,7 +1649,8 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 		const viewWriter = conversionApi.writer;
 
 		// If model item cannot be mapped to a view element, it means item is not an `Element` instance but a `ModelTextProxy` node.
-		// Only elements can have attributes in a view so do not proceed for anything else (#1587).
+		// Only elements can have attributes in a view so do not proceed for anything else.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/1587.
 		if ( !viewElement ) {
 			/**
 			 * This error occurs when a {@link module:engine/model/textproxy~ModelTextProxy text node's} attribute is to be downcasted

@@ -18,6 +18,6 @@
 	display: block;
 
 	/* Give the media some minimal width in the content to prevent them
-	from being "squashed" in tight spaces, e.g. in table cells (#44) */
+	from being "squashed" in tight spaces, e.g. in table cells (https://github.com/ckeditor/ckeditor5-media-embed/issues/44) */
 	min-width: 15em;
 }
