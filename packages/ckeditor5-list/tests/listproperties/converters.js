@@ -2121,6 +2121,42 @@ describe( 'ListPropertiesEditing - converters', () => {
 						} );
 					} );
 				} );
+
+				// See https://github.com/ckeditor/ckeditor5-commercial/issues/9765.
+				it( 'should refresh intermediate wrappers when listStart changes after a skip-level item', async () => {
+					const skipEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListPropertiesEditing,
+							UndoEditing, BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ],
+						list: {
+							properties: { styles: false, startIndex: true, reversed: false },
+							allowSkipLevels: true
+						}
+					} );
+
+					sinon.stub( skipEditor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+
+					_setModelData( skipEditor.model,
+						'<paragraph listIndent="1" listItemId="a" listType="numbered">aaa</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="numbered">bbb</paragraph>'
+					);
+
+					skipEditor.model.change( writer => {
+						writer.setAttribute( 'listStart', 5, skipEditor.model.document.getRoot().getChild( 1 ) );
+					} );
+
+					expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<ol start="5">' +
+							'<li style="list-style-type:none">' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">aaa</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">bbb</span></li>' +
+						'</ol>'
+					);
+
+					await skipEditor.destroy();
+				} );
 			} );
 
 			describe( 'change list type', () => {

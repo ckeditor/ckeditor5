@@ -45,6 +45,7 @@ import {
 	createModelToViewPositionMapper,
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
+	listItemSkipLevelConsumer,
 	listItemUpcastConverter,
 	reconvertItemsOnDataChange
 } from './converters.js';
@@ -435,6 +436,7 @@ export class ListEditing extends Plugin {
 		const attributeNames = this.getListAttributeNames();
 		const multiBlock = editor.config.get( 'list.multiBlock' );
 		const elementName = multiBlock ? 'paragraph' : 'listItem';
+		const allowSkipLevels = !!editor.config.get( 'list.allowSkipLevels' );
 
 		editor.conversion.for( 'upcast' )
 			// Convert <li> to a generic paragraph (or listItem element) so the content of <li> is always inside a block.
@@ -463,6 +465,17 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
+				if ( allowSkipLevels ) {
+					// A consuming converter for intermediate `<li>` wrappers produced by the skip-level downcast
+					// (or by external sources). It is registered with 'high' priority so it reliably runs before
+					// any other `element:li` upcast converter. Registration order inside this `.add()` is already
+					// enough for our own converters, but `high` guards against other plugins that may attach their
+					// own `element:li` listeners at the default priority in a separate `.add()` block.
+					dispatcher.on<UpcastElementEvent>(
+						'element:li', listItemSkipLevelConsumer(), { priority: 'high' }
+					);
+				}
+
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 			} );
 
@@ -483,7 +496,12 @@ export class ListEditing extends Plugin {
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+					listItemDowncastConverter(
+						attributeNames,
+						this._downcastStrategies,
+						model,
+						{ allowSkipLevels }
+					)
 				);
 
 				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter( model.schema ) );
@@ -498,7 +516,9 @@ export class ListEditing extends Plugin {
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, {
+						dataPipeline: true, allowSkipLevels
+					} )
 				);
 			} );
 
@@ -540,16 +560,17 @@ export class ListEditing extends Plugin {
 	private _setupModelPostFixing() {
 		const model = this.editor.model;
 		const attributeNames = this.getListAttributeNames();
-
 		// Register list fixing.
 		// First the low level handler.
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, attributeNames, this ) );
 
 		// Then the callbacks for the specific lists.
-		// The indentation fixing must be the first one...
-		this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
-			evt.return = fixListIndents( listNodes, writer ) || evt.return;
-		}, { priority: 'high' } );
+		// The indentation fixing must be the first one (but only when skip levels are not allowed)...
+		if ( !this.editor.config.get( 'list.allowSkipLevels' ) ) {
+			this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+				evt.return = fixListIndents( listNodes, writer ) || evt.return;
+			}, { priority: 'high' } );
+		}
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
 		this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {

@@ -67,6 +67,7 @@
     "@ckeditor/ckeditor5-media-embed": "workspace:*",
     "@ckeditor/ckeditor5-page-break": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
+    "@ckeditor/ckeditor5-paste-from-office": "workspace:*",
     "@ckeditor/ckeditor5-remove-format": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",

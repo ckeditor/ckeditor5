@@ -60,6 +60,25 @@ export interface ListConfig {
 	 * @default true
 	 */
 	enableListItemMarkerFormatting?: boolean;
+
+	/**
+	 * When set to `true`, list items can be indented by more than one level relative to their parent.
+	 * By default, the editor enforces that each nested list item is only one level deeper than its parent.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		list: {
+	 * 			allowSkipLevels: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * @default false
+	 */
+	allowSkipLevels?: boolean;
 }
 
 /**

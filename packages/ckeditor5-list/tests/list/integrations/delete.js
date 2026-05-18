@@ -6644,6 +6644,85 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 		} );
 	} );
 
+	describe( 'backspace (backward) - skip-level lists', () => {
+		let skipElement, skipEditor, skipModel, skipView;
+		let skipEventInfo, skipDomEventData;
+
+		beforeEach( async () => {
+			skipElement = document.createElement( 'div' );
+			document.body.appendChild( skipElement );
+
+			skipEditor = await ClassicTestEditor.create( skipElement, {
+				plugins: [ ListEditing, Paragraph, Delete ],
+				list: {
+					allowSkipLevels: true
+				}
+			} );
+
+			skipModel = skipEditor.model;
+			skipView = skipEditor.editing.view;
+
+			skipEventInfo = new BubblingEventInfo( skipView.document, 'delete' );
+			skipDomEventData = new ViewDocumentDomEventData( skipView, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'backward',
+				unit: 'codePoint',
+				sequence: 1
+			} );
+		} );
+
+		afterEach( async () => {
+			skipElement.remove();
+
+			await skipEditor.destroy();
+		} );
+
+		it( 'should not throw and should merge the item into the previous one when the previous list block has a higher indent', () => {
+			_setModelData( skipModel, modelList( [
+				'    # aaa',
+				'  # []bbb'
+			] ) );
+
+			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
+
+			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+				'    # aaa',
+				'      []bbb'
+			] ) );
+		} );
+
+		it( 'should merge the item into the previous one when the previous list block has an even higher indent', () => {
+			_setModelData( skipModel, modelList( [
+				'      # aaa',
+				'  # []bbb'
+			] ) );
+
+			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
+
+			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+				'      # aaa',
+				'        []bbb'
+			] ) );
+		} );
+
+		it( 'should keep nested children of the merged list item and re-indent them', () => {
+			_setModelData( skipModel, modelList( [
+				'    # aaa',
+				'  # []bbb',
+				'    # ccc'
+			] ) );
+
+			expect( () => skipView.document.fire( skipEventInfo, skipDomEventData ) ).to.not.throw();
+
+			expect( _getModelData( skipModel ) ).to.equalMarkup( modelList( [
+				'    # aaa',
+				'      []bbb',
+				'      # ccc'
+			] ) );
+		} );
+	} );
+
 	// @param {Iterable.<String>} input
 	// @param {Iterable.<String>} expected
 	// @param {Boolean|Object.<String,Boolean>} eventStopped Boolean when preventDefault() and stop() were called/not called together.
