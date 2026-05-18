@@ -16,10 +16,9 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ViewRootElementDefinition
 } from '@ckeditor/ckeditor5-core';
-
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { DecoupledEditorUI } from './decouplededitorui.js';
 import { DecoupledEditorUIView } from './decouplededitoruiview.js';
@@ -91,18 +90,12 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		// From this point use only normalized `roots.main.element`.
-		const sourceElement = this.config.get( 'roots' )!.main.element;
+		// `normalizeRootsConfig()` reshaped this into a canonical form (HTMLElement or ViewRootElementDefinition).
+		const editableElement = this.config.get( 'roots' )!.main.element as HTMLElement | ViewRootElementDefinition | undefined;
 
-		if ( isElement( sourceElement ) ) {
-			if ( sourceElement.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
-			this.sourceElement = sourceElement;
-			secureSourceElement( this, sourceElement );
+		if ( isElement( editableElement ) ) {
+			this.sourceElement = editableElement;
+			secureSourceElement( this, editableElement );
 		}
 
 		this.model.document.createRoot( this.config.get( 'roots' )!.main.modelElement );
@@ -110,7 +103,7 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, {
-			editableElement: this.sourceElement,
+			editableElement,
 			shouldToolbarGroupWhenFull,
 			label: this.config.get( 'roots' )!.main.label
 		} );

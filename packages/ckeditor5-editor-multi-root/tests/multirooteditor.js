@@ -321,6 +321,228 @@ describe( 'MultiRootEditor', () => {
 				} ).to.throw( CKEditorError, 'editor-wrong-element' );
 			} );
 		} );
+
+		describe( 'config.roots.*.element', () => {
+			describe( 'as a tag name string', () => {
+				it( 'should create per-root editables with the given tag names', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: { element: 'h1' },
+							bar: { element: 'section' }
+						}
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'foo' ).tagName ).to.equal( 'H1' );
+					expect( newEditor.ui.getEditableElement( 'bar' ).tagName ).to.equal( 'SECTION' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should reflect the tag name on the view roots', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: { foo: { element: 'h1' } }
+					} );
+
+					expect( newEditor.editing.view.document.getRoot( 'foo' ).name ).to.equal( 'h1' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should leave editor.sourceElements empty', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: { foo: { element: 'h1' } }
+					} );
+
+					expect( newEditor.sourceElements ).to.deep.equal( {} );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should persist the element on $rootEditableOptions for RTC replication', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: { foo: { element: 'h1' } }
+					} );
+
+					expect( newEditor.model.document.getRoot( 'foo' ).getAttribute( '$rootEditableOptions' ) )
+						.to.deep.equal( { element: { name: 'h1' } } );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should throw when the tag name is `textarea`', () => {
+					expect( () => {
+						// eslint-disable-next-line no-new
+						new MultiRootEditor( {
+							roots: { foo: { element: 'textarea' } }
+						} );
+					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+				} );
+			} );
+
+			describe( 'as a view element definition object', () => {
+				it( 'should create the editable element with the given tag name', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: { foo: { element: { name: 'section' } } }
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'foo' ).tagName ).to.equal( 'SECTION' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should reflect the element shape on the view root', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: {
+								element: {
+									name: 'section',
+									classes: [ 'foo' ],
+									attributes: { 'data-id': '123' }
+								}
+							}
+						}
+					} );
+
+					const viewRoot = newEditor.editing.view.document.getRoot( 'foo' );
+
+					expect( viewRoot.name ).to.equal( 'section' );
+					expect( viewRoot.hasClass( 'foo' ) ).to.be.true;
+					expect( viewRoot.getAttribute( 'data-id' ) ).to.equal( '123' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should apply classes, styles and attributes to the editable element', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: {
+								element: {
+									name: 'section',
+									classes: [ 'foo' ],
+									styles: { color: 'rgb(255, 0, 0)' },
+									attributes: { 'data-id': '123' }
+								}
+							}
+						}
+					} );
+
+					const editable = newEditor.ui.getEditableElement( 'foo' );
+
+					expect( editable.classList.contains( 'foo' ) ).to.be.true;
+					expect( editable.style.color ).to.equal( 'rgb(255, 0, 0)' );
+					expect( editable.getAttribute( 'data-id' ) ).to.equal( '123' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should persist the element on $rootEditableOptions in canonical form', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: {
+								element: {
+									name: 'section',
+									classes: 'foo bar',
+									attributes: { class: 'baz', style: 'color: red' }
+								}
+							}
+						}
+					} );
+
+					const stored = newEditor.model.document.getRoot( 'foo' ).getAttribute( '$rootEditableOptions' );
+
+					expect( stored ).to.have.property( 'element' );
+					expect( stored.element.name ).to.equal( 'section' );
+					// `classes` is always an array post-normalize, and `attributes.class` is lifted into it.
+					expect( stored.element.classes ).to.deep.equal( [ 'foo bar', 'baz' ] );
+					// `attributes.class` is replaced with an empty-string sentinel so the deep-merge in `Config.set()`
+					// does not preserve the user-provided value.
+					expect( stored.element.attributes ).to.deep.equal( { class: '', style: 'color: red' } );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should throw when the name is `textarea`', () => {
+					expect( () => {
+						// eslint-disable-next-line no-new
+						new MultiRootEditor( {
+							roots: { foo: { element: { name: 'textarea' } } }
+						} );
+					} ).to.throw( CKEditorError, 'editor-wrong-element' );
+				} );
+			} );
+
+			describe( 'mixed forms', () => {
+				it( 'should allow different forms across roots', async () => {
+					const fooEl = document.createElement( 'div' );
+					fooEl.innerHTML = '<p>From DOM</p>';
+
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: { element: fooEl },
+							bar: { element: 'h1' },
+							baz: { element: { name: 'section', classes: [ 'special' ] } }
+						}
+					} );
+
+					expect( newEditor.sourceElements ).to.have.property( 'foo', fooEl );
+					expect( newEditor.sourceElements ).to.not.have.property( 'bar' );
+					expect( newEditor.sourceElements ).to.not.have.property( 'baz' );
+
+					expect( newEditor.ui.getEditableElement( 'foo' ) ).to.equal( fooEl );
+					expect( newEditor.ui.getEditableElement( 'bar' ).tagName ).to.equal( 'H1' );
+					expect( newEditor.ui.getEditableElement( 'baz' ).tagName ).to.equal( 'SECTION' );
+					expect( newEditor.ui.getEditableElement( 'baz' ).classList.contains( 'special' ) ).to.be.true;
+
+					await newEditor.destroy();
+				} );
+			} );
+
+			describe( 'RTC fallback', () => {
+				it( 'should recreate the editable from $rootEditableOptions when local config has no element', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: {
+								modelAttributes: {
+									$rootEditableOptions: { element: { name: 'h1' } }
+								}
+							}
+						}
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'foo' ).tagName ).to.equal( 'H1' );
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should prefer local config.roots.*.element over $rootEditableOptions', async () => {
+					const newEditor = await MultiRootEditor.create( {
+						plugins: [ Paragraph ],
+						roots: {
+							foo: {
+								element: 'section',
+								modelAttributes: {
+									$rootEditableOptions: { element: { name: 'h1' } }
+								}
+							}
+						}
+					} );
+
+					expect( newEditor.ui.getEditableElement( 'foo' ).tagName ).to.equal( 'SECTION' );
+
+					await newEditor.destroy();
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -1331,6 +1553,46 @@ describe( 'MultiRootEditor', () => {
 
 			sinon.assert.calledWithMatch( console.warn, 'multi-root-editor-add-root-element-option-ignored' );
 		} );
+
+		it( 'should drop a DOM element from $rootEditableOptions on warning', () => {
+			editor.addRoot( 'baz', { element: document.createElement( 'div' ) } );
+
+			const stored = editor.model.document.getRoot( 'baz' ).getAttribute( '$rootEditableOptions' );
+
+			expect( stored ).to.not.have.property( 'element' );
+		} );
+
+		it( 'should accept a tag name string and persist it normalized on $rootEditableOptions', () => {
+			editor.addRoot( 'baz', { element: 'h1' } );
+
+			const stored = editor.model.document.getRoot( 'baz' ).getAttribute( '$rootEditableOptions' );
+
+			expect( stored ).to.deep.equal( { element: { name: 'h1' } } );
+		} );
+
+		it( 'should accept a view element definition and persist it normalized on $rootEditableOptions', () => {
+			editor.addRoot( 'baz', {
+				element: {
+					name: 'section',
+					classes: 'foo bar',
+					attributes: { class: 'baz', 'data-id': '123' }
+				}
+			} );
+
+			const stored = editor.model.document.getRoot( 'baz' ).getAttribute( '$rootEditableOptions' );
+
+			expect( stored.element.name ).to.equal( 'section' );
+			expect( stored.element.classes ).to.deep.equal( [ 'foo bar', 'baz' ] );
+			// `attributes.class` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does
+			// not preserve the user-provided value.
+			expect( stored.element.attributes ).to.deep.equal( { class: '', 'data-id': '123' } );
+		} );
+
+		it( 'should throw when the element tag name is `textarea`', () => {
+			expect( () => {
+				editor.addRoot( 'baz', { element: 'textarea' } );
+			} ).to.throw( CKEditorError, 'editor-wrong-element' );
+		} );
 	} );
 
 	describe( 'detachRoot()', () => {
@@ -1811,6 +2073,54 @@ describe( 'MultiRootEditor', () => {
 			const editableElement = editor.ui.view.editables.new.element;
 
 			expect( editableElement ).to.be.instanceOf( HTMLElement );
+		} );
+
+		it( 'should accept `element` as a tag name string in options', () => {
+			editor.addRoot( 'new' );
+
+			const el = editor.createEditable( editor.model.document.getRoot( 'new' ), { element: 'h1' } );
+
+			expect( el.tagName ).to.equal( 'H1' );
+		} );
+
+		it( 'should accept `element` as a view element definition in options', () => {
+			editor.addRoot( 'new' );
+
+			const el = editor.createEditable( editor.model.document.getRoot( 'new' ), {
+				element: {
+					name: 'section',
+					classes: [ 'foo' ],
+					attributes: { 'data-id': '123' }
+				}
+			} );
+
+			expect( el.tagName ).to.equal( 'SECTION' );
+			expect( el.classList.contains( 'foo' ) ).to.be.true;
+			expect( el.getAttribute( 'data-id' ) ).to.equal( '123' );
+		} );
+
+		it( 'should fall back to $rootEditableOptions.element when not passed in options', () => {
+			editor.addRoot( 'new', { element: 'h1' } );
+
+			const el = editor.createEditable( editor.model.document.getRoot( 'new' ) );
+
+			expect( el.tagName ).to.equal( 'H1' );
+		} );
+
+		it( 'should prefer options.element over $rootEditableOptions.element', () => {
+			editor.addRoot( 'new', { element: 'h1' } );
+
+			const el = editor.createEditable( editor.model.document.getRoot( 'new' ), { element: 'section' } );
+
+			expect( el.tagName ).to.equal( 'SECTION' );
+		} );
+
+		it( 'should throw when options.element tag name is `textarea`', () => {
+			editor.addRoot( 'new' );
+
+			expect( () => {
+				editor.createEditable( editor.model.document.getRoot( 'new' ), { element: 'textarea' } );
+			} ).to.throw( CKEditorError, 'editor-wrong-element' );
 		} );
 	} );
 

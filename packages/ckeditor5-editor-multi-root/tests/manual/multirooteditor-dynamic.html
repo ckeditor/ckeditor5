@@ -1,0 +1,94 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<p>
+	<button id="destroyEditor">Destroy editor</button>
+	<button id="initEditor">Init editor</button>
+</p>
+
+<h2>The menubar</h2>
+<div class="menubar-container"></div>
+
+<h2>The toolbar</h2>
+<div class="toolbar-container"></div>
+
+<h2>The editable</h2>
+<div class="editable-container">
+	<h3 id="editor-intro"><strong>Exciting</strong> intro text to an article.</h3>
+	<div id="editor-content">
+		<table>
+			<tr>
+				<td>First cell</td>
+				<td>Second cell</td>
+			</tr>
+		</table>
+
+		<br />
+		<br />
+
+		<p>Hello World</p>
+	</div>
+	<div id="editor-outro"><p>Closing text.</p></div>
+	<div style="text-align: right">Signature: <em id="editor-signature">John Doe</em></div>
+</div>
+
+<style>
+	.editable-container,
+	.toolbar-container,
+	.menubar-container {
+		position: relative;
+		border: 1px solid red;
+	}
+
+	.editable-container::after,
+	.toolbar-container::after,
+	.menubar-container::after {
+		content: attr(class);
+		position: absolute;
+		background: red;
+		color: #fff;
+		top: 0;
+		right: 0;
+		font: 10px/2 monospace;
+		padding: .1em .3em;
+	}
+
+	.toolbar-container,
+	.menubar-container{
+		padding: 1em;
+	}
+
+	.editable-container {
+		padding: 3em;
+		overflow-y: scroll;
+		max-height: 300px;
+	}
+
+	.editable-container div.ck-editor__editable {
+		padding: 2em;
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	}
+
+	.editable-container h3.ck-editor__editable {
+		padding: 2em;
+		margin-bottom: 1em;
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	}
+
+	.editable-container em.ck-editor__editable {
+		padding: 0.1em 0.2em;
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	}
+</style>

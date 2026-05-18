@@ -20,7 +20,8 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ViewRootElementDefinition
 } from '@ckeditor/ckeditor5-core';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
@@ -106,10 +107,14 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		const menuBarConfig = this.config.get( 'menuBar' )!;
 
+		// The `normalizeRootsConfig()` already normalized this.
+		const editableElement = this.config.get( 'roots' )!.main.element as ViewRootElementDefinition | undefined;
+
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
-			label: this.config.get( 'roots' )!.main.label
+			label: this.config.get( 'roots' )!.main.label,
+			editableElement
 		} );
 
 		this.ui = new ClassicEditorUI( this, view );

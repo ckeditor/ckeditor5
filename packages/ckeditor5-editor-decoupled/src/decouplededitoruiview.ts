@@ -10,6 +10,7 @@
 import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
@@ -55,7 +56,7 @@ export class DecoupledEditorUIView extends EditorUIView {
 		locale: Locale,
 		editingView: EditingView,
 		options: {
-			editableElement?: HTMLElement;
+			editableElement?: HTMLElement | ViewRootElementDefinition;
 			shouldToolbarGroupWhenFull?: boolean;
 			label?: string | Record<string, string>;
 		} = {}

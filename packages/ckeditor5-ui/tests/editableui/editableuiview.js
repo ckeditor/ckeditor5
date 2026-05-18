@@ -108,6 +108,119 @@ describe( 'EditableUIView', () => {
 
 			view.destroy();
 		} );
+
+		describe( 'when editableElement is a ViewRootElementDefinition', () => {
+			it( 'should render a fresh element with the given tag name', () => {
+				const view = new EditableUIView( locale, editingView, { name: 'h1' } );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.tagName ).to.equal( 'H1' );
+				expect( view._hasExternalElement ).to.be.false;
+				expect( view.hasExternalElement ).to.be.false;
+
+				view.destroy();
+			} );
+
+			it( 'should default to a `<div>` when no name is provided in the definition', () => {
+				const view = new EditableUIView( locale, editingView, {} );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.tagName ).to.equal( 'DIV' );
+
+				view.destroy();
+			} );
+
+			it( 'should keep the editor classes on top of the definition\'s classes', () => {
+				const view = new EditableUIView( locale, editingView, {
+					name: 'section',
+					classes: [ 'foo', 'bar' ]
+				} );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+
+				view.destroy();
+			} );
+
+			it( 'should accept `classes` as a single string', () => {
+				const view = new EditableUIView( locale, editingView, {
+					name: 'section',
+					classes: 'foo bar'
+				} );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
+
+				view.destroy();
+			} );
+
+			it( 'should apply the `styles` object', () => {
+				const view = new EditableUIView( locale, editingView, {
+					name: 'section',
+					styles: { color: 'rgb(255, 0, 0)', 'font-weight': 'bold' }
+				} );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.style.color ).to.equal( 'rgb(255, 0, 0)' );
+				expect( view.element.style.fontWeight ).to.equal( 'bold' );
+
+				view.destroy();
+			} );
+
+			it( 'should apply arbitrary attributes', () => {
+				const view = new EditableUIView( locale, editingView, {
+					name: 'section',
+					attributes: { 'data-id': '123', 'data-role': 'editor' }
+				} );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.getAttribute( 'data-id' ) ).to.equal( '123' );
+				expect( view.element.getAttribute( 'data-role' ) ).to.equal( 'editor' );
+
+				view.destroy();
+			} );
+
+			it( 'should keep locale `lang` and `dir` attributes', () => {
+				const view = new EditableUIView( locale, editingView, { name: 'section' } );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view.element.getAttribute( 'lang' ) ).to.equal( 'en' );
+				expect( view.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+
+				view.destroy();
+			} );
+
+			it( 'should leave _editableElement set to the freshly created element', () => {
+				const view = new EditableUIView( locale, editingView, { name: 'h1' } );
+				view.name = editingViewRoot.rootName;
+
+				view.render();
+
+				expect( view._editableElement ).to.equal( view.element );
+
+				view.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'View bindings', () => {
