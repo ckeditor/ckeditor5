@@ -6,6 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
+import { MediaEmbed } from '../src/mediaembed.js';
 import { MediaEmbedStyle } from '../src/mediaembedstyle.js';
 import { MediaEmbedStyleEditing } from '../src/mediaembedstyle/mediaembedstyleediting.js';
 import { MediaEmbedStyleUI } from '../src/mediaembedstyle/mediaembedstyleui.js';
@@ -55,5 +56,71 @@ describe( 'MediaEmbedStyle', () => {
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
 		expect( MediaEmbedStyle.isPremiumPlugin ).to.be.false;
+	} );
+
+	describe( 'config.mediaEmbed.styles wiring', () => {
+		let configuredEditor, configuredEditorElement;
+
+		beforeEach( async () => {
+			configuredEditorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( configuredEditorElement );
+
+			configuredEditor = await ClassicTestEditor.create( {
+				attachTo: configuredEditorElement,
+				plugins: [ MediaEmbed, MediaEmbedStyle ],
+				mediaEmbed: {
+					styles: {
+						options: [
+							{ name: 'alignBlockLeft', title: 'Left (relabeled)' },
+							{
+								name: 'natural',
+								title: 'Natural',
+								icon: 'center',
+								isDefault: true
+							},
+							{
+								name: 'side',
+								title: 'Side',
+								icon: '<svg/>',
+								className: 'media-style-side'
+							}
+						]
+					}
+				}
+			} );
+		} );
+
+		afterEach( async () => {
+			configuredEditorElement.remove();
+			await configuredEditor.destroy();
+		} );
+
+		it( 'honors config.mediaEmbed.styles.options end-to-end', () => {
+			const editing = configuredEditor.plugins.get( MediaEmbedStyleEditing );
+
+			expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [
+				'alignBlockLeft', 'natural', 'side'
+			] );
+		} );
+
+		it( 'registers only the configured buttons in the UI factory', () => {
+			const factory = configuredEditor.ui.componentFactory;
+
+			expect( factory.has( 'mediaEmbed:alignBlockLeft' ) ).to.be.true;
+			expect( factory.has( 'mediaEmbed:natural' ) ).to.be.true;
+			expect( factory.has( 'mediaEmbed:side' ) ).to.be.true;
+
+			expect( factory.has( 'mediaEmbed:alignLeft' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:alignCenter' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:alignRight' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:alignBlockRight' ) ).to.be.false;
+		} );
+
+		it( 'skips both default dropdowns when their items don\'t survive the filter', () => {
+			const factory = configuredEditor.ui.componentFactory;
+
+			expect( factory.has( 'mediaEmbed:wrapText' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:breakText' ) ).to.be.false;
+		} );
 	} );
 } );

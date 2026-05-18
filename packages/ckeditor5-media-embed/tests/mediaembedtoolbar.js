@@ -87,6 +87,38 @@ describe( 'MediaEmbedToolbar', () => {
 
 			toolbar.destroy();
 		} );
+
+		it( 'normalizes media style dropdown definitions in the toolbar config to their registered names', async () => {
+			// Custom dropdown definition entries in `config.mediaEmbed.toolbar` must be flattened
+			// to their `.name` strings so the toolbar resolves them against the component factory
+			// (and renders the SplitButtonView our UI plugin registers) instead of treating each
+			// object as a generic nested-toolbar grouping.
+			const localElement = document.createElement( 'div' );
+			document.body.appendChild( localElement );
+
+			const localEditor = await ClassicTestEditor.create( localElement, {
+				plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
+				mediaEmbed: {
+					toolbar: [
+						'fake_button',
+						{
+							name: 'fake_dropdown',
+							title: 'Fake dropdown',
+							items: [ 'fake_button' ],
+							defaultItem: 'fake_button'
+						}
+					]
+				}
+			} );
+
+			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
+			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
+
+			expect( items ).to.deep.equal( [ 'fake_button', 'fake_dropdown' ] );
+
+			localElement.remove();
+			await localEditor.destroy();
+		} );
 	} );
 
 	describe( 'integration with the editor focus', () => {

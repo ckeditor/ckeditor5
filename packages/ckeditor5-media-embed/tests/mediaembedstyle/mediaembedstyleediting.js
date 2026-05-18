@@ -13,6 +13,14 @@ import { MediaEmbedStyleCommand } from '../../src/mediaembedstyle/mediaembedstyl
 
 const YOUTUBE_URL = 'https://youtu.be/foo';
 
+// Async factory used inside `beforeEach` to build a VirtualTestEditor with a `mediaEmbed.styles` config.
+function createConfiguredEditor( styleOptions ) {
+	return VirtualTestEditor.create( {
+		plugins: [ Paragraph, MediaEmbedEditing, MediaEmbedStyleEditing ],
+		mediaEmbed: { styles: { options: styleOptions } }
+	} );
+}
+
 describe( 'MediaEmbedStyleEditing', () => {
 	let editor, model;
 
@@ -115,7 +123,8 @@ describe( 'MediaEmbedStyleEditing', () => {
 
 			it( 'does not write a class for an unknown mediaStyle value', () => {
 				// Unknown values are silently ignored — schema doesn't constrain values, but
-				// the downcast looks the value up in MEDIA_STYLE_CLASSES.
+				// the downcast looks the value up in the runtime class map built from the
+				// resolved options.
 				_setModelData( model, `<media mediaStyle="bogus" url="${ YOUTUBE_URL }"></media>` );
 
 				expect( editor.getData() ).to.match( /^<figure class="media">/ );
@@ -161,9 +170,9 @@ describe( 'MediaEmbedStyleEditing', () => {
 			} );
 
 			it( 'when multiple alignment classes are present, the last one (in iteration order) wins', () => {
-				// Iteration order from MEDIA_STYLE_CLASSES:
-				// alignLeft, alignBlockLeft, alignBlockRight, alignRight.
-				// So if both align-left and align-right are present, align-right wins.
+				// Iteration order follows the resolved options: alignLeft, alignBlockLeft,
+				// alignBlockRight, alignRight (alignCenter is the default, no class). So if
+				// align-left and align-right are both present, align-right wins.
 				editor.setData(
 					'<figure class="media media-style-align-left media-style-align-right">' +
 						`<oembed url="${ YOUTUBE_URL }"></oembed>` +
@@ -263,6 +272,123 @@ describe( 'MediaEmbedStyleEditing', () => {
 			const mediaModel = previewModel.document.getRoot().getChild( 0 );
 
 			expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'alignRight' );
+		} );
+	} );
+
+	describe( 'config.mediaEmbed.styles', () => {
+		it( 'defaults to the canonical five-built-in list when no config is provided', () => {
+			expect( editor.config.get( 'mediaEmbed.styles' ) ).to.deep.equal( {
+				options: [ 'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight' ]
+			} );
+		} );
+
+		it( 'exposes the resolved normalizedStyles on the editing plugin', () => {
+			const editing = editor.plugins.get( MediaEmbedStyleEditing );
+
+			expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [
+				'alignLeft', 'alignBlockLeft', 'alignCenter', 'alignBlockRight', 'alignRight'
+			] );
+		} );
+
+		describe( 'with a subset config (alignLeft, alignRight dropped)', () => {
+			let subsetEditor, subsetModel;
+
+			beforeEach( async () => {
+				subsetEditor = await createConfiguredEditor( [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ] );
+				subsetModel = subsetEditor.model;
+			} );
+
+			afterEach( async () => {
+				await subsetEditor.destroy();
+			} );
+
+			it( 'reflects the subset in normalizedStyles', () => {
+				const editing = subsetEditor.plugins.get( MediaEmbedStyleEditing );
+
+				expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [
+					'alignBlockLeft', 'alignCenter', 'alignBlockRight'
+				] );
+			} );
+
+			it( 'downcast does not write a class for a filtered-out value', () => {
+				_setModelData( subsetModel, `<media mediaStyle="alignLeft" url="${ YOUTUBE_URL }"></media>` );
+
+				expect( subsetEditor.getData() ).to.match( /^<figure class="media">/ );
+			} );
+
+			it( 'upcast does not set the attribute for a filtered-out class', () => {
+				subsetEditor.setData(
+					`<figure class="media media-style-align-left"><oembed url="${ YOUTUBE_URL }"></oembed></figure>`
+				);
+
+				const mediaModel = subsetModel.document.getRoot().getChild( 0 );
+
+				expect( mediaModel.hasAttribute( 'mediaStyle' ) ).to.be.false;
+			} );
+
+			it( 'downcast still writes the class for surviving styles', () => {
+				_setModelData( subsetModel, `<media mediaStyle="alignBlockLeft" url="${ YOUTUBE_URL }"></media>` );
+
+				expect( subsetEditor.getData() ).to.match( /^<figure class="media media-style-block-align-left">/ );
+			} );
+		} );
+
+		describe( 'with a custom semantical style', () => {
+			let customEditor, customModel;
+
+			beforeEach( async () => {
+				customEditor = await createConfiguredEditor( [
+					'alignCenter',
+					{ name: 'side', title: 'Side media', icon: '<svg/>', className: 'media-style-side' }
+				] );
+				customModel = customEditor.model;
+			} );
+
+			afterEach( async () => {
+				await customEditor.destroy();
+			} );
+
+			it( 'downcast writes the custom className for the custom style', () => {
+				_setModelData( customModel, `<media mediaStyle="side" url="${ YOUTUBE_URL }"></media>` );
+
+				expect( customEditor.getData() ).to.match( /^<figure class="media media-style-side">/ );
+			} );
+
+			it( 'upcast reads the custom className back into the model attribute', () => {
+				customEditor.setData(
+					`<figure class="media media-style-side"><oembed url="${ YOUTUBE_URL }"></oembed></figure>`
+				);
+
+				const mediaModel = customModel.document.getRoot().getChild( 0 );
+
+				expect( mediaModel.getAttribute( 'mediaStyle' ) ).to.equal( 'side' );
+			} );
+		} );
+
+		describe( 'invalid entries', () => {
+			let warnStub;
+
+			beforeEach( () => {
+				warnStub = sinon.stub( console, 'warn' );
+			} );
+
+			afterEach( () => {
+				warnStub.restore();
+			} );
+
+			it( 'are filtered out of normalizedStyles and trigger a warning', async () => {
+				const editorWithBadConfig = await createConfiguredEditor( [
+					'alignCenter',
+					{ name: 'incomplete' } // Missing title, icon, className → invalid.
+				] );
+
+				const editing = editorWithBadConfig.plugins.get( MediaEmbedStyleEditing );
+
+				expect( editing.normalizedStyles.map( s => s.name ) ).to.deep.equal( [ 'alignCenter' ] );
+				sinon.assert.calledWith( warnStub, sinon.match( /^media-style-configuration-definition-invalid/ ) );
+
+				await editorWithBadConfig.destroy();
+			} );
 		} );
 	} );
 } );
