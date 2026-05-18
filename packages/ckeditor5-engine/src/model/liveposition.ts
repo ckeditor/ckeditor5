@@ -112,7 +112,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 // Proper overload would interfere with that.
 ModelLivePosition.prototype.is = function( type: string ): boolean {
 	return type === 'livePosition' || type === 'model:livePosition' ||
-		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+		// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 		type == 'position' || type === 'model:position';
 };
 

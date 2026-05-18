@@ -1295,7 +1295,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should upcast the decorators when linked image (figure > a > img)', () => {
-				// (#7975)
+				// (https://github.com/ckeditor/ckeditor5/issues/7975)
 				editor.setData(
 					'<figure class="image">' +
 						'<a class="gallery highlighted" href="https://cksource.com" target="_blank" ' +
@@ -1329,7 +1329,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should upcast the decorators when linked image (a > img)', () => {
-				// (#7975)
+				// (https://github.com/ckeditor/ckeditor5/issues/7975)
 				editor.setData(
 					'<a class="gallery highlighted" href="https://cksource.com" target="_blank" rel="noopener noreferrer"' +
 					'download="download" style="text-decoration:underline;">' +
@@ -1561,7 +1561,7 @@ describe( 'LinkImageEditing', () => {
 				);
 			} );
 
-			// See #8401.
+			// See https://github.com/ckeditor/ckeditor5/issues/8401.
 			it( 'should downcast without error if the image already has no link', () => {
 				_setModelData( model,
 					'[<imageBlock alt="bar" src="assets/sample.png"></imageBlock>]'
@@ -1592,7 +1592,7 @@ describe( 'LinkImageEditing', () => {
 				);
 			} );
 
-			// See #8401.
+			// See https://github.com/ckeditor/ckeditor5/issues/8401.
 			describe( 'order of model updates', () => {
 				it( 'should not affect converters - base link attributes first', () => {
 					_setModelData( model,

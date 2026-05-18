@@ -556,7 +556,7 @@ describe( 'ButtonView', () => {
 		} );
 
 		it( 'is omitted in #children when view#keystroke is not defined', () => {
-			// (#9412)
+			// (https://github.com/ckeditor/ckeditor5/issues/9412)
 			view = new ButtonView( locale );
 			view.withKeystroke = true;
 			view.render();

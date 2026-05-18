@@ -94,14 +94,14 @@ export class ModelRootElement extends ModelElement {
 ModelRootElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'model:rootElement' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'element' || type === 'model:element' ||
 			type === 'node' || type === 'model:node';
 	}
 
 	return name === this.name && (
 		type === 'rootElement' || type === 'model:rootElement' ||
-		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+		// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 		type === 'element' || type === 'model:element'
 	);
 };

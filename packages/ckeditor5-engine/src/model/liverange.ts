@@ -90,7 +90,7 @@ export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( ModelRange ) {
 // Proper overload would interfere with that.
 ModelLiveRange.prototype.is = function( type: string ): boolean {
 	return type === 'liveRange' || type === 'model:liveRange' ||
-		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+		// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 		type == 'range' || type === 'model:range';
 };
 

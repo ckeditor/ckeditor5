@@ -87,7 +87,7 @@ export class FindAndReplaceUI extends Plugin {
 			if ( isUiUsingDropdown ) {
 				view = this._createDropdown();
 
-				// Button should be disabled when in source editing mode. See #10001.
+				// Button should be disabled when in source editing mode. See https://github.com/ckeditor/ckeditor5/issues/10001.
 				view.bind( 'isEnabled' ).to( findCommand );
 			} else {
 				view = this._createDialogButtonForToolbar();
@@ -253,7 +253,7 @@ export class FindAndReplaceUI extends Plugin {
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
 		const t = editor.locale.t;
 
-		// Button should be disabled when in source editing mode. See #10001.
+		// Button should be disabled when in source editing mode. See https://github.com/ckeditor/ckeditor5/issues/10001.
 		buttonView.bind( 'isEnabled' ).to( findCommand );
 
 		buttonView.set( {

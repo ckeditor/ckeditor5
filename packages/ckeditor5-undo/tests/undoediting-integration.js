@@ -972,7 +972,7 @@ describe( 'UndoEditing integration', () => {
 			output( '<paragraph>Foo[]</paragraph>' );
 		} );
 
-		// ckeditor5#781
+		// https://github.com/ckeditor/ckeditor5/issues/781
 		it( 'cutting should not create empty undo step', () => {
 			input( '<paragraph>Fo[oba]r</paragraph>' );
 

@@ -239,7 +239,8 @@ export class ModelTreeWalker implements Iterable<ModelTreeWalkerValue> {
 		}
 
 		// Get node just after the current position.
-		// Use a highly optimized version instead of checking the text node first and then getting the node after. See #6582.
+		// Use a highly optimized version instead of checking the text node first and then getting the node after.
+		// See https://github.com/ckeditor/ckeditor5/issues/6582.
 		const textNodeAtPosition = getTextNodeAtPosition( position, parent );
 		const node = textNodeAtPosition || getNodeAfterPosition( position, parent, textNodeAtPosition );
 
@@ -318,7 +319,8 @@ export class ModelTreeWalker implements Iterable<ModelTreeWalkerValue> {
 		}
 
 		// Get node just before the current position.
-		// Use a highly optimized version instead of checking the text node first and then getting the node before. See #6582.
+		// Use a highly optimized version instead of checking the text node first and then getting the node before.
+		// See https://github.com/ckeditor/ckeditor5/issues/6582.
 		const positionParent = position.parent;
 		const textNodeAtPosition = getTextNodeAtPosition( position, positionParent );
 		const node = textNodeAtPosition || getNodeBeforePosition( position, positionParent, textNodeAtPosition );

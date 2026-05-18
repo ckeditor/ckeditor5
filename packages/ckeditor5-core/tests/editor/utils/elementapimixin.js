@@ -18,7 +18,7 @@ describe( 'ElementApiMixin', () => {
 		editor = new CustomEditor();
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
-		editor.fire( 'ready' ); // (#6139)
+		editor.fire( 'ready' ); // (https://github.com/ckeditor/ckeditor5/issues/6139)
 	} );
 
 	afterEach( async () => {

@@ -64,7 +64,8 @@ describe( 'TableUI', () => {
 
 			document.body.appendChild( insertTable.element );
 
-			insertTable.isOpen = true; // Dropdown is lazy loaded, so make sure its open (#6193).
+			// Dropdown is lazy loaded, so make sure its open (https://github.com/ckeditor/ckeditor5/issues/6193).
+			insertTable.isOpen = true;
 		} );
 
 		afterEach( () => {
@@ -119,7 +120,7 @@ describe( 'TableUI', () => {
 				insertTable.render();
 				document.body.appendChild( insertTable.element );
 
-				insertTable.isOpen = true; // Dropdown is lazy loaded (#6193).
+				insertTable.isOpen = true; // Dropdown is lazy loaded (https://github.com/ckeditor/ckeditor5/issues/6193).
 				insertTable.isOpen = false;
 			} );
 

@@ -785,7 +785,7 @@ describe( 'DataController utils', () => {
 					);
 				} );
 
-				// See ckeditor5#2010.
+				// See https://github.com/ckeditor/ckeditor5/issues/2010.
 				it( 'should handle bQ+p over bQ+p insertion', () => {
 					model.schema.register( 'blockQuote', {
 						allowWhere: '$block',
