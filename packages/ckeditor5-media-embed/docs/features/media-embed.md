@@ -62,7 +62,8 @@ The [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/
 * {@link features/media-embed-configuration Configuration} &ndash; set the data output format and extend, remove, or override the default media providers.
 * {@link features/media-embed-external-preview External services} &ndash; use Iframely or Embedly to render rich previews inside the editor and on your target website.
 * {@link features/media-embed-resize Resizing media embeds} &ndash; enable drag-to-resize handles for media widgets (premium).
-* {@link features/media-embed-styles Styling media} &ndash; create dedicated styles for specific non-previewable media providers.
+* {@link features/media-embed-styles Media embed styles} &ndash; alignment and other configurable styles applied to the media `<figure>` (alignment built-ins, customizable per integrator).
+* {@link features/styling-non-previewable-media Styling non-previewable media} &ndash; create dedicated styles for specific non-previewable media providers.
 
 ## Previewable and non-previewable media
 
