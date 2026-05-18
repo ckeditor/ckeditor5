@@ -7,10 +7,15 @@
  * @module utils/diff
  */
 
-import { fastDiff } from './fastdiff.js';
+import { fastDiff as fastDiffFunction } from './fastdiff.js';
 
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
+
+type Diff = {
+	<T>( a: ArrayLike<T>, b: ArrayLike<T>, cmp?: ( a: T, b: T ) => boolean ): Array<DiffResult>;
+	fastDiff: typeof fastDiffFunction;
+};
 
 /**
  * Calculates the difference between two arrays or strings producing an array containing a list of changes
@@ -30,7 +35,7 @@ import { fastDiff } from './fastdiff.js';
  * @param cmp Optional function used to compare array values, by default === is used.
  * @returns Array of changes.
  */
-export function diff<T>(
+export const diff: Diff = function<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean
@@ -137,11 +142,11 @@ export function diff<T>(
 	// Return the final list of edit changes.
 	// We remove the first item that represents the action for the injected nulls.
 	return es[ delta ].slice( 1 );
-}
+} as Diff;
 
 // Store the API in static property to easily overwrite it in tests.
 // Too bad dependency injection does not work in Webpack + ES 6 (const) + Babel.
-diff.fastDiff = fastDiff;
+diff.fastDiff = fastDiffFunction;
 
 /**
  * The element of the result of {@link module:utils/diff~diff} function.

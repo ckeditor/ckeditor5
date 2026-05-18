@@ -7,7 +7,7 @@
  * @module html-support/integrations/customelement
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ViewUpcastWriter, type ViewDocumentFragment, type ViewNode } from '@ckeditor/ckeditor5-engine';
 
 import { DataSchema } from '../dataschema.js';
@@ -21,8 +21,8 @@ export class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ DataFilter, DataSchema ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataFilter, DataSchema ]> {
+		return [ DataFilter, DataSchema ];
 	}
 
 	/**

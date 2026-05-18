@@ -7,7 +7,7 @@
  * @module list/listformatting/listitemfontcolorintegration
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { ListEditing } from '../list/listediting.js';
@@ -34,8 +34,8 @@ export class ListItemFontColorIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing ]> {
+		return [ ListEditing ];
 	}
 
 	/**

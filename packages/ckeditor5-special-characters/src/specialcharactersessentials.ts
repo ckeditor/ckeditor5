@@ -7,7 +7,7 @@
  * @module special-characters/specialcharactersessentials
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { SpecialCharactersCurrency } from './specialcharacterscurrency.js';
 import { SpecialCharactersMathematical } from './specialcharactersmathematical.js';
@@ -45,13 +45,19 @@ export class SpecialCharactersEssentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
+	public static get requires(): PluginDependenciesOf<[
+		SpecialCharactersCurrency,
+		SpecialCharactersText,
+		SpecialCharactersMathematical,
+		SpecialCharactersArrows,
+		SpecialCharactersLatin
+	]> {
 		return [
 			SpecialCharactersCurrency,
 			SpecialCharactersText,
 			SpecialCharactersMathematical,
 			SpecialCharactersArrows,
 			SpecialCharactersLatin
-		] as const;
+		];
 	}
 }

@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	addBackgroundStylesRules,
 	addBorderStylesRules,
@@ -97,8 +97,8 @@ export class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableEditing ]> {
+		return [ TableEditing ];
 	}
 
 	/**

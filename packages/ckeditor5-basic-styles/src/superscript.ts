@@ -7,7 +7,7 @@
  * @module basic-styles/superscript
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { SuperscriptEditing } from './superscript/superscriptediting.js';
 import { SuperscriptUI } from './superscript/superscriptui.js';
 
@@ -21,8 +21,8 @@ export class Superscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ SuperscriptEditing, SuperscriptUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ SuperscriptEditing, SuperscriptUI ]> {
+		return [ SuperscriptEditing, SuperscriptUI ];
 	}
 
 	/**

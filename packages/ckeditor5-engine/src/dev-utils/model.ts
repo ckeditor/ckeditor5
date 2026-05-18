@@ -71,6 +71,30 @@ import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import { isPlainObject } from 'es-toolkit/compat';
 
+type GetModelDataOptions = {
+	withoutSelection?: boolean;
+	rootName?: string;
+	convertMarkers?: boolean;
+};
+
+type GetModelData = {
+	( model: Model, options?: GetModelDataOptions ): string;
+	_stringify: typeof _stringifyModel;
+};
+
+type SetModelDataOptions = {
+	rootName?: string;
+	selectionAttributes?: Record<string, unknown>;
+	lastRangeBackward?: boolean;
+	batchType?: BatchType;
+	inlineObjectElements?: Array<string>;
+};
+
+type SetModelData = {
+	( model: Model, data: string, options?: SetModelDataOptions ): void;
+	_parse: typeof _parseModel;
+};
+
 /**
  * Writes the content of a model {@link module:engine/model/document~ModelDocument document} to an HTML-like string.
  *
@@ -94,13 +118,9 @@ import { isPlainObject } from 'es-toolkit/compat';
  * @param options.convertMarkers Whether to include markers in the returned string.
  * @returns The stringified data.
  */
-export function _getModelData(
+export const _getModelData: GetModelData = function(
 	model: Model,
-	options: {
-		withoutSelection?: boolean;
-		rootName?: string;
-		convertMarkers?: boolean;
-	} = {}
+	options: GetModelDataOptions = {}
 ): string {
 	if ( !( model instanceof Model ) ) {
 		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
@@ -114,7 +134,7 @@ export function _getModelData(
 		options.withoutSelection ? null : model.document.selection,
 		options.convertMarkers ? model.markers : null
 	);
-}
+} as GetModelData;
 
 // Set stringify as getData private method - needed for testing/spying.
 _getModelData._stringify = _stringifyModel;
@@ -145,16 +165,10 @@ _getModelData._stringify = _stringifyModel;
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward.
  * @param options.batchType Batch type used for inserting elements. See {@link module:engine/model/batch~Batch#constructor}.
  */
-export function _setModelData(
+export const _setModelData: SetModelData = function(
 	model: Model,
 	data: string,
-	options: {
-		rootName?: string;
-		selectionAttributes?: Record<string, unknown>;
-		lastRangeBackward?: boolean;
-		batchType?: BatchType;
-		inlineObjectElements?: Array<string>;
-	} = {}
+	options: SetModelDataOptions = {}
 ): void {
 	if ( !( model instanceof Model ) ) {
 		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
@@ -213,7 +227,7 @@ export function _setModelData(
 			}
 		}
 	}
-}
+} as SetModelData;
 
 // Set parse as setData private method - needed for testing/spying.
 _setModelData._parse = _parseModel;

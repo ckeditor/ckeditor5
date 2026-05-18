@@ -8,7 +8,7 @@
  */
 
 import { priorities } from '@ckeditor/ckeditor5-utils';
-import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	Matcher,
 	addBorderStylesRules,
@@ -101,8 +101,8 @@ export class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableEditing, TableCellWidthEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableEditing, TableCellWidthEditing ]> {
+		return [ TableEditing, TableCellWidthEditing ];
 	}
 
 	/**

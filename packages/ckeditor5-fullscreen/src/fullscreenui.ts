@@ -7,7 +7,7 @@
  * @module fullscreen/fullscreenui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconFullscreenEnter, IconFullscreenLeave } from '@ckeditor/ckeditor5-icons';
 import { env } from '@ckeditor/ckeditor5-utils';
@@ -24,8 +24,8 @@ export class FullscreenUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FullscreenEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ FullscreenEditing ]> {
+		return [ FullscreenEditing ];
 	}
 
 	/**

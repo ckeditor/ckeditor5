@@ -17,7 +17,8 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ElementApiMixinConstructor
 } from '@ckeditor/ckeditor5-core';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -34,7 +35,9 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a inline editor instance, use the static
  * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method.
  */
-export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+const InlineEditorBase: ElementApiMixinConstructor<typeof Editor> = /* #__PURE__ */ ElementApiMixin( Editor );
+
+export class InlineEditor extends InlineEditorBase {
 	/**
 	 * @inheritDoc
 	 */

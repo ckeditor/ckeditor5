@@ -7,7 +7,7 @@
  * @module image/imageinsert/imageinsertviaurlui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ButtonView, Dialog, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
 
@@ -46,8 +46,8 @@ export class ImageInsertViaUrlUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageInsertUI, Dialog ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageInsertUI, Dialog ]> {
+		return [ ImageInsertUI, Dialog ];
 	}
 
 	public init(): void {

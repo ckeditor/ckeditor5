@@ -13,7 +13,9 @@ import { ModelRange } from '../model/range.js';
 import { ViewPosition } from '../view/position.js';
 import { ViewRange } from '../view/range.js';
 
-import { CKEditorError, EmitterMixin, type GetCallback } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, EmitterMixin, type GetCallback,
+	type EmitterMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import { type ViewElement } from '../view/element.js';
@@ -21,6 +23,9 @@ import { type ViewText } from '../view/text.js';
 import { type ModelElement } from '../model/element.js';
 import { type ModelDocumentFragment } from '../model/documentfragment.js';
 import type { ViewNode, ViewNodeChangeEvent } from '../view/node.js';
+
+const MapperBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+const MapperCacheBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Maps elements, positions and markers between the {@link module:engine/view/document~ViewDocument view} and
@@ -41,7 +46,7 @@ import type { ViewNode, ViewNodeChangeEvent } from '../view/node.js';
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
  */
-export class Mapper extends /* #__PURE__ */ EmitterMixin() {
+export class Mapper extends MapperBase {
 	/**
 	 * Model element to view element mapping.
 	 */
@@ -875,7 +880,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
  *
  * @internal
  */
-export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
+export class MapperCache extends MapperCacheBase {
 	/**
 	 * For every view element or document fragment tracked by `MapperCache`, it holds currently cached data, or more precisely,
 	 * model offset to view position mappings. See also `MappingCache` and `CacheItem`.

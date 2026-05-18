@@ -10,7 +10,7 @@
 import fuzzysort from 'fuzzysort';
 import { groupBy } from 'es-toolkit/compat';
 
-import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { logWarning, version as editorVersion } from '@ckeditor/ckeditor5-utils';
 import { EmojiUtils } from './emojiutils.js';
 import type { EmojiSkinToneId } from './emojiconfig.js';
@@ -51,8 +51,8 @@ export class EmojiRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ EmojiUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ EmojiUtils ]> {
+		return [ EmojiUtils ];
 	}
 
 	/**

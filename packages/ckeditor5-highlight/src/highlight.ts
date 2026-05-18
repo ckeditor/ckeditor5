@@ -7,7 +7,7 @@
  * @module highlight/highlight
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { HighlightEditing } from './highlightediting.js';
 import { HighlightUI } from './highlightui.js';
@@ -24,8 +24,8 @@ export class Highlight extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ HighlightEditing, HighlightUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ HighlightEditing, HighlightUI ]> {
+		return [ HighlightEditing, HighlightUI ];
 	}
 
 	/**

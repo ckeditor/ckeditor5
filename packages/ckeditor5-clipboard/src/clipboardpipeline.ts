@@ -7,7 +7,7 @@
  * @module clipboard/clipboardpipeline
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
@@ -158,8 +158,8 @@ export class ClipboardPipeline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ClipboardMarkersUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ClipboardMarkersUtils ]> {
+		return [ ClipboardMarkersUtils ];
 	}
 
 	/**

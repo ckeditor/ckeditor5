@@ -13,13 +13,17 @@ import {
 	ObservableMixin,
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
-	type CollectionChangeEvent
+	type CollectionChangeEvent,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 /**
  * A collection to store document colors. It enforces colors to be unique.
  */
-export class DocumentColorCollection extends /* #__PURE__ */ ObservableMixin( Collection<ColorDefinition> ) {
+const DocumentColorCollectionBase: ObservableMixinConstructor<typeof Collection<ColorDefinition>> =
+	/* #__PURE__ */ ObservableMixin( Collection<ColorDefinition> );
+
+export class DocumentColorCollection extends DocumentColorCollectionBase {
 	/**
 	 * Indicates whether the document color collection is empty.
 	 *

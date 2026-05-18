@@ -18,7 +18,9 @@ import { type MoveOperation } from './operation/moveoperation.js';
 import { type Operation } from './operation/operation.js';
 import { type ModelPosition } from './position.js';
 
-import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin,
+	type EmitterMixinConstructor
+} from '@ckeditor/ckeditor5-utils';
 
 /**
  * `ModelLiveRange` is a type of {@link module:engine/model/range~ModelRange Range}
@@ -29,7 +31,9 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * have to be unbound. Use {@link module:engine/model/liverange~ModelLiveRange#detach detach} whenever you don't need
  * `ModelLiveRange` anymore.
  */
-export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( ModelRange ) {
+const ModelLiveRangeBase: EmitterMixinConstructor<typeof ModelRange> = /* #__PURE__ */ EmitterMixin( ModelRange );
+
+export class ModelLiveRange extends ModelLiveRangeBase {
 	/**
 	 * Creates a live range.
 	 *

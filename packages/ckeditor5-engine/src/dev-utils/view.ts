@@ -30,6 +30,31 @@ import { type ViewNode } from '../view/node.js';
 import { type ViewText } from '../view/text.js';
 import { type ViewDomConverter } from '../view/domconverter.js';
 
+type GetViewDataOptions = {
+	withoutSelection?: boolean;
+	rootName?: string;
+	showType?: boolean;
+	showPriority?: boolean;
+	renderUIElements?: boolean;
+	renderRawElements?: boolean;
+	domConverter?: ViewDomConverter;
+	skipListItemIds?: boolean;
+};
+
+type GetViewData = {
+	( view: EditingView, options?: GetViewDataOptions ): string;
+	_stringify: typeof _stringifyView;
+};
+
+type SetViewDataOptions = {
+	rootName?: string;
+};
+
+type SetViewData = {
+	( view: EditingView, data: string, options?: SetViewDataOptions ): void;
+	_parse: typeof _parseView;
+};
+
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
@@ -70,18 +95,9 @@ const domConverterStub: ViewDomConverter = {
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns The stringified data.
  */
-export function _getViewData(
+export const _getViewData: GetViewData = function(
 	view: EditingView,
-	options: {
-		withoutSelection?: boolean;
-		rootName?: string;
-		showType?: boolean;
-		showPriority?: boolean;
-		renderUIElements?: boolean;
-		renderRawElements?: boolean;
-		domConverter?: ViewDomConverter;
-		skipListItemIds?: boolean;
-	} = {}
+	options: GetViewDataOptions = {}
 ): string {
 	if ( !( view instanceof EditingView ) ) {
 		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
@@ -104,7 +120,7 @@ export function _getViewData(
 	return withoutSelection ?
 		_getViewData._stringify( root, null, stringifyOptions ) :
 		_getViewData._stringify( root, document.selection, stringifyOptions );
-}
+} as GetViewData;
 
 // Set stringify as getData private method - needed for testing/spying.
 _getViewData._stringify = _stringifyView;
@@ -116,10 +132,10 @@ _getViewData._stringify = _stringifyView;
  * @param options.rootName The root name where _parseViewd data will be stored. If not provided,
  * the default `main` name will be used.
  */
-export function _setViewData(
+export const _setViewData: SetViewData = function(
 	view: EditingView,
 	data: string,
-	options: { rootName?: string } = {}
+	options: SetViewDataOptions = {}
 ): void {
 	if ( !( view instanceof EditingView ) ) {
 		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
@@ -136,7 +152,7 @@ export function _setViewData(
 			writer.setSelection( result.selection );
 		}
 	} );
-}
+} as SetViewData;
 
 // Set _parseView as _setViewData private method - needed for testing/spying.
 _setViewData._parse = _parseView;

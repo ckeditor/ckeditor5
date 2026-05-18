@@ -7,7 +7,7 @@
  * @module image/pictureediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { ImageEditing } from './image/imageediting.js';
 import { ImageUtils } from './imageutils.js';
@@ -71,8 +71,8 @@ export class PictureEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageEditing, ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageEditing, ImageUtils ]> {
+		return [ ImageEditing, ImageUtils ];
 	}
 
 	/**

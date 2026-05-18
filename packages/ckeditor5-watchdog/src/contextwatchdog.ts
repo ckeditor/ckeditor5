@@ -26,7 +26,7 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 	/**
 	 * A map of internal watchdogs for added items.
 	 */
-	protected _watchdogs = new Map<string, EditorWatchdog>();
+	protected _watchdogs: Map<string, EditorWatchdog> = new Map<string, EditorWatchdog>();
 
 	/**
 	 * The watchdog configuration.

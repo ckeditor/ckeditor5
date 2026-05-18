@@ -10,7 +10,7 @@
 import { LegacyListEditing } from './legacylist/legacylistediting.js';
 import { ListUI } from './list/listui.js';
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 /**
  * The legacy list feature.
@@ -22,8 +22,8 @@ export class LegacyList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ LegacyListEditing, ListUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ LegacyListEditing, ListUI ]> {
+		return [ LegacyListEditing, ListUI ];
 	}
 
 	/**

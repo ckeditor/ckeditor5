@@ -20,7 +20,8 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ElementApiMixinConstructor
 } from '@ckeditor/ckeditor5-core';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
@@ -32,7 +33,9 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a classic editor instance, use the static
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method.
  */
-export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+const ClassicEditorBase: ElementApiMixinConstructor<typeof Editor> = /* #__PURE__ */ ElementApiMixin( Editor );
+
+export class ClassicEditor extends ClassicEditorBase {
 	/**
 	 * @inheritDoc
 	 */

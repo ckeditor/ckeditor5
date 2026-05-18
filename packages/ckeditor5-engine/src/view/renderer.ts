@@ -24,7 +24,8 @@ import {
 	remove,
 	indexOf,
 	type DiffResult,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewDocumentChangeType } from './document.js';
@@ -43,6 +44,8 @@ type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
 type DomSelection = globalThis.Selection;
 
+const ViewRendererBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
  * the {@link module:engine/view/renderer~ViewRenderer#markToSync information about updated view nodes}.
@@ -56,7 +59,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~ViewDomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
+export class ViewRenderer extends ViewRendererBase {
 	/**
 	 * Set of DOM Documents instances.
 	 */

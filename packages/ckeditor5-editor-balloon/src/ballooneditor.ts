@@ -17,7 +17,8 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ElementApiMixinConstructor
 } from '@ckeditor/ckeditor5-core';
 
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
@@ -36,7 +37,9 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a balloon editor instance, use the static
  * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method.
  */
-export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+const BalloonEditorBase: ElementApiMixinConstructor<typeof Editor> = /* #__PURE__ */ ElementApiMixin( Editor );
+
+export class BalloonEditor extends BalloonEditorBase {
 	/**
 	 * @inheritDoc
 	 */

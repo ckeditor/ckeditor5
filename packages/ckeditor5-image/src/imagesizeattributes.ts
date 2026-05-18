@@ -7,7 +7,7 @@
  * @module image/imagesizeattributes
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, ModelElement } from '@ckeditor/ckeditor5-engine';
 import { ImageUtils } from './imageutils.js';
 import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils.js';
@@ -19,8 +19,8 @@ export class ImageSizeAttributes extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageUtils ]> {
+		return [ ImageUtils ];
 	}
 
 	/**

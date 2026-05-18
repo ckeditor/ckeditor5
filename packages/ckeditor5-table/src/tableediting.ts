@@ -7,7 +7,7 @@
  * @module table/tableediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from '@ckeditor/ckeditor5-engine';
 
 import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
@@ -72,8 +72,8 @@ export class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableUtils ]> {
+		return [ TableUtils ];
 	}
 
 	/**

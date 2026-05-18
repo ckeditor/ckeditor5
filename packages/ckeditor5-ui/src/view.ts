@@ -19,7 +19,9 @@ import {
 	type CollectionAddEvent,
 	type DecoratedMethodEvent,
 	type Locale,
-	type LocaleTranslate
+	type LocaleTranslate,
+	type ObservableMixinConstructor,
+	type DomEmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import '../theme/index.css';
@@ -94,9 +96,11 @@ import '../theme/index.css';
  * full description, fenced examples, and assignment note are in the block comment immediately above the `element` field
  * in the source.
  */
+const ViewBase: DomEmitterMixinConstructor<ObservableMixinConstructor> =
+	/* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() );
+
 export class View<TElement extends HTMLElement = HTMLElement>
-	extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() )
-{
+	extends ViewBase {
 	/*
 	 * An HTML element of the view. `null` until {@link #render rendered}
 	 * from the {@link #template}.

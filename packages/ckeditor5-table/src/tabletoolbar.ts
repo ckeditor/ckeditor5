@@ -7,7 +7,7 @@
  * @module table/tabletoolbar
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget.js';
 
@@ -24,8 +24,8 @@ export class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetToolbarRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetToolbarRepository ]> {
+		return [ WidgetToolbarRepository ];
 	}
 
 	/**

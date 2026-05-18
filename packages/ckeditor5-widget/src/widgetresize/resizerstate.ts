@@ -7,15 +7,17 @@
  * @module widget/widgetresize/resizerstate
  */
 
-import { ObservableMixin, Rect } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, Rect, type ObservableMixinConstructor } from '@ckeditor/ckeditor5-utils';
 
 import type { WidgetResizerOptions } from '../widgetresize.js';
 import { calculateResizeHostPercentageWidth } from '../utils.js';
 
+const WidgetResizeStateBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * Stores the internal state of a single resizable object.
  */
-export class WidgetResizeState extends /* #__PURE__ */ ObservableMixin() {
+export class WidgetResizeState extends WidgetResizeStateBase {
 	/**
 	 * The position of the handle that initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc. or `null`
 	 * if unknown.

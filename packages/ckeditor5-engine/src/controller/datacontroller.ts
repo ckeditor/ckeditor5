@@ -11,7 +11,8 @@ import {
 	CKEditorError,
 	EmitterMixin,
 	ObservableMixin,
-	logWarning
+	logWarning,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { Mapper } from '../conversion/mapper.js';
@@ -47,6 +48,8 @@ import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing.js';
 import { HtmlDataProcessor } from '../dataprocessor/htmldataprocessor.js';
 import { type DataProcessor } from '../dataprocessor/dataprocessor.js';
 
+const DataControllerBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
  * and set inside it. Hence, the controller features two methods which allow to {@link ~DataController#get get}
@@ -64,7 +67,7 @@ import { type DataProcessor } from '../dataprocessor/dataprocessor.js';
  * editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
  * ```
  */
-export class DataController extends /* #__PURE__ */ EmitterMixin() {
+export class DataController extends DataControllerBase {
 	/**
 	 * Data model.
 	 */

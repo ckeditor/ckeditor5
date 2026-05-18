@@ -15,15 +15,21 @@ import type { ModelElement, ModelPosition, ModelRange } from '@ckeditor/ckeditor
 import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget.js';
 import { getSelectionAffectedTable } from '../common.js';
 
-const BALLOON_POSITIONS = /* #__PURE__ */ ( () => [
-	BalloonPanelView.defaultPositions.northArrowSouth,
-	BalloonPanelView.defaultPositions.northArrowSouthWest,
-	BalloonPanelView.defaultPositions.northArrowSouthEast,
-	BalloonPanelView.defaultPositions.southArrowNorth,
-	BalloonPanelView.defaultPositions.southArrowNorthWest,
-	BalloonPanelView.defaultPositions.southArrowNorthEast,
-	BalloonPanelView.defaultPositions.viewportStickyNorth
-] )();
+const BALLOON_POSITIONS = /* #__PURE__ */ ( () => {
+	const data = [];
+
+	data.push(
+		BalloonPanelView.defaultPositions.northArrowSouth,
+		BalloonPanelView.defaultPositions.northArrowSouthWest,
+		BalloonPanelView.defaultPositions.northArrowSouthEast,
+		BalloonPanelView.defaultPositions.southArrowNorth,
+		BalloonPanelView.defaultPositions.southArrowNorthWest,
+		BalloonPanelView.defaultPositions.southArrowNorthEast,
+		BalloonPanelView.defaultPositions.viewportStickyNorth
+	);
+
+	return data;
+} )();
 
 /**
  * A helper utility that positions the

@@ -7,10 +7,12 @@
  * @module utils/collection
  */
 
-import { EmitterMixin } from './emittermixin.js';
+import { EmitterMixin, type EmitterMixinConstructor } from './emittermixin.js';
 import { CKEditorError } from './ckeditorerror.js';
 import { uid } from './uid.js';
 import { isIterable } from './isiterable.js';
+
+const CollectionBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Collections are ordered sets of objects. Items in the collection can be retrieved by their indexes
@@ -24,7 +26,7 @@ import { isIterable } from './isiterable.js';
  *
  * @typeParam T The type of the collection element.
  */
-export class Collection<T extends Record<string, any>> extends /* #__PURE__ */ EmitterMixin() implements Iterable<T> {
+export class Collection<T extends Record<string, any>> extends CollectionBase implements Iterable<T> {
 	/**
 	 * The internal list of items in the collection.
 	 */

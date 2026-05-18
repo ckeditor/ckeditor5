@@ -7,7 +7,7 @@
  * @module image/imageinline
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { ImageTextAlternative } from './imagetextalternative.js';
@@ -31,8 +31,8 @@ export class ImageInline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageInlineEditing, Widget, ImageTextAlternative, ImageInsertUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ ImageInlineEditing, Widget, ImageTextAlternative, ImageInsertUI ]> {
+		return [ ImageInlineEditing, Widget, ImageTextAlternative, ImageInsertUI ];
 	}
 
 	/**

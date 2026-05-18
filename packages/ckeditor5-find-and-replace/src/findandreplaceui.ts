@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplaceui
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconFindReplace } from '@ckeditor/ckeditor5-icons';
 import {
 	ButtonView,
@@ -37,8 +37,8 @@ export class FindAndReplaceUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Dialog ] as const;
+	public static get requires(): PluginDependenciesOf<[ Dialog ]> {
+		return [ Dialog ];
 	}
 
 	/**

@@ -32,7 +32,8 @@ import {
 	Collection,
 	EmitterMixin,
 	toMap,
-	uid
+	uid,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 const storePrefix = 'selection:';
@@ -61,7 +62,9 @@ const storePrefix = 'selection:';
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~ModelSelection Selection class} instead.
  */
-export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
+const ModelDocumentSelectionBase: EmitterMixinConstructor<typeof ModelTypeCheckable> = /* #__PURE__ */ EmitterMixin( ModelTypeCheckable );
+
+export class ModelDocumentSelection extends ModelDocumentSelectionBase {
 	/**
 	 * Selection used internally by that class (`ModelDocumentSelection` is a proxy to that selection).
 	 */

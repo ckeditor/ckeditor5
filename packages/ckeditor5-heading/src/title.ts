@@ -7,7 +7,7 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type ElementApi, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
 import {
@@ -64,8 +64,8 @@ export class Title extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Paragraph ] as const;
+	public static get requires(): PluginDependenciesOf<[ Paragraph ]> {
+		return [ Paragraph ];
 	}
 
 	/**
