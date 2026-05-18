@@ -1,0 +1,90 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { MultiRootEditor } from '../../src/multirooteditor.js';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Image, AutoImage, ImageInsert } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+
+const editorElements = {
+	intro: document.querySelector( '#editor-intro' ),
+	content: document.querySelector( '#editor-content' ),
+	outro: document.querySelector( '#editor-outro' ),
+	signature: document.querySelector( '#editor-signature' )
+};
+
+let editor;
+
+function initEditor() {
+	MultiRootEditor
+		.create( {
+			plugins: [
+				Paragraph, Heading, Bold, Italic,
+				Image, ImageInsert, AutoImage, LinkImage,
+				ArticlePluginSet, CKFinderUploadAdapter, CKFinder
+			],
+			toolbar: [
+				'heading', '|', 'bold', 'italic', 'undo', 'redo', '|',
+				'insertImage', 'insertTable', 'blockQuote'
+			],
+			image: {
+				toolbar: [
+					'imageStyle:inline', 'imageStyle:block',
+					'imageStyle:wrapText', '|', 'toggleImageCaption',
+					'imageTextAlternative'
+				]
+			},
+			ckfinder: {
+				// eslint-disable-next-line @stylistic/max-len
+				uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+			}
+		} )
+		.then( newEditor => {
+			console.log( 'Editor was initialized', newEditor );
+
+			newEditor.on( 'addRoot', ( evt, root ) => {
+				editorElements[ root.rootName ].replaceWith( newEditor.createEditable( root, {
+					element: editorElements[ root.rootName ].tagName.toLowerCase()
+				} ) );
+			} );
+
+			newEditor.addRoot( 'intro', { initialData: editorElements.intro.innerHTML, modelElement: '$inlineRoot' } );
+			newEditor.addRoot( 'content', { initialData: editorElements.content.innerHTML } );
+			newEditor.addRoot( 'outro', { initialData: editorElements.outro.innerHTML } );
+			newEditor.addRoot( 'signature', { initialData: editorElements.signature.innerHTML, modelElement: '$inlineRoot' } );
+
+			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
+			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
+
+			window.editor = editor = newEditor;
+			window.editables = newEditor.ui.view.editables;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
+
+function destroyEditor() {
+	editor.destroy()
+		.then( () => {
+			editor.ui.view.toolbar.element.remove();
+			editor.ui.view.menuBarView.element.remove();
+
+			window.editor = editor = null;
+			window.editables = null;
+
+			console.log( 'Editor was destroyed' );
+		} );
+}
+
+document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
+document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+
+initEditor();
