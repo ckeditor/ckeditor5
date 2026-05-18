@@ -57,7 +57,7 @@
 			}
 		}
 
-		/* #23 */
+		/* https://github.com/ckeditor/ckeditor5/issues/23 */
 		& .ck-button__label {
 			width: 7em;
 			overflow: hidden;

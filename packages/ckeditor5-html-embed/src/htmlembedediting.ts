@@ -397,7 +397,7 @@ export class HtmlEmbedEditing extends Plugin {
 			} );
 
 			// Creating a contextual document fragment allows executing scripts when inserting into the preview element.
-			// See: #8326.
+			// See: https://github.com/ckeditor/ckeditor5/issues/8326.
 			const domRange = domDocument.createRange();
 			const domDocumentFragment = domRange.createContextualFragment( sanitizedOutput.html );
 

@@ -282,7 +282,7 @@ The following `@Output` properties are supported by the CKEditor&nbsp;5 rich tex
 Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
 It is fired with the editor instance.
 
-Note that this method might be called multiple times. Apart from initialization, it is also called whenever the editor is restarted after a crash. Do not keep the reference to the editor instance internally, because it will change in case of a restart. Instead, you should use the `watchdog.editor` property.
+Note that this method might be called multiple times. It is fired on the initial editor initialization and also each time the editor is re-initialized after a crash recovery. Each re-initialization is a full editor restart that counts as a new editor load for {@link getting-started/licensing/usage-based-billing usage-based billing} purposes. Do not keep the reference to the editor instance internally, because it will change in case of a restart. Instead, you should use the `watchdog.editor` property.
 
 ### `change`
 

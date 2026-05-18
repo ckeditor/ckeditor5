@@ -192,7 +192,7 @@ export class LinkUI extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		// Destroy created UI components as they are not automatically destroyed (see https://github.com/ckeditor/ckeditor5/issues/1341).
 		if ( this.propertiesView ) {
 			this.propertiesView.destroy();
 		}
@@ -536,6 +536,13 @@ export class LinkUI extends Plugin {
 			} );
 
 			const setHref = ( href: string | undefined ) => {
+				if ( href === '' ) {
+					button.label = t( 'This link has no URL' );
+					button.icon = undefined;
+					button.tooltip = false;
+					return;
+				}
+
 				if ( !href ) {
 					button.label = undefined;
 					button.icon = undefined;
@@ -812,7 +819,7 @@ export class LinkUI extends Plugin {
 
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
-		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && !!linkCommand.value;
+		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && linkCommand.value !== undefined;
 
 		this._balloon.add( {
 			view: this.formView!,

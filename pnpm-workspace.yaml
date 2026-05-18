@@ -1,16 +1,17 @@
 packages:
   - packages/*
 
-onlyBuiltDependencies:
-  - '@ckeditor/ckeditor5-dev-tests'
-  - '@ckeditor/ckeditor5-mermaid'
-  - '@parcel/watcher'
-  - '@swc/core'
-  - core-js
-  - esbuild
-  - hexo-util
-  - puppeteer
-  - sharp
+allowBuilds:
+  '@ckeditor/ckeditor5-dev-tests': true
+  '@ckeditor/ckeditor5-mermaid': true
+  '@parcel/watcher': true
+  '@swc/core': true
+  'core-js': true
+  'esbuild': true
+  'hexo-util': true
+  'puppeteer': true
+  'sharp': true
+  'snyk': true
 
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:

@@ -73,7 +73,7 @@ describe( 'ColorSelectorView', () => {
 				format: 'hsl'
 			}
 		} );
-		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
+		// Grids rendering is deferred (https://github.com/ckeditor/ckeditor5/issues/6192) therefore render happens before appending grids.
 		colorSelectorView.render();
 		colorSelectorView._appendColorGridsFragment();
 

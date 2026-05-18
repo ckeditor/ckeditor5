@@ -235,16 +235,28 @@ describe( 'LinkUI', () => {
 				expect( button.icon ).to.equal( undefined );
 			} );
 
-			it( 'should reset button labels when command is empty', () => {
+			it( 'should reset button labels when command is blank', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				linkCommand.value = 'foo';
+				expect( button.icon ).to.equal( undefined );
+
+				linkCommand.value = undefined;
+				expect( button.icon ).to.equal( undefined );
+				expect( button.label ).to.be.undefined;
+				expect( button.tooltip ).to.equal( 'Open link in new tab' );
+			} );
+
+			it( 'should set no URL label when command returns empty link', () => {
 				const linkCommand = editor.commands.get( 'link' );
 
 				linkCommand.value = 'foo';
 				expect( button.icon ).to.equal( undefined );
 
 				linkCommand.value = '';
-				expect( button.icon ).to.equal( undefined );
-				expect( button.label ).to.be.undefined;
-				expect( button.tooltip ).to.equal( 'Open link in new tab' );
+				expect( button.icon ).to.be.undefined;
+				expect( button.label ).to.equal( 'This link has no URL' );
+				expect( button.tooltip ).to.be.false;
 			} );
 		} );
 
@@ -328,6 +340,18 @@ describe( 'LinkUI', () => {
 				// Simulate link selection.
 				linkCommand.isEnabled = true;
 				linkCommand.value = 'http://ckeditor.com';
+
+				button.fire( 'execute' );
+
+				expect( linkUIFeature.formView.backButtonView.isVisible ).to.be.true;
+			} );
+
+			it( 'should open link form view with back button (empty link)', () => {
+				const linkCommand = editor.commands.get( 'link' );
+
+				// Simulate link selection.
+				linkCommand.isEnabled = true;
+				linkCommand.value = '';
 
 				button.fire( 'execute' );
 
@@ -463,7 +487,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
-			// (#7926)
+			// (https://github.com/ckeditor/ckeditor5/issues/7926)
 			_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
@@ -1740,7 +1764,7 @@ describe( 'LinkUI', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			// See: #9607.
+			// See: https://github.com/ckeditor/ckeditor5/issues/9607.
 			it( 'should show the UI when clicking on the linked inline widget', () => {
 				editor.model.schema.register( 'inlineWidget', {
 					allowWhere: '$text',

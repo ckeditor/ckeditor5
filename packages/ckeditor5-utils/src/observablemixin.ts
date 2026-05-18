@@ -145,7 +145,8 @@ export function ObservableMixin( base?: Constructor<Emitter> ): unknown {
 						newValue = value;
 					}
 
-					// Allow undefined as an initial value like A.define( 'x', undefined ) (#132).
+					// Allow undefined as an initial value like A.define( 'x', undefined ).
+					// See https://github.com/ckeditor/ckeditor5/issues/132.
 					// Note: When properties map has no such own property, then its value is undefined.
 					if ( oldValue !== newValue || !properties!.has( name ) ) {
 						properties!.set( name, newValue );

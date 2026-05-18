@@ -267,7 +267,7 @@ export class WidgetResize extends Plugin {
 		if ( this._activeResizer ) {
 			this._activeResizer.begin( resizeHandle );
 
-			// Do not call other events when resizing. See: #6755.
+			// Do not call other events when resizing. See: https://github.com/ckeditor/ckeditor5/issues/6755.
 			event.stop();
 			domEventData.preventDefault();
 		}

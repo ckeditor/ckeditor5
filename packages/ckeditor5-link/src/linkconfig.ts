@@ -14,7 +14,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		link:  ... // Link feature configuration.
  * 	} )
  * 	.then( ... )
@@ -35,7 +35,7 @@ export interface LinkConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		link: {
 	 * 			defaultProtocol: 'http://'
 	 * 		}
@@ -57,7 +57,7 @@ export interface LinkConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		link: {
 	 * 			allowedProtocols: [ 'http', 'https', 'ftp', 'tel', 'mailto', 'ssh' ]
 	 * 		}
@@ -74,7 +74,7 @@ export interface LinkConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		link: {
 	 * 			allowCreatingEmptyLinks: true
 	 * 		}
@@ -95,7 +95,7 @@ export interface LinkConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		link: {
 	 * 			addTargetToExternalLinks: true
 	 * 		}
@@ -143,7 +143,7 @@ export interface LinkConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		link: {
 	 * 			decorators: {
 	 * 				isExternal: {

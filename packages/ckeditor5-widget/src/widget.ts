@@ -170,7 +170,7 @@ export class Widget extends Plugin {
 				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item as ViewElement;
-					// Do not mark nested widgets in selected one. See: #4594
+					// Do not mark nested widgets in selected one. See: https://github.com/ckeditor/ckeditor5/issues/4594
 					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
 						this._previouslySelected.add( node );

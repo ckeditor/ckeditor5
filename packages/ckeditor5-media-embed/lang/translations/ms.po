@@ -54,3 +54,15 @@ msgstr "Buka media dalam tab baru"
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
 msgstr "Benam media"
+
+msgctxt "The label for the left aligned media option."
+msgid "Left aligned media"
+msgstr ""
+
+msgctxt "The label for the centered media option."
+msgid "Centered media"
+msgstr ""
+
+msgctxt "The label for the right aligned media option."
+msgid "Right aligned media"
+msgstr ""

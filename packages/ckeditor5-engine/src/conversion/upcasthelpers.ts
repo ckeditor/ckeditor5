@@ -1159,7 +1159,7 @@ function setAttributeOn(
 		}
 
 		// Mark the node as consumed even if the attribute will not be updated because it's in a valid context (schema)
-		// and would be converted if the attribute wouldn't be present. See #8921.
+		// and would be converted if the attribute wouldn't be present. See https://github.com/ckeditor/ckeditor5/issues/8921.
 		result = true;
 
 		// Do not override the attribute if it's already present.

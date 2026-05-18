@@ -15,7 +15,7 @@ import { type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		list:  ... // The list feature configuration.
  * 	} )
  * 	.then( ... )
@@ -77,7 +77,7 @@ export interface ListConfig {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		list: {
  * 			properties: {
  * 				styles: true,

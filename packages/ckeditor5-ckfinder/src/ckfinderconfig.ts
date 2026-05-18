@@ -13,7 +13,7 @@
  *
  * ```
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		ckfinder: {
  * 			options: {
  * 				resourceType: 'Images'
@@ -58,7 +58,7 @@ export interface CKFinderConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		ckfinder: {
 	 * 			uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 	 * 		}

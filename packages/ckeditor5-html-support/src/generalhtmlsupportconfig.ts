@@ -185,7 +185,7 @@ export interface GHSFullPageConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		htmlSupport: {
 	 * 			fullPage: {
 	 * 				allowRenderStylesFromHead: true,

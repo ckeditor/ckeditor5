@@ -251,7 +251,8 @@ export class EmojiMention extends Plugin {
 				return [];
 			}
 
-			// If the repository plugin is not available, return an empty feed to avoid confusion. See: #17842.
+			// If the repository plugin is not available, return an empty feed to avoid confusion.
+			// See: https://github.com/ckeditor/ckeditor5/issues/17842.
 			if ( !this._isEmojiRepositoryAvailable ) {
 				return [];
 			}

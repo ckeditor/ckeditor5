@@ -209,7 +209,8 @@ export class LegacyListPropertiesEditing extends Plugin {
 			} );
 
 			// The outermost list item may not exist while removing elements between lists with different value
-			// of the `listIndent` attribute. In such a case we don't want to update anything. See: #8073.
+			// of the `listIndent` attribute. In such a case we don't want to update anything.
+			// See: https://github.com/ckeditor/ckeditor5/issues/8073.
 			if ( !mostOuterItemList ) {
 				return;
 			}
@@ -240,7 +241,7 @@ export class LegacyListPropertiesEditing extends Plugin {
 				} );
 
 				// If the selection ends in a non-list element, there are no <listItem>s that would require adjustments.
-				// See: #8642.
+				// See: https://github.com/ckeditor/ckeditor5/issues/8642.
 				if ( !secondListMostOuterItem ) {
 					firstMostOuterItem = null;
 					return;
@@ -649,7 +650,8 @@ function fixListAttributesOnListItemElements( editor: Editor, attributeStrategie
 				while ( existingListItem.is( 'element', 'listItem' ) && existingListItem.getAttribute( 'listIndent' ) !== indent ) {
 					existingListItem = existingListItem.previousSibling;
 
-					// If the item does not exist, most probably there is no other content in the editor. See: #8072.
+					// If the item does not exist, most probably there is no other content in the editor.
+					// See: https://github.com/ckeditor/ckeditor5/issues/8072.
 					if ( !existingListItem ) {
 						break;
 					}
@@ -676,7 +678,7 @@ function fixListAttributesOnListItemElements( editor: Editor, attributeStrategie
 					wasFixed = true;
 				} else {
 					// Adjust the `listStyle`, `listReversed` and `listStart`
-					// attributes for inserted (pasted) items. See #8160.
+					// attributes for inserted (pasted) items. See https://github.com/ckeditor/ckeditor5/issues/8160.
 					//
 					// ■ List item 1. // [listStyle="square", listType="bulleted"]
 					//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]

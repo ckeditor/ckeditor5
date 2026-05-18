@@ -14,7 +14,7 @@
  *
  * ```ts
  *	ClassicEditor
- *		.create( editorElement, {
+ *		.create( {
  *			emoji: ... // Emoji feature options.
  *		} )
  *		.then( ... )
@@ -30,7 +30,7 @@ export interface EmojiConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ Emoji, ... ],
 	 *			emoji: {
 	 *				dropdownLimit: 4
@@ -49,7 +49,7 @@ export interface EmojiConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ Emoji, ... ],
 	 *			emoji: {
 	 *				skinTone: 'medium'
@@ -68,7 +68,7 @@ export interface EmojiConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ Emoji, ... ],
 	 *			emoji: {
 	 *				definitionsUrl: ''
@@ -85,7 +85,7 @@ export interface EmojiConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ Emoji, ... ],
 	 *			emoji: {
 	 *				version: 15

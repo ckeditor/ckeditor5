@@ -170,7 +170,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'doesn\'t flicker at the beginning of the resize', async () => {
-				// (#5189)
+				// (https://github.com/ckeditor/ckeditor5/issues/5189)
 				const resizerPosition = 'bottom-left';
 				const domParts = getWidgetDomParts( editor, widget, resizerPosition );
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
@@ -630,7 +630,7 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			it( 'doesn\'t flicker at the beginning of the resize', async () => {
-				// (#5189)
+				// (https://github.com/ckeditor/ckeditor5/issues/5189)
 				const resizerPosition = 'bottom-left';
 				const domParts = getWidgetDomParts( editor, widget, resizerPosition );
 				const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
