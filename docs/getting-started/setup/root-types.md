@@ -52,7 +52,7 @@ ClassicEditor
 
 ### Allowed content in a block root
 
-A block root imposes no schema-level content restrictions. It accepts whatever the enabled plugins register: paragraphs, headings, lists, tables, block images, code blocks, and any other block elements, as well as all inline content within those blocks.
+A block root accepts whatever block elements the enabled plugins register: paragraphs, headings, lists, tables, block images, code blocks, and similar. Inline content such as text and formatting must appear inside those block elements - it cannot be placed directly in the root. This reflects the standard document structure enforced by the {@link framework/deep-dive/schema#generic-items schema}: root → blocks → inline content.
 
 ## Inline root
 
@@ -82,11 +82,27 @@ ClassicEditor
 ```
 </code-switcher>
 
-The `modelElement` option works with all single-root editor types: `ClassicEditor`, `InlineEditor`, `BalloonEditor`, `BalloonBlockEditor`, and `DecoupledEditor`.
+The `modelElement` option works with all editor types: `ClassicEditor`, `InlineEditor`, `BalloonEditor`, `BalloonBlockEditor`, `DecoupledEditor`, and `MultiRootEditor`.
+
+For non-classic editors, consider passing a semantically appropriate DOM element as `root.element` instead of relying on the default `div`. For example, if the inline root serves as a document title, an `h1` element is a better fit:
+
+```js
+InlineEditor
+	.create( {
+		root: {
+			element: document.querySelector( 'h1#title' ),
+			modelElement: '$inlineRoot'
+		},
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ### Allowed content in an inline root
 
-The `$inlineRoot` model element allows the same content as a paragraph: text nodes and inline objects. Block elements are not permitted.
+The `$inlineRoot` model element allows the same content as a paragraph: text nodes and inline objects. Block elements are not permitted. Where a block root follows the root → blocks → inline content structure, an inline root skips the block layer entirely: root → inline content. For a deeper look at how CKEditor&nbsp;5 schema controls content rules, see the {@link framework/deep-dive/schema#generic-items Schema deep dive} guide.
 
 | Content type                                              | Allowed |
 |-----------------------------------------------------------|---------|
