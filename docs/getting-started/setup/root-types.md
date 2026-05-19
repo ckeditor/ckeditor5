@@ -13,7 +13,7 @@ In CKEditor&nbsp;5, a root is the top-level container element in the document mo
 
 You can configure a root to use a different model element via the {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} option, and set initial root attributes via {@link module:core/editor/editorconfig~RootConfig#modelAttributes `config.root.modelAttributes`}. CKEditor&nbsp;5 ships with a second built-in root type, `$inlineRoot`, which restricts the root to inline content only - text and inline formatting, but no block elements. This turns the root into a paragraph-like editing area, suitable for document titles, form labels, meta descriptions, and similar single-line fields. For the technical background behind this feature, see the [paragraph-like editor RFC](https://github.com/ckeditor/ckeditor5/issues/19921).
 
-## Block root
+## Standard root
 
 The default root type is `$root`. It accepts the full range of block-level content: paragraphs, headings, lists, tables, block images, and any other block elements that the enabled plugins support. This is the standard editing experience for most use cases - articles, documents, comments, and similar rich-text areas.
 
@@ -50,9 +50,9 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-### Allowed content in a block root
+### Allowed content in a standard root
 
-A block root accepts whatever block elements the enabled plugins register: paragraphs, headings, lists, tables, block images, code blocks, and similar. Inline content such as text and formatting must appear inside those block elements - it cannot be placed directly in the root. This reflects the standard document structure enforced by the {@link framework/deep-dive/schema#generic-items schema}: root → blocks → inline content.
+A standard root accepts whatever block elements the enabled plugins register: paragraphs, headings, lists, tables, block images, code blocks, and similar. Inline content such as text and formatting must appear inside those block elements - it cannot be placed directly in the root. This reflects the standard document structure enforced by the {@link framework/deep-dive/schema#generic-items schema}: root → blocks → inline content.
 
 ## Inline root
 
@@ -102,7 +102,7 @@ InlineEditor
 
 ### Allowed content in an inline root
 
-The `$inlineRoot` model element allows the same content as a paragraph: text nodes and inline objects. Block elements are not permitted. Where a block root follows the root → blocks → inline content structure, an inline root skips the block layer entirely: root → inline content. For a deeper look at how CKEditor&nbsp;5 schema controls content rules, see the {@link framework/deep-dive/schema#generic-items Schema deep dive} guide.
+The `$inlineRoot` model element allows the same content as a paragraph: text nodes and inline objects. Block elements are not permitted. Where a standard root follows the root → blocks → inline content structure, an inline root skips the block layer entirely: root → inline content. For a deeper look at how CKEditor&nbsp;5 schema controls content rules, see the {@link framework/deep-dive/schema#generic-items Schema deep dive} guide.
 
 | Content type                                              | Allowed |
 |-----------------------------------------------------------|---------|
@@ -120,7 +120,7 @@ Plugins that only produce block-level output will have no effect inside an `$inl
 
 ## Mixed root types in multi-root editor
 
-Mixing root types lets different parts of the same document use different content models. In a multi-root editor, you can configure each root independently. For example, a common pattern is to use an inline root for the title and a standard block root for the body:
+Mixing root types lets different parts of the same document use different content models. In a multi-root editor, you can configure each root independently. For example, a common pattern is to use an inline root for the title and a standard root for the body:
 
 <code-switcher>
 ```js
@@ -161,7 +161,7 @@ editor.on( 'addRoot', ( evt, root ) => {
 	document.querySelector( '#editors' ).appendChild( editableElement );
 } );
 
-// Add a block root.
+// Add a standard root.
 editor.addRoot( 'section', {
 	initialData: '<p>Section content.</p>'
 } );
