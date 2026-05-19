@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedresize
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { MediaEmbedResizeEditing } from './mediaembedresize/mediaembedresizeediting.js';
 import { MediaEmbedResizeHandles } from './mediaembedresize/mediaembedresizehandles.js';
 
@@ -22,8 +22,8 @@ export class MediaEmbedResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ MediaEmbedResizeEditing, MediaEmbedResizeHandles ] as const;
+	public static get requires(): PluginDependenciesOf<[ MediaEmbedResizeEditing, MediaEmbedResizeHandles ]> {
+		return [ MediaEmbedResizeEditing, MediaEmbedResizeHandles ];
 	}
 
 	/**

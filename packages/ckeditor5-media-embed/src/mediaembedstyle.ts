@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedstyle
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { MediaEmbedStyleEditing } from './mediaembedstyle/mediaembedstyleediting.js';
 import { MediaEmbedStyleUI } from './mediaembedstyle/mediaembedstyleui.js';
 
@@ -26,8 +26,8 @@ export class MediaEmbedStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ MediaEmbedStyleEditing, MediaEmbedStyleUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ MediaEmbedStyleEditing, MediaEmbedStyleUI ]> {
+		return [ MediaEmbedStyleEditing, MediaEmbedStyleUI ];
 	}
 
 	/**

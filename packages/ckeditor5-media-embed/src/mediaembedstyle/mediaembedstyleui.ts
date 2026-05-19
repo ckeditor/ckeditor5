@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedstyle/mediaembedstyleui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import {
 	IconObjectCenter,
@@ -50,8 +50,8 @@ export class MediaEmbedStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ MediaEmbedStyleEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ MediaEmbedStyleEditing ]> {
+		return [ MediaEmbedStyleEditing ];
 	}
 
 	/**
