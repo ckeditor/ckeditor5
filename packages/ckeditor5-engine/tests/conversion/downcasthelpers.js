@@ -5424,6 +5424,18 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
 					} );
 
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<marker-start name="marker:2"></marker-start>' +
+							'<marker-start name="marker:3"></marker-start>' +
+							'<p>text</p>' +
+							'<marker-end name="marker:3"></marker-end>' +
+							'<marker-end name="marker:2"></marker-end>' +
+							'<marker-end name="marker:1"></marker-end>' +
+						'</div>'
+					);
+
 					model.change( writer => {
 						writer.removeMarker( 'marker:2' );
 					} );
@@ -5449,6 +5461,199 @@ describe( 'DowncastHelpers', () => {
 							'<marker-end name="marker:3"></marker-end>' +
 						'</div>'
 					);
+				} );
+
+				it( 'should produce a deterministic view when three stacked markers are removed and re-added in reverse order', () => {
+					// Model: <m1><m2><m3><paragraph>text</paragraph></m3></m2></m1>
+					// -> remove all -> <paragraph>text</paragraph>
+					// -> re-add reversed
+					// -> <m3><m2><m1><paragraph>text</paragraph></m1></m2></m3>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p = writer.createElement( 'paragraph' );
+						writer.insertText( 'text', p, 0 );
+						writer.insert( p, modelRoot, 0 );
+					} );
+
+					const range = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:3', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range, usingOperation: false } );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<marker-start name="marker:2"></marker-start>' +
+							'<marker-start name="marker:3"></marker-start>' +
+							'<p>text</p>' +
+							'<marker-end name="marker:3"></marker-end>' +
+							'<marker-end name="marker:2"></marker-end>' +
+							'<marker-end name="marker:1"></marker-end>' +
+						'</div>'
+					);
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+						writer.removeMarker( 'marker:3' );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:3', { range, usingOperation: false } );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div>' +
+							'<marker-start name="marker:3"></marker-start>' +
+							'<marker-start name="marker:2"></marker-start>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<p>text</p>' +
+							'<marker-end name="marker:1"></marker-end>' +
+							'<marker-end name="marker:2"></marker-end>' +
+							'<marker-end name="marker:3"></marker-end>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should produce a deterministic view when markers with a shared end are removed and re-added in reverse order', () => {
+					// Model: <m1><paragraph>first</paragraph><m2><paragraph>inner</paragraph></m2></m1>
+					// -> remove all -> re-add reversed
+					// -> <m1><paragraph>first</paragraph><m2><paragraph>inner</paragraph></m2></m1>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p1 = writer.createElement( 'paragraph' );
+						writer.insertText( 'first', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+						writer.insertText( 'inner', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 1 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					const expected =
+                        '<div>' +
+                            '<marker-start name="marker:1"></marker-start>' +
+                            '<p>first</p>' +
+                            '<marker-start name="marker:2"></marker-start>' +
+                            '<p>inner</p>' +
+                            '<marker-end name="marker:2"></marker-end>' +
+                            '<marker-end name="marker:1"></marker-end>' +
+                        '</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'should produce a deterministic view when markers with ' +
+						'a shared start are removed and re-added in reverse order', () => {
+					// Model: <m1><m2><paragraph>inner</paragraph></m2><paragraph>last</paragraph></m1>
+					// -> remove all -> re-add reversed
+					// -> <m1><m2><paragraph>inner</paragraph></m2><paragraph>last</paragraph></m1>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p1 = writer.createElement( 'paragraph' );
+						writer.insertText( 'inner', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+						writer.insertText( 'last', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					const expected =
+                        '<div>' +
+                            '<marker-start name="marker:1"></marker-start>' +
+                            '<marker-start name="marker:2"></marker-start>' +
+                            '<p>inner</p>' +
+                            '<marker-end name="marker:2"></marker-end>' +
+                            '<p>last</p>' +
+                            '<marker-end name="marker:1"></marker-end>' +
+                        '</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
 				} );
 			} );
 		} );
