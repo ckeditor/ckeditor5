@@ -509,6 +509,23 @@ describe( 'PasteFromOffice - filters', () => {
 						expect( out ).to.contain( '<p style="mso-list:l0 level2 lfo0">Ccc</p><p>cont</p></li>' );
 					} );
 
+					it( 'leaves a non-list block without margin-left outside the list (not matched to intermediate)', () => {
+						const html =
+							'<p style="mso-list:l0 level1 lfo0">Aaa</p>' +
+							'<p style="margin-left:144px;mso-list:l0 level3 lfo0">Bbb</p>' +
+							'<p>no margin paragraph</p>';
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						const out = _stringifyView( view );
+						// The no-margin paragraph sits OUTSIDE the list as a plain <p> — it is not
+						// appended inside any <li>, and the list structure for Aaa/Bbb is intact.
+						expect( out ).to.contain( '</ol><p>no margin paragraph</p>' );
+						expect( out ).to.contain( '<li style="list-style-type:none">' );
+						expect( out ).to.contain( '<p style="mso-list:l0 level3 lfo0">Bbb</p>' );
+					} );
+
 					it( 'creates a sibling root list when the root-level intermediate type does not match', () => {
 						// First item starts at level 2 (skip from indent 0 — intermediate placed at the
 						// document root). The second item at level 1 of a different type cannot merge into
