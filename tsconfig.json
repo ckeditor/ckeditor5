@@ -28,6 +28,7 @@
     "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
     "declaration": true,
     "isolatedModules": true,
     "isolatedDeclarations": true
