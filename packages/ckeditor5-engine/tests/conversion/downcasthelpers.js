@@ -4683,6 +4683,7 @@ describe( 'DowncastHelpers', () => {
 							range: sameRange()( writer ),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:2', {
 							range: sameRange()( writer ),
 							usingOperation: false
@@ -4709,6 +4710,7 @@ describe( 'DowncastHelpers', () => {
 							range: sameRange()( writer ),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:1', {
 							range: sameRange()( writer ),
 							usingOperation: false
@@ -4730,10 +4732,12 @@ describe( 'DowncastHelpers', () => {
 							range: sameRange()( writer ),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:bravo', {
 							range: sameRange()( writer ),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:charlie', {
 							range: sameRange()( writer ),
 							usingOperation: false
@@ -4788,6 +4792,7 @@ describe( 'DowncastHelpers', () => {
 							),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:2', {
 							range: writer.createRange(
 								writer.createPositionAt( modelElement, 2 ),
@@ -4795,6 +4800,7 @@ describe( 'DowncastHelpers', () => {
 							),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:3', {
 							range: writer.createRange(
 								writer.createPositionAt( modelElement, 3 ),
@@ -4829,6 +4835,7 @@ describe( 'DowncastHelpers', () => {
 							),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:2', {
 							range: writer.createRange(
 								writer.createPositionAt( modelElement, 2 ),
@@ -4836,6 +4843,7 @@ describe( 'DowncastHelpers', () => {
 							),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:1', {
 							range: writer.createRange(
 								writer.createPositionAt( modelElement, 0 ),
@@ -4943,6 +4951,7 @@ describe( 'DowncastHelpers', () => {
 							),
 							usingOperation: false
 						} );
+
 						writer.addMarker( 'marker:2', {
 							range: writer.createRange(
 								writer.createPositionAt( modelElement, 2 ),
@@ -5252,6 +5261,194 @@ describe( 'DowncastHelpers', () => {
 						'</p></div>';
 
 					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'should preserve boundaries when removing the inner marker from identical ranges', () => {
+					// Model: <m1><m2><paragraph>inner</paragraph></m2></m1> -> remove m2 -> <m1><paragraph>inner</paragraph></m1>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p = writer.createElement( 'paragraph' );
+						writer.insertText( 'inner', p, 0 );
+						writer.insert( p, modelRoot, 0 );
+					} );
+
+					const range = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					const expected =
+                        '<div>' +
+                            '<marker-start name="marker:1"></marker-start>' +
+                            '<p>inner</p>' +
+                            '<marker-end name="marker:1"></marker-end>' +
+                        '</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'should preserve boundaries when removing the outer marker from shared end ranges', () => {
+					// Model: <m1><paragraph>first</paragraph><m2><paragraph>inner</paragraph></m2></m1>
+					// -> remove m1 -> <m2><paragraph>inner</paragraph></m2>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p1 = writer.createElement( 'paragraph' );
+						writer.insertText( 'first', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+						writer.insertText( 'inner', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 1 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+					} );
+
+					const expected =
+                        '<div>' +
+                            '<p>first</p>' +
+                            '<marker-start name="marker:2"></marker-start>' +
+                            '<p>inner</p>' +
+                            '<marker-end name="marker:2"></marker-end>' +
+                        '</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'should preserve boundaries when removing the middle marker from three nested markers', () => {
+					// Model: <m1>fo<m2>o<m3>b</m3>a</m2>r</m1> -> remove m2 -> <m1>foo<m3>b</m3>ar</m1>
+					model.change( writer => {
+						writer.addMarker( 'marker:3', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 3 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 5 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<marker-start name="marker:1"></marker-start>fo' +
+							'o<marker-start name="marker:3"></marker-start>b<marker-end name="marker:3"></marker-end>a' +
+							'r<marker-end name="marker:1"></marker-end>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'should preserve boundaries when removing the middle marker then the outer marker from three stacked markers', () => {
+					// Model: <m1><m2><m3><paragraph>text</paragraph></m3></m2></m1>
+					// -> remove m2 -> <m1><m3><paragraph>text</paragraph></m3></m1>
+					// -> remove m1 -> <m3><paragraph>text</paragraph></m3>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'text', p, 0 );
+						writer.insert( p, modelRoot, 0 );
+					} );
+
+					const range = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:3', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<marker-start name="marker:3"></marker-start>' +
+							'<p>text</p>' +
+							'<marker-end name="marker:3"></marker-end>' +
+							'<marker-end name="marker:1"></marker-end>' +
+						'</div>'
+					);
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div>' +
+							'<marker-start name="marker:3"></marker-start>' +
+							'<p>text</p>' +
+							'<marker-end name="marker:3"></marker-end>' +
+						'</div>'
+					);
 				} );
 			} );
 		} );
