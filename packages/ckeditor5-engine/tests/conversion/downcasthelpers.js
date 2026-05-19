@@ -4605,6 +4605,388 @@ describe( 'DowncastHelpers', () => {
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 				expect( controller.downcastDispatcher.fire.calledWith( 'addMarker:marker' ) );
 			} );
+
+			describe( 'marker boundary ordering', () => {
+				function markerView( data, { writer } ) {
+					return writer.createUIElement( 'span', {
+						class: `${ data.markerName }-${ data.isOpening ? 'start' : 'end' }`
+					} );
+				}
+
+				beforeEach( () => {
+					downcastHelpers.markerToElement( { model: 'marker', view: markerView } );
+				} );
+
+				it( 'nested markers sharing the same end position preserve outer-last closing order', () => {
+					// Model: <m1>foo<m2>bar</m2></m1>
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 3 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<span class="marker:1-start"></span>foo' +
+							'<span class="marker:2-start"></span>bar' +
+							'<span class="marker:2-end"></span><span class="marker:1-end"></span>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					// Re-add in reversed order — result must be identical.
+					model.change( writer => {
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 3 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'markers on identical ranges are ordered by name, outer-first regardless of creation order', () => {
+					// Model: <m1><m2>foobar</m2></m1>
+					const sameRange = () => writer => writer.createRange(
+						writer.createPositionAt( modelElement, 0 ),
+						writer.createPositionAt( modelElement, 6 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:2', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<span class="marker:1-start"></span><span class="marker:2-start"></span>' +
+							'foobar' +
+							'<span class="marker:2-end"></span><span class="marker:1-end"></span>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					// Re-add in reversed order — result must be identical.
+					model.change( writer => {
+						writer.addMarker( 'marker:2', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:1', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'three markers on identical ranges are ordered by name regardless of creation order', () => {
+					// Model: <alpha><bravo><charlie>foobar</charlie></bravo></alpha>
+					const sameRange = () => writer => writer.createRange(
+						writer.createPositionAt( modelElement, 0 ),
+						writer.createPositionAt( modelElement, 6 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:alpha', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:bravo', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:charlie', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<span class="marker:alpha-start"></span>' +
+							'<span class="marker:bravo-start"></span>' +
+							'<span class="marker:charlie-start"></span>' +
+							'foobar' +
+							'<span class="marker:charlie-end"></span>' +
+							'<span class="marker:bravo-end"></span>' +
+							'<span class="marker:alpha-end"></span>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:alpha' );
+						writer.removeMarker( 'marker:bravo' );
+						writer.removeMarker( 'marker:charlie' );
+					} );
+
+					// Re-add in reversed order — result must be identical.
+					model.change( writer => {
+						writer.addMarker( 'marker:charlie', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:bravo', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:alpha', {
+							range: sameRange()( writer ),
+							usingOperation: false
+						} );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'three fully nested markers with distinct boundaries close in reverse-open order', () => {
+					// Model: <m1>fo<m2>o<m3>b</m3>a</m2>r</m1>
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 5 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:3', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 3 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<span class="marker:1-start"></span>fo' +
+							'<span class="marker:2-start"></span>o' +
+							'<span class="marker:3-start"></span>b<span class="marker:3-end"></span>a' +
+							'<span class="marker:2-end"></span>r<span class="marker:1-end"></span>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+						writer.removeMarker( 'marker:3' );
+					} );
+
+					// Re-add in reversed order — result must be identical.
+					model.change( writer => {
+						writer.addMarker( 'marker:3', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 3 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 5 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'two collapsed markers at the same position are inserted in reverse creation order', () => {
+					// Model: foo<m1/><m2/>bar (both collapsed at offset 3)
+					const collapsedAt3 = writer => writer.createRange(
+						writer.createPositionAt( modelElement, 3 ),
+						writer.createPositionAt( modelElement, 3 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: collapsedAt3( writer ), usingOperation: false } );
+						writer.addMarker( 'marker:2', { range: collapsedAt3( writer ), usingOperation: false } );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div><p>foo<span class="marker:2-start"></span><span class="marker:1-start"></span>bar</p></div>'
+					);
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: collapsedAt3( writer ), usingOperation: false } );
+						writer.addMarker( 'marker:1', { range: collapsedAt3( writer ), usingOperation: false } );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal(
+						'<div><p>foo<span class="marker:1-start"></span><span class="marker:2-start"></span>bar</p></div>'
+					);
+				} );
+
+				it( 'partially overlapping markers produce deterministic output regardless of creation order', () => {
+					// Model: <m1>fo<m2>ob</m1>ar</m2>
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<span class="marker:1-start"></span>fo' +
+							'<span class="marker:2-start"></span>ob' +
+							'<span class="marker:1-end"></span>ar<span class="marker:2-end"></span>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					// Re-add in reversed order — result must be identical.
+					model.change( writer => {
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'outer marker spanning entire text with inner sub-range closes last regardless of creation order', () => {
+					// Model: <m1>fo<m2>ob</m2>ar</m1>
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<span class="marker:1-start"></span>fo' +
+							'<span class="marker:2-start"></span>ob<span class="marker:2-end"></span>' +
+							'ar<span class="marker:1-end"></span>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+
+					model.change( writer => {
+						writer.removeMarker( 'marker:1' );
+						writer.removeMarker( 'marker:2' );
+					} );
+
+					// Re-add in reversed order — result must be identical.
+					model.change( writer => {
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+			} );
 		} );
 	} );
 
