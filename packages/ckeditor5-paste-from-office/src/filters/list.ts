@@ -200,9 +200,14 @@ export function transformListItemLikeElementsIntoLists(
 					encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
 				}
 			} else if ( stack[ indent ].isIntermediate ) {
-				// Same type as the intermediate — reuse its `<ol>`/`<ul>` and update the frame to
-				// represent the claiming item (id, marginLeft, …) so later lookups don't see stale
-				// data from the deep item that originally seeded the intermediate.
+				// Same type as the intermediate — reuse its `<ol>`/`<ul>`. The intermediate was created
+				// without `list-style-type`, `start`, or the `legal-list` class (the fill loop only sets
+				// the tag name); apply them now from the claiming item so the reused element no longer
+				// looks like a styleless wrapper.
+				applyListStyleToElement( stack[ indent ].listElement, listStyle, writer, hasMultiLevelListPlugin );
+
+				// Update the wrapper to represent the claiming item (id, marginLeft, …) so later lookups
+				// don't see stale data from the deep item that originally seeded the intermediate.
 				stack[ indent ] = {
 					...itemLikeElement,
 					listElement: stack[ indent ].listElement,
@@ -649,6 +654,22 @@ function createNewEmptyList(
 ) {
 	const list = writer.createElement( listStyle.type );
 
+	applyListStyleToElement( list, listStyle, writer, hasMultiLevelListPlugin );
+
+	return list;
+}
+
+/**
+ * Applies `list-style-type`, `start`, and the `legal-list` class to a list element based on the detected
+ * list style. Used both when creating a fresh list and when a real item claims a previously-intermediate
+ * wrapper (which was created without any of these).
+ */
+function applyListStyleToElement(
+	list: ViewElement,
+	listStyle: ReturnType<typeof detectListStyle>,
+	writer: ViewUpcastWriter,
+	hasMultiLevelListPlugin: boolean
+) {
 	// We do not support modifying the marker for a particular list item.
 	// Set the value for the `list-style-type` property directly to the list container.
 	if ( listStyle.style ) {
@@ -662,8 +683,6 @@ function createNewEmptyList(
 	if ( listStyle.isLegalStyleList && hasMultiLevelListPlugin ) {
 		writer.addClass( 'legal-list', list );
 	}
-
-	return list;
 }
 
 /**

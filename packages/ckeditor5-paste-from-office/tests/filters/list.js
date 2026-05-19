@@ -526,6 +526,35 @@ describe( 'PasteFromOffice - filters', () => {
 						expect( out ).to.contain( '<p style="mso-list:l0 level3 lfo0">Bbb</p>' );
 					} );
 
+					it( 'applies the claiming item\'s list-style-type to a reused intermediate wrapper', () => {
+						// Foo creates the root <ol>. Bar at level 3 creates intermediates at indents 1 and 2.
+						// Baz at level 2 (styled `alpha-lower`) claims the intermediate at indent 1. Without
+						// the fix that <ol> stays styleless, so Baz ends up as plain decimal in the model.
+						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view,
+							'@list l0:level2 { mso-level-number-format: alpha-lower; }',
+							false, true
+						);
+
+						const out = _stringifyView( view );
+						expect( out ).to.contain( '<ol style="list-style-type:lower-alpha">' );
+					} );
+
+					it( 'applies the claiming item\'s `start` to a reused intermediate wrapper', () => {
+						const html = `<p ${ level1 }>Foo</p><p ${ level3 }>Bar</p><p ${ level2 }>Baz</p>`;
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view,
+							'@list l0:level2 { mso-level-start-at: 5; }',
+							false, true
+						);
+
+						const out = _stringifyView( view );
+						expect( out ).to.contain( '<ol start="5">' );
+					} );
+
 					it( 'creates a sibling root list when the root-level intermediate type does not match', () => {
 						// First item starts at level 2 (skip from indent 0 — intermediate placed at the
 						// document root). The second item at level 1 of a different type cannot merge into
