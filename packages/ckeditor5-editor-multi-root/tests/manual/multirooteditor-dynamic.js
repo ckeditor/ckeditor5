@@ -10,14 +10,40 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Image, AutoImage, ImageInsert } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
-const editorElements = {
-	intro: document.querySelector( '#editor-intro' ),
-	content: document.querySelector( '#editor-content' ),
-	outro: document.querySelector( '#editor-outro' ),
-	signature: document.querySelector( '#editor-signature' )
+const roots = {
+	intro: {
+		initialData: '<strong>Exciting</strong> intro text to an article.',
+		modelElement: '$inlineRoot',
+		element: 'h1',
+		placeholder: 'Type title',
+		callback( editable ) {
+			const editableContainer = document.querySelector( '.editable-container' );
+
+			editableContainer.insertBefore( editable, editableContainer.firstElementChild );
+		}
+	},
+	content: {
+		element: document.querySelector( '#editor-content' ),
+		initialData: document.querySelector( '#editor-content' ).innerHTML,
+		placeholder: 'Type content'
+	},
+	outro: {
+		initialData: 'Closing text.',
+		modelElement: '$inlineRoot',
+		element: {
+			name: 'span',
+			styles: {
+				display: 'inline-block',
+				'max-width': 'fit-content',
+				'vertical-align': 'middle'
+			}
+		},
+		placeholder: '-- sign --',
+		callback( editable ) {
+			document.querySelector( '.signature-container' ).appendChild( editable );
+		}
+	}
 };
 
 let editor;
@@ -28,7 +54,7 @@ function initEditor() {
 			plugins: [
 				Paragraph, Heading, Bold, Italic,
 				Image, ImageInsert, AutoImage, LinkImage,
-				ArticlePluginSet, CKFinderUploadAdapter, CKFinder
+				ArticlePluginSet
 			],
 			toolbar: [
 				'heading', '|', 'bold', 'italic', 'undo', 'redo', '|',
@@ -40,25 +66,26 @@ function initEditor() {
 					'imageStyle:wrapText', '|', 'toggleImageCaption',
 					'imageTextAlternative'
 				]
-			},
-			ckfinder: {
-				// eslint-disable-next-line @stylistic/max-len
-				uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 			}
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
 
 			newEditor.on( 'addRoot', ( evt, root ) => {
-				editorElements[ root.rootName ].replaceWith( newEditor.createEditable( root, {
-					element: editorElements[ root.rootName ].tagName.toLowerCase()
-				} ) );
+				const rootConfig = roots[ root.rootName ];
+
+				if ( rootConfig.callback ) {
+					rootConfig.callback( newEditor.createEditable( root ) );
+				} else {
+					newEditor.createEditable( root, {
+						element: rootConfig.element
+					} );
+				}
 			} );
 
-			newEditor.addRoot( 'intro', { initialData: editorElements.intro.innerHTML, modelElement: '$inlineRoot' } );
-			newEditor.addRoot( 'content', { initialData: editorElements.content.innerHTML } );
-			newEditor.addRoot( 'outro', { initialData: editorElements.outro.innerHTML } );
-			newEditor.addRoot( 'signature', { initialData: editorElements.signature.innerHTML, modelElement: '$inlineRoot' } );
+			for ( const [ rootName, rootConfig ] of Object.entries( roots ) ) {
+				newEditor.addRoot( rootName, rootConfig );
+			}
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
 			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
