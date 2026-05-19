@@ -465,6 +465,56 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
+				// A `<p>` that is the only `<p>` child of its `<li>` and carries no own attributes is
+				// a bogus wrapper around the list item's content. Consume its name and convert its
+				// children directly into the surrounding `<li>`'s paragraph instead of letting
+				// `elementToElement('p')` above create a separate paragraph and force an autobreak.
+				// Otherwise we would end up with two paragraphs (one of them empty), instead of one paragraph with content.
+				dispatcher.on<UpcastElementEvent>( 'element:p', ( evt, data, conversionApi ) => {
+					const viewElement = data.viewItem;
+
+					if ( !viewElement.parent || !viewElement.parent.is( 'element', 'li' ) ) {
+						return;
+					}
+
+					// Empty <p> (truly empty, e.g. `<li><p></p></li>`) must go through the standard
+					// `elementToElement('p')` path so the EmptyBlock upcast (priority 'lowest') takes care of it.
+					if ( viewElement.isEmpty ) {
+						return;
+					}
+
+					// Bogus only when <p> carries no own attributes…
+					if ( !viewElement.getAttributeKeys().next().done ) {
+						return;
+					}
+
+					// …and the surrounding <li> has no other block-level content besides nested lists
+					// (any text or non-list element sibling means a multi-block list item where this
+					// <p> must keep its own paragraph in the model).
+					for ( const sibling of viewElement.parent.getChildren() ) {
+						if ( sibling === viewElement ) {
+							continue;
+						}
+
+						if ( sibling.is( 'element', 'ol' ) || sibling.is( 'element', 'ul' ) ) {
+							continue;
+						}
+
+						return;
+					}
+
+					// Mark the <p> as consumed so the lower-priority `elementToElement('p')` (and the
+					// Paragraph plugin's default `<p>` converter) skip it — otherwise they would
+					// create a separate model paragraph and trigger the auto-break empty paragraph
+					// we are working around.
+					conversionApi.consumable.consume( viewElement, { name: true } );
+
+					const { modelRange, modelCursor } = conversionApi.convertChildren( viewElement, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+				}, { priority: 'highest' } );
+
 				if ( allowSkipLevels ) {
 					// A consuming converter for intermediate `<li>` wrappers produced by the skip-level downcast
 					// (or by external sources). It is registered with 'high' priority so it reliably runs before

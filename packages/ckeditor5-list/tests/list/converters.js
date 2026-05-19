@@ -1548,6 +1548,34 @@ describe( 'ListEditing - converters', () => {
 
 			expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal( initialView );
 		} );
+
+		describe( 'upcast (bogus <p> inside <li>)', () => {
+			it( 'should not create a leading empty multi-block paragraph for the first <li> ' +
+				'in an intermediate wrapper with multiple siblings', () => {
+				// Without bogus <p> handling, the first <li> inside a consumed skip-level
+				// wrapper's <ol> produced an auto-break empty paragraph.
+				skipEditor.setData(
+					'<ul>' +
+						'<li><p>A</p>' +
+							'<ul>' +
+								'<li style="list-style-type:none">' +
+									'<ul>' +
+										'<li><p>B</p></li>' +
+										'<li><p>C</p></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a03" listType="bulleted">A</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a01" listType="bulleted">C</paragraph>'
+				);
+			} );
+		} );
 	} );
 
 	function getViewPosition( root, path, view ) {
