@@ -555,6 +555,20 @@ describe( 'PasteFromOffice - filters', () => {
 						expect( out ).to.contain( '<ol start="5">' );
 					} );
 
+					it( 'tracks the claimed-intermediate list so a later resumed list at that indent gets `start`', () => {
+						const html =
+							'<p style="margin-left:32px;mso-list:l0 level1 lfo0">Foo</p>' +
+							'<p style="margin-left:144px;mso-list:l0 level3 lfo0">Bar</p>' +
+							'<p style="margin-left:72px;mso-list:l0 level2 lfo0">Baz</p>' +
+							'<p style="margin-left:32px">multi-block</p>' +
+							'<p style="margin-left:72px;mso-list:l0 level2 lfo0">Resumed</p>';
+						const view = htmlDataProcessor.toView( html );
+
+						transformListItemLikeElementsIntoLists( view, '', false, true );
+
+						expect( _stringifyView( view ) ).to.contain( '<ol start="2">' );
+					} );
+
 					it( 'creates a sibling root list when the root-level intermediate type does not match', () => {
 						// First item starts at level 2 (skip from indent 0 — intermediate placed at the
 						// document root). The second item at level 1 of a different type cannot merge into

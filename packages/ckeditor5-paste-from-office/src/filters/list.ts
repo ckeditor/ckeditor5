@@ -213,6 +213,17 @@ export function transformListItemLikeElementsIntoLists(
 					listElement: stack[ indent ].listElement,
 					listItemElements: stack[ indent ].listItemElements
 				};
+
+				// Same as the create-new path: track this list so that if it is interrupted (e.g. by a
+				// multi-block paragraph matched against an ancestor frame) and later resumed via a fresh
+				// `<ol>`, the continuation can set the correct `start` attribute instead of restarting from 1.
+				if ( itemLikeElement.id !== undefined ) {
+					if ( !encounteredLists[ indent ] ) {
+						encounteredLists[ indent ] = {};
+					}
+
+					encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
+				}
 			}
 
 			// Use LI if it is already it or create a new LI element.
