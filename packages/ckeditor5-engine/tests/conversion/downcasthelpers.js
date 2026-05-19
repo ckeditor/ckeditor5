@@ -4986,6 +4986,273 @@ describe( 'DowncastHelpers', () => {
 
 					expect( viewToString( viewRoot ) ).to.equal( expected );
 				} );
+
+				it( 'shared end, different start', () => {
+					// Model: <m1><paragraph>first</paragraph><m2><paragraph>inner</paragraph></m2></m1>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p1 = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'first', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'inner', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 1 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					const expected =
+						'<div>' +
+							'<span class="marker:1-start"></span>' +
+							'<p>first</p>' +
+							'<span class="marker:2-start"></span>' +
+							'<p>inner</p>' +
+							'<span class="marker:2-end"></span>' +
+							'<span class="marker:1-end"></span>' +
+						'</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'shared start, different end', () => {
+					// Model: <m1><m2><paragraph>inner</paragraph></m2><paragraph>last</paragraph></m1>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+						const p1 = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'inner', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'last', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					const expected =
+						'<div>' +
+							'<span class="marker:1-start"></span>' +
+							'<span class="marker:2-start"></span>' +
+							'<p>inner</p>' +
+							'<span class="marker:2-end"></span>' +
+							'<p>last</p>' +
+							'<span class="marker:1-end"></span>' +
+						'</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+			} );
+
+			describe( 'marker boundary ordering (separated batches)', () => {
+				function markerView( data, { writer } ) {
+					const tagName = data.isOpening ? 'marker-start' : 'marker-end';
+
+					return writer.createUIElement( tagName, { name: data.markerName } );
+				}
+
+				beforeEach( () => {
+					downcastHelpers.markerToElement( { model: 'marker', view: markerView } );
+				} );
+
+				it( 'identical ranges (shared start and end)', () => {
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'inner', p, 0 );
+						writer.insert( p, modelRoot, 0 );
+					} );
+
+					const range = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range, usingOperation: false } );
+					} );
+
+					const expected =
+						'<div>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<marker-start name="marker:2"></marker-start>' +
+							'<p>inner</p>' +
+							'<marker-end name="marker:2"></marker-end>' +
+							'<marker-end name="marker:1"></marker-end>' +
+						'</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'shared start, different end', () => {
+					// Model: <m1><m2><paragraph>inner</paragraph></m2><paragraph>last</paragraph></m1>
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p1 = writer.createElement( 'paragraph' );
+						writer.insertText( 'inner', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+						writer.insertText( 'last', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 1 )
+					);
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					const expected =
+						'<div>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<marker-start name="marker:2"></marker-start>' +
+							'<p>inner</p>' +
+							'<marker-end name="marker:2"></marker-end>' +
+							'<p>last</p>' +
+							'<marker-end name="marker:1"></marker-end>' +
+						'</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'shared end, different start', () => {
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+
+						const p1 = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'first', p1, 0 );
+						writer.insert( p1, modelRoot, 0 );
+
+						const p2 = writer.createElement( 'paragraph' );
+
+						writer.insertText( 'inner', p2, 0 );
+						writer.insert( p2, modelRoot, 1 );
+					} );
+
+					const outerRange = model.createRange(
+						model.createPositionAt( modelRoot, 0 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					const innerRange = model.createRange(
+						model.createPositionAt( modelRoot, 1 ),
+						model.createPositionAt( modelRoot, 2 )
+					);
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
+					} );
+
+					const expected =
+						'<div>' +
+							'<marker-start name="marker:1"></marker-start>' +
+							'<p>first</p>' +
+							'<marker-start name="marker:2"></marker-start>' +
+							'<p>inner</p>' +
+							'<marker-end name="marker:2"></marker-end>' +
+							'<marker-end name="marker:1"></marker-end>' +
+						'</div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
+
+				it( 'three fully nested markers with distinct boundaries close in reverse-open order', () => {
+					// Model: <m1>fo<m2>o<m3>b</m3>a</m2>r</m1>
+					model.change( writer => {
+						writer.addMarker( 'marker:3', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 3 ),
+								writer.createPositionAt( modelElement, 4 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:2', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 2 ),
+								writer.createPositionAt( modelElement, 5 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					model.change( writer => {
+						writer.addMarker( 'marker:1', {
+							range: writer.createRange(
+								writer.createPositionAt( modelElement, 0 ),
+								writer.createPositionAt( modelElement, 6 )
+							),
+							usingOperation: false
+						} );
+					} );
+
+					const expected =
+						'<div><p>' +
+							'<marker-start name="marker:1"></marker-start>fo' +
+							'<marker-start name="marker:2"></marker-start>o' +
+							'<marker-start name="marker:3"></marker-start>b<marker-end name="marker:3"></marker-end>a' +
+							'<marker-end name="marker:2"></marker-end>r<marker-end name="marker:1"></marker-end>' +
+						'</p></div>';
+
+					expect( viewToString( viewRoot ) ).to.equal( expected );
+				} );
 			} );
 		} );
 	} );
