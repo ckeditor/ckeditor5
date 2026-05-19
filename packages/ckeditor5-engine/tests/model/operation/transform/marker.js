@@ -71,6 +71,168 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'in same range - reversed adding order should produce same result', () => {
+				john.setData( '<paragraph>[Foo]</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				kate.setMarker( 'm2' );
+				john.setMarker( 'm1' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start><m2:start></m2:start>Foo<m2:end></m2:end><m1:end></m1:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'in same range - name order determines nesting when ranges are identical', () => {
+				john.setData( '<paragraph>[Foo]</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.setMarker( 'alpha' );
+				kate.setMarker( 'charlie' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<alpha:start></alpha:start><charlie:start></charlie:start>Foo<charlie:end></charlie:end><alpha:end></alpha:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'in same range - three markers with identical ranges are ordered by name', () => {
+				john.setData( '<paragraph>[Foo]</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.setMarker( 'alpha' );
+				kate.setMarker( 'bravo' );
+
+				syncClients();
+
+				john.setSelection( [ 0, 0 ], [ 0, 3 ] );
+				john.setMarker( 'charlie' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<alpha:start></alpha:start>' +
+							'<bravo:start></bravo:start>' +
+								'<charlie:start></charlie:start>Foo<charlie:end></charlie:end>' +
+							'<bravo:end></bravo:end>' +
+						'<alpha:end></alpha:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'nested - outer start before inner start, shared end position (client case 2)', () => {
+				john.setData( '<paragraph>[Foo Bar]</paragraph>' );
+				kate.setData( '<paragraph>Foo [Bar]</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.setMarker( 'm2' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start>Foo <m2:start></m2:start>Bar<m2:end></m2:end><m1:end></m1:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'nested - outer start before inner start, shared end position - reversed adding order', () => {
+				john.setData( '<paragraph>[Foo Bar]</paragraph>' );
+				kate.setData( '<paragraph>Foo [Bar]</paragraph>' );
+
+				kate.setMarker( 'm2' );
+				john.setMarker( 'm1' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start>Foo <m2:start></m2:start>Bar<m2:end></m2:end><m1:end></m1:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'nested - three fully nested markers with distinct boundaries', () => {
+				john.setData( '<paragraph>[Foo Bar Baz]</paragraph>' );
+				kate.setData( '<paragraph>Foo [Bar Baz]</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.setMarker( 'm2' );
+
+				syncClients();
+
+				kate.setSelection( [ 0, 8 ], [ 0, 11 ] );
+				kate.setMarker( 'm3' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start>Foo ' +
+						'<m2:start></m2:start>Bar ' +
+						'<m3:start></m3:start>Baz<m3:end></m3:end>' +
+						'<m2:end></m2:end>' +
+						'<m1:end></m1:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'collapsed - two collapsed markers at the same position are ordered by name', () => {
+				john.setData( '<paragraph>Foo[]</paragraph>' );
+				kate.setData( '<paragraph>Foo[]</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.setMarker( 'm2' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'Foo<m1:start></m1:start><m2:start></m2:start>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'partially overlapping markers produce deterministic output', () => {
+				john.setData( '<paragraph>[Foo Bar] Baz</paragraph>' );
+				kate.setData( '<paragraph>Foo [Bar Baz]</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.setMarker( 'm2' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start>Foo <m2:start></m2:start>Bar<m1:end></m1:end> Baz<m2:end></m2:end>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'nested - outer spans entire paragraph, inner is a sub-range', () => {
+				john.setData( '<paragraph>[Foo Bar Baz]</paragraph>' );
+				kate.setData( '<paragraph>Foo [Bar] Baz</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.setMarker( 'm2' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start>Foo <m2:start></m2:start>Bar<m2:end></m2:end> Baz<m1:end></m1:end>' +
+					'</paragraph>'
+				);
+			} );
+
 			it( 'in other user\'s selection', () => {
 				john.setData( '<paragraph>[Foo Bar]</paragraph>' );
 				kate.setData( '<paragraph>Fo[o B]ar</paragraph>' );
