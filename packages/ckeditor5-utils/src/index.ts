@@ -24,7 +24,7 @@ export {
 	type EnvFeaturesType
 } from './env.js';
 
-export { diff, type DiffResult } from './diff.js';
+export { diff, type Diff, type DiffResult } from './diff.js';
 export { fastDiff } from './fastdiff.js';
 export { diffToChanges, type InsertChange, type DeleteChange, type Change } from './difftochanges.js';
 

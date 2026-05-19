@@ -12,7 +12,7 @@ import { fastDiff as fastDiffFunction } from './fastdiff.js';
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 
-type Diff = {
+export type Diff = {
 	<T>( a: ArrayLike<T>, b: ArrayLike<T>, cmp?: ( a: T, b: T ) => boolean ): Array<DiffResult>;
 	fastDiff: typeof fastDiffFunction;
 };
