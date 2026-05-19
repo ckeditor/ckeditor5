@@ -14,7 +14,7 @@
  *
  * ```ts
  * ClassicEditor
- *   .create( editorElement, {
+ *   .create( {
  *     specialCharacters: ... // Special characters feature options.
  *   } )
  *   .then( ... )
@@ -34,7 +34,7 @@ export interface SpecialCharactersConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 *   .create( editorElement, {
+	 *   .create( {
 	 *     plugins: [ SpecialCharacters, SpecialCharactersEssentials, ... ],
 	 *     specialCharacters: {
 	 *       order: [

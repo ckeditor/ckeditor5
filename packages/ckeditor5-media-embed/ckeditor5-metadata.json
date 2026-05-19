@@ -4,7 +4,7 @@
 			"name": "Media embed",
 			"className": "MediaEmbed",
 			"description": "Allows for inserting embeddable media such as YouTube or Vimeo videos, Instagram posts and tweets or Google Maps into your rich-text content.",
-			"docs": "features/media-embed.html",
+			"docs": "features/media-embed/media-embed.html",
 			"path": "src/mediaembed.ts",
 			"uiComponents": [
 				{
@@ -37,27 +37,25 @@
 				},
 				{
 					"elements": "div",
-					"styles": [
-						"height",
-						"padding-bottom",
-						"position"
-					],
 					"isAlternative": true,
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
+					"_comment": "A plain wrapper element placed between the outer `<div data-oembed-url>` and the preview `<iframe>`."
 				},
 				{
 					"elements": "iframe",
 					"styles": [
+						"aspect-ratio",
+						"border",
+						"display",
 						"height",
-						"left",
-						"position",
-						"top",
 						"width"
 					],
 					"attributes": [
 						"*allow*",
 						"frameborder",
-						"src"
+						"height",
+						"referrerpolicy",
+						"src",
+						"width"
 					],
 					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
@@ -73,10 +71,108 @@
 			]
 		},
 		{
+			"name": "Media embed resize",
+			"className": "MediaEmbedResize",
+			"description": "Allows for resizing media embeds using handles.",
+			"docs": "features/media-embed/media-embed-resize.html",
+			"path": "src/mediaembedresize.ts",
+			"requires": [
+				"MediaEmbed"
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "media_resized",
+					"styles": [
+						"width"
+					]
+				}
+			]
+		},
+		{
+			"name": "Media embed style",
+			"className": "MediaEmbedStyle",
+			"description": "Adds alignment to media embeds, with optional text wrapping.",
+			"docs": "features/media-embed/media-embed-alignment.html",
+			"path": "src/mediaembedstyle.ts",
+			"requires": [
+				"MediaEmbed"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "mediaEmbed:alignLeft",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectInlineLeft"
+				},
+				{
+					"type": "Button",
+					"name": "mediaEmbed:alignBlockLeft",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectLeft"
+				},
+				{
+					"type": "Button",
+					"name": "mediaEmbed:alignCenter",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectCenter"
+				},
+				{
+					"type": "Button",
+					"name": "mediaEmbed:alignBlockRight",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectRight"
+				},
+				{
+					"type": "Button",
+					"name": "mediaEmbed:alignRight",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectInlineRight"
+				},
+				{
+					"type": "SplitButton",
+					"name": "mediaEmbed:wrapText",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectInlineLeft"
+				},
+				{
+					"type": "SplitButton",
+					"name": "mediaEmbed:breakText",
+					"toolbars": [
+						"mediaEmbed.toolbar"
+					],
+					"iconName": "IconObjectCenter"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": [
+						"media-style-align-left",
+						"media-style-block-align-left",
+						"media-style-block-align-right",
+						"media-style-align-right"
+					]
+				}
+			]
+		},
+		{
 			"name": "Media embed toolbar",
 			"className": "MediaEmbedToolbar",
 			"description": "Implements an optional toolbar for media embed that shows when the media element is selected.",
-			"docs": "features/media-embed.html",
+			"docs": "features/media-embed/media-embed.html",
 			"path": "src/mediaembedtoolbar.ts",
 			"requires": [
 				"MediaEmbed"

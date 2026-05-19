@@ -247,7 +247,8 @@ export class StyleCommand extends Command {
 
 /**
  * Returns classes that are defined only in the supplied definition and not in any other active definition. It's used
- * to ensure that classes used by other definitions are preserved when a style is removed. See #11748.
+ * to ensure that classes used by other definitions are preserved when a style is removed.
+ * See https://github.com/ckeditor/ckeditor5/issues/11748.
  *
  * @param activeDefinitions All currently active definitions affecting selected element(s).
  * @param definition Definition whose classes will be compared with all other active definition classes.

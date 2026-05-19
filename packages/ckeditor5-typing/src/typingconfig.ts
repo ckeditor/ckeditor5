@@ -12,7 +12,7 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		typing: ... // Typing feature options.
  * 	} )
  * 	.then( ... )
@@ -44,7 +44,7 @@ export interface TypingConfig {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		typing: {
  * 			transformations: ... // Text transformation feature options.
  * 		}

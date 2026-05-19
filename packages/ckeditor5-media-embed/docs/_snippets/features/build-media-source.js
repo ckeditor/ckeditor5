@@ -5,6 +5,7 @@
 
 import {
 	MediaEmbed,
+	MediaEmbedResize,
 	CKBox,
 	CKBoxImageEdit,
 	PictureEditing,
@@ -19,6 +20,7 @@ export class MediaEditor extends ClassicEditor {
 	static builtinPlugins = [
 		...ClassicEditor.builtinPlugins,
 		MediaEmbed,
+		MediaEmbedResize,
 		PictureEditing,
 		ImageInsert,
 		ImageResize,

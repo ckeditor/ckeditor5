@@ -26,7 +26,7 @@
 	& > .ck.ck-dropdown {
 		& > .ck.ck-button.ck-input-color__button {
 			padding: 0;
-			/* Resolving issue with misaligned buttons on Safari (see #10589) */
+			/* Resolving issue with misaligned buttons on Safari (see https://github.com/ckeditor/ckeditor5/issues/10589) */
 			display: flex;
 
 			[dir="ltr"] & {

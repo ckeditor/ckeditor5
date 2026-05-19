@@ -141,7 +141,7 @@ describe( 'MentionUI', () => {
 			expect( panelView.isVisible ).to.be.false;
 		} );
 
-		// See #17964
+		// See https://github.com/ckeditor/ckeditor5/issues/17964
 		it( 'should have the ck-mention-balloon class to make sure z-index does not conflict with the dialog system', () => {
 			expect( balloonAddSpy.callCount ).to.equal( 1 );
 			expect( balloonAddSpy.firstCall.args[ 0 ].balloonClassName ).to.equal( 'ck-mention-balloon' );
@@ -2227,7 +2227,8 @@ describe( 'MentionUI', () => {
 							marker: '$',
 							feed: [
 								'$a1', '$a2', '$a3', '$a4',
-								// A case of mention with a marker character from other feed. See #6398.
+								// A case of mention with a marker character from other feed.
+								// See https://github.com/ckeditor/ckeditor5/issues/6398.
 								'$a@'
 							]
 						}

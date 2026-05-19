@@ -38,7 +38,8 @@ describe( 'PasteFromOffice - integration', () => {
 			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Strikethrough, PasteFromOffice ]
 		},
 		skip: {
-			safari: [ 'italicStartingText', 'multipleStylesSingleLine', 'multipleStylesMultiline' ] // Skip due to spacing issue (#13).
+			// Skip due to spacing issue (https://github.com/ckeditor/ckeditor5-paste-from-office/issues/13).
+			safari: [ 'italicStartingText', 'multipleStylesSingleLine', 'multipleStylesMultiline' ]
 		}
 	} );
 
@@ -61,7 +62,7 @@ describe( 'PasteFromOffice - integration', () => {
 			plugins: [ Clipboard, Paragraph, Heading, Bold, Link, ShiftEnter, PasteFromOffice ]
 		},
 		skip: {
-			safari: [ 'combined' ] // Skip due to spacing issue (#13).
+			safari: [ 'combined' ] // Skip due to spacing issue (https://github.com/ckeditor/ckeditor5-paste-from-office/issues/13).
 		}
 	} );
 
@@ -71,7 +72,7 @@ describe( 'PasteFromOffice - integration', () => {
 			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, ListProperties, PasteFromOffice ]
 		},
 		skip: {
-			safari: [ 'heading3Styled' ] // Skip due to spacing issue (#13).
+			safari: [ 'heading3Styled' ] // Skip due to spacing issue (https://github.com/ckeditor/ckeditor5-paste-from-office/issues/13).
 		}
 	} );
 

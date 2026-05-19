@@ -47,7 +47,7 @@
 
 	& > .ck-toolbar__items {
 		& > *:not(.ck-toolbar__line-break) {
-			/* (#11) Separate toolbar items. */
+			/* (https://github.com/ckeditor/ckeditor5/issues/11) Separate toolbar items. */
 			margin-right: var(--ck-spacing-small);
 		}
 
@@ -164,7 +164,7 @@
 	}
 
 	&:not(.ck-toolbar_compact) > .ck-toolbar__items > .ck {
-		/* (#11) Separate toolbar items. */
+		/* (https://github.com/ckeditor/ckeditor5/issues/11) Separate toolbar items. */
 		margin-left: var(--ck-spacing-small);
 	}
 

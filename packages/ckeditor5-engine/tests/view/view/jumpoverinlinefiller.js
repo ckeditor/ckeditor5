@@ -87,7 +87,7 @@ describe( 'View', () => {
 			expect( domSelection.focusOffset ).to.equal( 1 );
 		} );
 
-		// See #664
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/664
 		// it( 'should do nothing if node does not start with the filler', () => {
 		// 	_setViewData( view, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
 		// 	viewDocument.render();

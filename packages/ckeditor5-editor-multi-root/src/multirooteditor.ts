@@ -437,7 +437,8 @@ export class MultiRootEditor extends Editor {
 		if ( !this.model.schema.isLimit( modelElement ) ) {
 			/**
 			 * The model root element must be a {@link module:engine/model/schema~ModelSchemaItemDefinition#isLimit limit element}.
-			 * The element name specified in {@link ~MultiRootEditor#addRoot `addRoot()`} options must be registered in the schema
+			 * The element name specified in {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot:ROOT_CONFIG addRoot()}
+			 * options must be registered in the schema
 			 * with `isLimit` set to `true`.
 			 *
 			 * @error multi-root-editor-add-root-element-is-not-limit
