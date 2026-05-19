@@ -559,16 +559,23 @@ export class MultiRootEditor extends Editor {
 	}
 
 	/**
-	 * Creates and returns a new DOM editable element for the given root element.
+	 * Creates and returns a DOM editable element for the given root element.
 	 *
-	 * The new DOM editable is attached to the model root and can be used to modify the root content.
+	 * The DOM editable is attached to the model root and can be used to modify the root content.
+	 *
+	 * When `options.element` is an existing `HTMLElement`, the method uses it as-is and returns
+	 * the same element. Otherwise a fresh DOM element is created from `options.element`
+	 * (descriptor or tag name) — or a default `<div>` when the option is omitted — and the caller
+	 * is expected to append the returned element to the DOM.
 	 *
 	 * @label OPTIONS
 	 * @param root Root for which the editable element should be created.
 	 * @param options.placeholder Placeholder for the editable element. If not set, placeholder value from the
 	 * {@link module:core/editor/editorconfig~RootConfig#placeholder root configuration} will be used (if it was provided).
 	 * @param options.label The accessible label text describing the editable to the assistive technologies.
-	 * @returns The created DOM element. Append it in a desired place in your application.
+	 * @param options.element Description of the editable element to create, or an existing `HTMLElement` to use as-is.
+	 * See {@link ~RootEditableOptions#element} for accepted forms and the real-time collaboration caveat.
+	 * @returns The DOM element for the editable.
 	 */
 	public createEditable( root: ModelRootElement, options?: RootEditableOptions ): HTMLElement;
 
@@ -592,7 +599,7 @@ export class MultiRootEditor extends Editor {
 
 	public createEditable( root: ModelRootElement, optionsOrPlaceholder?: RootEditableOptions | string, label?: string ): HTMLElement {
 		let placeholder: string | undefined;
-		let element: string | ViewRootElementDefinition | undefined;
+		let element: string | ViewRootElementDefinition | HTMLElement | undefined;
 
 		if ( !optionsOrPlaceholder || typeof optionsOrPlaceholder === 'string' ) {
 			placeholder = optionsOrPlaceholder;
@@ -603,10 +610,13 @@ export class MultiRootEditor extends Editor {
 		}
 
 		const rootEditableConfig: RootEditableOptions = root.getAttribute( '$rootEditableOptions' ) || {};
-		// `element` comes from user input and needs normalization; `rootEditableConfig.element` is already canonical.
+		// `element` from the call site may still be a tag name or an `HTMLElement` and needs normalization.
+		// `rootEditableConfig.element` was normalized by `setRootEditableOptions()` at storage time, which
+		// also drops any `HTMLElement` (a DOM node cannot be replicated through RTC), so at runtime it is
+		// always a `ViewRootElementDefinition | undefined` despite the wider static type.
 		const editableElement: HTMLElement | ViewRootElementDefinition | undefined = element ?
 			normalizeViewRootElementDefinition( element ) :
-			rootEditableConfig.element as HTMLElement | ViewRootElementDefinition | undefined;
+			rootEditableConfig.element as ViewRootElementDefinition | undefined;
 
 		const editable = this.ui.view.createEditable(
 			root.rootName,
@@ -1435,12 +1445,21 @@ export interface RootEditableOptions {
 	label?: string;
 
 	/**
-	 * A description of the editable root element to create. May be a tag name string (e.g. `'h1'`) or a
-	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} object. When omitted, a default `<div>`
-	 * is created.
+	 * A description of the editable root element to create, or an existing DOM element to use.
 	 *
-	 * Passing an existing DOM element is not supported -
-	 * {@link ~MultiRootEditor#createEditable `createEditable()`} always creates a fresh DOM element.
+	 * Accepted forms:
+	 *
+	 * * A tag name string (e.g. `'h1'`).
+	 * * A {@link module:core/editor/editorconfig~ViewRootElementDefinition} object.
+	 * * An existing `HTMLElement`. The element is used as-is — `createEditable()` returns the same
+	 *   element instead of creating a new one, so callers do not need to append it to the DOM.
+	 *
+	 * When omitted, a default `<div>` is created.
+	 *
+	 * **Note**: an `HTMLElement` value is local to this client. It cannot be replicated through
+	 * real-time collaboration, so it is not persisted with the root. Other clients calling
+	 * `createEditable()` for the same root receive a fresh element built from the canonical
+	 * descriptor (or the default `<div>`), unless they pass their own `HTMLElement` as well.
 	 */
-	element?: string | ViewRootElementDefinition;
+	element?: string | ViewRootElementDefinition | HTMLElement;
 }

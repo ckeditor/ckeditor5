@@ -2122,6 +2122,71 @@ describe( 'MultiRootEditor', () => {
 				editor.createEditable( editor.model.document.getRoot( 'new' ), { element: 'textarea' } );
 			} ).to.throw( CKEditorError, 'editor-wrong-element' );
 		} );
+
+		it( 'should accept `element` as an existing HTMLElement and return that same element', () => {
+			editor.addRoot( 'new' );
+
+			const provided = document.createElement( 'section' );
+			const returned = editor.createEditable( editor.model.document.getRoot( 'new' ), { element: provided } );
+
+			expect( returned ).to.equal( provided );
+			expect( returned.tagName ).to.equal( 'SECTION' );
+		} );
+
+		it( 'should preserve attributes and classes already set on the provided HTMLElement', () => {
+			editor.addRoot( 'new' );
+
+			const provided = document.createElement( 'section' );
+			provided.classList.add( 'foo' );
+			provided.setAttribute( 'data-id', '123' );
+
+			const returned = editor.createEditable( editor.model.document.getRoot( 'new' ), { element: provided } );
+
+			expect( returned.classList.contains( 'foo' ) ).to.be.true;
+			expect( returned.getAttribute( 'data-id' ) ).to.equal( '123' );
+		} );
+
+		it( 'should render downcasted model data into the provided HTMLElement', () => {
+			editor.addRoot( 'new' );
+
+			const provided = document.createElement( 'div' );
+			editor.createEditable( editor.model.document.getRoot( 'new' ), { element: provided } );
+
+			editor.setData( { new: '<p>New.</p>' } );
+
+			expect( provided.innerHTML ).to.equal( '<p>New.</p>' );
+		} );
+
+		it( 'should prefer the provided HTMLElement over $rootEditableOptions.element', () => {
+			editor.addRoot( 'new', { element: 'h1' } );
+
+			const provided = document.createElement( 'section' );
+			const returned = editor.createEditable( editor.model.document.getRoot( 'new' ), { element: provided } );
+
+			expect( returned ).to.equal( provided );
+			expect( returned.tagName ).to.equal( 'SECTION' );
+		} );
+
+		it( 'should not persist the provided HTMLElement in $rootEditableOptions', () => {
+			editor.addRoot( 'new' );
+
+			const provided = document.createElement( 'section' );
+			editor.createEditable( editor.model.document.getRoot( 'new' ), { element: provided } );
+
+			const storedOptions = editor.model.document.getRoot( 'new' ).getAttribute( '$rootEditableOptions' );
+
+			expect( storedOptions && storedOptions.element ).to.be.undefined;
+		} );
+
+		it( 'should throw when the provided HTMLElement has a disallowed tag name', () => {
+			editor.addRoot( 'new' );
+
+			const provided = document.createElement( 'textarea' );
+
+			expect( () => {
+				editor.createEditable( editor.model.document.getRoot( 'new' ), { element: provided } );
+			} ).to.throw( CKEditorError, 'editor-wrong-element' );
+		} );
 	} );
 
 	describe( 'detachEditable()', () => {
