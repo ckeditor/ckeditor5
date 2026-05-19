@@ -175,7 +175,9 @@ editor.addRoot( 'sectionTitle', {
 
 The root type is fixed at creation time and cannot be changed afterward.
 
-## Styling the host element
+## Styling the editable area
+
+### Styling the host element
 
 When you mount an inline root on a non-block HTML element such as a `<span>`, the browser may render the editable area with unexpected line breaks or sizing. This happens because block-filler mechanisms used by the editor can interact poorly with inline host elements.
 
@@ -188,8 +190,34 @@ To avoid this, apply the following CSS to the editable element:
 }
 ```
 
-This ensures the editing area does not collapse or stretch beyond its content. Mounting on a block element like a `<div>` does not require any extra CSS. See the {@link getting-started/setup/css Editor and content styles} guide for broader CSS customization options.
+This ensures the editing area does not collapse or stretch beyond its content. Mounting on a block element like a `<div>` does not require any extra CSS.
 
 <info-box>
 	When using a `<span>` as the host element, also set `display: inline-block` on the `<span>` itself, since block-level children are not valid inside an inline element.
 </info-box>
+
+### Applying classes and styles
+
+Instead of targeting the editable element with a global CSS selector, you can apply CSS classes and inline styles directly from the editor configuration via `root.element`. The example below adds a custom class and sets a minimum and maximum height on the editable area:
+
+```js
+InlineEditor
+	.create( {
+		root: {
+			element: {
+				classes: [ 'my-editor' ],
+				styles: {
+					'min-height': '300px',
+					'max-height': '500px' // Adds a scrollbar when content overflows.
+				}
+			},
+			initialData: '<p>Start writing here.</p>'
+		},
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+The `classes` array and `styles` object are applied to the editable element. This is useful for controlling dimensions, scoping CSS rules, or integrating with a class-based styling system. For broader CSS customization options, see the {@link getting-started/setup/css Editor and content styles} guide.

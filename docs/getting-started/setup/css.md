@@ -83,6 +83,8 @@ Here are some essential CSS variables for customizing the editor:
 
 Knowing the variables, you can push the customization even further and create your own themes, as in this {@link examples/theme-customization dark theme example}.
 
+To apply classes or styles directly to the editable area from the editor configuration, see the {@link getting-started/setup/root-types#styling-the-editable-area Styling the editable area} section of the Root types guide.
+
 ## Customizing the look of the features
 
 Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties).
