@@ -1339,8 +1339,14 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 		viewWriter.setCustomProperty( 'markerBoundaryType', 'end', viewEndElement );
 
 		// Add "end" element only if range is not collapsed.
+		// Multiple markers sharing the same end boundary must be closed in reverse order of their opening,
+		// so each successive "end" element must be inserted after the ones already placed there.
 		if ( !markerRange.isCollapsed ) {
-			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
+			const endViewPosition = mapper.toViewPosition( markerRange.end ).getLastMatchingPosition( ( { item } ) =>
+				item.is( 'uiElement' ) && item.getCustomProperty( 'markerBoundaryType' ) === 'end'
+			);
+
+			viewWriter.insert( endViewPosition, viewEndElement );
 			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
 		}
 
