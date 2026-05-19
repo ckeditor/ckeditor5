@@ -1240,7 +1240,7 @@ describe( 'ToolbarView', () => {
 				expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemD ] );
 			} );
 
-			it( 'doesn\'t throw when removing the first of grouped items', () => { // (#7655)
+			it( 'doesn\'t throw when removing the first of grouped items', () => { // (https://github.com/ckeditor/ckeditor5/issues/7655)
 				const items = [ focusable(), focusable(), focusable(), focusable() ];
 				view.element.style.width = '200px';
 				view.items.addMany( items );

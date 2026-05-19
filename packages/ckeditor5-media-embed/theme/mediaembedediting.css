@@ -60,11 +60,6 @@
 		}
 	}
 
-	&[data-oembed-url*="open.spotify.com"] {
-		max-width: 300px;
-		max-height: 380px;
-	}
-
 	&[data-oembed-url*="google.com/maps"] .ck-media__placeholder__icon,
 	&[data-oembed-url*="goo.gl/maps"] .ck-media__placeholder__icon,
 	&[data-oembed-url*="maps.google.com"] .ck-media__placeholder__icon,
@@ -133,6 +128,16 @@
 			display: none;
 		}
 	}
+}
+
+/* Preserve the historical 300px default size for unresized Spotify embeds (backward
+   compatibility). Set on the figure so the selection outline hugs the embed; an inline
+   `style="width: X%"` from resize beats this rule.
+   The 280px min-width matches Spotify's responsive breakpoint — below it, the embed's
+   internal layout switches and the iframe's declared aspect ratio no longer matches. */
+.ck-content .media:has(> div[data-oembed-url*="open.spotify.com"]) {
+	width: 300px;
+	min-width: 280px;
 }
 
 /* Disable all mouse interaction as long as the editor is not read–only.

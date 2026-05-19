@@ -272,7 +272,8 @@ function getDropdownViewCreator( {
 		} );
 
 		// Focus the editable after executing the command.
-		// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+		// Overrides a default behaviour where the focus is moved to the dropdown button.
+		// See https://github.com/ckeditor/ckeditor5/issues/12125.
 		dropdownView.on( 'execute', () => {
 			editor.editing.view.focus();
 		} );

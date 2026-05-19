@@ -45,7 +45,7 @@ import { isPlainObject } from 'es-toolkit/compat';
  *
  * ```ts
  * 	ClassicEditor
- * 		.create( editorElement, {
+ * 		.create( {
  * 			plugins: [ ActionsRecorder, ... ],
  * 			actionsRecorder: {
  * 				maxEntries: 1000, // This is the default value and could be adjusted.
@@ -68,7 +68,7 @@ import { isPlainObject } from 'es-toolkit/compat';
  *
  * ```ts
  * 	ClassicEditor
- * 		.create( editorElement, {
+ * 		.create( {
  * 			plugins: [ ActionsRecorder, ... ],
  * 			actionsRecorder: {
  * 				maxEntries: 50, // This is the batch size.

@@ -154,3 +154,11 @@ msgstr "Päivitä"
 msgctxt "Label for the Back button."
 msgid "Back"
 msgstr "Takaisin"
+
+msgctxt "The label for the object (e.g. image, media) style button that wraps text around the object."
+msgid "Wrap text"
+msgstr "Sovita teksti"
+
+msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
+msgid "Break text"
+msgstr "Irrota teksti"

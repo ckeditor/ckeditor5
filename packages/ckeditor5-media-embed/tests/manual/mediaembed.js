@@ -7,19 +7,26 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { MediaEmbed } from '../../src/mediaembed.js';
 import { MediaEmbedToolbar } from '../../src/mediaembedtoolbar.js';
+import { MediaEmbedResize } from '../../src/mediaembedresize.js';
+import { MediaEmbedStyle } from '../../src/mediaembedstyle.js';
 
 ClassicEditor
 	.create( {
 		attachTo: document.querySelector( '#editor' ),
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [ ArticlePluginSet, MediaEmbed, MediaEmbedToolbar ],
+		plugins: [ ArticlePluginSet, MediaEmbed, MediaEmbedToolbar, MediaEmbedResize, MediaEmbedStyle ],
 		toolbar: [
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
 		],
 		menuBar: { isVisible: true },
 		mediaEmbed: {
 			previewsInData: true,
-			toolbar: [ 'blockQuote' ]
+			toolbar: [
+				'mediaEmbed:breakText',
+				'mediaEmbed:wrapText',
+				'|',
+				'blockQuote'
+			]
 		}
 	} )
 	.then( editor => {

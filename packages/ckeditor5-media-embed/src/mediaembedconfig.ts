@@ -13,11 +13,11 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 /**
  * The configuration of the media embed features.
  *
- * Read more about {@glink features/media-embed#configuration configuring the media embed feature}.
+ * Read more about {@glink features/media-embed/media-embed-configuration configuring the media embed feature}.
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 			mediaEmbed: ... // Media embed feature options.
  * 	} )
  * 	.then( ... )
@@ -65,7 +65,7 @@ export interface MediaEmbedConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ MediaEmbed, ... ],
 	 * 		mediaEmbed: {
 	 * 			providers: [
@@ -99,7 +99,7 @@ export interface MediaEmbedConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ MediaEmbed, ... ],
 	 * 		mediaEmbed: {
 	 * 			extraProviders: [
@@ -246,15 +246,20 @@ export interface MediaEmbedConfig {
  * }
  * ```
  *
- * To implement responsive media, you can use the following HTML structure:
+ * To implement responsive media, set an `aspect-ratio` on the iframe. The HTML `width` and
+ * `height` attributes act as the intrinsic size (useful for layout hints in containers like
+ * table cells), while CSS `width: 100%` and `height: auto` make the element scale with its
+ * container while preserving the declared aspect ratio. The iframe is wrapped in a plain
+ * `<div>` so external styles or queries that target this wrapper continue to work:
  *
  * ```ts
  * {
  * 	...
  * 	html: match =>
- * 		'<div style="position:relative; padding-bottom:100%; height:0">' +
- * 			'<iframe src="..." frameborder="0" ' +
- * 				'style="position:absolute; width:100%; height:100%; top:0; left:0">' +
+ * 		'<div>' +
+ * 			`<iframe src="..." width="1280" height="720" ` +
+ * 				`style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;" ` +
+ * 				'frameborder="0" allowfullscreen>' +
  * 			'</iframe>' +
  * 		'</div>'
  * }

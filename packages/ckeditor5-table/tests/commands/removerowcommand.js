@@ -84,7 +84,7 @@ describe( 'RemoveRowCommand', () => {
 		} );
 
 		it( 'should be false when the first column with rowspan is selected', () => {
-			// (#6427)
+			// (https://github.com/ckeditor/ckeditor5/issues/6427)
 			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01' ],
 				[ '11' ],

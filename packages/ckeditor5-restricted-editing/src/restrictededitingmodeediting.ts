@@ -648,7 +648,7 @@ function isRangeInsideSingleMarker( editor: Editor, range: ModelRange ) {
  * Note: This marker fixer only consider case which is possible to create using StandardEditing mode plugin.
  * Markers created by developer in the data might break in many other ways.
  *
- * See #6003.
+ * See https://github.com/ckeditor/ckeditor5/issues/6003.
  */
 function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 	return writer => {

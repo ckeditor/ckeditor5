@@ -178,7 +178,8 @@ export class ImageStyleUI extends Plugin {
 				.toMany( buttonViews, 'isEnabled', ( ...areEnabled ) => areEnabled.some( identity ) );
 
 			// Focus the editable after executing the command.
-			// Overrides a default behaviour where the focus is moved to the dropdown button (#12125).
+			// Overrides a default behaviour where the focus is moved to the dropdown button.
+			// See https://github.com/ckeditor/ckeditor5/issues/12125.
 			this.listenTo( dropdownView, 'execute', () => {
 				this.editor.editing.view.focus();
 			} );

@@ -86,8 +86,11 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -101,24 +104,26 @@ export interface EditorConfig extends EngineConfig {
 	 * roots names and values equal to the data that should be set in each root:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		initialData: {
-	 * 			header: '<p>Content for header part.</p>',
-	 * 			content: '<p>Content for main part.</p>',
-	 * 			leftSide: '<p>Content for left-side box.</p>',
-	 * 			rightSide: '<p>Content for right-side box.</p>'
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			initialData: '<p>Content for header part.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			initialData: '<p>Content for main part.</p>'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			initialData: '<p>Content for left-side box.</p>'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			initialData: '<p>Content for right-side box.</p>'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -531,8 +536,11 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		placeholder: 'Type some text...'
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			placeholder: 'Type some text...'
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -542,24 +550,26 @@ export interface EditorConfig extends EngineConfig {
 	 * roots names and values equal to the placeholder that should be set in each root:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		placeholder: {
-	 * 			header: 'Type header...',
-	 * 			content: 'Type content...',
-	 * 			leftSide: 'Type left-side...',
-	 * 			rightSide: 'Type right-side...'
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			placeholder: 'Type header...'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			placeholder: 'Type content...'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			placeholder: 'Type left-side...'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			placeholder: 'Type right-side...'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -885,8 +895,11 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		label: 'Article main content'
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			label: 'Article main content'
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -896,24 +909,26 @@ export interface EditorConfig extends EngineConfig {
 	 * roots names and values equal to the label that should be used for each root:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		sideQuote: document.querySelector( '#side-quote' ),
-	 * 		relatedLinks: document.querySelector( '#related-links' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		label: {
-	 * 			header: 'Article header',
-	 * 			content: 'Article main content',
-	 * 			sideQuote: 'Side-quote',
-	 * 			relatedLinks: 'Related links'
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			label: 'Article header'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			label: 'Article main content'
+	 * 		},
+	 * 		sideQuote: {
+	 * 			element: document.querySelector( '#side-quote' ),
+	 * 			label: 'Side-quote'
+	 * 		},
+	 * 		relatedLinks: {
+	 * 			element: document.querySelector( '#related-links' ),
+	 * 			label: 'Related links'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```

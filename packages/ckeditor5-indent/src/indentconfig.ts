@@ -16,7 +16,7 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		indentBlock: {
  * 			offset: 2,
  * 			unit: 'em'
@@ -31,7 +31,7 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		indentBlock: {
  * 			classes: [
  * 				'indent-a', // The first step - smallest indentation.

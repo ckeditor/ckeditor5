@@ -61,7 +61,8 @@ export class LinkCommand extends Command {
 		const selectedElement = selection.getSelectedElement() || first( selection.getSelectedBlocks() );
 
 		// A check for any integration that allows linking elements (e.g. `LinkImage`).
-		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
+		// Currently the selection reads attributes from text nodes only.
+		// See https://github.com/ckeditor/ckeditor5/issues/7429 and https://github.com/ckeditor/ckeditor5/issues/7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
 			this.value = selectedElement.getAttribute( 'linkHref' ) as string | undefined;
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
@@ -385,7 +386,8 @@ export class LinkCommand extends Command {
 		const selectedElement = selection.getSelectedElement();
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
-		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
+		// Currently the selection reads attributes from text nodes only.
+		// See https://github.com/ckeditor/ckeditor5/issues/7429 and https://github.com/ckeditor/ckeditor5/issues/7465.
 		if ( isLinkableElement( selectedElement, model.schema ) ) {
 			return selectedElement.getAttribute( decoratorName ) as boolean | undefined;
 		}

@@ -66,3 +66,7 @@ msgstr "Näytettävä teksti"
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
 msgstr "Linkkejä ei käytettävissä"
+
+msgctxt "The label of the switch button shown when link has empty href attribute."
+msgid "This link has no URL"
+msgstr ""

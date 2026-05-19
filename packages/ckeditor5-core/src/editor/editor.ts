@@ -221,7 +221,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * // The default options can be overridden by the configuration passed to create().
 	 * ClassicEditor
-	 * 	.create( sourceElement, { bar: 3 } )
+	 * 	.create( { bar: 3 } )
 	 * 	.then( editor => {
 	 * 		editor.config.get( 'foo' ); // -> 1
 	 * 		editor.config.get( 'bar' ); // -> 3
@@ -255,7 +255,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * 	} );
 	 *
 	 * ClassicEditor
-	 * 	.create( sourceElement, {
+	 * 	.create( {
 	 * 		// Do not initialize these plugins (note: it is defined by a string):
 	 * 		removePlugins: [ 'Foo' ]
 	 * 	} )
@@ -265,7 +265,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * 	} );
 	 *
 	 * ClassicEditor
-	 * 	.create( sourceElement, {
+	 * 	.create( {
 	 * 		// Load only this plugin. It can also be defined by a string if
 	 * 		// this plugin was built into the editor class.
 	 * 		plugins: [ FooPlugin ]
