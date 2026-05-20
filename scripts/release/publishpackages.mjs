@@ -16,13 +16,10 @@ import parseArguments from './utils/parsearguments.mjs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import { RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
-import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
-const githubToken = await getGitHubToken( cliArguments );
 
 const { version: latestVersion } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
-const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 
 const tasks = new Listr( [
 	{
@@ -79,34 +76,10 @@ const tasks = new Listr( [
 				]
 			} );
 		}
-	},
-	{
-		title: 'Pushing changes.',
-		task: () => {
-			return releaseTools.push( {
-				releaseBranch: cliArguments.branch,
-				version: latestVersion
-			} );
-		},
-		skip: isNonCommittableRelease( cliArguments )
-	},
-	{
-		title: 'Creating the release page.',
-		task: async ( _, task ) => {
-			const releaseUrl = await releaseTools.createGithubRelease( {
-				token: githubToken,
-				version: latestVersion,
-				description: versionChangelog,
-				isLatest: false
-			} );
-
-			task.output = `Release page: ${ releaseUrl }`;
-		},
-		options: {
-			persistentOutput: true
-		},
-		skip: isNonCommittableRelease( cliArguments )
 	}
+
+	// In merged monorepo release flow, pushing tags/commits is handled once by
+	// `ckeditor5-commercial/scripts/release/publishpackages.mjs`.
 ], getListrOptions( cliArguments ) );
 
 tasks.run()
@@ -115,19 +88,3 @@ tasks.run()
 
 		console.error( err );
 	} );
-
-/**
- * @param {ReleaseOptions} cliArguments
- * @returns {Promise.<string|null>}
- */
-async function getGitHubToken( cliArguments ) {
-	if ( process.env.CKE5_RELEASE_TOKEN ) {
-		return process.env.CKE5_RELEASE_TOKEN;
-	}
-
-	if ( !isNonCommittableRelease( cliArguments ) ) {
-		return releaseTools.provideToken();
-	}
-
-	return null;
-}
