@@ -376,10 +376,8 @@ export class DragDrop extends Plugin {
 			// is not possible until 'dragend' event case will be fixed.
 			if ( !this._draggedRange ) {
 				data.dataTransfer.dropEffect = 'copy';
-			}
-
-			// In Firefox it is already set and effect allowed remains the same as originally set.
-			if ( !env.isGecko ) {
+			} else if ( !env.isGecko ) {
+				// In Firefox it is already set and effect allowed remains the same as originally set.
 				if ( data.dataTransfer.effectAllowed == 'copy' ) {
 					data.dataTransfer.dropEffect = 'copy';
 				} else if ( [ 'all', 'copyMove' ].includes( data.dataTransfer.effectAllowed ) ) {

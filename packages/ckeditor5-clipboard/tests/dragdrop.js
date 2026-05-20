@@ -200,6 +200,7 @@ describe( 'Drag and Drop', () => {
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
+			dataTransferMock.effectAllowed = 'copyMove';
 			fireDragging( dataTransferMock, targetPosition );
 			clock.tick( 100 );
 
