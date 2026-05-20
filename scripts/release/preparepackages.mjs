@@ -119,12 +119,10 @@ const tasks = new Listr( [
 				},
 				{
 					title: 'Updating references.',
-					task: async ctx => {
-						ctx.updatedFiles = await updateVersionReferences( {
-							version: latestVersion,
-							releaseDate: new Date()
-						} );
-					}
+					task: () => updateVersionReferences( {
+						version: latestVersion,
+						releaseDate: new Date()
+					} )
 				}
 			], taskOptions );
 		},
@@ -276,32 +274,11 @@ const tasks = new Listr( [
 
 			return Promise.reject( 'Release directory is empty, aborting.' );
 		}
-	},
-	{
-		title: 'Commit & tag phase.',
-		task: ctx => {
-			return releaseTools.commitAndTag( {
-				version: latestVersion,
-				files: [
-					'package.json',
-					`${ PACKAGES_DIRECTORY }/*/package.json`,
-					...ctx.updatedFiles
-				]
-			} );
-		},
-		skip: () => {
-			if ( isNonCommittableRelease( cliArguments ) ) {
-				return true;
-			}
-
-			// When compiling the packages only, do not commit anything.
-			if ( cliArguments.compileOnly ) {
-				return true;
-			}
-
-			return false;
-		}
 	}
+
+	// Note: there is intentionally no commit/tag step here. In the merged monorepo, the commercial
+	// `preparepackages.mjs` creates a single combined commit + tag whose file glob covers everything
+	// this script may modify (root + `packages/*/package.json`, plus `VERSION_REFERENCE_FILES`).
 ], getListrOptions( cliArguments ) );
 
 tasks.run()

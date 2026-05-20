@@ -44,7 +44,6 @@
     "@ckeditor/ckeditor5-dev-docs": "^55.6.0",
     "@ckeditor/ckeditor5-dev-license-checker": "^55.6.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^55.6.0",
-    "@ckeditor/ckeditor5-dev-stale-bot": "^55.6.0",
     "@ckeditor/ckeditor5-dev-tests": "^55.6.0",
     "@ckeditor/ckeditor5-dev-web-crawler": "^55.6.0",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
