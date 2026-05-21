@@ -115,6 +115,7 @@ export class MultiRootEditor extends Editor {
 
 		normalizeRootsConfig( sourceElementsOrData, this.config, false );
 		normalizeRootsAttributesConfig( this.config );
+		normalizeRootEditableOptionsConfig( this.config );
 
 		if ( this.config.get( 'lazyRoots' ) ) {
 			/**
@@ -175,30 +176,12 @@ export class MultiRootEditor extends Editor {
 			}
 		}
 
+		// Register `$rootEditableOptions` unconditionally, so it is always returned by `getRootAttributes()` (e.g. for RH).
+		// The value is set via `config.roots.<rootName>.modelAttributes.$rootEditableOptions` (see `normalizeRootEditableOptionsConfig`),
+		// which also makes it round-trip through RTC's initial-data path.
+		this.registerRootAttribute( '$rootEditableOptions' );
+
 		registerAndInitializeRootConfigAttributes( this );
-
-		// Registering `$rootEditableOptions` attribute to make it available in the editor model.
-		// This allows to store editable options for each root in the model, and make them available on other RTC clients.
-		// We do not use `registerRootAttribute()` method here, as this attribute is used internally
-		// and should not be returned by `getRootsAttributes()` method.
-		this.editing.model.schema.extend( '$root', { allowAttributes: '$rootEditableOptions' } );
-
-		this.data.on( 'init', () => {
-			this.model.enqueueChange( { isUndoable: false }, writer => {
-				for ( const [ rootName, rootConfig ] of rootsConfig ) {
-					const root = this.model.document.getRoot( rootName )!;
-
-					// Set editable config for consistency with `addRoot()` method. This will allow features
-					// to use the same configuration for both initially loaded and dynamically added roots.
-					const rootEditableOptions: RootEditableOptions = {
-						...rootConfig.placeholder && { placeholder: rootConfig.placeholder },
-						...rootConfig.label && { label: rootConfig.label }
-					};
-
-					writer.setAttribute( '$rootEditableOptions', rootEditableOptions, root );
-				}
-			} );
-		} );
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
@@ -447,7 +430,8 @@ export class MultiRootEditor extends Editor {
 
 	public addRoot( rootName: string, options: AddRootOptions & AddRootRootConfig = {} ): void {
 		const initialData: string = options.initialData || options.data || '';
-		const modelAttributes: EditorRootAttributes = options.modelAttributes || options.attributes || {};
+		const modelAttributes: EditorRootAttributes = { ...options.modelAttributes || options.attributes };
+		// eslint-disable-next-line ckeditor5-rules/no-literal-dollar-root -- public API default for `addRoot()`
 		const modelElement: string = options.modelElement || options.elementName || '$root';
 
 		if ( !this.model.schema.isLimit( modelElement ) ) {
@@ -474,6 +458,9 @@ export class MultiRootEditor extends Editor {
 			logWarning( 'multi-root-editor-add-root-element-option-ignored' );
 		}
 
+		// Storing editable options as a root attribute to make them available on other RTC clients.
+		ensureRootEditableOptions( modelAttributes, options );
+
 		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, modelElement );
 
@@ -485,14 +472,6 @@ export class MultiRootEditor extends Editor {
 				this.registerRootAttribute( key );
 				writer.setAttribute( key, modelAttributes[ key ], root );
 			}
-
-			// Storing editable options as a root attribute to make them available on other RTC clients.
-			const rootEditableOptions: RootEditableOptions = {
-				...options.placeholder && { placeholder: options.placeholder },
-				...options.label && { label: options.label }
-			};
-
-			writer.setAttribute( '$rootEditableOptions', rootEditableOptions, root );
 		};
 
 		if ( options.isUndoable ) {
@@ -1236,6 +1215,53 @@ function normalizeRootsAttributesConfig( config: Config<EditorConfig> ): void {
 			config.set( `roots.${ rootName }.modelAttributes`, attributes );
 		}
 	}
+}
+
+/**
+ * Normalize `placeholder` and `label` from `config.roots.<rootName>` into the `$rootEditableOptions` root model attribute,
+ * stored under `config.roots.<rootName>.modelAttributes`. This way the attribute is registered, set on initial data load
+ * and shipped through RTC initial-data path together with the rest of `modelAttributes`.
+ *
+ * This is also required by the revision history feature: on editor load, RH compares the latest revision data against
+ * `initialData` and `modelAttributes` passed to the editor and logs a warning if they do not match. Because `$rootEditableOptions`
+ * ends up in the revision data, it must also be present in `modelAttributes` (even as an empty object when no options
+ * are configured), otherwise the comparison reports a spurious mismatch.
+ */
+function normalizeRootEditableOptionsConfig( config: Config<EditorConfig> ): void {
+	const rootsConfig = config.get( 'roots' )!;
+
+	for ( const [ rootName, rootConfig ] of Object.entries( rootsConfig ) ) {
+		const modelAttributes: EditorRootAttributes = { ...rootConfig.modelAttributes };
+
+		if ( !ensureRootEditableOptions( modelAttributes, rootConfig ) ) {
+			continue;
+		}
+
+		config.set( `roots.${ rootName }.modelAttributes`, modelAttributes );
+	}
+}
+
+/**
+ * Mutates the given `modelAttributes` map by adding the `$rootEditableOptions` entry derived from `placeholder` and `label`.
+ * If `$rootEditableOptions` is already present, the map is left untouched.
+ *
+ * Returns `true` when the map was modified, `false` otherwise — useful to skip downstream work (e.g. `config.set`)
+ * when nothing changed.
+ */
+function ensureRootEditableOptions(
+	modelAttributes: EditorRootAttributes,
+	{ placeholder, label }: RootEditableOptions
+): boolean {
+	if ( '$rootEditableOptions' in modelAttributes ) {
+		return false;
+	}
+
+	modelAttributes.$rootEditableOptions = {
+		...placeholder && { placeholder },
+		...label && { label }
+	} satisfies RootEditableOptions;
+
+	return true;
 }
 
 function isElement( value: any ): value is Element {
