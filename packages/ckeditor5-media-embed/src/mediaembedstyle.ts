@@ -20,7 +20,7 @@ import '../theme/mediaembedstyle.css';
  * * {@link module:media-embed/mediaembedstyle/mediaembedstyleediting~MediaEmbedStyleEditing},
  * * {@link module:media-embed/mediaembedstyle/mediaembedstyleui~MediaEmbedStyleUI}
  *
- * For a detailed overview, check the {@glink features/media-embed/media-embed-alignment Aligning media embeds feature documentation}.
+ * For a detailed overview, check the {@glink features/media-embed/media-embed-styles Media embed styles feature documentation}.
  */
 export class MediaEmbedStyle extends Plugin {
 	/**

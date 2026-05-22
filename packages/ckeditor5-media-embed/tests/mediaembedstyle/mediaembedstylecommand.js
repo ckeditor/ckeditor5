@@ -14,6 +14,14 @@ import { MediaEmbedStyleCommand } from '../../src/mediaembedstyle/mediaembedstyl
 
 const URL = 'https://youtu.be/foo';
 
+// Async factory used inside `beforeEach` to build a VirtualTestEditor with a `mediaEmbed.styles` config.
+function createConfiguredEditor( styleOptions ) {
+	return VirtualTestEditor.create( {
+		plugins: [ Paragraph, MediaEmbedEditing, MediaEmbedStyleEditing, UndoEditing ],
+		mediaEmbed: { styles: { options: styleOptions } }
+	} );
+}
+
 describe( 'MediaEmbedStyleCommand', () => {
 	let editor, model, command;
 
@@ -160,6 +168,224 @@ describe( 'MediaEmbedStyleCommand', () => {
 			expect( _getModelData( model ) ).to.equal(
 				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
 			);
+		} );
+	} );
+
+	describe( 'with a subset config (alignLeft dropped)', () => {
+		let configuredEditor, configuredModel, configuredCommand;
+
+		beforeEach( async () => {
+			configuredEditor = await createConfiguredEditor(
+				[ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
+			);
+			configuredModel = configuredEditor.model;
+			configuredCommand = configuredEditor.commands.get( 'mediaStyle' );
+		} );
+
+		afterEach( async () => {
+			await configuredEditor.destroy();
+		} );
+
+		it( 'rejects execute() with a value not in the resolved options', () => {
+			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'alignLeft' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+		} );
+
+		it( 'preserves previous state when execute() is rejected', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'alignRight' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal(
+				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
+			);
+		} );
+
+		it( 'refresh() falls back to the default when the model attribute is no longer in the resolved list', () => {
+			// The attribute survives in the data (engine doesn't strip unknown attrs). The command
+			// reports the effective default so the default-state button can light up.
+			_setModelData( configuredModel, `[<media mediaStyle="alignLeft" url="${ URL }"></media>]` );
+
+			expect( configuredCommand.value ).to.equal( 'alignCenter' );
+		} );
+	} );
+
+	describe( 'with a custom isDefault style ("natural" replaces alignCenter as the default)', () => {
+		let configuredEditor, configuredModel, configuredCommand;
+
+		beforeEach( async () => {
+			configuredEditor = await createConfiguredEditor( [
+				{ name: 'natural', title: 'Natural', icon: 'center', isDefault: true },
+				'alignBlockLeft'
+			] );
+			configuredModel = configuredEditor.model;
+			configuredCommand = configuredEditor.commands.get( 'mediaStyle' );
+		} );
+
+		afterEach( async () => {
+			await configuredEditor.destroy();
+		} );
+
+		it( 'refresh() reports the custom default name when no attribute is set', () => {
+			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
+
+			expect( configuredCommand.value ).to.equal( 'natural' );
+		} );
+
+		it( 'execute() with the custom default name clears the attribute', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'natural' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+		} );
+
+		it( 'execute() with alignCenter (no longer the resolved default) is rejected — alignCenter was filtered out', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'alignCenter' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal(
+				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
+			);
+		} );
+	} );
+
+	describe( 'with no resolved isDefault style', () => {
+		let configuredEditor, configuredModel, configuredCommand;
+
+		beforeEach( async () => {
+			configuredEditor = await createConfiguredEditor( [ 'alignBlockLeft' ] );
+			configuredModel = configuredEditor.model;
+			configuredCommand = configuredEditor.commands.get( 'mediaStyle' );
+		} );
+
+		afterEach( async () => {
+			await configuredEditor.destroy();
+		} );
+
+		it( 'refresh() value is false when the selected media has no mediaStyle attribute', () => {
+			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
+
+			expect( configuredCommand.value ).to.be.false;
+		} );
+
+		it( 'refresh() value is false when the attribute references an unknown style', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="unknown" url="${ URL }"></media>]` );
+
+			expect( configuredCommand.value ).to.be.false;
+		} );
+
+		it( 'execute({ value: "alignCenter" }) is rejected — alignCenter is not in the resolved list', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'alignCenter' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal(
+				`[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]`
+			);
+		} );
+
+		it( 'execute({ value: null }) still clears the attribute', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="alignBlockLeft" url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: null } );
+
+			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+		} );
+	} );
+
+	describe( 'with alignCenter demoted (isDefault: false + className)', () => {
+		// The normalizer accepts this shape — see utils.js. The command must respect the demotion:
+		// execute({ value: 'alignCenter' }) writes the attribute (not clear), so the configured
+		// className reaches the downcast.
+		let configuredEditor, configuredModel, configuredCommand;
+
+		beforeEach( async () => {
+			configuredEditor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, MediaEmbedEditing, MediaEmbedStyleEditing, UndoEditing ],
+				mediaEmbed: {
+					styles: {
+						options: [
+							{ name: 'alignCenter', isDefault: false, className: 'media-style-explicit-center' },
+							'alignBlockLeft'
+						]
+					}
+				}
+			} );
+			configuredModel = configuredEditor.model;
+			configuredCommand = configuredEditor.commands.get( 'mediaStyle' );
+		} );
+
+		afterEach( async () => {
+			await configuredEditor.destroy();
+		} );
+
+		it( 'execute({ value: "alignCenter" }) writes the attribute (does not clear)', () => {
+			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'alignCenter' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal(
+				`[<media mediaStyle="alignCenter" url="${ URL }"></media>]`
+			);
+		} );
+
+		it( 'refresh() value is false when no attribute and no isDefault style', () => {
+			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
+
+			expect( configuredCommand.value ).to.be.false;
+		} );
+
+		it( 'refresh() reflects the demoted alignCenter when the attribute is applied', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="alignCenter" url="${ URL }"></media>]` );
+
+			expect( configuredCommand.value ).to.equal( 'alignCenter' );
+		} );
+	} );
+
+	describe( 'with multiple isDefault styles', () => {
+		// Both `alignCenter` (built-in default) and `natural` (custom) are marked isDefault.
+		// Any isDefault style must clear the attribute — they all map to attribute-absence.
+		let configuredEditor, configuredModel, configuredCommand;
+
+		beforeEach( async () => {
+			configuredEditor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, MediaEmbedEditing, MediaEmbedStyleEditing, UndoEditing ],
+				mediaEmbed: {
+					styles: {
+						options: [
+							'alignCenter',
+							{ name: 'natural', title: 'Natural', icon: 'center', isDefault: true }
+						]
+					}
+				}
+			} );
+			configuredModel = configuredEditor.model;
+			configuredCommand = configuredEditor.commands.get( 'mediaStyle' );
+		} );
+
+		afterEach( async () => {
+			await configuredEditor.destroy();
+		} );
+
+		it( 'execute({ value: "alignCenter" }) clears the attribute', () => {
+			_setModelData( configuredModel, `[<media mediaStyle="natural" url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'alignCenter' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
+		} );
+
+		it( 'execute({ value: "natural" }) also clears the attribute (the second isDefault)', () => {
+			_setModelData( configuredModel, `[<media url="${ URL }"></media>]` );
+
+			configuredCommand.execute( { value: 'natural' } );
+
+			expect( _getModelData( configuredModel ) ).to.equal( `[<media url="${ URL }"></media>]` );
 		} );
 	} );
 } );

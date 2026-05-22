@@ -92,8 +92,8 @@
 		{
 			"name": "Media embed style",
 			"className": "MediaEmbedStyle",
-			"description": "Adds alignment to media embeds, with optional text wrapping.",
-			"docs": "features/media-embed/media-embed-alignment.html",
+			"description": "Adds configurable styles (such as alignments) to media embeds.",
+			"docs": "features/media-embed/media-embed-styles.html",
 			"path": "src/mediaembedstyle.ts",
 			"requires": [
 				"MediaEmbed"

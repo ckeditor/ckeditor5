@@ -1100,14 +1100,14 @@ Embed media such as YouTube or Vimeo videos and other rich content directly in y
 	</ck:card>
 
 	<ck:card>
-		<ck:card-title level='4' heading-id='media-embed-alignment'>
-			Media embed alignment
+		<ck:card-title level='4' heading-id='media-embed-styles'>
+			Media embed styles
 		</ck:card-title>
 		<ck:card-description>
-			The media embed alignment feature lets you align media embeds within the surrounding content, with optional text wrapping.
+			The media embed styles feature lets you apply configurable styles to media embeds, including built-in alignments and integrator-defined custom styles.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-alignment}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/media-embed-styles}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>

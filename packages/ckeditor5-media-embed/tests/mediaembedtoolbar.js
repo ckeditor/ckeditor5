@@ -6,6 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { MediaEmbed } from '../src/mediaembed.js';
+import { MediaEmbedStyle } from '../src/mediaembedstyle.js';
 import { MediaEmbedToolbar } from '../src/mediaembedtoolbar.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -86,6 +87,125 @@ describe( 'MediaEmbedToolbar', () => {
 			expect( toolbar.element.getAttribute( 'aria-label' ) ).to.equal( 'Media toolbar' );
 
 			toolbar.destroy();
+		} );
+
+		it( 'normalizes media style dropdown definitions in the toolbar config to their registered names', async () => {
+			// Custom dropdown definition entries in `config.mediaEmbed.toolbar` must be flattened
+			// to their `.name` strings so the toolbar resolves them against the component factory
+			// (and renders the SplitButtonView our UI plugin registers) instead of treating each
+			// object as a generic nested-toolbar grouping.
+			const localElement = document.createElement( 'div' );
+			document.body.appendChild( localElement );
+
+			const localEditor = await ClassicTestEditor.create( localElement, {
+				plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
+				mediaEmbed: {
+					toolbar: [
+						'fake_button',
+						{
+							name: 'fake_dropdown',
+							title: 'Fake dropdown',
+							items: [ 'fake_button' ],
+							defaultItem: 'fake_button'
+						}
+					]
+				}
+			} );
+
+			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
+			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
+
+			expect( items ).to.deep.equal( [ 'fake_button', 'fake_dropdown' ] );
+
+			localElement.remove();
+			await localEditor.destroy();
+		} );
+
+		it( 'drops mediaEmbed: dropdown names that the style UI did not register', async () => {
+			// `wrapText` groups `alignLeft` + `alignRight`. Filtering both out leaves zero items,
+			// so `MediaEmbedStyleUI` skips registering `mediaEmbed:wrapText`. Without the toolbar-side
+			// filter the contextual toolbar would crash on render with `componentfactory-item-missing`.
+			const localElement = document.createElement( 'div' );
+			document.body.appendChild( localElement );
+
+			const localEditor = await ClassicTestEditor.create( localElement, {
+				plugins: [ Paragraph, MediaEmbed, MediaEmbedStyle, MediaEmbedToolbar ],
+				mediaEmbed: {
+					styles: { options: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ] },
+					toolbar: [ 'mediaEmbed:wrapText', 'mediaEmbed:breakText' ]
+				}
+			} );
+
+			const factory = localEditor.ui.componentFactory;
+			expect( factory.has( 'mediaEmbed:wrapText' ) ).to.be.false;
+			expect( factory.has( 'mediaEmbed:breakText' ) ).to.be.true;
+
+			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
+			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
+
+			expect( items ).to.deep.equal( [ 'mediaEmbed:breakText' ] );
+
+			localElement.remove();
+			await localEditor.destroy();
+		} );
+
+		it( 'passes generic nested toolbar groupings ({ label, items }) through unchanged', async () => {
+			// Generic groupings have no `defaultItem` so they are not media-style dropdowns —
+			// the toolbar machinery handles them. The filter must not call `.startsWith()` on them.
+			const localElement = document.createElement( 'div' );
+			document.body.appendChild( localElement );
+
+			const grouping = { label: 'Group', items: [ 'fake_button' ] };
+			const localEditor = await ClassicTestEditor.create( localElement, {
+				plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
+				mediaEmbed: {
+					toolbar: [ 'fake_button', grouping ]
+				}
+			} );
+
+			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
+			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
+
+			expect( items ).to.deep.equal( [ 'fake_button', grouping ] );
+
+			localElement.remove();
+			await localEditor.destroy();
+		} );
+
+		it( 'drops custom dropdown objects whose name was not registered', async () => {
+			const warnStub = sinon.stub( console, 'warn' );
+
+			const localElement = document.createElement( 'div' );
+			document.body.appendChild( localElement );
+
+			const localEditor = await ClassicTestEditor.create( localElement, {
+				plugins: [ Paragraph, MediaEmbed, MediaEmbedStyle, MediaEmbedToolbar ],
+				mediaEmbed: {
+					toolbar: [
+						'mediaEmbed:breakText',
+						{
+							name: 'mediaEmbed:custom',
+							title: 'Custom',
+							items: [ 'mediaEmbed:alignCenter' ],
+							defaultItem: 'mediaEmbed:notListed'
+						}
+					]
+				}
+			} );
+
+			sinon.assert.calledWith( warnStub, sinon.match( /^media-style-configuration-definition-invalid/ ) );
+
+			const factory = localEditor.ui.componentFactory;
+			expect( factory.has( 'mediaEmbed:custom' ) ).to.be.false;
+
+			const repo = localEditor.plugins.get( 'WidgetToolbarRepository' );
+			const items = repo._toolbarDefinitions.get( 'mediaEmbed' ).itemsConfig;
+
+			expect( items ).to.deep.equal( [ 'mediaEmbed:breakText' ] );
+
+			warnStub.restore();
+			localElement.remove();
+			await localEditor.destroy();
 		} );
 	} );
 

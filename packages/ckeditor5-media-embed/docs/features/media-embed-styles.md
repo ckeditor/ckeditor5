@@ -1,85 +1,274 @@
 ---
 category: features-media-embed
-menu-title: Styling media
-meta-title: Styling media embeds | CKEditor 5 Documentation
-meta-description: Style media in the editor content, including dedicated styles for specific non-previewable media providers.
-order: 60
+menu-title: Media embed styles
+meta-title: Media embed styles | CKEditor 5 Documentation
+meta-description: Apply alignment and other configurable styles to media embeds, with support for custom styles.
+modified_at: 2026-05-21
+order: 55
 ---
 
-# Styling media in the editor content
+# Media embed styles
 
-While the editor comes with default styles for popular media providers like Facebook, Instagram, or X, you can create additional styles for non-previewable media in your editor content to help users identify them.
+The media embed styles feature lets you apply a style (for example, an alignment) to a media embed such as a YouTube or Vimeo video, a Spotify player, and so on. It is implemented by the {@link module:media-embed/mediaembedstyle~MediaEmbedStyle} plugin.
 
-## Styling non-previewable media
+Out of the box the plugin ships five alignment styles. You can pick a subset of the built-ins, override their labels or icons, or register completely new styles through {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles `config.mediaEmbed.styles`}.
 
-The HTML structure of every non-previewable media in the editor is as follows:
+## Installation
 
-```html
-<figure class="media ck-widget" contenteditable="false">
-	<div class="ck-media__wrapper" data-oembed-url="[ URL of the media ]">
-		<div class="ck ck-reset_all ck-media__placeholder">
-			<div class="ck-media__placeholder__icon">
-				<svg class="ck ck-icon" ...>...</svg>
-			</div>
-			<a class="ck-media__placeholder__url" target="new" href="[ URL of the media]">
-				<span class="ck-media__placeholder__url__text">[ URL of the media]</span>
-			</a>
-		</div>
-	</div>
-</figure>
+The {@link module:media-embed/mediaembedstyle~MediaEmbedStyle} plugin is not loaded by default. Add it explicitly alongside {@link module:media-embed/mediaembed~MediaEmbed} to enable the feature:
+
+<code-switcher>
+```js
+import { ClassicEditor, MediaEmbed, MediaEmbedStyle } from 'ckeditor5';
+
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ MediaEmbed, MediaEmbedStyle, /* ... */ ],
+		toolbar: [ 'mediaEmbed', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
+</code-switcher>
 
-For example, you can create a dedicated style for media coming from the [ckeditor.com](https://ckeditor.com) domain. To accomplish that, you will need some additional styles included in your website.
+## Built-in styles
 
-First, you must hide the generic media icon displayed for non-previewable media:
+The plugin provides the following five style options out of the box. Each option registers a toolbar button under the name `mediaEmbed:<style-name>` (used to place it in `config.mediaEmbed.toolbar`) and, for non-default styles, applies a CSS class to the media `<figure>` element. The default `alignCenter` option emits no class.
 
-```css
-.ck-media__wrapper[data-oembed-url*="ckeditor.com"] .ck-media__placeholder__icon * {
-	display: none;
-}
-```
+**Block alignments** &ndash; the media takes a full line, with surrounding text appearing above and below.
 
-Then, give the media a distinctive background color:
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/object-left.svg Left aligned media} **Left aligned** &ndash; button `mediaEmbed:alignBlockLeft`, class `media-style-block-align-left`.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/object-center.svg Centered media} **Centered** &ndash; button `mediaEmbed:alignCenter`; default, no class.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/object-right.svg Right aligned media} **Right aligned** &ndash; button `mediaEmbed:alignBlockRight`, class `media-style-block-align-right`.
 
-```css
-.ck-media__wrapper[data-oembed-url*="ckeditor.com"] .ck-media__placeholder {
-	background: hsl(282, 44%, 47%);
-}
-```
+**Wrap-text alignments** &ndash; the media floats to one side and surrounding text wraps around it.
 
-and introduce the custom icon identifying the media:
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/object-inline-left.svg Left aligned media} **Left aligned** &ndash; button `mediaEmbed:alignLeft`, class `media-style-align-left`.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/object-inline-right.svg Right aligned media} **Right aligned** &ndash; button `mediaEmbed:alignRight`, class `media-style-align-right`.
 
-```css
-.ck-media__wrapper[data-oembed-url*="ckeditor.com"] .ck-media__placeholder__icon {
-	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxMDFweCIgaGVpZ2h0PSIxMDFweCIgdmlld0JveD0iMCAwIDEwMSAxMDEiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+bG9nby1lY29zeXN0ZW0tM2NhYTI3MDIxODwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGcgaWQ9ImxvZ28tZWNvc3lzdGVtLTNjYWEyNzAyMTgiIGZpbGw9IiNGRkZGRkYiIGZpbGwtcnVsZT0ibm9uemVybyI+ICAgICAgICAgICAgPHJlY3QgaWQ9IlJlY3RhbmdsZSIgZmlsbC1vcGFjaXR5PSIwIiB4PSIwIiB5PSIwIiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjEwMSI+PC9yZWN0PiAgICAgICAgICAgIDxwYXRoIGQ9Ik02NC44LDM4Ljg5MTIzODIgQzY2LjEwODU1MzgsMzkuOTE3NzU4MiA2Ny43MjMxODI2LDQwLjQ3MzI5MyA2OS4zODQ0NTk1LDQwLjQ2ODU4MzQgQzczLjQzMTIxNjIsNDAuNDY4NTgzNCA3Ni43MTE1MTM1LDM3LjI1Nzc4MTkgNzYuNzExNTEzNSwzMy4yOTUwOTE4IEM3Ni43MTE1MTM1LDI5LjMzMzAyNTIgNzMuNDMxMjE2MiwyNi4xMjA5NzY4IDY5LjM4NDQ1OTUsMjYuMTIwOTc2OCBDNjUuMzM3NzAyNywyNi4xMjA5NzY4IDYyLjA1ODAyNywyOS4zMzMwMjUyIDYyLjA1ODAyNywzMy4yOTUwOTE4IEM2Mi4wNTgwMjcsMzQuMzY0MzE5OSA2Mi4yOTY3Mjk3LDM1LjM3ODY4MzggNjIuNzI1MDI3LDM2LjI5MDE3NzMgTDU4LjM3MzA1NDEsNDAuNTUwODc5NyBDNTYuMjU3MjU2OCwzOS4xMjEwNDg1IDUzLjc2MjYxNjcsMzguMzYwMzA1NSA1MS4yMTEzNTE0LDM4LjM2NjkxMTIgQzQ4LjMzMzg2NDksMzguMzY2OTExMiA0NS42ODIwMjcsMzkuMzEwODI0NSA0My41NjEwNTQxLDQwLjg5OTM5MTkgTDM5LjY1NjY0ODYsMzcuMDc2MzU2MSBDNDAuMzc1NDcxNiwzNS45NDcwNDM1IDQwLjc1Njg0NDgsMzQuNjM0OTA3OSA0MC43NTU2NzU3LDMzLjI5NTA5MTggQzQwLjc1NTY3NTcsMjkuMzMzMDI1MiAzNy40NzUzNzg0LDI2LjEyMDk3NjggMzMuNDI4NjIxNiwyNi4xMjA5NzY4IEMyOS4zODE4NjQ5LDI2LjEyMDk3NjggMjYuMTAxNTY3NiwyOS4zMzMwMjUyIDI2LjEwMTU2NzYsMzMuMjk1MDkxOCBDMjYuMTAxNTY3NiwzNy4yNTcxNTg1IDI5LjM4MTg2NDksNDAuNDY5MjA2OSAzMy40Mjg2MjE2LDQwLjQ2OTIwNjkgQzM0Ljg0NTkxODksNDAuNDY5MjA2OSAzNi4xNjkzNTE0LDQwLjA3NTE4MjMgMzcuMjkwMTM1MSwzOS4zOTMxMjA4IEw0MS4xOTUxNjIyLDQzLjIxNjE1NjYgQzM5LjU3MjcyOTcsNDUuMjkyODkwNSAzOC42MDc5NzMsNDcuODg5NTg3MiAzOC42MDc5NzMsNTAuNzA2OTg3NiBDMzguNjA2NjIzNyw1My4yMjAyMjEzIDM5LjM4NjcwNSw1NS42NzEzMjggNDAuODM5NTk0Niw1Ny43MTkwMDM5IEwzNi40ODcsNjEuOTgwMzI5NyBDMzUuNTI1MTEwNSw2MS41NDc5NzY5IDM0LjQ4MjY4OTMsNjEuMzI1Mjc3MyAzMy40Mjg2MjE2LDYxLjMyNjk0NzIgQzI5LjM4MTg2NDksNjEuMzI2OTQ3MiAyNi4xMDE1Njc2LDY0LjUzODk5NTYgMjYuMTAxNTY3Niw2OC41MDEwNjIzIEMyNi4xMDE1Njc2LDcyLjQ2Mzc1MjQgMjkuMzgxODY0OSw3NS42NzUxNzczIDMzLjQyODYyMTYsNzUuNjc1MTc3MyBDMzcuNDc1Mzc4NCw3NS42NzUxNzczIDQwLjc1NTY3NTcsNzIuNDYzNzUyNCA0MC43NTU2NzU3LDY4LjUwMTA2MjMgQzQwLjc1NTY3NTcsNjYuODAyMTQzIDQwLjE1MjcwMjcsNjUuMjQxMDA3NyAzOS4xNDM4MTA4LDY0LjAxMjE3NDggTDQzLjA5MjM1MTQsNjAuMTQ2MTIwNCBDNDUuMjg1NDMyNCw2MS45NTYwMTQ5IDQ4LjExODE2MjIsNjMuMDQ3MDY0IDUxLjIxMDcyOTcsNjMuMDQ3MDY0IEM1NC4wODg4Mzc4LDYzLjA0NzA2NCA1Ni43NDAwNTQxLDYyLjEwMzE1MDcgNTguODYxNjQ4Niw2MC41MTM5NTk4IEw2My4xNTcwNTQxLDY0LjcxOTc5OCBDNjIuNDM4MjMxMSw2NS44NDkxMTA2IDYyLjA1Njg1NzksNjcuMTYxMjQ2MiA2Mi4wNTgwMjcsNjguNTAxMDYyMyBDNjIuMDU4MDI3LDcyLjQ2Mzc1MjQgNjUuMzM4MzI0Myw3NS42NzUxNzczIDY5LjM4NDQ1OTUsNzUuNjc1MTc3MyBDNzMuNDMxMjE2Miw3NS42NzUxNzczIDc2LjcxMTUxMzUsNzIuNDYzNzUyNCA3Ni43MTE1MTM1LDY4LjUwMTA2MjMgQzc2LjcxMTUxMzUsNjQuNTM4OTk1NiA3My40MzEyMTYyLDYxLjMyNjk0NzIgNjkuMzg0NDU5NSw2MS4zMjY5NDcyIEM2Ny45NjcxNjIyLDYxLjMyNjk0NzIgNjYuNjQ0MzUxNCw2MS43MjA5NzE4IDY1LjUyMjk0NTksNjIuNDAzNjU2OCBMNjEuMjI3NTQwNSw1OC4xOTc4MTg2IEM2Mi44NDk5NzMsNTYuMTIwNDYxMiA2My44MTQxMDgxLDUzLjUyMzc2NDUgNjMuODE0MTA4MSw1MC43MDY5ODc2IEM2My44MTQxMDgxLDQ3LjY3ODIzNTUgNjIuNzAwMTYyMiw0NC45MDUxMDA1IDYwLjg1MTQ1OTUsNDIuNzU3OTE2IEw2NC44LDM4Ljg5MTIzODIgWiBNNTUuOTc5MTg5MiwxLjMwNjc4MDg3IEw5Mi4wMjA4MTA4LDIxLjY4MDcxODkgQzk1LjEwMTU2NzYsMjMuNDIyNjU2NiA5NywyNi42NDIxODY1IDk3LDMwLjEyNjA2MTkgTDk3LDcwLjg3MzkzODEgQzk3LDc0LjM1NzgxMzUgOTUuMTAxNTY3Niw3Ny41NzczNDM0IDkyLjAyMDgxMDgsNzkuMzE5MjgxMSBMNTUuOTc5MTg5Miw5OS42OTM4NDI2IEM1Mi44ODY4MTA4LDEwMS40MzUzODYgNDkuMTEzMTg5MiwxMDEuNDM1Mzg2IDQ2LjAyMDgxMDgsOTkuNjkzODQyNiBMOS45NzkxODkxOSw3OS4zMTkyODExIEM2Ljg5ODQzMjQzLDc3LjU3NzM0MzQgNSw3NC4zNTc4MTM1IDUsNzAuODczOTM4MSBMNSwzMC4xMjYwNjE5IEM1LDI2LjY0MjE4NjUgNi44OTg0MzI0MywyMy40MjI2NTY2IDkuOTc5MTg5MTksMjEuNjgwNzE4OSBMNDYuMDIwODEwOCwxLjMwNjE1NzQxIEM0OS4xMTMxODkyLC0wLjQzNTM4NTgwMyA1Mi44ODY4MTA4LC0wLjQzNTM4NTgwMyA1NS45NzkxODkyLDEuMzA2MTU3NDEgTDU1Ljk3OTE4OTIsMS4zMDY3ODA4NyBaIE01MS4yMTEzNTE0LDU5Ljc5NjM2MTMgQzQ2LjA4NDIxNjIsNTkuNzk2MzYxMyA0MS45MjgwNTQxLDU1LjcyNzA2MDEgNDEuOTI4MDU0MSw1MC43MDYzNjQxIEM0MS45MjgwNTQxLDQ1LjY4NjkxNTEgNDYuMDg0MjE2Miw0MS42MTY5OTA0IDUxLjIxMTM1MTQsNDEuNjE2OTkwNCBDNTYuMzM4NDg2NSw0MS42MTY5OTA0IDYwLjQ5NDY0ODYsNDUuNjg2OTE1MSA2MC40OTQ2NDg2LDUwLjcwNjk4NzYgQzYwLjQ5NDY0ODYsNTUuNzI3MDYwMSA1Ni4zMzg0ODY1LDU5Ljc5Njk4NDcgNTEuMjExMzUxNCw1OS43OTY5ODQ3IEw1MS4yMTEzNTE0LDU5Ljc5NjM2MTMgWiBNNjkuMzg0NDU5NSw3Mi40MjUwOTgxIEM2Ny4xNzE0ODY1LDcyLjQyNTA5ODEgNjUuMzc3NDg2NSw3MC42NjgxOTc0IDY1LjM3NzQ4NjUsNjguNTAxMDYyMyBDNjUuMzc3NDg2NSw2Ni4zMzQ1NTA2IDY3LjE3MTQ4NjUsNjQuNTc3NjQ5OSA2OS4zODQ0NTk1LDY0LjU3NzY0OTkgQzcxLjU5NzQzMjQsNjQuNTc3NjQ5OSA3My4zOTIwNTQxLDY2LjMzNDU1MDYgNzMuMzkyMDU0MSw2OC41MDEwNjIzIEM3My4zOTIwNTQxLDcwLjY2ODE5NzQgNzEuNTk4MDU0MSw3Mi40MjUwOTgxIDY5LjM4NDQ1OTUsNzIuNDI1MDk4MSBaIE0zMy40Mjg2MjE2LDcyLjQyNTA5ODEgQzMxLjIxNTY0ODYsNzIuNDI1MDk4MSAyOS40MjE2NDg2LDcwLjY2ODE5NzQgMjkuNDIxNjQ4Niw2OC41MDEwNjIzIEMyOS40MjE2NDg2LDY2LjMzNDU1MDYgMzEuMjE1NjQ4Niw2NC41Nzc2NDk5IDMzLjQyODYyMTYsNjQuNTc3NjQ5OSBDMzUuNjQxNTk0Niw2NC41Nzc2NDk5IDM3LjQzNTU5NDYsNjYuMzM0NTUwNiAzNy40MzU1OTQ2LDY4LjUwMTA2MjMgQzM3LjQzNTU5NDYsNzAuNjY4MTk3NCAzNS42NDE1OTQ2LDcyLjQyNTA5ODEgMzMuNDI4NjIxNiw3Mi40MjUwOTgxIFogTTMzLjQyODYyMTYsMzcuMjE4NTA0MiBDMzEuMjE1NjQ4NiwzNy4yMTg1MDQyIDI5LjQyMTY0ODYsMzUuNDYyMjI2OSAyOS40MjE2NDg2LDMzLjI5NTA5MTggQzI5LjQyMTY0ODYsMzEuMTI3OTU2NyAzMS4yMTU2NDg2LDI5LjM3MTY3OTUgMzMuNDI4NjIxNiwyOS4zNzE2Nzk1IEMzNS42NDE1OTQ2LDI5LjM3MTY3OTUgMzcuNDM1NTk0NiwzMS4xMjc5NTY3IDM3LjQzNTU5NDYsMzMuMjk1MDkxOCBDMzcuNDM1NTk0NiwzNS40NjIyMjY5IDM1LjY0MTU5NDYsMzcuMjE4NTA0MiAzMy40Mjg2MjE2LDM3LjIxODUwNDIgWiBNNjkuMzg0NDU5NSwzNy4yMTg1MDQyIEM2Ny4xNzE0ODY1LDM3LjIxODUwNDIgNjUuMzc3NDg2NSwzNS40NjIyMjY5IDY1LjM3NzQ4NjUsMzMuMjk1MDkxOCBDNjUuMzc3NDg2NSwzMS4xMjc5NTY3IDY3LjE3MTQ4NjUsMjkuMzcxNjc5NSA2OS4zODQ0NTk1LDI5LjM3MTY3OTUgQzcxLjU5NzQzMjQsMjkuMzcxNjc5NSA3My4zOTIwNTQxLDMxLjEyNzk1NjcgNzMuMzkyMDU0MSwzMy4yOTUwOTE4IEM3My4zOTIwNTQxLDM1LjQ2MjIyNjkgNzEuNTk4MDU0MSwzNy4yMTg1MDQyIDY5LjM4NDQ1OTUsMzcuMjE4NTA0MiBaIiBpZD0iU2hhcGUiPjwvcGF0aD4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
-}
-```
+<info-box>
+	The actual styling of the media embeds is the job of the integrator. CKEditor&nbsp;5 comes with some default styles, but they will only be applied to the media inside the editor. The integrator needs to style them appropriately on the target pages.
 
-Finally, make sure the URL in the placeholder has the right contrast:
+	You can find the source of the default styles applied by the editor here: [`ckeditor5-media-embed/theme/mediaembedstyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/theme/mediaembedstyle.css).
 
-```css
-.ck-media__wrapper[data-oembed-url*="ckeditor.com"] .ck-media__placeholder__url .ck-media__placeholder__url__text {
-	color: hsl(282, 100%, 93%);
-}
+	Read more about {@link getting-started/setup/css styling the content of the editor}.
+</info-box>
 
-.ck-media__wrapper[data-oembed-url*="ckeditor.com"] .ck-media__placeholder__url .ck-media__placeholder__url__text:hover {
-	color: hsl(0, 100%, 100%);
-}
-```
+The demo below shows the five built-in alignment styles, wired through the two compact split-button dropdowns and combined with the {@link features/media-embed-resize media embed resize feature}. Select a figure and try the **Wrap text** and **Break text** dropdowns in its contextual toolbar &ndash; the action button reflects whichever alignment is currently applied.
 
-Before you load the data, make sure the `ckeditor.com` provider is {@link features/media-embed-configuration#extending-media-providers enabled in your configuration}. In its most basic form, it could look like this:
+{@snippet features/media-embed-styles-default}
+
+## Configuring the styles
+
+You can customize the set of available styles through {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles `config.mediaEmbed.styles`}. The configuration accepts an `options` array whose entries can be:
+
+* a **string** referencing a built-in style by name (`'alignLeft'`, `'alignBlockLeft'`, `'alignCenter'`, `'alignBlockRight'`, `'alignRight'`),
+* an **object** whose `name` matches a built-in (its fields are shallow-merged on top of the built-in),
+* an **object** with a new `name` (a fully custom style). See {@link module:media-embed/mediaembedconfig~MediaStyleOptionDefinition} for the required and optional fields.
+
+When `config.mediaEmbed.styles` is not provided, all five built-in styles are available. This is the default behavior.
+
+<info-box warning>
+	When a configured style option misses a required field (`name`, `title`, `icon`, or `className` for non-default styles), or references an unknown built-in name, the entry is dropped from the resolved options and a console warning is emitted under the `media-style-configuration-definition-invalid` error code. The other valid entries continue to work as configured.
+</info-box>
+
+### Picking a subset of built-in styles
+
+Pass only the styles you want to expose. Filtered-out styles disappear from the toolbar and cannot be applied through the `'mediaStyle'` command.
 
 ```js
 mediaEmbed: {
-	extraProviders: [
+	styles: {
+		options: [ 'alignBlockLeft', 'alignCenter', 'alignBlockRight' ]
+	}
+}
+```
+
+In the example above the wrap-text floats (`alignLeft`, `alignRight`) are dropped. The `mediaEmbed:wrapText` dropdown auto-skips because both of its items were filtered out, and only the three block alignments remain.
+
+### Overriding a built-in style
+
+To customize a built-in style, pass an object whose `name` matches the built-in plus the fields you want to change. Fields you set replace the built-in's defaults. Fields you omit are inherited.
+
+```js
+mediaEmbed: {
+	styles: {
+		options: [
+			'alignLeft',
+			{ name: 'alignCenter', title: 'Center' },
+			'alignRight'
+		]
+	}
+}
+```
+
+### Adding a custom style
+
+To add a custom style, supply an object with a fresh `name`, a `title`, an `icon`, and a `className`. You own the CSS for the resulting class. The plugin only writes the class to the figure when the style is applied.
+
+```js
+import sideMediaIcon from 'path/to/side-media.svg';
+
+ClassicEditor
+	.create( {
+		// ... Other configuration options ...
+		mediaEmbed: {
+			toolbar: [ 'mediaEmbed:alignCenter', 'mediaEmbed:side' ],
+			styles: {
+				options: [
+					'alignCenter',
+					{
+						name: 'side',
+						title: 'Side media',
+						icon: sideMediaIcon,
+						className: 'media-style-side'
+					}
+				]
+			}
+		}
+	} );
+```
+
+<info-box hint>
+	The `icon` field accepts either a full SVG XML string (as shown above) or one of the short aliases shipped with the plugin: `'inlineLeft'`, `'left'`, `'center'`, `'right'`, `'inlineRight'`.
+</info-box>
+
+```css
+/* Your CSS for the custom style. */
+.ck-content .media.media-style-side {
+	float: right;
+	margin: 0 0 1em 1.5em;
+	clear: none;
+	box-shadow: 0 4px 16px rgba( 0, 0, 0, 0.2 );
+}
+```
+
+The same mechanism supports purely semantical styles. There is no requirement that a custom style be alignment-flavored.
+
+To group several custom styles under a single split button in the toolbar, see [Custom split-button dropdowns](#toolbar-configuration) below.
+
+### Custom default style
+
+To mark a style as the default, set `isDefault: true`. Default styles do not need a `className` because the default state is encoded on the model as the absence of the `mediaStyle` attribute, so no class is written to the view. Applying a default style clears any other style that was previously set.
+
+```js
+import naturalIcon from 'path/to/natural.svg';
+
+mediaEmbed: {
+	styles: {
+		options: [
+			'alignBlockLeft',
+			{
+				name: 'natural',
+				title: 'Natural position',
+				icon: naturalIcon,
+				isDefault: true
+			},
+			'alignBlockRight'
+		]
+	}
+}
+```
+
+<info-box warning>
+	Only one style should be marked as the default. If multiple are marked, the first one in the resolved options wins. If none is marked, the command has no default. In that case, `command.value` is `false` whenever the selected media has no `mediaStyle` attribute.
+</info-box>
+
+### Demo
+
+The demo below replaces the built-in alignments with three custom semantic styles &ndash; a Featured frame and two side asides grouped in a custom split-button dropdown. Select a figure to open the contextual toolbar.
+
+{@snippet features/media-embed-styles-custom}
+
+## Toolbar configuration
+
+Each entry in {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#toolbar `config.mediaEmbed.toolbar`} is either a built-in component name (string) or an inline split-button dropdown definition (object). You can mix them freely.
+
+**Built-in dropdowns**: `mediaEmbed:wrapText` groups the wrap-text alignments and `mediaEmbed:breakText` groups the block alignments. Each dropdown's action button reflects whichever option from its group is currently applied to the selected media, falling back to the dropdown's default (`alignLeft` for wrap, `alignCenter` for break) when none is applied. A dropdown is skipped automatically when fewer than two of its items survive your style configuration.
+
+```js
+mediaEmbed: {
+	toolbar: [ 'mediaEmbed:wrapText', 'mediaEmbed:breakText' ]
+}
+```
+
+**Flat buttons**: every style is also exposed as an individual button named `mediaEmbed:<style-name>`.
+
+```js
+mediaEmbed: {
+	toolbar: [
+		'mediaEmbed:alignLeft', 'mediaEmbed:alignBlockLeft',
+		'mediaEmbed:alignCenter',
+		'mediaEmbed:alignBlockRight', 'mediaEmbed:alignRight'
+	]
+}
+```
+
+**Custom split-button dropdowns**: declare your own grouping inline, alongside built-in entries. The definition follows the {@link module:media-embed/mediaembedconfig~MediaStyleDropdownDefinition} shape &ndash; `name`, `title`, `items`, `defaultItem` &ndash; and all names use the full `mediaEmbed:` prefix.
+
+```js
+mediaEmbed: {
+	toolbar: [
+		'mediaEmbed:alignCenter',
 		{
-			name: 'ckeditor',
-			url: /^ckeditor\.com/
+			name: 'mediaEmbed:myAlignments',
+			title: 'Alignment',
+			items: [ 'mediaEmbed:alignBlockLeft', 'mediaEmbed:alignBlockRight' ],
+			defaultItem: 'mediaEmbed:alignBlockLeft'
 		}
 	]
 }
 ```
 
-Having your styles defined and the media provider configured, insert the new media into your editor, for example, the following URL: `https://ckeditor.com/path/to/media`. You should see something like this:
+Custom dropdowns inherit the same item-filtering and skip behavior as the built-in dropdowns:
 
-{@img assets/img/features-media-embed-ckeditor.png 791 The example media style of the media}
+* Items referencing styles that are not in the resolved `config.mediaEmbed.styles.options` list are filtered out at registration time. For custom dropdowns this also emits a console warning under `media-style-configuration-definition-invalid` so you know the config was not fully honored. Built-in dropdowns auto-skip silently.
+* A dropdown that ends up with fewer than two items is skipped entirely.
+* If the configured `defaultItem` was filtered out, the first surviving item becomes the new default.
+
+A dropdown definition is also dropped (with the same warning) when its `name` lacks the `mediaEmbed:` prefix, `items` is empty or contains non-prefixed entries, `defaultItem` is not one of `items`, or `title` is empty.
+
+## Interaction with resizing
+
+<info-box hint>
+	If you use the built-in alignment styles, you should combine them with the optional {@link features/media-embed-resize media embed resize feature} as the two features were designed to be used together: resizing controls the width, alignment controls the position.
+
+	Without the resize feature, embeds span the full width of the editor by default and the alignment classes have no visible effect, because the figure already occupies the full row. Alignment starts producing a visible effect once the figure is narrower than its container (via the resize feature, your own CSS, or `style` preserved by other means).
+
+	Custom non-alignment styles (for example, a drop shadow or border treatment) do not depend on width and work regardless of whether resizing is enabled.
+</info-box>
+
+The HTML representation of an aligned and {@link features/media-embed-resize resized} media embed looks like this:
+
+```html
+<figure class="media media_resized media-style-align-left" style="width:50%;">...</figure>
+```
+
+## Common API
+
+The {@link module:media-embed/mediaembedstyle~MediaEmbedStyle} plugin registers:
+
+* A button for each style option, for example `'mediaEmbed:alignLeft'` and `'mediaEmbed:alignCenter'` (to use in the media embed contextual toolbar).
+* Two built-in split-button dropdowns: `'mediaEmbed:wrapText'` and `'mediaEmbed:breakText'`. Each is skipped automatically when fewer than two of its items survive your style configuration.
+* Any custom split-button dropdowns declared inline in {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#toolbar `config.mediaEmbed.toolbar`}.
+* The {@link module:media-embed/mediaembedstyle/mediaembedstylecommand~MediaEmbedStyleCommand `'mediaStyle'` command}. It accepts a value matching one of the resolved {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles configured options}:
+
+	```js
+	// Float the selected media to the left so text wraps around it.
+	editor.execute( 'mediaStyle', { value: 'alignLeft' } );
+
+	// Clear the style to return to the default state.
+	editor.execute( 'mediaStyle', { value: null } );
+	```
+
+	Values outside the resolved options are silently rejected. Passing the effective default name (or `null`) always clears the attribute.
+
+<info-box>
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
+## Contribute
+
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-media-embed](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-media-embed).

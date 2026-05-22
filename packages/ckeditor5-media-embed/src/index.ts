@@ -22,7 +22,12 @@ export { MediaEmbedStyleEditing } from './mediaembedstyle/mediaembedstyleediting
 export { MediaEmbedStyleUI } from './mediaembedstyle/mediaembedstyleui.js';
 export { MediaEmbedStyleCommand } from './mediaembedstyle/mediaembedstylecommand.js';
 
-export type { MediaEmbedConfig } from './mediaembedconfig.js';
+export type {
+	MediaEmbedConfig,
+	MediaStyleConfig,
+	MediaStyleOptionDefinition,
+	MediaStyleDropdownDefinition
+} from './mediaembedconfig.js';
 
 export { modelToViewUrlAttributeConverter as _modelToViewUrlAttributeMediaConverter } from './converters.js';
 export { MediaFormView as _MediaFormView } from './ui/mediaformview.js';
