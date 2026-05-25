@@ -45,10 +45,10 @@ export class HighlightedTextView extends View {
 			// Classic setTemplate binding for #text will not work because highlightText() replaces the
 			// pre-rendered DOM text node new a new one (and <mark> elements).
 			this.on( 'change:text', () => {
-				this._updateInnerHTML( this.text );
+				this._updateInnerHTML( escape( this.text || '' ) );
 			} );
 
-			this._updateInnerHTML( this.text );
+			this._updateInnerHTML( escape( this.text || '' ) );
 		} );
 	}
 
