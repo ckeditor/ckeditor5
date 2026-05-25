@@ -95,6 +95,23 @@ export function transformListItemLikeElementsIntoLists(
 
 			// Trimming of the list stack on list ID change.
 			if ( indent < stack.length && stack[ indent ].id !== itemLikeElement.id ) {
+				// A different list at the top level starts here. `isListContinuation` returned true
+				// (the previous sibling in the DOM is the prior list's `<ol>/<ul>`), so the outer reset
+				// path didn't run. Flush the prior list's accumulated margin onto its own `<ol>/<ul>`
+				// BEFORE the stack reference is replaced — otherwise a later flush would hoist that
+				// margin onto the wrong (interrupting) list and strip it from the original list's
+				// `<li>`s. The flush is a no-op unless the prior list actually had uniform-margin
+				// items pushed, so single-item / mixed-margin lists keep their pre-existing
+				// per-`<li>` margin semantics.
+				if (
+					indent == 0 &&
+					topLevelListInfo.canApplyMarginOnList &&
+					topLevelListInfo.topLevelListItemElements.length > 0
+				) {
+					applyIndentationToTopLevelList( writer, stack, topLevelListInfo );
+					topLevelListInfo = createTopLevelListInfo();
+				}
+
 				// A different list started at this indent level — counters for this level and deeper
 				// belong to the previous list context and must not carry over.
 				encounteredLists.length = indent;
@@ -461,7 +478,16 @@ function findAllItemLikeElements(
  * or the current element already is inside a list.
  */
 function isListContinuation( currentItem: ListLikeElement ) {
-	const previousSibling = currentItem.element.previousSibling;
+	let previousSibling = currentItem.element.previousSibling;
+
+	// Skip past stray inline markers that Word leaves between list paragraphs (e.g. empty
+	// `<span style='mso-bookmark:...'></span>` or empty `<o:p></o:p>`). They have no visual effect
+	// but would otherwise break list continuity here — which matters most for nested items pasted
+	// right after their parent, where breaking the chain causes PFO to clamp the deeper item to
+	// indent 0 instead of nesting it.
+	while ( previousSibling && isStrayInlineMarker( previousSibling ) ) {
+		previousSibling = previousSibling.previousSibling;
+	}
 
 	if ( !previousSibling ) {
 		const parent = currentItem.element.parent as ViewElement;
@@ -473,6 +499,19 @@ function isListContinuation( currentItem: ListLikeElement ) {
 
 	// Even with the same id the list does not have to be continuous (https://github.com/ckeditor/ckeditor5/issues/43).
 	return isList( previousSibling );
+}
+
+/**
+ * True for empty inline elements Word emits as residue between paragraphs (`<span>`, `<a>`, `<o:p>`).
+ * Used by `isListContinuation` to look past these when checking whether the prior block is a list —
+ * they're layout artefacts, not real content.
+ */
+function isStrayInlineMarker( node: ViewNode ): boolean {
+	return (
+		node.is( 'element' ) &&
+		node.childCount === 0 &&
+		/^(?:span|a|o:p)$/.test( node.name )
+	);
 }
 
 function isList( element: ViewNode ) {

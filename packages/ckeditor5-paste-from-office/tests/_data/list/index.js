@@ -26,6 +26,7 @@ import indentBlockList from './indent-block-list/input.word.html';
 import nestedContinued from './nested-continued/input.word.html';
 import manualIndent from './manual-indent/input.word.html';
 import multiSkipLevelDeep from './multi-skip-level-deep/input.word.html';
+import continuationAfterDifferentList from './continuation-after-different-list/input.word.html';
 
 import simpleNormalized from './simple/normalized.word2016.html';
 import styledNormalized from './styled/normalized.word2016.html';
@@ -49,6 +50,7 @@ import indentBlockListNormalized from './indent-block-list/normalized.word.html'
 import nestedContinuedNormalized from './nested-continued/normalized.word.html';
 import manualIndentNormalized from './manual-indent/normalized.word.html';
 import multiSkipLevelDeepNormalized from './multi-skip-level-deep/normalized.word.html';
+import continuationAfterDifferentListNormalized from './continuation-after-different-list/normalized.word.html';
 
 import simpleModel from './simple/model.word2016.html';
 import styledModel from './styled/model.word2016.html';
@@ -72,6 +74,7 @@ import indentBlockListModel from './indent-block-list/model.word.html';
 import nestedContinuedModel from './nested-continued/model.word.html';
 import manualIndentModel from './manual-indent/model.word.html';
 import multiSkipLevelDeepModel from './multi-skip-level-deep/model.word.html';
+import continuationAfterDifferentListModel from './continuation-after-different-list/model.word.html';
 
 // Skip-level list models — same inputs as the matching default-config fixtures above, but the
 // expected model differs because `enableSkipLevelLists: true` lets the post-fixer keep the indent gaps.
@@ -104,7 +107,8 @@ export const fixtures = {
 		indentBlockList,
 		nestedContinued,
 		manualIndent,
-		multiSkipLevelDeep
+		multiSkipLevelDeep,
+		continuationAfterDifferentList
 	},
 	normalized: {
 		simple: simpleNormalized,
@@ -128,7 +132,8 @@ export const fixtures = {
 		indentBlockList: indentBlockListNormalized,
 		nestedContinued: nestedContinuedNormalized,
 		manualIndent: manualIndentNormalized,
-		multiSkipLevelDeep: multiSkipLevelDeepNormalized
+		multiSkipLevelDeep: multiSkipLevelDeepNormalized,
+		continuationAfterDifferentList: continuationAfterDifferentListNormalized
 	},
 	model: {
 		simple: simpleModel,
@@ -152,7 +157,8 @@ export const fixtures = {
 		indentBlockList: indentBlockListModel,
 		nestedContinued: nestedContinuedModel,
 		manualIndent: manualIndentModel,
-		multiSkipLevelDeep: multiSkipLevelDeepModel
+		multiSkipLevelDeep: multiSkipLevelDeepModel,
+		continuationAfterDifferentList: continuationAfterDifferentListModel
 	}
 };
 

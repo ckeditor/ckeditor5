@@ -980,6 +980,68 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( result ).to.contain( '<ol><li><p style="mso-list:l0 level2 lfo1">Item B.1</p></li></ol>' );
 				} );
 			} );
+
+			describe( 'top-level lists with different ids', () => {
+				const listA = 'style="mso-list:l0 level1 lfo1;margin-left:24px"';
+				const listB = 'style="mso-list:l1 level1 lfo2;margin-left:24px"';
+
+				it( 'applies margin-left to every top-level list when the prior list is resumed after a different list', () => {
+					const html =
+						`<p ${ listA }>One</p>` +
+						`<p ${ listA }>Two</p>` +
+						'<p>&nbsp;</p>' +
+						`<p ${ listB }>Foo</p>` +
+						`<p ${ listA }>Three</p>` +
+						`<p ${ listA }>Four</p>`;
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '@list l1:level1 { mso-level-number-format: alpha-upper; }' );
+
+					const result = _stringifyView( view );
+
+					// Every top-level <ol> must carry the lifted margin-left so the three lists line up.
+					expect( result.match( /<ol[^>]*style="[^"]*margin-left:-16px[^"]*"/g ) ).to.have.length( 3 );
+
+					// And none of the <li>s should keep the per-item margin (it was moved up to the <ol>).
+					expect( result ).not.to.match( /<li[^>]*style="[^"]*margin-left/ );
+				} );
+
+				it( 'keeps a per-<li> margin when an isolated list does not resume after a different list', () => {
+					const html =
+						'<p style="mso-list:l2 level1 lfo1">A</p>' +
+						'<p style="mso-list:l5 level1 lfo2;margin-left:54pt">B</p>' +
+						'<p style="mso-list:l7 level1 lfo3">C</p>';
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '' );
+
+					const result = _stringifyView( view );
+
+					// B's <ol> must NOT have received margin-left — the margin must stay on the <li>.
+					expect( result ).not.to.match( /<ol[^>]*style="[^"]*margin-left/ );
+					expect( result ).to.match( /<li[^>]*style="[^"]*margin-left:32px/ );
+				} );
+
+				it( 'hoists margin onto each <ol> separately when three lists are adjacent with no separator', () => {
+					const html =
+						`<p ${ listA }>One</p>` +
+						`<p ${ listA }>Two</p>` +
+						`<p ${ listB }>Foo</p>` +
+						`<p ${ listA }>Three</p>` +
+						`<p ${ listA }>Four</p>`;
+					const view = htmlDataProcessor.toView( html );
+
+					transformListItemLikeElementsIntoLists( view, '@list l1:level1 { mso-level-number-format: alpha-upper; }' );
+
+					const result = _stringifyView( view );
+
+					// All three top-level <ol>s must carry the lifted margin-left, including the first one.
+					expect( result.match( /<ol[^>]*style="[^"]*margin-left:-16px[^"]*"/g ) ).to.have.length( 3 );
+
+					// And none of the <li>s should keep the per-item margin.
+					expect( result ).not.to.match( /<li[^>]*style="[^"]*margin-left/ );
+				} );
+			} );
 		} );
 	} );
 
