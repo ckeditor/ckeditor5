@@ -7,7 +7,7 @@
 import { fixtures as basicStyles, browserFixtures as basicStylesBrowser } from '../_data/basic-styles/index.js';
 import { fixtures as image, browserFixtures as imageBrowser } from '../_data/image/index.js';
 import { fixtures as link, browserFixtures as linkBrowser } from '../_data/link/index.js';
-import { fixtures as list, browserFixtures as listBrowser } from '../_data/list/index.js';
+import { fixtures as list, browserFixtures as listBrowser, skipLevelFixtures as listSkipLevel } from '../_data/list/index.js';
 import { fixtures as spacing, browserFixtures as spacingBrowser } from '../_data/spacing/index.js';
 import { fixtures as googleDocsBoldWrapper, browserFixtures as googleDocsBoldWrapperBrowser }
 	from '../_data/paste-from-google-docs/bold-wrapper/index.js';
@@ -25,6 +25,7 @@ export const generic = {
 	image,
 	link,
 	list,
+	'list-skip-level': listSkipLevel,
 	spacing,
 	'google-docs-bold-wrapper': googleDocsBoldWrapper,
 	'google-docs-list': googleDocsList,

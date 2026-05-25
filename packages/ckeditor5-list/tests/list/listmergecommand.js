@@ -451,6 +451,66 @@ describe( 'ListMergeCommand', () => {
 							} );
 						} );
 					} );
+
+					describe( 'previous list block has a higher indent (skip-level lists)', () => {
+						it( 'should merge with previous list item that has a higher indent', () => {
+							runTest( {
+								input: [
+									'    # aaa',
+									'  # []bbb'
+								],
+								expected: [
+									'    # aaa',
+									'      []bbb'
+								],
+								changedBlocks: [ 1 ]
+							} );
+						} );
+
+						it( 'should merge with previous list item that has an even higher indent (multiple-level gap)', () => {
+							runTest( {
+								input: [
+									'      # aaa',
+									'  # []bbb'
+								],
+								expected: [
+									'      # aaa',
+									'        []bbb'
+								],
+								changedBlocks: [ 1 ]
+							} );
+						} );
+
+						it( 'should keep nested children of the merged list item and re-indent them', () => {
+							runTest( {
+								input: [
+									'    # aaa',
+									'  # []bbb',
+									'    # ccc'
+								],
+								expected: [
+									'    # aaa',
+									'      []bbb',
+									'      # ccc'
+								],
+								changedBlocks: [ 1, 2 ]
+							} );
+						} );
+
+						it( 'should not throw when previous sibling is not a list item (defensive guard)', () => {
+							_setModelData( model, modelList( [
+								'foo',
+								'  # []bbb'
+							] ) );
+
+							expect( () => command.execute() ).to.not.throw();
+
+							expect( _getModelData( model ) ).to.equalMarkup( modelList( [
+								'foo',
+								'  # []bbb'
+							] ) );
+						} );
+					} );
 				} );
 
 				describe( 'collapsed selection at the end of a list item', () => {

@@ -32,6 +32,8 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 
 	public readonly hasTablePropertiesPlugin: boolean;
 
+	public readonly enableSkipLevelLists: boolean;
+
 	/**
 	 * Creates a new `PasteFromOfficeMSWordNormalizer` instance.
 	 *
@@ -40,11 +42,13 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 	constructor(
 		document: ViewDocument,
 		hasMultiLevelListPlugin: boolean = false,
-		hasTablePropertiesPlugin: boolean = false
+		hasTablePropertiesPlugin: boolean = false,
+		enableSkipLevelLists: boolean = false
 	) {
 		this.document = document;
 		this.hasMultiLevelListPlugin = hasMultiLevelListPlugin;
 		this.hasTablePropertiesPlugin = hasTablePropertiesPlugin;
+		this.enableSkipLevelLists = enableSkipLevelLists;
 	}
 
 	/**
@@ -62,7 +66,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 		const stylesString = ( data.extraContent as { stylesString: string } ).stylesString;
 
 		transformBookmarks( data.content, writer );
-		transformListItemLikeElementsIntoLists( data.content, stylesString, this.hasMultiLevelListPlugin );
+		transformListItemLikeElementsIntoLists( data.content, stylesString, this.hasMultiLevelListPlugin, this.enableSkipLevelLists );
 		replaceImagesSourceWithBase64( data.content, data.dataTransfer.getData( 'text/rtf' ) );
 		transformTables( data.content, writer, this.hasTablePropertiesPlugin );
 		removeInvalidTableWidth( data.content, writer );

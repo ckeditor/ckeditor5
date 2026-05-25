@@ -90,12 +90,14 @@ export class PasteFromOffice extends Plugin {
 		const viewDocument = editor.editing.view.document;
 		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelListEditing' );
 		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TablePropertiesEditing' );
+		const enableSkipLevelLists = !!this.editor.config.get( 'list.enableSkipLevelLists' );
 
 		this.registerNormalizer(
 			new PasteFromOfficeMSWordNormalizer(
 				viewDocument,
 				hasMultiLevelListPlugin,
-				hasTablePropertiesPlugin
+				hasTablePropertiesPlugin,
+				enableSkipLevelLists
 			)
 		);
 

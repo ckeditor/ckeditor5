@@ -73,7 +73,10 @@ export class Autoformat extends Plugin {
 	 *
 	 * When typed:
 	 * - `* ` or `- ` &ndash; A paragraph will be changed into a bulleted list.
-	 * - `1. ` or `1) ` &ndash; A paragraph will be changed into a numbered list ("1" can be any digit or a list of digits).
+	 * - `<number>. ` or `<number>) ` &ndash; A paragraph will be changed into a numbered list.
+	 * If the paragraph is adjacent to an existing list, the typed number is ignored and the item joins the list
+	 * as the next sequential item. Otherwise, a new list is created with the `listStart` attribute set to the typed number
+	 * (when the {@link module:list/listproperties~ListProperties start index feature} is enabled).
 	 * - `[] ` or `[ ] ` &ndash; A paragraph will be changed into a to-do list.
 	 * - `[x] ` or `[ x ] ` &ndash; A paragraph will be changed into a checked to-do list.
 	 */
@@ -85,7 +88,19 @@ export class Autoformat extends Plugin {
 		}
 
 		if ( commands.get( 'numberedList' ) ) {
-			blockAutoformatEditing( this.editor, this, /^1[.|)]\s$/, 'numberedList' );
+			const numberedListCommand = commands.get( 'numberedList' )!;
+			const hasStartIndexFeature = !!commands.get( 'listStart' );
+
+			blockAutoformatEditing( this.editor, this, /^(\d+)[.|)]\s$/, ( { match } ) => {
+				if ( !numberedListCommand.isEnabled || numberedListCommand.value === true ) {
+					return false;
+				}
+
+				this.editor.execute( 'numberedList', hasStartIndexFeature ?
+					{ additionalAttributes: { listStart: parseInt( match[ 1 ] ) } } :
+					undefined
+				);
+			} );
 		}
 
 		if ( commands.get( 'todoList' ) ) {

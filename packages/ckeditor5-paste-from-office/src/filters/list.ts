@@ -33,12 +33,15 @@ import {
  *
  * @param documentFragment The view structure to be transformed.
  * @param stylesString Styles from which list-like elements styling will be extracted.
+ * @param hasMultiLevelListPlugin Whether the editor has the multi-level list plugin enabled.
+ * @param enableSkipLevelLists Whether to enable skip-level lists.
  * @internal
  */
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
 	stylesString: string,
-	hasMultiLevelListPlugin: boolean
+	hasMultiLevelListPlugin: boolean,
+	enableSkipLevelLists: boolean = false
 ): void {
 	if ( !documentFragment.childCount ) {
 		return;
@@ -82,8 +85,13 @@ export function transformListItemLikeElementsIntoLists(
 			// level (e.g. first an <ol>, then a <ul> after a paragraph break) don't share a counter.
 			const originalListId = `${ itemLikeElement.id }:${ itemLikeElement.indent }`;
 
-			// Normalized list item indentation.
-			const indent = Math.min( itemLikeElement.indent - 1, stack.length );
+			// When the editor opts into skip-level lists, preserve Word indent gaps (the fill loop below
+			// inserts `<li style="list-style-type:none">` wrappers for them). Otherwise clamp to one
+			// level below the current stack top — the original pre-skip-level behavior — so the editor's
+			// list post-fixer doesn't have to bridge the gap with empty filler paragraphs.
+			const indent = enableSkipLevelLists ?
+				itemLikeElement.indent - 1 :
+				Math.min( itemLikeElement.indent - 1, stack.length );
 
 			// Trimming of the list stack on list ID change.
 			if ( indent < stack.length && stack[ indent ].id !== itemLikeElement.id ) {
@@ -99,53 +107,124 @@ export function transformListItemLikeElementsIntoLists(
 				encounteredLists.length = indent + 1;
 				stack.length = indent + 1;
 			}
-			else {
-				const listStyle = detectListStyle( itemLikeElement, stylesString );
 
-				// Create a new OL/UL if required (greater indent or different list type).
-				if ( indent > stack.length - 1 || stack[ indent ].listElement.name != listStyle.type ) {
-					// If this list was seen before at this indent (i.e. it was interrupted by a non-list block
-					// and is now resuming), set `start` so the numbering continues from where it left off.
-					if (
-						listStyle.type == 'ol' &&
-						itemLikeElement.id !== undefined &&
-						encounteredLists[ indent ] &&
-						encounteredLists[ indent ][ originalListId ]
-					) {
-						listStyle.startIndex = encounteredLists[ indent ][ originalListId ];
+			const listStyle = detectListStyle( itemLikeElement, stylesString );
+
+			// Word can jump indent levels (e.g. from level 1 directly to level 3) without producing
+			// items for the in-between levels. Fill the missing levels with intermediate wrappers —
+			// an `<ol>`/`<ul>` of the deepest item's type containing a single `<li style="list-style-type:none">` —
+			// so the resulting view matches the shape the skip-level upcast (`listItemSkipLevelConsumer`) expects.
+			while ( stack.length < indent ) {
+				const intermediateList = writer.createElement( listStyle.type );
+				const intermediateListItem = writer.createElement( 'li' );
+
+				writer.setStyle( 'list-style-type', 'none', intermediateListItem );
+
+				if ( stack.length == 0 ) {
+					const parent = itemLikeElement.element.parent!;
+					const index = parent.getChildIndex( itemLikeElement.element ) + 1;
+
+					writer.insertChild( index, intermediateList, parent );
+				} else {
+					const parentListItems = stack[ stack.length - 1 ].listItemElements;
+
+					writer.appendChild( intermediateList, parentListItems[ parentListItems.length - 1 ] );
+				}
+
+				writer.appendChild( intermediateListItem, intermediateList );
+
+				stack.push( {
+					...itemLikeElement,
+					listElement: intermediateList,
+					listItemElements: [ intermediateListItem ],
+					isIntermediate: true,
+					// Intermediate wrappers hold no real list item, so they must not pretend to "own" the
+					// deep item's `margin-left` — otherwise `stack.find` (matching non-list multi-block
+					// continuations by margin) returns the shallower intermediate before the real item.
+					marginLeft: undefined
+				} );
+			}
+
+			// Create a new OL/UL if required (greater indent or different list type).
+			if (
+				indent > stack.length - 1 ||
+				stack[ indent ].listElement.name != listStyle.type
+			) {
+				// If this list was seen before at this indent (i.e. it was interrupted by a non-list block
+				// and is now resuming), set `start` so the numbering continues from where it left off.
+				if (
+					listStyle.type == 'ol' &&
+					itemLikeElement.id !== undefined &&
+					encounteredLists[ indent ] &&
+					encounteredLists[ indent ][ originalListId ]
+				) {
+					listStyle.startIndex = encounteredLists[ indent ][ originalListId ];
+				}
+
+				const listElement = createNewEmptyList( listStyle, writer, hasMultiLevelListPlugin );
+
+				// Insert the new OL/UL.
+				if ( stack.length == 0 ) {
+					const parent = itemLikeElement.element.parent!;
+					const index = parent.getChildIndex( itemLikeElement.element ) + 1;
+
+					writer.insertChild( index, listElement, parent );
+				} else if ( indent == 0 ) {
+					// A real list at root indent while a skip-level intermediate of a different type
+					// already sits there — insert the new list as a sibling of the intermediate in the
+					// same parent (can't merge two lists of different types).
+					const existingList = stack[ 0 ].listElement;
+					const listParent = existingList.parent!;
+					const insertIndex = listParent.getChildIndex( existingList ) + 1;
+
+					writer.insertChild( insertIndex, listElement, listParent );
+				} else {
+					const parentListItems = stack[ indent - 1 ].listItemElements;
+
+					writer.appendChild( listElement, parentListItems[ parentListItems.length - 1 ] );
+				}
+
+				// Update the list stack for other items to reference.
+				stack[ indent ] = {
+					...itemLikeElement,
+					listElement,
+					listItemElements: []
+				};
+
+				// Record the starting value for this list so that if it is interrupted and resumed later,
+				// the continuation list can pick up numbering from the right value.
+				// For a fresh list `listStyle.startIndex` is undefined, so we fall back to 1.
+				if ( itemLikeElement.id !== undefined ) {
+					if ( !encounteredLists[ indent ] ) {
+						encounteredLists[ indent ] = {};
 					}
 
-					const listElement = createNewEmptyList( listStyle, writer, hasMultiLevelListPlugin );
+					encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
+				}
+			} else if ( stack[ indent ].isIntermediate ) {
+				// Same type as the intermediate — reuse its `<ol>`/`<ul>`. The intermediate was created
+				// without `list-style-type`, `start`, or the `legal-list` class (the fill loop only sets
+				// the tag name); apply them now from the claiming item so the reused element no longer
+				// looks like a styleless wrapper.
+				applyListStyleToElement( stack[ indent ].listElement, listStyle, writer, hasMultiLevelListPlugin );
 
-					// Insert the new OL/UL.
-					if ( stack.length == 0 ) {
-						const parent = itemLikeElement.element.parent!;
-						const index = parent.getChildIndex( itemLikeElement.element ) + 1;
+				// Update the wrapper to represent the claiming item (id, marginLeft, …) so later lookups
+				// don't see stale data from the deep item that originally seeded the intermediate.
+				stack[ indent ] = {
+					...itemLikeElement,
+					listElement: stack[ indent ].listElement,
+					listItemElements: stack[ indent ].listItemElements
+				};
 
-						writer.insertChild( index, listElement, parent );
-					} else {
-						const parentListItems = stack[ indent - 1 ].listItemElements;
-
-						writer.appendChild( listElement, parentListItems[ parentListItems.length - 1 ] );
+				// Same as the create-new path: track this list so that if it is interrupted (e.g. by a
+				// multi-block paragraph matched against an ancestor frame) and later resumed via a fresh
+				// `<ol>`, the continuation can set the correct `start` attribute instead of restarting from 1.
+				if ( itemLikeElement.id !== undefined ) {
+					if ( !encounteredLists[ indent ] ) {
+						encounteredLists[ indent ] = {};
 					}
 
-					// Update the list stack for other items to reference.
-					stack[ indent ] = {
-						...itemLikeElement,
-						listElement,
-						listItemElements: []
-					};
-
-					// Record the starting value for this list so that if it is interrupted and resumed later,
-					// the continuation list can pick up numbering from the right value.
-					// For a fresh list `listStyle.startIndex` is undefined, so we fall back to 1.
-					if ( itemLikeElement.id !== undefined ) {
-						if ( !encounteredLists[ indent ] ) {
-							encounteredLists[ indent ] = {};
-						}
-
-						encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
-					}
+					encounteredLists[ indent ][ originalListId ] = listStyle.startIndex || 1;
 				}
 			}
 
@@ -226,22 +305,22 @@ function applyListItemMarginLeftAndUpdateTopLevelInfo(
 
 	let currentListBlockIndent = 0;
 
-	if ( stack.length > 1 ) {
-		const prevStackLevelItems = stack[ stack.length - 2 ].listItemElements;
+	// Sum the relative `margin-left` of the last `<li>` in every ancestor stack frame.
+	// Browser nesting cumulates: each ancestor `<li>`'s margin pushes its descendants further right,
+	// so to convert Word's absolute `margin-left` into the editor's relative value we have to subtract
+	// every ancestor's contribution — not only the immediate parent. Skip-level intermediate wrappers
+	// contribute 0 (no margin set) and so naturally drop out of the sum.
+	for ( let ancestorIndex = 0; ancestorIndex < stack.length - 1; ancestorIndex++ ) {
+		const ancestorListItems = stack[ ancestorIndex ].listItemElements;
+		const ancestorMargin = ancestorListItems[ ancestorListItems.length - 1 ].getStyle( 'margin-left' );
 
-		if ( prevStackLevelItems.length > 0 ) {
-			// The margin-left style of the previous indent level last item is already a relative value applied in the previous iteration.
-			const lastItemMargin = prevStackLevelItems[ prevStackLevelItems.length - 1 ].getStyle( 'margin-left' );
-
-			if ( lastItemMargin !== undefined ) {
-				currentListBlockIndent += parseFloat( lastItemMargin );
-			}
+		if ( ancestorMargin !== undefined ) {
+			currentListBlockIndent += parseFloat( ancestorMargin );
 		}
 	}
 
 	// Add 40px for each indent level because by default HTML lists have 40px indentation (padding-inline-start: 40px).
 	// So every nested list is indented by another 40px.
-	// Additionally, the nested list itself may be placed in a list item with margin-left style.
 	currentListBlockIndent += stack.length * 40;
 
 	// Calculate relative list item indentation to the list it is in.
@@ -588,6 +667,22 @@ function createNewEmptyList(
 ) {
 	const list = writer.createElement( listStyle.type );
 
+	applyListStyleToElement( list, listStyle, writer, hasMultiLevelListPlugin );
+
+	return list;
+}
+
+/**
+ * Applies `list-style-type`, `start`, and the `legal-list` class to a list element based on the detected
+ * list style. Used both when creating a fresh list and when a real item claims a previously-intermediate
+ * wrapper (which was created without any of these).
+ */
+function applyListStyleToElement(
+	list: ViewElement,
+	listStyle: ReturnType<typeof detectListStyle>,
+	writer: ViewUpcastWriter,
+	hasMultiLevelListPlugin: boolean
+) {
 	// We do not support modifying the marker for a particular list item.
 	// Set the value for the `list-style-type` property directly to the list container.
 	if ( listStyle.style ) {
@@ -601,8 +696,6 @@ function createNewEmptyList(
 	if ( listStyle.isLegalStyleList && hasMultiLevelListPlugin ) {
 		writer.addClass( 'legal-list', list );
 	}
-
-	return list;
 }
 
 /**
@@ -714,6 +807,13 @@ interface ListLikeElement extends ListItemData {
 type ListStack = Array<ListLikeElement & {
 	listElement: ViewElement;
 	listItemElements: Array<ViewElement>;
+
+	/**
+	 * Set on frames created by the skip-level fill loop to mark them as intermediate wrappers
+	 * for indent levels Word jumped over. A real list item arriving at this indent (e.g. after
+	 * a deeper item) replaces the frame with a real one of the correct type.
+	 */
+	isIntermediate?: boolean;
 }>;
 
 type TopLevelListInfo = {

@@ -76,6 +76,16 @@ describe( 'PasteFromOffice - integration', () => {
 		}
 	} );
 
+	// Same Word inputs as above, but with `list.enableSkipLevelLists: true` so PFO emits intermediate
+	// `<li style="list-style-type:none">` wrappers and the list post-fixer keeps the indent gaps.
+	generateIntegrationTests( {
+		input: 'list-skip-level',
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, ListProperties, PasteFromOffice ],
+			list: { enableSkipLevelLists: true }
+		}
+	} );
+
 	generateIntegrationTests( {
 		input: 'spacing',
 		editorConfig: {
