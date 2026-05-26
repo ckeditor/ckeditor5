@@ -13,6 +13,12 @@ The media embed resize feature lets you change the width of media embeds (such a
 
 {@snippet getting-started/unlock-feature}
 
+## Demo
+
+Click the media embed in the editor below to select it, then drag any of its corner handles to change the width.
+
+{@snippet features/media-embed-resize}
+
 ## Installation
 
 The {@link module:media-embed/mediaembedresize~MediaEmbedResize} plugin is not loaded by default. Add it explicitly alongside {@link module:media-embed/mediaembed~MediaEmbed} to enable the feature:
