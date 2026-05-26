@@ -22,7 +22,7 @@ Use the editor below to see the list feature in action. You can use toolbar butt
 You can also use Markdown code recognized by the {@link features/autoformat autoformatting feature}:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
-* Start a line with `1.` or `1)` followed by a space for a numbered list.
+* Start a line with any number followed by `.` or `)` and a space for a numbered list.
 
 {@snippet features/lists-document}
 
@@ -46,7 +46,7 @@ ClassicEditor
 	.create( {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ List, /* ... */ ],
-		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 			// Configuration.
 		}

@@ -4,7 +4,7 @@ meta-title: Lists editing behavior | CKEditor 5 Documentation
 meta-description: Easily edit and customize lists in CKEditor 5 with intuitive tools for nesting, reordering, and formatting list items.
 category: features-lists
 order: 50
-modified_at: 2024-04-01
+modified_at: 2026-05-25
 ---
 
 # Lists editing behavior
@@ -87,3 +87,29 @@ This means that if you want to allow indenting lists only, you can do that by lo
 When both the `IndentBlock` and `List` plugins are loaded, the editor also supports visual block indentation of list containers (`<ol>`, `<ul>`) and list items (`<li>`), applying a `margin-left` style or CSS class. Refer to the {@link features/indent#indenting-lists Indenting lists} section in the block indentation guide for details on the behavior, UX, and configuration.
 
 If you want the full behavior &ndash; nesting list items, block indentation of paragraphs, and visual block indentation of lists &ndash; you need to load all three plugins: `Indent`, `IndentBlock`, and `List`.
+
+## Skip-level lists
+
+By default, each nested list item can only be one level deeper than its parent. The {@link module:list/listconfig~ListConfig#enableSkipLevelLists `config.list.enableSkipLevelLists`} option removes this restriction and allows list items to be indented by more than one level at a time.
+
+<code-switcher>
+```js
+import { ClassicEditor, List } from 'ckeditor5';
+
+ClassicEditor
+	.create( {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ List, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+			enableSkipLevelLists: true
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+<info-box warning>
+	Skip-level lists are not fully compatible with email clients. To represent skipped indentation levels in HTML, the editor inserts placeholder `<li>` elements with `list-style-type: none`. Some email clients ignore the inline style and render these placeholders as visible bulleted or numbered items.
+</info-box>
