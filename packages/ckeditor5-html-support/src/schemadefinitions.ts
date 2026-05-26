@@ -351,7 +351,7 @@ export const defaultConfig = {
 			view: 'form',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
