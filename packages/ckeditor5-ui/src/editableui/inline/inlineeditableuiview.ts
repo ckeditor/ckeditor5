@@ -11,6 +11,7 @@ import { EditableUIView } from '../editableuiview.js';
 
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
 /**
  * The inline editable UI class implementing an inline {@link module:ui/editableui/editableuiview~EditableUIView}.
@@ -26,9 +27,10 @@ export class InlineEditableUIView extends EditableUIView {
 	 *
 	 * @param locale The locale instance.
 	 * @param editingView The editing view instance the editable is related to.
-	 * @param editableElement The editable element. If not specified, the
-	 * {@link module:ui/editableui/editableuiview~EditableUIView}
-	 * will create it. Otherwise, the existing element will be used.
+	 * @param editableElement The editable element. May be an existing `HTMLElement`, a
+	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} describing the element to create,
+	 * or `undefined` to create a default `<div>` element. See
+	 * {@link module:ui/editableui/editableuiview~EditableUIView}.
 	 * @param options Additional configuration of the view.
 	 * @param options.label The label of the editable for assistive technologies. If not provided, a default label is used or,
 	 * the existing `aria-label` attribute value from the specified `editableElement` is preserved.
@@ -36,7 +38,7 @@ export class InlineEditableUIView extends EditableUIView {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement,
+		editableElement?: HTMLElement | ViewRootElementDefinition,
 		options: InlineEditableUIViewOptions = {}
 	) {
 		super( locale, editingView, editableElement );

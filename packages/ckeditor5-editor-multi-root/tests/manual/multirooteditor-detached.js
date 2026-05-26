@@ -13,13 +13,27 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 const roots = {
 	intro: {
-		initialData: '<p><strong>Exciting</strong> intro text to an article.</p>'
+		initialData: '<p><strong>Exciting</strong> intro text to an article.</p>',
+		modelElement: '$inlineRoot',
+		element: 'h1',
+		placeholder: 'Type title'
 	},
 	content: {
-		initialData: '<h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p>'
+		initialData: '<h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p>',
+		placeholder: 'Type content'
 	},
 	outro: {
-		initialData: '<p>Closing text.</p>'
+		initialData: '<p>Closing text.</p>',
+		modelElement: '$inlineRoot',
+		element: {
+			name: 'span',
+			styles: {
+				display: 'inline-block',
+				'max-width': 'fit-content',
+				'vertical-align': 'middle'
+			}
+		},
+		placeholder: '-- sign --'
 	}
 };
 let editor;
@@ -35,11 +49,17 @@ function initEditor() {
 			console.log( 'Editor was initialized', newEditor );
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
-			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'intro' ) );
-			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'content' ) );
-			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.getEditableElement( 'outro' ) );
+			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
+
+			const editableContainer = document.querySelector( '.editable-container' );
+
+			editableContainer.insertBefore( newEditor.ui.getEditableElement( 'intro' ), editableContainer.lastElementChild );
+			editableContainer.insertBefore( newEditor.ui.getEditableElement( 'content' ), editableContainer.lastElementChild );
+
+			document.querySelector( '.signature-container' ).appendChild( newEditor.ui.getEditableElement( 'outro' ) );
 
 			window.editor = editor = newEditor;
+			window.editables = newEditor.ui.view.editables;
 		} )
 		.catch( err => {
 			console.error( err.stack );
@@ -50,12 +70,14 @@ function destroyEditor() {
 	editor.destroy()
 		.then( () => {
 			editor.ui.view.toolbar.element.remove();
+			editor.ui.view.menuBarView.element.remove();
 
 			for ( const editable of Object.values( editor.ui.view.editables ) ) {
 				editable.element.remove();
 			}
 
 			window.editor = editor = null;
+			window.editables = null;
 
 			console.log( 'Editor was destroyed' );
 		} );
@@ -63,3 +85,5 @@ function destroyEditor() {
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
 document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+
+initEditor();

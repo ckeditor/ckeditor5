@@ -41,6 +41,7 @@ export {
 export type {
 	EditorConfig,
 	RootConfig,
+	ViewRootElementDefinition,
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
@@ -56,9 +57,11 @@ export { registerAndInitializeRootConfigAttributes } from './editor/utils/regist
 export {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
-	normalizeMultiRootEditorConstructorParams
+	normalizeMultiRootEditorConstructorParams,
+	normalizeViewRootElementDefinition
 } from './editor/utils/normalizerootsconfig.js';
 export { verifyRootElements } from './editor/utils/verifyrootelements.js';
+export { rootAcceptsBlocks } from './editor/utils/rootacceptsblocks.js';
 
 export { PendingActions, type PendingAction, type PendingActionsAddEvent, type PendingActionsRemoveEvent } from './pendingactions.js';
 

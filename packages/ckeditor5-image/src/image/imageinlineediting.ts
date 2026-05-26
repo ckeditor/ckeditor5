@@ -79,6 +79,19 @@ export class ImageInlineEditing extends Plugin {
 			disallowIn: [ 'caption' ]
 		} );
 
+		// Disallow inline images in any root (or other limit context) that does not accept block content - i.e.
+		// `$inlineRoot` and any plugin-registered custom inline-only root or limit. A child check is used rather than
+		// `disallowIn: [ '$inlineRoot' ]` because such roots may have arbitrary names; this rule catches them by their
+		// structural properties (limit + no `$block` child allowed) instead of by name.
+		// This disallow rule will be relaxed once block↔inline image type conversion can adapt when an image is in an inline root.
+		schema.addChildCheck( context => {
+			const parent = context.last;
+
+			if ( schema.isLimit( parent.name ) && !schema.checkChild( parent.name, '$block' ) ) {
+				return false;
+			}
+		}, 'imageInline' );
+
 		this._setupConversion();
 
 		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {

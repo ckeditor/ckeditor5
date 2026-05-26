@@ -17,7 +17,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { normalizeRootsConfig } from '@ckeditor/ckeditor5-core';
+import { normalizeRootsConfig, Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'BalloonEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -82,6 +82,79 @@ describe( 'BalloonEditorUI', () => {
 			} );
 		} );
 
+		describe( 'inline root', () => {
+			it( 'leaves view.editable#isInlineRoot false for a block root', () => {
+				expect( view.editable.isInlineRoot ).to.be.false;
+				expect( view.editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+			} );
+
+			it( 'sets view.editable#isInlineRoot to true when the root is $inlineRoot', () => {
+				return VirtualBalloonTestEditor
+					.create( '', {
+						extraPlugins: [ BalloonToolbar ],
+						root: { modelElement: '$inlineRoot' }
+					} )
+					.then( newEditor => {
+						const editable = newEditor.ui.view.editable;
+
+						expect( editable.isInlineRoot ).to.be.true;
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets isInlineRoot=false for a custom block-like root registered by a plugin', () => {
+				class CustomBlockRootPlugin extends Plugin {
+					init() {
+						this.editor.model.schema.register( 'customBlockRoot', {
+							isLimit: true,
+							allowContentOf: '$root'
+						} );
+					}
+				}
+
+				return VirtualBalloonTestEditor
+					.create( '', {
+						extraPlugins: [ BalloonToolbar, CustomBlockRootPlugin ],
+						root: { modelElement: 'customBlockRoot' }
+					} )
+					.then( newEditor => {
+						const editable = newEditor.ui.view.editable;
+
+						expect( editable.isInlineRoot ).to.be.false;
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets isInlineRoot=true for a custom inline-only root registered by a plugin', () => {
+				class CustomInlineRootPlugin extends Plugin {
+					init() {
+						this.editor.model.schema.register( 'customInlineRoot', {
+							isLimit: true,
+							allowContentOf: '$inlineRoot'
+						} );
+					}
+				}
+
+				return VirtualBalloonTestEditor
+					.create( '', {
+						extraPlugins: [ BalloonToolbar, CustomInlineRootPlugin ],
+						root: { modelElement: 'customInlineRoot' }
+					} )
+					.then( newEditor => {
+						const editable = newEditor.ui.view.editable;
+
+						expect( editable.isInlineRoot ).to.be.true;
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+
 		describe( 'placeholder', () => {
 			it( 'sets placeholder from editor.config.root.placeholder - string', () => {
 				return VirtualBalloonTestEditor
@@ -93,6 +166,23 @@ describe( 'BalloonEditorUI', () => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets the placeholder directly on the root for an inline root (no block child to host it)', () => {
+				return VirtualBalloonTestEditor
+					.create( '', {
+						extraPlugins: [ BalloonToolbar ],
+						root: { modelElement: '$inlineRoot', placeholder: 'placeholder-text' }
+					} )
+					.then( newEditor => {
+						const root = newEditor.editing.view.document.getRoot();
+
+						// Inline roots have no block children, so the placeholder is hosted on the root itself
+						// (isDirectHost: true) rather than on the first child.
+						expect( root.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );

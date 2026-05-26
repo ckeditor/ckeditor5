@@ -6,6 +6,7 @@
 import { MultiRootEditor } from '../src/multirooteditor.js';
 import { EditorUI, View } from '@ckeditor/ckeditor5-ui';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MultiRootEditorUI', () => {
@@ -162,6 +163,116 @@ describe( 'MultiRootEditorUI', () => {
 			} );
 		} );
 
+		describe( 'inline root', () => {
+			it( 'leaves view.editables[].isInlineRoot false for block roots', () => {
+				expect( view.editables.foo.isInlineRoot ).to.be.false;
+				expect( view.editables.bar.isInlineRoot ).to.be.false;
+				expect( view.editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+				expect( view.editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+			} );
+
+			it( 'sets view.editables[].isInlineRoot per editable based on the root model element', () => {
+				return MultiRootEditor
+					.create( { foo: '', bar: '' }, {
+						roots: {
+							foo: { modelElement: '$root' },
+							bar: { modelElement: '$inlineRoot' }
+						}
+					} )
+					.then( newEditor => {
+						const editables = newEditor.ui.view.editables;
+
+						expect( editables.foo.isInlineRoot ).to.be.false;
+						expect( editables.bar.isInlineRoot ).to.be.true;
+
+						expect( editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+						expect( editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets view.editables[].isInlineRoot for dynamically added inline root', () => {
+				return MultiRootEditor
+					.create( { foo: '' } )
+					.then( newEditor => {
+						newEditor.addRoot( 'bar', { modelElement: '$inlineRoot' } );
+						const root = newEditor.model.document.getRoot( 'bar' );
+						newEditor.createEditable( root );
+
+						const editable = newEditor.ui.view.editables.bar;
+
+						expect( editable.isInlineRoot ).to.be.true;
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets isInlineRoot per editable for custom root types registered by a plugin', () => {
+				class CustomRootsPlugin extends Plugin {
+					init() {
+						this.editor.model.schema.register( 'customBlockRoot', {
+							isLimit: true,
+							allowContentOf: '$root'
+						} );
+						this.editor.model.schema.register( 'customInlineRoot', {
+							isLimit: true,
+							allowContentOf: '$inlineRoot'
+						} );
+					}
+				}
+
+				return MultiRootEditor
+					.create( { foo: '', bar: '' }, {
+						extraPlugins: [ CustomRootsPlugin ],
+						roots: {
+							foo: { modelElement: 'customBlockRoot' },
+							bar: { modelElement: 'customInlineRoot' }
+						}
+					} )
+					.then( newEditor => {
+						const editables = newEditor.ui.view.editables;
+
+						expect( editables.foo.isInlineRoot ).to.be.false;
+						expect( editables.bar.isInlineRoot ).to.be.true;
+
+						expect( editables.foo.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+						expect( editables.bar.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets isInlineRoot for a dynamically added root of a plugin-registered custom type', () => {
+				class CustomInlineRootPlugin extends Plugin {
+					init() {
+						this.editor.model.schema.register( 'customInlineRoot', {
+							isLimit: true,
+							allowContentOf: '$inlineRoot'
+						} );
+					}
+				}
+
+				return MultiRootEditor
+					.create( { foo: '' }, {
+						extraPlugins: [ CustomInlineRootPlugin ]
+					} )
+					.then( newEditor => {
+						newEditor.addRoot( 'bar', { modelElement: 'customInlineRoot' } );
+						const root = newEditor.model.document.getRoot( 'bar' );
+						newEditor.createEditable( root );
+
+						const editable = newEditor.ui.view.editables.bar;
+
+						expect( editable.isInlineRoot ).to.be.true;
+						expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+
 		describe( 'placeholder', () => {
 			it( 'sets placeholder from config.roots.<name>.placeholder for initial editables', () => {
 				return MultiRootEditor
@@ -250,6 +361,45 @@ describe( 'MultiRootEditorUI', () => {
 
 						const abcP = newEditor.editing.view.document.getRoot( 'abc' ).getChild( 0 );
 						expect( abcP.getAttribute( 'data-placeholder' ) ).to.equal( 'Type abc...' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'hosts the placeholder directly on the root for inline roots (no block child)', () => {
+				return MultiRootEditor
+					.create( { foo: '', bar: '' }, {
+						extraPlugins: [ Paragraph ],
+						roots: {
+							foo: { modelElement: '$inlineRoot', placeholder: 'Inline placeholder' },
+							bar: { modelElement: '$root', placeholder: 'Block placeholder' }
+						}
+					} )
+					.then( newEditor => {
+						const fooRoot = newEditor.editing.view.document.getRoot( 'foo' );
+						const barRoot = newEditor.editing.view.document.getRoot( 'bar' );
+
+						// Inline root: placeholder on the root element itself.
+						expect( fooRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'Inline placeholder' );
+						// Block root: placeholder on its first child (a paragraph).
+						expect( barRoot.hasAttribute( 'data-placeholder' ) ).to.be.false;
+						expect( barRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'Block placeholder' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'hosts the placeholder directly on the root for a dynamically added inline root', () => {
+				return MultiRootEditor
+					.create( { foo: '' } )
+					.then( newEditor => {
+						newEditor.addRoot( 'bar', { modelElement: '$inlineRoot' } );
+						const root = newEditor.model.document.getRoot( 'bar' );
+						newEditor.createEditable( root, 'Inline placeholder' );
+
+						const barRoot = newEditor.editing.view.document.getRoot( 'bar' );
+
+						expect( barRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'Inline placeholder' );
 
 						return newEditor.destroy();
 					} );

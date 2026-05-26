@@ -85,6 +85,47 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( model.schema.checkChild( [ '$root', 'caption' ], 'imageInline' ) ).to.be.false;
 		} );
+
+		it( 'should disallow imageInline in $inlineRoot (inline-only root)', () => {
+			expect( model.schema.checkChild( [ '$inlineRoot' ], 'imageInline' ) ).to.be.false;
+		} );
+
+		it( 'should disallow imageInline in a custom inline-only root registered by a plugin', () => {
+			model.schema.register( 'customInlineRoot', {
+				isLimit: true,
+				allowContentOf: '$inlineRoot'
+			} );
+
+			expect( model.schema.checkChild( [ 'customInlineRoot' ], 'imageInline' ) ).to.be.false;
+		} );
+
+		it( 'should allow imageInline in a custom block-accepting root registered by a plugin', () => {
+			model.schema.register( 'customBlockRoot', {
+				isLimit: true,
+				allowContentOf: '$root'
+			} );
+
+			// The new rule only fires for limit elements that disallow `$block`. A custom root that accepts blocks
+			// must continue to host inline images in its block descendants (e.g. paragraphs).
+			expect( model.schema.checkChild( [ 'customBlockRoot', '$block' ], 'imageInline' ) ).to.be.true;
+		} );
+
+		it( 'should still allow imageInline inside non-limit block elements (e.g. paragraph)', () => {
+			// Regression check: the new structural rule must not affect `$block`-like containers that are not limits.
+			expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
+		} );
+
+		it( 'should still allow imageInline inside a limit element that accepts $block (e.g. table cell)', () => {
+			// Mimics a table-cell-like limit: it is a limit element but explicitly accepts block content,
+			// so the new structural rule must not fire.
+			model.schema.register( 'cellLike', {
+				isLimit: true,
+				allowIn: '$root',
+				allowChildren: '$block'
+			} );
+
+			expect( model.schema.checkChild( [ '$root', 'cellLike', '$block' ], 'imageInline' ) ).to.be.true;
+		} );
 	} );
 
 	it( 'should register ImageLoadObserver', () => {

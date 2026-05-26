@@ -10,6 +10,7 @@
 import { EditorUIView, InlineEditableUIView, MenuBarView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
 /**
  * The multi-root editor UI view. It is a virtual view providing an inline
@@ -65,7 +66,7 @@ export class MultiRootEditorUIView extends EditorUIView {
 		editingView: EditingView,
 		editableNames: Array<string>,
 		options: {
-			editableElements?: Record<string, HTMLElement>;
+			editableElements?: Record<string, HTMLElement | ViewRootElementDefinition>;
 			shouldToolbarGroupWhenFull?: boolean;
 			label?: string | Record<string, string>;
 		} = {}
@@ -132,7 +133,11 @@ export class MultiRootEditorUIView extends EditorUIView {
 	 * @param label The accessible editable label used by assistive technologies.
 	 * @returns The created editable instance.
 	 */
-	public createEditable( editableName: string, editableElement?: HTMLElement, label?: string ): InlineEditableUIView {
+	public createEditable(
+		editableName: string,
+		editableElement?: HTMLElement | ViewRootElementDefinition,
+		label?: string
+	): InlineEditableUIView {
 		const editable = new InlineEditableUIView( this.locale, this._editingView, editableElement, {
 			label
 		} );

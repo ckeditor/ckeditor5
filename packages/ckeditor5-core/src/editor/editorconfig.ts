@@ -1127,18 +1127,52 @@ export interface EditorConfig extends EngineConfig {
 export interface RootConfig {
 
 	/**
-	 * The DOM element that will be the source for the created editor root (on which the editor root will be initialized).
+	 * The DOM element to use as the editor's editable root, or a description of one to create.
 	 *
-	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization (but only when
-	 * {@link #initialData `initialData`} is not set).
+	 * Accepted forms:
 	 *
-	 * The editor data will be set back to the original element once the editor is destroyed only if the
-	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
-	 * option is set to `true`.
+	 * * An existing DOM element.
 	 *
-	 * If this config property is not set, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 *   Its content is automatically loaded to the editor upon initialization (but only when
+	 *   {@link #initialData `initialData`} is not set).
+	 *
+	 *   The editor data will be set back to the original element once the editor is destroyed only if the
+	 *   {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
+	 *   option is set to `true`.
+	 *
+	 *   Not accepted by {@link module:editor-classic/classiceditor~ClassicEditor} - use
+	 *   {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`} instead.
+	 *
+	 * * A tag name string, e.g. `'h1'`. The editor creates a fresh element with that tag and uses it as the editable.
+	 *
+	 * * A {@link ~ViewRootElementDefinition} object. The editor creates a fresh element matching the definition and
+	 * uses it as the editable.
+	 *
+	 * ```ts
+	 * // Tag name string.
+	 * BalloonEditor.create( {
+	 * 	root: {
+	 * 		element: 'h1'
+	 * 	}
+	 * } );
+	 *
+	 * // Element definition.
+	 * BalloonEditor.create( {
+	 * 	root: {
+	 * 		element: {
+	 * 			name: 'h1',
+	 * 			classes: [ 'article-title' ],
+	 * 			styles: { 'font-weight': 'bold' },
+	 * 			attributes: { 'data-id': '123' }
+	 * 		}
+	 * 	}
+	 * } );
+	 * ```
+	 *
+	 * Unless an existing DOM element is provided, a detached editor will be created. In this case you need to insert
+	 * it into the DOM manually.
 	 */
-	element?: HTMLElement;
+	element?: HTMLElement | string | ViewRootElementDefinition;
 
 	/**
 	 * The initial editor data to be used instead of the HTML content of the
@@ -1478,6 +1512,52 @@ export interface RootConfig {
 	 */
 	modelAttributes?: EditorRootAttributes;
 
+}
+
+/**
+ * A description of the DOM element used as an editor's editable root, accepted by
+ * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}.
+ *
+ * ```ts
+ * const element: ViewRootElementDefinition = {
+ * 	name: 'h1',
+ * 	classes: [ 'article-title' ],
+ * 	styles: { 'font-weight': 'bold' },
+ * 	attributes: { 'data-id': '123' }
+ * };
+ * ```
+ *
+ * `class` and `style` may also be passed as strings inside `attributes` as a shorthand:
+ *
+ * ```ts
+ * const element: ViewRootElementDefinition = {
+ * 	name: 'h1',
+ * 	attributes: { class: 'article-title', style: 'font-weight: bold' }
+ * };
+ * ```
+ */
+export interface ViewRootElementDefinition {
+
+	/**
+	 * The DOM tag name to use. Defaults to `'div'` when not provided, so integrators can keep the default element and
+	 * still specify {@link #classes}, {@link #styles}, or {@link #attributes}.
+	 */
+	name?: string;
+
+	/**
+	 * Class name or array of class names to apply to the editable element. Each name can be provided as a string.
+	 */
+	classes?: string | Array<string>;
+
+	/**
+	 * Inline styles to apply to the editable element as a record of style properties.
+	 */
+	styles?: Record<string, string>;
+
+	/**
+	 * Additional DOM attributes to apply to the editable element.
+	 */
+	attributes?: Record<string, string>;
 }
 
 /**
