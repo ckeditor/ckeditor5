@@ -80,12 +80,16 @@ export class MediaEmbedEditing extends Plugin {
 					],
 					html: match => {
 						const id = match[ 1 ];
+						const isTrack = id.startsWith( 'track/' );
+						const iframeStyle = isTrack ?
+							'width: 100%; height: 80px; border: 0; display: block;' :
+							'width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;';
 
 						return (
 							'<div>' +
 								`<iframe src="https://open.spotify.com/embed/${ id }" ` +
-									'width="300" height="378" ' +
-									'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
+									`width="300" height="${ isTrack ? '80' : '378' }" ` +
+									`style="${ iframeStyle }" ` +
 									'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 								'</iframe>' +
 							'</div>'
