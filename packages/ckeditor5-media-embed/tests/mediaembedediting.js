@@ -204,8 +204,8 @@ describe( 'MediaEmbedEditing', () => {
 								],
 								'<div>' +
 									'<iframe src="https://open.spotify.com/embed/track/foo" ' +
-										'width="300" height="378" ' +
-										'style="width: 100%; height: auto; aspect-ratio: 100 / 126; border: 0; display: block;" ' +
+										'width="300" height="80" ' +
+										'style="width: 100%; height: 80px; border: 0; display: block;" ' +
 										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 									'</iframe>' +
 								'</div>' );
