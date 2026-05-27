@@ -23,8 +23,19 @@
 
 		cursor: text;
 
-		/* See ckeditor/ckeditor5#469. */
+		/* See https://github.com/ckeditor/ckeditor5/issues/469. */
 		pointer-events: none;
+
+		/*
+		 * Inherit the content styles padding of the placeholder host.
+		 * This ensures the placeholder stays at the padding just like the native caret does, and not at the edge of editable.
+		 */
+		padding-left: inherit;
+		padding-right: inherit;
+
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 
 		@media (forced-colors: none) {
 			color: var(--ck-color-engine-placeholder-text);
@@ -46,7 +57,7 @@
 	}
 }
 
-/* See ckeditor/ckeditor5#1987. */
+/* See https://github.com/ckeditor/ckeditor5/issues/1987. */
 .ck.ck-read-only .ck-placeholder {
 	&::before {
 		display: none;

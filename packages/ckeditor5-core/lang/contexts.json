@@ -34,5 +34,7 @@
 	"Insert": "Label for the Insert button.",
 	"Update": "Label for the Update button.",
 	"Back": "Label for the Back button.",
-	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no results are available for the search criteria."
+	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no results are available for the search criteria.",
+	"Wrap text": "The label for the object (e.g. image, media) style button that wraps text around the object.",
+	"Break text": "The label for the object (e.g. image, media) style button that breaks the text around the object."
 }

@@ -15,10 +15,13 @@
 }
 
 a.ck.ck-button.ck-link-toolbar__preview {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
 	padding: 0 var(--ck-spacing-medium);
 	color: var(--ck-color-link-default);
 	cursor: pointer;
-	justify-content: center;
 
 	& .ck.ck-button__label {
 		text-overflow: ellipsis;

@@ -14,7 +14,7 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		mention: ... // Mention feature options.
  * 	} )
  * 	.then( ... )
@@ -30,7 +30,7 @@ export interface MentionConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ Mention, ... ],
 	 * 		mention: {
 	 * 			feeds: [
@@ -56,7 +56,7 @@ export interface MentionConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ Mention, ... ],
 	 * 		mention: {
 	 * 			// [ Enter, Space ]
@@ -88,7 +88,7 @@ export interface MentionConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ Mention, ... ],
 	 * 		mention: {
 	 * 			dropdownLimit: 20,
@@ -102,7 +102,7 @@ export interface MentionConfig {
 	 * 	.catch( ... );
 	 *
 	 * ClassicEditor
-	 * 	.create( editorElement, {
+	 * 	.create( {
 	 * 		plugins: [ Mention, ... ],
 	 * 		mention: {
 	 * 			dropdownLimit: Infinity,
@@ -222,7 +222,7 @@ export type MentionItemRenderer = ( item: MentionFeedObjectItem ) => HTMLElement
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		plugins: [ Mention, ... ],
  * 		mention: {
  * 			feeds: [

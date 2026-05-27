@@ -9,7 +9,7 @@
 
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import { ModelLiveRange, ModelLivePosition } from '@ckeditor/ckeditor5-engine';
-import { Clipboard, type ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { Clipboard, type ClipboardInputTransformationEvent, type ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Undo, type UndoCommand } from '@ckeditor/ckeditor5-undo';
 import { global } from '@ckeditor/ckeditor5-utils';
@@ -79,7 +79,7 @@ export class AutoMediaEmbed extends Plugin {
 		// After pasting, the content between those positions will be checked for a URL that could be transformed
 		// into media.
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
-		this.listenTo( clipboardPipeline, 'inputTransformation', () => {
+		this.listenTo<ClipboardInputTransformationEvent>( clipboardPipeline, 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange()!;
 
 			const leftLivePosition = ModelLivePosition.fromPosition( firstRange.start );
@@ -148,7 +148,8 @@ export class AutoMediaEmbed extends Plugin {
 
 		const mediaEmbedCommand: MediaEmbedCommand = editor.commands.get( 'mediaEmbed' )!;
 
-		// Do not anything if media element cannot be inserted at the current position (#47).
+		// Do not anything if media element cannot be inserted at the current position.
+		// See https://github.com/ckeditor/ckeditor5-media-embed/issues/47.
 		if ( !mediaEmbedCommand.isEnabled ) {
 			urlRange.detach();
 

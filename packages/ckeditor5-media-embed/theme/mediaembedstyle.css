@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* Side spacing between a floated media and surrounding text. */
+	--ck-content-media-style-spacing: 1.5em;
+}
+
+.ck-content {
+	/* `clear: none` lets multiple floats stack horizontally. `width: 100%` keeps float
+	   from collapsing the iframe to its 300×150 default; resize's inline `style="width: …"`
+	   and Spotify's `:has()` rule in mediaembedediting.css both win on specificity. */
+	& .media.media-style-align-left,
+	& .media.media-style-align-right {
+		clear: none;
+		width: 100%;
+	}
+
+	& .media.media-style-align-left {
+		float: left;
+		margin-right: var(--ck-content-media-style-spacing);
+	}
+
+	& .media.media-style-align-right {
+		float: right;
+		margin-left: var(--ck-content-media-style-spacing);
+	}
+
+	/* Margin-auto shifts a width-constrained figure within its line — a no-op for full-width
+	   figures, visible once a width constraint applies (resize's inline width, or Spotify's
+	   backward-compat 300px). */
+	& .media.media-style-block-align-left {
+		margin-left: 0;
+		margin-right: auto;
+	}
+
+	& .media.media-style-block-align-right {
+		margin-left: auto;
+		margin-right: 0;
+	}
+}

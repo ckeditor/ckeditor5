@@ -44,6 +44,8 @@ The editor initializes as follows:
 2. Depending on the setup, the editor will either initialize with the selected DOM element or, if provided with data, initialize in a detached mode to be added to the DOM on demand.
 3. Upon the `ready` event, the editor sends usage information to the server to confirm the license. [Read more about the license check](#license-check-and-usage-data).
 
+Automatic editor restarts triggered by the watchdog after a crash also count as editor loads, because each restart is a full re-initialization of the editor instance.
+
 Each individual editor instance on a page is counted as one editor load. For example, if a page contains ten editors, a single refresh of that page will result in ten editor loads.
 
 Several factors can contribute to a high number of editor loads, with one of the most significant being the use of multiple editors on a single page. For example:

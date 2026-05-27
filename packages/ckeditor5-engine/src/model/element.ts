@@ -397,7 +397,7 @@ export class ModelElement extends ModelNode {
 ModelElement.prototype.is = function( this: ModelElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'element' || type === 'model:element' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'node' || type === 'model:node';
 	}
 

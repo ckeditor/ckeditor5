@@ -38,6 +38,13 @@ describe( 'TemplateListButtonView', () => {
 
 			expect( view.element.innerHTML ).to.equal( 'foo' );
 		} );
+
+		it( 'should handle text escaping directly', () => {
+			view.text = 'Foo <bar> bar &amp; qux';
+
+			expect( view.element.innerHTML ).to.equal( 'Foo &lt;bar&gt; bar &amp;amp; qux' );
+			expect( view.element.textContent ).to.equal( 'Foo <bar> bar &amp; qux' );
+		} );
 	} );
 
 	describe( 'highlightText()', () => {

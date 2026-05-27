@@ -10,6 +10,7 @@ import {
 	ItalicEditing,
 	UnderlineEditing,
 	Clipboard,
+	CKEditorError,
 	Editor,
 	ElementApiMixin,
 	attachToForm,
@@ -28,11 +29,18 @@ import {
 
 // Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends ElementApiMixin( Editor ) {
-	constructor( element, config ) {
+	constructor( config ) {
 		super( config );
 
+		const sourceElement = config.root?.element;
+
+		if ( !sourceElement ) {
+			// This example expects the editable host in `config.root.element` (see EditorConfig).
+			throw new CKEditorError( 'bootstrap-editor-missing-root-element', null );
+		}
+
 		// Remember the element the editor is created with.
-		this.sourceElement = element;
+		this.sourceElement = sourceElement;
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
@@ -55,16 +63,18 @@ export default class BootstrapEditor extends ElementApiMixin( Editor ) {
 		return super.destroy();
 	}
 
-	static create( element, config ) {
+	static create( config ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( config );
+
+			const replacementElement = editor.sourceElement;
 
 			resolve(
 				editor.initPlugins()
 					// Initialize the UI first. See the BootstrapEditorUI class to learn more.
-					.then( () => editor.ui.init( element ) )
+					.then( () => editor.ui.init( replacementElement ) )
 					// Fill the editable with the initial data.
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => editor.data.init( getDataFromElement( replacementElement ) ) )
 					// Fire the `editor#ready` event that announce the editor is complete and ready to use.
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
@@ -274,7 +284,10 @@ class BootstrapEditorUI extends EditorUI {
 
 // Finally, create the BootstrapEditor instance with a selected set of features.
 BootstrapEditor
-	.create( $( '#editor' ).get( 0 ), {
+	.create( {
+		root: {
+			element: $( '#editor' ).get( 0 )
+		},
 		plugins: [
 			Clipboard, Enter, Typing, Paragraph, Image,
 			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing

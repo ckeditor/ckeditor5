@@ -17,10 +17,9 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ViewRootElementDefinition
 } from '@ckeditor/ckeditor5-core';
-
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { InlineEditorUI } from './inlineeditorui.js';
 import { InlineEditorUIView } from './inlineeditoruiview.js';
@@ -83,18 +82,12 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		// From this point use only normalized `roots.main.element`.
-		const sourceElement = this.config.get( 'roots' )!.main.element;
+		// `normalizeRootsConfig()` reshaped this into a canonical form (HTMLElement or ViewRootElementDefinition).
+		const editableElement = this.config.get( 'roots' )!.main.element as HTMLElement | ViewRootElementDefinition | undefined;
 
-		if ( isElement( sourceElement ) ) {
-			if ( sourceElement.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
-			this.sourceElement = sourceElement;
-			secureSourceElement( this, sourceElement );
+		if ( isElement( editableElement ) ) {
+			this.sourceElement = editableElement;
+			secureSourceElement( this, editableElement );
 		}
 
 		this.config.define( 'menuBar.isVisible', false );
@@ -106,7 +99,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		const menuBarConfig = this.config.get( 'menuBar' )!;
 
-		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
+		const view = new InlineEditorUIView( this.locale, this.editing.view, editableElement, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,
 			label: this.config.get( 'roots' )!.main.label

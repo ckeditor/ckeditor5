@@ -120,6 +120,12 @@
 				},
 				{
 					"elements": "li"
+				},
+				{
+					"elements": "li",
+					"styles": "list-style-type",
+					"isAlternative": true,
+					"_comment": "If `config.list.enableSkipLevelLists` is set to `true`, intermediate `<li>` wrappers with `list-style-type: none` are emitted to bridge missing indent levels."
 				}
 			]
 		},

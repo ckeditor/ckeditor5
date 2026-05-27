@@ -15,7 +15,7 @@ import type { ColorOption, ColorPickerConfig } from '@ckeditor/ckeditor5-ui';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		table: ... // Table feature options.
  * 	} )
  * 	.then( ... )

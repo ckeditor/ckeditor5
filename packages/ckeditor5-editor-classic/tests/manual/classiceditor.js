@@ -21,6 +21,11 @@ function initEditor() {
 			root: {
 				modelAttributes: {
 					section: 'test'
+				},
+				element: {
+					styles: {
+						'min-height': '200px'
+					}
 				}
 			},
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
@@ -57,3 +62,5 @@ function destroyEditor() {
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
 document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+
+initEditor();

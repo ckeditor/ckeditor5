@@ -116,7 +116,8 @@ export class FontColorUIBase extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView: FontColorSelectorDropdownView = createDropdown( locale );
-			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
+			// Font color dropdown rendering is deferred once it gets open to improve performance.
+			// See https://github.com/ckeditor/ckeditor5/issues/6192.
 			let dropdownContentRendered = false;
 
 			const colorSelectorView = addColorSelectorToDropdown( {
@@ -223,7 +224,8 @@ export class FontColorUIBase extends Plugin {
 
 			menuView.bind( 'isEnabled' ).to( command );
 
-			// Font color sub-menu rendering is deferred once it gets open to improve performance (#6192).
+			// Font color sub-menu rendering is deferred once it gets open to improve performance.
+			// See https://github.com/ckeditor/ckeditor5/issues/6192.
 			let contentRendered = false;
 
 			const colorSelectorView = new ColorSelectorView( locale, {

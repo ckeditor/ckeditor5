@@ -143,7 +143,7 @@ describe( 'LinkImageUI', () => {
 			expect( data.preventDefault.called ).to.be.true;
 		} );
 
-		// See: #9607.
+		// See: https://github.com/ckeditor/ckeditor5/issues/9607.
 		describe( 'blocking the LinkUI plugin', () => {
 			let linkUI;
 

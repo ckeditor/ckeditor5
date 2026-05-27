@@ -6,7 +6,7 @@
 import { Autoformat } from '../src/autoformat.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ListEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
+import { ListEditing, ListPropertiesEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
 import { HeadingEditing, HeadingCommand } from '@ckeditor/ckeditor5-heading';
 import { BoldEditing, StrikethroughEditing, CodeEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
@@ -278,11 +278,40 @@ describe( 'Autoformat', () => {
 				);
 			} );
 
-			it( 'should not replace digit with numbered list item when digit is different than "1"', () => {
+			it( 'should replace digit with numbered list item when digit is different than "1"', () => {
 				_setModelData( model, '<paragraph>3.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>3. []</paragraph>' );
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
+				);
+			} );
+
+			it( 'should replace multi-digit number with numbered list item', () => {
+				_setModelData( model, '<paragraph>12.[]</paragraph>' );
+				insertSpace();
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
+				);
+			} );
+
+			it( 'should replace digit with numbered list item using the parenthesis format when digit is not "1"', () => {
+				_setModelData( model, '<paragraph>5)[]</paragraph>' );
+				insertSpace();
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
+				);
+			} );
+
+			it( 'should not replace digit character when inside numbered list item (digit different than "1")', () => {
+				_setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="numbered">5.[]</paragraph>' );
+				insertSpace();
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered">5. []</paragraph>'
+				);
 			} );
 
 			it( 'should not replace digit character after <softBreak>', () => {
@@ -1631,11 +1660,40 @@ describe( 'Autoformat', () => {
 				);
 			} );
 
-			it( 'should not replace digit with numbered list item when digit is different than "1"', () => {
+			it( 'should replace digit with numbered list item when digit is different than "1"', () => {
 				_setModelData( model, '<paragraph>3.[]</paragraph>' );
 				insertSpace();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>3. []</paragraph>' );
+				expect( _getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
+				);
+			} );
+
+			it( 'should replace multi-digit number with numbered list item', () => {
+				_setModelData( model, '<paragraph>12.[]</paragraph>' );
+				insertSpace();
+
+				expect( _getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
+				);
+			} );
+
+			it( 'should replace digit with numbered list item using the parenthesis format when digit is not "1"', () => {
+				_setModelData( model, '<paragraph>5)[]</paragraph>' );
+				insertSpace();
+
+				expect( _getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listItemId="a00" listType="numbered">[]</listItem>'
+				);
+			} );
+
+			it( 'should not replace digit character when inside numbered list item (digit different than "1")', () => {
+				_setModelData( model, '<listItem listIndent="0" listItemId="a00" listType="numbered">5.[]</listItem>' );
+				insertSpace();
+
+				expect( _getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listItemId="a00" listType="numbered">5. []</listItem>'
+				);
 			} );
 
 			it( 'should not replace digit character after <softBreak>', () => {
@@ -2695,6 +2753,192 @@ describe( 'Autoformat', () => {
 						return editor.destroy();
 					} );
 			} );
+		} );
+	} );
+
+	describe( 'with list properties (startIndex)', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					Enter,
+					Paragraph,
+					Autoformat,
+					ListEditing,
+					ListPropertiesEditing,
+					HeadingEditing,
+					UndoEditing
+				],
+				list: {
+					properties: {
+						startIndex: true,
+						reversed: false,
+						styles: false
+					}
+				}
+			} );
+
+			model = editor.model;
+			doc = model.document;
+
+			stubUid();
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should set listStart attribute to 1 when typing "1. "', () => {
+			_setModelData( model, '<paragraph>1.[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listStart="1" listType="numbered">[]</paragraph>'
+			);
+		} );
+
+		it( 'should set listStart attribute to the typed number when typing "5. "', () => {
+			_setModelData( model, '<paragraph>5.[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</paragraph>'
+			);
+		} );
+
+		it( 'should set listStart attribute to the typed number for multi-digit "12. "', () => {
+			_setModelData( model, '<paragraph>12.[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listStart="12" listType="numbered">[]</paragraph>'
+			);
+		} );
+
+		it( 'should set listStart attribute to 0 when typing "0. "', () => {
+			_setModelData( model, '<paragraph>0.[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listStart="0" listType="numbered">[]</paragraph>'
+			);
+		} );
+
+		it( 'should set listStart attribute to the typed number for the parenthesis format "5) "', () => {
+			_setModelData( model, '<paragraph>5)[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</paragraph>'
+			);
+		} );
+
+		it( 'should ignore typed number and inherit listStart from adjacent numbered list above', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a01" listStart="1" listType="numbered">Item 1</paragraph>' +
+				'<paragraph>5.[]</paragraph>'
+			);
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a01" listStart="1" listType="numbered">Item 1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listStart="1" listType="numbered">[]</paragraph>'
+			);
+		} );
+
+		it( 'should start a new numbered list with typed listStart when adjacent list is bulleted', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Item 1</paragraph>' +
+				'<paragraph>5.[]</paragraph>'
+			);
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Item 1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'with list properties but startIndex disabled', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					Enter,
+					Paragraph,
+					Autoformat,
+					ListEditing,
+					ListPropertiesEditing,
+					HeadingEditing,
+					UndoEditing
+				],
+				list: {
+					properties: {
+						startIndex: false,
+						reversed: false,
+						styles: false
+					}
+				}
+			} );
+
+			model = editor.model;
+			doc = model.document;
+
+			stubUid();
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should not set listStart attribute when typing "5. "', () => {
+			_setModelData( model, '<paragraph>5.[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">[]</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'with single-block lists plugin and list properties (startIndex)', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					Enter,
+					Paragraph,
+					Autoformat,
+					ListEditing,
+					ListPropertiesEditing,
+					HeadingEditing,
+					UndoEditing
+				],
+				list: {
+					multiBlock: false,
+					properties: {
+						startIndex: true,
+						reversed: false,
+						styles: false
+					}
+				}
+			} );
+
+			model = editor.model;
+			doc = model.document;
+
+			stubUid();
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should set listStart attribute to the typed number when typing "5. "', () => {
+			_setModelData( model, '<paragraph>5.[]</paragraph>' );
+			insertSpace();
+
+			expect( _getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listItemId="a00" listStart="5" listType="numbered">[]</listItem>'
+			);
 		} );
 	} );
 

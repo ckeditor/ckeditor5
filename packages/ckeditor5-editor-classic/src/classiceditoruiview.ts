@@ -10,6 +10,7 @@
 import { BoxedEditorUIView, InlineEditableUIView, MenuBarView, StickyPanelView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
 import '../theme/classiceditor.css';
 
@@ -43,6 +44,8 @@ export class ClassicEditorUIView extends BoxedEditorUIView {
 	 * @param options.shouldToolbarGroupWhenFull When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
+	 * @param options.editableElement A {@link module:core/editor/editorconfig~ViewRootElementDefinition}
+	 * describing the editable element to create inside the UI box. When omitted, a default `<div>` is used.
 	 * @param options.label When set, this value will be used as an accessible `aria-label` of the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view}.
 	 */
@@ -52,6 +55,7 @@ export class ClassicEditorUIView extends BoxedEditorUIView {
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
 			useMenuBar?: boolean;
+			editableElement?: ViewRootElementDefinition;
 			label?: string | Record<string, string>;
 		} = {}
 	) {
@@ -67,7 +71,7 @@ export class ClassicEditorUIView extends BoxedEditorUIView {
 			this.menuBarView = new MenuBarView( locale );
 		}
 
-		this.editable = new InlineEditableUIView( locale, editingView, undefined, {
+		this.editable = new InlineEditableUIView( locale, editingView, options.editableElement, {
 			label: options.label
 		} );
 	}

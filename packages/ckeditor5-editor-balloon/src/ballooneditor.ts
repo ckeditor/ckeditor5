@@ -17,11 +17,11 @@ import {
 	registerAndInitializeRootConfigAttributes,
 	verifyRootElements,
 	type EditorConfig,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type ViewRootElementDefinition
 } from '@ckeditor/ckeditor5-core';
 
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { BalloonEditorUI } from './ballooneditorui.js';
 import { BalloonEditorUIView } from './ballooneditoruiview.js';
@@ -85,18 +85,12 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		normalizeRootsConfig( sourceElementOrData, this.config );
 
-		// From this point use only normalized `roots.main.element`.
-		const sourceElement = this.config.get( 'roots' )!.main.element;
+		// `normalizeRootsConfig()` reshaped this into a canonical form (HTMLElement or ViewRootElementDefinition).
+		const editableElement = this.config.get( 'roots' )!.main.element as HTMLElement | ViewRootElementDefinition | undefined;
 
-		if ( isElement( sourceElement ) ) {
-			if ( sourceElement.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
-			this.sourceElement = sourceElement;
-			secureSourceElement( this, sourceElement );
+		if ( isElement( editableElement ) ) {
+			this.sourceElement = editableElement;
+			secureSourceElement( this, editableElement );
 		}
 
 		const plugins = this.config.get( 'plugins' )!;
@@ -109,7 +103,7 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 		this.model.document.createRoot( this.config.get( 'roots' )!.main.modelElement );
 		registerAndInitializeRootConfigAttributes( this );
 
-		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement, this.config.get( 'roots' )!.main.label );
+		const view = new BalloonEditorUIView( this.locale, this.editing.view, editableElement, this.config.get( 'roots' )!.main.label );
 		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );

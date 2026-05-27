@@ -15,7 +15,7 @@ import { type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		list:  ... // The list feature configuration.
  * 	} )
  * 	.then( ... )
@@ -60,6 +60,25 @@ export interface ListConfig {
 	 * @default true
 	 */
 	enableListItemMarkerFormatting?: boolean;
+
+	/**
+	 * When set to `true`, list items can be indented by more than one level relative to their parent.
+	 * By default, the editor enforces that each nested list item is only one level deeper than its parent.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		list: {
+	 * 			enableSkipLevelLists: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * @default false
+	 */
+	enableSkipLevelLists?: boolean;
 }
 
 /**
@@ -77,7 +96,7 @@ export interface ListConfig {
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		list: {
  * 			properties: {
  * 				styles: true,

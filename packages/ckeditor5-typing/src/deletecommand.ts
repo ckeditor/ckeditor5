@@ -101,7 +101,7 @@ export class DeleteCommand extends Command {
 				} );
 			}
 
-			// Check if deleting in an empty editor. See #61.
+			// Check if deleting in an empty editor. See https://github.com/ckeditor/ckeditor5-typing/issues/61.
 			if ( this._shouldEntireContentBeReplacedWithParagraph( sequence ) ) {
 				this._replaceEntireContentWithParagraph( writer );
 

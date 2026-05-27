@@ -228,7 +228,8 @@ export class ModelPosition extends ModelTypeCheckable {
 	 * Node directly after this position. Returns `null` if this position is at the end of its parent, or if it is in a text node.
 	 */
 	public get nodeAfter(): ModelNode | null {
-		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
+		// Cache the parent and reuse for performance reasons.
+		// See https://github.com/ckeditor/ckeditor5/issues/6579 and https://github.com/ckeditor/ckeditor5/issues/6582.
 		const parent = this.parent;
 
 		return getNodeAfterPosition( this, parent, getTextNodeAtPosition( this, parent ) );
@@ -238,7 +239,8 @@ export class ModelPosition extends ModelTypeCheckable {
 	 * Node directly before this position. Returns `null` if this position is at the start of its parent, or if it is in a text node.
 	 */
 	public get nodeBefore(): ModelNode | null {
-		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
+		// Cache the parent and reuse for performance reasons.
+		// See https://github.com/ckeditor/ckeditor5/issues/6579 and https://github.com/ckeditor/ckeditor5/issues/6582.
 		const parent = this.parent;
 
 		return getNodeBeforePosition( this, parent, getTextNodeAtPosition( this, parent ) );

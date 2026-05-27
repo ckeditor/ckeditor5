@@ -37,7 +37,8 @@
   "dependencies": {
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
-    "@ckeditor/ckeditor5-engine": "workspace:*"
+    "@ckeditor/ckeditor5-engine": "workspace:*",
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
@@ -56,8 +57,7 @@
     "@ckeditor/ckeditor5-list": "workspace:*",
     "@ckeditor/ckeditor5-page-break": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
-    "@ckeditor/ckeditor5-table": "workspace:*",
-    "@ckeditor/ckeditor5-utils": "workspace:*"
+    "@ckeditor/ckeditor5-table": "workspace:*"
   },
   "scripts": {
     "build": "node ../../scripts/nim/build-package.mjs"

@@ -351,14 +351,14 @@ export const defaultConfig = {
 			view: 'form',
 			modelSchema: {
 				inheritAllFrom: '$container',
-				isBlock: true
+				isBlock: false
 			}
 		},
 		{
 			model: 'htmlHgroup',
 			view: 'hgroup',
 			modelSchema: {
-				allowIn: [ '$root', '$container' ],
+				allowWhere: '$container',
 				allowChildren: [
 					'paragraph',
 					'htmlP',

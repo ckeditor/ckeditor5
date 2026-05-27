@@ -13,8 +13,21 @@ export { MediaEmbedUI } from './mediaembedui.js';
 export { AutoMediaEmbed } from './automediaembed.js';
 export { MediaEmbedToolbar } from './mediaembedtoolbar.js';
 export { MediaEmbedCommand } from './mediaembedcommand.js';
+export { MediaEmbedResize } from './mediaembedresize.js';
+export { MediaEmbedResizeEditing } from './mediaembedresize/mediaembedresizeediting.js';
+export { MediaEmbedResizeHandles } from './mediaembedresize/mediaembedresizehandles.js';
+export { ResizeMediaEmbedCommand } from './mediaembedresize/resizemediaembedcommand.js';
+export { MediaEmbedStyle } from './mediaembedstyle.js';
+export { MediaEmbedStyleEditing } from './mediaembedstyle/mediaembedstyleediting.js';
+export { MediaEmbedStyleUI } from './mediaembedstyle/mediaembedstyleui.js';
+export { MediaEmbedStyleCommand } from './mediaembedstyle/mediaembedstylecommand.js';
 
-export type { MediaEmbedConfig } from './mediaembedconfig.js';
+export type {
+	MediaEmbedConfig,
+	MediaStyleConfig,
+	MediaStyleOptionDefinition,
+	MediaStyleDropdownDefinition
+} from './mediaembedconfig.js';
 
 export { modelToViewUrlAttributeConverter as _modelToViewUrlAttributeMediaConverter } from './converters.js';
 export { MediaFormView as _MediaFormView } from './ui/mediaformview.js';
