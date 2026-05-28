@@ -7,6 +7,7 @@ import { ListEditing } from '../../../src/list/listediting.js';
 
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -6720,6 +6721,60 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 				'      []bbb',
 				'      # ccc'
 			] ) );
+		} );
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5-commercial/issues/10152.
+	describe( 'backspace (backward) - skip-level lists with a preceding block quote', () => {
+		let element, editor, model, view;
+		let eventInfo, domEventData;
+
+		beforeEach( async () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ListEditing, Paragraph, Delete, BlockQuoteEditing ],
+				list: {
+					enableSkipLevelLists: true
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+
+			eventInfo = new BubblingEventInfo( view.document, 'delete' );
+			domEventData = new ViewDocumentDomEventData( view, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'backward',
+				unit: 'codePoint',
+				sequence: 1
+			} );
+		} );
+
+		afterEach( async () => {
+			element.remove();
+
+			await editor.destroy();
+		} );
+
+		it( 'should outdent the item when the preceding list item is inside a block quote', () => {
+			_setModelData( model,
+				'<blockQuote>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'</blockQuote>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">[]bbb</paragraph>'
+			);
+
+			expect( () => view.document.fire( eventInfo, domEventData ) ).to.not.throw();
+
+			expect( _getModelData( model ) ).to.equalMarkup(
+				'<blockQuote>' +
+					'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'</blockQuote>' +
+				'<paragraph listIndent="0" listItemId="b" listType="numbered">[]bbb</paragraph>'
+			);
 		} );
 	} );
 

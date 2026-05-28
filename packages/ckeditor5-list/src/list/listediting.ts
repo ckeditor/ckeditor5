@@ -282,8 +282,13 @@ export class ListEditing extends Plugin {
 						sameIndent: true
 					} );
 
-					// Outdent the first block of a first list item.
-					if ( !previousBlock && positionParent.getAttribute( 'listIndent' ) === 0 ) {
+					// Outdent the first block of a list item when there is no list block to merge with: either a first
+					// list item (indent 0) or an item whose preceding sibling is not a list block (for example a block
+					// quote between skip-level list items), in which case the only sensible action is to outdent.
+					const hasNoMergeTarget = positionParent.getAttribute( 'listIndent' ) === 0 ||
+						!isListItemBlock( positionParent.previousSibling );
+
+					if ( !previousBlock && hasNoMergeTarget ) {
 						if ( !isLastBlockOfListItem( positionParent ) ) {
 							editor.execute( 'splitListItemAfter' );
 						}
