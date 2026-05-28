@@ -69,4 +69,4 @@ msgstr "사용 가능한 링크 없음"
 
 msgctxt "The label of the switch button shown when link has empty href attribute."
 msgid "This link has no URL"
-msgstr ""
+msgstr "이 링크에는 URL이 없습니다"

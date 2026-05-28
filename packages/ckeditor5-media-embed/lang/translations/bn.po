@@ -57,12 +57,12 @@ msgstr "মিডিয়া এম্বেড"
 
 msgctxt "The label for the left aligned media option."
 msgid "Left aligned media"
-msgstr ""
+msgstr "বামদিকে সারিবদ্ধ মিডিয়া"
 
 msgctxt "The label for the centered media option."
 msgid "Centered media"
-msgstr ""
+msgstr "মাঝখানে সারিবদ্ধ মিডিয়া"
 
 msgctxt "The label for the right aligned media option."
 msgid "Right aligned media"
-msgstr ""
+msgstr "ডানদিকে সারিবদ্ধ মিডিয়া"
