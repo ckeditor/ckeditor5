@@ -1,0 +1,184 @@
+# This is the configuration executed in a new workflow once the main thread starts processing
+# a new job on CircleCI.
+#
+# To modify commands to execute on CI review this file, and the script that generates it.
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@2.4.0
+  codecov: codecov/codecov@5.4.3
+
+# List of parameters are automatically inherited from `config.yml`.
+parameters:
+
+commands:
+  install_newest_emoji:
+    steps:
+      - run:
+          name: Install the emoji font
+          command: |
+            sudo apt install fonts-noto-color-emoji
+
+  install_ssh_keys_command:
+    description: "Install SSH keys"
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
+
+  bootstrap_repository_command:
+    description: "Bootstrap the CKEditor 5 project"
+    steps:
+      - install_ssh_keys_command
+      - run:
+          name: Disable Corepack
+          command: sudo corepack disable
+      - run:
+          name: Install pnpm
+          command: sudo npm i -g pnpm@^10
+      - run:
+          name: Install dependencies
+          environment:
+            PUPPETEER_SKIP_DOWNLOAD: true
+          command: pnpm install --frozen-lockfile
+
+  checkout_command:
+    description: "Clone the CKEditor 5 repository with limited depth and branches"
+    steps:
+      - run:
+          name: Add GitHub to known_hosts
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Checkout code (single branch)
+          command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+
+jobs:
+  cke5_manual:
+    docker:
+      - image: cimg/node:24.11.0-browsers
+    resource_class: large
+    steps:
+      - checkout_command
+      - browser-tools/install_chrome
+      - bootstrap_repository_command
+      - install_newest_emoji
+      - run:
+          name: Prepare DLL builds in CKEditor 5
+          command: pnpm run dll:build
+      - run:
+          name: Verify CKEditor 5 manual tests
+          command: |
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
+            bash scripts/check-manual-tests.sh -r ckeditor5-root
+
+  cke5_validators:
+    docker:
+      - image: cimg/node:24.11.0
+    resource_class: medium
+    steps:
+      - checkout_command
+      - bootstrap_repository_command
+      - run:
+          when: always
+          name: Execute tests for internal scripts
+          command: pnpm run test:scripts
+      - run:
+          when: always
+          name: Validate versions of CKEditor 5 dependencies
+          command: pnpm run check-dependencies:versions-match
+      - run:
+          when: always
+          name: Validate "ckeditor5-metadata.json" files
+          command: node scripts/ci/validate-metadata-files.mjs
+      - run:
+          when: always
+          name: Check if all SVG files are optimized
+          command: pnpm run clean-up-svg-icons --verify-only
+      - run:
+          when: always
+          name: Validate manual test directories
+          command: node scripts/ci/check-manual-tests-directory-structure.mjs
+      - run:
+          when: always
+          name: Validate license files
+          command: pnpm run validate-license-files --verbose
+      - run:
+          when: always
+          name: Execute ESLint
+          command: pnpm run lint
+      - run:
+          when: always
+          name: Execute Stylelint
+          command: pnpm run stylelint
+      - run:
+          when: always
+          name: Check if all packages are exported in the "ckeditor5" package
+          command: pnpm run check-exports
+      - run:
+          when: always
+          name: Check if all package members are exported correctly from the index.ts file
+          command: pnpm run validate-module-re-exports
+
+  release_prepare:
+    docker:
+      - image: cimg/node:24.11.0
+    resource_class: large
+    steps:
+      - checkout_command
+      - bootstrap_repository_command
+      - run:
+          name: Check if packages are ready to be released
+          command: pnpm run release:prepare-packages --compile-only --verbose
+      - run:
+          name: Lint generated packages
+          command: pnpm run release:lint-packages
+      - run:
+          name: Check dependencies
+          command: pnpm run check-dependencies
+
+  cke5_coverage:
+    docker:
+      - image: cimg/node:24.11.0
+    resource_class: small
+    steps:
+      - checkout_command
+      - attach_workspace:
+          at: .out
+      - run:
+          name: Merge the code coverage of the framework and features
+          command: cat .out/combined_framework.info .out/combined_features_batch_n.info > .out/combined_lcov.info
+      - codecov/upload:
+          files: .out/combined_lcov.info
+
+  notify_ci_failure:
+    docker:
+      - image: cimg/node:24.11.0
+    resource_class: small
+    parameters:
+      hideAuthor:
+        type: string
+        default: "false"
+    steps:
+      - checkout_command
+      - bootstrap_repository_command
+      - run:
+          name: Waiting for other jobs to finish and sending notification on failure
+          command: pnpm ckeditor5-dev-ci-circle-workflow-notifier --task "pnpm ckeditor5-dev-ci-notify-circle-status --pipeline-id << pipeline.number >> --hide-author << parameters.hideAuthor >>"
+          no_output_timeout: 30m
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - cke5_tests_framework
+      - cke5_tests_features_batch_n
+      - cke5_coverage:
+          requires:
+            - cke5_tests_framework
+            - cke5_tests_features_batch_n
+      - cke5_validators
+      - cke5_manual
+      - release_prepare
+      - notify_ci_failure
