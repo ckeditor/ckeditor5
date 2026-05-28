@@ -8,7 +8,7 @@ modified_at: 2022-11-03
 
 # Code style
 
-{@link framework/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDE settings (if it is configured to read them).
+{@link framework/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDE settings (if it is configured to read them).
 
 Here is a quick summary of these rules.
 

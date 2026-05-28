@@ -54,9 +54,7 @@
     "fs-extra": "^11.0.0",
     "glob": "^13.0.0",
     "globals": "^16.1.0",
-    "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
-    "lint-staged": "^16.1.0",
     "listr2": "^8.0.0",
     "local-web-server": "^5.4.0",
     "minimist": "^1.2.8",
@@ -97,7 +95,6 @@
   },
   "scripts": {
     "nice": "ckeditor5-dev-changelog-create-entry",
-    "postinstall": "husky",
     "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=4",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "ckeditor5-dev-tests-run-automated",
@@ -134,17 +131,6 @@
     "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
     "test:memory": "node ./scripts/memory/test-memory.mjs",
     "validate-license-files": "node ./scripts/ci/validate-license-files.mjs"
-  },
-  "lint-staged": {
-    "**/*": [
-      "eslint --quiet"
-    ],
-    "packages/**/*.css": [
-      "stylelint --quiet --allow-empty-input"
-    ],
-    "docs/**/*.css": [
-      "stylelint --quiet --allow-empty-input"
-    ]
   },
   "ck-lts-versions": [
     47
