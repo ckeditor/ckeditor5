@@ -1266,15 +1266,9 @@ importers:
         specifier: 1.45.1
         version: 1.45.1
     devDependencies:
-      '@ckeditor/ckeditor5-adapter-ckfinder':
-        specifier: workspace:*
-        version: link:../ckeditor5-adapter-ckfinder
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
-      '@ckeditor/ckeditor5-ckfinder':
-        specifier: workspace:*
-        version: link:../ckeditor5-ckfinder
       '@ckeditor/ckeditor5-clipboard':
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
