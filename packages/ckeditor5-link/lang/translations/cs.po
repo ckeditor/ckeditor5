@@ -69,4 +69,4 @@ msgstr "Žádné dostupné odkazy"
 
 msgctxt "The label of the switch button shown when link has empty href attribute."
 msgid "This link has no URL"
-msgstr ""
+msgstr "Tento odkaz nemá adresu URL"

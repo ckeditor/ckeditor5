@@ -71,4 +71,4 @@ msgstr "কোনো লিঙ্ক উপলব্ধ নেই"
 
 msgctxt "The label of the switch button shown when link has empty href attribute."
 msgid "This link has no URL"
-msgstr ""
+msgstr "এই লিঙ্কের কোন URL নেই"
