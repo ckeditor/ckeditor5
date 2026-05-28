@@ -2,7 +2,6 @@
 .*/**
 !.changelog/**
 !.github/**
-!.husky/**
 !.circleci/**
 
 # Generated automatically via CircleCI.
