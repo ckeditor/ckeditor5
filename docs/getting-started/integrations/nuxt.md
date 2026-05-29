@@ -93,7 +93,9 @@ Notice that the `<Editor>` component is wrapped in a `<ClientOnly>` component. I
 
 You can run your project now using the `npm run dev` command to see your application in the browser.
 
-In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options, refer to the {@link getting-started/integrations/vuejs-v3 Vue.js integration guide}.
+<info-box>
+	In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options &ndash; including inline editors &ndash; refer to the {@link getting-started/integrations/vuejs-v3 Vue.js integration guide}.
+</info-box>
 
 ## Next steps
 

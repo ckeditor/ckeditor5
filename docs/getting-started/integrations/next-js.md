@@ -125,7 +125,9 @@ If you have trouble seeing the editor, remember that the Next.js project ships w
 
 Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path appropriately.
 
-In the example above, we only used basic features of the `<CKEditor>` component. To learn more about additional features and configuration options, refer to the {@link getting-started/integrations/react-default-npm React integration guide}.
+<info-box>
+	In the example above, we only used basic features of the `<CKEditor>` component. To learn more about additional features and configuration options &ndash; including inline editors and the multi-root variant &ndash; refer to the {@link getting-started/integrations/react-default-npm React integration guide}.
+</info-box>
 
 ## How to?
 

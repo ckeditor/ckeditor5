@@ -4,6 +4,7 @@ meta-title: Using CKEditor 5 with Angular from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with CDN.
 category: cloud
 order: 30
+modified_at: 2026-05-27
 ---
 
 # Integrating CKEditor&nbsp;5 with Angular from CDN
@@ -148,6 +149,10 @@ export class MyComponent {
 ```
 
 ### `tagName`
+
+<info-box warning>
+	The `tagName` input is deprecated in favor of `config.root.element` (or `config.roots.main.element`). The new configuration option lets you customize the tag name, classes, inline styles, and HTML attributes of the editable element. See the [Using an inline editor](#using-an-inline-editor) section below for details.
+</info-box>
 
 The tag name of the HTML element on which the rich text editor will be created.
 
@@ -548,6 +553,77 @@ And then, link the method in the template:
 >
 </ckeditor>
 ```
+
+### Using an inline editor
+
+Single-root editors such as {@link module:editor-inline/inlineeditor~InlineEditor `InlineEditor`}, {@link module:editor-balloon/ballooneditor~BalloonEditor `BalloonEditor`}, and {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} can be configured as inline editors that accept only inline content (text, bold, italic, links) instead of blocks. This is useful for short fields such as titles, captions, or single-line inputs.
+
+Set {@link module:core/editor/editorconfig~RootConfig#modelElement `root.modelElement`} to `'$inlineRoot'` to restrict the root to inline content. Optionally, provide a custom {@link module:core/editor/editorconfig~RootConfig#element `root.element`} to render the editable host as a specific tag (for example, `<h1>` for a title) instead of the default `<div>`.
+
+```angular-ts
+// app.component.ts
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
+import { BalloonEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
+
+@Component( {
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	imports: [ CommonModule, CKEditorModule ],
+	standalone: true
+} )
+export class AppComponent {
+	public Editor: typeof BalloonEditor | null = null;
+
+	public config: EditorConfig | null = null;
+
+	public ngOnInit(): void {
+		loadCKEditorCloud( {
+			version: '{@var ckeditor5-version}'
+		} ).then( this._setupEditor.bind( this ) );
+	}
+
+	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}' }> ) {
+		const { BalloonEditor, Essentials, Bold, Italic } = cloud.CKEditor;
+
+		this.Editor = BalloonEditor;
+		this.config = {
+			licenseKey: '<YOUR_LICENSE_KEY>',
+			plugins: [ Essentials, Bold, Italic ],
+			toolbar: [ 'bold', 'italic' ],
+			root: {
+				element: 'h1',
+				modelElement: '$inlineRoot',
+				initialData: 'Document title',
+				placeholder: 'Enter title...'
+			}
+		};
+	}
+}
+```
+
+```angular-html
+<!-- app.component.html -->
+
+<ckeditor
+  *ngIf="(Editor && config)"
+  [editor]="Editor"
+  [config]="config"
+></ckeditor>
+```
+
+The `root.element` property accepts:
+
+* A tag name string, for example `'h1'` or `'section'`.
+* A descriptor object with `name`, `classes`, `styles`, and `attributes` fields.
+
+Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the schema still permits blocks inside the root.
+
+<info-box important>
+	The `<ckeditor>` component always renders a `<div>` host for `ClassicEditor`, regardless of `root.element`. Classic editor wraps its toolbar and editable inside its own structure. Use `InlineEditor`, `BalloonEditor`, or `DecoupledEditor` to control the host element.
+</info-box>
 
 ### Using the editor with collaboration plugins
 
