@@ -18,6 +18,11 @@ const API_KEY = 'febab8169e71e501ae2e707f55105647';
 MediaEditor
 	.create( {
 		attachTo: document.querySelector( '#snippet-media-embed-preview' ),
+		// MediaEmbedResize is removed because Iframely sizes its own .iframely-responsive
+		// wrapper at runtime (via postMessage from the embedded iframe), and resize handles
+		// on the figure would fight that — producing a width chosen by the user and a height
+		// chosen by Iframely that no longer match.
+		removePlugins: [ 'MediaEmbedResize' ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
