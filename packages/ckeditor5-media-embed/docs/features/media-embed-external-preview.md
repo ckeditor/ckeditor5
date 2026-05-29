@@ -6,6 +6,8 @@ meta-description: Use Iframely or Embedly to show media previews inside CKEditor
 order: 40
 ---
 
+{@snippet features/build-media-source empty}
+
 # Using external services for media previews
 
 You can use proxy services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) for two related purposes:
