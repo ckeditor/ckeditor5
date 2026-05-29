@@ -7,7 +7,7 @@
  * @module adapter-ckfinder/uploadadapter
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	FileRepository,
 	type UploadAdapter as UploadAdapterInterface,
@@ -32,8 +32,8 @@ export class CKFinderUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FileRepository ] as const;
+	public static get requires(): PluginDependenciesOf<[ FileRepository ]> {
+		return [ FileRepository ];
 	}
 
 	/**

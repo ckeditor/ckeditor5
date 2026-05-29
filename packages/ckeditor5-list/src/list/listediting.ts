@@ -7,11 +7,7 @@
  * @module list/list/listediting
  */
 
-import {
-	Plugin,
-	type Editor,
-	type MultiCommand
-} from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type MultiCommand, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import type {
 	DowncastAttributeEvent,
@@ -122,8 +118,8 @@ export class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Enter, Delete, ListUtils, ClipboardPipeline, ListFormatting ] as const;
+	public static get requires(): PluginDependenciesOf<[ Enter, Delete, ListUtils, ClipboardPipeline, ListFormatting ]> {
+		return [ Enter, Delete, ListUtils, ClipboardPipeline, ListFormatting ];
 	}
 
 	/**

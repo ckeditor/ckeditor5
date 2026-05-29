@@ -9,7 +9,7 @@
 
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import type { DomOptimalPositionOptions } from '@ckeditor/ckeditor5-utils';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { IconEmoji } from '@ckeditor/ckeditor5-icons';
 
@@ -53,8 +53,8 @@ export class EmojiPicker extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ EmojiRepository, ContextualBalloon, Dialog, Typing ] as const;
+	public static get requires(): PluginDependenciesOf<[ EmojiRepository, ContextualBalloon, Dialog, Typing ]> {
+		return [ EmojiRepository, ContextualBalloon, Dialog, Typing ];
 	}
 
 	/**

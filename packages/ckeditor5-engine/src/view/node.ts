@@ -12,12 +12,15 @@ import { ViewTypeCheckable } from './typecheckable.js';
 import {
 	CKEditorError,
 	EmitterMixin,
-	compareArrays
+	compareArrays,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
+
+const ViewNodeBase: EmitterMixinConstructor<typeof ViewTypeCheckable> = /* #__PURE__ */ EmitterMixin( ViewTypeCheckable );
 
 /**
  * Abstract view node class.
@@ -26,7 +29,7 @@ import { type ViewElement } from './element.js';
  * Use the {@link module:engine/view/downcastwriter~ViewDowncastWriter} or {@link module:engine/view/upcastwriter~ViewUpcastWriter}
  * to create new instances of view nodes.
  */
-export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
+export abstract class ViewNode extends ViewNodeBase {
 	/**
 	 * The document instance to which this node belongs.
 	 */

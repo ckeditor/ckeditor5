@@ -7,7 +7,7 @@
  * @module source-editing/sourceediting
  */
 
-import { Plugin, PendingActions, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, PendingActions, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { IconSource } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from '@ckeditor/ckeditor5-ui';
 import { CKEditorError, createElement, ElementReplacer, env, formatHtml } from '@ckeditor/ckeditor5-utils';
@@ -42,8 +42,8 @@ export class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ PendingActions ] as const;
+	public static get requires(): PluginDependenciesOf<[ PendingActions ]> {
+		return [ PendingActions ];
 	}
 
 	/**

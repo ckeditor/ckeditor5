@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplaceediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { DifferItem, DifferItemAttribute, ModelElement, ModelNode } from '@ckeditor/ckeditor5-engine';
 import {
 	scrollViewportToShowTarget,
@@ -38,8 +38,8 @@ export class FindAndReplaceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FindAndReplaceUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ FindAndReplaceUtils ]> {
+		return [ FindAndReplaceUtils ];
 	}
 
 	/**

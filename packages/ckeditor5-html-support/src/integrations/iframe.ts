@@ -8,7 +8,7 @@
  */
 
 import type { DowncastDispatcher, DowncastInsertEvent, ModelElement } from '@ckeditor/ckeditor5-engine';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 
 /**
@@ -18,8 +18,8 @@ export class IframeElementSupport extends Plugin {
 	/**
      * @inheritDoc
      */
-	public static get requires() {
-		return [ DataFilter ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataFilter ]> {
+		return [ DataFilter ];
 	}
 
 	/**

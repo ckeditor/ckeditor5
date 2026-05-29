@@ -11,7 +11,7 @@ import { LegacyListCommand } from './legacylistcommand.js';
 import { LegacyIndentCommand } from './legacyindentcommand.js';
 import { LegacyListUtils } from './legacylistutils.js';
 
-import { Plugin, type MultiCommand } from '@ckeditor/ckeditor5-core';
+import { Plugin, type MultiCommand, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { Enter, type ViewDocumentEnterEvent } from '@ckeditor/ckeditor5-enter';
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -71,8 +71,8 @@ export class LegacyListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Enter, Delete, LegacyListUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ Enter, Delete, LegacyListUtils ]> {
+		return [ Enter, Delete, LegacyListUtils ];
 	}
 
 	/**

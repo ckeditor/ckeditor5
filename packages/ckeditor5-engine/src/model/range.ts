@@ -115,13 +115,14 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	}
 
 	/**
-	 * Checks whether this range contains given {@link ~ModelRange range}.
+	 * Checks whether this range contains given {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param otherRange Range to check.
 	 * @param loose Whether the check is loose or strict. If the check is strict (`false`), compared range cannot
 	 * start or end at the same position as this range boundaries. If the check is loose (`true`), compared range can start, end or
 	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
-	 * @returns {Boolean} `true` if given {@link ~ModelRange range} boundaries are contained by this range, `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link module:engine/model/range~ModelRange range} boundaries are contained by this range,
+	 * `false` otherwise.
 	 */
 	public containsRange( otherRange: ModelRange, loose: boolean = false ): boolean {
 		if ( otherRange.isCollapsed ) {
@@ -164,8 +165,9 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	}
 
 	/**
-	 * Computes which part(s) of this {@link ~ModelRange range} is not a part of given {@link ~ModelRange range}.
-	 * Returned array contains zero, one or two {@link ~ModelRange ranges}.
+	 * Computes which part(s) of this {@link module:engine/model/range~ModelRange range} is not a part of given
+	 * {@link module:engine/model/range~ModelRange range}.
+	 * Returned array contains zero, one or two {@link module:engine/model/range~ModelRange ranges}.
 	 *
 	 * Examples:
 	 *
@@ -216,7 +218,8 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	}
 
 	/**
-	 * Returns an intersection of this {@link ~ModelRange range} and given {@link ~ModelRange range}.
+	 * Returns an intersection of this {@link module:engine/model/range~ModelRange range} and given
+	 * {@link module:engine/model/range~ModelRange range}.
 	 * Intersection is a common part of both of those ranges. If ranges has no common part, returns `null`.
 	 *
 	 * Examples:
@@ -263,7 +266,8 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	}
 
 	/**
-	 * Returns a range created by joining this {@link ~ModelRange range} with the given {@link ~ModelRange range}.
+	 * Returns a range created by joining this {@link module:engine/model/range~ModelRange range} with the given
+	 * {@link module:engine/model/range~ModelRange range}.
 	 * If ranges have no common part, returns `null`.
 	 *
 	 * Examples:
@@ -501,7 +505,7 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	/**
 	 * Returns a range that is a result of transforming this range by multiple `operations`.
 	 *
-	 * @see ~ModelRange#getTransformedByOperation
+	 * @see module:engine/model/range~ModelRange#getTransformedByOperation
 	 * @param operations Operations to transform the range by.
 	 * @returns Range which is the result of transformation.
 	 */
@@ -715,9 +719,10 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	}
 
 	/**
-	 * Returns an array containing one or two {@link ~ModelRange ranges} that are a result of transforming this
-	 * {@link ~ModelRange range} by inserting `howMany` nodes at `insertPosition`. Two {@link ~ModelRange ranges} are
-	 * returned if the insertion was inside this {@link ~ModelRange range} and `spread` is set to `true`.
+	 * Returns an array containing one or two {@link module:engine/model/range~ModelRange ranges} that are a result of transforming this
+	 * {@link module:engine/model/range~ModelRange range} by inserting `howMany` nodes at `insertPosition`. Two
+	 * {@link module:engine/model/range~ModelRange ranges} are returned if the insertion was inside this
+	 * {@link module:engine/model/range~ModelRange range} and `spread` is set to `true`.
 	 *
 	 * Examples:
 	 *
@@ -770,8 +775,8 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	}
 
 	/**
-	 * Returns an array containing {@link ~ModelRange ranges} that are a result of transforming this
-	 * {@link ~ModelRange range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
+	 * Returns an array containing {@link module:engine/model/range~ModelRange ranges} that are a result of transforming this
+	 * {@link module:engine/model/range~ModelRange range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
 	 * @internal
 	 * @param sourcePosition Position from which nodes are moved.

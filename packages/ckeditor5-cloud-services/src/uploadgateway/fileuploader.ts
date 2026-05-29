@@ -8,15 +8,17 @@
  */
 
 import type { UploadResponse } from '@ckeditor/ckeditor5-upload';
-import { EmitterMixin, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, CKEditorError, type EmitterMixinConstructor } from '@ckeditor/ckeditor5-utils';
 import type { InitializedToken } from '../token/token.js';
 
 const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 
+const FileUploaderBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
+
 /**
  * FileUploader class used to upload single file.
  */
-export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
+export class FileUploader extends FileUploaderBase {
 	/**
 	 * A file that is being uploaded.
 	 */

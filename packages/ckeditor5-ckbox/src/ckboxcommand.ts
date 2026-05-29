@@ -62,7 +62,7 @@ export class CKBoxCommand extends Command {
 	 *
 	 * @internal
 	 */
-	public readonly _chosenAssets = new Set<CKBoxAssetDefinition>();
+	public readonly _chosenAssets: Set<CKBoxAssetDefinition> = new Set<CKBoxAssetDefinition>();
 
 	/**
 	 * The DOM element that acts as a mounting point for the CKBox dialog.

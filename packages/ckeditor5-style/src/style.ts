@@ -7,7 +7,7 @@
  * @module style/style
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { StyleUI } from './styleui.js';
 import { StyleEditing } from './styleediting.js';
@@ -36,7 +36,7 @@ export class Style extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ StyleEditing, StyleUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ StyleEditing, StyleUI ]> {
+		return [ StyleEditing, StyleUI ];
 	}
 }

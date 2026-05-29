@@ -8,11 +8,14 @@
  */
 
 import { ViewContainerElement } from './containerelement.js';
-import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, type ObservableMixinConstructor } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection.js';
 import type { ViewElementAttributes } from './element.js';
 import { type ViewDocument } from './document.js';
 import { type ViewNode } from './node.js';
+
+const ViewEditableElementBase: ObservableMixinConstructor<typeof ViewContainerElement> =
+	/* #__PURE__ */ ObservableMixin( ViewContainerElement );
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~ViewRootEditableElement root}
@@ -23,7 +26,7 @@ import { type ViewNode } from './node.js';
  * The constructor of this class shouldn't be used directly. To create new `ViewEditableElement` use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
-export class ViewEditableElement extends /* #__PURE__ */ ObservableMixin( ViewContainerElement ) {
+export class ViewEditableElement extends ViewEditableElementBase {
 	/**
 	 * Whether the editable is in read-write or read-only mode.
 	 *

@@ -7,7 +7,7 @@
  * @module table/tablelayout/tablelayoutediting
  */
 
-import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ClipboardContentInsertionEvent, ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import type {
 	DowncastDispatcher,
@@ -50,8 +50,8 @@ export class TableLayoutEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableColumnResize ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableColumnResize ]> {
+		return [ TableColumnResize ];
 	}
 
 	/**

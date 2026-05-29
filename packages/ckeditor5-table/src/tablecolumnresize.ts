@@ -7,7 +7,7 @@
  * @module table/tablecolumnresize
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 import { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 
@@ -22,8 +22,8 @@ export class TableColumnResize extends Plugin {
 	/**
 	 * @inheritDoc
  	 */
-	public static get requires() {
-		return [ TableColumnResizeEditing, TableCellWidthEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableColumnResizeEditing, TableCellWidthEditing ]> {
+		return [ TableColumnResizeEditing, TableCellWidthEditing ];
 	}
 
 	/**

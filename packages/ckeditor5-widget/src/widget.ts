@@ -7,7 +7,7 @@
  * @module widget/widget
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	PointerObserver,
@@ -91,8 +91,8 @@ export class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ WidgetTypeAround, Delete ] as const;
+	public static get requires(): PluginDependenciesOf<[ WidgetTypeAround, Delete ]> {
+		return [ WidgetTypeAround, Delete ];
 	}
 
 	/**

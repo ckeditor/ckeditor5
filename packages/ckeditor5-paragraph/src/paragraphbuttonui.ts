@@ -7,7 +7,7 @@
  * @module paragraph/paragraphbuttonui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconParagraph } from '@ckeditor/ckeditor5-icons';
 
@@ -35,8 +35,8 @@ export class ParagraphButtonUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Paragraph ] as const;
+	public static get requires(): PluginDependenciesOf<[ Paragraph ]> {
+		return [ Paragraph ];
 	}
 
 	/**

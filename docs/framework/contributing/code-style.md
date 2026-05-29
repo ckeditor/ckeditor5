@@ -1007,7 +1007,7 @@ import { Table } from 'ckeditor5';
 
 In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
 
-The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method) to have all return statements with `as const`.
 
 👎&nbsp; Examples of incorrect code for this rule:
 

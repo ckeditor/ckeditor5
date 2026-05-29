@@ -114,6 +114,7 @@ function getDeclarationsWithMissingExports( library ) {
 		.filter( ( { declaration } ) => declaration.isUsedAcrossPackages )
 		.filter( ( { declaration } ) => !declaration.isAugmentation )
 		.filter( ( { declaration } ) => !declaration.referenceGlobalThisProperty )
+		.filter( ( { declaration } ) => !declaration.isMixinBaseHelper )
 		.filter( ( { declaration } ) =>
 			!declaration.references.find( ref => ref instanceof Export && ref.localName === declaration.localName )
 		)

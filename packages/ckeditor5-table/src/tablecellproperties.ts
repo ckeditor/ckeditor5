@@ -7,7 +7,7 @@
  * @module table/tablecellproperties
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
 import { TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting.js';
@@ -40,7 +40,7 @@ export class TableCellProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableCellPropertiesEditing, TableCellPropertiesUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableCellPropertiesEditing, TableCellPropertiesUI ]> {
+		return [ TableCellPropertiesEditing, TableCellPropertiesUI ];
 	}
 }

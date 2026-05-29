@@ -14,7 +14,11 @@ import { getSubNodes } from './getsubnodes.js';
  *
  * @internal
  */
-export function areConnectedThroughProperties( target1: unknown, target2: unknown, excludedNodes = new Set() ): boolean {
+export function areConnectedThroughProperties(
+	target1: unknown,
+	target2: unknown,
+	excludedNodes: Set<unknown> = new Set()
+): boolean {
 	if ( target1 === target2 && isObject( target1 ) ) {
 		return true;
 	}

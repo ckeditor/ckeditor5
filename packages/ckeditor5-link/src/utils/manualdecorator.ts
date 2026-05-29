@@ -7,16 +7,18 @@
  * @module link/utils/manualdecorator
  */
 
-import { ObservableMixin, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { ObservableMixin, type ArrayOrItem, type ObservableMixinConstructor } from '@ckeditor/ckeditor5-utils';
 import type { MatcherObjectPattern } from '@ckeditor/ckeditor5-engine';
 import type { NormalizedLinkDecoratorManualDefinition } from '../utils.js';
+
+const LinkManualDecoratorBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
 
 /**
  * Helper class that stores manual decorators with observable {@link module:link/utils/manualdecorator~LinkManualDecorator#value}
  * to support integration with the UI state. An instance of this class is a model with the state of individual manual decorators.
  * These decorators are kept as collections in {@link module:link/linkcommand~LinkCommand#manualDecorators}.
  */
-export class LinkManualDecorator extends /* #__PURE__ */ ObservableMixin() {
+export class LinkManualDecorator extends LinkManualDecoratorBase {
 	/**
 	 * An ID of a manual decorator which is the name of the attribute in the model, for example: 'linkManualDecorator0'.
 	 */

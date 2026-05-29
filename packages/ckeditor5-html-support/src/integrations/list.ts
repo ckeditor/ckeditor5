@@ -8,7 +8,7 @@
  */
 
 import { isEqual } from 'es-toolkit/compat';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 import type { GetCallback } from '@ckeditor/ckeditor5-utils';
 import type {
@@ -30,8 +30,8 @@ export class ListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ DataFilter ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataFilter ]> {
+		return [ DataFilter ];
 	}
 
 	/**

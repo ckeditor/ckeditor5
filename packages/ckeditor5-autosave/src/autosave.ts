@@ -13,7 +13,8 @@ import {
 	type Editor,
 	type PendingAction,
 	type EditorDestroyEvent,
-	type EditorReadyEvent
+	type EditorReadyEvent,
+	type PluginDependenciesOf
 } from '@ckeditor/ckeditor5-core';
 
 import { DomEmitterMixin, type DomEmitter } from '@ckeditor/ckeditor5-utils';
@@ -140,8 +141,8 @@ export class Autosave extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ PendingActions ] as const;
+	public static get requires(): PluginDependenciesOf<[ PendingActions ]> {
+		return [ PendingActions ];
 	}
 
 	/**

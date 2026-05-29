@@ -38,6 +38,11 @@ minimumReleaseAgeExclude:
   - '*ckeditor5*'
   - 'umberto'
 
+  # Remove after 2026-05-30
+  - 'rolldown'
+  - '@rolldown/*'
+  - '@oxc-project/*'
+
 shellEmulator: true
 shamefullyHoist: true
 preferFrozenLockfile: true

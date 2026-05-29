@@ -7,7 +7,7 @@
  * @module html-support/integrations/style
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	createObjectView,
@@ -25,8 +25,8 @@ export class StyleElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ DataFilter ] as const;
+	public static get requires(): PluginDependenciesOf<[ DataFilter ]> {
+		return [ DataFilter ];
 	}
 
 	/**

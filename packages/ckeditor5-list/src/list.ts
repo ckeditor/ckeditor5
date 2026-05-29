@@ -7,7 +7,7 @@
  * @module list/list
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ListEditing } from './list/listediting.js';
 import { ListUI } from './list/listui.js';
 
@@ -21,8 +21,8 @@ export class List extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing, ListUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing, ListUI ]> {
+		return [ ListEditing, ListUI ];
 	}
 
 	/**

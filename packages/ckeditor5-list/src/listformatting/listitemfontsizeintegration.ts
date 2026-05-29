@@ -7,7 +7,7 @@
  * @module list/listformatting/listitemfontsizeintegration
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
@@ -36,8 +36,8 @@ export class ListItemFontSizeIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ListEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ ListEditing ]> {
+		return [ ListEditing ];
 	}
 
 	/**

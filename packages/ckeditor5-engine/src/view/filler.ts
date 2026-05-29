@@ -90,7 +90,7 @@ export const INLINE_FILLER_LENGTH = 7;
  *
  * @internal
  */
-export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
+export const INLINE_FILLER: string = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
 /**
  * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.

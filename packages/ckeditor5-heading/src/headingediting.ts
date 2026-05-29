@@ -7,7 +7,7 @@
  * @module heading/headingediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import type { EnterCommandAfterExecuteEvent } from '@ckeditor/ckeditor5-enter';
@@ -56,8 +56,8 @@ export class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ Paragraph ] as const;
+	public static get requires(): PluginDependenciesOf<[ Paragraph ]> {
+		return [ Paragraph ];
 	}
 
 	/**

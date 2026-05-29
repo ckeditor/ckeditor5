@@ -30,7 +30,12 @@ import { FocusCycler, isViewWithFocusCycler,
 	isFocusable
 }
 	from '../focuscycler.js';
-import { DraggableViewMixin, type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
+import {
+	DraggableViewMixin,
+	type DraggableView,
+	type DraggableViewDragEvent,
+	type DraggableViewMixinConstructor
+} from '../bindings/draggableviewmixin.js';
 import { DialogActionsView, type DialogActionButtonDefinition } from './dialogactionsview.js';
 import { DialogContentView } from './dialogcontentview.js';
 import { type EditorUI } from '../editorui/editorui.js';
@@ -65,10 +70,12 @@ export const DialogViewPosition = {
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
+const DialogViewBase: DraggableViewMixinConstructor<typeof View> = /* #__PURE__ */ DraggableViewMixin( View );
+
 /**
  * A dialog view class.
  */
-export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
+export class DialogView extends DialogViewBase implements DraggableView {
 	/**
 	 * A collection of the child views inside of the dialog.
 	 * A dialog can have 3 optional parts: header, content, and actions.

@@ -7,7 +7,7 @@
  * @module clipboard/dragdrop
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import {
 	ModelLiveRange,
@@ -204,8 +204,8 @@ export class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] as const;
+	public static get requires(): PluginDependenciesOf<[ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ]> {
+		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ];
 	}
 
 	/**

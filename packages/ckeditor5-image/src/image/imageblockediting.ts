@@ -7,7 +7,7 @@
  * @module image/image/imageblockediting
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import {
 	ClipboardPipeline,
 	type ClipboardInputTransformationEvent,
@@ -46,8 +46,20 @@ export class ImageBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ImagePlaceholder, ClipboardPipeline ] as const;
+	public static get requires(): PluginDependenciesOf<[
+		ImageEditing,
+		ImageSizeAttributes,
+		ImageUtils,
+		ImagePlaceholder,
+		ClipboardPipeline
+	]> {
+		return [
+			ImageEditing,
+			ImageSizeAttributes,
+			ImageUtils,
+			ImagePlaceholder,
+			ClipboardPipeline
+		];
 	}
 
 	/**

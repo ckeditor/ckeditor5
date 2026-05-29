@@ -36,7 +36,8 @@ import {
 	CKEditorError,
 	ObservableMixin,
 	type DecoratedMethodEvent,
-	type Config
+	type Config,
+	type ObservableMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import type { EngineConfig } from '../engineconfig.js';
@@ -44,11 +45,13 @@ import type { EngineConfig } from '../engineconfig.js';
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
 
+const ModelBase: ObservableMixinConstructor = /* #__PURE__ */ ObservableMixin();
+
 /**
  * Editor's data model. Read about the model in the
  * {@glink framework/architecture/editing-engine engine architecture} guide.
  */
-export class Model extends /* #__PURE__ */ ObservableMixin() {
+export class Model extends ModelBase {
 	/**
 	 * Model's marker collection.
 	 */

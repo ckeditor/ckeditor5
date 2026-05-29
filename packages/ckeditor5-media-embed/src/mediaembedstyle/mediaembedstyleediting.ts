@@ -9,7 +9,7 @@
 
 import { first } from '@ckeditor/ckeditor5-utils';
 import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { MediaEmbedEditing } from '../mediaembedediting.js';
 import { MediaEmbedStyleCommand } from './mediaembedstylecommand.js';
 import type { NormalizedMediaStyleOption } from '../mediaembedconfig.js';
@@ -35,8 +35,8 @@ export class MediaEmbedStyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ MediaEmbedEditing ] as const;
+	public static get requires(): PluginDependenciesOf<[ MediaEmbedEditing ]> {
+		return [ MediaEmbedEditing ];
 	}
 
 	/**

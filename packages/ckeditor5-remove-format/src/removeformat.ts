@@ -7,7 +7,7 @@
  * @module remove-format/removeformat
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
 import { RemoveFormatUI } from './removeformatui.js';
 import { RemoveFormatEditing } from './removeformatediting.js';
@@ -24,8 +24,8 @@ export class RemoveFormat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ RemoveFormatEditing, RemoveFormatUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ RemoveFormatEditing, RemoveFormatUI ]> {
+		return [ RemoveFormatEditing, RemoveFormatUI ];
 	}
 
 	/**

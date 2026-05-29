@@ -7,7 +7,7 @@
  * @module table/tableselection
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { type EventInfo, first } from '@ckeditor/ckeditor5-utils';
 
 import type {
@@ -53,8 +53,8 @@ export class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ TableUtils, TableUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ TableUtils, TableUtils ]> {
+		return [ TableUtils, TableUtils ];
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module font/fontbackgroundcolor
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
 import { FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
 
@@ -25,8 +25,8 @@ export class FontBackgroundColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ FontBackgroundColorEditing, FontBackgroundColorUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ FontBackgroundColorEditing, FontBackgroundColorUI ]> {
+		return [ FontBackgroundColorEditing, FontBackgroundColorUI ];
 	}
 
 	/**

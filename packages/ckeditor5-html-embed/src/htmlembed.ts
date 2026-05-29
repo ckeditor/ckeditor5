@@ -7,7 +7,7 @@
  * @module html-embed/htmlembed
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { HtmlEmbedEditing } from './htmlembedediting.js';
@@ -24,8 +24,8 @@ export class HtmlEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ HtmlEmbedEditing, HtmlEmbedUI, Widget ] as const;
+	public static get requires(): PluginDependenciesOf<[ HtmlEmbedEditing, HtmlEmbedUI, Widget ]> {
+		return [ HtmlEmbedEditing, HtmlEmbedUI, Widget ];
 	}
 
 	/**

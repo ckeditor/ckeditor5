@@ -7,7 +7,7 @@
  * @module basic-styles/italic
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { ItalicEditing } from './italic/italicediting.js';
 import { ItalicUI } from './italic/italicui.js';
 
@@ -24,8 +24,8 @@ export class Italic extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ ItalicEditing, ItalicUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ ItalicEditing, ItalicUI ]> {
+		return [ ItalicEditing, ItalicUI ];
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @module basic-styles/underline
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { UnderlineEditing } from './underline/underlineediting.js';
 import { UnderlineUI } from './underline/underlineui.js';
 
@@ -24,8 +24,8 @@ export class Underline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ UnderlineEditing, UnderlineUI ] as const;
+	public static get requires(): PluginDependenciesOf<[ UnderlineEditing, UnderlineUI ]> {
+		return [ UnderlineEditing, UnderlineUI ];
 	}
 
 	/**

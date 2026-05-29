@@ -12,7 +12,8 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	Rect,
 	DomEmitterMixin,
-	type DomOptimalPositionOptions
+	type DomOptimalPositionOptions,
+	type DomEmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { type View } from '../view.js';
@@ -25,13 +26,15 @@ import { throttle } from 'es-toolkit/compat';
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
 
+const BadgeBase: DomEmitterMixinConstructor = /* #__PURE__ */ DomEmitterMixin();
+
 /**
  * A helper that enables the badge feature in the editor and renders a custom view next to the bottom of the editable element
  * (editor root, source editing area, etc.) when the editor is focused.
  *
  * @private
  */
-export abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
+export abstract class Badge extends BadgeBase {
 	/**
 	 * Editor instance the helper was created for.
 	 */

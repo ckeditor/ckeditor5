@@ -7,7 +7,7 @@
  * @module style/integrations/table
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
@@ -42,8 +42,8 @@ export class TableStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ StyleUtils ] as const;
+	public static get requires(): PluginDependenciesOf<[ StyleUtils ]> {
+		return [ StyleUtils ];
 	}
 
 	/**

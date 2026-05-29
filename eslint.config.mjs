@@ -81,6 +81,9 @@ export default defineConfig( [
 			} ],
 			'ckeditor5-rules/require-file-extensions-in-imports': [ 'error', {
 				extensions: [ '.ts', '.js', '.json' ]
+			} ],
+			'ckeditor5-rules/require-as-const-returns-in-methods': [ 'error', {
+				methodNames: [ 'pluginName' ]
 			} ]
 		}
 	},

@@ -25,7 +25,8 @@ import {
 	Collection,
 	EmitterMixin,
 	isInsideSurrogatePair,
-	isInsideCombinedSymbol
+	isInsideCombinedSymbol,
+	type EmitterMixinConstructor
 } from '@ckeditor/ckeditor5-utils';
 
 import { clone } from 'es-toolkit/compat';
@@ -33,6 +34,8 @@ import { clone } from 'es-toolkit/compat';
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
 const graveyardName = '$graveyard';
+
+const ModelDocumentBase: EmitterMixinConstructor = /* #__PURE__ */ EmitterMixin();
 
 /**
  * Data model's document. It contains the model's structure, its selection and the history of changes.
@@ -50,7 +53,7 @@ const graveyardName = '$graveyard';
  * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
  * (e.g. a title and a body of a message).
  */
-export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
+export class ModelDocument extends ModelDocumentBase {
 	/**
 	 * The {@link module:engine/model/model~Model model} that the document is a part of.
 	 */

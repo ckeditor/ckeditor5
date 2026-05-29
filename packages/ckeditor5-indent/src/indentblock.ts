@@ -7,7 +7,7 @@
  * @module indent/indentblock
  */
 
-import { Plugin, type Editor, type MultiCommand } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type MultiCommand, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { addMarginStylesRules, type DowncastAttributeDescriptor, type ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
@@ -56,8 +56,8 @@ export class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires() {
-		return [ IndentBlockListIntegration ] as const;
+	public static get requires(): PluginDependenciesOf<[ IndentBlockListIntegration ]> {
+		return [ IndentBlockListIntegration ];
 	}
 
 	/**

@@ -47,7 +47,7 @@ export class DragDropTarget extends Plugin {
 	 *
 	 * @internal
 	 */
-	public readonly removeDropMarkerDelayed = delay( () => this.removeDropMarker(), 40 );
+	public readonly removeDropMarkerDelayed: ReturnType<typeof delay> = delay( () => this.removeDropMarker(), 40 );
 
 	/**
 	 * A throttled callback updating the drop marker.
