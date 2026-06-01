@@ -3231,7 +3231,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				);
 
 				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph htmlLiAttributes="{"styles":{"list-style-type":"none"}}" htmlOlAttributes="{}" ' +
+					'<paragraph htmlLiAttributes="{"styles":{"list-style-type":"none"}}" ' +
 					'listIndent="1" listItemId="a00" listType="numbered">foobar</paragraph>'
 				);
 			} );
@@ -3250,7 +3250,6 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'"styles":{"list-style-type":"none"},' +
 							'"classes":["some-class"]' +
 						'}" ' +
-						'htmlOlAttributes="{}" ' +
 						'listIndent="0" listItemId="a00" listType="numbered">' +
 					'</paragraph>'
 				);
@@ -3269,7 +3268,6 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'"attributes":{"data-foo":"foo"},' +
 							'"styles":{"list-style-type":"none"}' +
 						'}" ' +
-						'htmlOlAttributes="{}" ' +
 						'listIndent="0" listItemId="a00" listType="numbered">' +
 						'foobar' +
 					'</paragraph>'
@@ -3321,7 +3319,6 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'"styles":{"list-style-type":"none"},' +
 							'"classes":["some-class"]' +
 						'}" ' +
-						'htmlOlAttributes="{}" ' +
 						'listIndent="0" listItemId="a00" listType="numbered">' +
 					'</paragraph>'
 				);
@@ -3340,7 +3337,6 @@ describe( 'ListEditing - converters - data pipeline', () => {
 							'"attributes":{"data-foo":"foo"},' +
 							'"styles":{"list-style-type":"none"}' +
 						'}" ' +
-						'htmlOlAttributes="{}" ' +
 						'listIndent="0" listItemId="a00" listType="numbered">' +
 						'foobar' +
 					'</paragraph>'
