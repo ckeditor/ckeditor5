@@ -19,6 +19,10 @@ Click the media embed in the editor below to select it, then drag any of its cor
 
 {@snippet features/media-embed-resize}
 
+<snippet-footer>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</snippet-footer>
+
 ## Installation
 
 The {@link module:media-embed/mediaembedresize~MediaEmbedResize} plugin is not loaded by default. Add it explicitly alongside {@link module:media-embed/mediaembed~MediaEmbed} to enable the feature:

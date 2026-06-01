@@ -25,6 +25,10 @@ Follow the [Iframely integration with CKEditor&nbsp;5](https://iframely.com/docs
 
 {@snippet features/media-embed-preview}
 
+<snippet-footer>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</snippet-footer>
+
 ## On your website
 
 By default, the media embed feature produces output that does not contain previews of embedded media, called the {@link features/media-embed-configuration#semantic-data-output-default semantic output}. This means that you need to transform the output `<oembed>` elements into real media on your target website.
