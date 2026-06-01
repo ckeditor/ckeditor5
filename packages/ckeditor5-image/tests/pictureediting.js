@@ -142,6 +142,30 @@ describe( 'PictureEditing', () => {
 					] );
 				} );
 
+				it( 'should not crash when the image cannot be inserted into the current context', () => {
+					// Disallow both image types everywhere, the same way an inline root ($inlineRoot) does for blocks.
+					model.schema.addChildCheck( () => false, 'imageBlock' );
+					model.schema.addChildCheck( () => false, 'imageInline' );
+
+					expect( () => {
+						editor.setData( '<p>foo<picture><img src="/assets/sample.png"></picture>bar</p>' );
+					} ).to.not.throw();
+				} );
+
+				it( 'should not crash when upcasting a picture directly into an inline root that disallows images', () => {
+					// An inline root holds inline content directly (no wrapping block) and here disallows both image
+					// types entirely - the conversion cursor parent is the inline root itself, not a paragraph.
+					model.schema.register( 'restrictedInlineRoot', { allowChildren: '$text', isLimit: true } );
+					model.schema.addChildCheck( () => false, 'imageBlock' );
+					model.schema.addChildCheck( () => false, 'imageInline' );
+
+					const viewFragment = editor.data.processor.toView( '<picture><img src="/assets/sample.png"></picture>' );
+
+					expect( () => {
+						editor.data.toModel( viewFragment, [ 'restrictedInlineRoot' ] );
+					} ).to.not.throw();
+				} );
+
 				it( 'should upcast a plain inline image (random order inside <picture>)', () => {
 					editor.setData(
 						'<p>' +

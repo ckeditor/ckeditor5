@@ -142,7 +142,7 @@ export function normalizeRootsConfig(
 			 * {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}.
 			 *
 			 * A tag name string (e.g. `'h1'`) or a
-			 * {@link module:engine/view/elementdefinition~ViewElementDefinition view element definition} are still
+			 * {@link module:core/editor/editorconfig~ViewRootElementDefinition view root element definition} are still
 			 * accepted - they describe the editable root element the classic editor creates inside its UI box.
 			 *
 			 * @error editor-create-root-element-not-supported
@@ -449,8 +449,8 @@ export function normalizeViewRootElementDefinition(
 
 	if ( stylesOverrode ) {
 		/**
-		 * Both the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition#styles `styles`} object
-		 * and the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition#attributes `attributes.style`}
+		 * Both the {@link module:core/editor/editorconfig~ViewRootElementDefinition#styles `styles`} object
+		 * and the {@link module:core/editor/editorconfig~ViewRootElementDefinition#attributes `attributes.style`}
 		 * string were provided in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}.
 		 * Provide one or the other - the object form takes precedence.
 		 *
@@ -504,12 +504,22 @@ function tokenizeClasses( value: string | Array<string> | undefined ): Array<str
 
 /**
  * Throws when the given tag name cannot be used as an editable root.
+ *
+ * The `<textarea>` and `<input>` elements are form fields and cannot contain other HTML elements,
+ * so the editor cannot render rich-text content inside them.
+ *
+ * To fix the error, use a tag that can contain other elements - for example `'div'`, `'section'`, `'article'`,
+ * or a heading like `'h1'`. You can also omit the `name` field to use the default `'div'`.
  */
 function assertAllowedTagName( name: string ): void {
 	if ( [ 'textarea', 'input' ].includes( name.toLowerCase() ) ) {
 		/**
 		 * The DOM tag name specified in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}
-		 * cannot be used as an editor's editable root.
+		 * cannot be used as an editor's editable root. The `<textarea>` and `<input>` elements are form fields and
+		 * cannot contain other HTML elements, so the editor cannot render rich-text content inside them.
+		 *
+		 * To fix the error, use a tag that can contain other elements - for example `'div'`, `'section'`, `'article'`,
+		 * or a heading like `'h1'`. You can also omit the `name` field to use the default `'div'`.
 		 *
 		 * @error editor-wrong-element
 		 */

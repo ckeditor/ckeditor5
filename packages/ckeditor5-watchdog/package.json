@@ -42,6 +42,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
+    "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",

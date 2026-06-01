@@ -434,7 +434,6 @@ describe( 'TodoListEditing', () => {
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph' +
-						' htmlLiAttributes="{}" htmlUlAttributes="{}"' +
 						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
 					'foo' +
 				'</paragraph>'
@@ -454,7 +453,7 @@ describe( 'TodoListEditing', () => {
 			);
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<htmlH2 htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
+				'<htmlH2 listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
 			);
 		} );
 

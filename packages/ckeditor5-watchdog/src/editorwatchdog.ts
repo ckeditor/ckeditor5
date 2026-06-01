@@ -267,6 +267,18 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 					// Delete `initialData` as it is not needed. Data will be set by the watchdog based on `_watchdogInitialData`.
 					rootConfig.initialData = '';
 
+					// Copy root element name as it is created in the editor constructor.
+					rootConfig.modelElement = rootData.modelElement;
+
+					// Reuse previous DOM editable.
+					if ( this._isUsingConfigBasedCreator ) {
+						if ( this._editables[ rootName ]?.isConnected ) {
+							rootConfig.element = this._editables[ rootName ];
+						} else if ( rootData.isLoaded && !rootConfig.element ) {
+							Object.assign( rootConfig, getSavedRootEditableOptions( rootData.attributes ) );
+						}
+					}
+
 					if ( rootData.isLoaded ) {
 						rootConfig.lazyLoad = false;
 					} else {
@@ -501,6 +513,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 			data.roots[ root.rootName ] = {
 				content: JSON.stringify( Array.from( root.getChildren() ) ),
 				attributes: JSON.stringify( Array.from( root.getAttributes() ) ),
+				modelElement: root.name,
 				isLoaded: root._isLoaded
 			};
 		} );
@@ -758,6 +771,7 @@ export type EditorData = {
 	roots: Record<string, {
 		content: string;
 		attributes: string;
+		modelElement: string;
 		isLoaded: boolean;
 	}>;
 	markers: Record<string, {
@@ -790,4 +804,30 @@ export type EditorWatchdogCreatorFunction<TEditor = Editor> =
  */
 function isElement( value: any ): value is Element {
 	return _isElement( value );
+}
+
+/**
+ * Reads the editable options persisted in the root's `$rootEditableOptions` model attribute and returns them as a
+ * {@link module:core/editor/editorconfig~RootConfig} partial. It is used to recreate a detached editable when the
+ * editor is restarted in the config-based creator mode.
+ *
+ * Only the known `placeholder`, `label` and `element` fields with a value are copied; their values are validated and
+ * normalized later by the editor constructor. Fields are returned only when set, so merging the result does not
+ * overwrite the existing restart config with `undefined`. A missing or tampered (non-object) value is dropped so it
+ * cannot break the restart.
+ *
+ * @param serializedAttributes The root attributes serialized as a JSON string of `[ key, value ]` entries.
+ */
+function getSavedRootEditableOptions( serializedAttributes: string ): Pick<RootConfig, 'placeholder' | 'label' | 'element'> {
+	const { $rootEditableOptions: options } = Object.fromEntries( JSON.parse( serializedAttributes ) );
+
+	if ( !options || typeof options != 'object' ) {
+		return {};
+	}
+
+	return {
+		...options.placeholder && { placeholder: options.placeholder },
+		...options.label && { label: options.label },
+		...options.element && { element: options.element }
+	};
 }

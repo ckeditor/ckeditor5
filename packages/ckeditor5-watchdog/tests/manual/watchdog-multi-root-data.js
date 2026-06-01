@@ -109,7 +109,17 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 let i = 0;
 
 document.getElementById( 'add-root' ).addEventListener( 'click', () => {
-	window.editor.addRoot( 'root' + ( ++i ), { data: '<p>' + i + '</p>' } );
+	window.editor.addRoot( 'root' + ( ++i ), {
+		initialData: '<p>' + i + '</p>'
+	} );
+} );
+
+document.getElementById( 'add-inline-root' ).addEventListener( 'click', () => {
+	window.editor.addRoot( 'root' + ( ++i ), {
+		initialData: '<p>' + i + '</p>',
+		modelElement: '$inlineRoot',
+		element: 'h1'
+	} );
 } );
 
 document.getElementById( 'remove-root' ).addEventListener( 'click', () => {

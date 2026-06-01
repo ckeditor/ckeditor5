@@ -134,7 +134,13 @@ export class ImageUploadEditing extends Plugin {
 					return;
 				}
 
-				const [ modelElement ] = Array.from( data.modelRange!.getItems( { shallow: true } ) );
+				// The `<img>` was not converted to a model image element (e.g. an inline root only allows
+				// inline content and the image was not allowed), so there is nothing to set the upload data on.
+				if ( !data.modelRange ) {
+					return;
+				}
+
+				const [ modelElement ] = Array.from( data.modelRange.getItems( { shallow: true } ) );
 				const loader = fileRepository.loaders.get( uploadId as string );
 
 				if ( modelElement ) {

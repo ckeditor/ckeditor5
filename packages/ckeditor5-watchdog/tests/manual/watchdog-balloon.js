@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 import { EditorWatchdog } from '../../src/editorwatchdog.js';
@@ -54,8 +54,7 @@ const watchdog2 = createWatchdog(
 	document.getElementById( 'editor-2-state' ),
 	'Second',
 	{
-		modelElement: '$inlineRoot',
-		element: 'h1'
+		modelElement: '$inlineRoot'
 	}
 );
 
@@ -66,14 +65,14 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 } );
 
 function createWatchdog( editorElement, stateElement, name, rootConfig ) {
-	const watchdog = new EditorWatchdog( ClassicEditor );
+	const watchdog = new EditorWatchdog( BalloonEditor );
 
 	watchdog.create( {
 		...editorConfig,
 		root: {
-			...rootConfig
-		},
-		attachTo: editorElement
+			...rootConfig,
+			element: editorElement
+		}
 	} );
 
 	watchdog.on( 'error', () => {

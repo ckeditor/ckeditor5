@@ -74,6 +74,18 @@ describe( 'CodeBlockElementSupport', () => {
 			'</pre>' );
 	} );
 
+	it( 'should not crash when the code block cannot be inserted into the current context', () => {
+		dataFilter.allowElement( /^(pre|code)$/ );
+		dataFilter.allowAttributes( { name: /^(pre|code)$/, attributes: { 'data-foo': /[\s\S]+/ } } );
+
+		// Disallow `codeBlock` everywhere, the same way an inline root ($inlineRoot) does.
+		model.schema.addChildCheck( () => false, 'codeBlock' );
+
+		expect( () => {
+			editor.setData( '<pre data-foo="foo"><code data-foo="foo">foobar</code></pre>' );
+		} ).to.not.throw();
+	} );
+
 	it( 'should allow attributes (classes)', () => {
 		dataFilter.allowElement( /^(pre|code)$/ );
 		dataFilter.allowAttributes( { name: /^(pre|code)$/, classes: [ 'foo' ] } );

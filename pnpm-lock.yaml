@@ -3642,6 +3642,9 @@ importers:
       '@ckeditor/ckeditor5-clipboard':
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
+      '@ckeditor/ckeditor5-editor-balloon':
+        specifier: workspace:*
+        version: link:../ckeditor5-editor-balloon
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic

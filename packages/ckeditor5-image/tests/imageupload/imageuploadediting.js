@@ -1817,6 +1817,16 @@ describe( 'ImageUploadEditing', () => {
 			);
 		} );
 
+		it( 'should not crash when the image cannot be inserted into the current context', () => {
+			// Disallow both image types everywhere, the same way an inline root ($inlineRoot) does for blocks.
+			model.schema.addChildCheck( () => false, 'imageBlock' );
+			model.schema.addChildCheck( () => false, 'imageInline' );
+
+			expect( () => {
+				editor.setData( '<p><img src="/assets/sample.png" data-ck-upload-id="123"></p>' );
+			} ).to.not.throw();
+		} );
+
 		it( 'should not upcast already consumed element', () => {
 			editor.conversion.for( 'upcast' ).add( dispatcher =>
 				dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {

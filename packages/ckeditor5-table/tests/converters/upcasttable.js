@@ -57,6 +57,21 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
+	describe( 'when a table cannot be inserted into the current context', () => {
+		beforeEach( () => {
+			// Disallow `table` everywhere, the same way an inline root ($inlineRoot) does.
+			model.schema.addChildCheck( () => false, 'table' );
+		} );
+
+		it( 'should not crash when upcasting a table figure', () => {
+			expect( () => {
+				editor.setData(
+					'<figure class="table"><table><tr><td>1</td></tr></table></figure>'
+				);
+			} ).to.not.throw();
+		} );
+	} );
+
 	it( 'should create table model from table without thead', () => {
 		editor.setData(
 			'<table>' +
