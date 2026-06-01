@@ -74,6 +74,16 @@
 	&.ck-blurred ::selection {
 		background: var(--ck-color-editable-blur-selection);
 	}
+
+	&.ck-editor__editable_inline-root br {
+		/*
+		 * An inline root content is placed directly inside editable element (without blocks)
+		 * and BR block filler (and plain soft-break) gets margins for first and last occurrences as set above.
+		 * This is ignored in Chrome but Firefox applies this margins.
+		 */
+		margin-top: 0;
+		margin-bottom: 0;
+	}
 }
 
 /* https://github.com/ckeditor/ckeditor5/issues/3383 */

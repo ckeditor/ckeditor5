@@ -33,6 +33,11 @@
 		padding-left: inherit;
 		padding-right: inherit;
 
+		/*
+		 * The padding should not expand element width when some other style set width to 100%.
+		 */
+		box-sizing: border-box;
+
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
