@@ -60,6 +60,10 @@ The demo below shows the five built-in alignment styles, wired through the two c
 
 {@snippet features/media-embed-styles-default}
 
+<snippet-footer>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</snippet-footer>
+
 ## Configuring the styles
 
 You can customize the set of available styles through {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#styles `config.mediaEmbed.styles`}. The configuration accepts an `options` array whose entries can be:
@@ -181,6 +185,10 @@ mediaEmbed: {
 The demo below replaces the built-in alignments with three custom semantic styles &ndash; a Featured frame and two side asides grouped in a custom split-button dropdown. Select a figure to open the contextual toolbar.
 
 {@snippet features/media-embed-styles-custom}
+
+<snippet-footer>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</snippet-footer>
 
 ## Toolbar configuration
 
