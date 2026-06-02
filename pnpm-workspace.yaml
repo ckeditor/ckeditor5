@@ -38,10 +38,9 @@ minimumReleaseAgeExclude:
   - '*ckeditor5*'
   - 'umberto'
 
-  # Remove after 2026-05-30
-  - 'rolldown'
-  - '@rolldown/*'
-  - '@oxc-project/*'
+  # Remove after 2026-06-04
+  - 'oxc-transform'
+  - '@oxc-transform/*'
 
 shellEmulator: true
 shamefullyHoist: true

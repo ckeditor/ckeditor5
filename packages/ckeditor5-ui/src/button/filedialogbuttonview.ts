@@ -25,15 +25,9 @@ import { ListItemButtonView } from './listitembuttonview.js';
  */
 export type FileDialogViewMixinConstructor<Base extends Constructor<ButtonView>> = Mixed<Base, FileDialogButtonViewBase>;
 
-/**
- * @internal
- */
 const FileDialogButtonViewMixinBase: FileDialogViewMixinConstructor<typeof ButtonView> =
 	/* #__PURE__ */ FileDialogViewMixin( ButtonView );
 
-/**
- * @internal
- */
 const FileDialogListItemButtonViewMixinBase: FileDialogViewMixinConstructor<typeof ListItemButtonView> =
 	/* #__PURE__ */ FileDialogViewMixin( ListItemButtonView );
 
