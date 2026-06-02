@@ -51,7 +51,7 @@
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "^4.1.8",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
     "acorn": "^8.11.3",
@@ -89,7 +89,7 @@
     "typescript": "5.5.4",
     "umberto": "^10.5.1",
     "upath": "^2.0.0",
-    "vitest": "^4.0.18",
+    "vitest": "^4.1.8",
     "wait-on": "^9.0.4"
   },
   "scripts": {
