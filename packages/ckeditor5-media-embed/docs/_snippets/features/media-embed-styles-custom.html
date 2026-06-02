@@ -1,0 +1,78 @@
+<style>
+	@layer snippets {
+		/* Override default Umberto guide styles. */
+		.media-styles-custom-demo .media iframe {
+			margin: 0;
+		}
+
+		/* Integrator-owned CSS for the two custom semantic media treatments. */
+		.media-styles-custom-demo .media.media-style-featured {
+			max-width: calc(90% - 64px);
+			margin: 3.5em auto;
+			box-shadow: 0 0 0 32px #d3e7fb;
+		}
+
+		.media-styles-custom-demo .media.media-style-aside-left,
+		.media-styles-custom-demo .media.media-style-aside-right {
+			position: relative;
+			width: 100%;
+			max-width: 48%;
+			clear: none;
+		}
+
+		.media-styles-custom-demo .media.media-style-aside-right {
+			float: right;
+			margin: 1em 0 1em 3em;
+		}
+
+		.media-styles-custom-demo .media.media-style-aside-left {
+			float: left;
+			margin: 1em 3em 1em 0;
+		}
+
+		/* Decorative oversized ※ glyph behind each aside. */
+		.media-styles-custom-demo .media.media-style-aside-left::before,
+		.media-styles-custom-demo .media.media-style-aside-right::before {
+			content: '\203B';
+			position: absolute;
+			top: -0.62em;
+			font-size: 7em;
+			line-height: 1;
+			color: #688aca;
+			opacity: 0.2;
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		.media-styles-custom-demo .media.media-style-aside-right::before {
+			left: -0.3em;
+		}
+
+		.media-styles-custom-demo .media.media-style-aside-left::before {
+			right: -0.3em;
+		}
+	}
+</style>
+
+<div class="ck ck-content" id="snippet-media-embed-styles-custom">
+	<h2>Inside the International Space Station</h2>
+	<p>
+		Most footage of the International Space Station shows its exterior &mdash; solar
+		arrays catching sunlight against the curve of the Earth. The walkthrough below
+		takes a different route, moving through the interior module by module: the
+		laboratories where experiments are run, the sleep stations the crew call home,
+		and the equipment that keeps the station alive and working.
+	</p>
+
+	<figure class="media-style-aside-right media">
+		<oembed url="https://www.youtube.com/watch?v=SGP6Y0Pnhe4"></oembed>
+	</figure>
+
+	<p>
+		The station is a chain of interconnected pressurized modules contributed by the
+		partner space agencies. Crew quarters, galleys, exercise gear, and dozens of
+		experiment racks share the same volume; weightlessness turns every wall and ceiling
+		into usable surface. Guided tours like this one are the closest most of us will
+		get to seeing how seven people share a permanent home in orbit.
+	</p>
+</div>

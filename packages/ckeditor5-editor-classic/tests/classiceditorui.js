@@ -17,7 +17,7 @@ import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
-import { normalizeRootsConfig } from '@ckeditor/ckeditor5-core';
+import { normalizeRootsConfig, Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -173,6 +173,78 @@ describe( 'ClassicEditorUI', () => {
 
 				expect( view.editable.name ).to.equal( editable.rootName );
 			} );
+
+			describe( 'inline root', () => {
+				it( 'leaves view.editable#isInlineRoot false for a block root', () => {
+					expect( view.editable.isInlineRoot ).to.be.false;
+					expect( view.editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+				} );
+
+				it( 'sets view.editable#isInlineRoot to true when the root is $inlineRoot', () => {
+					return VirtualClassicTestEditor
+						.create( '', {
+							root: { modelElement: '$inlineRoot' }
+						} )
+						.then( newEditor => {
+							const editable = newEditor.ui.view.editable;
+
+							expect( editable.isInlineRoot ).to.be.true;
+							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+							return newEditor.destroy();
+						} );
+				} );
+
+				it( 'sets isInlineRoot=false for a custom block-like root registered by a plugin', () => {
+					class CustomBlockRootPlugin extends Plugin {
+						init() {
+							this.editor.model.schema.register( 'customBlockRoot', {
+								isLimit: true,
+								allowContentOf: '$root'
+							} );
+						}
+					}
+
+					return VirtualClassicTestEditor
+						.create( '', {
+							extraPlugins: [ CustomBlockRootPlugin ],
+							root: { modelElement: 'customBlockRoot' }
+						} )
+						.then( newEditor => {
+							const editable = newEditor.ui.view.editable;
+
+							expect( editable.isInlineRoot ).to.be.false;
+							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.false;
+
+							return newEditor.destroy();
+						} );
+				} );
+
+				it( 'sets isInlineRoot=true for a custom inline-only root registered by a plugin', () => {
+					class CustomInlineRootPlugin extends Plugin {
+						init() {
+							this.editor.model.schema.register( 'customInlineRoot', {
+								isLimit: true,
+								allowContentOf: '$inlineRoot'
+							} );
+						}
+					}
+
+					return VirtualClassicTestEditor
+						.create( '', {
+							extraPlugins: [ CustomInlineRootPlugin ],
+							root: { modelElement: 'customInlineRoot' }
+						} )
+						.then( newEditor => {
+							const editable = newEditor.ui.view.editable;
+
+							expect( editable.isInlineRoot ).to.be.true;
+							expect( editable.element.classList.contains( 'ck-editor__editable_inline-root' ) ).to.be.true;
+
+							return newEditor.destroy();
+						} );
+				} );
+			} );
 		} );
 
 		describe( 'placeholder', () => {
@@ -223,6 +295,22 @@ describe( 'ClassicEditorUI', () => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets the placeholder directly on the root for an inline root (no block child to host it)', () => {
+				return VirtualClassicTestEditor
+					.create( '', {
+						root: { modelElement: '$inlineRoot', placeholder: 'placeholder-text' }
+					} )
+					.then( newEditor => {
+						const root = newEditor.editing.view.document.getRoot();
+
+						// Inline roots have no block children, so the placeholder is hosted on the root itself
+						// (isDirectHost: true) rather than on the first child.
+						expect( root.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
 
 						return newEditor.destroy();
 					} );
@@ -1085,7 +1173,9 @@ class VirtualClassicTestEditor extends VirtualTestEditor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		normalizeRootsConfig( sourceElementOrData, this.config );
+		// Match real `ClassicEditor`: `separateAttachTo = true` so a DOM source element is routed to
+		// `config.attachTo` rather than `rootConfig.element`.
+		normalizeRootsConfig( sourceElementOrData, this.config, 'main', true );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;

@@ -11,7 +11,7 @@ modified_at: 2025-03-13
 
 [Nuxt](https://nuxt.com/) is a Vue.js meta-framework for creating full-stack web applications. It offers everything you would expect from a modern framework, including various rendering modes, file-based routing, automatic code splitting, a large ecosystem of plugins and hosting integrations, and more.
 
-The CKEditor&nbsp;5 HTML editor does not support server-side rendering, but you can integrate it with the Nuxt framework. In this guide, you will add the editor to a Nuxt project. For this purpose, you will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation) and the official {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 Vue component}.
+The CKEditor&nbsp;5 HTML editor does not support server-side rendering, but you can integrate it with the Nuxt framework. In this guide, you will add the editor to a Nuxt project. For this purpose, you will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation) and the official {@link getting-started/integrations-cdn/vuejs-v3 CKEditor&nbsp;5 Vue component}.
 
 {@snippet getting-started/use-builder}
 
@@ -95,7 +95,9 @@ Notice that the `<Editor>` component is wrapped in a `<ClientOnly>` component. I
 
 You can run your project now using the `npm run dev` command to see your application in the browser.
 
-In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options, refer to the {@link getting-started/integrations/vuejs-v3 Vue.js integration guide}.
+<info-box>
+	In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options &ndash; including inline editors &ndash; refer to the {@link getting-started/integrations-cdn/vuejs-v3 Vue.js integration guide}.
+</info-box>
 
 ## Next steps
 

@@ -7,12 +7,17 @@
  * @module core/editor/utils/normalizerootsconfig
  */
 
-import type { EditorConfig, RootConfig } from '../editorconfig.js';
+import type {
+	EditorConfig,
+	RootConfig,
+	ViewRootElementDefinition
+} from '../editorconfig.js';
 
 import {
 	CKEditorError,
 	getDataFromElement,
 	logWarning,
+	toArray,
 	type Config
 } from '@ckeditor/ckeditor5-utils';
 
@@ -128,15 +133,24 @@ export function normalizeRootsConfig(
 
 		if ( separateAttachTo && isElement( rootConfig.element ) ) {
 			/**
-			 * The {@link module:editor-classic/classiceditor~ClassicEditor} ignores
-			 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`} because
-			 * the classic editor replaces the DOM element with its own UI rather than editing inline within it.
-			 * Use {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`}
-			 * to specify the DOM element the editor should replace.
+			 * The {@link module:editor-classic/classiceditor~ClassicEditor} cannot use an existing DOM element as
+			 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`} because the classic
+			 * editor replaces the source element with its own UI rather than editing inline within it. The passed
+			 * element is ignored along with its content, so any markup inside it will not be used as the editor's
+			 * initial data. Use {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`}
+			 * to specify the DOM element the editor should replace, or pass the initial data via
+			 * {@link module:core/editor/editorconfig~RootConfig#initialData `config.root.initialData`}.
+			 *
+			 * A tag name string (e.g. `'h1'`) or a
+			 * {@link module:core/editor/editorconfig~ViewRootElementDefinition view root element definition} are still
+			 * accepted - they describe the editable root element the classic editor creates inside its UI box.
 			 *
 			 * @error editor-create-root-element-not-supported
 			 */
 			logWarning( 'editor-create-root-element-not-supported' );
+
+			// Drop the unsupported DOM element so downstream code can read a normalized value without re-checking.
+			rootConfig.element = undefined;
 		}
 
 		// No dedicated initial data for the root.
@@ -144,9 +158,12 @@ export function normalizeRootsConfig(
 			// No legacy initial data for the root, either.
 			if ( legacyInitialData[ rootName ] === undefined ) {
 				// Use source element data or data itself as a string.
-				// Fall back to legacy sourceElement, `rootConfig.element` or `config.attachTo` (for ClassicEditor) for data extraction.
+				// Fall back to legacy sourceElement, `rootConfig.element` (only when it is an HTMLElement)
+				// or `config.attachTo` (for ClassicEditor) for data extraction.
+				const rootConfigElement = isElement( rootConfig.element ) ? rootConfig.element : undefined;
+
 				rootConfig.initialData = getInitialData(
-					sourceElementOrDataForRoot || rootConfig.element || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
+					sourceElementOrDataForRoot || rootConfigElement || ( separateAttachTo && config.get( 'attachTo' ) ) || ''
 				);
 			}
 			// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
@@ -210,6 +227,10 @@ export function normalizeRootsConfig(
 
 		// Default model element to `$root` so all callers can rely on `rootConfig.modelElement` being a string.
 		rootConfig.modelElement ||= '$root';
+
+		// Reshape `rootConfig.element` into a canonical form (`HTMLElement` or `ViewRootElementDefinition`)
+		// so downstream code can read it directly without re-running the string / flat-notation normalization.
+		rootConfig.element = normalizeViewRootElementDefinition( rootConfig.element );
 
 		rootsConfig[ rootName ] = rootConfig;
 	}
@@ -371,8 +392,144 @@ function getLegacyPlainConfigValue(
 }
 
 /**
+ * Normalizes the value passed in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`} into a
+ * canonical form (`HTMLElement` or {@link module:core/editor/editorconfig~ViewRootElementDefinition}) that the UI layer
+ * can consume directly.
+ *
+ * Accepts:
+ *
+ * * an existing `HTMLElement` - returned as is, so the editor wraps it in place,
+ * * a tag name string (e.g. `'h1'`) - turned into `{ name: 'h1' }`,
+ * * a {@link module:core/editor/editorconfig~ViewRootElementDefinition} object - reshaped so `classes` becomes an
+ * array and `attributes.class` is lifted into it.
+ *
+ * The `class` attribute may be passed either as the dedicated `classes` field (string or array of strings) or as a
+ * `class` key inside `attributes`. They are concatenated. The `style` attribute may be passed either as the `styles`
+ * object or as a `style` string inside `attributes`. When both are provided, the object form takes precedence and a
+ * warning is logged.
+ *
+ * The `<textarea>` tag name is rejected as it cannot host a rich-text editable.
+ *
+ * Already used internally by {@link ~normalizeRootsConfig `normalizeRootsConfig()`} for `config.root.element` /
+ * `config.roots.*.element`. Exported for callers that bypass the regular config-normalization pass, e.g.
+ * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot `MultiRootEditor.addRoot()`}
+ * and {@link module:editor-multi-root/multirooteditor~MultiRootEditor#createEditable `MultiRootEditor.createEditable()`}.
+ *
+ * @internal
+ */
+export function normalizeViewRootElementDefinition(
+	spec: HTMLElement | string | ViewRootElementDefinition | undefined
+): HTMLElement | ViewRootElementDefinition | undefined {
+	if ( spec == null ) {
+		return undefined;
+	}
+
+	if ( isElement( spec ) ) {
+		assertAllowedTagName( spec.tagName );
+
+		return spec;
+	}
+
+	if ( typeof spec === 'string' ) {
+		assertAllowedTagName( spec );
+
+		return { name: spec };
+	}
+
+	const { name, classes, styles, attributes } = spec;
+
+	if ( name !== undefined ) {
+		assertAllowedTagName( name );
+	}
+
+	const { class: attrClass, style: attrStyle, ...restAttributes } = attributes || {};
+	const hadAttrClass = !!attributes && 'class' in attributes;
+	const hasStyles = !!styles && Object.keys( styles ).length > 0;
+	const stylesOverrode = hasStyles && !!attrStyle;
+
+	if ( stylesOverrode ) {
+		/**
+		 * Both the {@link module:core/editor/editorconfig~ViewRootElementDefinition#styles `styles`} object
+		 * and the {@link module:core/editor/editorconfig~ViewRootElementDefinition#attributes `attributes.style`}
+		 * string were provided in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}.
+		 * Provide one or the other - the object form takes precedence.
+		 *
+		 * @error editor-root-element-styles-overspecified
+		 */
+		logWarning( 'editor-root-element-styles-overspecified' );
+	}
+
+	// Split whitespace-separated tokens (e.g. `'foo bar'` or `[ 'a b', 'c' ]`) into individual class names so the
+	// canonical `classes` array is "one class per entry". This matches how a caller would expect the array form to
+	// behave if it were ever passed directly to per-class APIs.
+	const normalizedClasses: Array<string> = [
+		...tokenizeClasses( classes ),
+		...tokenizeClasses( attrClass )
+	];
+
+	// `class` and `style` are kept as empty strings (rather than stripped) when their value was lifted into `classes`
+	// or overridden by `styles`. This way the deep-merge in `Config.set()` overwrites any stale value left from the
+	// user-provided input, instead of preserving it.
+	const normalizedAttributes: Record<string, string> = { ...restAttributes };
+
+	if ( hadAttrClass ) {
+		normalizedAttributes.class = '';
+	}
+
+	if ( stylesOverrode ) {
+		normalizedAttributes.style = '';
+	} else if ( attrStyle ) {
+		normalizedAttributes.style = attrStyle;
+	}
+
+	return {
+		...( name !== undefined && { name } ),
+		...( normalizedClasses.length && { classes: normalizedClasses } ),
+		...( hasStyles && { styles } ),
+		...( Object.keys( normalizedAttributes ).length && { attributes: normalizedAttributes } )
+	};
+}
+
+/**
+ * Splits a class value (string, array of strings, or `undefined`) into individual class tokens.
+ * Whitespace-separated tokens within a single string are split into separate array entries and empty entries are dropped.
+ */
+function tokenizeClasses( value: string | Array<string> | undefined ): Array<string> {
+	if ( !value ) {
+		return [];
+	}
+
+	return toArray( value ).flatMap( token => token.split( /\s+/ ) ).filter( Boolean );
+}
+
+/**
+ * Throws when the given tag name cannot be used as an editable root.
+ *
+ * The `<textarea>` and `<input>` elements are form fields and cannot contain other HTML elements,
+ * so the editor cannot render rich-text content inside them.
+ *
+ * To fix the error, use a tag that can contain other elements - for example `'div'`, `'section'`, `'article'`,
+ * or a heading like `'h1'`. You can also omit the `name` field to use the default `'div'`.
+ */
+function assertAllowedTagName( name: string ): void {
+	if ( [ 'textarea', 'input' ].includes( name.toLowerCase() ) ) {
+		/**
+		 * The DOM tag name specified in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}
+		 * cannot be used as an editor's editable root. The `<textarea>` and `<input>` elements are form fields and
+		 * cannot contain other HTML elements, so the editor cannot render rich-text content inside them.
+		 *
+		 * To fix the error, use a tag that can contain other elements - for example `'div'`, `'section'`, `'article'`,
+		 * or a heading like `'h1'`. You can also omit the `name` field to use the default `'div'`.
+		 *
+		 * @error editor-wrong-element
+		 */
+		throw new CKEditorError( 'editor-wrong-element', null );
+	}
+}
+
+/**
  * An alias for `isElement` from `es-toolkit/compat` with additional type guard.
  */
-function isElement( value: any ): value is Element {
+function isElement( value: any ): value is HTMLElement {
 	return _isElement( value );
 }

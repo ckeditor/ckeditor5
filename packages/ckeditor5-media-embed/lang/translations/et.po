@@ -54,3 +54,15 @@ msgstr "Avage meedia uuel vahekaardil"
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
 msgstr "Meedium manustatud"
+
+msgctxt "The label for the left aligned media option."
+msgid "Left aligned media"
+msgstr "Vasakule joondatud meedia"
+
+msgctxt "The label for the centered media option."
+msgid "Centered media"
+msgstr "Keskele joondatud meedia"
+
+msgctxt "The label for the right aligned media option."
+msgid "Right aligned media"
+msgstr "Paremale joondatud meedia"

@@ -40,7 +40,7 @@ describe( 'RemoveFormat', () => {
 	} );
 
 	it( 'does not remove image width attribute', () => {
-		// (#9684)
+		// (https://github.com/ckeditor/ckeditor5/issues/9684)
 		_setModelData( model, '[<imageBlock src="assets/sample.png" width="50%"><caption>caption</caption></imageBlock>]' );
 
 		editor.execute( 'removeFormat' );

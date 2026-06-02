@@ -1422,7 +1422,7 @@ describe( 'Editor', () => {
 			editor.model.document.createRoot( '$root', 'main' );
 			editor.model.document.createRoot( '$root', 'secondRoot' );
 			editor.model.schema.extend( '$text', { allowIn: '$root' } );
-			editor.fire( 'ready' ); // (#6139)
+			editor.fire( 'ready' ); // (https://github.com/ckeditor/ckeditor5/issues/6139)
 		} );
 
 		afterEach( async () => {

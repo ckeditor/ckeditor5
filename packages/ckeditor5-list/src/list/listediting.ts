@@ -45,6 +45,7 @@ import {
 	createModelToViewPositionMapper,
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
+	listItemSkipLevelConsumer,
 	listItemUpcastConverter,
 	reconvertItemsOnDataChange
 } from './converters.js';
@@ -281,8 +282,13 @@ export class ListEditing extends Plugin {
 						sameIndent: true
 					} );
 
-					// Outdent the first block of a first list item.
-					if ( !previousBlock && positionParent.getAttribute( 'listIndent' ) === 0 ) {
+					// Outdent the first block of a list item when there is no list block to merge with: either a first
+					// list item (indent 0) or an item whose preceding sibling is not a list block (for example a block
+					// quote between skip-level list items), in which case the only sensible action is to outdent.
+					const hasNoMergeTarget = positionParent.getAttribute( 'listIndent' ) === 0 ||
+						!isListItemBlock( positionParent.previousSibling );
+
+					if ( !previousBlock && hasNoMergeTarget ) {
 						if ( !isLastBlockOfListItem( positionParent ) ) {
 							editor.execute( 'splitListItemAfter' );
 						}
@@ -435,6 +441,7 @@ export class ListEditing extends Plugin {
 		const attributeNames = this.getListAttributeNames();
 		const multiBlock = editor.config.get( 'list.multiBlock' );
 		const elementName = multiBlock ? 'paragraph' : 'listItem';
+		const enableSkipLevelLists = !!editor.config.get( 'list.enableSkipLevelLists' );
 
 		editor.conversion.for( 'upcast' )
 			// Convert <li> to a generic paragraph (or listItem element) so the content of <li> is always inside a block.
@@ -463,6 +470,67 @@ export class ListEditing extends Plugin {
 				converterPriority: 'high'
 			} )
 			.add( dispatcher => {
+				// A `<p>` that is the only `<p>` child of its `<li>` and carries no own attributes is
+				// a bogus wrapper around the list item's content. Consume its name and convert its
+				// children directly into the surrounding `<li>`'s paragraph instead of letting
+				// `elementToElement('p')` above create a separate paragraph and force an autobreak.
+				// Otherwise we would end up with two paragraphs (one of them empty), instead of one paragraph with content.
+				dispatcher.on<UpcastElementEvent>( 'element:p', ( evt, data, conversionApi ) => {
+					const viewElement = data.viewItem;
+
+					if ( !viewElement.parent || !viewElement.parent.is( 'element', 'li' ) ) {
+						return;
+					}
+
+					// Empty <p> (truly empty, e.g. `<li><p></p></li>`) must go through the standard
+					// `elementToElement('p')` path so the EmptyBlock upcast (priority 'lowest') takes care of it.
+					if ( viewElement.isEmpty ) {
+						return;
+					}
+
+					// Bogus only when `<p>` carries no own attributes.
+					if ( !viewElement.getAttributeKeys().next().done ) {
+						return;
+					}
+
+					// And the surrounding <li> has no other block-level content besides nested lists
+					// (any text or non-list element sibling means a multi-block list item where this
+					// <p> must keep its own paragraph in the model).
+					for ( const sibling of viewElement.parent.getChildren() ) {
+						if ( sibling === viewElement ) {
+							continue;
+						}
+
+						if ( sibling.is( 'element', 'ol' ) || sibling.is( 'element', 'ul' ) ) {
+							continue;
+						}
+
+						return;
+					}
+
+					// Mark the <p> as consumed so the lower-priority `elementToElement('p')` (and the
+					// Paragraph plugin's default `<p>` converter) skip it — otherwise they would
+					// create a separate model paragraph and trigger the auto-break empty paragraph
+					// we are working around.
+					conversionApi.consumable.consume( viewElement, { name: true } );
+
+					const { modelRange, modelCursor } = conversionApi.convertChildren( viewElement, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+				}, { priority: 'highest' } );
+
+				if ( enableSkipLevelLists ) {
+					// A consuming converter for intermediate `<li>` wrappers produced by the skip-level downcast
+					// (or by external sources). It is registered with 'high' priority so it reliably runs before
+					// any other `element:li` upcast converter. Registration order inside this `.add()` is already
+					// enough for our own converters, but `high` guards against other plugins that may attach their
+					// own `element:li` listeners at the default priority in a separate `.add()` block.
+					dispatcher.on<UpcastElementEvent>(
+						'element:li', listItemSkipLevelConsumer(), { priority: 'high' }
+					);
+				}
+
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 			} );
 
@@ -483,7 +551,12 @@ export class ListEditing extends Plugin {
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+					listItemDowncastConverter(
+						attributeNames,
+						this._downcastStrategies,
+						model,
+						{ enableSkipLevelLists }
+					)
 				);
 
 				dispatcher.on<DowncastRemoveEvent>( 'remove', listItemDowncastRemoveConverter( model.schema ) );
@@ -498,7 +571,9 @@ export class ListEditing extends Plugin {
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, {
+						dataPipeline: true, enableSkipLevelLists
+					} )
 				);
 			} );
 
@@ -540,16 +615,17 @@ export class ListEditing extends Plugin {
 	private _setupModelPostFixing() {
 		const model = this.editor.model;
 		const attributeNames = this.getListAttributeNames();
-
 		// Register list fixing.
 		// First the low level handler.
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, attributeNames, this ) );
 
 		// Then the callbacks for the specific lists.
-		// The indentation fixing must be the first one...
-		this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
-			evt.return = fixListIndents( listNodes, writer ) || evt.return;
-		}, { priority: 'high' } );
+		// The indentation fixing must be the first one (but only when skip levels are not allowed)...
+		if ( !this.editor.config.get( 'list.enableSkipLevelLists' ) ) {
+			this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+				evt.return = fixListIndents( listNodes, writer ) || evt.return;
+			}, { priority: 'high' } );
+		}
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
 		this.on<ListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {

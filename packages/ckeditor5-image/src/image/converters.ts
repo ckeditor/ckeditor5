@@ -58,8 +58,19 @@ export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: Upcas
 		// Convert view image to model image.
 		const conversionResult = conversionApi.convertItem( viewImage, data.modelCursor );
 
+		// When nothing was converted there is no model image to attach the figure's children to.
+		// In practice `convertItem()` yields a non-null (empty) range for an `<img/>` - handled by the
+		// `!modelImage` check below - so this only guards the `ModelRange | null` return type.
+		/* istanbul ignore if: defensive guard for the `ModelRange | null` return type -- @preserve */
+		if ( !conversionResult.modelRange ) {
+			// Revert consumed figure so other features can convert it.
+			conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'image' } );
+
+			return;
+		}
+
 		// Get image element from conversion result.
-		const modelImage = first( conversionResult.modelRange!.getItems() ) as ModelElement;
+		const modelImage = first( conversionResult.modelRange.getItems() ) as ModelElement;
 
 		// When image wasn't successfully converted then finish conversion.
 		if ( !modelImage ) {
@@ -151,7 +162,20 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 			// Continue conversion where image conversion ends.
 			data.modelCursor = conversionResult.modelCursor;
 
-			modelImage = first( conversionResult.modelRange!.getItems() ) as ModelElement;
+			// The `<img/>` was not converted to a model image element (e.g. an inline root only allows
+			// inline content and neither image type was allowed), so there is nothing to set the sources on.
+			// In practice `convertItem()` yields a non-null (empty) range for an `<img/>` - handled by the
+			// `!modelImage` check below - so this only guards the `ModelRange | null` return type.
+			/* istanbul ignore if: defensive guard for the `ModelRange | null` return type -- @preserve */
+			if ( !conversionResult.modelRange ) {
+				return;
+			}
+
+			modelImage = first( conversionResult.modelRange.getItems() ) as ModelElement;
+
+			if ( !modelImage ) {
+				return;
+			}
 		}
 
 		conversionApi.consumable.consume( pictureViewElement, { name: true } );
@@ -244,7 +268,7 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 
 			const hasPictureElement = imgElement.parent!.is( 'element', 'picture' );
 
-			// Reuse existing <picture> element (ckeditor5#17192) or create a new one.
+			// Reuse existing <picture> element (https://github.com/ckeditor/ckeditor5/issues/17192) or create a new one.
 			const pictureElement = hasPictureElement ? imgElement.parent : viewWriter.createContainerElement( 'picture', null );
 
 			if ( !hasPictureElement ) {

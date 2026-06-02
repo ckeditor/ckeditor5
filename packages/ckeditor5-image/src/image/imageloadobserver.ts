@@ -32,7 +32,7 @@ export class ImageLoadObserver extends Observer {
 			if ( domElement.tagName == 'IMG' ) {
 				this._fireEvents( domEvent );
 			}
-			// Use capture phase for better performance (#4504).
+			// Use capture phase for better performance (https://github.com/ckeditor/ckeditor5/issues/4504).
 		}, { useCapture: true } );
 	}
 

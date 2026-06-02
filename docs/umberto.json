@@ -162,7 +162,8 @@
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/content-filter.html": "features/pasting/paste-from-google-docs.html#automatic-content-filtering",
 		"features/easy-image.html": "features/images/image-upload/image-upload.html",
-		"features/easy-video.html": "features/media-embed.html",
+		"features/easy-video.html": "features/media-embed/media-embed.html",
+		"features/media-embed.html": "features/media-embed/media-embed.html",
 		"features/emoji-panel.html": "features/emoji.html",
 		"features/export-pdf.html": "features/converters/export-pdf.html",
 		"features/export-word.html": "features/converters/export-word.html",
@@ -170,7 +171,7 @@
 		"features/horizontal-rule.html": "features/horizontal-line.html",
 		"features/html-comments.html": "features/html/html-comments.html",
 		"features/html-embed.html": "features/html/html-embed.html",
-		"features/iframe-embed.html": "features/media-embed.html",
+		"features/iframe-embed.html": "features/media-embed/media-embed.html",
 		"features/image-upload.html": "features/images/image-upload/image-upload.html",
 		"features/image-upload/base64-upload-adapter.html": "features/images/image-upload/base64-upload-adapter.html",
 		"features/image-upload/ckfinder.html": "features/file-management/ckfinder.html",
@@ -215,8 +216,8 @@
 		"features/toolbar/menubar.html": "getting-started/setup/menubar.html",
 		"features/toolbar/toolbar.html": "getting-started/setup/toolbar.html",
 		"features/ui-language.html": "getting-started/setup/ui-language.html",
-		"features/video-upload.html": "features/media-embed.html",
-		"features/video.html": "features/media-embed.html",
+		"features/video-upload.html": "features/media-embed/media-embed.html",
+		"features/video.html": "features/media-embed/media-embed.html",
 		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html",
 		"framework/development-tools.html": "framework/develpment-tools/inspector.html",
 		"framework/guides/architecture/core-editor-architecture.html": "framework/architecture/core-editor-architecture.html",
@@ -516,9 +517,9 @@
 	"promobar": {
 		"prefix": {
 			"icon": "premium",
-			"title": "NEW"
+			"title": "WEBINAR"
 		},
-		"message": "Free 14-Day Trial! <a target=\"_blank\" href=\"https://ckeditor.com/ckeditor-5/\">Learn more</a>"
+		"message": "Beyond Disjointed Text Boxes: Orchestrating Every Piece of Content and Its Metadata with CKEditor AI. <a target=\"_blank\" href=\"https://app.zuddl.com/p/a/event/ada452e7-dcc8-4faf-8088-7bb02168dbbd?utm_campaign=ckeditor_ai_multiroot_webinar&utm_source=documentation_banner&utm_medium=referral\">REGISTER NOW!</a>"
 	},
 	"og": {
 		"description": "Learn to install and configure CKEditor 5. Work with the CKEditor 5 Framework, customize it, create plugins, and custom editors. Includes API reference."
@@ -722,6 +723,11 @@
 					"name": "Lists",
 					"id": "features-lists",
 					"slug": "lists"
+				},
+				{
+					"name": "Media embed",
+					"id": "features-media-embed",
+					"slug": "media-embed"
 				},
 				{
 					"name": "Pagination",

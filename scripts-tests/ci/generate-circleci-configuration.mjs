@@ -32,18 +32,6 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		expect( config.jobs.cke5_tests_framework ).toBeDefined();
 	} );
 
-	it( 'injects `halt_if_short_flow` into generated test jobs', async () => {
-		const config = await generateCircleConfiguration( {
-			featurePackages: [ 'ckeditor5-feature-a', 'ckeditor5-feature-b' ]
-		} );
-
-		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'halt_if_short_flow' );
-
-		getFeatureBatchJobNames( config ).forEach( jobName => {
-			expect( config.jobs[ jobName ].steps ).toContain( 'halt_if_short_flow' );
-		} );
-	} );
-
 	it( 'allows non-full coverage for the `ckeditor5-minimap` package', async () => {
 		const config = await generateCircleConfiguration( {
 			featurePackages: [ 'ckeditor5-minimap' ]
@@ -85,10 +73,6 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 	it( 'inherits parameters from the `config.yml` file', async () => {
 		const rootConfig = {
 			parameters: {
-				isNightly: {
-					type: 'boolean',
-					default: false
-				},
 				isLtsPipeline: {
 					type: 'boolean',
 					default: false
@@ -152,27 +136,12 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 		expect( config.jobs.cke5_tests_features_batch_1.environment ).toBeUndefined();
 	} );
 
-	it( 'keeps `checkout_command` in non-community runs', async () => {
+	it( 'keeps `checkout_command` in generated jobs', async () => {
 		const config = await generateCircleConfiguration();
 
 		expect( config.jobs.cke5_manual.steps ).toContain( 'checkout_command' );
 		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'checkout_command' );
 		expect( config.jobs.cke5_manual.steps ).not.toContain( 'checkout' );
-	} );
-
-	it( 'replaces `checkout_command` with `checkout` for community pull requests', async () => {
-		const config = await generateCircleConfiguration( {
-			isCommunityPr: true
-		} );
-
-		Object.values( config.jobs ).forEach( job => {
-			const stringSteps = job.steps.filter( step => typeof step === 'string' );
-
-			expect( stringSteps ).not.toContain( 'checkout_command' );
-		} );
-
-		expect( config.jobs.cke5_manual.steps ).toContain( 'checkout' );
-		expect( config.jobs.cke5_tests_framework.steps ).toContain( 'checkout' );
 	} );
 
 	it( 'stores the generated configuration file as `config-tests.yml`', async () => {
@@ -194,7 +163,6 @@ describe( 'scripts/ci/generate-circleci-configuration', () => {
 
 async function generateCircleConfiguration( {
 	cliArgs = [],
-	isCommunityPr = false,
 	frameworkEntries = [ 'index.ts', 'foo.js', 'bar.ts' ],
 	featurePackages = [ 'ckeditor5-feature-a' ],
 	templateConfig = getTemplateConfigFixture(),
@@ -206,8 +174,6 @@ async function generateCircleConfiguration( {
 	vi.mocked( parseArgs ).mockReturnValue( {
 		values: parseScriptOptionsFromCliArgs( cliArgs )
 	} );
-
-	vi.stubEnv( 'CIRCLE_PR_NUMBER', isCommunityPr ? '1234' : '' );
 
 	vi.mocked( fs.readdir ).mockResolvedValue( frameworkEntries );
 	vi.mocked( glob ).mockResolvedValue( featurePackages );
@@ -295,7 +261,6 @@ function getTemplateConfigFixture() {
 					{ image: 'cimg/node:24.11.0' }
 				],
 				steps: [
-					'community_verification_command',
 					'checkout_command',
 					{
 						attach_workspace: {
@@ -373,10 +338,6 @@ function getTemplateConfigFixture() {
 function getRootConfigFixture() {
 	return {
 		parameters: {
-			isNightly: {
-				type: 'boolean',
-				default: false
-			},
 			chromeVersion: {
 				type: 'string',
 				default: '144.0.7559.59'

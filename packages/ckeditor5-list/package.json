@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-list",
-  "version": "48.1.1",
+  "version": "48.2.0",
   "description": "Ordered and unordered lists feature to CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -67,6 +67,7 @@
     "@ckeditor/ckeditor5-media-embed": "workspace:*",
     "@ckeditor/ckeditor5-page-break": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
+    "@ckeditor/ckeditor5-paste-from-office": "workspace:*",
     "@ckeditor/ckeditor5-remove-format": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",

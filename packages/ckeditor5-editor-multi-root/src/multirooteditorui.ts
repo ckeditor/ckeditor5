@@ -8,6 +8,7 @@
  */
 
 import {
+	rootAcceptsBlocks,
 	type Editor
 } from '@ckeditor/ckeditor5-core';
 
@@ -53,6 +54,15 @@ export class MultiRootEditorUI extends EditorUI {
 	 */
 	public init(): void {
 		const view = this.view;
+		const editor = this.editor;
+
+		// Resolved during UI init rather than in the editor constructor: by this point the plugin
+		// initialization phase has finished, so the schema is fully populated and the check below
+		// reflects any plugin-registered root types or additional content rules.
+		// Done before `view.render()` so the CSS class lands on the DOM from the start.
+		for ( const editable of Object.values( this.view.editables ) ) {
+			editable.isInlineRoot = !rootAcceptsBlocks( editor, editable.name! );
+		}
 
 		view.render();
 
@@ -216,7 +226,7 @@ export class MultiRootEditorUI extends EditorUI {
 		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
-			isDirectHost: false,
+			isDirectHost: editable.isInlineRoot,
 			keepOnFocus: true
 		} );
 	}

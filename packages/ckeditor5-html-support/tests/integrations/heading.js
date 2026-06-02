@@ -4,8 +4,11 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { HeadingElementSupport } from '../../src/integrations/heading.js';
@@ -89,7 +92,7 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
-					allowIn: [ '$root', '$container' ],
+					allowWhere: '$container',
 					allowChildren: [
 						'paragraph',
 						'htmlP',
@@ -521,7 +524,7 @@ describe( 'HeadingElementSupport', () => {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
-					allowIn: [ '$root', '$container' ],
+					allowWhere: '$container',
 					allowChildren: [
 						'paragraph',
 						'htmlP',
@@ -941,6 +944,133 @@ describe( 'HeadingElementSupport', () => {
 				'<h3 data-foo="bar-3">three</h3>' +
 				'<h4 data-foo="bar-4">four</h4>'
 			);
+		} );
+	} );
+
+	describe( 'htmlHgroup placement (allowWhere: $container)', () => {
+		async function createEditorWithPlugins( plugins, config = {} ) {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, HeadingEditing, GeneralHtmlSupport, ...plugins ],
+				...config
+			} );
+
+			editor.plugins.get( 'DataFilter' ).loadAllowedConfig( [ {
+				name: /^(hgroup|h1|h2|h3|h4|h5|h6)$/,
+				attributes: true
+			} ] );
+
+			model = editor.model;
+		}
+
+		it( 'should upcast hgroup placed directly in $root to htmlHgroup', async () => {
+			await createEditorWithPlugins( [] );
+
+			editor.setData( '<hgroup><p>Sub</p><p>Title</p></hgroup>' );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<htmlHgroup>' +
+					'<paragraph>Sub</paragraph>' +
+					'<paragraph>Title</paragraph>' +
+				'</htmlHgroup>'
+			);
+		} );
+
+		it( 'should downcast htmlHgroup back to hgroup when placed in $root', async () => {
+			await createEditorWithPlugins( [] );
+
+			const html = '<hgroup><p>Sub</p><p>Title</p></hgroup>';
+
+			editor.setData( html );
+
+			expect( editor.getData() ).to.equal( html );
+		} );
+
+		it( 'should allow hgroup nested inside a $container-based element (blockQuote)', async () => {
+			await createEditorWithPlugins( [ BlockQuote ] );
+
+			editor.setData(
+				'<blockquote>' +
+					'<hgroup><p>Sub</p><p>Title</p></hgroup>' +
+					'<p>Foo</p>' +
+				'</blockquote>'
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<blockQuote>' +
+					'<htmlHgroup>' +
+						'<paragraph>Sub</paragraph>' +
+						'<paragraph>Title</paragraph>' +
+					'</htmlHgroup>' +
+					'<paragraph>Foo</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'should round-trip hgroup nested inside a blockQuote through setData/getData', async () => {
+			await createEditorWithPlugins( [ BlockQuote ] );
+
+			const html =
+				'<blockquote>' +
+					'<hgroup><p>Sub</p><p>Title</p></hgroup>' +
+					'<p>Foo</p>' +
+				'</blockquote>';
+
+			editor.setData( html );
+
+			expect( editor.getData() ).to.equal( html );
+		} );
+
+		it( 'should allow hgroup in a custom root that opts into the $container chain', async () => {
+			class CustomRootSchema extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'myRoot', {
+						inheritAllFrom: '$root'
+					} );
+
+					// Opt the custom root into the generic container chain so anything declaring
+					// `allowWhere: '$container'` (htmlHgroup, block-level GHS wrappers, etc.) can
+					// land inside it.
+					this.editor.model.schema.extend( '$container', { allowIn: 'myRoot' } );
+					this.editor.model.schema.extend( '$block', { allowIn: 'myRoot' } );
+				}
+			}
+
+			await createEditorWithPlugins( [ CustomRootSchema ], {
+				root: { modelElement: 'myRoot' }
+			} );
+
+			editor.setData( '<hgroup><p>Sub</p><p>Title</p></hgroup>' );
+
+			// `setData` triggers DataFilter's deferred element registration, so the schema check is valid afterwards.
+			expect( model.schema.checkChild( [ 'myRoot' ], 'htmlHgroup' ) ).to.be.true;
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<htmlHgroup>' +
+					'<paragraph>Sub</paragraph>' +
+					'<paragraph>Title</paragraph>' +
+				'</htmlHgroup>'
+			);
+
+			expect( editor.getData() ).to.equal( '<hgroup><p>Sub</p><p>Title</p></hgroup>' );
+		} );
+
+		it( 'should not allow hgroup in a custom root that does not opt into the $container chain', async () => {
+			class IsolatedRootSchema extends Plugin {
+				init() {
+					this.editor.model.schema.register( 'isolatedRoot', {
+						isLimit: true
+					} );
+				}
+			}
+
+			await createEditorWithPlugins( [ IsolatedRootSchema ], {
+				root: { modelElement: 'isolatedRoot' }
+			} );
+
+			expect( model.schema.checkChild( [ 'isolatedRoot' ], 'htmlHgroup' ) ).to.be.false;
 		} );
 	} );
 } );

@@ -5,9 +5,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-// The script assumes that it is executed from the CKEditor 5 Commercial directory and aims to load
-// the template file (`.circleci/template.yml`) and store it under the `.circleci/config-tests.yml` path,
-// a source for a new workflow triggered from the main thread when a new build starts.
+// The script aims to load the template file (`.circleci/template.yml`) and store it under
+// the `.circleci/config-tests.yml` path, a source for a new workflow triggered from the main
+// thread when a new build starts.
 //
 // See: https://circleci.com/docs/using-dynamic-configuration/.
 
@@ -15,7 +15,6 @@ import upath from 'upath';
 import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
-import IS_COMMUNITY_PR from './is-community-pr.mjs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import { parseArgs } from 'node:util';
 
@@ -74,7 +73,6 @@ const isLtsPipeline = options[ 'is-lts-pipeline' ] === 'true';
 
 const bootstrapCommands = () => ( [
 	'checkout_command',
-	'halt_if_short_flow',
 	'bootstrap_repository_command',
 	'browser-tools/install_chrome'
 ] );
@@ -166,7 +164,6 @@ const persistToWorkspace = fileName => ( {
 				checkCoverage: true,
 				coverageFile: '.out/combined_framework.info'
 			} ),
-			'community_verification_command',
 			persistToWorkspace( 'combined_framework.info' )
 		]
 	};
@@ -186,7 +183,6 @@ const persistToWorkspace = fileName => ( {
 					checkCoverage: true,
 					coverageFile: featureCoverageBatchFilenames[ batchIndex ]
 				} ),
-				'community_verification_command',
 				persistToWorkspace( featureCoverageBatchFilenames[ batchIndex ].replace( /^\.out\//, '' ) )
 			]
 		};
@@ -271,15 +267,6 @@ const persistToWorkspace = fileName => ( {
 		);
 	} );
 
-	if ( IS_COMMUNITY_PR ) {
-		// CircleCI does not understand custom cloning when a PR comes from the community.
-		// In such a case, the goal to use the built-in command.
-		Object.keys( config.jobs )
-			.forEach( jobName => {
-				replaceShortCheckout( config, jobName );
-			} );
-	}
-
 	config.jobs = substituteChromeVersion( options[ 'chrome-version' ], config.jobs );
 	config.commands = substituteChromeVersion( options[ 'chrome-version' ], config.commands );
 
@@ -318,22 +305,6 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 				command: testCommand
 			}
 		};
-	} );
-}
-
-/**
- * @param {CircleCIConfiguration} config
- * @param {String} jobName
- */
-function replaceShortCheckout( config, jobName ) {
-	const job = config.jobs[ jobName ];
-
-	job.steps = job.steps.map( item => {
-		if ( item === 'checkout_command' ) {
-			return 'checkout';
-		}
-
-		return item;
 	} );
 }
 

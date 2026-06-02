@@ -66,3 +66,7 @@ msgstr "Văn bản đã hiển thị"
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
 msgstr "Không có đường liên kết khả dụng"
+
+msgctxt "The label of the switch button shown when link has empty href attribute."
+msgid "This link has no URL"
+msgstr "Liên kết này không có URL"

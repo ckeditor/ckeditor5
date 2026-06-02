@@ -12,7 +12,7 @@
  *
  * ```ts
  * ClassicEditor
- *   .create( editorElement, {
+ *   .create( {
  *     htmlEmbed: ... // HTML embed feature options.
  *   } )
  * 	 .then( ... )
@@ -50,7 +50,7 @@ export interface HtmlEmbedConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 *   .create( editorElement, {
+	 *   .create( {
 	 *     htmlEmbed: {
 	 *       showPreviews: true,
 	 *       sanitizeHtml( inputHtml ) {

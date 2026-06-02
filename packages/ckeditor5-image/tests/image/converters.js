@@ -109,6 +109,15 @@ describe( 'Image converters', () => {
 			expect( imgConverterCalled ).to.be.true;
 		} );
 
+		it( 'should not crash when the image cannot be inserted into the current context', () => {
+			// Disallow `imageBlock` everywhere, the same way an inline root ($inlineRoot) does.
+			schema.addChildCheck( () => false, 'imageBlock' );
+
+			expect( () => {
+				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+			} ).to.not.throw();
+		} );
+
 		it( 'should convert children allowed by schema and omit disallowed', () => {
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'foo', model: 'foo' } );
 			editor.conversion.for( 'upcast' ).elementToElement( { view: 'bar', model: 'bar' } );

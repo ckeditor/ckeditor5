@@ -4,7 +4,7 @@ meta-title: Using CKEditor 5 with React rich text editor multi-root hook from np
 meta-description: Install, integrate, and configure CKEditor 5 using the React multi-root hook with npm.
 category: react-npm
 order: 20
-modified_at: 2024-04-25
+modified_at: 2026-05-25
 ---
 
 # Integrating CKEditor&nbsp;5 with React rich text multi-root editor hook from npm
@@ -122,6 +122,8 @@ The `useMultiRootEditor` hook returns the following values:
 * `setData` &ndash; The function used for updating the editor's data.
 * `attributes` &ndash; The current state of the editor's attributes. It is updated after each editor attributes update. Note that you should not use it if you disabled two-way binding by passing the `disableTwoWayDataBinding` property.
 * `setAttributes` &ndash; The function used for updating the editor's attributes.
+* `addRoot` &ndash; A function that adds a new root to the editor at runtime. It accepts a single options object with `name`, `data`, `attributes`, `modelElement` (for example, `'$inlineRoot'`), and `editableOptions` (per-root `element`, `placeholder`, and `label`). The returned promise resolves once the root has been added.
+* `removeRoot` &ndash; A function that detaches a root from the editor by name. The returned promise resolves once the root has been removed.
 
 ## Context feature
 
@@ -140,6 +142,49 @@ By default, the two-way data binding is enabled. It means that every change done
 </info-box>
 
 ## How to?
+
+### Adding and removing roots dynamically
+
+The hook exposes `addRoot` and `removeRoot` helpers so you can manage roots from event handlers or effects. The `addRoot` helper accepts the new root's name, initial data, optional attributes, an optional `modelElement` for the schema, and `editableOptions` describing the editable element (its host tag, placeholder text, and accessible label).
+
+```tsx
+const { addRoot, removeRoot } = useMultiRootEditor( editorProps );
+
+// Add a block-content root rendered as a <section>.
+await addRoot( {
+	name: 'sidebar',
+	data: '<p>Sidebar content</p>',
+	attributes: { order: 30 },
+	editableOptions: {
+		element: 'section',
+		placeholder: 'Type the sidebar content...',
+		label: 'Sidebar'
+	}
+} );
+
+// Later, remove the same root.
+await removeRoot( 'sidebar' );
+```
+
+The `editableOptions.element` field accepts a tag name string (`'section'`, `'article'`) or a descriptor object with `name`, `classes`, `styles`, and `attributes`.
+
+### Mixing standard and inline roots
+
+A multi-root editor can host both standard and inline roots in the same document. Set `modelElement` to `'$inlineRoot'` for any root that should accept only inline content (text, bold, italic, links) instead of blocks. This is useful for titles, captions, or single-line fields combined with a block-based body.
+
+```tsx
+await addRoot( {
+	name: 'title',
+	data: 'Document title',
+	modelElement: '$inlineRoot',
+	editableOptions: {
+		element: 'h1',
+		placeholder: 'Enter title...'
+	}
+} );
+```
+
+Without `modelElement: '$inlineRoot'`, only the host tag changes &ndash; the schema still permits blocks inside the root.
 
 ### Using the editor with collaboration plugins
 

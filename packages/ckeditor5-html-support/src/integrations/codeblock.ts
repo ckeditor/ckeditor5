@@ -98,6 +98,12 @@ function viewToModelCodeBlockAttributeConverter( dataFilter: DataFilter ) {
 				return;
 			}
 
+			// The `<code>` was not converted to a model `codeBlock` element (e.g. an inline root only allows
+			// inline content), so there is no model range to set the preserved attributes on.
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			preserveElementAttributes( viewPreElement, 'htmlPreAttributes' );
 			preserveElementAttributes( viewCodeElement, 'htmlContentAttributes' );
 

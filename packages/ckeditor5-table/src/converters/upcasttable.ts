@@ -50,8 +50,17 @@ export function upcastTableFigure() {
 			// Convert view table to model table.
 			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
 
+			// When nothing was converted there is no model table to attach the figure's children to.
+			/* istanbul ignore if: defensive guard for the `ModelRange | null` return type -- @preserve */
+			if ( !conversionResult.modelRange ) {
+				// Revert consumed figure so other features can convert it.
+				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
+
+				return;
+			}
+
 			// Get table element from conversion result.
-			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<ModelElement> );
+			const modelTable = first( conversionResult.modelRange.getItems() as Iterator<ModelElement> );
 
 			// When table wasn't successfully converted then finish conversion.
 			if ( !modelTable || !modelTable.is( 'element', 'table' ) ) {
@@ -59,7 +68,7 @@ export function upcastTableFigure() {
 				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
 
 				// If anyway some table content was converted, we have to pass the model range and cursor.
-				if ( conversionResult.modelRange && !conversionResult.modelRange.isCollapsed ) {
+				if ( !conversionResult.modelRange.isCollapsed ) {
 					data.modelRange = conversionResult.modelRange;
 					data.modelCursor = conversionResult.modelCursor;
 				}
@@ -253,7 +262,7 @@ function scanTable( viewTable: ViewElement ) {
 		}
 
 		// There might be some extra empty text nodes between the `<tr>`s.
-		// Make sure further code operates on `tr`s only. (#145)
+		// Make sure further code operates on `tr`s only. (https://github.com/ckeditor/ckeditor5/issues/145)
 		const trs = Array.from( tableChild.getChildren() ).filter(
 			( el: ViewNode ): el is ViewElement & { name: 'tr' } => el.is( 'element', 'tr' )
 		);

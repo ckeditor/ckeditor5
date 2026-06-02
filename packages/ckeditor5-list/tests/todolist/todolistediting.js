@@ -434,7 +434,6 @@ describe( 'TodoListEditing', () => {
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph' +
-						' htmlLiAttributes="{}" htmlUlAttributes="{}"' +
 						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
 					'foo' +
 				'</paragraph>'
@@ -454,7 +453,7 @@ describe( 'TodoListEditing', () => {
 			);
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<htmlH2 htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
+				'<htmlH2 listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
 			);
 		} );
 
@@ -1352,6 +1351,117 @@ describe( 'TodoListEditing', () => {
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'skip-level lists', () => {
+		let skipEditor, skipModel, skipView;
+
+		beforeEach( async () => {
+			skipEditor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, TodoListEditing, BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ],
+				list: {
+					enableSkipLevelLists: true
+				}
+			} );
+
+			skipModel = skipEditor.model;
+			skipView = skipEditor.editing.view;
+
+			skipEditor.plugins.get( 'ListEditing' )._downcastStrategies.splice(
+				skipEditor.plugins.get( 'ListEditing' )._downcastStrategies.findIndex(
+					strategy => strategy.attributeName === 'listItemId' ), 1 );
+		} );
+
+		afterEach( async () => {
+			await skipEditor.destroy();
+		} );
+
+		it( 'should apply todo-list class on intermediate list wrappers', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a01" listType="todo">bar</paragraph>'
+			);
+
+			expect( _getViewData( skipView, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">' +
+								'foo' +
+							'</span>' +
+						'</span>' +
+						'<ul class="todo-list">' +
+							'<li style="list-style-type:none">' +
+								'<ul class="todo-list">' +
+									'<li>' +
+										'<span class="todo-list__label">' +
+											'<span contenteditable="false">' +
+												'<input tabindex="-1" type="checkbox"></input>' +
+											'</span>' +
+											'<span class="todo-list__label__description">' +
+												'bar' +
+											'</span>' +
+										'</span>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should merge intermediate and real todo list wrappers at the same indent', () => {
+			_setModelData( skipModel,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a02" listType="todo">baz</paragraph>'
+			);
+
+			expect( _getViewData( skipView, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">' +
+								'foo' +
+							'</span>' +
+						'</span>' +
+						'<ul class="todo-list">' +
+							'<li style="list-style-type:none">' +
+								'<ul class="todo-list">' +
+									'<li>' +
+										'<span class="todo-list__label">' +
+											'<span contenteditable="false">' +
+												'<input tabindex="-1" type="checkbox"></input>' +
+											'</span>' +
+											'<span class="todo-list__label__description">' +
+												'bar' +
+											'</span>' +
+										'</span>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>' +
+								'<span class="todo-list__label">' +
+									'<span contenteditable="false">' +
+										'<input tabindex="-1" type="checkbox"></input>' +
+									'</span>' +
+									'<span class="todo-list__label__description">' +
+										'baz' +
+									'</span>' +
+								'</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 	} );
 

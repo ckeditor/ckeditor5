@@ -133,7 +133,8 @@ describe( 'FontSizeUI', () => {
 		describe( 'config', () => {
 			beforeEach( () => {
 				// Each test case in this group creates its own element, so make sure to delete editor created in
-				// the main beforeEach in this file, as later element and editor vars are overridden (#6002).
+				// the main beforeEach in this file, as later element and editor vars are overridden.
+				// See https://github.com/ckeditor/ckeditor5/issues/6002.
 				element.remove();
 				return editor.destroy();
 			} );

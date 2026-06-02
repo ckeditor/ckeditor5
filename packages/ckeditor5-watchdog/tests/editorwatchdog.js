@@ -1723,8 +1723,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				content: { order: 2 }
+				header: { order: 1, $rootEditableOptions: {} },
+				content: { order: 2, $rootEditableOptions: {} }
 			} );
 
 			await watchdog.destroy();
@@ -1775,9 +1775,233 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				new: { order: 3 }
+				header: { order: 1, $rootEditableOptions: {} },
+				new: { order: 3, $rootEditableOptions: {} }
 			} );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should bring back an inline root as an inline root after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					intro: {
+						initialData: 'Article title',
+						modelElement: '$inlineRoot'
+					},
+					content: {
+						initialData: '<p>Article body.</p>'
+					}
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+			expect( watchdog.editor.model.document.getRoot( 'content' ).name ).to.equal( '$root' );
+
+			const dataBefore = watchdog.editor.getFullData();
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			// The inline root must not degrade to a generic `$root` after the restart.
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+			expect( watchdog.editor.model.document.getRoot( 'content' ).name ).to.equal( '$root' );
+
+			expect( watchdog.editor.getFullData() ).to.deep.equal( dataBefore );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should bring back an inline root added at runtime after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+			const clock = sinon.useFakeTimers();
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					content: {
+						initialData: '<p>Article body.</p>'
+					}
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			watchdog.editor.addRoot( 'intro', { data: 'Runtime title', modelElement: '$inlineRoot' } );
+
+			// Wait for throttled save.
+			clock.tick( 6000 );
+			clock.restore();
+
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+
+			const dataBefore = watchdog.editor.getFullData();
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+			expect( watchdog.editor.getFullData() ).to.deep.equal( dataBefore );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should restore editable options of an inline root added at runtime after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+			const clock = sinon.useFakeTimers();
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					content: {
+						initialData: '<p>Article body.</p>'
+					}
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			watchdog.editor.addRoot( 'intro', {
+				data: 'Runtime title',
+				modelElement: '$inlineRoot',
+				element: 'h1',
+				placeholder: 'Type title',
+				label: 'Article title'
+			} );
+
+			// Wait for throttled save.
+			clock.tick( 6000 );
+			clock.restore();
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+
+			// The editable element tag name, placeholder and label are rebuilt from `$rootEditableOptions` restored after the restart.
+			expect( watchdog.editor.ui.getEditableElement( 'intro' ).tagName ).to.equal( 'H1' );
+			expect( watchdog.editor.getRootsAttributes().intro.$rootEditableOptions ).to.deep.equal( {
+				element: { name: 'h1' },
+				placeholder: 'Type title',
+				label: 'Article title'
+			} );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should reuse a connected DOM editable after crash in config-based mode', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					header: { initialData: '<p>Foo</p>' },
+					content: { initialData: '<p>Bar</p>' }
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			// In config-based mode the editor creates the editables, but leaves placing them in the DOM to the integration.
+			// Connect the header editable so the watchdog can reuse the very same element after the restart.
+			const headerEditable = watchdog.editor.ui.getEditableElement( 'header' );
+			document.body.appendChild( headerEditable );
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			sinon.assert.calledOnce( restartSpy );
+
+			// The previously connected DOM editable is reused instead of creating a fresh detached one.
+			expect( watchdog.editor.ui.getEditableElement( 'header' ) ).to.equal( headerEditable );
+			expect( headerEditable.isConnected ).to.be.true;
+			expect( watchdog.editor.getData( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+
+			await watchdog.destroy();
+
+			headerEditable.remove();
+		} );
+
+		it( 'should not break the restart when the saved $rootEditableOptions value is invalid', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+			const clock = sinon.useFakeTimers();
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					content: { initialData: '<p>Article body.</p>' }
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			watchdog.editor.addRoot( 'intro', { data: 'Runtime title', modelElement: '$inlineRoot' } );
+
+			// Simulate a corrupted or injected attribute value that is not a valid options object.
+			watchdog.editor.model.change( writer => {
+				writer.setAttribute( '$rootEditableOptions', null, watchdog.editor.model.document.getRoot( 'intro' ) );
+			} );
+
+			// Wait for throttled save.
+			clock.tick( 6000 );
+			clock.restore();
+
+			const dataBefore = watchdog.editor.getFullData();
+
+			const restartSpy = sinon.spy();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			// The invalid value must be ignored instead of breaking the restart.
+			sinon.assert.calledOnce( restartSpy );
+
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+			expect( watchdog.editor.getFullData() ).to.deep.equal( dataBefore );
 
 			await watchdog.destroy();
 		} );
@@ -1920,8 +2144,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					content: { order: 2 }
+					header: { order: 1, $rootEditableOptions: {} },
+					content: { order: 2, $rootEditableOptions: {} }
 				} );
 			} );
 
@@ -1947,8 +2171,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					new: { order: 3 }
+					header: { order: 1, $rootEditableOptions: {} },
+					new: { order: 3, $rootEditableOptions: {} }
 				} );
 			} );
 
@@ -1974,9 +2198,9 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					content: { order: 2 },
-					lazyTwo: { order: 5 }
+					header: { order: 1, $rootEditableOptions: {} },
+					content: { order: 2, $rootEditableOptions: {} },
+					lazyTwo: { order: 5, $rootEditableOptions: {} }
 				} );
 			} );
 		} );
@@ -2081,8 +2305,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					new: { order: 3 }
+					header: { order: 1, $rootEditableOptions: {} },
+					new: { order: 3, $rootEditableOptions: {} }
 				} );
 			} );
 
@@ -2108,9 +2332,9 @@ describe( 'EditorWatchdog', () => {
 				} );
 
 				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-					header: { order: 1 },
-					content: { order: 2 },
-					lazyTwo: { order: 5 }
+					header: { order: 1, $rootEditableOptions: {} },
+					content: { order: 2, $rootEditableOptions: {} },
+					lazyTwo: { order: 5, $rootEditableOptions: {} }
 				} );
 			} );
 		} );
@@ -2148,8 +2372,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				content: { order: 2 }
+				header: { order: 1, $rootEditableOptions: { placeholder: 'Type in header' } },
+				content: { order: 2, $rootEditableOptions: { placeholder: 'Type in content' } }
 			} );
 
 			const editables = watchdog.editor.ui.view.editables;
@@ -2188,8 +2412,8 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
-				header: { order: 1 },
-				content: { order: 2 }
+				header: { order: 1, $rootEditableOptions: { placeholder: 'Type in some content' } },
+				content: { order: 2, $rootEditableOptions: { placeholder: 'Type in some content' } }
 			} );
 
 			const editables = watchdog.editor.ui.view.editables;

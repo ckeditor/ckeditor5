@@ -77,7 +77,7 @@ export class ViewRootEditableElement extends ViewEditableElement {
 ViewRootEditableElement.prototype.is = function( this: ViewRootEditableElement, type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'view:rootElement' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'editableElement' || type === 'view:editableElement' ||
 			type === 'containerElement' || type === 'view:containerElement' ||
 			type === 'element' || type === 'view:element' ||
@@ -85,7 +85,7 @@ ViewRootEditableElement.prototype.is = function( this: ViewRootEditableElement, 
 	} else {
 		return name === this.name && (
 			type === 'rootElement' || type === 'view:rootElement' ||
-			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 			type === 'editableElement' || type === 'view:editableElement' ||
 			type === 'containerElement' || type === 'view:containerElement' ||
 			type === 'element' || type === 'view:element'

@@ -495,7 +495,7 @@ export abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
 			// This ensures, the navigation works always the same and no pair of toolbars takes over
 			// (e.g. image and table toolbars when a selected image is inside a cell).
 			// * It could be that the focus went to the toolbar by clicking a toolbar item (e.g. a dropdown). In this case,
-			// there were no candidates so they must be obtained (#12339).
+			// there were no candidates so they must be obtained (https://github.com/ckeditor/ckeditor5/issues/12339).
 			if ( !currentFocusedToolbarDefinition || !candidateDefinitions ) {
 				candidateDefinitions = this._getFocusableCandidateToolbarDefinitions();
 			}

@@ -50,7 +50,8 @@ import {
 	BoldEditing,
 	ItalicEditing,
 	UnderlineEditing,
-	HeadingEditing
+	HeadingEditing,
+	CKEditorError
 } from 'ckeditor5';
 ```
 </code-switcher>
@@ -66,11 +67,18 @@ After importing the basic editor components, you can define the custom `Bootstra
 ```js
 // Extending the Editor class, which brings the base editor API.
 export default class BootstrapEditor extends ElementApiMixin( Editor ) {
-	constructor( element, config ) {
+	constructor( config ) {
 		super( config );
 
+		const sourceElement = config.root?.element;
+
+		if ( !sourceElement ) {
+			// This example expects the editable host in `config.root.element` (see EditorConfig).
+			throw new CKEditorError( 'bootstrap-editor-missing-root-element', null );
+		}
+
 		// Remember the element the editor is created with.
-		this.sourceElement = element;
+		this.sourceElement = sourceElement;
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
@@ -93,16 +101,18 @@ export default class BootstrapEditor extends ElementApiMixin( Editor ) {
 		return super.destroy();
 	}
 
-	static create( element, config ) {
+	static create( config ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( config );
+
+			const replacementElement = editor.sourceElement;
 
 			resolve(
 				editor.initPlugins()
 					// Initialize the UI first. See the BootstrapEditorUI class to learn more.
-					.then( () => editor.ui.init( element ) )
+					.then( () => editor.ui.init( replacementElement ) )
 					// Fill the editable with the initial data.
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => editor.data.init( getDataFromElement( replacementElement ) ) )
 					// Fire the `editor#ready` event that announce the editor is complete and ready to use.
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
@@ -484,10 +494,13 @@ _setupBootstrapHeadingDropdown() {
 
 ## Running the editor
 
-When the editor classes and the user interface are ready, it is time to run the editor. Just make sure all the plugins are loaded and the right DOM element is passed to `BootstrapEditor#create`:
+When the editor classes and the user interface are ready, it is time to run the editor. Just make sure all the plugins are loaded and the source element is set in {@link module:core/editor/editorconfig~EditorConfig#root `config.root.element`}:
 
 ```js
-BootstrapEditor.create( $( '#editor' ).get( 0 ), {
+BootstrapEditor.create( {
+	root: {
+		element: $( '#editor' ).get( 0 )
+	},
 	plugins: [
 		Clipboard, Enter, Typing, Paragraph,
 		BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing

@@ -135,6 +135,6 @@ ViewText.prototype.is = function( type: string ): boolean {
 	return type === '$text' || type === 'view:$text' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'text' || type === 'view:text' ||
-		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+		// From super.is(). This is highly utilised method and cannot call super. See https://github.com/ckeditor/ckeditor5/issues/6529.
 		type === 'node' || type === 'view:node';
 } as any;

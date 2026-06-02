@@ -36,7 +36,7 @@ export function viewToPlainText(
 	}
 
 	if ( viewItem.is( 'element', 'br' ) ) {
-		return '\n'; // Convert soft breaks to single line break (#8045).
+		return '\n'; // Convert soft breaks to single line break (https://github.com/ckeditor/ckeditor5/issues/8045).
 	}
 
 	/**

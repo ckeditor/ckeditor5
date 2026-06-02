@@ -86,8 +86,11 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -101,24 +104,26 @@ export interface EditorConfig extends EngineConfig {
 	 * roots names and values equal to the data that should be set in each root:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		initialData: {
-	 * 			header: '<p>Content for header part.</p>',
-	 * 			content: '<p>Content for main part.</p>',
-	 * 			leftSide: '<p>Content for left-side box.</p>',
-	 * 			rightSide: '<p>Content for right-side box.</p>'
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			initialData: '<p>Content for header part.</p>'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			initialData: '<p>Content for main part.</p>'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			initialData: '<p>Content for left-side box.</p>'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			initialData: '<p>Content for right-side box.</p>'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -531,8 +536,11 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		placeholder: 'Type some text...'
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			placeholder: 'Type some text...'
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -542,24 +550,26 @@ export interface EditorConfig extends EngineConfig {
 	 * roots names and values equal to the placeholder that should be set in each root:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		leftSide: document.querySelector( '#left-side' ),
-	 * 		rightSide: document.querySelector( '#right-side' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		placeholder: {
-	 * 			header: 'Type header...',
-	 * 			content: 'Type content...',
-	 * 			leftSide: 'Type left-side...',
-	 * 			rightSide: 'Type right-side...'
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			placeholder: 'Type header...'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			placeholder: 'Type content...'
+	 * 		},
+	 * 		leftSide: {
+	 * 			element: document.querySelector( '#left-side' ),
+	 * 			placeholder: 'Type left-side...'
+	 * 		},
+	 * 		rightSide: {
+	 * 			element: document.querySelector( '#right-side' ),
+	 * 			placeholder: 'Type right-side...'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -885,8 +895,11 @@ export interface EditorConfig extends EngineConfig {
 	 *
 	 * ```ts
 	 * ClassicEditor
-	 * 	.create( document.querySelector( '#editor' ), {
-	 * 		label: 'Article main content'
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		root: {
+	 * 			label: 'Article main content'
+	 * 		}
 	 * 	} )
 	 * 	.then( ... )
 	 * 	.catch( ... );
@@ -896,24 +909,26 @@ export interface EditorConfig extends EngineConfig {
 	 * roots names and values equal to the label that should be used for each root:
 	 *
 	 * ```ts
-	 * MultiRootEditor.create(
-	 * 	// Roots for the editor:
-	 * 	{
-	 * 		header: document.querySelector( '#header' ),
-	 * 		content: document.querySelector( '#content' ),
-	 * 		sideQuote: document.querySelector( '#side-quote' ),
-	 * 		relatedLinks: document.querySelector( '#related-links' )
-	 * 	},
-	 * 	// Config:
-	 * 	{
-	 * 		label: {
-	 * 			header: 'Article header',
-	 * 			content: 'Article main content',
-	 * 			sideQuote: 'Side-quote',
-	 * 			relatedLinks: 'Related links'
+	 * MultiRootEditor.create( {
+	 * 	roots: {
+	 * 		header: {
+	 * 			element: document.querySelector( '#header' ),
+	 * 			label: 'Article header'
+	 * 		},
+	 * 		content: {
+	 * 			element: document.querySelector( '#content' ),
+	 * 			label: 'Article main content'
+	 * 		},
+	 * 		sideQuote: {
+	 * 			element: document.querySelector( '#side-quote' ),
+	 * 			label: 'Side-quote'
+	 * 		},
+	 * 		relatedLinks: {
+	 * 			element: document.querySelector( '#related-links' ),
+	 * 			label: 'Related links'
 	 * 		}
 	 * 	}
-	 * )
+	 * } )
 	 * .then( ... )
 	 * .catch( ... );
 	 * ```
@@ -1112,18 +1127,52 @@ export interface EditorConfig extends EngineConfig {
 export interface RootConfig {
 
 	/**
-	 * The DOM element that will be the source for the created editor root (on which the editor root will be initialized).
+	 * The DOM element to use as the editor's editable root, or a description of one to create.
 	 *
-	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization (but only when
-	 * {@link #initialData `initialData`} is not set).
+	 * Accepted forms:
 	 *
-	 * The editor data will be set back to the original element once the editor is destroyed only if the
-	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy updateSourceElementOnDestroy}
-	 * option is set to `true`.
+	 * * An existing DOM element.
 	 *
-	 * If this config property is not set, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 *   Its content is automatically loaded to the editor upon initialization (but only when
+	 *   {@link #initialData `initialData`} is not set).
+	 *
+	 *   The editor data will be set back to the original element once the editor is destroyed only if the
+	 *   {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
+	 *   option is set to `true`.
+	 *
+	 *   Not accepted by {@link module:editor-classic/classiceditor~ClassicEditor} - use
+	 *   {@link module:core/editor/editorconfig~EditorConfig#attachTo `config.attachTo`} instead.
+	 *
+	 * * A tag name string, e.g. `'h1'`. The editor creates a fresh element with that tag and uses it as the editable.
+	 *
+	 * * A {@link ~ViewRootElementDefinition} object. The editor creates a fresh element matching the definition and
+	 * uses it as the editable.
+	 *
+	 * ```ts
+	 * // Tag name string.
+	 * BalloonEditor.create( {
+	 * 	root: {
+	 * 		element: 'h1'
+	 * 	}
+	 * } );
+	 *
+	 * // Element definition.
+	 * BalloonEditor.create( {
+	 * 	root: {
+	 * 		element: {
+	 * 			name: 'h1',
+	 * 			classes: [ 'article-title' ],
+	 * 			styles: { 'font-weight': 'bold' },
+	 * 			attributes: { 'data-id': '123' }
+	 * 		}
+	 * 	}
+	 * } );
+	 * ```
+	 *
+	 * Unless an existing DOM element is provided, a detached editor will be created. In this case you need to insert
+	 * it into the DOM manually.
 	 */
-	element?: HTMLElement;
+	element?: HTMLElement | string | ViewRootElementDefinition;
 
 	/**
 	 * The initial editor data to be used instead of the HTML content of the
@@ -1463,6 +1512,52 @@ export interface RootConfig {
 	 */
 	modelAttributes?: EditorRootAttributes;
 
+}
+
+/**
+ * A description of the DOM element used as an editor's editable root, accepted by
+ * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}.
+ *
+ * ```ts
+ * const element: ViewRootElementDefinition = {
+ * 	name: 'h1',
+ * 	classes: [ 'article-title' ],
+ * 	styles: { 'font-weight': 'bold' },
+ * 	attributes: { 'data-id': '123' }
+ * };
+ * ```
+ *
+ * `class` and `style` may also be passed as strings inside `attributes` as a shorthand:
+ *
+ * ```ts
+ * const element: ViewRootElementDefinition = {
+ * 	name: 'h1',
+ * 	attributes: { class: 'article-title', style: 'font-weight: bold' }
+ * };
+ * ```
+ */
+export interface ViewRootElementDefinition {
+
+	/**
+	 * The DOM tag name to use. Defaults to `'div'` when not provided, so integrators can keep the default element and
+	 * still specify {@link #classes}, {@link #styles}, or {@link #attributes}.
+	 */
+	name?: string;
+
+	/**
+	 * Class name or array of class names to apply to the editable element. Each name can be provided as a string.
+	 */
+	classes?: string | Array<string>;
+
+	/**
+	 * Inline styles to apply to the editable element as a record of style properties.
+	 */
+	styles?: Record<string, string>;
+
+	/**
+	 * Additional DOM attributes to apply to the editable element.
+	 */
+	attributes?: Record<string, string>;
 }
 
 /**

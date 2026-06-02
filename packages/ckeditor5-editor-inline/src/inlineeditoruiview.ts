@@ -22,6 +22,7 @@ import {
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
+import type { ViewRootElementDefinition } from '@ckeditor/ckeditor5-core';
 
 import '../theme/inlineeditor.css';
 
@@ -140,7 +141,7 @@ export class InlineEditorUIView extends EditorUIView {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement,
+		editableElement?: HTMLElement | ViewRootElementDefinition,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
 			useMenuBar?: boolean;

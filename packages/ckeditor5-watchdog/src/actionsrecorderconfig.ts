@@ -14,7 +14,7 @@ import type { ActionsRecorder } from './actionsrecorder.js';
  *
  * ```ts
  *	ClassicEditor
- *		.create( editorElement, {
+ *		.create( {
  *			actionsRecorder: ... // ActionsRecorder feature options.
  *		} )
  *		.then( ... )
@@ -33,7 +33,7 @@ export interface ActionsRecorderConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
 	 *				maxEntries: 1000
@@ -56,7 +56,7 @@ export interface ActionsRecorderConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
 	 *				onFilter( entry, prevEntries ) {
@@ -76,7 +76,7 @@ export interface ActionsRecorderConfig {
 	 *
 	 * ```ts
 	 *	ClassicEditor
-	 *		.create( editorElement, {
+	 *		.create( {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
 	 *				onError( error, entries ) {
@@ -98,7 +98,7 @@ export interface ActionsRecorderConfig {
 	 *
 	 * ```ts
 	 * 	ClassicEditor
-	 * 		.create( editorElement, {
+	 * 		.create( {
 	 * 			plugins: [ ActionsRecorder, ... ],
 	 * 			actionsRecorder: {
 	 * 				onMaxEntries() {

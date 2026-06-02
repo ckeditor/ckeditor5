@@ -8,6 +8,7 @@
  */
 
 import {
+	rootAcceptsBlocks,
 	type Editor
 } from '@ckeditor/ckeditor5-core';
 
@@ -61,6 +62,11 @@ export class BalloonEditorUI extends EditorUI {
 		// The editable UI and editing root should share the same name. Then name is used
 		// to recognize the particular editable, for instance in ARIA attributes.
 		editable.name = editingRoot.rootName;
+
+		// Resolved during UI init rather than in the editor constructor: by this point the plugin
+		// initialization phase has finished, so the schema is fully populated and the check below
+		// reflects any plugin-registered root types or additional content rules.
+		editable.isInlineRoot = !rootAcceptsBlocks( editor, editingRoot.rootName );
 
 		view.render();
 
@@ -122,7 +128,7 @@ export class BalloonEditorUI extends EditorUI {
 		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
-			isDirectHost: false,
+			isDirectHost: this.view.editable.isInlineRoot,
 			keepOnFocus: true
 		} );
 	}

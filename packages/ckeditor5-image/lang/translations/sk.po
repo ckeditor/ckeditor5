@@ -15,14 +15,6 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "widget obrázka"
 
-msgctxt "The label for the image style button that wraps text around the image."
-msgid "Wrap text"
-msgstr "Obtekanie textu"
-
-msgctxt "The label for the image style button that breaks the text around the image."
-msgid "Break text"
-msgstr "Zalomenie textu"
-
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
 msgstr "V riadku"

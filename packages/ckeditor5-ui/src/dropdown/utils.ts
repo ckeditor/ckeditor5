@@ -620,8 +620,9 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 
 		const elements = dropdownView.focusTracker.elements;
 
-		// If the dropdown was closed, move the focus back to the button (#12125).
-		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
+		// If the dropdown was closed, move the focus back to the button (https://github.com/ckeditor/ckeditor5/issues/12125).
+		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute).
+		// See https://github.com/ckeditor/ckeditor5/issues/12178.
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
 		if ( elements.some( element => element.contains( global.document.activeElement ) ) ) {
 			dropdownView.buttonView.focus();

@@ -66,3 +66,7 @@ msgstr "Teks yang dipaparkan"
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
 msgstr "Tiada pautan tersedia"
+
+msgctxt "The label of the switch button shown when link has empty href attribute."
+msgid "This link has no URL"
+msgstr "Pautan ini tidak mempunyai URL"

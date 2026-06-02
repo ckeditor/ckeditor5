@@ -1985,12 +1985,15 @@ describe( 'WidgetTypeAround', () => {
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 			} );
 
-			viewDocument.fire( 'clipboardInput', {
-				dataTransfer: {
-					getData() {
-						return 'foo<b>bar</b>';
-					}
+			const dataTransfer = {
+				getData() {
+					return 'foo<b>bar</b>';
 				}
+			};
+
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer,
+				content: dataTransfer.getData()
 			} );
 
 			expect( _getModelData( model ) ).to.equal(
@@ -2224,6 +2227,7 @@ describe( 'WidgetTypeAround', () => {
 			} );
 
 			viewDocument.fire( 'clipboardInput', {
+				content: 'bar',
 				dataTransfer: {
 					getData() {
 						return 'bar';

@@ -12,7 +12,7 @@
  *
  * ```ts
  * ClassicEditor
- *   .create( editorElement, {
+ *   .create( {
  *     alignment: {
  *       options: [ 'left', 'right' ]
  *     }
@@ -38,7 +38,7 @@ export interface AlignmentConfig {
  *
  * ```ts
  * ClassicEditor
- *   .create( editorElement, {
+ *   .create( {
  *     alignment: {
  *       options: [ 'left', 'right' ]
  *     }
@@ -54,7 +54,7 @@ export interface AlignmentConfig {
  *
  * ```ts
  * ClassicEditor
- *   .create( editorElement, {
+ *   .create( {
  *     alignment: {
  *       options: [
  *         { name: 'left', className: 'my-align-left' },

@@ -59,12 +59,10 @@ ReadOnlyEditor
 						left: '15mm'
 					}
 				}
-			},
-			tokenUrl: false
+			}
 		},
 		exportWord: {
 			fileName: 'export-word-demo.docx',
-			tokenUrl: false,
 			stylesheets: [
 				'../../assets/ckeditor5/ckeditor5.css',
 				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'

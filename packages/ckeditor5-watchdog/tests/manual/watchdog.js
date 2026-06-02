@@ -52,7 +52,11 @@ const watchdog1 = createWatchdog(
 const watchdog2 = createWatchdog(
 	document.getElementById( 'editor-2' ),
 	document.getElementById( 'editor-2-state' ),
-	'Second'
+	'Second',
+	{
+		modelElement: '$inlineRoot',
+		element: 'h1'
+	}
 );
 
 Object.assign( window, { watchdog1, watchdog2 } );
@@ -61,11 +65,14 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 	throw new Error( 'foo' );
 } );
 
-function createWatchdog( editorElement, stateElement, name ) {
+function createWatchdog( editorElement, stateElement, name, rootConfig ) {
 	const watchdog = new EditorWatchdog( ClassicEditor );
 
 	watchdog.create( {
 		...editorConfig,
+		root: {
+			...rootConfig
+		},
 		attachTo: editorElement
 	} );
 

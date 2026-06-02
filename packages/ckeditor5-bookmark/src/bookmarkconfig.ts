@@ -14,7 +14,7 @@
  *
  * ```ts
  * ClassicEditor
- * 	.create( editorElement, {
+ * 	.create( {
  * 		bookmark: {
  * 			// Bookmark configuration.
  * 		}

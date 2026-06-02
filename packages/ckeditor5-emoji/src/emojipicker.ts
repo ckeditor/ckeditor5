@@ -138,7 +138,7 @@ export class EmojiPicker extends Plugin {
 	 */
 	public showUI( searchValue: string = '' ): void {
 		// Show visual selection on a text when the contextual balloon is displayed.
-		// See #17654.
+		// See https://github.com/ckeditor/ckeditor5/issues/17654.
 		this._showFakeVisualSelection();
 
 		if ( !this.emojiPickerView ) {
