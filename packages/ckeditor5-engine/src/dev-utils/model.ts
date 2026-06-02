@@ -118,26 +118,30 @@ type SetModelData = {
  * @param options.convertMarkers Whether to include markers in the returned string.
  * @returns The stringified data.
  */
-export const _getModelData: GetModelData = function(
-	model: Model,
-	options: GetModelDataOptions = {}
-): string {
-	if ( !( model instanceof Model ) ) {
-		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
-	}
+export const _getModelData: GetModelData = /* #__PURE__ */ ( () => {
+	const getModelData = function(
+		model: Model,
+		options: GetModelDataOptions = {}
+	): string {
+		if ( !( model instanceof Model ) ) {
+			throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
+		}
 
-	const rootName = options.rootName || 'main';
-	const root = model.document.getRoot( rootName )!;
+		const rootName = options.rootName || 'main';
+		const root = model.document.getRoot( rootName )!;
 
-	return _getModelData._stringify(
-		root,
-		options.withoutSelection ? null : model.document.selection,
-		options.convertMarkers ? model.markers : null
-	);
-} as GetModelData;
+		return getModelData._stringify(
+			root,
+			options.withoutSelection ? null : model.document.selection,
+			options.convertMarkers ? model.markers : null
+		);
+	} as GetModelData;
 
-// Set stringify as getData private method - needed for testing/spying.
-_getModelData._stringify = _stringifyModel;
+	// Set stringify as getData private method - needed for testing/spying.
+	getModelData._stringify = _stringifyModel;
+
+	return getModelData;
+} )();
 
 /**
  * Sets the content of a model {@link module:engine/model/document~ModelDocument document} provided as an HTML-like string.
@@ -165,72 +169,76 @@ _getModelData._stringify = _stringifyModel;
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward.
  * @param options.batchType Batch type used for inserting elements. See {@link module:engine/model/batch~Batch#constructor}.
  */
-export const _setModelData: SetModelData = function(
-	model: Model,
-	data: string,
-	options: SetModelDataOptions = {}
-): void {
-	if ( !( model instanceof Model ) ) {
-		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
-	}
+export const _setModelData: SetModelData = /* #__PURE__ */ ( () => {
+	const setModelData = function(
+		model: Model,
+		data: string,
+		options: SetModelDataOptions = {}
+	): void {
+		if ( !( model instanceof Model ) ) {
+			throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
+		}
 
-	let modelDocumentFragment: ModelNode | ModelDocumentFragment;
-	let selection: ModelSelection | null = null;
-	const modelRoot = model.document.getRoot( options.rootName || 'main' )!;
+		let modelDocumentFragment: ModelNode | ModelDocumentFragment;
+		let selection: ModelSelection | null = null;
+		const modelRoot = model.document.getRoot( options.rootName || 'main' )!;
 
-	// Parse data string to model.
-	const parsedResult = _setModelData._parse( data, model.schema, {
-		lastRangeBackward: options.lastRangeBackward,
-		selectionAttributes: options.selectionAttributes,
-		context: [ modelRoot.name ],
-		inlineObjectElements: options.inlineObjectElements
-	} );
+		// Parse data string to model.
+		const parsedResult = setModelData._parse( data, model.schema, {
+			lastRangeBackward: options.lastRangeBackward,
+			selectionAttributes: options.selectionAttributes,
+			context: [ modelRoot.name ],
+			inlineObjectElements: options.inlineObjectElements
+		} );
 
-	// Retrieve DocumentFragment and Selection from parsed model.
-	if ( 'model' in parsedResult ) {
-		modelDocumentFragment = parsedResult.model;
-		selection = parsedResult.selection;
-	} else {
-		modelDocumentFragment = parsedResult;
-	}
+		// Retrieve DocumentFragment and Selection from parsed model.
+		if ( 'model' in parsedResult ) {
+			modelDocumentFragment = parsedResult.model;
+			selection = parsedResult.selection;
+		} else {
+			modelDocumentFragment = parsedResult;
+		}
 
-	if ( options.batchType !== undefined ) {
-		model.enqueueChange( options.batchType, writeToModel );
-	} else {
-		model.change( writeToModel );
-	}
+		if ( options.batchType !== undefined ) {
+			model.enqueueChange( options.batchType, writeToModel );
+		} else {
+			model.change( writeToModel );
+		}
 
-	function writeToModel( writer: ModelWriter ) {
-		// Replace existing model in document by new one.
-		writer.remove( writer.createRangeIn( modelRoot ) );
-		writer.insert( modelDocumentFragment, modelRoot );
+		function writeToModel( writer: ModelWriter ) {
+			// Replace existing model in document by new one.
+			writer.remove( writer.createRangeIn( modelRoot ) );
+			writer.insert( modelDocumentFragment, modelRoot );
 
-		// Clean up previous document selection.
-		writer.setSelection( null );
-		writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
+			// Clean up previous document selection.
+			writer.setSelection( null );
+			writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 
-		// Update document selection if specified.
-		if ( selection ) {
-			const ranges: Array<ModelRange> = [];
+			// Update document selection if specified.
+			if ( selection ) {
+				const ranges: Array<ModelRange> = [];
 
-			for ( const range of selection.getRanges() ) {
-				const start = new ModelPosition( modelRoot, range.start.path );
-				const end = new ModelPosition( modelRoot, range.end.path );
+				for ( const range of selection.getRanges() ) {
+					const start = new ModelPosition( modelRoot, range.start.path );
+					const end = new ModelPosition( modelRoot, range.end.path );
 
-				ranges.push( new ModelRange( start, end ) );
-			}
+					ranges.push( new ModelRange( start, end ) );
+				}
 
-			writer.setSelection( ranges, { backward: selection.isBackward } );
+				writer.setSelection( ranges, { backward: selection.isBackward } );
 
-			if ( options.selectionAttributes ) {
-				writer.setSelectionAttribute( selection.getAttributes() );
+				if ( options.selectionAttributes ) {
+					writer.setSelectionAttribute( selection.getAttributes() );
+				}
 			}
 		}
-	}
-} as SetModelData;
+	} as SetModelData;
 
-// Set parse as setData private method - needed for testing/spying.
-_setModelData._parse = _parseModel;
+	// Set parse as setData private method - needed for testing/spying.
+	setModelData._parse = _parseModel;
+
+	return setModelData;
+} )();
 
 /**
  * Converts model nodes to HTML-like string representation.
