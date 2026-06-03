@@ -39,15 +39,18 @@ import type { ViewDocumentFragment, ViewElement, ViewText, ViewUpcastWriter } fr
  * ```html
  * <p>Text with footnote<sup class="footnote"><a id="ref-footnote-ftn1" href="#footnote-ftn1">1</a></sup> reference.</p>
  *
- * <ol class="footnotes">
- * 	<li class="footnote-definition" id="footnote-ftn1">
- * 		<a href="#ref-footnote-ftn1" class="footnote-backlink">^</a>
- * 		<div class="footnote-content">
- * 			<p>Footnote content</p>
- * 			<table>...</table>
- * 		</div>
- * 	</li>
- * </ol>
+ * <div class="footnotes">
+ * 	<hr class="footnotes-divider">
+ * 	<ol class="footnotes-list">
+ * 		<li class="footnote-definition" id="footnote-ftn1">
+ * 			<a href="#ref-footnote-ftn1" class="footnote-backlink">^</a>
+ * 			<div class="footnote-content">
+ * 				<p>Footnote content</p>
+ * 				<table>...</table>
+ * 			</div>
+ * 		</li>
+ * 	</ol>
+ * </div>
  * ```
  *
  * @param documentFragment `data.content` obtained from clipboard.
@@ -100,9 +103,9 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 	}
 
 	// Phase 2: Replace footnotes definitions list with proper element.
-	const footnotesDefinitionsList = createFootnotesListViewElement( writer );
+	const footnotesList = createFootnotesListContainerElement( writer );
 
-	writer.replace( msFootnotesDefinitionsList, footnotesDefinitionsList );
+	writer.replace( msFootnotesDefinitionsList, footnotesList.wrapper );
 
 	// Phase 3: Replace all footnotes references and add matching definitions to the definitions list.
 	for ( const [ footnoteId, msFootnoteRef ] of msFootnotesRefs ) {
@@ -132,7 +135,7 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 			writer.appendChild( clonedChild, defElements.content );
 		}
 
-		writer.appendChild( defElements.listItem, footnotesDefinitionsList );
+		writer.appendChild( defElements.listItem, footnotesList.list );
 	}
 }
 
@@ -190,13 +193,24 @@ function removeMSReferences( writer: ViewUpcastWriter, element: ViewElement ): V
 }
 
 /**
- * Creates a footnotes list view element.
+ * Creates a footnotes list container element.
  *
  * @param writer The view writer instance.
- * @returns The footnotes list view element.
+ * @returns The footnotes list container element and list itself.
  */
-function createFootnotesListViewElement( writer: ViewUpcastWriter ): ViewElement {
-	return writer.createElement( 'ol', { class: 'footnotes' } );
+function createFootnotesListContainerElement( writer: ViewUpcastWriter ) {
+	const divider = writer.createElement( 'hr', { class: 'footnotes-divider' } );
+	const list = writer.createElement( 'ol', { class: 'footnotes-list' } );
+
+	const wrapper = writer.createElement( 'div', { class: 'footnotes' }, [
+		divider,
+		list
+	] );
+
+	return {
+		list,
+		wrapper
+	};
 }
 
 /**
