@@ -511,8 +511,13 @@ function enableCellTypeProperty( editor: Editor ) {
 				const { writer, consumable } = conversionApi;
 				const { viewItem, modelRange } = data;
 
-				const modelElement = modelRange!.start.nodeAfter!;
-				const previousTableCellType = modelElement?.getAttribute( 'tableCellType' ) as TableCellType | undefined;
+				const modelElement = modelRange?.start.nodeAfter;
+
+				if ( !modelElement ) {
+					return;
+				}
+
+				const previousTableCellType = modelElement.getAttribute( 'tableCellType' ) as TableCellType | undefined;
 
 				if ( previousTableCellType === 'header' && consumable.consume( viewItem, { attributes: [ 'scope' ] } ) ) {
 					const scope = viewItem.getAttribute( 'scope' );

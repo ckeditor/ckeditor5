@@ -4324,6 +4324,29 @@ describe( 'table cell properties', () => {
 						] )
 					);
 				} );
+
+				it( 'should not crash when a scoped `th` cannot be placed in the model (e.g. inline root)', () => {
+					// Disallow the table in the root, simulating an `$inlineRoot` context where block
+					// elements are not allowed. The `th` then produces no model range during upcast.
+					model.schema.addChildCheck( ( context, childDefinition ) => {
+						if ( childDefinition.name === 'table' && context.endsWith( '$root' ) ) {
+							return false;
+						}
+					} );
+
+					expect( () => {
+						editor.setData(
+							viewTable( [
+								[ { contents: '00', isHeading: true, scope: 'row' }, '01' ],
+								[ '10', '11' ]
+							] )
+						);
+					} ).to.not.throw();
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>00</paragraph><paragraph>01</paragraph><paragraph>10</paragraph><paragraph>11</paragraph>'
+					);
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
