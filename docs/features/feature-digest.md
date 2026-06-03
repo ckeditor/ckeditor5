@@ -502,6 +502,20 @@ Lists allow the creation and management of various list types, including to-do l
 	</ck:card>
 
 	<ck:card>
+		<ck:card-title level='4' heading-id='skip-level-lists'>
+			Skip-level lists
+		</ck:card-title>
+		<ck:card-description>
+			By default, each nested list item can only be one level deeper than its parent. The skip-level lists feature removes this restriction and allows list items to be indented by more than one level at a time.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-editing#skip-level-lists}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
 		<ck:card-title level='4' heading-id='to-do-lists'>
 			To-do lists
 		</ck:card-title>
