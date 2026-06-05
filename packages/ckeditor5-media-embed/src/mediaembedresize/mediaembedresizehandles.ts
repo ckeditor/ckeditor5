@@ -103,7 +103,7 @@ export class MediaEmbedResizeHandles extends Plugin {
 		const editingView = editor.editing.view;
 
 		const resizer = editor.plugins.get( WidgetResize ).attachTo( {
-			unit: '%',
+			unit: editor.config.get( 'mediaEmbed.resizeUnit' )!,
 			modelElement,
 			viewElement: widgetView,
 			editor,

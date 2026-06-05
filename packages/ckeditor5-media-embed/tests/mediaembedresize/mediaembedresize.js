@@ -9,6 +9,8 @@ import { global } from '@ckeditor/ckeditor5-utils';
 import { MediaEmbedResize } from '../../src/mediaembedresize.js';
 import { MediaEmbedResizeEditing } from '../../src/mediaembedresize/mediaembedresizeediting.js';
 import { MediaEmbedResizeHandles } from '../../src/mediaembedresize/mediaembedresizehandles.js';
+import { MediaEmbedResizeButtons } from '../../src/mediaembedresize/mediaembedresizebuttons.js';
+import { MediaEmbedCustomResizeUI } from '../../src/mediaembedresize/mediaembedcustomresizeui.js';
 
 describe( 'MediaEmbedResize', () => {
 	let editorElement, editor;
@@ -43,6 +45,14 @@ describe( 'MediaEmbedResize', () => {
 
 	it( 'should load MediaEmbedResizeHandles plugin', () => {
 		expect( editor.plugins.get( MediaEmbedResizeHandles ) ).to.instanceOf( MediaEmbedResizeHandles );
+	} );
+
+	it( 'should load MediaEmbedResizeButtons plugin', () => {
+		expect( editor.plugins.get( MediaEmbedResizeButtons ) ).to.instanceOf( MediaEmbedResizeButtons );
+	} );
+
+	it( 'should load MediaEmbedCustomResizeUI plugin', () => {
+		expect( editor.plugins.get( MediaEmbedCustomResizeUI ) ).to.instanceOf( MediaEmbedCustomResizeUI );
 	} );
 
 	it( 'has proper name', () => {

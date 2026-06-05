@@ -162,3 +162,19 @@ msgstr "Text nahoře a dole"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "Obtékání textu"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "Vlastní"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "Originální"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "Hodnota nesmí být prázdná"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "Hodnota musí být prosté číslo."

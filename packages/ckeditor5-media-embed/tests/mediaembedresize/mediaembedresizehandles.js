@@ -68,6 +68,23 @@ describe( 'MediaEmbedResizeHandles', () => {
 			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.property( 'unit', '%' );
 		} );
 
+		it( 'should use `mediaEmbed.resizeUnit` from config as the resizer unit', async () => {
+			editor = await ClassicEditor.create( {
+				attachTo: editorElement,
+				plugins: [ Widget, Paragraph, MediaEmbedEditing, MediaEmbedResizeEditing, MediaEmbedResizeHandles ],
+				mediaEmbed: { resizeUnit: 'px' }
+			} );
+			viewDocument = editor.editing.view.document;
+			await focusEditor( editor );
+
+			const attachToSpy = sinon.spy( editor.plugins.get( WidgetResize ), 'attachTo' );
+
+			_setModelData( editor.model, `[<media url="${ YOUTUBE_URL }"></media>]` );
+
+			expect( attachToSpy.calledOnce ).to.be.true;
+			expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.property( 'unit', 'px' );
+		} );
+
 		it( 'attaches resizers to media present in the initial data', async () => {
 			editor = await createEditor();
 

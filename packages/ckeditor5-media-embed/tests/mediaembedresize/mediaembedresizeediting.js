@@ -295,4 +295,54 @@ describe( 'MediaEmbedResizeEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'config defaults', () => {
+		it( 'should define `mediaEmbed.resizeUnit` default as `%`', () => {
+			expect( editor.config.get( 'mediaEmbed.resizeUnit' ) ).to.equal( '%' );
+		} );
+
+		it( 'should define `mediaEmbed.resizeOptions` default with 5 entries', () => {
+			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
+
+			expect( resizeOptions ).to.have.length( 5 );
+		} );
+
+		it( 'should include the original option with null value', () => {
+			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
+			const originalOption = resizeOptions.find( option => option.value === null );
+
+			expect( originalOption ).to.exist;
+			expect( originalOption.name ).to.equal( 'resizeMediaEmbed:original' );
+			expect( originalOption.icon ).to.equal( 'original' );
+		} );
+
+		it( 'should include the custom option', () => {
+			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
+			const customOption = resizeOptions.find( option => option.value === 'custom' );
+
+			expect( customOption ).to.exist;
+			expect( customOption.name ).to.equal( 'resizeMediaEmbed:custom' );
+			expect( customOption.icon ).to.equal( 'custom' );
+		} );
+
+		it( 'should include preset size options (25, 50, 75)', () => {
+			const resizeOptions = editor.config.get( 'mediaEmbed.resizeOptions' );
+			const values = resizeOptions.map( option => option.value );
+
+			expect( values ).to.include.members( [ '25', '50', '75' ] );
+		} );
+
+		it( 'should allow overriding resizeUnit via config', async () => {
+			const pxEditor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, MediaEmbedEditing, MediaEmbedResizeEditing ],
+				mediaEmbed: {
+					resizeUnit: 'px'
+				}
+			} );
+
+			expect( pxEditor.config.get( 'mediaEmbed.resizeUnit' ) ).to.equal( 'px' );
+
+			await pxEditor.destroy();
+		} );
+	} );
 } );

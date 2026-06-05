@@ -162,3 +162,19 @@ msgstr "テキストを折り返す"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "テキストを分割する"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "カスタム"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "オリジナル"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "この値は空白にできません。"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "この値は単純な数字にする必要があります。"

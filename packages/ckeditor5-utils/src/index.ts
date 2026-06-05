@@ -175,4 +175,10 @@ export {
 export { decodeLicenseKey } from './decodelicensekey.js';
 export { isFeatureBlockedByLicenseKey } from './isfeatureblockedbylicensekey.js';
 
+export {
+	tryParseDimensionWithUnit as _tryParseDimensionWithUnit,
+	tryCastDimensionsToUnit as _tryCastDimensionsToUnit,
+	type DimensionWithUnit as _DimensionWithUnit
+} from './parsedimensionwithunit.js';
+
 export { version, releaseDate } from './version.js';

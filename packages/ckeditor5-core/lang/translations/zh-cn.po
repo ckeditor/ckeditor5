@@ -162,3 +162,19 @@ msgstr "文字环绕"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "文字断行"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "自定义"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "原始大小"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "该值不能为空。"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "该值应当为纯数字。"

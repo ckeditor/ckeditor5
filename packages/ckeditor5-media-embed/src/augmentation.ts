@@ -14,6 +14,8 @@ import type {
 	MediaEmbedResize,
 	MediaEmbedResizeEditing,
 	MediaEmbedResizeHandles,
+	MediaEmbedResizeButtons,
+	MediaEmbedCustomResizeUI,
 	ResizeMediaEmbedCommand,
 	MediaEmbedStyle,
 	MediaEmbedStyleEditing,
@@ -41,6 +43,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ MediaEmbedResize.pluginName ]: MediaEmbedResize;
 		[ MediaEmbedResizeEditing.pluginName ]: MediaEmbedResizeEditing;
 		[ MediaEmbedResizeHandles.pluginName ]: MediaEmbedResizeHandles;
+		[ MediaEmbedResizeButtons.pluginName ]: MediaEmbedResizeButtons;
+		[ MediaEmbedCustomResizeUI.pluginName ]: MediaEmbedCustomResizeUI;
 		[ MediaEmbedStyle.pluginName ]: MediaEmbedStyle;
 		[ MediaEmbedStyleEditing.pluginName ]: MediaEmbedStyleEditing;
 		[ MediaEmbedStyleUI.pluginName ]: MediaEmbedStyleUI;

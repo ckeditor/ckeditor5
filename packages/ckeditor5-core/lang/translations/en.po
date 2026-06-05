@@ -162,3 +162,19 @@ msgstr "Wrap text"
 msgctxt "The label for the object (e.g. image, media) style button that breaks the text around the object."
 msgid "Break text"
 msgstr "Break text"
+
+msgctxt "The label for the resize option that allows the user to enter a custom size."
+msgid "Custom"
+msgstr "Custom"
+
+msgctxt "The default label for the resize option that resets the size."
+msgid "Original"
+msgstr "Original"
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with a blank value."
+msgid "The value must not be empty."
+msgstr "The value must not be empty."
+
+msgctxt "Text used as an error label when the user submitted a custom resize form with an incorrect value."
+msgid "The value should be a plain number."
+msgstr "The value should be a plain number."

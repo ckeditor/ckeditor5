@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageresize/utils/tryparsedimensionwithunit
+ * @module utils/parsedimensionwithunit
  */
 
 /**
@@ -45,6 +45,7 @@ export function tryParseDimensionWithUnit( dimension: string | null | undefined 
  *
  * @param parentDimensionPx	Dimension of parent element that contains measured element.
  * @param dimension Measured element dimension.
+ * @param targetUnit Target unit for conversion.
  * @returns Casted dimension.
  * @internal
  */

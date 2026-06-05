@@ -16,6 +16,12 @@ export { MediaEmbedCommand } from './mediaembedcommand.js';
 export { MediaEmbedResize } from './mediaembedresize.js';
 export { MediaEmbedResizeEditing } from './mediaembedresize/mediaembedresizeediting.js';
 export { MediaEmbedResizeHandles } from './mediaembedresize/mediaembedresizehandles.js';
+export { MediaEmbedResizeButtons } from './mediaembedresize/mediaembedresizebuttons.js';
+export { MediaEmbedCustomResizeUI } from './mediaembedresize/mediaembedcustomresizeui.js';
+export type {
+	MediaEmbedCustomResizeFormViewSubmitEvent,
+	MediaEmbedCustomResizeFormViewCancelEvent
+} from './mediaembedresize/ui/mediaembedcustomresizeformview.js';
 export { ResizeMediaEmbedCommand } from './mediaembedresize/resizemediaembedcommand.js';
 export { MediaEmbedStyle } from './mediaembedstyle.js';
 export { MediaEmbedStyleEditing } from './mediaembedstyle/mediaembedstyleediting.js';
@@ -24,6 +30,7 @@ export { MediaEmbedStyleCommand } from './mediaembedstyle/mediaembedstylecommand
 
 export type {
 	MediaEmbedConfig,
+	MediaEmbedResizeOption,
 	MediaStyleConfig,
 	MediaStyleOptionDefinition,
 	MediaStyleDropdownDefinition

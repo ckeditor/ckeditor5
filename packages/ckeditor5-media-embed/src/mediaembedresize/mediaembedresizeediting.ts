@@ -8,7 +8,7 @@
  */
 
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
-import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import { MediaEmbedEditing } from '../mediaembedediting.js';
 import { ResizeMediaEmbedCommand } from './resizemediaembedcommand.js';
 import { RESIZED_MEDIA_CLASS } from './constants.js';
@@ -53,6 +53,24 @@ export class MediaEmbedResizeEditing extends Plugin {
 	 */
 	public static override get isPremiumPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'mediaEmbed', {
+			resizeUnit: '%',
+			resizeOptions: [
+				{ name: 'resizeMediaEmbed:original', value: null, icon: 'original' },
+				{ name: 'resizeMediaEmbed:custom', value: 'custom', icon: 'custom' },
+				{ name: 'resizeMediaEmbed:25', value: '25', icon: 'small' },
+				{ name: 'resizeMediaEmbed:50', value: '50', icon: 'medium' },
+				{ name: 'resizeMediaEmbed:75', value: '75', icon: 'large' }
+			]
+		} );
 	}
 
 	/**
