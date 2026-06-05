@@ -1041,6 +1041,23 @@ describe( 'PasteFromOffice - filters', () => {
 					// And none of the <li>s should keep the per-item margin.
 					expect( result ).not.to.match( /<li[^>]*style="[^"]*margin-left/ );
 				} );
+
+				it( 'does not crash when a non-list block matches a former list margin but no active list', () => {
+					// See https://github.com/ckeditor/ckeditor5-commercial/issues/10255.
+					const html =
+						'<p style="mso-list:l0 level1 lfo1;margin-left:48pt">A item</p>' +
+						`<p ${ listB }>B item</p>` +
+						'<p style="margin-left:48pt">Trailing block matching the first list margin</p>';
+					const view = htmlDataProcessor.toView( html );
+
+					expect( () => transformListItemLikeElementsIntoLists( view, '' ) ).to.not.throw();
+
+					const result = _stringifyView( view );
+
+					// Both lists are still produced and the trailing block stays a standalone paragraph.
+					expect( result.match( /<ol/g ) ).to.have.length( 2 );
+					expect( result ).to.contain( '<p style="margin-left:48pt">Trailing block matching the first list margin</p>' );
+				} );
 			} );
 		} );
 	} );

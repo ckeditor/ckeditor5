@@ -293,6 +293,14 @@ export function transformListItemLikeElementsIntoLists(
 				// numbering from where it left off (e.g. <ol start="3">).
 				encounteredLists.length = stack.length + 1;
 			} else {
+				// A non-list block whose margin matches no active list wrapper fully interrupts the
+				// current top-level list. Flush the pending uniform margin onto that list (while
+				// `stack[ 0 ]` still exists) and reset the info, mirroring the non-continuation reset
+				// above — otherwise the stale `topLevelListInfo` would later be flushed against an
+				// already-cleared stack, dereferencing `stack[ 0 ]` when it is `undefined`.
+				// See https://github.com/ckeditor/ckeditor5-commercial/issues/10255.
+				applyIndentationToTopLevelList( writer, stack, topLevelListInfo );
+				topLevelListInfo = createTopLevelListInfo();
 				stack.length = 0;
 			}
 		}
