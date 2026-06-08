@@ -503,15 +503,33 @@ function tokenizeClasses( value: string | Array<string> | undefined ): Array<str
 }
 
 /**
- * Throws when the given tag name cannot be used as an editable root.
+ * Throws when the given value cannot be used as an editable root tag name.
  *
- * The `<textarea>` and `<input>` elements are form fields and cannot contain other HTML elements,
- * so the editor cannot render rich-text content inside them.
+ * Rejects values that are not a valid HTML tag name (non-strings, empty strings, names with whitespace,
+ * angle brackets, slashes, or other invalid characters) with `editor-wrong-element-name`.
+ *
+ * Also rejects the `<textarea>` and `<input>` tags with `editor-wrong-element` - they are form fields
+ * and cannot contain other HTML elements, so the editor cannot render rich-text content inside them.
  *
  * To fix the error, use a tag that can contain other elements - for example `'div'`, `'section'`, `'article'`,
  * or a heading like `'h1'`. You can also omit the `name` field to use the default `'div'`.
  */
-function assertAllowedTagName( name: string ): void {
+function assertAllowedTagName( name: unknown ): void {
+	if ( typeof name !== 'string' || !/^[A-Za-z][A-Za-z0-9_-]*$/.test( name ) ) {
+		/**
+		 * The value supplied as the editable root tag name in
+		 * {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`} or
+		 * `config.roots.<rootName>.element` is not a valid HTML tag name.
+		 *
+		 * Valid HTML tag names start with a letter and contain only letters, digits, hyphens, or underscores
+		 * (e.g. `'div'`, `'h1'`, `'my-element'`; uppercase variants such as `'DIV'` and `'H1'` are also accepted).
+		 * Whitespace, angle brackets, slashes, empty strings, and non-string values are not allowed.
+		 *
+		 * @error editor-wrong-element-name
+		 */
+		throw new CKEditorError( 'editor-wrong-element-name', null, { name } );
+	}
+
 	if ( [ 'textarea', 'input' ].includes( name.toLowerCase() ) ) {
 		/**
 		 * The DOM tag name specified in {@link module:core/editor/editorconfig~RootConfig#element `config.root.element`}

@@ -510,12 +510,118 @@ describe( 'normalizeRootsConfig()', () => {
 			}, /^editor-wrong-element/ );
 		} );
 
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with a leading space', () => {
+			config.set( 'roots', { main: { element: ' div' } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with angle brackets', () => {
+			config.set( 'roots', { main: { element: '<miamia>' } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for an empty tag-name string', () => {
+			config.set( 'roots', { main: { element: '' } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a tag name containing a space', () => {
+			config.set( 'roots', { main: { element: { name: 'has space' } } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a non-string name', () => {
+			config.set( 'roots', { main: { element: { name: 123 } } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should not throw for a custom element name with a hyphen', () => {
+			config.set( 'roots', { main: { element: 'my-element' } } );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'my-element' } );
+		} );
+
 		it( 'should not extract initial data from a non-HTMLElement element', () => {
 			config.set( 'roots', { main: { element: 'h1' } } );
 
 			normalizeRootsConfig( '', config );
 
 			expect( config.get( 'roots' ).main.initialData ).to.equal( '' );
+		} );
+	} );
+
+	describe( 'rootConfig.element normalization (config.root)', () => {
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with a leading space', () => {
+			config.set( 'root', { element: ' div' } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with angle brackets', () => {
+			config.set( 'root', { element: '<miamia>' } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for an empty tag-name string', () => {
+			config.set( 'root', { element: '' } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a tag name containing a space', () => {
+			config.set( 'root', { element: { name: 'has space' } } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element` when the tag-name string is `textarea`', () => {
+			config.set( 'root', { element: 'textarea' } );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( '', config );
+			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should turn a tag-name string into a canonical descriptor', () => {
+			config.set( 'root', { element: 'h1' } );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'h1' } );
+		} );
+
+		it( 'should not throw for a custom element name with a hyphen', () => {
+			config.set( 'root', { element: 'my-element' } );
+
+			normalizeRootsConfig( '', config );
+
+			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'my-element' } );
 		} );
 	} );
 
@@ -735,6 +841,92 @@ describe( 'normalizeRootsConfig()', () => {
 			expectToThrowCKEditorError( () => {
 				normalizeViewRootElementDefinition( 'TEXTAREA' );
 			}, /^editor-wrong-element/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with a leading space', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( ' div' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with angle brackets', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( '<miamia>' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with a trailing space', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( 'div ' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string with a slash', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( 'div/' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for an empty tag-name string', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( '' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string starting with a digit', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( '1div' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string containing a dot', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( 'foo.bar' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a tag-name string containing a colon', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( 'svg:rect' );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a name containing a space', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( { name: 'has space' } );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a name containing angle brackets', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( { name: '<div>' } );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with an empty name', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( { name: '' } );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a numeric name', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( { name: 123 } );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should throw `editor-wrong-element-name` for a definition with a null name', () => {
+			expectToThrowCKEditorError( () => {
+				normalizeViewRootElementDefinition( { name: null } );
+			}, /^editor-wrong-element-name/ );
+		} );
+
+		it( 'should not throw for a custom element name with a hyphen', () => {
+			expect( normalizeViewRootElementDefinition( 'my-element' ) ).to.deep.equal( { name: 'my-element' } );
+		} );
+
+		it( 'should not throw for a custom element name with an underscore', () => {
+			expect( normalizeViewRootElementDefinition( 'my_element' ) ).to.deep.equal( { name: 'my_element' } );
 		} );
 
 		it( 'should ignore the `priority` field from ViewElementDefinition', () => {
