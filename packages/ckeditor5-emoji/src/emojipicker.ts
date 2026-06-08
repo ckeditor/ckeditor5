@@ -74,16 +74,11 @@ export class EmojiPicker extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public async init(): Promise<void> {
-		const editor = this.editor;
+	public init(): void {
+		const { editor } = this;
 
 		this.balloonPlugin = editor.plugins.get( 'ContextualBalloon' );
 		this.emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
-
-		// Skip registering a button in the toolbar and list item in the menu bar if the emoji repository is not ready.
-		if ( !await this.emojiRepositoryPlugin.isReady() ) {
-			return;
-		}
 
 		const command = new EmojiCommand( editor );
 
@@ -158,7 +153,6 @@ export class EmojiPicker extends Plugin {
 		if ( !this.balloonPlugin.hasView( this.emojiPickerFormView ) ) {
 			// Show back button if there is another balloon view visible.
 			this.emojiPickerFormView!.backButtonView.isVisible = !!this.balloonPlugin.visibleView;
-
 			this.balloonPlugin.add( {
 				view: this.emojiPickerFormView,
 				position: this._getBalloonPositionData(),
@@ -196,14 +190,31 @@ export class EmojiPicker extends Plugin {
 	 * Creates an instance of the `EmojiPickerView` class that represents an emoji balloon.
 	 */
 	private _createEmojiPickerView(): EmojiPickerView {
+		const emojiCategories = [ ...this.emojiRepositoryPlugin.getEmojiCategories() ];
 		const emojiPickerView = new EmojiPickerView( this.editor.locale, {
-			emojiCategories: this.emojiRepositoryPlugin.getEmojiCategories(),
+			emojiCategories,
 			skinTone: this.editor.config.get( 'emoji.skinTone' )!,
 			skinTones: this.emojiRepositoryPlugin.getSkinTones(),
 			getEmojiByQuery: ( query: string ) => {
 				return this.emojiRepositoryPlugin.getEmojiByQuery( query );
 			}
 		} );
+
+		// If the view was created before the repository finished loading, populate
+		// the shared categories array in-place once data arrives and refresh the grid.
+		if ( !this.emojiRepositoryPlugin.isRepositoryReady ) {
+			this.emojiRepositoryPlugin.onReady( isReady => {
+				if ( !isReady ) {
+					return;
+				}
+
+				const categories = this.emojiRepositoryPlugin.getEmojiCategories();
+
+				if ( categories.length ) {
+					emojiPickerView.setCategories( categories );
+				}
+			} );
+		}
 
 		// Insert an emoji on a tile click.
 		this.listenTo<EmojiGridViewExecuteEvent>( emojiPickerView.gridView, 'execute', ( evt, data ) => {
@@ -311,7 +322,7 @@ export class EmojiPicker extends Plugin {
 	}
 
 	/**
-	 * Returns positioning options for the {@link #balloonPlugin}. They control the way the balloon is attached
+	 * Returns positioning options for the balloon plugin. They control the way the balloon is attached
 	 * to the target element or selection.
 	 */
 	private _getBalloonPositionData(): Partial<DomOptimalPositionOptions> {

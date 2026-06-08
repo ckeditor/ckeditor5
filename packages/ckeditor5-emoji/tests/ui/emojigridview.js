@@ -361,6 +361,34 @@ describe( 'EmojiGridView', () => {
 			view.destroy();
 		} );
 
+		it( 'should return empty results when categoryName does not match any category', () => {
+			emojiCategories = [
+				{
+					title: 'faces',
+					icon: '😊',
+					items: [
+						{ 'annotation': 'grinning face', 'emoji': '😀', 'skins': { 'default': '😀' } }
+					]
+				}
+			];
+
+			const spy = sinon.stub().returns( [] );
+
+			const view = new EmojiGridView( locale, {
+				emojiCategories,
+				categoryName: 'non-existing-category',
+				getEmojiByQuery: spy
+			} );
+
+			const result = view.filter( null );
+
+			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 0 } );
+			expect( view.isEmpty ).is.equal( true );
+			sinon.assert.callCount( spy, 0 );
+
+			view.destroy();
+		} );
+
 		it( 'should re-use cached tile if it exists', () => {
 			emojiCategories = [
 				{

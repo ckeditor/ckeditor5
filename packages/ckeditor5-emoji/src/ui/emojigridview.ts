@@ -201,7 +201,15 @@ export class EmojiGridView extends View<HTMLDivElement> implements FilteredView 
 	 * Returns emojis that belong to the specified category.
 	 */
 	private _getItemsByCategory(): { matchingItems: Array<EmojiEntry>; allItems: Array<EmojiEntry> } {
-		const emojiCategory = this.emojiCategories.find( item => item.title === this.categoryName )!;
+		const emojiCategory = this.emojiCategories.find( item => item.title === this.categoryName );
+
+		if ( !emojiCategory ) {
+			return {
+				matchingItems: [],
+				allItems: []
+			};
+		}
+
 		const { items } = emojiCategory;
 
 		return {

@@ -6,6 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Emoji } from '../src/emoji.js';
 import { EmojiPicker } from '../src/emojipicker.js';
+import { EmojiRepository } from '../src/emojirepository.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';
@@ -14,27 +15,27 @@ import database from './fixtures/database.json';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Emoji integration', () => {
-	let editor, element, emojiPicker;
+	let editor, element, emojiPicker, emojiRepository;
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		const response = new Response( JSON.stringify( database ) );
 		testUtils.sinon.stub( window, 'fetch' ).resolves( response );
 
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ Emoji, Essentials, Paragraph, Mention ],
-				toolbar: 'emoji',
-				menubar: {
-					isVisible: true
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				emojiPicker = editor.plugins.get( EmojiPicker );
-			} );
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ Emoji, Essentials, Paragraph, Mention ],
+			toolbar: 'emoji',
+			menubar: {
+				isVisible: true
+			}
+		} );
+
+		emojiPicker = editor.plugins.get( EmojiPicker );
+		emojiRepository = editor.plugins.get( EmojiRepository );
+
+		await emojiRepository.isReady();
 	} );
 
 	afterEach( () => {

@@ -6,6 +6,7 @@
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { EmojiCommand } from '../src/emojicommand.js';
+import { EmojiRepository } from '../src/emojirepository.js';
 
 class EmojiPickerFakePlugin {
 	static get pluginName() {
@@ -16,27 +17,26 @@ class EmojiPickerFakePlugin {
 }
 
 describe( 'EmojiCommand', () => {
-	let editor, command, model;
+	let editor, command, model, repository;
 
-	beforeEach( () => {
-		return ModelTestEditor
-			.create( {
-				plugins: [ EmojiPickerFakePlugin ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ EmojiPickerFakePlugin, EmojiRepository ]
+		} );
 
-				command = new EmojiCommand( editor );
+		await editor.plugins.get( EmojiRepository ).isReady();
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-				model.schema.register( 'x', {
-					inheritAllFrom: '$block',
-					disallowChildren: [
-						'$text'
-					]
-				} );
-			} );
+		model = editor.model;
+		command = new EmojiCommand( editor );
+		repository = editor.plugins.get( EmojiRepository );
+
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
+		model.schema.register( 'x', {
+			inheritAllFrom: '$block',
+			disallowChildren: [
+				'$text'
+			]
+		} );
 	} );
 
 	afterEach( () => {
@@ -66,6 +66,34 @@ describe( 'EmojiCommand', () => {
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 				_setModelData( model, '[<x></x>]' );
+				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( 'isRepositoryReady influence', () => {
+			beforeEach( () => {
+				_setModelData( model, '<p>f[]oo</p>' );
+			} );
+
+			it( 'should be false when isRepositoryReady is not true', () => {
+				repository.isRepositoryReady = null;
+				expect( command.isEnabled ).to.be.false;
+
+				repository.isRepositoryReady = false;
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true when isRepositoryReady is true and selection allows text', () => {
+				repository.isRepositoryReady = true;
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should refresh automatically when isRepositoryReady changes', () => {
+				repository.isRepositoryReady = true;
+				expect( command.isEnabled ).to.be.true;
+
+				repository.isRepositoryReady = false;
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );

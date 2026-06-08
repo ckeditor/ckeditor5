@@ -37,11 +37,6 @@ export class EmojiMention extends Plugin {
 	declare public emojiRepositoryPlugin: EmojiRepository;
 
 	/**
-	 * A flag that informs if the {@link module:emoji/emojirepository~EmojiRepository} plugin is loaded correctly.
-	 */
-	declare private _isEmojiRepositoryAvailable: boolean;
-
-	/**
 	 * Defines a number of displayed items in the auto complete dropdown.
 	 *
 	 * It includes the "Show all emoji..." option if the `EmojiPicker` plugin is loaded.
@@ -136,17 +131,13 @@ export class EmojiMention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public async init(): Promise<void> {
-		const editor = this.editor;
+	public init(): void {
+		const { editor } = this;
 
 		this.emojiPickerPlugin = editor.plugins.has( 'EmojiPicker' ) ? editor.plugins.get( 'EmojiPicker' ) : null;
 		this.emojiRepositoryPlugin = editor.plugins.get( 'EmojiRepository' );
-		this._isEmojiRepositoryAvailable = await this.emojiRepositoryPlugin.isReady();
 
-		// Override the `mention` command listener if the emoji repository is ready.
-		if ( this._isEmojiRepositoryAvailable ) {
-			editor.once( 'ready', this._overrideMentionExecuteListener.bind( this ) );
-		}
+		this._overrideMentionExecuteListener();
 	}
 
 	/**
@@ -189,9 +180,13 @@ export class EmojiMention extends Plugin {
 	 * Overrides the default mention execute listener to insert an emoji as plain text instead.
 	 */
 	private _overrideMentionExecuteListener(): void {
-		const editor = this.editor;
+		const { editor } = this;
 
 		editor.commands.get( 'mention' )!.on( 'execute', ( event, data ) => {
+			if ( !this.emojiRepositoryPlugin.isRepositoryReady ) {
+				return;
+			}
+
 			const eventData = data[ 0 ];
 
 			// Ignore non-emoji auto-complete actions.
@@ -253,7 +248,7 @@ export class EmojiMention extends Plugin {
 
 			// If the repository plugin is not available, return an empty feed to avoid confusion.
 			// See: https://github.com/ckeditor/ckeditor5/issues/17842.
-			if ( !this._isEmojiRepositoryAvailable ) {
+			if ( !this.emojiRepositoryPlugin.isRepositoryReady ) {
 				return [];
 			}
 

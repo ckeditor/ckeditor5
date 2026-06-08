@@ -47,7 +47,7 @@ function mockEmojiRepositoryValues( editor ) {
 describe( 'EmojiMention', () => {
 	testUtils.createSinonSandbox();
 
-	let editor, editorElement, fetchStub;
+	let editor, editorElement, fetchStub, emojiRepository;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -76,6 +76,8 @@ describe( 'EmojiMention', () => {
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
 		} );
+
+		emojiRepository = editor.plugins.get( EmojiRepository );
 
 		mockEmojiRepositoryValues( editor );
 	} );
@@ -437,6 +439,24 @@ describe( 'EmojiMention', () => {
 			editorElement.remove();
 		} );
 
+		it( 'should not stop the "mention" command execution when the emoji repository is not ready', async () => {
+			await emojiRepository.isReady();
+			emojiRepository.isRepositoryReady = false;
+
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+
+			const range = editor.model.document.selection.getFirstRange();
+			const insertTextSpy = sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+
+			editor.commands.execute( 'mention', {
+				range,
+				marker: ':',
+				mention: { id: ':raising hands:', text: '🙌' }
+			} );
+
+			sinon.assert.notCalled( insertTextSpy );
+		} );
+
 		describe( 'break the command execution', () => {
 			it( 'should stop the "mention" command when inserting an item from the list', () => {
 				_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
@@ -633,7 +653,7 @@ describe( 'EmojiMention', () => {
 				plugins: [ EmojiMention, Paragraph, Essentials, Mention ]
 			} );
 
-			editor.plugins.get( 'EmojiMention' )._isEmojiRepositoryAvailable = false;
+			editor.plugins.get( 'EmojiRepository' ).isRepositoryReady = false;
 
 			const queryEmoji = editor.plugins.get( 'EmojiMention' )._queryEmojiCallbackFactory();
 

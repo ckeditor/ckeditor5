@@ -91,7 +91,7 @@ export class EmojiPickerView extends View<HTMLDivElement> {
 	) {
 		super( locale );
 
-		const categoryName = emojiCategories[ 0 ].title;
+		const categoryName = emojiCategories[ 0 ]?.title ?? '';
 
 		this.gridView = new EmojiGridView( locale, {
 			categoryName,
@@ -201,6 +201,21 @@ export class EmojiPickerView extends View<HTMLDivElement> {
 	}
 
 	/**
+	 * Sets certain list of categories in categories view and performs search.
+	 */
+	public setCategories( categories: Array<EmojiCategory> ): void {
+		const { emojiCategories } = this.gridView;
+		const categoryName = categories[ 0 ].title;
+
+		emojiCategories.splice( 0, emojiCategories.length, ...categories );
+
+		this.categoriesView.setCategories( categories );
+		this.categoriesView.categoryName = categoryName;
+		this.gridView.categoryName = categoryName;
+		this.searchView.search( this.searchView.getInputValue() );
+	}
+
+	/**
 	 * Initializes interactions between sub-views.
 	 */
 	private _setupEventListeners(): void {
@@ -217,6 +232,11 @@ export class EmojiPickerView extends View<HTMLDivElement> {
 
 		// Show a user-friendly message depending on the search query.
 		this.searchView.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
+			// If there are no categories loaded - skip searching.
+			if ( !this.categoriesView.buttonViews.length ) {
+				return;
+			}
+
 			if ( data.query.length === 1 ) {
 				this.infoView.set( {
 					primaryText: t( 'Keep on typing to see the emoji.' ),

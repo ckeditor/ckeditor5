@@ -42,7 +42,7 @@ await reloadEditor();
 	element.addEventListener( 'input', async event => {
 		// Clear the internal cache when messing up with the filtering mechanism.
 		if ( event.target.name === 'custom-font' ) {
-			EmojiRepository._results = {};
+			EmojiRepository._cache.clear();
 		}
 
 		await reloadEditor();

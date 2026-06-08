@@ -199,6 +199,125 @@ describe( 'EmojiPickerView', () => {
 				sinon.assert.calledOnce( fireSpy );
 				sinon.assert.calledWith( fireSpy, 'update' );
 			} );
+
+			it( 'should not update the info view when there are no categories loaded', () => {
+				emojiPickerView.categoriesView.buttonViews.clear();
+
+				const setInfoSpy = sinon.spy( emojiPickerView.infoView, 'set' );
+
+				// A single-character query that would normally trigger the "keep typing" hint.
+				emojiPickerView.searchView.fire( 'search', { query: 'a' } );
+
+				sinon.assert.notCalled( setInfoSpy );
+			} );
+
+			it( 'should not update the info view for "no results" message when there are no categories loaded', () => {
+				emojiPickerView.categoriesView.buttonViews.clear();
+
+				const setInfoSpy = sinon.spy( emojiPickerView.infoView, 'set' );
+
+				emojiPickerView.searchView.fire( 'search', { query: 'foo', resultsCount: 0 } );
+
+				sinon.assert.notCalled( setInfoSpy );
+			} );
+		} );
+	} );
+
+	describe( 'setCategories()', () => {
+		beforeEach( () => {
+			emojiPickerView.render();
+			document.body.appendChild( emojiPickerView.element );
+		} );
+
+		afterEach( () => {
+			emojiPickerView.element.remove();
+		} );
+
+		it( 'should replace gridView.emojiCategories with the provided categories', () => {
+			const newCategories = [
+				{
+					title: 'animals',
+					icon: '🐶',
+					items: [
+						{ 'annotation': 'dog', 'emoji': '🐶', skins: { 'default': '🐶' } }
+					]
+				}
+			];
+
+			emojiPickerView.setCategories( newCategories );
+
+			expect( emojiPickerView.gridView.emojiCategories.length ).to.equal( newCategories.length );
+			expect( emojiPickerView.gridView.emojiCategories[ 0 ] ).to.deep.equal( newCategories[ 0 ] );
+		} );
+
+		it( 'should update categoryName in categoriesView and gridView to the first new category', () => {
+			const newCategories = [
+				{
+					title: 'animals',
+					icon: '🐶',
+					items: []
+				}
+			];
+
+			emojiPickerView.setCategories( newCategories );
+
+			expect( emojiPickerView.categoriesView.categoryName ).to.equal( 'animals' );
+			expect( emojiPickerView.gridView.categoryName ).to.equal( 'animals' );
+		} );
+
+		it( 'should pass new categories to categoriesView.setCategories()', () => {
+			const newCategories = [
+				{
+					title: 'animals',
+					icon: '🐶',
+					items: []
+				}
+			];
+
+			const stub = sinon.stub( emojiPickerView.categoriesView, 'setCategories' );
+
+			emojiPickerView.setCategories( newCategories );
+
+			sinon.assert.calledOnce( stub );
+			sinon.assert.calledWithExactly( stub, newCategories );
+		} );
+
+		it( 'should trigger a search using the current input value after updating categories', () => {
+			const newCategories = [
+				{
+					title: 'animals',
+					icon: '🐶',
+					items: []
+				}
+			];
+
+			const searchStub = sinon.stub( emojiPickerView.searchView, 'search' );
+			const getInputValueStub = sinon.stub( emojiPickerView.searchView, 'getInputValue' ).returns( 'dog' );
+
+			emojiPickerView.setCategories( newCategories );
+
+			sinon.assert.calledOnce( getInputValueStub );
+			sinon.assert.calledTwice( searchStub );
+			sinon.assert.calledWithExactly( searchStub.lastCall, 'dog' );
+		} );
+
+		it( 'should trigger a search with empty string when input is empty', () => {
+			const newCategories = [
+				{
+					title: 'animals',
+					icon: '🐶',
+					items: []
+				}
+			];
+
+			const searchStub = sinon.stub( emojiPickerView.searchView, 'search' );
+
+			sinon.stub( emojiPickerView.searchView, 'getInputValue' ).returns( '' );
+
+			emojiPickerView.setCategories( newCategories );
+
+			sinon.assert.calledTwice( searchStub );
+			sinon.assert.calledWithExactly( searchStub.lastCall, '' );
 		} );
 	} );
 

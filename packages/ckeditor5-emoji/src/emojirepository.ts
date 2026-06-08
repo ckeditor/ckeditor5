@@ -11,8 +11,9 @@ import fuzzysort from 'fuzzysort';
 import { groupBy } from 'es-toolkit/compat';
 
 import { type Editor, Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
-import { logWarning, version as editorVersion } from '@ckeditor/ckeditor5-utils';
+import { logWarning, version as editorVersion, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { EmojiUtils } from './emojiutils.js';
+import { EmojiRepositoryCache } from './utils/emojirepositorycache.js';
 import type { EmojiSkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji data will be downloaded during plugin initialization.
@@ -28,25 +29,18 @@ const DEFAULT_EMOJI_VERSION = 16;
  */
 export class EmojiRepository extends Plugin {
 	/**
-	 * A callback to resolve the {@link #_repositoryPromise} to control the return value of this promise.
+	 * Whether the emoji repository has been successfully loaded.
+	 *
+	 * - `null` – the repository is still being loaded (initial state).
+	 * - `true` – the repository has been loaded successfully.
+	 * - `false` – the repository failed to load (e.g. network error or empty response).
 	 */
-	declare private _repositoryPromiseResolveCallback: ( value: boolean ) => void;
-
-	/**
-	 * Emoji repository in a configured version.
-	 */
-	private _items: Array<EmojiEntry> | null;
+	declare public isRepositoryReady: boolean | null;
 
 	/**
 	 * The resolved URL from which the emoji repository is downloaded.
 	 */
 	private readonly _url: URL;
-
-	/**
-	 * A promise resolved after downloading the emoji collection.
-	 * The promise resolves with `true` when the repository is successfully downloaded or `false` otherwise.
-	 */
-	private readonly _repositoryPromise: Promise<boolean>;
 
 	/**
 	 * @inheritDoc
@@ -82,40 +76,65 @@ export class EmojiRepository extends Plugin {
 			useCustomFont: false
 		} );
 
+		this.set( 'isRepositoryReady', null );
 		this._url = this._getUrl();
-
-		this._repositoryPromise = new Promise<boolean>( resolve => {
-			this._repositoryPromiseResolveCallback = resolve;
-		} );
-
-		this._items = null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public async init(): Promise<void> {
+	public init(): void {
 		this._warnAboutCdnUse();
 
-		await this._loadAndCacheEmoji();
+		EmojiRepository._cache
+			.fetch( {
+				url: this._url.toString(),
+				cacheKeys: this._cacheKeys,
+				transform: raw => this._normalizeEmoji( raw )
+			} )
+			.then( () => {
+				if ( this.editor.state === 'destroyed' ) {
+					return;
+				}
 
-		this._items = this._getItems();
+				const ready = !!this._getItems();
 
-		if ( !this._items ) {
-			/**
-			 * Unable to identify the available emoji to display.
-			 *
-			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in the {@glink features/emoji Emoji feature} guide
-			 * for more details.
-			 *
-			 * @error emoji-repository-empty
-			 */
-			logWarning( 'emoji-repository-empty' );
+				if ( !ready ) {
+					/**
+					 * Unable to identify the available emoji to display.
+					 *
+					 * See the {@glink features/emoji#troubleshooting troubleshooting} section in
+					 * the {@glink features/emoji Emoji feature} guide for more details.
+					 *
+					 * @error emoji-repository-empty
+					 */
+					logWarning( 'emoji-repository-empty' );
+				}
 
-			return this._repositoryPromiseResolveCallback( false );
+				this.isRepositoryReady = ready;
+			} );
+	}
+
+	/**
+	 * Calls `callback` once the repository finishes loading, passing the result as the argument.
+	 *
+	 * @param callback Receives `true` when the repository loaded successfully, `false` on failure.
+	 * Note: if the editor is destroyed before loading completes, the callback may never be called.
+	 * Use {@link #isReady} instead if you need a guaranteed resolution in all cases.
+	 */
+	public onReady( callback: ( isReady: boolean ) => void ): void {
+		if ( this.editor.state === 'destroyed' ) {
+			return;
 		}
 
-		return this._repositoryPromiseResolveCallback( true );
+		if ( this.isRepositoryReady !== null ) {
+			callback( this.isRepositoryReady );
+			return;
+		}
+
+		this.once<ObservableChangeEvent<boolean | null>>( 'change:isRepositoryReady', ( evt, name, isReady ) => {
+			callback( !!isReady );
+		} );
 	}
 
 	/**
@@ -126,7 +145,9 @@ export class EmojiRepository extends Plugin {
 	 * @returns An array of emoji entries that match the search query.
 	 */
 	public getEmojiByQuery( searchQuery: string ): Array<EmojiEntry> {
-		if ( !this._items ) {
+		const items = this._getItems();
+
+		if ( !items ) {
 			return [];
 		}
 
@@ -140,7 +161,7 @@ export class EmojiRepository extends Plugin {
 		}
 
 		return fuzzysort
-			.go( searchQuery, this._items, {
+			.go( searchQuery, items, {
 				threshold: 0.6,
 				keys: [
 					'emoticon',
@@ -215,10 +236,24 @@ export class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * Indicates whether the emoji repository has been successfully downloaded and the plugin is operational.
+	 * Returns a promise that resolves once the repository finishes loading.
+	 *
+	 * Resolves with `true` if the repository loaded successfully, or `false` if loading failed.
+	 * Rejects if the editor was destroyed before loading completed.
 	 */
 	public isReady(): Promise<boolean> {
-		return this._repositoryPromise;
+		return new Promise( ( resolve, reject ) => {
+			const fail = () => reject(
+				new Error( 'The editor was destroyed before the emoji repository finished loading.' )
+			);
+
+			if ( this.editor.state === 'destroyed' ) {
+				fail();
+			} else {
+				this.onReady( resolve );
+				this.editor.once( 'destroy', fail );
+			}
+		} );
 	}
 
 	/**
@@ -295,37 +330,16 @@ export class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * Returns the emoji repository in a configured version if it is a non-empty array. Returns `null` otherwise.
+	 * Returns the normalised emoji repository for this editor instance if it is
+	 * a non-empty array, or `null` otherwise.
 	 */
 	private _getItems(): Array<EmojiEntry> | null {
-		const repository = EmojiRepository._results[ this._url.href ];
+		const repository = EmojiRepository._cache.getSync( {
+			url: this._url.toString(),
+			cacheKeys: this._cacheKeys
+		} );
 
 		return repository && repository.length ? repository : null;
-	}
-
-	/**
-	 * Loads the emoji repository. If the repository is already loaded, it returns the cached result.
-	 * Otherwise, it fetches the repository from the URL and adds it to the cache.
-	 */
-	private async _loadAndCacheEmoji(): Promise<void> {
-		if ( EmojiRepository._results[ this._url.href ] ) {
-			// The repository has already been downloaded.
-			return;
-		}
-
-		const result: Array<EmojiCdnResource> = await fetch( this._url, { cache: 'force-cache' } )
-			.then( response => {
-				if ( !response.ok ) {
-					return [];
-				}
-
-				return response.json();
-			} )
-			.catch( () => {
-				return [];
-			} );
-
-		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
 	}
 
 	/**
@@ -361,11 +375,18 @@ export class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * Versioned emoji repository.
+	 * Cache key segments that distinguish the transformation result for this editor instance.
 	 */
-	private static _results: {
-		[ key in string ]?: Array<EmojiEntry>
-	} = {};
+	private get _cacheKeys(): Array<string> {
+		const useCustomFont = this.editor.config.get( 'emoji.useCustomFont' );
+
+		return [ `useCustomFont:${ !!useCustomFont }` ];
+	}
+
+	/**
+	 * Process-global cache that stores fetched emojis.
+	 */
+	private static _cache = new EmojiRepositoryCache();
 }
 
 /**

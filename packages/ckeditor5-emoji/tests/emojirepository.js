@@ -9,7 +9,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { EmojiRepository } from '../src/emojirepository.js';
-import { EmojiUtils } from '../src/emojiutils.ts';
+import { EmojiUtils } from '../src/emojiutils.js';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 class EmojiUtilsMockVersion15 extends EmojiUtils {
@@ -32,6 +32,13 @@ class EmojiUtilsMockVersion16 extends EmojiUtils {
 	}
 }
 
+function getCachedResults( plugin ) {
+	return EmojiRepository._cache.getSync( {
+		url: plugin._url.toString(),
+		cacheKeys: plugin._cacheKeys
+	} );
+}
+
 describe( 'EmojiRepository', () => {
 	testUtils.createSinonSandbox();
 
@@ -40,7 +47,7 @@ describe( 'EmojiRepository', () => {
 	beforeEach( () => {
 		clock = testUtils.sinon.useFakeTimers();
 
-		EmojiRepository._results = {};
+		EmojiRepository._cache.clear();
 
 		consoleStub = testUtils.sinon.stub( console, 'warn' );
 		fetchStub = testUtils.sinon.stub( window, 'fetch' );
@@ -95,7 +102,7 @@ describe( 'EmojiRepository', () => {
 
 			expect( fetchStub.calledOnce ).to.equal( true );
 
-			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+			const cdnUrl = new URL( fetchStub.firstCall.args[ 0 ] );
 
 			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 			expect( cdnUrl.searchParams.has( 'editorVersion' ) ).to.equal( true );
@@ -136,11 +143,11 @@ describe( 'EmojiRepository', () => {
 
 			expect( fetchStub.calledOnce ).to.equal( true );
 
-			const cdnUrl = fetchStub.firstCall.args[ 0 ];
+			const cdnUrl = new URL( fetchStub.firstCall.args[ 0 ] );
 
 			expect( cdnUrl.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 
-			const results = EmojiRepository._results[ cdnUrl.href ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			expect( results ).to.have.length( 2 );
 			expect( results[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -178,14 +185,14 @@ describe( 'EmojiRepository', () => {
 
 			expect( fetchStub.callCount ).to.equal( 2 );
 
-			const cdnUrl1 = fetchStub.getCall( 0 ).args[ 0 ];
-			const cdnUrl2 = fetchStub.getCall( 1 ).args[ 0 ];
+			const cdnUrl1 = new URL( fetchStub.getCall( 0 ).args[ 0 ] );
+			const cdnUrl2 = new URL( fetchStub.getCall( 1 ).args[ 0 ] );
 
 			expect( cdnUrl1.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json' ) );
 			expect( cdnUrl2.href ).to.satisfy( input => input.startsWith( 'https://cdn.ckeditor.com/ckeditor5/data/emoji/15/en.json' ) );
 
-			const resultsFor16 = EmojiRepository._results[ cdnUrl1.href ];
-			const resultsFor15 = EmojiRepository._results[ cdnUrl2.href ];
+			const resultsFor16 = getCachedResults( editor1.plugins.get( EmojiRepository ) );
+			const resultsFor15 = getCachedResults( editor2.plugins.get( EmojiRepository ) );
 
 			expect( resultsFor16 ).to.have.length( 2 );
 			expect( resultsFor16[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
@@ -244,7 +251,7 @@ describe( 'EmojiRepository', () => {
 
 			expect( fetchStub.calledOnce ).to.equal( true );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor1.plugins.get( EmojiRepository ) );
 
 			expect( results ).to.deep.equal( [] );
 
@@ -265,7 +272,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 			const hasGroup2 = results.some( item => item.group === 2 );
 
 			expect( hasGroup2 ).to.equal( false );
@@ -287,7 +294,7 @@ describe( 'EmojiRepository', () => {
 			} );
 
 			// `Head shaking horizontally` is mocked to be an unsupported emoji in `EmojiUtilsMock`.
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 			const headShakingHorizontallyEmoji = results.find( item => item.annotation === 'head shaking horizontally' );
 			const unamusedFaceEmoji = results.find( item => item.annotation === 'unamused face' );
 
@@ -314,7 +321,7 @@ describe( 'EmojiRepository', () => {
 				}
 			);
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );
 			const hasUnamusedEmoji = results.find( item => item.annotation === 'unamused face' );
@@ -345,7 +352,7 @@ describe( 'EmojiRepository', () => {
 				}
 			);
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			// EmojiUtilsMockVersion15 removes emoji assigned to version `16`.
 			// However, the filtering mechanism is disabled by passing `emoji.useCustomFont=true`.
@@ -370,7 +377,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			expect( results ).to.have.length( 2 );
 			expect( results[ 0 ] ).to.have.deep.property( 'skins', { default: '😐️' } );
@@ -402,7 +409,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( response ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			expect( results ).to.have.length( 1 );
 			expect( results[ 0 ] ).to.have.deep.property( 'skins', {
@@ -423,7 +430,7 @@ describe( 'EmojiRepository', () => {
 				resolve( new Response( null, { status: 500 } ) );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
 			expect( results ).to.deep.equal( [] );
 
@@ -434,14 +441,14 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should log a warning and store emoji database as empty array on network error when fetching emoji database', async () => {
+		it( 'should log a warning and do not store empty emoji array on network error when fetching emoji database', async () => {
 			const { editor, domElement } = await createTestEditor( ( resolve, reject ) => {
 				reject( new Response() );
 			} );
 
-			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+			const results = getCachedResults( editor.plugins.get( EmojiRepository ) );
 
-			expect( results ).to.deep.equal( [] );
+			expect( results ).to.be.null;
 
 			expect( consoleStub.called ).to.equal( true );
 			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
@@ -577,6 +584,40 @@ describe( 'EmojiRepository', () => {
 			domElement.remove();
 			await editor.destroy();
 		} );
+
+		it( 'should not crash when editor is destroyed before fetch completes', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.returns( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			expect( plugin.isRepositoryReady ).to.equal( null );
+
+			domElement.remove();
+			await editor.destroy();
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+			] );
+
+			expect( () => {
+				fetchResolve( new Response( response ) );
+			} ).to.not.throw();
+
+			await clock.nextAsync();
+
+			expect( plugin.isRepositoryReady ).to.equal( null );
+		} );
 	} );
 
 	describe( 'getEmojiByQuery()', () => {
@@ -617,8 +658,25 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should return empty array if emojis failed to load', () => {
-			emojiRepositoryPlugin._items = null;
+		it( 'should return empty array if emojis failed to load', async () => {
+			domElement.remove();
+			await editor.destroy();
+
+			EmojiRepository._cache.clear();
+
+			const instance = await createTestEditor( ( _, reject ) => {
+				const response = JSON.stringify( {
+					error: 'Critical error'
+				} );
+
+				reject( new Response( response, {
+					status: 400
+				} ) );
+			} );
+
+			editor = instance.editor;
+			domElement = instance.domElement;
+			emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
 
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
@@ -720,7 +778,7 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should return empty array for each emoji category if emoji database is empty', () => {
-			EmojiRepository._results[ emojiRepositoryPlugin._url ] = [];
+			EmojiRepository._cache.clear();
 
 			const result = emojiRepositoryPlugin.getEmojiCategories();
 
@@ -807,6 +865,222 @@ describe( 'EmojiRepository', () => {
 		} );
 	} );
 
+	describe( 'onReady()', () => {
+		it( 'should invoke callback synchronously with `true` when repository is already loaded', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = testUtils.sinon.spy();
+
+			plugin.onReady( spy );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, true );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback synchronously with `false` when repository already failed to load', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				resolve( new Response( null, { status: 500 } ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = testUtils.sinon.spy();
+
+			plugin.onReady( spy );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback asynchronously once the repository finishes loading successfully', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.returns( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = testUtils.sinon.spy();
+
+			expect( plugin.isRepositoryReady ).to.equal( null );
+
+			plugin.onReady( spy );
+
+			sinon.assert.notCalled( spy );
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+			] );
+
+			fetchResolve( new Response( response ) );
+
+			await plugin.isReady();
+			await clock.nextAsync();
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, true );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback asynchronously with `false` when the repository fetch fails', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.returns( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = testUtils.sinon.spy();
+
+			expect( plugin.isRepositoryReady ).to.equal( null );
+
+			plugin.onReady( spy );
+
+			sinon.assert.notCalled( spy );
+
+			fetchResolve( new Response( null, { status: 500 } ) );
+
+			await plugin.isReady();
+			await clock.nextAsync();
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should invoke callback only once even if `onReady` is called while loading is in progress', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.returns( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			const callbackSpy = testUtils.sinon.spy();
+
+			plugin.onReady( callbackSpy );
+
+			const response = JSON.stringify( [
+				{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+			] );
+
+			fetchResolve( new Response( response ) );
+
+			await plugin.isReady();
+			await clock.nextAsync();
+
+			expect( callbackSpy.callCount ).to.equal( 1 );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not invoke a previously registered callback again after repository is re-checked', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			const firstSpy = testUtils.sinon.spy();
+			const secondSpy = testUtils.sinon.spy();
+
+			plugin.onReady( firstSpy );
+			plugin.onReady( secondSpy );
+
+			expect( firstSpy.callCount ).to.equal( 1 );
+			expect( secondSpy.callCount ).to.equal( 1 );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should never invoke the callback when the editor is destroyed before loading completes', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			fetchStub.returns( new Promise( () => {} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const spy = testUtils.sinon.spy();
+
+			plugin.onReady( spy );
+			sinon.assert.notCalled( spy );
+
+			domElement.remove();
+			await editor.destroy();
+			await clock.nextAsync();
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should not invoke callback when called on an already-destroyed editor', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			domElement.remove();
+			await editor.destroy();
+
+			const spy = testUtils.sinon.spy();
+
+			plugin.onReady( spy );
+			sinon.assert.notCalled( spy );
+		} );
+	} );
+
 	describe( 'isReady()', () => {
 		it( 'should return `true` when emoji database is not empty', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
@@ -842,12 +1116,8 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should return `false` when emoji database is not stored', async () => {
-			testUtils.sinon.stub( EmojiRepository, '_results' ).get( () => ( {} ) );
-
 			const { editor, domElement } = await createTestEditor( resolve => {
-				const response = JSON.stringify( [] );
-
-				resolve( new Response( response ) );
+				resolve( new Response( JSON.stringify( [] ) ) );
 			} );
 
 			const result = await editor.plugins.get( EmojiRepository ).isReady();
@@ -856,6 +1126,65 @@ describe( 'EmojiRepository', () => {
 
 			domElement.remove();
 			await editor.destroy();
+		} );
+
+		it( 'should return `false` when the editor is destroyed while fetch is still pending', async () => {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			let fetchResolve;
+
+			fetchStub.returns( new Promise( resolve => {
+				fetchResolve = resolve;
+			} ) );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ]
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+			const isReadyPromise = plugin.isReady();
+
+			domElement.remove();
+			await editor.destroy();
+
+			let caughtError;
+
+			try {
+				await isReadyPromise;
+			} catch ( error ) {
+				caughtError = error;
+			}
+
+			fetchResolve();
+			expect( caughtError ).to.be.instanceOf( Error );
+			expect( caughtError.message ).to.equal( 'The editor was destroyed before the emoji repository finished loading.' );
+		} );
+
+		it( 'should reject immediately when called on an already-destroyed editor', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const plugin = editor.plugins.get( EmojiRepository );
+
+			domElement.remove();
+			await editor.destroy();
+
+			let caughtError;
+
+			try {
+				await plugin.isReady();
+			} catch ( error ) {
+				caughtError = error;
+			}
+
+			expect( caughtError ).to.be.instanceOf( Error );
+			expect( caughtError.message ).to.equal( 'The editor was destroyed before the emoji repository finished loading.' );
 		} );
 	} );
 
@@ -879,13 +1208,16 @@ describe( 'EmojiRepository', () => {
 			...editorConfig
 		} );
 
-		// Break the event loop to execute scheduled promise callbacks.
-		await clock.nextAsync();
+		const editor = await editorPromise;
+		const repository = editor.plugins.get( EmojiRepository );
 
 		fetchStubCallback( fetchStubResolve, fetchStubReject );
 
+		await repository.isReady();
+		await clock.nextAsync();
+
 		return {
-			editor: await editorPromise,
+			editor,
 			domElement
 		};
 	}
