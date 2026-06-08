@@ -187,8 +187,8 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
       umberto:
-        specifier: ^10.5.1
-        version: 10.5.1(chokidar@3.6.0)(esbuild@0.25.12)(postcss@8.5.15)
+        specifier: ^10.6.0
+        version: 10.6.0(chokidar@3.6.0)(esbuild@0.25.12)(postcss@8.5.15)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -11600,8 +11600,8 @@ packages:
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
 
-  umberto@10.5.1:
-    resolution: {integrity: sha512-JdGSnB3a8i3ds0Vm2esahqiyrmgmnDB8HiOv4XcF+TXjY4I4KhikbzGcUzlwCwk6uuQ9j6g+Kh5HUZdj2QbQdw==}
+  umberto@10.6.0:
+    resolution: {integrity: sha512-VdQhX+bB4AHbrfplj49+kQoTa6IC+EGTjxYVtx0YUJBX6LbctIe9pri5NNvFKFEOZbb4QniU5oJfzZod+KcgwA==}
     engines: {node: '>=24.11.0'}
 
   undici-types@7.24.6:
@@ -20768,7 +20768,7 @@ snapshots:
 
   ufo@1.6.4: {}
 
-  umberto@10.5.1(chokidar@3.6.0)(esbuild@0.25.12)(postcss@8.5.15):
+  umberto@10.6.0(chokidar@3.6.0)(esbuild@0.25.12)(postcss@8.5.15):
     dependencies:
       '@babel/core': 7.29.0
       '@babel/preset-env': 7.29.5(@babel/core@7.29.0)
