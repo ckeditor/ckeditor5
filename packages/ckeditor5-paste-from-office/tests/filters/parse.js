@@ -90,6 +90,44 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( stylesString ).to.equal( '' );
 			} );
 
+			it( 'should remove a `<style>` block located in the body', () => {
+				const html = '<body><style>p { color: red; }</style><p>Foo Bar</p></body>';
+				const { body, bodyString } = parsePasteOfficeHtml( html );
+
+				expect( body ).to.instanceof( ViewDocumentFragment );
+				expect( body.childCount ).to.equal( 1 );
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+			} );
+
+			it( 'should remove a `<style>` block nested in the body (e.g. Excel Online)', () => {
+				// Excel Online wraps a full document inside a `<div>`, which flattens the `<style>` into the body.
+				const html =
+					'<div ccp_infra_version=\'3\' data-ccp-timestamp=\'1780896911866\'>' +
+						'<html><head>' +
+							'<meta name=Generator content="Microsoft Excel 15">' +
+							'<style>td { color:black; } .xl63 { font-size:48.0pt; }</style>' +
+						'</head><body>' +
+							'<table><tr><td class="xl63">Hello</td></tr></table>' +
+						'</body></html>' +
+					'</div>';
+
+				const { body, bodyString } = parsePasteOfficeHtml( html );
+
+				expect( body ).to.instanceof( ViewDocumentFragment );
+				expect( bodyString ).to.not.contain( '<style>' );
+				expect( bodyString ).to.not.contain( 'font-size:48.0pt' );
+				expect( bodyString ).to.contain( 'Hello' );
+			} );
+
+			it( 'should not remove `<style>` blocks located in the head', () => {
+				const html = '<head><style>p { color: red; }</style></head><body><p>Foo Bar</p></body>';
+				const { bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( styles.length ).to.equal( 1 );
+				expect( stylesString ).to.equal( 'p { color: red; }' );
+			} );
+
 			it( 'should remove any content after body closing tag - plain', () => {
 				const html = '<html><head></head><body><p>Foo Bar</p></body>Ba</html>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );

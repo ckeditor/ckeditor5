@@ -22,6 +22,10 @@ import type { PasteFromOfficeNormalizer } from '../normalizer.js';
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
 
+// Matches content copied from MS Excel, including Excel Online which is not wrapped in the `xmlns:o` namespace.
+// See https://github.com/ckeditor/ckeditor5/issues/20188.
+const msExcelMatch = /<meta\s*name="?generator"?\s*content="?microsoft\s*excel\s*\d+"?\/?>/i;
+
 /**
  * Normalizer for the content pasted from Microsoft Word.
  */
@@ -55,7 +59,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 	 * @inheritDoc
 	 */
 	public isActive( htmlString: string ): boolean {
-		return msWordMatch1.test( htmlString ) || msWordMatch2.test( htmlString );
+		return msWordMatch1.test( htmlString ) || msWordMatch2.test( htmlString ) || msExcelMatch.test( htmlString );
 	}
 
 	/**

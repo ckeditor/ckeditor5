@@ -90,6 +90,20 @@ describe( 'PasteFromOffice', () => {
 				);
 			} );
 
+			it( 'should process data from Excel Online', () => {
+				checkCorrectData(
+					'<div ccp_infra_version=\'3\' data-ccp-timestamp=\'1780896911866\'>' +
+						'<html><head>' +
+							'<meta name=ProgId content=Excel.Sheet>' +
+							'<meta name=Generator content="Microsoft Excel 15">' +
+							'<style>td { color:black; }</style>' +
+						'</head><body>' +
+							'<table><tbody><tr><td>123</td></tr></tbody></table>' +
+						'</body></html>' +
+					'</div>'
+				);
+			} );
+
 			function checkCorrectData( inputString ) {
 				const data = setUpData( inputString );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );
@@ -105,6 +119,40 @@ describe( 'PasteFromOffice', () => {
 				sinon.assert.called( getDataSpy );
 			}
 		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/20188.
+		it( 'should not leak the `<style>` block as text when pasting from Excel Online', () => {
+			const data = setUpData(
+				'<div ccp_infra_version=\'3\' data-ccp-timestamp=\'1780896911866\'>' +
+					'<html><head>' +
+						'<meta name=ProgId content=Excel.Sheet>' +
+						'<meta name=Generator content="Microsoft Excel 15">' +
+						'<style>td { color:black; } .xl63 { font-size:48.0pt; }</style>' +
+					'</head><body>' +
+						'<table><tbody><tr><td class="xl63">123</td></tr></tbody></table>' +
+					'</body></html>' +
+				'</div>'
+			);
+
+			viewDocument.fire( 'clipboardInput', data );
+
+			expect( data.content ).to.be.instanceOf( ViewDocumentFragment );
+			expect( hasStyleElement( data.content ) ).to.be.false;
+		} );
+
+		function hasStyleElement( node ) {
+			for ( const child of node.getChildren() ) {
+				if ( child.is( 'element', 'style' ) ) {
+					return true;
+				}
+
+				if ( child.is( 'element' ) && hasStyleElement( child ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		describe( 'data which should not be marked with flag', () => {
 			it( 'should process data with regular html', () => {

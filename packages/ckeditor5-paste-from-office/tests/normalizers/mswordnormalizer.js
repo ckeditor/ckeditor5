@@ -21,6 +21,18 @@ describe( 'PasteFromOfficeMSWordNormalizer', () => {
 				'xmlns="http://www.w3.org/TR/REC-html40">' ) ).to.be.true;
 		} );
 
+		it( 'should return true for microsoft excel content', () => {
+			expect( normalizer.isActive( '<meta name=Generator content="Microsoft Excel 15"><table></table>' ) ).to.be.true;
+		} );
+
+		it( 'should return true for microsoft excel online content (no xmlns:o)', () => {
+			const html = '<div ccp_infra_version=\'3\' data-ccp-timestamp=\'1780896911866\'>' +
+				'<meta name=ProgId content=Excel.Sheet>' +
+				'<meta name=Generator content="Microsoft Excel 15"><table></table></div>';
+
+			expect( normalizer.isActive( html ) ).to.be.true;
+		} );
+
 		it( 'should return false for google docs content', () => {
 			expect( normalizer.isActive( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' ) ).to.be.false;
 		} );
