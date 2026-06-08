@@ -355,6 +355,52 @@ describe( 'normalizeRootsConfig()', () => {
 		} );
 	} );
 
+	describe( 'config.roots validation', () => {
+		it( 'should throw when config.roots has a custom prototype', () => {
+			config.set( 'roots', Object.assign( Object.create( {} ), { foo: { initialData: '' } } ) );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( {}, config, false );
+			}, /^editor-create-roots-not-plain-object/ );
+		} );
+
+		it( 'should throw when config.roots is a class instance', () => {
+			class CustomRoots {
+				constructor() {
+					this.foo = { initialData: '' };
+				}
+			}
+
+			config.set( 'roots', new CustomRoots() );
+
+			expectToThrowCKEditorError( () => {
+				normalizeRootsConfig( {}, config, false );
+			}, /^editor-create-roots-not-plain-object/ );
+		} );
+
+		it( 'should not throw for a plain-object config.roots', () => {
+			config.set( 'roots', { foo: { initialData: '<p>Foo</p>' } } );
+
+			normalizeRootsConfig( {}, config, false );
+
+			expect( config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+		} );
+
+		it( 'should not throw when config.roots is omitted', () => {
+			normalizeRootsConfig( {}, config, false );
+
+			expect( config.get( 'roots' ) ).to.deep.equal( {} );
+		} );
+
+		it( 'should not throw when config.roots is null', () => {
+			config.set( 'roots', null );
+
+			normalizeRootsConfig( {}, config, false );
+
+			expect( config.get( 'roots' ) ).to.deep.equal( {} );
+		} );
+	} );
+
 	describe( 'rootConfig.element normalization', () => {
 		it( 'should leave an HTMLElement as-is', () => {
 			const el = document.createElement( 'div' );

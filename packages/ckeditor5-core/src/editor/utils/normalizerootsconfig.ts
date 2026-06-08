@@ -21,7 +21,7 @@ import {
 	type Config
 } from '@ckeditor/ckeditor5-utils';
 
-import { isElement as _isElement } from 'es-toolkit/compat';
+import { isElement as _isElement, isPlainObject } from 'es-toolkit/compat';
 
 /**
  * Normalizes the editor roots configuration. It ensures that all root configurations are defined in `config.roots`
@@ -43,6 +43,33 @@ export function normalizeRootsConfig(
 ): void {
 	const mainRootConfig = config.get( 'root' );
 	const rootsConfig: Record<string, RootConfig> = config.get( 'roots' ) || Object.create( null );
+
+	if ( !isPlainObject( rootsConfig ) ) {
+		/**
+		 * The {@link module:core/editor/editorconfig~EditorConfig#roots `config.roots`} option
+		 * must be a plain object (an object literal or `Object.create( null )`). Objects with a
+		 * custom prototype (e.g. created via `Object.create( someProto )`) or class instances
+		 * are not accepted, because internal configuration processing relies on a known
+		 * prototype chain to detect nested configuration objects.
+		 *
+		 * Replace the value with a plain object before passing it to the editor:
+		 *
+		 * ```ts
+		 * // Wrong
+		 * MultiRootEditor.create( {
+		 *     roots: Object.assign( Object.create( {} ), { intro: { ... } } )
+		 * } );
+		 *
+		 * // Right
+		 * MultiRootEditor.create( {
+		 *     roots: { intro: { ... } }
+		 * } );
+		 * ```
+		 *
+		 * @error editor-create-roots-not-plain-object
+		 */
+		throw new CKEditorError( 'editor-create-roots-not-plain-object', null );
+	}
 
 	// Avoid mixing `config.root` and `config.roots.main`.
 	if ( mainRootConfig ) {
@@ -90,7 +117,7 @@ export function normalizeRootsConfig(
 		rootsConfig[ defaultRootName ] = mainRootConfig || Object.create( null );
 	}
 
-	const sourceElementIsPlainObject = isPlainObject( sourceElementsOrData );
+	const sourceElementIsPlainObject = isSourceElementsOrDataRecord( sourceElementsOrData );
 
 	// Collect legacy configuration values for `initialData`, `placeholder`, and `label` from the config.
 	const legacyInitialData = getLegacyInitialData( config, sourceElementIsPlainObject, defaultRootName );
@@ -338,9 +365,9 @@ export function normalizeMultiRootEditorConstructorParams(
 }
 
 /**
- * Type guard to check if the provided value is a plain object.
+ * Type guard to check if the provided value is a plain object containing source elements or data.
  */
-function isPlainObject(
+function isSourceElementsOrDataRecord(
 	sourceElementsOrData: HTMLElement | string | Record<string, HTMLElement> | Record<string, string>
 ): sourceElementsOrData is Record<string, HTMLElement> | Record<string, string> {
 	return (

@@ -331,6 +331,32 @@ describe( 'MultiRootEditor', () => {
 					} );
 				} ).to.throw( CKEditorError, 'editor-wrong-element' );
 			} );
+
+			it( 'should throw a developer-friendly error when config.roots has a custom prototype', () => {
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new MultiRootEditor( {
+						roots: Object.assign( Object.create( {} ), {
+							foo: { initialData: '' },
+							bar: { initialData: '' }
+						} )
+					} );
+				} ).to.throw( CKEditorError, 'editor-create-roots-not-plain-object' );
+			} );
+
+			it( 'should throw a developer-friendly error when config.roots is a class instance', () => {
+				class CustomRoots {
+					constructor() {
+						this.foo = { initialData: '' };
+						this.bar = { initialData: '' };
+					}
+				}
+
+				expect( () => {
+					// eslint-disable-next-line no-new
+					new MultiRootEditor( { roots: new CustomRoots() } );
+				} ).to.throw( CKEditorError, 'editor-create-roots-not-plain-object' );
+			} );
 		} );
 
 		describe( 'config.roots.*.element', () => {
