@@ -21,7 +21,7 @@ The main difference between using a multi-root editor and using multiple separat
 
 ## Editor example configuration
 
-Check out the {@link getting-started/setup/editor-types#multi-root-editor Editor types} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor's code below.
+Check out the {@link getting-started/setup/editor-types#multi-root-editor Editor types} guide to learn more about implementing this kind of editor. You will find implementation steps there. To learn how to configure individual roots to accept different content — for example, an inline-only title alongside a block content body — see the {@link getting-started/setup/root-types Root types} guide. You can see this example editor's code below.
 
 <details>
 <summary>View editor configuration script</summary>

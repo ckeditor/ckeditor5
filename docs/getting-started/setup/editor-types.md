@@ -207,11 +207,9 @@ The multi-root editor is an editor type that features multiple, separate editabl
 	See an {@link examples/builds/multi-root-editor example of the multi-root editor} in action.
 </snippet-footer>
 
-<info-box>
-	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
-</info-box>
+At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 
-<info-box important>
+<info-box>
 	The multi-root editor requires a more advanced configuration of the roots.
 </info-box>
 
@@ -274,3 +272,7 @@ Then, use these roots to place editor windows in the document.
 	</div>
 </div>
 ```
+
+<info-box hint>
+	All editor types support configuring what content a root can hold. This is most useful in multi-root setups, but it works with any editor type. See the {@link getting-started/setup/root-types Root types} guide for details.
+</info-box>

@@ -1179,7 +1179,7 @@ This rule ensures that changelog entry files are populated with proper data and 
 
 ### Disallow hardcoded `$root` literals: `ckeditor5-rules/no-literal-dollar-root`
 
-This rule disallows the literal `'$root'` string anywhere it could be used as a schema context. Hardcoding `'$root'` is silently wrong when {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} is customized: the runtime root no longer matches the literal, and any schema check or upcast against it operates against the wrong element name.
+This rule disallows the literal `'$root'` string anywhere it could be used as a schema context. Hardcoding `'$root'` is silently wrong when {@link module:core/editor/editorconfig~RootConfig#modelElement `config.root.modelElement`} is customized: the runtime root no longer matches the literal, and any schema check or upcast against it operates against the wrong element name. See the {@link getting-started/setup/root-types Root types} guide for an overview of the available root model element types.
 
 The rule also reports two specific patterns that have a name-agnostic replacement and provides an auto-fix for them:
 
