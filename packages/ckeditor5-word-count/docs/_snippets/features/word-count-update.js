@@ -97,4 +97,3 @@ BalloonEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-

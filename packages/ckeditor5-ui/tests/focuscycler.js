@@ -1146,4 +1146,3 @@ describe( 'FocusCycler', () => {
 		return { focusCycler, focusTracker, focusables };
 	}
 } );
-

@@ -160,4 +160,3 @@ describe( 'Link integration: clipboard paste', () => {
 		} );
 	} );
 } );
-

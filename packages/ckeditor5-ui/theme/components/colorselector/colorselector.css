@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -18,7 +18,6 @@
 			}
 		}
 
-		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button.ck-color-selector__color-picker {
 			padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
 			border-bottom-left-radius: 0;

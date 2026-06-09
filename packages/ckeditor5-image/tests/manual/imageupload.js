@@ -100,4 +100,3 @@ function createProgressButton( loader, adapterMock ) {
 		}
 	} );
 }
-

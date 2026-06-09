@@ -41,4 +41,3 @@ export class StandardEditingMode extends Plugin {
 		return [ StandardEditingModeEditing, StandardEditingModeUI ];
 	}
 }
-

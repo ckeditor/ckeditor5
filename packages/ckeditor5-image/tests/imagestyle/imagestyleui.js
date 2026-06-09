@@ -556,4 +556,3 @@ describe( 'ImageStyleUI', () => {
 		} );
 	} );
 } );
-

@@ -28,4 +28,3 @@ describe( 'scripts/release/utils/istypescriptpackage', () => {
 		expect( result ).toBe( false );
 	} );
 } );
-

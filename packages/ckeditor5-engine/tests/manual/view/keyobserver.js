@@ -23,4 +23,3 @@ view.change( writer => {
 } );
 
 view.focus();
-

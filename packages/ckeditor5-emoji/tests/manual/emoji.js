@@ -164,4 +164,3 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true, root = {}
 		}
 	};
 }
-

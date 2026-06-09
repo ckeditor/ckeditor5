@@ -334,4 +334,3 @@ export function downcastImageAttribute(
 		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};
 }
-

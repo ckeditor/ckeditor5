@@ -107,10 +107,6 @@ jobs:
           command: pnpm run lint
       - run:
           when: always
-          name: Execute Stylelint
-          command: pnpm run stylelint
-      - run:
-          when: always
           name: Check if all packages are exported in the "ckeditor5" package
           command: pnpm run check-exports
       - run:

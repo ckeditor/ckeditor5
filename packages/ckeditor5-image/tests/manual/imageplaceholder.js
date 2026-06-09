@@ -25,4 +25,3 @@ ClassicEditor.create( {
 	.catch( error => {
 		console.error( error );
 	} );
-

@@ -66,4 +66,3 @@ describe( 'CKBox', () => {
 		expect( CKBox.isPremiumPlugin ).to.be.false;
 	} );
 } );
-

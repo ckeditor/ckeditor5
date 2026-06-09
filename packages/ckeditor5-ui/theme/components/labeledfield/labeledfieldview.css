@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -94,14 +94,12 @@
 	}
 
 	/* Fields that are disabled or not focused and without a placeholder should have full-sized labels. */
-	/* stylelint-disable-next-line no-descending-specificity */
 	&.ck-disabled.ck-labeled-field-view_empty:not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder):not(.ck-error) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		[dir="ltr"] & {
 			transform: translate(var(--ck-labeled-field-label-default-position-x), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}
 
-		/* stylelint-disable-next-line no-descending-specificity */
 		[dir="rtl"] & {
 			transform: translate(calc(-1 * var(--ck-labeled-field-label-default-position-x)), var(--ck-labeled-field-label-default-position-y)) scale(1);
 		}

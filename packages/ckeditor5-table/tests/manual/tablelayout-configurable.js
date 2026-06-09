@@ -550,4 +550,3 @@ tableTypeSelect.addEventListener( 'change', async () => {
 
 	window.editor = editor;
 } );
-
