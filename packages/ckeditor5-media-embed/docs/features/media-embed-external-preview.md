@@ -167,3 +167,7 @@ In this case, the code is almost the same as with the semantic data, but you sho
 	} );
 </script>
 ```
+
+## Known issues
+
+The {@link features/media-embed-resize media embed resize feature} (`MediaEmbedResize`) is not compatible with proxy-based preview providers like Iframely or Embedly. The proxy controls the iframe height at runtime, so a user-applied width on the `<figure>` no longer matches the proxy-chosen height. Remove `MediaEmbedResize` from `plugins` (or pass it via `removePlugins`) in setups that use these providers. If you still need to control the size of these embeds, register a width-applying custom style through {@link features/media-embed-styles `config.mediaEmbed.styles`} that sets a `width` on the `<figure>`.
