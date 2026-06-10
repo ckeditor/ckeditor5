@@ -127,8 +127,8 @@ describe( 'HtmlComment integration', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<!-- c2 -->' +
 				'<!-- c1 -->' +
+				'<!-- c2 -->' +
 				'<pre>' +
 					'<code class="language-plaintext">' +
 						'<!-- c3 -->' +
@@ -136,8 +136,8 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c4 -->' +
 					'</code>' +
 				'</pre>' +
-				'<!-- c6 -->' +
-				'<!-- c5 -->'
+				'<!-- c5 -->' +
+				'<!-- c6 -->'
 			);
 		} );
 	} );
@@ -267,8 +267,8 @@ describe( 'HtmlComment integration', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<!-- c2 -->' +
 					'<!-- c1 -->' +
+					'<!-- c2 -->' +
 					'<mark class="marker-yellow">' +
 						'Yellow marker' +
 						'<!-- c3 -->' +
@@ -277,8 +277,8 @@ describe( 'HtmlComment integration', () => {
 					'<!-- c4 -->' +
 				'</p>' +
 				'<p>' +
-					'<!-- c6 -->' +
 					'<!-- c5 -->' +
+					'<!-- c6 -->' +
 					'<mark class="pen-red">' +
 						'Red pen' +
 						'<!-- c7 -->' +
@@ -379,8 +379,8 @@ describe( 'HtmlComment integration', () => {
 			expect( editor.getData() ).to.equal(
 				'<!-- c1 -->' +
 				'<figure class="image">' +
-					'<!-- c3 -->' +
 					'<!-- c2 -->' +
+					'<!-- c3 -->' +
 					'<img src="/assets/sample.png" alt="Example image">' +
 					'<figcaption>' +
 						'<!-- c4 -->' +
@@ -533,13 +533,13 @@ describe( 'HtmlComment integration', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<!-- c2 -->' +
 					'<!-- c1 -->' +
+					'<!-- c2 -->' +
 					'<a href="path/to/resource">' +
 						'Link' +
 					'</a>' +
-					'<!-- c4 -->' +
 					'<!-- c3 -->' +
+					'<!-- c4 -->' +
 				'</p>'
 			);
 		} );
@@ -655,8 +655,8 @@ describe( 'HtmlComment integration', () => {
 			// Comments inside <li> elements (c3, c4, c8, c9) and comments outside lists (c1, c6, c11) are preserved
 			// but may appear in different positions.
 			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
-				'<!-- c2 -->' +
 				'<!-- c1 -->' +
+				'<!-- c2 -->' +
 				'<ol>' +
 					'<li>' +
 						'<!-- c3 -->' +
@@ -664,9 +664,9 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c4 -->' +
 					'</li>' +
 				'</ol>' +
-				'<!-- c7 -->' +
-				'<!-- c6 -->' +
 				'<!-- c5 -->' +
+				'<!-- c6 -->' +
+				'<!-- c7 -->' +
 				'<ul>' +
 					'<li>' +
 						'<!-- c8 -->' +
@@ -674,8 +674,8 @@ describe( 'HtmlComment integration', () => {
 						'<!-- c9 -->' +
 					'</li>' +
 				'</ul>' +
-				'<!-- c11 -->' +
-				'<!-- c10 -->'
+				'<!-- c10 -->' +
+				'<!-- c11 -->'
 			);
 		} );
 
@@ -705,7 +705,7 @@ describe( 'HtmlComment integration', () => {
 			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
-						'<p><!-- c2 --><!-- c1 -->&nbsp;</p>' +
+						'<p><!-- c1 --><!-- c2 -->&nbsp;</p>' +
 						'<ul>' +
 							'<li>' +
 								'<!-- c3 -->' +
@@ -713,7 +713,7 @@ describe( 'HtmlComment integration', () => {
 								'<!-- c4 -->' +
 							'</li>' +
 						'</ul>' +
-						'<p><!-- c7 --><!-- c6 -->&nbsp;</p>' +
+						'<p><!-- c6 --><!-- c7 -->&nbsp;</p>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -865,8 +865,8 @@ describe( 'HtmlComment integration', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<!-- c2 -->' +
 				'<!-- c1 -->' +
+				'<!-- c2 -->' +
 				'<figure class="media">' +
 					'<!-- c3 -->' +
 					'<div data-oembed-url="https://example.com/1234">' +
@@ -891,16 +891,16 @@ describe( 'HtmlComment integration', () => {
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<!-- c2 -->' +
 				'<!-- c1 -->' +
+				'<!-- c2 -->' +
 				'<figure class="media">' +
 					'<!-- c3 -->' +
 					'<div data-oembed-url="https://example.com/1234">' +
 						'example provider, id=1234' +
 					'</div>' +
 				'</figure>' +
-				'<!-- c5 -->' +
-				'<!-- c4 -->'
+				'<!-- c4 -->' +
+				'<!-- c5 -->'
 			);
 		} );
 	} );
@@ -990,8 +990,8 @@ describe( 'HtmlComment integration', () => {
 				'<p>' +
 					'<!-- comment 1 -->' +
 					'Foo' +
-					'<!-- comment 4 -->' +
 					'<!-- comment 2 -->' +
+					'<!-- comment 4 -->' +
 				'</p>'
 			);
 		} );
@@ -1325,16 +1325,16 @@ describe( 'HtmlComment integration', () => {
 							'</tr>' +
 						'</tfoot>' +
 					'</table>' +
-					'<!-- c17 -->' +
-					'<!-- c16 -->' +
-					'<!-- c13 -->' +
-					'<!-- c12 -->' +
-					'<!-- c11 -->' +
-					'<!-- c8 -->' +
-					'<!-- c7 -->' +
-					'<!-- c6 -->' +
-					'<!-- c3 -->' +
 					'<!-- c2 -->' +
+					'<!-- c3 -->' +
+					'<!-- c6 -->' +
+					'<!-- c7 -->' +
+					'<!-- c8 -->' +
+					'<!-- c11 -->' +
+					'<!-- c12 -->' +
+					'<!-- c13 -->' +
+					'<!-- c16 -->' +
+					'<!-- c17 -->' +
 				'</figure>' +
 				'<!-- c18 -->'
 			);

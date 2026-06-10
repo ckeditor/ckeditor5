@@ -375,8 +375,8 @@ describe( 'HtmlComment', () => {
 			expect( editor.getData( { trim: false } ) ).to.equal(
 				// The order is not perfect.
 				'<p>&nbsp;</p>' +
-				'<!-- comment 3 -->' +
 				'<!-- comment 1 -->' +
+				'<!-- comment 3 -->' +
 				'<p>Bar<!-- comment 4 --></p>' +
 				'<!-- comment 5 -->'
 			);
@@ -406,8 +406,8 @@ describe( 'HtmlComment', () => {
 				'<!-- comment 1 -->' +
 				'<p>F<!-- comment 2 -->oo</p>' +
 				'<p>&nbsp;</p>' +
-				'<!-- comment 5 -->' +
-				'<!-- comment 3 -->'
+				'<!-- comment 3 -->' +
+				'<!-- comment 5 -->'
 			);
 
 			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
@@ -462,7 +462,7 @@ describe( 'HtmlComment', () => {
 			htmlCommentPlugin.createHtmlComment( position, 'foo' );
 			htmlCommentPlugin.createHtmlComment( position, 'bar' );
 
-			expect( editor.getData() ).to.equal( '<p>F<!--bar--><!--foo-->oo</p>' );
+			expect( editor.getData() ).to.equal( '<p>F<!--foo--><!--bar-->oo</p>' );
 		} );
 
 		it( 'should allow creating an HTML comment before the first element', () => {
