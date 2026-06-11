@@ -9,15 +9,13 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe( 'inlineAutoformatEditing', () => {
 	let editor, model, doc, plugin, formatSpy;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
-		formatSpy = testUtils.sinon.spy().named( 'formatCallback' );
+		formatSpy = vi.fn().mockName( 'formatCallback' );
 
 		return VirtualTestEditor
 			.create( {
@@ -35,6 +33,7 @@ describe( 'inlineAutoformatEditing', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'regExp', () => {
@@ -46,7 +45,7 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( formatSpy );
+			expect( formatSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should call the formatCallback when the pattern is matched', () => {
@@ -57,7 +56,7 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.calledOnce( formatSpy );
+			expect( formatSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should not call the formatCallback if the selection is not collapsed', () => {
@@ -68,13 +67,13 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( formatSpy );
+			expect( formatSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
 	describe( 'callback', () => {
 		it( 'should stop when there are no format ranges returned from testCallback', () => {
-			const testStub = testUtils.sinon.stub().returns( {
+			const testStub = vi.fn().mockReturnValue( {
 				format: [ [] ],
 				remove: []
 			} );
@@ -86,11 +85,11 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( formatSpy );
+			expect( formatSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should stop when there are no remove ranges returned from testCallback', () => {
-			const testStub = testUtils.sinon.stub().returns( {
+			const testStub = vi.fn().mockReturnValue( {
 				format: [],
 				remove: [ [] ]
 			} );
@@ -102,11 +101,11 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( formatSpy );
+			expect( formatSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should stop early when there is no text', () => {
-			const testStub = testUtils.sinon.stub().returns( {
+			const testStub = vi.fn().mockReturnValue( {
 				format: [],
 				remove: [ [] ]
 			} );
@@ -118,7 +117,7 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( formatSpy );
+			expect( formatSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not run the formatCallback when the pattern is matched but the plugin is disabled', () => {
@@ -131,7 +130,7 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( formatSpy );
+			expect( formatSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not autoformat if callback returned false', () => {
@@ -152,7 +151,7 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>Foobar []</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foobar []</paragraph>' );
 		} );
 	} );
 
@@ -164,8 +163,8 @@ describe( 'inlineAutoformatEditing', () => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 
-		sinon.assert.notCalled( formatSpy );
-		expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+		expect( formatSpy ).not.toHaveBeenCalled();
+		expect( _getModelData( model ) ).toBe( '<paragraph>*foobar*[]</paragraph>' );
 	} );
 
 	it( 'should ignore undo batches', () => {
@@ -176,7 +175,7 @@ describe( 'inlineAutoformatEditing', () => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 
-		sinon.assert.notCalled( formatSpy );
-		expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+		expect( formatSpy ).not.toHaveBeenCalled();
+		expect( _getModelData( model ) ).toBe( '<paragraph>*foobar*[]</paragraph>' );
 	} );
 } );
