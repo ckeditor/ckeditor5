@@ -108,6 +108,7 @@ export class DecoupledEditor extends DecoupledEditorBase {
 			]
 		},
 		list: {
+			enableSkipLevelLists: true,
 			properties: {
 				styles: true,
 				startIndex: true,

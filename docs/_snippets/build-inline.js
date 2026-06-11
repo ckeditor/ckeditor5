@@ -78,6 +78,9 @@ export class InlineEditor extends InlineEditorBase {
 				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	};
 }

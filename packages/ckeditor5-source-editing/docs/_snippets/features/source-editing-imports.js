@@ -80,6 +80,9 @@ export class SourceEditingEditor extends ClassicEditor {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()
 			}
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	};
 }

@@ -78,6 +78,9 @@ export class MultiRootEditor extends MultiRootEditorBase {
 				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	};
 }

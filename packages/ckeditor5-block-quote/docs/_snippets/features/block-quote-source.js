@@ -53,6 +53,9 @@ export class BlockQuoteEditor extends ClassicEditor {
 		},
 		image: {
 			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	};
 }

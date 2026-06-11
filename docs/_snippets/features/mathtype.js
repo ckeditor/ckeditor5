@@ -68,6 +68,9 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
+		list: {
+			enableSkipLevelLists: true
+		},
 		cloudServices: CS_CONFIG
 	} )
 
