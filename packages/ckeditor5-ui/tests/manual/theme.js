@@ -686,8 +686,10 @@ function input( {
 }
 
 function setManualTestDirection( direction ) {
-	document.querySelector( '.manual-test-container' ).classList.add( 'ck' );
-	document.querySelector( '.manual-test-container' ).setAttribute( 'dir', direction );
+	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
+
+	wrapper.classList.add( 'ck' );
+	wrapper.setAttribute( 'dir', direction );
 }
 
 document.querySelector( '#direcion-selector' ).addEventListener( 'change', evt => {

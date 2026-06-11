@@ -49,7 +49,9 @@ ClassicEditor
 		const selectionStatusBanner = document.createElement( 'div' );
 		selectionStatusBanner.classList.add( 'status-banner' );
 		selectionStatusBanner.innerHTML = 'Selection&inline filler rendering is ';
-		document.body.appendChild( selectionStatusBanner );
+
+		const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
+		wrapper.appendChild( selectionStatusBanner );
 
 		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'highlight',

@@ -206,9 +206,9 @@ export class Autosave extends Plugin {
 		// `editor.getData()` will be called before plugins are destroyed.
 		this.listenTo<EditorDestroyEvent>( editor, 'destroy', () => this._flush(), { priority: 'highest' } );
 
-		// It's not possible to easy test it because karma uses `beforeunload` event
-		// to warn before full page reload and this event cannot be dispatched manually.
-		/* istanbul ignore next -- @preserve */
+		// This is not easily testable because the `beforeunload` event cannot be dispatched manually
+		// in a way that exercises the native full-page reload warning.
+		/* v8 ignore next -- @preserve */
 		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
 			if ( this._pendingActions.hasAny ) {
 				domEvt.returnValue = this._pendingActions.first!.message;

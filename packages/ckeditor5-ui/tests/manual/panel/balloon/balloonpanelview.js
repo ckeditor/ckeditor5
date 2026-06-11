@@ -33,7 +33,10 @@ for ( const i in defaultPositions ) {
 	const balloon = new BalloonPanelView();
 	balloon.render();
 	balloon.element.textContent = i;
-	document.body.appendChild( balloon.element );
+
+	const wrapper = document.querySelector( '.manual-test-container' ) || document.body;
+
+	wrapper.appendChild( balloon.element );
 
 	// Without it the position could be wrong because the element has just been rendered in DOM.
 	setTimeout( () => {
