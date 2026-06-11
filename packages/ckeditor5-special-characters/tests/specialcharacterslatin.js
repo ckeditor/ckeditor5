@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { SpecialCharacters } from '../src/specialcharacters.js';
 import { SpecialCharactersLatin } from '../src/specialcharacterslatin.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SpecialCharactersLatin', () => {
-	testUtils.createSinonSandbox();
-
 	let editor, editorElement, addItemsSpy, addItemsFirstCallArgs;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 
-		addItemsSpy = sinon.spy( SpecialCharacters.prototype, 'addItems' );
+		addItemsSpy = vi.spyOn( SpecialCharacters.prototype, 'addItems' );
 
 		document.body.appendChild( editorElement );
 		return ClassicTestEditor
@@ -25,46 +23,46 @@ describe( 'SpecialCharactersLatin', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				addItemsFirstCallArgs = addItemsSpy.args[ 0 ];
+				addItemsFirstCallArgs = addItemsSpy.mock.calls[ 0 ];
 			} );
 	} );
 
 	afterEach( () => {
-		addItemsSpy.restore();
+		vi.restoreAllMocks();
 
 		editorElement.remove();
 		return editor.destroy();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SpecialCharactersLatin.isOfficialPlugin ).to.be.true;
+		expect( SpecialCharactersLatin.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SpecialCharactersLatin.isPremiumPlugin ).to.be.false;
+		expect( SpecialCharactersLatin.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'adds new items', () => {
-		expect( addItemsSpy.callCount ).to.equal( 1 );
+		expect( addItemsSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Latin' );
+		expect( addItemsFirstCallArgs[ 0 ] ).toBe( 'Latin' );
 	} );
 
 	it( 'defines a label displayed in the toolbar', () => {
-		expect( addItemsFirstCallArgs[ 2 ] ).to.deep.equal( {
+		expect( addItemsFirstCallArgs[ 2 ] ).toEqual( {
 			label: 'Latin'
 		} );
 	} );
 
 	it( 'adds proper characters', () => {
-		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
+		expect( addItemsFirstCallArgs[ 1 ] ).toContainEqual( {
 			character: 'Ō',
 			title: 'Latin capital letter o with macron'
 		} );
 
-		expect( addItemsFirstCallArgs[ 1 ] ).to.deep.include( {
+		expect( addItemsFirstCallArgs[ 1 ] ).toContainEqual( {
 			character: 'Ō',
 			title: 'Latin capital letter o with macron'
 		} );

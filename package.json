@@ -51,6 +51,7 @@
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
+    "@vitest/browser-playwright": "^4.1.8",
     "@vitest/coverage-v8": "^4.1.8",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
