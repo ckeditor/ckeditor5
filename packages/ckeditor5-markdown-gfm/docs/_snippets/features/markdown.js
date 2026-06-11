@@ -64,6 +64,9 @@ ClassicEditor
 			]
 		},
 		cloudServices: CS_CONFIG,
+		list: {
+			enableSkipLevelLists: true
+		},
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

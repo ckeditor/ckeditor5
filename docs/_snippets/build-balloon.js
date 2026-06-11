@@ -78,6 +78,9 @@ export class BalloonEditor extends BalloonEditorBase {
 				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		list: {
+			enableSkipLevelLists: true
 		}
 	};
 }

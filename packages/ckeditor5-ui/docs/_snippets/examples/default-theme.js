@@ -205,6 +205,9 @@ ClassicEditor
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
+		list: {
+			enableSkipLevelLists: true
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {

@@ -63,6 +63,9 @@ export class TableEditor extends ClassicEditorBase {
 				top: getViewportTopOffsetConfig()
 			}
 		},
-		indentBlock: { offset: 30, unit: 'px' }
+		indentBlock: { offset: 30, unit: 'px' },
+		list: {
+			enableSkipLevelLists: true
+		}
 	};
 }
