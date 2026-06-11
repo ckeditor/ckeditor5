@@ -109,10 +109,17 @@
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
   "devDependencies": {
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.8",
     "@wiris/mathtype-ckeditor5": "^8.13.1"
   },
   "scripts": {
-    "build": "node ../../scripts/nim/build-ckeditor5.mjs"
+    "build": "node ../../scripts/nim/build-ckeditor5.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "test:debug": "vitest",
+    "coverage": "pnpm run test:headless --coverage"
   },
   "files": [
     "dist",

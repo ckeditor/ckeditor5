@@ -16,6 +16,7 @@ import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { NON_FULL_COVERAGE_PACKAGES } from './constants.mjs';
 import { parseArgs } from 'node:util';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
@@ -32,10 +33,6 @@ const FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER = '.out/combined_features_batc
 const FEATURE_BATCH_SIZES = [
 	20,
 	15
-];
-
-const NON_FULL_COVERAGE_PACKAGES = [
-	'ckeditor5-minimap'
 ];
 
 const FRAMEWORK_PACKAGES = [
