@@ -3,20 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, expect, it } from 'vitest';
+
 import { Alignment } from '../src/alignment.js';
 import { AlignmentEditing } from '../src/alignmentediting.js';
 import { AlignmentUI } from '../src/alignmentui.js';
 
 describe( 'Alignment', () => {
 	it( 'requires AlignmentEditing and AlignmentUI', () => {
-		expect( Alignment.requires ).to.deep.equal( [ AlignmentEditing, AlignmentUI ] );
+		expect( Alignment.requires ).toEqual( [ AlignmentEditing, AlignmentUI ] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Alignment.isOfficialPlugin ).to.be.true;
+		expect( Alignment.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Alignment.isPremiumPlugin ).to.be.false;
+		expect( Alignment.isPremiumPlugin ).toBe( false );
 	} );
 } );
