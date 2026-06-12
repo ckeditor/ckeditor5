@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
@@ -36,30 +37,30 @@ describe( 'CKFinder', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( CKFinder ) ).to.instanceOf( CKFinder );
+		expect( editor.plugins.get( CKFinder ) ).toBeInstanceOf( CKFinder );
 	} );
 
 	it( 'should load CKFinderUI plugin', () => {
-		expect( editor.plugins.get( CKFinderUI ) ).to.instanceOf( CKFinderUI );
+		expect( editor.plugins.get( CKFinderUI ) ).toBeInstanceOf( CKFinderUI );
 	} );
 
 	it( 'should load CKFinderEditing plugin', () => {
-		expect( editor.plugins.get( CKFinderEditing ) ).to.instanceOf( CKFinderEditing );
+		expect( editor.plugins.get( CKFinderEditing ) ).toBeInstanceOf( CKFinderEditing );
 	} );
 
 	it( 'should require CKFinderUploadAdapter', () => {
-		expect( CKFinder.requires ).to.contain( CKFinderUploadAdapter );
+		expect( CKFinder.requires ).toContain( CKFinderUploadAdapter );
 	} );
 
 	it( 'has proper name', () => {
-		expect( CKFinder.pluginName ).to.equal( 'CKFinder' );
+		expect( CKFinder.pluginName ).toBe( 'CKFinder' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKFinder.isOfficialPlugin ).to.be.true;
+		expect( CKFinder.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKFinder.isPremiumPlugin ).to.be.false;
+		expect( CKFinder.isPremiumPlugin ).toBe( false );
 	} );
 } );

@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -18,8 +19,6 @@ import { CKFinderUI } from '../src/ckfinderui.js';
 
 describe( 'CKFinderUI', () => {
 	let editorElement, editor, button;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -37,6 +36,8 @@ describe( 'CKFinderUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -160,7 +161,7 @@ describe( 'CKFinderUI', () => {
 			const formView = dropdown.panelView.children.get( 0 );
 			const buttonView = formView.children.get( 0 );
 
-			sinon.stub( editor, 'execute' );
+			vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			buttonView.fire( 'execute' );
 
@@ -192,11 +193,11 @@ describe( 'CKFinderUI', () => {
 				modal: () => {}
 			};
 
-			const executeStub = testUtils.sinon.spy( editor, 'execute' );
+			const executeStub = vi.spyOn( editor, 'execute' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeStub );
+			expect( executeStub ).toHaveBeenCalledOnce();
 		} );
 	}
 
