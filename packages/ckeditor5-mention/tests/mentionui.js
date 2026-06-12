@@ -166,6 +166,15 @@ describe( 'MentionUI', () => {
 			width: 200
 		};
 
+		const viewportRect = {
+			bottom: 1000,
+			height: 1000,
+			left: 0,
+			right: 1000,
+			top: 0,
+			width: 1000
+		};
+
 		beforeEach( () => {
 			return createClassicTestEditor( staticConfig ).then( () => {
 				pinSpy = vi.spyOn( panelView, 'pin' );
@@ -217,7 +226,7 @@ describe( 'MentionUI', () => {
 					const caretNorthEast = positions[ 2 ];
 					const caretNorthWest = positions[ 3 ];
 
-					expect( caretSouthEast( caretRect, balloonRect ) ).toEqual( {
+					expect( caretSouthEast( caretRect, balloonRect, viewportRect ) ).toEqual( {
 						left: 501,
 						name: 'caret_se',
 						top: 31,
@@ -226,7 +235,7 @@ describe( 'MentionUI', () => {
 						}
 					} );
 
-					expect( caretSouthWest( caretRect, balloonRect ) ).toEqual( {
+					expect( caretSouthWest( caretRect, balloonRect, viewportRect ) ).toEqual( {
 						left: 301,
 						name: 'caret_sw',
 						top: 31,
@@ -235,7 +244,7 @@ describe( 'MentionUI', () => {
 						}
 					} );
 
-					expect( caretNorthEast( caretRect, balloonRect ) ).toEqual( {
+					expect( caretNorthEast( caretRect, balloonRect, viewportRect ) ).toEqual( {
 						left: 501,
 						name: 'caret_ne',
 						top: -143,
@@ -244,7 +253,7 @@ describe( 'MentionUI', () => {
 						}
 					} );
 
-					expect( caretNorthWest( caretRect, balloonRect ) ).toEqual( {
+					expect( caretNorthWest( caretRect, balloonRect, viewportRect ) ).toEqual( {
 						left: 301,
 						name: 'caret_nw',
 						top: -143,
@@ -252,6 +261,46 @@ describe( 'MentionUI', () => {
 							withArrow: false
 						}
 					} );
+				} );
+		} );
+
+		it( 'should keep the panel inside the viewport horizontally on narrow screens', () => {
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
+			stubSelectionRects( [ caretRect ] );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					const { positions } = pinSpy.mock.calls[ 0 ][ 0 ];
+
+					const caretSouthEast = positions[ 0 ];
+					const caretSouthWest = positions[ 1 ];
+
+					const narrowViewportRect = {
+						bottom: 800,
+						height: 800,
+						left: 0,
+						right: 390,
+						top: 0,
+						width: 390
+					};
+
+					// The caret is close to the right edge of the screen.
+					const caretNearRightEdge = { ...caretRect, left: 350, right: 351 };
+
+					// The panel would stick out beyond the right edge of the viewport (351 + 200 > 390),
+					// so it is moved left to stay fully visible.
+					expect( caretSouthEast( caretNearRightEdge, balloonRect, narrowViewportRect ).left ).toBe( 190 );
+
+					// The caret is close to the left edge of the screen.
+					const caretNearLeftEdge = { ...caretRect, left: 9, right: 10 };
+
+					// The panel would stick out beyond the left edge of the viewport (10 - 200 < 0),
+					// so it is moved right to stay fully visible.
+					expect( caretSouthWest( caretNearLeftEdge, balloonRect, narrowViewportRect ).left ).toBe( 0 );
 				} );
 		} );
 
