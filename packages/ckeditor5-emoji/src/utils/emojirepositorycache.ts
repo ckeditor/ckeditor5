@@ -25,6 +25,7 @@ export class EmojiRepositoryCache {
 	 * At most one HTTP request is issued per unique `[url, ...cacheKeys]` combination.
 	 * Returns `[]` on network or HTTP failure.
 	 *
+	 * @param params Fetch parameters.
 	 * @param params.url URL of the emoji repository JSON file.
 	 * @param params.cacheKeys Extra segments that differentiate results for the same URL.
 	 *   The URL itself is always the first segment of the composite key.

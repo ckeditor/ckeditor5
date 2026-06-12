@@ -444,7 +444,8 @@ export class MultiRootEditor extends Editor {
 		if ( !this.model.schema.isLimit( modelElement ) ) {
 			/**
 			 * The model root element must be a {@link module:engine/model/schema~ModelSchemaItemDefinition#isLimit limit element}.
-			 * The element name specified in {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot:ROOT_CONFIG addRoot()}
+			 * The element name specified in
+			 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot()`}
 			 * options must be registered in the schema
 			 * with `isLimit` set to `true`.
 			 *
@@ -461,9 +462,10 @@ export class MultiRootEditor extends Editor {
 		if ( isElement( options.element ) ) {
 			/**
 			 * Passing an existing DOM element as the `element` option of
-			 * {@link ~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot()`} is not supported and will be ignored. The
+			 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot:ROOT_CONFIG `addRoot()`}
+			 * is not supported and will be ignored. The
 			 * `addRoot()` method only registers the model root; the DOM editable is created later by
-			 * {@link ~MultiRootEditor#createEditable `createEditable()`}.
+			 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#createEditable `createEditable()`}.
 			 *
 			 * Pass a tag name string (e.g. `'h1'`) or a
 			 * {@link module:engine/view/elementdefinition~ViewElementDefinition view element definition}
@@ -1415,7 +1417,7 @@ export interface AddRootRootConfig extends RootConfig {
 	 * {@link module:core/editor/editorconfig~ViewRootElementDefinition} object.
 	 *
 	 * Passing an existing DOM element is not supported - `addRoot()` only registers the model root;
-	 * the DOM editable is created later by {@link ~MultiRootEditor#createEditable `createEditable()`}.
+	 * the DOM editable is created later by {@link ~MultiRootEditor#createEditable:OPTIONS `createEditable()`}.
 	 */
 	element?: string | ViewRootElementDefinition;
 
