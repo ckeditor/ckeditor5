@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -22,7 +24,7 @@ describe( 'UpdateBookmarkCommand', () => {
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
-		stub = sinon.stub( console, 'warn' );
+		stub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 		editor = await ClassicEditor.create( domElement, {
 			plugins: [
@@ -43,7 +45,7 @@ describe( 'UpdateBookmarkCommand', () => {
 	} );
 
 	afterEach( () => {
-		stub.restore();
+		vi.restoreAllMocks();
 		domElement.remove();
 		return editor.destroy();
 	} );
@@ -53,7 +55,7 @@ describe( 'UpdateBookmarkCommand', () => {
 			it( 'when only bookmark element is selected', () => {
 				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
-				expect( command.isEnabled ).to.equal( true );
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -61,25 +63,25 @@ describe( 'UpdateBookmarkCommand', () => {
 			it( 'when selection is collapsed inside paragraph text', () => {
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'when an image is selected', () => {
 				_setModelData( model, '<paragraph>foo [<imageInline src="#"></imageInline>] bar</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'when a link is selected', () => {
 				_setModelData( model, '<paragraph>foo [<$text linkHref="foo">link</$text>] bar</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'when selection contains a bookmark and a text', () => {
 				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>bar]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -91,7 +93,7 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
 
 			it( 'if bookmarkId is an empty string', () => {
@@ -99,7 +101,7 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( '' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
 
 			it( 'if bookmarkId is not a string', () => {
@@ -107,7 +109,16 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( true );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			} );
+
+			it( 'if there is no selected bookmark', () => {
+				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command.isEnabled = true;
+				command.execute( { bookmarkId: 'bar' } );
+
+				expect( _getModelData( model ) ).toEqual( '<paragraph>fo[]o</paragraph>' );
 			} );
 		} );
 
@@ -119,7 +130,7 @@ describe( 'UpdateBookmarkCommand', () => {
 			it( 'should update the bookmarkId of bookmark element with the proper id attribute', () => {
 				command.execute( { bookmarkId: 'bar' } );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
 				);
 			} );
@@ -131,7 +142,10 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: '   ' } );
 
-				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-name' );
+				expect( stub ).toHaveBeenCalledWith(
+					expect.stringContaining( 'update-bookmark-command-executed-with-invalid-name' ),
+					expect.anything()
+				);
 			} );
 
 			it( 'should warn if the command is executed with invalid id (spaces with bookmark name)', () => {
@@ -139,7 +153,10 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: 'bookmark name' } );
 
-				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-name' );
+				expect( stub ).toHaveBeenCalledWith(
+					expect.stringContaining( 'update-bookmark-command-executed-with-invalid-name' ),
+					expect.anything()
+				);
 			} );
 
 			it( 'should warn if the command is executed with invalid id (empty name)', () => {
@@ -147,7 +164,10 @@ describe( 'UpdateBookmarkCommand', () => {
 
 				command.execute( { bookmarkId: '' } );
 
-				sinon.assert.calledWithMatch( stub, 'update-bookmark-command-executed-with-invalid-name' );
+				expect( stub ).toHaveBeenCalledWith(
+					expect.stringContaining( 'update-bookmark-command-executed-with-invalid-name' ),
+					expect.anything()
+				);
 			} );
 		} );
 	} );
