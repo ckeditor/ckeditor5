@@ -3,17 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { HorizontalLineEditing } from '../src/horizontallineediting.js';
 import { HorizontalLineCommand } from '../src/horizontallinecommand.js';
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { isWidget } from '@ckeditor/ckeditor5-widget';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'HorizontalLineEditing', () => {
 	let editor, model, view, viewDocument;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -29,28 +31,28 @@ describe( 'HorizontalLineEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( HorizontalLineEditing.pluginName ).to.equal( 'HorizontalLineEditing' );
+		expect( HorizontalLineEditing.pluginName ).toEqual( 'HorizontalLineEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( HorizontalLineEditing.isOfficialPlugin ).to.be.true;
+		expect( HorizontalLineEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( HorizontalLineEditing.isPremiumPlugin ).to.be.false;
+		expect( HorizontalLineEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HorizontalLineEditing ) ).to.be.instanceOf( HorizontalLineEditing );
+		expect( editor.plugins.get( HorizontalLineEditing ) ).toBeInstanceOf( HorizontalLineEditing );
 	} );
 
 	it( 'should set proper schema lines', () => {
-		expect( model.schema.checkChild( [ '$root' ], 'horizontalLine' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'horizontalLine' ) ).toBe( true );
 
-		expect( model.schema.isObject( 'horizontalLine' ) ).to.be.true;
+		expect( model.schema.isObject( 'horizontalLine' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root', 'horizontalLine' ], '$text' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalLine' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'horizontalLine' ], '$text' ) ).toBe( false );
+		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalLine' ) ).toBe( false );
 	} );
 
 	it( 'inherits attributes from $blockObject', () => {
@@ -58,11 +60,11 @@ describe( 'HorizontalLineEditing', () => {
 			allowAttributes: 'foo'
 		} );
 
-		expect( model.schema.checkAttribute( 'horizontalLine', 'foo' ) ).to.be.true;
+		expect( model.schema.checkAttribute( 'horizontalLine', 'foo' ) ).toBe( true );
 	} );
 
 	it( 'should register horizontalLine command', () => {
-		expect( editor.commands.get( 'horizontalLine' ) ).to.be.instanceOf( HorizontalLineCommand );
+		expect( editor.commands.get( 'horizontalLine' ) ).toBeInstanceOf( HorizontalLineCommand );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -70,7 +72,7 @@ describe( 'HorizontalLineEditing', () => {
 			it( 'should convert', () => {
 				_setModelData( model, '<horizontalLine></horizontalLine>' );
 
-				expect( editor.getData() ).to.equal( '<hr>' );
+				expect( editor.getData() ).toEqual( '<hr>' );
 			} );
 		} );
 
@@ -79,7 +81,7 @@ describe( 'HorizontalLineEditing', () => {
 				editor.setData( '<hr>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<horizontalLine></horizontalLine>' );
+					.toEqual( '<horizontalLine></horizontalLine>' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
@@ -95,7 +97,7 @@ describe( 'HorizontalLineEditing', () => {
 				editor.setData( '<div><hr></div>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<div></div>' );
+					.toEqual( '<div></div>' );
 			} );
 		} );
 	} );
@@ -105,7 +107,7 @@ describe( 'HorizontalLineEditing', () => {
 			it( 'should convert', () => {
 				_setModelData( model, '<horizontalLine></horizontalLine>' );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toEqual(
 					'<div class="ck-horizontal-line ck-widget" contenteditable="false"><hr></hr></div>'
 				);
 			} );
@@ -114,8 +116,8 @@ describe( 'HorizontalLineEditing', () => {
 				_setModelData( model, '<horizontalLine></horizontalLine>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.name ).to.equal( 'div' );
-				expect( isHorizontalLineWidget( widget ) ).to.be.true;
+				expect( widget.name ).toEqual( 'div' );
+				expect( isHorizontalLineWidget( widget ) ).toBe( true );
 			} );
 		} );
 	} );

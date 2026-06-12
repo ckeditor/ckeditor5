@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HorizontalLineEditing } from '../src/horizontallineediting.js';
 import { HorizontalLineUI } from '../src/horizontallineui.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { IconHorizontalLine } from '@ckeditor/ckeditor5-icons';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -15,7 +15,9 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 describe( 'HorizontalLineUI', () => {
 	let editor, editorElement, button;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -77,14 +79,15 @@ describe( 'HorizontalLineUI', () => {
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
-			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+			const executeSpy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' ).mockImplementation( () => {} );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
-			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.callOrder( executeSpy, focusSpy );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( featureName );
+			expect( focusSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( `should bind #isEnabled to ${ featureName } command`, () => {
