@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { BlockQuoteEditing } from '../src/blockquoteediting.js';
 import { BlockQuoteCommand } from '../src/blockquotecommand.js';
 
@@ -48,21 +50,21 @@ describe( 'BlockQuoteCommand', () => {
 	} );
 
 	it( 'is a command', () => {
-		expect( BlockQuoteCommand.prototype ).to.be.instanceOf( Command );
-		expect( command ).to.be.instanceOf( Command );
+		expect( BlockQuoteCommand.prototype ).toBeInstanceOf( Command );
+		expect( command ).toBeInstanceOf( Command );
 	} );
 
 	describe( 'value', () => {
 		it( 'is false when selection is not in a block quote', () => {
 			_setModelData( model, '<paragraph>x[]x</paragraph>' );
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is false when start of the selection is not in a block quote', () => {
 			_setModelData( model, '<paragraph>x[x</paragraph><blockQuote><paragraph>y]y</paragraph></blockQuote>' );
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is false when selection starts in a blockless space', () => {
@@ -70,19 +72,19 @@ describe( 'BlockQuoteCommand', () => {
 
 			_setModelData( model, 'x[]x' );
 
-			expect( command ).to.have.property( 'value', false );
+			expect( command ).toHaveProperty( 'value', false );
 		} );
 
 		it( 'is true when selection is in a block quote', () => {
 			_setModelData( model, '<blockQuote><paragraph>x[]x</paragraph></blockQuote>' );
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 
 		it( 'is true when selection starts in a block quote', () => {
 			_setModelData( model, '<blockQuote><paragraph>x[x</paragraph></blockQuote><paragraph>y]y</paragraph>' );
 
-			expect( command ).to.have.property( 'value', true );
+			expect( command ).toHaveProperty( 'value', true );
 		} );
 	} );
 
@@ -90,25 +92,25 @@ describe( 'BlockQuoteCommand', () => {
 		it( 'is true when selection is in a block which can be wrapped with blockQuote', () => {
 			_setModelData( model, '<paragraph>x[]x</paragraph>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection is in a block which is already in blockQuote', () => {
 			_setModelData( model, '<blockQuote><paragraph>x[]x</paragraph></blockQuote>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection starts in a block which can be wrapped with blockQuote', () => {
 			_setModelData( model, '<paragraph>x[x</paragraph><widget>y]y</widget>' );
 
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 		} );
 
 		it( 'is false when selection is in an element which cannot be wrapped with blockQuote (because it cannot be its child)', () => {
 			_setModelData( model, '<widget>x[]x</widget>' );
 
-			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).toHaveProperty( 'isEnabled', false );
 		} );
 
 		it(
@@ -123,7 +125,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				_setModelData( model, '<paragraph>x[]x</paragraph>' );
 
-				expect( command ).to.have.property( 'isEnabled', false );
+				expect( command ).toHaveProperty( 'isEnabled', false );
 			}
 		);
 
@@ -150,7 +152,7 @@ describe( 'BlockQuoteCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
 
 			_setModelData( model, '<paragraph>x[]x</paragraph>' );
-			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).toHaveProperty( 'isEnabled', true );
 
 			await editor.destroy();
 		} );
@@ -178,7 +180,7 @@ describe( 'BlockQuoteCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
 
 			_setModelData( model, '<paragraph>x[]x</paragraph>' );
-			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).toHaveProperty( 'isEnabled', false );
 
 			await editor.destroy();
 		} );
@@ -203,13 +205,13 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>abc</paragraph>' +
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>' +
 					'<paragraph>def</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>abc</p><blockquote><p>x{}x</p></blockquote><p>def</p>'
 				);
 			} );
@@ -224,7 +226,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<heading>a[bc</heading>' +
 						'<paragraph>xx</paragraph>' +
@@ -232,7 +234,7 @@ describe( 'BlockQuoteCommand', () => {
 					'</blockQuote>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><h>a{bc</h><p>xx</p><p>de}f</p></blockquote>'
 				);
 			} );
@@ -248,7 +250,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<heading>abc</heading>' +
 						'<paragraph>[x]x</paragraph>' +
@@ -258,7 +260,7 @@ describe( 'BlockQuoteCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><h>abc</h><p>{x}x</p><p>yy</p></blockquote><p>def</p>'
 				);
 			} );
@@ -272,12 +274,12 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><p>abc</p></blockquote>' +
 					'<blockquote><p>x{}x</p></blockquote>'
 				);
@@ -292,12 +294,12 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>' +
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><p>x{}x</p></blockquote>' +
 					'<blockquote><p>abc</p></blockquote>'
 				);
@@ -315,7 +317,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<heading>abc</heading>' +
 						'<paragraph>def</paragraph>' +
@@ -325,7 +327,7 @@ describe( 'BlockQuoteCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><h>abc</h><p>def</p><p>{x}x</p></blockquote><p>ghi</p>'
 				);
 			} );
@@ -341,7 +343,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
@@ -352,7 +354,7 @@ describe( 'BlockQuoteCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><p>abc</p></blockquote>[<widget>xx</widget><blockquote><p>de}f</p></blockquote>'
 				);
 			} );
@@ -371,7 +373,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
 					'[<widget>xx</widget>' +
 					'<blockQuote><paragraph>def</paragraph><paragraph>ghi</paragraph></blockQuote>' +
@@ -380,7 +382,7 @@ describe( 'BlockQuoteCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><p>abc</p></blockquote>' +
 					'[<widget>xx</widget>' +
 					'<blockquote><p>def</p><p>ghi</p></blockquote>' +
@@ -404,7 +406,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>x</paragraph>' +
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
@@ -417,7 +419,7 @@ describe( 'BlockQuoteCommand', () => {
 				);
 
 				// Selection incorrectly trimmed.
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>x</p>' +
 					'<blockquote>' +
 						'<p>abc</p>' +
@@ -451,7 +453,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
@@ -483,7 +485,7 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote' );
 
 				// Selection incorrectly trimmed.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
@@ -505,14 +507,14 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote', { forceValue: true } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph>x[x</paragraph>' +
 						'<paragraph>d]ef</paragraph>' +
 					'</blockQuote>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><p>x{x</p><p>d}ef</p></blockquote>'
 				);
 			} );
@@ -529,13 +531,13 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>abc</paragraph>' +
 					'<paragraph>x[]x</paragraph>' +
 					'<paragraph>def</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>abc</p><p>x{}x</p><p>def</p>'
 				);
 			} );
@@ -552,13 +554,13 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>a[bc</paragraph>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>de]f</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>a{bc</p><p>xx</p><p>de}f</p>'
 				);
 			} );
@@ -576,7 +578,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>a[b]c</paragraph>' +
 					'<blockQuote>' +
@@ -585,7 +587,7 @@ describe( 'BlockQuoteCommand', () => {
 					'<paragraph>yy</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>xx</p><p>a{b}c</p><blockquote><p>xx</p></blockquote><p>yy</p>'
 				);
 			} );
@@ -602,7 +604,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
@@ -610,7 +612,7 @@ describe( 'BlockQuoteCommand', () => {
 					'<paragraph>de]f</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<blockquote><p>abc</p></blockquote><p>x{x</p><p>de}f</p>'
 				);
 			} );
@@ -629,7 +631,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>xx</paragraph>' +
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
 					'<paragraph>c[]de</paragraph>' +
@@ -637,7 +639,7 @@ describe( 'BlockQuoteCommand', () => {
 					'<paragraph>xx</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>xx</p>' +
 					'<blockquote><p>abc</p></blockquote>' +
 					'<p>c{}de</p>' +
@@ -658,7 +660,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>a[bc</paragraph>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>def</paragraph><paragraph>ghi</paragraph>' +
@@ -667,7 +669,7 @@ describe( 'BlockQuoteCommand', () => {
 					'<blockQuote><paragraph>ghi</paragraph></blockQuote>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>a{bc</p>' +
 					'<p>xx</p>' +
 					'<p>def</p><p>ghi</p>' +
@@ -689,12 +691,12 @@ describe( 'BlockQuoteCommand', () => {
 				editor.execute( 'blockQuote', { forceValue: false } );
 
 				// Incorrect selection.
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>a[bc]</paragraph>' +
 					'<paragraph>xx</paragraph>'
 				);
 
-				expect( _getViewData( editor.editing.view ) ).to.equal(
+				expect( _getViewData( editor.editing.view ) ).toEqual(
 					'<p>a{bc}</p><p>xx</p>'
 				);
 			} );

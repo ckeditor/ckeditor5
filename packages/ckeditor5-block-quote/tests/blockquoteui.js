@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { BlockQuoteEditing } from '../src/blockquoteediting.js';
 import { BlockQuoteUI } from '../src/blockquoteui.js';
 
@@ -32,11 +34,11 @@ describe( 'BlockQuoteUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( BlockQuoteUI.isOfficialPlugin ).to.be.true;
+		expect( BlockQuoteUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( BlockQuoteUI.isPremiumPlugin ).to.be.false;
+		expect( BlockQuoteUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar block quote button', () => {
@@ -45,18 +47,18 @@ describe( 'BlockQuoteUI', () => {
 		} );
 
 		it( 'has the base properties', () => {
-			expect( button ).to.have.property( 'label', 'Block quote' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'isToggleable', true );
+			expect( button ).toHaveProperty( 'label', 'Block quote' );
+			expect( button ).toHaveProperty( 'icon' );
+			expect( button ).toHaveProperty( 'tooltip', true );
+			expect( button ).toHaveProperty( 'isToggleable', true );
 		} );
 
 		it( 'has isOn bound to command\'s value', () => {
 			command.value = false;
-			expect( button ).to.have.property( 'isOn', false );
+			expect( button ).toHaveProperty( 'isOn', false );
 
 			command.value = true;
-			expect( button ).to.have.property( 'isOn', true );
+			expect( button ).toHaveProperty( 'isOn', true );
 		} );
 
 		testButton();
@@ -68,9 +70,9 @@ describe( 'BlockQuoteUI', () => {
 		} );
 
 		it( 'has the base properties', () => {
-			expect( button ).to.have.property( 'label', 'Block quote' );
-			expect( button ).to.have.property( 'icon' );
-			expect( button ).to.have.property( 'isToggleable', true );
+			expect( button ).toHaveProperty( 'label', 'Block quote' );
+			expect( button ).toHaveProperty( 'icon' );
+			expect( button ).toHaveProperty( 'isToggleable', true );
 		} );
 
 		testButton();
@@ -79,19 +81,19 @@ describe( 'BlockQuoteUI', () => {
 	function testButton() {
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
 			command.isEnabled = true;
-			expect( button ).to.have.property( 'isEnabled', true );
+			expect( button ).toHaveProperty( 'isEnabled', true );
 
 			command.isEnabled = false;
-			expect( button ).to.have.property( 'isEnabled', false );
+			expect( button ).toHaveProperty( 'isEnabled', false );
 		} );
 
 		it( 'executes command when it\'s executed', () => {
-			const spy = sinon.stub( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 			button.fire( 'execute' );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toBe( 'blockQuote' );
 		} );
 	}
 } );
