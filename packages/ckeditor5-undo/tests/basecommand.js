@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { UndoRedoBaseCommand } from '../src/basecommand.js';
 
@@ -20,19 +21,19 @@ describe( 'UndoRedoBaseCommand', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create command with empty batch stack', () => {
-			expect( base.isEnabled ).to.be.false;
+			expect( base.isEnabled ).toBe( false );
 		} );
 	} );
 
 	describe( 'isEnabled', () => {
 		it( 'should be false if there are no batches in command stack', () => {
-			expect( base.isEnabled ).to.be.false;
+			expect( base.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if there are batches in command stack', () => {
 			base.addBatch( editor.model.createBatch() );
 
-			expect( base.isEnabled ).to.be.true;
+			expect( base.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -41,7 +42,7 @@ describe( 'UndoRedoBaseCommand', () => {
 			base.addBatch( editor.model.createBatch() );
 			base.clearStack();
 
-			expect( base.isEnabled ).to.be.false;
+			expect( base.isEnabled ).toBe( false );
 		} );
 	} );
 } );

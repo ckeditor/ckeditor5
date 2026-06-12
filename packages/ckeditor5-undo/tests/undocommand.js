@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Batch } from '@ckeditor/ckeditor5-engine';
 import { UndoCommand } from '../src/undocommand.js';
@@ -302,18 +303,18 @@ describe( 'UndoCommand', () => {
 			} );
 
 			it( 'should pass undoing batch to enqueueChange method', () => {
-				const enqueueChangeSpy = sinon.spy( model, 'enqueueChange' );
-				const undoSpy = sinon.spy( undo, '_undo' );
+				const enqueueChangeSpy = vi.spyOn( model, 'enqueueChange' );
+				const undoSpy = vi.spyOn( undo, '_undo' );
 
 				undo.execute();
 
-				sinon.assert.calledOnce( enqueueChangeSpy );
-				sinon.assert.calledOnce( undoSpy );
+				expect( enqueueChangeSpy ).toHaveBeenCalledTimes( 1 );
+				expect( undoSpy ).toHaveBeenCalledTimes( 1 );
 
-				const undoingBatch = enqueueChangeSpy.firstCall.args[ 0 ];
+				const undoingBatch = enqueueChangeSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( undoingBatch instanceof Batch ).to.be.true;
-				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( undoingBatch );
+				expect( undoSpy.mock.calls[ 0 ][ 1 ] ).to.equal( undoingBatch );
 			} );
 
 			it( 'should correctly undo root attribute changes', () => {
@@ -392,102 +393,102 @@ describe( 'UndoCommand', () => {
 		} );
 
 		it( 'should clear stack on DataController set()', () => {
-			const spy = sinon.stub( undo, 'clearStack' );
+			const spy = vi.spyOn( undo, 'clearStack' );
 
 			editor.setData( 'foo' );
 
-			sinon.assert.called( spy );
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should clear stack on DataController set() when the batch is set as not undoable', () => {
-			const spy = sinon.stub( undo, 'clearStack' );
+			const spy = vi.spyOn( undo, 'clearStack' );
 
 			editor.data.set( 'foo', { batchType: { isUndoable: false } } );
 
-			sinon.assert.called( spy );
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should not clear stack on DataController#set() when the batch is set as undoable', () => {
-			const spy = sinon.spy( undo, 'clearStack' );
+			const spy = vi.spyOn( undo, 'clearStack' );
 
 			editor.data.set( 'foo', { batchType: { isUndoable: true } } );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should override the batch type when the batch type is not set', () => {
-			const dataSetSpy = sinon.spy();
+			const dataSetSpy = vi.fn();
 
 			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
 
 			editor.data.set( 'foo' );
 
-			const firstCall = dataSetSpy.firstCall;
-			const data = firstCall.args[ 1 ];
+			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
 			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: false } );
 		} );
 
 		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
-			const dataSetSpy = sinon.spy();
+			const dataSetSpy = vi.fn();
 
 			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
 
 			editor.data.set( 'foo', { batchType: { isUndoable: true } } );
 
-			const firstCall = dataSetSpy.firstCall;
-			const data = firstCall.args[ 1 ];
+			const data = dataSetSpy.mock.calls[ 0 ][ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
 			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: true } );
 		} );
 
-		it( 'should fire `revert` event when executed, after all changes are applied (including post-fixer)', done => {
-			undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
-				// We undone "insert text `foo`".
-				expect( undoneBatch.operations.length ).to.equal( 1 );
+		it( 'should fire `revert` event when executed, after all changes are applied (including post-fixer)', () => {
+			return new Promise( resolve => {
+				undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
+					// We undone "insert text `foo`".
+					expect( undoneBatch.operations.length ).to.equal( 1 );
 
-				// The undoing batch contains "remove text `foo`" and "add text `x`".
-				expect( undoingBatch.operations.length ).to.equal( 2 );
+					// The undoing batch contains "remove text `foo`" and "add text `x`".
+					expect( undoingBatch.operations.length ).to.equal( 2 );
 
-				// Remove text `foo`:
-				expect( undoingBatch.operations[ 0 ].type ).to.equal( 'remove' );
-				expect( undoingBatch.operations[ 0 ].sourcePosition.root ).to.equal( root );
-				expect( undoingBatch.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 0 ] );
-				expect( undoingBatch.operations[ 0 ].howMany ).to.equal( 3 );
+					// Remove text `foo`:
+					expect( undoingBatch.operations[ 0 ].type ).to.equal( 'remove' );
+					expect( undoingBatch.operations[ 0 ].sourcePosition.root ).to.equal( root );
+					expect( undoingBatch.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 0 ] );
+					expect( undoingBatch.operations[ 0 ].howMany ).to.equal( 3 );
 
-				// Add text `x`:
-				expect( undoingBatch.operations[ 1 ].type ).to.equal( 'insert' );
-				expect( undoingBatch.operations[ 1 ].position.root ).to.equal( root );
-				expect( undoingBatch.operations[ 1 ].position.path ).to.deep.equal( [ 0 ] );
-				expect( undoingBatch.operations[ 1 ].nodes.length ).to.equal( 1 );
-				expect( undoingBatch.operations[ 1 ].nodes.getNode( 0 ).data ).to.equal( 'x' );
+					// Add text `x`:
+					expect( undoingBatch.operations[ 1 ].type ).to.equal( 'insert' );
+					expect( undoingBatch.operations[ 1 ].position.root ).to.equal( root );
+					expect( undoingBatch.operations[ 1 ].position.path ).to.deep.equal( [ 0 ] );
+					expect( undoingBatch.operations[ 1 ].nodes.length ).to.equal( 1 );
+					expect( undoingBatch.operations[ 1 ].nodes.getNode( 0 ).data ).to.equal( 'x' );
 
-				done();
+					resolve();
+				} );
+
+				// Example post-fixer, makes sure that there is always some character in the root:
+				doc.registerPostFixer( writer => {
+					if ( root.isEmpty ) {
+						writer.insertText( 'x', p( 0 ) );
+					}
+				} );
+
+				// Root is empty at this moment, post-fixer is not fired after it is registered, it is waiting for the first change.
+				// Let's add some text to the empty root:
+				const batch = model.createBatch();
+				undo.addBatch( batch );
+
+				model.enqueueChange( batch, writer => {
+					writer.insertText( 'foo', p( 0 ) );
+					writer.setSelection( p( 3 ) );
+				} );
+
+				// Let's undo.
+				// On undo, text `foo` is removed and then post-fixer should kick in and check that root is empty and add `x`.
+				// The operation to add `x` should be included in the undoing batch.
+				undo.execute();
 			} );
-
-			// Example post-fixer, makes sure that there is always some character in the root:
-			doc.registerPostFixer( writer => {
-				if ( root.isEmpty ) {
-					writer.insertText( 'x', p( 0 ) );
-				}
-			} );
-
-			// Root is empty at this moment, post-fixer is not fired after it is registered, it is waiting for the first change.
-			// Let's add some text to the empty root:
-			const batch = model.createBatch();
-			undo.addBatch( batch );
-
-			model.enqueueChange( batch, writer => {
-				writer.insertText( 'foo', p( 0 ) );
-				writer.setSelection( p( 3 ) );
-			} );
-
-			// Let's undo.
-			// On undo, text `foo` is removed and then post-fixer should kick in and check that root is empty and add `x`.
-			// The operation to add `x` should be included in the undoing batch.
-			undo.execute();
 		} );
 	} );
 } );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Undo } from '../src/undo.js';
 import { UndoEditing } from '../src/undoediting.js';
 import { UndoUI } from '../src/undoui.js';

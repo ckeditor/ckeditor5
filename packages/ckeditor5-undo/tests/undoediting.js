@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 import { UndoEditing } from '../src/undoediting.js';
@@ -55,34 +57,34 @@ describe( 'UndoEditing', () => {
 	} );
 
 	it( 'should add a batch to undo command and clear redo stack, if it\'s type is "default"', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
-		sinon.spy( undo._redoCommand, 'clearStack' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
+		const clearStackSpy = vi.spyOn( undo._redoCommand, 'clearStack' );
 
-		expect( undo._undoCommand.addBatch.called ).to.be.false;
-		expect( undo._redoCommand.clearStack.called ).to.be.false;
+		expect( addBatchSpy ).not.toHaveBeenCalled();
+		expect( clearStackSpy ).not.toHaveBeenCalled();
 
 		model.change( writer => {
 			writer.insertText( 'foobar', root );
 		} );
 
-		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
-		expect( undo._redoCommand.clearStack.calledOnce ).to.be.true;
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 1 );
+		expect( clearStackSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'should add each batch only once', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
 
 		model.change( writer => {
 			writer.insertText( 'foobar', root );
 			writer.insertText( 'foobar', root );
 		} );
 
-		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'should add a batch to undo command, if it\'s type is undo and it comes from redo command', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
-		sinon.spy( undo._redoCommand, 'clearStack' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
+		const clearStackSpy = vi.spyOn( undo._redoCommand, 'clearStack' );
 
 		const batch = model.createBatch();
 
@@ -92,22 +94,22 @@ describe( 'UndoEditing', () => {
 			writer.insertText( 'foobar', root );
 		} );
 
-		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
-		expect( undo._redoCommand.clearStack.called ).to.be.false;
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 1 );
+		expect( clearStackSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should add a batch to redo command on undo revert event', () => {
-		sinon.spy( undo._redoCommand, 'addBatch' );
-		sinon.spy( undo._redoCommand, 'clearStack' );
+		const addBatchSpy = vi.spyOn( undo._redoCommand, 'addBatch' );
+		const clearStackSpy = vi.spyOn( undo._redoCommand, 'clearStack' );
 
 		undo._undoCommand.fire( 'revert', null, model.createBatch() );
 
-		expect( undo._redoCommand.addBatch.calledOnce ).to.be.true;
-		expect( undo._redoCommand.clearStack.called ).to.be.false;
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 1 );
+		expect( clearStackSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should add redo batch to undo', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
 
 		model.change( writer => {
 			writer.insertText( 'foobar', root );
@@ -121,14 +123,14 @@ describe( 'UndoEditing', () => {
 		editor.execute( 'undo' );
 
 		editor.execute( 'redo' );
-		sinon.assert.calledThrice( undo._undoCommand.addBatch );
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 3 );
 
 		editor.execute( 'redo' );
-		sinon.assert.callCount( undo._undoCommand.addBatch, 4 );
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 4 );
 	} );
 
 	it( 'should not add a batch that has only non-document operations', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
 
 		model.change( writer => {
 			const docFrag = writer.createDocumentFragment();
@@ -137,21 +139,21 @@ describe( 'UndoEditing', () => {
 			writer.insertText( 'foo', null, element, 0 );
 		} );
 
-		expect( undo._undoCommand.addBatch.called ).to.be.false;
+		expect( addBatchSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not add a transparent batch', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
 
 		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.insertText( 'foobar', root );
 		} );
 
-		expect( undo._undoCommand.addBatch.called ).to.be.false;
+		expect( addBatchSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should add a batch that has both document and non-document operations', () => {
-		sinon.spy( undo._undoCommand, 'addBatch' );
+		const addBatchSpy = vi.spyOn( undo._undoCommand, 'addBatch' );
 
 		model.change( writer => {
 			const element = writer.createElement( 'paragraph' );
@@ -159,54 +161,54 @@ describe( 'UndoEditing', () => {
 			writer.insert( element, root, 0 );
 		} );
 
-		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
+		expect( addBatchSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'should set CTRL+Z keystroke', () => {
-		const spy = sinon.stub( editor, 'execute' );
+		const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.z,
 			ctrlKey: !env.isMac,
 			metaKey: env.isMac,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		} );
 
 		expect( wasHandled ).to.be.true;
-		expect( spy.calledWithExactly( 'undo' ) ).to.be.true;
+		expect( spy ).toHaveBeenCalledWith( 'undo' );
 	} );
 
 	it( 'should set CTRL+Y keystroke', () => {
-		const spy = sinon.stub( editor, 'execute' );
+		const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 
 		const wasHandled = editor.keystrokes.press( {
 			keyCode: keyCodes.y,
 			ctrlKey: !env.isMac,
 			metaKey: env.isMac,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		} );
 
 		expect( wasHandled ).to.be.true;
-		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
+		expect( spy ).toHaveBeenCalledWith( 'redo' );
 	} );
 
 	it( 'should set CTRL+SHIFT+Z keystroke', () => {
-		const spy = sinon.stub( editor, 'execute' );
+		const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 		const keyEventData = {
 			keyCode: keyCodes.z,
 			ctrlKey: !env.isMac,
 			metaKey: env.isMac,
 			shiftKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		};
 
 		const wasHandled = editor.keystrokes.press( keyEventData );
 
 		expect( wasHandled ).to.be.true;
-		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
-		expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+		expect( spy ).toHaveBeenCalledWith( 'redo' );
+		expect( keyEventData.preventDefault ).toHaveBeenCalledTimes( 1 );
 	} );
 } );
