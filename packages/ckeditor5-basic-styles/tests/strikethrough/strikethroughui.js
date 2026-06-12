@@ -3,19 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { StrikethroughEditing } from '../../src/strikethrough/strikethroughediting.js';
 import { StrikethroughUI } from '../../src/strikethrough/strikethroughui.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'StrikethroughUI', () => {
 	let editor, strikeView, editorElement;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -32,6 +31,7 @@ describe( 'StrikethroughUI', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -85,12 +85,12 @@ describe( 'StrikethroughUI', () => {
 		} );
 
 		it( 'should execute strikethrough command on model execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
 
 			strikeView.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'strikethrough' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'strikethrough' );
 		} );
 
 		it( 'should bind model to strikethrough command', () => {
@@ -107,21 +107,21 @@ describe( 'StrikethroughUI', () => {
 		} );
 
 		it( 'should set editor keystroke', () => {
-			const spy = sinon.spy( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' );
 			const keyEventData = {
 				keyCode: keyCodes.x,
 				shiftKey: true,
 				ctrlKey: !env.isMac,
 				metaKey: env.isMac,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
 			const wasHandled = editor.keystrokes.press( keyEventData );
 
 			expect( wasHandled ).to.be.true;
-			expect( spy.calledOnce ).to.be.true;
-			expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( keyEventData.preventDefault ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should bind `isOn` to `command`.`value`', () => {

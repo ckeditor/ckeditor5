@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ItalicEditing } from '../../src/italic/italicediting.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -30,51 +32,51 @@ describe( 'ItalicEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ItalicEditing.pluginName ).to.equal( 'ItalicEditing' );
+		expect( ItalicEditing.pluginName ).toBe( 'ItalicEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ItalicEditing.isOfficialPlugin ).to.be.true;
+		expect( ItalicEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ItalicEditing.isPremiumPlugin ).to.be.false;
+		expect( ItalicEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ItalicEditing ) ).to.be.instanceOf( ItalicEditing );
+		expect( editor.plugins.get( ItalicEditing ) ).toBeInstanceOf( ItalicEditing );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 			label: 'Italic text',
 			keystroke: 'CTRL+I'
 		} );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'italic' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'italic' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'italic' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'italic' ) ).toBe( true );
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( model.schema.getAttributeProperties( 'italic' ) ).to.include( {
+		expect( model.schema.getAttributeProperties( 'italic' ) ).toEqual( expect.objectContaining( {
 			isFormatting: true
-		} );
+		} ) );
 	} );
 
 	it( 'its attribute is marked with a copOnEnter property', () => {
-		expect( model.schema.getAttributeProperties( 'italic' ) ).to.include( {
+		expect( model.schema.getAttributeProperties( 'italic' ) ).toEqual( expect.objectContaining( {
 			copyOnEnter: true
-		} );
+		} ) );
 	} );
 
 	describe( 'command', () => {
 		it( 'should register italic command', () => {
 			const command = editor.commands.get( 'italic' );
 
-			expect( command ).to.be.instanceOf( AttributeCommand );
-			expect( command ).to.have.property( 'attributeKey', 'italic' );
+			expect( command ).toBeInstanceOf( AttributeCommand );
+			expect( command ).toHaveProperty( 'attributeKey', 'italic' );
 		} );
 	} );
 
@@ -83,36 +85,36 @@ describe( 'ItalicEditing', () => {
 			editor.setData( '<p><em>foo</em>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
+				.toEqual( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
+			expect( editor.getData() ).toEqual( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should convert <i> to italic attribute', () => {
 			editor.setData( '<p><i>foo</i>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
+				.toEqual( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
+			expect( editor.getData() ).toEqual( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should convert font-weight:italic to italic attribute', () => {
 			editor.setData( '<p><span style="font-style: italic;">foo</span>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
+				.toEqual( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
+			expect( editor.getData() ).toEqual( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<i>foo</i>bar' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
+				.toEqual( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
+			expect( editor.getData() ).toEqual( '<p><i>foo</i>bar</p>' );
 		} );
 	} );
 
@@ -120,7 +122,7 @@ describe( 'ItalicEditing', () => {
 		it( 'should convert attribute', () => {
 			_setModelData( model, '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><i>foo</i>bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual( '<p><i>foo</i>bar</p>' );
 		} );
 	} );
 } );
