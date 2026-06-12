@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Paragraph } from '../src/paragraph.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -28,7 +29,7 @@ describe( 'Paragraph feature – integration', () => {
 						content: _parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toEqual(
 						'<paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>bom[]</paragraph>'
 					);
 				} );
@@ -48,7 +49,7 @@ describe( 'Paragraph feature – integration', () => {
 						content: _parseView( '<h1>foo</h1><h2>bar</h2><h5>baz</h5><p>bom</p>' )
 					} );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toEqual(
 						'<heading1>foo</heading1><heading1>bar</heading1><paragraph>baz</paragraph><paragraph>bom[]</paragraph>'
 					);
 				} );
@@ -67,7 +68,7 @@ describe( 'Paragraph feature – integration', () => {
 						content: _parseView( '<ul><li>foo</li><li>bar</li></ul>' )
 					} );
 
-					expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph>' );
+					expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph>' );
 				} );
 		} );
 
@@ -86,7 +87,7 @@ describe( 'Paragraph feature – integration', () => {
 						content: _parseView( '<ul><li>x</li><li><h2>foo</h2><h3>bar</h3><p>bom</p></li><li>x</li></ul>' )
 					} );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toEqual(
 						'<paragraph>x</paragraph>' +
 						'<heading1>foo</heading1><heading2>bar</heading2><paragraph>bom</paragraph>' +
 						'<paragraph>x[]</paragraph>'
@@ -108,7 +109,7 @@ describe( 'Paragraph feature – integration', () => {
 						content: _parseView( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>' )
 					} );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toEqual(
 						'<paragraph>a</paragraph>' +
 						'<paragraph>b</paragraph>' +
 						'<paragraph>c[]</paragraph>'
@@ -130,7 +131,7 @@ describe( 'Paragraph feature – integration', () => {
 						content: _parseView( '<ul><li><p>a</p>b</li></ul>' )
 					} );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toEqual(
 						'<paragraph>a</paragraph>' +
 						'<paragraph>b[]</paragraph>'
 					);
@@ -147,8 +148,8 @@ describe( 'Paragraph feature – integration', () => {
 					const doc = editor.model.document;
 					const root = doc.getRoot();
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+					expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
+					expect( editor.commands.get( 'undo' ).isEnabled ).toBe( false );
 
 					editor.setData( '<p>Foobar.</p>' );
 
@@ -156,19 +157,19 @@ describe( 'Paragraph feature – integration', () => {
 						writer.remove( root.getChild( 0 ) );
 					} );
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>Foobar.</p>' );
 
 					editor.execute( 'redo' );
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).toEqual( '<p>Foobar.</p>' );
 				} );
 		} );
 
@@ -192,18 +193,18 @@ describe( 'Paragraph feature – integration', () => {
 						writer.remove( otherRoot.getChild( 0 ) );
 					} );
 
-					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).toEqual( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).toEqual( '<p>Foobar.</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
-					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).toEqual( '<p>Foobar.</p>' );
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).toEqual( '<p>Foobar.</p>' );
 				} );
 		} );
 	} );
