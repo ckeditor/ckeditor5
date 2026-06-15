@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -40,7 +41,7 @@ describe( 'CodeBlock - integration', () => {
 				'```'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'```plaintext\n' +
 				'test()\n' +
 				'```'
@@ -55,7 +56,7 @@ describe( 'CodeBlock - integration', () => {
 				'```'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'```javascript\n' +
 				'test()\n' +
 				'```'
@@ -83,10 +84,10 @@ describe( 'CodeBlock - integration', () => {
 		} );
 
 		it( 'should remove inline images when executing the "codeBlock" command', () => {
-			editor.setData( '<p>Foo<img src="/assets/sample.png">Bar.</p>' );
+			editor.setData( '<p>Foo<img src="/sample.png">Bar.</p>' );
 			editor.execute( 'codeBlock' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<pre>' +
 					'<code class="language-plaintext">FooBar.</code>' +
 				'</pre>'
@@ -94,9 +95,9 @@ describe( 'CodeBlock - integration', () => {
 		} );
 
 		it( 'should remove inline images when upcasting the "codeBlock" element (the paragraph inside the code)', () => {
-			editor.setData( '<pre><code><p>Foo<img src="/assets/sample.png">Bar.</p></code></pre>' );
+			editor.setData( '<pre><code><p>Foo<img src="/sample.png">Bar.</p></code></pre>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<pre>' +
 					'<code class="language-plaintext">FooBar.</code>' +
 				'</pre>'
@@ -104,9 +105,9 @@ describe( 'CodeBlock - integration', () => {
 		} );
 
 		it( 'should remove inline images when upcasting the "codeBlock" element (without the paragraph)', () => {
-			editor.setData( '<pre><code>Foo<img src="/assets/sample.png">Bar.</code></pre>' );
+			editor.setData( '<pre><code>Foo<img src="/sample.png">Bar.</code></pre>' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toBe(
 				'<pre>' +
 					'<code class="language-plaintext">FooBar.</code>' +
 				'</pre>'
@@ -139,7 +140,7 @@ describe( 'CodeBlock - integration', () => {
 			document.body.appendChild( dropdown.element );
 
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.listView ).to.be.undefined;
+			expect( dropdown.listView ).toBeUndefined();
 
 			// Trigger list view creation (lazy init).
 			dropdown.isOpen = true;
@@ -148,23 +149,23 @@ describe( 'CodeBlock - integration', () => {
 			const listView = dropdown.panelView.children.first;
 			const cSharpButton = listView.items.get( 2 ).children.first;
 
-			expect( cSharpButton.label ).to.equal( 'C#' );
+			expect( cSharpButton.label ).toBe( 'C#' );
 
 			// Initial state.
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>[]</paragraph>' );
 
 			// Select a language from dropdown.
 			cSharpButton.fire( 'execute' );
-			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+			expect( _getModelData( editor.model ) ).toBe( '<codeBlock language="cs">[]</codeBlock>' );
 
 			// Click on the `codeBlock` button next to the dropdown. When selection is inside the `<codeBlock>` element,
 			// the entire element should be replaced with the paragraph.
 			codeBlock.fire( 'execute' );
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toBe( '<paragraph>[]</paragraph>' );
 
 			// Clicking the button once again should create the code block with the C# language instead of the default (plaintext).
 			codeBlock.fire( 'execute' );
-			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+			expect( _getModelData( editor.model ) ).toBe( '<codeBlock language="cs">[]</codeBlock>' );
 
 			dropdown.element.remove();
 		} );
@@ -199,12 +200,12 @@ describe( 'CodeBlock - integration', () => {
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
-				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'listStyle' ), 'listStyle' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'htmlLiAttributes' ), 'htmlLiAttributes' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'htmlUlAttributes' ), 'htmlUlAttributes' ).to.be.true;
-				expect( model.schema.checkAttribute( codeBlock, 'htmlOlAttributes' ), 'htmlOlAttributes' ).to.be.true;
+				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).toBe( true );
+				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).toBe( true );
+				expect( model.schema.checkAttribute( codeBlock, 'listStyle' ), 'listStyle' ).toBe( true );
+				expect( model.schema.checkAttribute( codeBlock, 'htmlLiAttributes' ), 'htmlLiAttributes' ).toBe( true );
+				expect( model.schema.checkAttribute( codeBlock, 'htmlUlAttributes' ), 'htmlUlAttributes' ).toBe( true );
+				expect( model.schema.checkAttribute( codeBlock, 'htmlOlAttributes' ), 'htmlOlAttributes' ).toBe( true );
 			} );
 
 			it( 'should disallow attributes that are not registered as list attributes', () => {
@@ -212,13 +213,13 @@ describe( 'CodeBlock - integration', () => {
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
-				expect( model.schema.checkAttribute( codeBlock, 'listReversed' ), 'listReversed' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'list' ), 'list' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'fooList' ), 'fooList' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'alist' ), 'alist' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'alistb' ), 'alistb' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'LISTbar' ), 'LISTbar' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'listReversed' ), 'listReversed' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'list' ), 'list' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'fooList' ), 'fooList' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'alist' ), 'alist' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'alistb' ), 'alistb' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'LISTbar' ), 'LISTbar' ).toBe( false );
 			} );
 		} );
 
@@ -241,10 +242,10 @@ describe( 'CodeBlock - integration', () => {
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
-				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).to.be.false;
-				expect( model.schema.checkAttribute( codeBlock, 'listFoo' ), 'listFoo' ).to.be.false;
+				expect( model.schema.checkAttribute( codeBlock, 'listItemId' ), 'listItemId' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'listType' ), 'listType' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'listStart' ), 'listStart' ).toBe( false );
+				expect( model.schema.checkAttribute( codeBlock, 'listFoo' ), 'listFoo' ).toBe( false );
 			} );
 		} );
 	} );
