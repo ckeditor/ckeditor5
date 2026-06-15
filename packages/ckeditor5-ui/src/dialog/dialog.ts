@@ -287,13 +287,21 @@ export class Dialog extends Plugin {
 		isModal,
 		position,
 		onHide,
+		getRootName,
 		keystrokeHandlerOptions
 	}: DialogDefinition ) {
 		const editor = this.editor;
 
 		this.view = new DialogView( editor.locale, {
-			getCurrentDomRoot: () => {
-				return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+			getDomRootElement: () => {
+				// Use the configured root name or the root name of the selection anchor.
+				const rootName = getRootName?.() ?? this.editor.model.document.selection.anchor!.root.rootName;
+
+				if ( !rootName || !editor.editing.view.domRoots.has( rootName ) ) {
+					return null;
+				}
+
+				return editor.editing.view.getDomRoot( rootName ) ?? null;
 			},
 			getViewportOffset: () => {
 				return editor.ui.viewportOffset;
@@ -467,13 +475,22 @@ export interface DialogDefinition {
 	 * Available dialog positions. By default `DialogViewPosition.EDITOR_CENTER` is used for {@link #isModal non-modals}
 	 * and `DialogViewPosition.SCREEN_CENTER` for modals.
 	 *
-	 * If set to a function, it will be called with the DOM root Rect and the dialog Rect as arguments.
-	 * It should return the coordinates of the dialog's position.
+	 * If set to a function, it will be fed dialog and DOM root geometry as arguments and should return the coordinates of the
+	 * dialog's position.
 	 *
-	 * {@link module:ui/dialog/dialogview#DialogViewPosition Learn more} about available positions.
+	 * * Learn more about {@link module:ui/dialog/dialogview#DialogViewPosition available positions}.
+	 * * Learn more about which editor root the dialog is positioned relative to in the
+	 * {@link module:ui/dialog/dialog~DialogDefinition#getRootName} section.
 	 */
-	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null |
-		( ( dialogRect: Rect, domRootRect?: Rect | null ) => { left: number; top: number } | null );
+	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | DialogPositionCallback | null;
+
+	/**
+	 * A callback executed whenever the dialog is about to show up that returns the DOM root name that the
+	 * dialog should be {@link #position positioned} relative to.
+	 *
+	 * If not set, the dialog will be positioned relative to the DOM root the model selection is anchored to.
+	 */
+	getRootName?: () => string | null;
 
 	/**
 	 * A callback called when the dialog shows up with a `low` priority. It allows for setting up the dialog's {@link #content}.
@@ -493,6 +510,25 @@ export interface DialogDefinition {
 	 */
 	keystrokeHandlerOptions?: KeystrokeHandlerOptions;
 }
+
+/**
+ * A callback that returns the coordinates of the dialog's position. It can be used to customize the dialog's position.
+ *
+ * See {@link module:ui/dialog/dialog~DialogDefinition#getRootName} for more details on which DOM root is used as a source for
+ * the Rects passed as arguments.
+ *
+ * @param dialogRect The current `Rect` of the dialog view element.
+ * @param visibleDomRootRect The visible `Rect` of the DOM root element. This rect will be unavailable when the DOM root element is off the
+ * screen or cropped by overflowing parent.
+ * @param domRootRect The current `Rect` of the DOM root. This rect will be unavailable, e.g. when the DOM root element is completely hidden
+ * via CSS `display` property or detached from the DOM.
+ * @returns The coordinates of the dialog's position or `null` if the dialog should stay hidden.
+ */
+export type DialogPositionCallback = (
+	dialogRect: Rect,
+	visibleDomRootRect: Rect | null,
+	domRootRect: Rect | null
+) => { left: number; top: number } | null;
 
 /**
  * An event fired after {@link module:ui/dialog/dialog~Dialog#show} is called. You can use it to customize the behavior

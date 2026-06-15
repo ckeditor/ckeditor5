@@ -11,7 +11,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DialogView', () => {
 	let view, fakeDomRootElement;
-	let getCurrentDomRootStub, getViewportOffsetStub;
+	let getDomRootElementStub, getViewportOffsetStub;
 	const locale = new Locale();
 
 	testUtils.createSinonSandbox();
@@ -19,7 +19,7 @@ describe( 'DialogView', () => {
 	beforeEach( () => {
 		fakeDomRootElement = document.createElement( 'div' );
 
-		getCurrentDomRootStub = testUtils.sinon.stub().returns( fakeDomRootElement );
+		getDomRootElementStub = testUtils.sinon.stub().returns( fakeDomRootElement );
 		getViewportOffsetStub = testUtils.sinon.stub().returns( {
 			top: 0,
 			right: 0,
@@ -31,7 +31,7 @@ describe( 'DialogView', () => {
 		testUtils.sinon.stub( global.window, 'innerHeight' ).value( 500 );
 
 		view = new DialogView( locale, {
-			getCurrentDomRoot: getCurrentDomRootStub,
+			getDomRootElement: getDomRootElementStub,
 			getViewportOffset: getViewportOffsetStub
 		} );
 	} );
@@ -275,7 +275,7 @@ describe( 'DialogView', () => {
 
 				it( 'should cycle forward correctly if there are only action buttons', async () => {
 					const newView = new DialogView( locale, {
-						getCurrentDomRoot: getCurrentDomRootStub,
+						getDomRootElement: getDomRootElementStub,
 						getViewportOffset: getViewportOffsetStub
 					} );
 
@@ -358,7 +358,7 @@ describe( 'DialogView', () => {
 
 				it( 'should cycle backwards correctly if there are only action buttons', async () => {
 					const newView = new DialogView( locale, {
-						getCurrentDomRoot: getCurrentDomRootStub,
+						getDomRootElement: getDomRootElementStub,
 						getViewportOffset: getViewportOffsetStub
 					} );
 
@@ -408,7 +408,7 @@ describe( 'DialogView', () => {
 				const filterSpy = sinon.spy();
 
 				const newView = new DialogView( locale, {
-					getCurrentDomRoot: getCurrentDomRootStub,
+					getDomRootElement: getDomRootElementStub,
 					getViewportOffset: getViewportOffsetStub,
 					keystrokeHandlerOptions: {
 						filter: filterSpy
@@ -1012,7 +1012,7 @@ describe( 'DialogView', () => {
 		} );
 
 		it( 'should always position the dialog on the center of the screen if there is no editing root available', () => {
-			getCurrentDomRootStub.returns( null );
+			getDomRootElementStub.returns( null );
 
 			view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 
@@ -1043,7 +1043,7 @@ describe( 'DialogView', () => {
 
 			sinon.assert.calledOnce( positionFunctionSpy );
 
-			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
 
 			expect( dialogRect ).to.deep.equal( {
 				width: 100,
@@ -1052,6 +1052,16 @@ describe( 'DialogView', () => {
 				right: 100,
 				top: 0,
 				bottom: 50
+			} );
+
+			// The DOM root is fully within the viewport, so both rects are equal.
+			expect( visibleDomRootRect ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: 10,
+				right: 210,
+				top: 10,
+				bottom: 210
 			} );
 
 			expect( domRootRect ).to.deep.equal( {
@@ -1066,19 +1076,19 @@ describe( 'DialogView', () => {
 			sinon.assert.calledOnceWithExactly( moveToSpy, 123, 456 );
 		} );
 
-		it( 'should call position function with undefined domRootRect when no DOM root is available', () => {
+		it( 'should call position function with null root rects when no DOM root is available', () => {
 			const mockCoords = { left: 789, top: 101 };
 			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
 			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
 
-			getCurrentDomRootStub.returns( null );
+			getDomRootElementStub.returns( null );
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
 			sinon.assert.calledOnce( positionFunctionSpy );
 
-			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
 
 			expect( dialogRect ).to.deep.equal( {
 				width: 100,
@@ -1089,7 +1099,8 @@ describe( 'DialogView', () => {
 				bottom: 50
 			} );
 
-			expect( domRootRect ).to.be.undefined;
+			expect( visibleDomRootRect ).to.be.null;
+			expect( domRootRect ).to.be.null;
 
 			sinon.assert.calledOnceWithExactly( moveToSpy, 789, 101 );
 		} );
@@ -1104,7 +1115,7 @@ describe( 'DialogView', () => {
 
 			sinon.assert.calledOnce( positionFunctionSpy );
 
-			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
 
 			expect( dialogRect ).to.deep.equal( {
 				width: 100,
@@ -1113,6 +1124,15 @@ describe( 'DialogView', () => {
 				right: 100,
 				top: 0,
 				bottom: 50
+			} );
+
+			expect( visibleDomRootRect ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: 10,
+				right: 210,
+				top: 10,
+				bottom: 210
 			} );
 
 			expect( domRootRect ).to.deep.equal( {
@@ -1125,6 +1145,120 @@ describe( 'DialogView', () => {
 			} );
 
 			sinon.assert.calledOnceWithExactly( moveToSpy, -9999, -9999 );
+		} );
+
+		it( 'should pass the DOM root Rect to the position function even when the root is off the screen', () => {
+			// The DOM root is entirely off the screen, so it has no visible Rect, but its general Rect is still available.
+			fakeDomRootElement.getBoundingClientRect.returns( {
+				width: 200,
+				height: 200,
+				left: -1000,
+				right: -800,
+				top: 10,
+				bottom: 210
+			} );
+
+			const positionFunctionSpy = testUtils.sinon.stub().returns( { left: 5, top: 6 } );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( visibleDomRootRect, 'visibleDomRootRect' ).to.be.null;
+			expect( domRootRect, 'domRootRect' ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: -1000,
+				right: -800,
+				top: 10,
+				bottom: 210
+			} );
+
+			// The dialog can still be positioned despite the root not being visible.
+			sinon.assert.calledOnceWithExactly( moveToSpy, 5, 6 );
+		} );
+
+		it( 'should pass the DOM root Rect to the position function even when the root is cropped and invisible', () => {
+			const ancestorElement = document.createElement( 'div' );
+
+			ancestorElement.style.overflow = 'hidden';
+
+			fakeDomRootElement.getBoundingClientRect.returns( {
+				width: 200,
+				height: 200,
+				left: -1000,
+				right: -800,
+				top: 10,
+				bottom: 210
+			} );
+
+			document.body.appendChild( ancestorElement );
+			ancestorElement.appendChild( fakeDomRootElement );
+
+			const positionFunctionSpy = testUtils.sinon.stub().returns( { left: 7, top: 8 } );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( visibleDomRootRect, 'visibleDomRootRect' ).to.be.null;
+			expect( domRootRect, 'domRootRect' ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: -1000,
+				right: -800,
+				top: 10,
+				bottom: 210
+			} );
+
+			sinon.assert.calledOnceWithExactly( moveToSpy, 7, 8 );
+
+			ancestorElement.remove();
+		} );
+
+		it( 'should pass the visible (clipped) and the general DOM root Rects to the position function separately', () => {
+			// The DOM root sticks out of the viewport on the left, so its visible Rect is clipped to the viewport
+			// while its general Rect still spans the full geometry.
+			fakeDomRootElement.getBoundingClientRect.returns( {
+				width: 200,
+				height: 200,
+				left: -50,
+				right: 150,
+				top: 10,
+				bottom: 210
+			} );
+
+			const positionFunctionSpy = testUtils.sinon.stub().returns( { left: 1, top: 2 } );
+
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( visibleDomRootRect, 'visibleDomRootRect' ).to.deep.equal( {
+				width: 150,
+				height: 200,
+				left: 0,
+				right: 150,
+				top: 10,
+				bottom: 210
+			} );
+
+			expect( domRootRect, 'domRootRect' ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: -50,
+				right: 150,
+				top: 10,
+				bottom: 210
+			} );
 		} );
 
 		describe( 'when the DOM root is visible in the viewport', () => {
@@ -1416,7 +1550,7 @@ describe( 'DialogView', () => {
 			const warnStub = testUtils.sinon.stub( console, 'warn' );
 
 			const view = new DialogView( locale, {
-				getCurrentDomRoot: getCurrentDomRootStub,
+				getDomRootElement: getDomRootElementStub,
 				getViewportOffset: getViewportOffsetStub
 			} );
 

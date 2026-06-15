@@ -366,6 +366,50 @@ describe( 'Dialog', () => {
 			expect( dialogPlugin.view ).to.be.instanceOf( DialogView );
 		} );
 
+		describe( 'DOM root element resolution (DialogView#getDomRootElement)', () => {
+			it( 'should resolve the DOM root using the name returned by the #getRootName callback', () => {
+				const getRootName = sinon.stub().returns( 'main' );
+
+				dialogPlugin._show( { getRootName } );
+
+				expect( dialogPlugin.view._getDomRootElement() ).to.equal( editor.editing.view.getDomRoot( 'main' ) );
+				sinon.assert.called( getRootName );
+			} );
+
+			it( 'should resolve the DOM root using the selection anchor root when #getRootName is not provided', () => {
+				dialogPlugin._show( {} );
+
+				expect( dialogPlugin.view._getDomRootElement() ).to.equal( editor.editing.view.getDomRoot( 'main' ) );
+			} );
+
+			it( 'should fall back to the selection anchor root when #getRootName returns null', () => {
+				dialogPlugin._show( { getRootName: () => null } );
+
+				expect( dialogPlugin.view._getDomRootElement() ).to.equal( editor.editing.view.getDomRoot( 'main' ) );
+			} );
+
+			it( 'should return null when the resolved root name is empty', () => {
+				dialogPlugin._show( { getRootName: () => '' } );
+
+				expect( dialogPlugin.view._getDomRootElement() ).to.be.null;
+			} );
+
+			it( 'should return null when the resolved root name does not exist among the editing DOM roots', () => {
+				dialogPlugin._show( { getRootName: () => 'non-existent-root' } );
+
+				expect( dialogPlugin.view._getDomRootElement() ).to.be.null;
+			} );
+
+			it( 'should return null when there is no DOM root for the resolved root name', () => {
+				// Defensive: the root is registered but its DOM root is unavailable (e.g. detached).
+				sinon.stub( editor.editing.view, 'getDomRoot' ).returns( undefined );
+
+				dialogPlugin._show( { getRootName: () => 'main' } );
+
+				expect( dialogPlugin.view._getDomRootElement() ).to.be.null;
+			} );
+		} );
+
 		it( 'should attach the `close` event listener to the dialog view by default', () => {
 			const spy = sinon.spy( dialogPlugin, 'hide' );
 
