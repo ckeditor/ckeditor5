@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 import { Editor } from '../src/editor/editor.js';
 import { PluginCollection } from '../src/plugincollection.js';
 import { Command } from '../src/command.js';
@@ -16,7 +17,7 @@ let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, Plug
 class TestError extends Error {}
 
 describe( 'PluginCollection', () => {
-	before( () => {
+	beforeAll( () => {
 		PluginA = createPlugin( 'A' );
 		PluginB = createPlugin( 'B' );
 		PluginC = createPlugin( 'C' );
@@ -71,7 +72,7 @@ describe( 'PluginCollection', () => {
 	afterEach( async () => {
 		editor.state = 'ready';
 		await editor.destroy();
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'init()', () => {
@@ -80,7 +81,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [] )
 				.then( () => {
-					expect( getPlugins( plugins ) ).to.be.empty;
+					expect( getPlugins( plugins ) ).toHaveLength( 0 );
 				} );
 		} );
 
@@ -89,10 +90,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ PluginA, PluginB ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( PluginA ) ).to.be.an.instanceof( PluginA );
-					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( PluginA ) ).toBeInstanceOf( PluginA );
+					expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
 				} );
 		} );
 
@@ -101,87 +102,87 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ 'A', 'B' ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( 'A' ) ).to.be.an.instanceof( PluginA );
-					expect( plugins.get( 'B' ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( 'A' ) ).toBeInstanceOf( PluginA );
+					expect( plugins.get( 'B' ) ).toBeInstanceOf( PluginB );
 				} );
 		} );
 
 		it( 'should load dependency plugins', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginA, PluginC ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 3 );
+					expect( getPlugins( plugins ).length ).toBe( 3 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'B', 'C' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
+						.toEqual( [ 'A', 'B', 'C' ] );
 				} );
 		} );
 
 		it( 'should load dependency plugins defined by plugin names', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ 'J' ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 3 );
+					expect( getPlugins( plugins ).length ).toBe( 3 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'K', 'J' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by returned value' );
+						.toEqual( [ 'A', 'K', 'J' ] );
 				} );
 		} );
 
 		it( 'should be ok when dependencies are loaded first', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginA, PluginB, PluginC ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 3 );
+					expect( getPlugins( plugins ).length ).toBe( 3 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'B', 'C' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
+						.toEqual( [ 'A', 'B', 'C' ] );
 				} );
 		} );
 
 		it( 'should load deep dependency plugins', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginD ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 4 );
+					expect( getPlugins( plugins ).length ).toBe( 4 );
 
 					// The order must have dependencies first.
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'B', 'C', 'D' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by returned value' );
+						.toEqual( [ 'A', 'B', 'C', 'D' ] );
 				} );
 		} );
 
 		it( 'should handle cross dependency plugins', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginA, PluginE ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 3 );
+					expect( getPlugins( plugins ).length ).toBe( 3 );
 
 					// The order must have dependencies first.
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'F', 'E' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'F', 'E' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'F', 'E' ], 'order by returned value' );
+						.toEqual( [ 'A', 'F', 'E' ] );
 				} );
 		} );
 
@@ -193,7 +194,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ GrandPlugin ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 1 );
+					expect( getPlugins( plugins ).length ).toBe( 1 );
 				} );
 		} );
 
@@ -204,7 +205,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ Y ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 1 );
+					expect( getPlugins( plugins ).length ).toBe( 1 );
 				} );
 		} );
 
@@ -217,7 +218,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ pluginAsFunction ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 1 );
+					expect( getPlugins( plugins ).length ).toBe( 1 );
 				} );
 		} );
 
@@ -236,10 +237,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ PluginA, PluginB, pluginAsFunction, Y ] )
 				.then( () => {
-					expect( plugins.get( PluginA ).editor ).to.equal( editor );
-					expect( plugins.get( PluginB ).editor ).to.equal( editor );
-					expect( plugins.get( pluginAsFunction ).editor ).to.equal( editor );
-					expect( plugins.get( Y ).editor ).to.equal( editor );
+					expect( plugins.get( PluginA ).editor ).toBe( editor );
+					expect( plugins.get( PluginB ).editor ).toBe( editor );
+					expect( plugins.get( pluginAsFunction ).editor ).toBe( editor );
+					expect( plugins.get( Y ).editor ).toBe( editor );
 				} );
 		} );
 
@@ -257,8 +258,8 @@ describe( 'PluginCollection', () => {
 					error = err;
 				} );
 
-			expect( error ).to.be.an.instanceof( TestError );
-			expect( error ).to.have.property( 'message', 'Some error inside a plugin' );
+			expect( error ).toBeInstanceOf( TestError );
+			expect( error ).toHaveProperty( 'message', 'Some error inside a plugin' );
 		} );
 
 		it( 'should reject when loading non-existent plugin', async () => {
@@ -272,10 +273,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ PluginA, PluginB, PluginC ], [ PluginA ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
-					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+					expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
+					expect( plugins.get( PluginC ) ).toBeInstanceOf( PluginC );
 				} );
 		} );
 
@@ -284,10 +285,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ PluginA, PluginB, PluginC ], [ 'A' ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
-					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+					expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
+					expect( plugins.get( PluginC ) ).toBeInstanceOf( PluginC );
 				} );
 		} );
 
@@ -296,10 +297,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ 'A', 'B', 'C' ], [ 'A' ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
-					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+					expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
+					expect( plugins.get( PluginC ) ).toBeInstanceOf( PluginC );
 				} );
 		} );
 
@@ -308,10 +309,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ 'A', 'B', 'C' ], [ PluginA ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
-					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+					expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
+					expect( plugins.get( PluginC ) ).toBeInstanceOf( PluginC );
 				} );
 		} );
 
@@ -322,10 +323,10 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ AnonymousPlugin, 'A', 'B' ], [ AnonymousPlugin ] )
 				.then( () => {
-					expect( getPlugins( plugins ).length ).to.equal( 2 );
+					expect( getPlugins( plugins ).length ).toBe( 2 );
 
-					expect( plugins.get( PluginA ) ).to.be.an.instanceof( PluginA );
-					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( PluginA ) ).toBeInstanceOf( PluginA );
+					expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
 				} );
 		} );
 
@@ -348,7 +349,7 @@ describe( 'PluginCollection', () => {
 
 			await plugins.init( [ BarPlugin ] );
 
-			expect( getPlugins( plugins ) ).to.length( 2 );
+			expect( getPlugins( plugins ) ).toHaveLength( 2 );
 		} );
 
 		it( 'should resolve successfully when context plugin requires context plugin', async () => {
@@ -361,7 +362,7 @@ describe( 'PluginCollection', () => {
 
 			await plugins.init( [ BarContextPlugin ] );
 
-			expect( getPlugins( plugins ) ).to.length( 2 );
+			expect( getPlugins( plugins ) ).toHaveLength( 2 );
 		} );
 
 		it( 'should reject when loaded plugin requires not allowed plugins', async () => {
@@ -417,8 +418,9 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, [], Array.from( externalPlugins ) );
 			await plugins.init( [ PluginA ] );
 
-			expect( getPlugins( plugins ) ).to.length( 1 );
-			expect( plugins.get( PluginA ) ).to.equal( externalPlugins.get( PluginA ) ).to.instanceof( PluginA );
+			expect( getPlugins( plugins ) ).toHaveLength( 1 );
+			expect( plugins.get( PluginA ) ).toBe( externalPlugins.get( PluginA ) );
+			expect( plugins.get( PluginA ) ).toBeInstanceOf( PluginA );
 		} );
 
 		it( 'should get plugin by name from external plugins instead of creating new instance', async () => {
@@ -428,8 +430,9 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, [], Array.from( externalPlugins ) );
 			await plugins.init( [ 'A' ] );
 
-			expect( getPlugins( plugins ) ).to.length( 1 );
-			expect( plugins.get( PluginA ) ).to.equal( externalPlugins.get( PluginA ) ).to.instanceof( PluginA );
+			expect( getPlugins( plugins ) ).toHaveLength( 1 );
+			expect( plugins.get( PluginA ) ).toBe( externalPlugins.get( PluginA ) );
+			expect( plugins.get( PluginA ) ).toBeInstanceOf( PluginA );
 		} );
 
 		it( 'should get dependency of plugin from external plugins instead of creating new instance', async () => {
@@ -439,23 +442,24 @@ describe( 'PluginCollection', () => {
 			const plugins = new PluginCollection( editor, [], Array.from( externalPlugins ) );
 			await plugins.init( [ PluginC ] );
 
-			expect( getPlugins( plugins ) ).to.length( 2 );
-			expect( plugins.get( PluginB ) ).to.equal( externalPlugins.get( PluginB ) ).to.instanceof( PluginB );
-			expect( plugins.get( PluginC ) ).to.instanceof( PluginC );
+			expect( getPlugins( plugins ) ).toHaveLength( 2 );
+			expect( plugins.get( PluginB ) ).toBe( externalPlugins.get( PluginB ) );
+			expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
+			expect( plugins.get( PluginC ) ).toBeInstanceOf( PluginC );
 		} );
 
 		it( 'should load dependency plugins using soft requirement', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginJ ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 3 );
+					expect( getPlugins( plugins ).length ).toBe( 3 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'K', 'J' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'K', 'J' ], 'order by returned value' );
+						.toEqual( [ 'A', 'K', 'J' ] );
 				} );
 		} );
 
@@ -537,48 +541,48 @@ describe( 'PluginCollection', () => {
 		it( 'should load dependency plugins using soft requirement when plugin was loaded as dependency of other plugin', () => {
 			PluginFoo.requires = [ 'A' ];
 			const plugins = new PluginCollection( editor, availablePlugins );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginD, PluginFoo ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 5 );
+					expect( getPlugins( plugins ).length ).toBe( 5 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'B', 'C', 'D', 'Foo' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'B', 'C', 'D', 'Foo' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'B', 'C', 'D', 'Foo' ], 'order by returned value' );
+						.toEqual( [ 'A', 'B', 'C', 'D', 'Foo' ] );
 				} );
 		} );
 
 		it( 'should load dependency plugins using soft requirement if non-built-in plugin is available further in the plugin list', () => {
 			PluginFoo.requires = [ 'A', 'B' ];
 			const plugins = new PluginCollection( editor, [] );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginFoo, PluginA, PluginB ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 3 );
+					expect( getPlugins( plugins ).length ).toBe( 3 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'B', 'Foo' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'B', 'Foo' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'B', 'Foo' ], 'order by returned value' );
+						.toEqual( [ 'A', 'B', 'Foo' ] );
 				} );
 		} );
 
 		it( 'should load dependency plugins using soft requirement if non-built-in plugin is available further as other dependency', () => {
 			PluginFoo.requires = [ 'A', 'B' ];
 			const plugins = new PluginCollection( editor, [] );
-			const spy = sinon.spy( plugins, '_add' );
+			const spy = vi.spyOn( plugins, '_add' );
 
 			return plugins.init( [ PluginFoo, PluginD ] )
 				.then( loadedPlugins => {
-					expect( getPlugins( plugins ).length ).to.equal( 5 );
+					expect( getPlugins( plugins ).length ).toBe( 5 );
 
 					expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-						.to.deep.equal( [ 'A', 'B', 'Foo', 'C', 'D' ], 'order by plugins._add()' );
+						.toEqual( [ 'A', 'B', 'Foo', 'C', 'D' ] );
 					expect( getPluginNames( loadedPlugins ) )
-						.to.deep.equal( [ 'A', 'B', 'Foo', 'C', 'D' ], 'order by returned value' );
+						.toEqual( [ 'A', 'B', 'Foo', 'C', 'D' ] );
 				} );
 		} );
 
@@ -599,10 +603,10 @@ describe( 'PluginCollection', () => {
 
 				return plugins.init( [ 'A', 'B' ], [], [ newPluginA ] )
 					.then( () => {
-						expect( getPlugins( plugins ).length ).to.equal( 2 );
+						expect( getPlugins( plugins ).length ).toBe( 2 );
 
-						expect( plugins.get( newPluginA ) ).to.be.an.instanceof( newPluginA );
-						expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+						expect( plugins.get( newPluginA ) ).toBeInstanceOf( newPluginA );
+						expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
 					} );
 			} );
 
@@ -617,10 +621,10 @@ describe( 'PluginCollection', () => {
 
 				return plugins.init( [ PluginA, PluginB ], [], [ newPluginA ] )
 					.then( () => {
-						expect( getPlugins( plugins ).length ).to.equal( 2 );
+						expect( getPlugins( plugins ).length ).toBe( 2 );
 
-						expect( plugins.get( newPluginA ) ).to.be.an.instanceof( newPluginA );
-						expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+						expect( plugins.get( newPluginA ) ).toBeInstanceOf( newPluginA );
+						expect( plugins.get( PluginB ) ).toBeInstanceOf( PluginB );
 					} );
 			} );
 
@@ -802,7 +806,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ SomePlugin ] )
 				.then( () => {
-					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
+					expect( plugins.get( SomePlugin ) ).toBeInstanceOf( SomePlugin );
 				} );
 		} );
 
@@ -816,8 +820,8 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ SomePlugin ] )
 				.then( () => {
-					expect( plugins.get( 'foo/bar' ) ).to.be.instanceOf( SomePlugin );
-					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
+					expect( plugins.get( 'foo/bar' ) ).toBeInstanceOf( SomePlugin );
+					expect( plugins.get( SomePlugin ) ).toBeInstanceOf( SomePlugin );
 				} );
 		} );
 
@@ -865,25 +869,25 @@ describe( 'PluginCollection', () => {
 		} );
 
 		it( 'returns false if plugins is not loaded (retrieved by name)', () => {
-			expect( plugins.has( 'foobar' ) ).to.be.false;
+			expect( plugins.has( 'foobar' ) ).toBe( false );
 		} );
 
 		it( 'returns false if plugins is not loaded (retrieved by class)', () => {
 			class SomePlugin extends Plugin {
 			}
 
-			expect( plugins.has( SomePlugin ) ).to.be.false;
+			expect( plugins.has( SomePlugin ) ).toBe( false );
 		} );
 
 		it( 'returns true if plugins is loaded (retrieved by name)', () => {
 			return plugins.init( [ PluginA ] ).then( () => {
-				expect( plugins.has( 'A' ) ).to.be.true;
+				expect( plugins.has( 'A' ) ).toBe( true );
 			} );
 		} );
 
 		it( 'returns true if plugins is loaded (retrieved by class)', () => {
 			return plugins.init( [ PluginA ] ).then( () => {
-				expect( plugins.has( PluginA ) ).to.be.true;
+				expect( plugins.has( PluginA ) ).toBe( true );
 			} );
 		} );
 	} );
@@ -896,14 +900,14 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [ PluginA, PluginB ] )
 				.then( () => {
-					destroySpyForPluginA = sinon.spy( plugins.get( PluginA ), 'destroy' );
-					destroySpyForPluginB = sinon.spy( plugins.get( PluginB ), 'destroy' );
+					destroySpyForPluginA = vi.spyOn( plugins.get( PluginA ), 'destroy' );
+					destroySpyForPluginB = vi.spyOn( plugins.get( PluginB ), 'destroy' );
 
 					return plugins.destroy();
 				} )
 				.then( () => {
-					expect( destroySpyForPluginA.calledOnce ).to.equal( true );
-					expect( destroySpyForPluginB.calledOnce ).to.equal( true );
+					expect( destroySpyForPluginA ).toHaveBeenCalledOnce();
+					expect( destroySpyForPluginB ).toHaveBeenCalledOnce();
 				} );
 		} );
 
@@ -941,8 +945,8 @@ describe( 'PluginCollection', () => {
 			return plugins.init( [ AsynchronousPluginA, AsynchronousPluginB ] )
 				.then( () => plugins.destroy() )
 				.then( () => {
-					expect( destroyedPlugins ).to.contain( 'AsynchronousPluginB.destroy()' );
-					expect( destroyedPlugins ).to.contain( 'AsynchronousPluginA.destroy()' );
+					expect( destroyedPlugins ).toContain( 'AsynchronousPluginB.destroy()' );
+					expect( destroyedPlugins ).toContain( 'AsynchronousPluginA.destroy()' );
 				} );
 		} );
 
@@ -958,7 +962,7 @@ describe( 'PluginCollection', () => {
 			return plugins.init( [ PluginA, FooPlugin ] )
 				.then( () => plugins.destroy() )
 				.then( destroyedPlugins => {
-					expect( destroyedPlugins.length ).to.equal( 1 );
+					expect( destroyedPlugins.length ).toBe( 1 );
 				} );
 		} );
 	} );
@@ -967,7 +971,7 @@ describe( 'PluginCollection', () => {
 		it( 'exists', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
-			expect( plugins ).to.have.property( Symbol.iterator );
+			expect( plugins[ Symbol.iterator ] ).toBeDefined();
 		} );
 
 		it( 'returns only plugins by constructors', () => {
@@ -985,7 +989,8 @@ describe( 'PluginCollection', () => {
 					const pluginConstructors = Array.from( plugins )
 						.map( entry => entry[ 0 ] );
 
-					expect( pluginConstructors ).to.have.members( [ SomePlugin1, SomePlugin2 ] );
+					expect( pluginConstructors ).toEqual( expect.arrayContaining( [ SomePlugin1, SomePlugin2 ] ) );
+					expect( pluginConstructors.length ).toBe( 2 );
 				} );
 		} );
 	} );
@@ -1010,7 +1015,7 @@ function getPlugins( pluginCollection ) {
 }
 
 function getPluginsFromSpy( addSpy ) {
-	return addSpy.args
+	return addSpy.mock.calls
 		.map( arg => arg[ 0 ] )
 		// Entries may be kept twice in the plugins map - once as a pluginName => plugin, once as pluginClass => plugin.
 		// Return only pluginClass => plugin entries as these will always represent all plugins.

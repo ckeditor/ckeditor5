@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { global, env } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BalloonToolbar, BlockToolbar } from '@ckeditor/ckeditor5-ui';
@@ -10,7 +11,6 @@ import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-import { testUtils } from '../../_utils/utils.js';
 import { ClassicTestEditor } from '../../_utils/classictesteditor.js';
 import { Plugin } from '../../../src/plugin.js';
 import { getEditorUsageData } from '../../../src/editor/utils/editorusagedata.js';
@@ -18,7 +18,9 @@ import { getEditorUsageData } from '../../../src/editor/utils/editorusagedata.js
 describe( 'getEditorUsageData()', () => {
 	let domElement, editor;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editor = null;
@@ -42,32 +44,32 @@ describe( 'getEditorUsageData()', () => {
 
 		const usageData = getEditorUsageData( editor );
 
-		expect( usageData ).to.include( {
+		expect( usageData ).toMatchObject( {
 			hostname: 'localhost',
 			version: globalThis.CKEDITOR_VERSION,
 			type: 'Editor'
 		} );
 
-		expect( usageData.plugins.map( ( { name } ) => name ) ).to.deep.equal( [
+		expect( usageData.plugins.map( ( { name } ) => name ) ).toEqual( [
 			'Dialog', 'AccessibilityHelp', 'ClipboardMarkersUtils', 'ClipboardPipeline', 'Enter', 'Delete', 'WidgetTypeAround',
 			'Widget', 'DragDropTarget', 'DragDropBlockToolbar', 'DragDrop', 'PastePlainText', 'Clipboard', 'SelectAllEditing',
 			'SelectAllUI', 'SelectAll', 'ShiftEnter', 'Input', 'Typing', 'UndoEditing', 'UndoUI', 'Undo', 'Essentials'
 		] );
 
-		expect( usageData.distribution ).to.be.deep.equal( {
+		expect( usageData.distribution ).toEqual( {
 			channel: 'sh'
 		} );
 
-		expect( usageData.menuBar ).to.be.deep.equal( {
+		expect( usageData.menuBar ).toEqual( {
 			isVisible: false
 		} );
 
-		expect( usageData.language ).to.be.deep.equal( {
+		expect( usageData.language ).toEqual( {
 			ui: 'en',
 			content: 'en'
 		} );
 
-		expect( usageData.toolbar ).to.be.deep.equal( {
+		expect( usageData.toolbar ).toEqual( {
 			main: undefined,
 			block: undefined,
 			balloon: undefined
@@ -84,7 +86,7 @@ describe( 'getEditorUsageData()', () => {
 
 			const usageData = getEditorUsageData( editor );
 
-			expect( usageData.pageSessionId ).to.be.a( 'string' );
+			expect( typeof usageData.pageSessionId ).toBe( 'string' );
 		} );
 
 		it( 'should return the same page session id for the same editor instance', async () => {
@@ -93,7 +95,7 @@ describe( 'getEditorUsageData()', () => {
 			const usageData1 = getEditorUsageData( editor );
 			const usageData2 = getEditorUsageData( editor );
 
-			expect( usageData1.pageSessionId ).to.be.equal( usageData2.pageSessionId );
+			expect( usageData1.pageSessionId ).toBe( usageData2.pageSessionId );
 		} );
 
 		it( 'should return the same page session id for different editor instances', async () => {
@@ -106,7 +108,7 @@ describe( 'getEditorUsageData()', () => {
 			const usageData1 = getEditorUsageData( editor1 );
 			const usageData2 = getEditorUsageData( editor2 );
 
-			expect( usageData1.pageSessionId ).to.be.equal( usageData2.pageSessionId );
+			expect( usageData1.pageSessionId ).toBe( usageData2.pageSessionId );
 
 			await editor1.destroy();
 			await editor2.destroy();
@@ -120,16 +122,16 @@ describe( 'getEditorUsageData()', () => {
 
 			const usageData = getEditorUsageData( editor );
 
-			expect( global.window.CKEDITOR_PAGE_SESSION_ID ).to.be.equal( usageData.pageSessionId );
+			expect( global.window.CKEDITOR_PAGE_SESSION_ID ).toBe( usageData.pageSessionId );
 		} );
 
 		it( 'should not use crypto API to generate session id', async () => {
-			const spy = sinon.spy( global.window.crypto, 'randomUUID' );
+			const spy = vi.spyOn( global.window.crypto, 'randomUUID' );
 
 			editor = await ClassicTestEditor.create( domElement, {} );
 			getEditorUsageData( editor );
 
-			expect( spy ).to.not.have.been.called;
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -139,7 +141,7 @@ describe( 'getEditorUsageData()', () => {
 
 			editor = await ClassicTestEditor.create( domElement, {} );
 
-			expect( getEditorUsageData( editor ).sessionId ).to.be.string;
+			expect( typeof getEditorUsageData( editor ).sessionId ).toBe( 'string' );
 		} );
 
 		it( 'should return sessionId when present in local storage', async () => {
@@ -147,7 +149,7 @@ describe( 'getEditorUsageData()', () => {
 
 			editor = await ClassicTestEditor.create( domElement, {} );
 
-			expect( getEditorUsageData( editor ).sessionId ).to.equal( 'fake-session-id' );
+			expect( getEditorUsageData( editor ).sessionId ).toBe( 'fake-session-id' );
 		} );
 
 		it( 'should return the same session id for the same editor instance', async () => {
@@ -156,7 +158,7 @@ describe( 'getEditorUsageData()', () => {
 			const usageData1 = getEditorUsageData( editor );
 			const usageData2 = getEditorUsageData( editor );
 
-			expect( usageData1.sessionId ).to.be.equal( usageData2.sessionId );
+			expect( usageData1.sessionId ).toBe( usageData2.sessionId );
 		} );
 
 		it( 'should return the same page session id for different editor instances', async () => {
@@ -169,7 +171,7 @@ describe( 'getEditorUsageData()', () => {
 			const usageData1 = getEditorUsageData( editor1 );
 			const usageData2 = getEditorUsageData( editor2 );
 
-			expect( usageData1.sessionId ).to.be.equal( usageData2.sessionId );
+			expect( usageData1.sessionId ).toBe( usageData2.sessionId );
 
 			await editor1.destroy();
 			await editor2.destroy();
@@ -194,15 +196,25 @@ describe( 'getEditorUsageData()', () => {
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
-					expect( getEditorUsageData( editor ).env ).to.include( {
+					expect( getEditorUsageData( editor ).env ).toMatchObject( {
 						os: osName
 					} );
 				} );
 			}
 
+			it( 'should return "unknown" when no OS flag matches', async () => {
+				mockFlag( null );
+
+				editor = await ClassicTestEditor.create( domElement, {} );
+
+				expect( getEditorUsageData( editor ).env ).toMatchObject( {
+					os: 'unknown'
+				} );
+			} );
+
 			function mockFlag( mockFlag ) {
 				for ( const [ flag ] of os ) {
-					sinon.stub( env, flag ).value( flag === mockFlag );
+					vi.spyOn( env, flag, 'get' ).mockReturnValue( flag === mockFlag );
 				}
 			}
 		} );
@@ -220,15 +232,25 @@ describe( 'getEditorUsageData()', () => {
 
 					editor = await ClassicTestEditor.create( domElement, {} );
 
-					expect( getEditorUsageData( editor ).env ).to.include( {
+					expect( getEditorUsageData( editor ).env ).toMatchObject( {
 						browser
 					} );
 				} );
 			}
 
+			it( 'should return "unknown" when no browser flag matches', async () => {
+				mockFlag( null );
+
+				editor = await ClassicTestEditor.create( domElement, {} );
+
+				expect( getEditorUsageData( editor ).env ).toMatchObject( {
+					browser: 'unknown'
+				} );
+			} );
+
 			function mockFlag( mockFlag ) {
 				for ( const [ flag ] of browsers ) {
-					sinon.stub( env, flag ).value( flag === mockFlag );
+					vi.spyOn( env, flag, 'get' ).mockReturnValue( flag === mockFlag );
 				}
 			}
 		} );
@@ -242,7 +264,7 @@ describe( 'getEditorUsageData()', () => {
 				]
 			} );
 
-			expect( getEditorUsageData( editor ).plugins ).to.deep.equal( [
+			expect( getEditorUsageData( editor ).plugins ).toEqual( [
 				makeBasePluginUsageData( 'BoldEditing', { isOfficial: true } ),
 				makeBasePluginUsageData( 'BoldUI', { isOfficial: true } ),
 				makeBasePluginUsageData( 'Bold', { isOfficial: true } )
@@ -272,7 +294,7 @@ describe( 'getEditorUsageData()', () => {
 				]
 			} );
 
-			expect( getEditorUsageData( editor ).plugins ).to.deep.equal( [
+			expect( getEditorUsageData( editor ).plugins ).toEqual( [
 				makeBasePluginUsageData( 'NamedPlugin' )
 			] );
 		} );
@@ -299,7 +321,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).plugins ).to.deep.equal( [
+				expect( getEditorUsageData( editor ).plugins ).toEqual( [
 					makeBasePluginUsageData( 'NamedPlugin', { [ field ]: true } )
 				] );
 			} );
@@ -316,7 +338,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.main ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.main ).toEqual( {
 					isMultiline: false,
 					items: [ 'bold', 'undo', 'redo' ],
 					shouldNotGroupWhenFull: false
@@ -331,7 +353,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.main ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.main ).toEqual( {
 					isMultiline: false,
 					items: [],
 					shouldNotGroupWhenFull: false
@@ -346,7 +368,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.main ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.main ).toEqual( {
 					isMultiline: false,
 					items: [ 'bold', 'undo', 'redo' ],
 					shouldNotGroupWhenFull: false
@@ -364,7 +386,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.main ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.main ).toEqual( {
 					isMultiline: true,
 					items: [ 'bold', 'undo', 'redo' ],
 					shouldNotGroupWhenFull: false
@@ -382,7 +404,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.main ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.main ).toEqual( {
 					isMultiline: false,
 					items: [ 'bold', 'undo', 'redo' ],
 					shouldNotGroupWhenFull: true
@@ -399,7 +421,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.block ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.block ).toEqual( {
 					isMultiline: false,
 					items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ],
 					shouldNotGroupWhenFull: false
@@ -416,7 +438,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.block ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.block ).toEqual( {
 					isMultiline: false,
 					items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ],
 					shouldNotGroupWhenFull: false
@@ -432,7 +454,7 @@ describe( 'getEditorUsageData()', () => {
 					plugins: [ BlockToolbar, Paragraph, ParagraphButtonUI ]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.block ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.block ).toEqual( {
 					isMultiline: false,
 					items: [ 'paragraph' ],
 					shouldNotGroupWhenFull: true
@@ -449,7 +471,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.balloon ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.balloon ).toEqual( {
 					isMultiline: false,
 					items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ],
 					shouldNotGroupWhenFull: false
@@ -466,7 +488,7 @@ describe( 'getEditorUsageData()', () => {
 					]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.balloon ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.balloon ).toEqual( {
 					isMultiline: false,
 					items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ],
 					shouldNotGroupWhenFull: false
@@ -482,7 +504,7 @@ describe( 'getEditorUsageData()', () => {
 					plugins: [ BalloonToolbar, Paragraph, ParagraphButtonUI ]
 				} );
 
-				expect( getEditorUsageData( editor ).toolbar.balloon ).to.be.deep.equal( {
+				expect( getEditorUsageData( editor ).toolbar.balloon ).toEqual( {
 					isMultiline: false,
 					items: [ 'paragraph' ],
 					shouldNotGroupWhenFull: true

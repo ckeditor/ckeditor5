@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { cloneDeep } from 'es-toolkit/compat';
@@ -24,7 +25,7 @@ describe( 'Accessibility', () => {
 	} );
 
 	it( 'should provide default categories, groups, and keystrokes', () => {
-		expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).to.deep.equal( [
+		expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).toEqual( [
 			[
 				'contentEditing',
 				{
@@ -109,11 +110,11 @@ describe( 'Accessibility', () => {
 		const accessibility = editor.accessibility;
 		const keystrokes = serializeKeystrokes( accessibility.keystrokeInfos );
 
-		expect( keystrokes[ 1 ][ 1 ].groups[ 0 ][ 1 ].keystrokes ).to.deep.include( {
+		expect( keystrokes[ 1 ][ 1 ].groups[ 0 ][ 1 ].keystrokes ).toEqual( expect.arrayContaining( [ {
 			label: 'Move focus to the menu bar, navigate between menu bars',
 			keystroke: 'Alt+F9',
 			mayRequireFn: true
-		} );
+		} ] ) );
 
 		editor.fire( 'ready' );
 		await editor.destroy();
@@ -129,7 +130,7 @@ describe( 'Accessibility', () => {
 
 			const keystrokes = serializeKeystrokes( accessibility.keystrokeInfos );
 
-			expect( keystrokes ).to.deep.include( [
+			expect( keystrokes ).toEqual( expect.arrayContaining( [ [
 				'test',
 				{
 					id: 'test',
@@ -146,7 +147,7 @@ describe( 'Accessibility', () => {
 						]
 					]
 				}
-			] );
+			] ] ) );
 		} );
 
 		it( 'should add child groups with keystrokes when specified', () => {
@@ -168,7 +169,7 @@ describe( 'Accessibility', () => {
 				]
 			} );
 
-			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).to.deep.include( [
+			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).toEqual( expect.arrayContaining( [ [
 				'testcat',
 				{
 					id: 'testcat',
@@ -198,7 +199,7 @@ describe( 'Accessibility', () => {
 						]
 					]
 				}
-			] );
+			] ] ) );
 		} );
 	} );
 
@@ -215,7 +216,7 @@ describe( 'Accessibility', () => {
 				]
 			} );
 
-			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).to.deep.include( [
+			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).toEqual( expect.arrayContaining( [ [
 				'contentEditing',
 				{
 					id: 'contentEditing',
@@ -245,7 +246,7 @@ describe( 'Accessibility', () => {
 						]
 					]
 				}
-			] );
+			] ] ) );
 		} );
 
 		it( 'should throw if the category was not found', () => {
@@ -283,7 +284,7 @@ describe( 'Accessibility', () => {
 				]
 			} );
 
-			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).to.deep.include( [
+			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).toEqual( expect.arrayContaining( [ [
 				'testcat',
 				{
 					id: 'testcat',
@@ -313,7 +314,7 @@ describe( 'Accessibility', () => {
 						]
 					]
 				}
-			] );
+			] ] ) );
 		} );
 	} );
 
@@ -387,7 +388,7 @@ describe( 'Accessibility', () => {
 				]
 			} );
 
-			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).to.deep.include( [
+			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).toEqual( expect.arrayContaining( [ [
 				'testcat',
 				{
 					id: 'testcat',
@@ -417,7 +418,7 @@ describe( 'Accessibility', () => {
 						]
 					]
 				}
-			] );
+			] ] ) );
 		} );
 
 		it( 'should add keystrokes to the default group and category ', () => {
@@ -430,7 +431,7 @@ describe( 'Accessibility', () => {
 				]
 			} );
 
-			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).to.deep.include( [
+			expect( serializeKeystrokes( accessibility.keystrokeInfos ) ).toEqual( expect.arrayContaining( [ [
 				'contentEditing',
 				{
 					description: 'These keyboard shortcuts allow for quick access to content editing features.',
@@ -452,7 +453,7 @@ describe( 'Accessibility', () => {
 					id: 'contentEditing',
 					label: 'Content editing keystrokes'
 				}
-			] );
+			] ] ) );
 		} );
 	} );
 

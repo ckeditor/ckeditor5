@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '../../_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Editor } from '../../../src/editor/editor.js';
 import { ElementApiMixin } from '../../../src/editor/utils/elementapimixin.js';
 import { normalizeRootsConfig, normalizeSingleRootEditorConstructorParams } from '../../../src/editor/utils/normalizerootsconfig.js';
@@ -13,8 +13,6 @@ import { global } from '@ckeditor/ckeditor5-utils';
 describe( 'registerAndInitializeRootConfigAttributes()', () => {
 	let domElement, editor;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		editor = null;
 		domElement = global.document.body.appendChild(
@@ -23,6 +21,7 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
 		domElement.remove();
 
 		if ( editor && editor.state !== 'destroyed' ) {
@@ -33,7 +32,7 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 	it( 'should not crash if editor was initialized without root(s) config', async () => {
 		editor = await CustomEditor.create( {} );
 
-		expect( editor ).to.be.instanceOf( CustomEditor );
+		expect( editor ).toBeInstanceOf( CustomEditor );
 	} );
 
 	it( 'should not crash if root config is defined without `modelAttributes`', async () => {
@@ -43,7 +42,7 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 			}
 		} );
 
-		expect( editor ).to.be.instanceOf( CustomEditor );
+		expect( editor ).toBeInstanceOf( CustomEditor );
 	} );
 
 	it( 'should not crash if roots config is defined without `modelAttributes`', async () => {
@@ -55,7 +54,7 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 			}
 		} );
 
-		expect( editor ).to.be.instanceOf( CustomEditor );
+		expect( editor ).toBeInstanceOf( CustomEditor );
 	} );
 
 	it( 'should register attributes if specified in `root.modelAttributes`', async () => {
@@ -70,10 +69,10 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 
 		const root = editor.model.document.getRoot();
 
-		expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
-		expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+		expect( root.getAttribute( 'foo' ) ).toBe( 1 );
+		expect( root.getAttribute( 'bar' ) ).toBe( 2 );
 
-		expect( editor.getRootAttributes() ).to.deep.equal( {
+		expect( editor.getRootAttributes() ).toEqual( {
 			foo: 1,
 			bar: 2
 		} );
@@ -93,10 +92,10 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 
 		const root = editor.model.document.getRoot();
 
-		expect( root.getAttribute( 'foo' ) ).to.be.equal( 1 );
-		expect( root.getAttribute( 'bar' ) ).to.be.equal( 2 );
+		expect( root.getAttribute( 'foo' ) ).toBe( 1 );
+		expect( root.getAttribute( 'bar' ) ).toBe( 2 );
 
-		expect( editor.getRootAttributes() ).to.deep.equal( {
+		expect( editor.getRootAttributes() ).toEqual( {
 			foo: 1,
 			bar: 2
 		} );
@@ -117,12 +116,26 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 			}
 		} );
 
-		expect( editor.getRootAttributes() ).to.deep.equal( {
+		expect( editor.getRootAttributes() ).toEqual( {
 			foo: 1,
 			bar: 2
 		} );
 
-		expect( editor.model.document.getRoot( 'second' ) ).to.be.null;
+		expect( editor.model.document.getRoot( 'second' ) ).toBeNull();
+	} );
+
+	it( 'should not set a root attribute when its value is `null` in `modelAttributes`', async () => {
+		editor = await CustomEditor.create( {
+			roots: {
+				main: {
+					modelAttributes: {
+						foo: null
+					}
+				}
+			}
+		} );
+
+		expect( editor.getRootAttributes( 'main' ) ).toEqual( { foo: null } );
 	} );
 
 	it( 'should not crash if there is no `modelAttributes` specified for created root', async () => {
@@ -137,8 +150,8 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 			}
 		} );
 
-		expect( editor.getRootAttributes( 'main' ) ).to.deep.equal( { foo: 1 } );
-		expect( editor.getRootAttributes( 'second' ) ).to.deep.equal( { foo: null } );
+		expect( editor.getRootAttributes( 'main' ) ).toEqual( { foo: 1 } );
+		expect( editor.getRootAttributes( 'second' ) ).toEqual( { foo: null } );
 	} );
 
 	it( 'should be possible to define attributes for multiple roots at once', async () => {
@@ -162,17 +175,17 @@ describe( 'registerAndInitializeRootConfigAttributes()', () => {
 			}
 		} );
 
-		expect( editor.getRootAttributes( 'main' ) ).to.deep.equal( {
+		expect( editor.getRootAttributes( 'main' ) ).toEqual( {
 			foo: 1,
 			bar: null
 		} );
 
-		expect( editor.getRootAttributes( 'second' ) ).to.deep.equal( {
+		expect( editor.getRootAttributes( 'second' ) ).toEqual( {
 			foo: null,
 			bar: 2
 		} );
 
-		expect( editor.getRootAttributes( 'third' ) ).to.deep.equal( {
+		expect( editor.getRootAttributes( 'third' ) ).toEqual( {
 			foo: null,
 			bar: 3
 		} );
