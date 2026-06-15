@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command, PendingActions } from '@ckeditor/ckeditor5-core';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -11,12 +12,22 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image, PictureEditing, ImageUploadEditing, ImageUploadProgress } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Notification } from '@ckeditor/ckeditor5-ui';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import * as isEqualCompat from 'es-toolkit/compat';
+import { isEqual as isEqualMock } from 'es-toolkit/compat';
+
+vi.mock( 'es-toolkit/compat', async importOriginal => {
+	const actual = await importOriginal();
+	const isEqualFn = vi.fn( actual.isEqual );
+	// Expose the original so tests can restore behavior after `mockReturnValue` overrides.
+	isEqualFn.__originalIsEqual = actual.isEqual;
+	return {
+		...actual,
+		isEqual: isEqualFn
+	};
+} );
 import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
@@ -27,8 +38,6 @@ import { CKBoxUtils } from '../../src/ckboxutils.js';
 const CKBOX_API_URL = 'https://upload.example.com';
 
 describe( 'CKBoxImageEditCommand', () => {
-	testUtils.createSinonSandbox();
-
 	let editor, domElement, command, model, dataMock, dataWithBlurHashMock;
 
 	beforeEach( async () => {
@@ -41,13 +50,17 @@ describe( 'CKBoxImageEditCommand', () => {
 			'signature'
 		].join( '.' );
 
-		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
+		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
+		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
+		// HTTP requests replace `window.XMLHttpRequest` with a fake server, so they are not affected.
+		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
+		vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).mockResolvedValue();
 
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
 
 		window.CKBox = {
-			mountImageEditor: sinon.stub()
+			mountImageEditor: vi.fn()
 		};
 
 		editor = await ClassicTestEditor.create( domElement, {
@@ -123,15 +136,20 @@ describe( 'CKBoxImageEditCommand', () => {
 		}
 
 		await editor.destroy();
+
+		vi.restoreAllMocks();
+		// Restore the real isEqual implementation (mock is preserved by `vi.mock`).
+		vi.mocked( isEqualMock ).mockImplementation( isEqualMock.__originalIsEqual );
+		vi.mocked( isEqualMock ).mockClear();
 	} );
 
 	describe( 'constructor', () => {
 		it( 'should be a command instance', () => {
-			expect( command ).to.be.instanceOf( Command );
+			expect( command ).toBeInstanceOf( Command );
 		} );
 
 		it( 'should set "#value" property to false', () => {
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 	} );
 
@@ -142,8 +160,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			await tick();
 
-			expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
-			expect( window.CKBox.mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'assetId' ).that.equals( 'example-id' );
+			expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+			expect( window.CKBox.mountImageEditor.mock.calls[ 0 ][ 1 ] ).toHaveProperty( 'assetId', 'example-id' );
 		} );
 
 		describe( 'mount image editor options', () => {
@@ -161,8 +179,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				await tick();
 
-				expect( mountImageEditor.callCount ).to.equal( 1 );
-				expect( mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'language' ).that.equals( 'fr' );
+				expect( mountImageEditor ).toHaveBeenCalledTimes( 1 );
+				expect( mountImageEditor.mock.calls[ 0 ][ 1 ] ).toHaveProperty( 'language', 'fr' );
 			} );
 
 			it( 'should forward tokenUrl configuration to mountImageEditor', async () => {
@@ -171,10 +189,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				await tick();
 
-				expect( mountImageEditor.callCount ).to.equal( 1 );
-				expect( mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'tokenUrl' ).that.equals(
-					'https://example.com/token'
-				);
+				expect( mountImageEditor ).toHaveBeenCalledTimes( 1 );
+				expect( mountImageEditor.mock.calls[ 0 ][ 1 ] ).toHaveProperty( 'tokenUrl', 'https://example.com/token' );
 			} );
 
 			it( 'should forward serviceOrigin configuration to mountImageEditor', async () => {
@@ -183,10 +199,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				await tick();
 
-				expect( mountImageEditor.callCount ).to.equal( 1 );
-				expect( mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'serviceOrigin' ).that.equals(
-					'https://example.com'
-				);
+				expect( mountImageEditor ).toHaveBeenCalledTimes( 1 );
+				expect( mountImageEditor.mock.calls[ 0 ][ 1 ] ).toHaveProperty( 'serviceOrigin', 'https://example.com' );
 			} );
 		} );
 
@@ -197,14 +211,17 @@ describe( 'CKBoxImageEditCommand', () => {
 
 	describe( 'save edited image logic', () => {
 		describe( 'opening dialog', () => {
-			let clock;
-
 			beforeEach( () => {
-				clock = sinon.useFakeTimers( { now: Date.now() } );
+				vi.useFakeTimers( { now: Date.now() } );
 			} );
 
-			afterEach( () => {
-				sinon.restore();
+			afterEach( async () => {
+				// Flush any pending debounced/abortable promises started by `command.execute()` calls
+				// in this block so their rejections settle while the editor is still alive.
+				// Otherwise they surface as unhandled rejections during later tests and pollute
+				// the global `console.error` spy in browser mode.
+				await vi.runAllTimersAsync();
+				vi.useRealTimers();
 			} );
 
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
@@ -213,8 +230,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const wrapper = command._wrapper;
 
-				expect( wrapper.nodeName ).to.equal( 'DIV' );
-				expect( wrapper.className ).to.equal( 'ck ckbox-wrapper' );
+				expect( wrapper.nodeName ).toEqual( 'DIV' );
+				expect( wrapper.className ).toEqual( 'ck ckbox-wrapper' );
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
@@ -231,15 +248,15 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const wrapper3 = command._wrapper;
 
-				expect( wrapper1 ).to.equal( wrapper2 );
-				expect( wrapper2 ).to.equal( wrapper3 );
+				expect( wrapper1 ).toEqual( wrapper2 );
+				expect( wrapper2 ).toEqual( wrapper3 );
 			} );
 
 			it( 'should not create a wrapper if the command is disabled', () => {
 				command.isEnabled = false;
 				command.execute();
 
-				expect( command._wrapper ).to.equal( null );
+				expect( command._wrapper ).toEqual( null );
 			} );
 
 			it( 'should not create a wrapper if the wrapper is already created', () => {
@@ -248,7 +265,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				command._wrapper = wrapper;
 				command.execute();
 
-				expect( command._wrapper ).to.equal( wrapper );
+				expect( command._wrapper ).toEqual( wrapper );
 			} );
 
 			it( 'should open the CKBox Image Editor dialog instance only once', async () => {
@@ -258,9 +275,9 @@ describe( 'CKBoxImageEditCommand', () => {
 				command.execute();
 				command.execute();
 
-				await clock.tickAsync( 0 );
+				await vi.advanceTimersByTimeAsync( 0 );
 
-				expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
+				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance (ckbox image)', async () => {
@@ -277,19 +294,19 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				expect( options ).to.have.property( 'assetId', ckboxImageId );
-				expect( options ).to.have.property( 'serviceOrigin', CKBOX_API_URL );
-				expect( options ).to.have.property( 'tokenUrl', 'foo' );
-				expect( options.imageEditing.allowOverwrite ).to.be.false;
-				expect( options.onSave ).to.be.a( 'function' );
-				expect( options.onClose ).to.be.a( 'function' );
+				expect( options ).toHaveProperty( 'assetId', ckboxImageId );
+				expect( options ).toHaveProperty( 'serviceOrigin', CKBOX_API_URL );
+				expect( options ).toHaveProperty( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).toBe( false );
+				expect( options.onSave ).toBeTypeOf( 'function' );
+				expect( options.onClose ).toBeTypeOf( 'function' );
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance (external image)', async () => {
 				const imageUrl = 'https://example.com/assets/sample.png';
 				const categoryId = 'id-category-1';
 
-				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockResolvedValue( categoryId );
 
 				_setModelData( model,
 					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
@@ -302,13 +319,13 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				expect( options ).to.not.have.property( 'assetId' );
-				expect( options ).to.have.property( 'imageUrl', imageUrl );
-				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
-				expect( options ).to.have.property( 'tokenUrl', 'foo' );
-				expect( options.imageEditing.allowOverwrite ).to.be.false;
-				expect( options.onSave ).to.be.a( 'function' );
-				expect( options.onClose ).to.be.a( 'function' );
+				expect( options ).not.toHaveProperty( 'assetId' );
+				expect( options ).toHaveProperty( 'imageUrl', imageUrl );
+				expect( options ).toHaveProperty( 'uploadCategoryId', categoryId );
+				expect( options ).toHaveProperty( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).toBe( false );
+				expect( options.onSave ).toBeTypeOf( 'function' );
+				expect( options.onClose ).toBeTypeOf( 'function' );
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance (external image with relative URL)', async () => {
@@ -316,7 +333,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const categoryId = 'id-category-1';
 				const origin = window.location.origin;
 
-				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockResolvedValue( categoryId );
 
 				_setModelData( model,
 					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
@@ -329,22 +346,22 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				expect( options ).to.not.have.property( 'assetId' );
-				expect( options ).to.have.property( 'imageUrl', `${ origin }/${ imageUrl }` );
-				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
-				expect( options ).to.have.property( 'tokenUrl', 'foo' );
-				expect( options.imageEditing.allowOverwrite ).to.be.false;
-				expect( options.onSave ).to.be.a( 'function' );
-				expect( options.onClose ).to.be.a( 'function' );
+				expect( options ).not.toHaveProperty( 'assetId' );
+				expect( options ).toHaveProperty( 'imageUrl', `${ origin }/${ imageUrl }` );
+				expect( options ).toHaveProperty( 'uploadCategoryId', categoryId );
+				expect( options ).toHaveProperty( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).toBe( false );
+				expect( options.onSave ).toBeTypeOf( 'function' );
+				expect( options.onClose ).toBeTypeOf( 'function' );
 			} );
 
 			it( 'should handle error when preparing options', async () => {
 				const notification = editor.plugins.get( Notification );
-				const notificationStub = sinon.stub( notification, 'showWarning' );
-				const consoleStub = sinon.stub( console, 'error' );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+				const consoleStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 				const reason = 'getCategoryIdForFile behavied very badly.';
 
-				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).returns( Promise.reject( reason ) );
+				vi.spyOn( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).mockReturnValue( Promise.reject( reason ) );
 
 				_setModelData( model,
 					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
@@ -352,11 +369,18 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command.execute();
 
-				await clock.tickAsync( 0 );
+				await vi.advanceTimersByTimeAsync( 0 );
 
-				expect( command._wrapper ).to.be.null;
-				expect( consoleStub.calledOnceWith( reason ) ).to.be.true;
-				expect( notificationStub.calledOnce ).to.be.true;
+				// Ignore Vitest browser-mode forwarding of cross-file unhandled rejections,
+				// which surface as PromiseRejectionEvent objects on the shared `console.error`.
+				const productionCalls = consoleStub.mock.calls.filter(
+					call => !( call[ 0 ] instanceof PromiseRejectionEvent )
+				);
+
+				expect( command._wrapper ).toBeNull();
+				expect( productionCalls ).toHaveLength( 1 );
+				expect( productionCalls[ 0 ][ 0 ] ).toEqual( reason );
+				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
@@ -377,14 +401,14 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command.execute();
 
-				expect( command._wrapper ).not.to.equal( null );
+				expect( command._wrapper ).not.toEqual( null );
 
-				const spy = sinon.spy( command._wrapper, 'remove' );
+				const spy = vi.spyOn( command._wrapper, 'remove' );
 
 				options.onClose();
 
-				expect( spy.callCount ).to.equal( 1 );
-				expect( command._wrapper ).to.equal( null );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( command._wrapper ).toEqual( null );
 			} );
 
 			it( 'should focus view after closing the CKBox Image Editor dialog', async () => {
@@ -402,13 +426,13 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 				command.execute();
 
 				options.onClose();
 
-				sinon.assert.calledOnce( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should refresh the command after closing the CKBox Image Editor dialog', async () => {
@@ -426,21 +450,21 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				const refreshSpy = testUtils.sinon.spy( command, 'refresh' );
+				const refreshSpy = vi.spyOn( command, 'refresh' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 
 				command.execute();
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 
 				options.onClose();
-				expect( command.value ).to.be.false;
-				sinon.assert.calledOnce( refreshSpy );
+				expect( command.value ).toBe( false );
+				expect( refreshSpy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should update ui after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
 				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
@@ -454,20 +478,20 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				const updateUISpy = testUtils.sinon.spy( editor.ui, 'update' );
+				const updateUISpy = vi.spyOn( editor.ui, 'update' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 
 				command.execute();
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 
 				options.onClose();
 
-				await clock.tickAsync( 10 );
+				await vi.advanceTimersByTimeAsync( 10 );
 
-				expect( command.value ).to.be.false;
-				sinon.assert.calledOnce( updateUISpy );
-				clock.restore();
+				expect( command.value ).toBe( false );
+				expect( updateUISpy ).toHaveBeenCalledTimes( 1 );
+				vi.useRealTimers();
 			} );
 
 			it( 'should clear timer on editor destroy', async () => {
@@ -485,25 +509,25 @@ describe( 'CKBoxImageEditCommand', () => {
 					controller: new AbortController()
 				} );
 
-				const clearTimeoutSpy = sinon.spy( command._updateUiDelayed, 'cancel' );
+				const clearTimeoutSpy = vi.spyOn( command._updateUiDelayed, 'cancel' );
 
 				editor.fire( 'ready' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 
 				command.execute();
 
 				options.onClose();
 
 				command.destroy();
-				sinon.assert.calledTwice( clearTimeoutSpy );
+				expect( clearTimeoutSpy ).toHaveBeenCalledTimes( 2 );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 		} );
 
 		describe( 'saving edited asset', () => {
-			let options, sinonXHR, jwtToken, clock;
+			let options, fakeXHRServer, jwtToken;
 
 			beforeEach( async () => {
 				const ckboxImageId = 'example-id';
@@ -521,27 +545,23 @@ describe( 'CKBoxImageEditCommand', () => {
 					ckboxImageId,
 					controller: new AbortController()
 				} );
-				sinonXHR = testUtils.sinon.useFakeServer();
-				sinonXHR.autoRespond = true;
+				fakeXHRServer = createFakeXHRServer();
 			} );
 
 			afterEach( () => {
-				sinonXHR.restore();
-
-				if ( clock ) {
-					clock.restore();
-				}
+				fakeXHRServer.restore();
+				vi.useRealTimers();
 			} );
 
 			it( 'should poll data for edited image and if success status, save it', async () => {
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
 					return xhr.error();
 				} );
 
 				command.on( 'ckboxImageEditor:processed', () => {
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toEqual(
 						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
 							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
 						'</imageBlock>]'
@@ -550,13 +570,13 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 1500 );
+				await vi.advanceTimersByTimeAsync( 1500 );
 			} );
 
 			it( 'should abort when image was removed while processing on server', async () => {
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -568,13 +588,13 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 100 );
+				await vi.advanceTimersByTimeAsync( 100 );
 
 				const selection = model.document.selection;
 
 				model.deleteContent( selection );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -584,17 +604,17 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				await clock.tickAsync( 1000 );
+				await vi.advanceTimersByTimeAsync( 1000 );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toEqual( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should display notification in case fail', async () => {
 				const notification = editor.plugins.get( Notification );
-				const clock = sinon.useFakeTimers();
-				const spy = sinon.stub( notification, 'showWarning' );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -606,35 +626,41 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 20000 );
+				await vi.advanceTimersByTimeAsync( 20000 );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should log error in case runtime error in asynchronous code', async () => {
 				const notification = editor.plugins.get( Notification );
-				const clock = sinon.useFakeTimers();
-				const spy = sinon.stub( notification, 'showWarning' );
-				const consoleStub = sinon.stub( console, 'error' );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+				const consoleStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
-				sinon.stub( command, '_getAssetStatusFromServer' ).callsFake( () => {
+				vi.spyOn( command, '_getAssetStatusFromServer' ).mockImplementation( () => {
 					throw new Error( 'unhandled' );
 				} );
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 20000 );
+				await vi.advanceTimersByTimeAsync( 20000 );
 
-				sinon.assert.notCalled( spy );
-				sinon.assert.calledOnce( consoleStub );
+				// Ignore Vitest browser-mode forwarding of cross-file unhandled rejections,
+				// which surface as `PromiseRejectionEvent` objects on the shared `console.error`.
+				const productionCalls = consoleStub.mock.calls.filter(
+					call => !( call[ 0 ] instanceof PromiseRejectionEvent )
+				);
+
+				expect( spy ).not.toHaveBeenCalled();
+				expect( productionCalls ).toHaveLength( 1 );
 			} );
 
 			it( 'should disable command for images being processed', async () => {
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
-				sinon.stub( isEqualCompat, 'isEqual' ).returns( true );
+				vi.mocked( isEqualMock ).mockReturnValue( true );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -644,20 +670,20 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 10 );
+				await vi.advanceTimersByTimeAsync( 10 );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should abort on CKBoxImageEditCommand destroy', async () => {
-				const clock = sinon.useFakeTimers();
-				const spy = sinon.spy( editor.editing, 'reconvertItem' );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( editor.editing, 'reconvertItem' );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -669,21 +695,21 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 10 );
+				await vi.advanceTimersByTimeAsync( 10 );
 
 				command.destroy();
 
-				await clock.tickAsync( 10 );
+				await vi.advanceTimersByTimeAsync( 10 );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should not display notification error on editor destroy', async () => {
 				const notification = editor.plugins.get( Notification );
-				const clock = sinon.useFakeTimers();
-				const spy = sinon.spy( notification, 'showWarning' );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -695,39 +721,39 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 10 );
+				await vi.advanceTimersByTimeAsync( 10 );
 
 				command.destroy();
 
-				await clock.tickAsync( 10 );
+				await vi.advanceTimersByTimeAsync( 10 );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should display notification error if server fail or didnt respond', async () => {
 				const notification = editor.plugins.get( Notification );
-				const clock = sinon.useFakeTimers();
-				const spy = sinon.stub( notification, 'showWarning' );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
 					return xhr.error();
 				} );
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 20000 );
+				await vi.advanceTimersByTimeAsync( 20000 );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should reconvert image if server respond with "error" status', async () => {
-				const clock = sinon.useFakeTimers();
-				const spy = sinon.spy( editor.editing, 'reconvertItem' );
+				vi.useFakeTimers();
+				const spy = vi.spyOn( editor.editing, 'reconvertItem' );
 				const notification = editor.plugins.get( Notification );
 
-				sinon.stub( notification, 'showWarning' );
+				vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -739,17 +765,15 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 20000 );
+				await vi.advanceTimersByTimeAsync( 20000 );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should stop polling if limit was reached', async () => {
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
-				const respondSpy = sinon.spy( sinonXHR, 'respond' );
-
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -761,15 +785,15 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				await clock.tickAsync( 15000 );
+				await vi.advanceTimersByTimeAsync( 15000 );
 
-				sinon.assert.callCount( respondSpy, 4 );
+				expect( fakeXHRServer.requests ).toHaveLength( 4 );
 			} );
 
 			it( 'should add a pending action after a change and remove after server response', async () => {
 				const pendingActions = editor.plugins.get( PendingActions );
 
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
 				const dataMock2 = {
 					data: {
@@ -788,9 +812,9 @@ describe( 'CKBoxImageEditCommand', () => {
 					}
 				};
 
-				expect( pendingActions._actions.length ).to.equal( 0 );
+				expect( pendingActions._actions.length ).toEqual( 0 );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -802,20 +826,20 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				expect( pendingActions.hasAny ).to.be.true;
-				expect( pendingActions._actions.length ).to.equal( 1 );
-				expect( pendingActions.first.message ).to.equal( 'Processing the edited image.' );
+				expect( pendingActions.hasAny ).toBe( true );
+				expect( pendingActions._actions.length ).toEqual( 1 );
+				expect( pendingActions.first.message ).toEqual( 'Processing the edited image.' );
 
-				await clock.tickAsync( 1000 );
+				await vi.advanceTimersByTimeAsync( 1000 );
 
 				options.onSave( dataMock2 );
 
-				expect( pendingActions.hasAny ).to.be.true;
-				expect( pendingActions._actions.length ).to.equal( 2 );
-				expect( pendingActions.first.message ).to.equal( 'Processing the edited image.' );
-				expect( pendingActions._actions.get( 1 ).message ).to.equal( 'Processing the edited image.' );
+				expect( pendingActions.hasAny ).toBe( true );
+				expect( pendingActions._actions.length ).toEqual( 2 );
+				expect( pendingActions.first.message ).toEqual( 'Processing the edited image.' );
+				expect( pendingActions._actions.get( 1 ).message ).toEqual( 'Processing the edited image.' );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( {
@@ -829,14 +853,14 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				await clock.tickAsync( 10000 );
+				await vi.advanceTimersByTimeAsync( 10000 );
 
-				expect( pendingActions.hasAny ).to.be.false;
-				expect( pendingActions._actions.length ).to.equal( 0 );
+				expect( pendingActions.hasAny ).toBe( false );
+				expect( pendingActions._actions.length ).toEqual( 0 );
 			} );
 
 			it( 'should reject if fetching asset\'s status ended with the authorization error', () => {
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+				fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					401,
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( { message: 'Invalid token.', statusCode: 401 } )
@@ -844,12 +868,12 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				return command._getAssetStatusFromServer( dataMock )
 					.then( res => {
-						expect( res.message ).to.equal( 'Invalid token.' );
+						expect( res.message ).toEqual( 'Invalid token.' );
 						throw new Error( 'Expected to be rejected.' );
 					}, () => {
-						expect( sinonXHR.requests[ 0 ].requestHeaders ).to.be.an( 'object' );
-						expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-						expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
+						expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toBeInstanceOf( Object );
+						expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'Authorization', jwtToken );
+						expect( fakeXHRServer.requests[ 0 ].requestHeaders ).toHaveProperty( 'CKBox-Version', 'CKEditor 5' );
 					} );
 			} );
 
@@ -876,7 +900,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -902,7 +926,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( modelData );
+				expect( _getModelData( model ) ).toEqual( modelData );
 			} );
 
 			it( 'should replace inline image with saved one after it is processed', () => {
@@ -914,7 +938,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<paragraph>[<imageInline ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -935,7 +959,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -956,7 +980,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'[<imageBlock ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
@@ -978,7 +1002,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataWithBlurHashMock );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -993,7 +1017,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should change <img> size attributes and add `image-processing` CSS class ' +
 				'while waiting for the processed image', async () => {
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
 						'<img alt="alt text" height="50" loading="lazy" src="/assets/sample.png" style="aspect-ratio:50/50" width="50">' +
 						'</img>' +
@@ -1003,7 +1027,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toEqual(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
 						'contenteditable="false" data-ckbox-resource-id="example-id">' +
 						'<img alt="alt text" height="100" loading="lazy" src="/assets/sample.png" ' +
@@ -1026,4 +1050,137 @@ function createToken( tokenClaims ) {
 		// Signature.
 		'signature'
 	].join( '.' );
+}
+
+// Minimal fake XHR server used in this file:
+// - `respondWith( method, url, [ status, headers, body ] )` — register a deferred response.
+// - `respondWith( method, url, xhr => { ... } )` — register a callback response.
+//   The callback receives the request and may call `xhr.error()`.
+// - `requests` — array of issued requests (tracked from `open()`).
+// - `restore()` — revert the `XMLHttpRequest` global.
+//
+// Responses fire on the next macrotask (via `setTimeout( 0 )`) so the requesting
+// code can finish attaching its listeners first. The latest matching `respondWith`
+// entry wins, so callers can override earlier ones mid-test.
+function createFakeXHRServer() {
+	const responses = [];
+	const requests = [];
+	const OriginalXMLHttpRequest = window.XMLHttpRequest;
+
+	class FakeXMLHttpRequest {
+		constructor() {
+			this.listeners = new Map();
+			this.requestHeaders = {};
+			this.upload = {
+				addEventListener: () => {},
+				removeEventListener: () => {}
+			};
+			this.status = 0;
+			this.response = null;
+			this.responseText = '';
+			this.responseType = '';
+			this.aborted = false;
+			this._sent = false;
+		}
+
+		open( method, url ) {
+			this.method = method;
+			this.url = url;
+
+			if ( !requests.includes( this ) ) {
+				requests.push( this );
+			}
+		}
+
+		setRequestHeader( name, value ) {
+			this.requestHeaders[ name ] = value;
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		removeEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			const index = callbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				callbacks.splice( index, 1 );
+			}
+		}
+
+		abort() {
+			this.aborted = true;
+			this._dispatchEvent( 'abort' );
+		}
+
+		send() {
+			this._sent = true;
+			this._dispatchEvent( 'loadstart' );
+
+			// Defer the response so the requesting code can finish attaching its listeners first.
+			window.setTimeout( () => {
+				if ( this.aborted ) {
+					return;
+				}
+
+				// Find the latest matching response (so callers can override earlier ones).
+				let match;
+				for ( let i = responses.length - 1; i >= 0; i-- ) {
+					const entry = responses[ i ];
+					if ( entry.method === this.method && entry.url === this.url ) {
+						match = entry;
+						break;
+					}
+				}
+
+				if ( !match ) {
+					this.status = 404;
+					this._dispatchEvent( 'load' );
+					this._dispatchEvent( 'loadend' );
+					return;
+				}
+
+				if ( typeof match.response === 'function' ) {
+					match.response( this );
+					return;
+				}
+
+				const [ status, headers, body ] = match.response;
+
+				this.status = status;
+				this.responseHeaders = headers;
+				this.responseText = body;
+				this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+
+				this._dispatchEvent( 'load' );
+				this._dispatchEvent( 'loadend' );
+			}, 10 );
+		}
+
+		error() {
+			this._dispatchEvent( 'error' );
+			this._dispatchEvent( 'loadend' );
+		}
+
+		_dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	window.XMLHttpRequest = FakeXMLHttpRequest;
+
+	return {
+		requests,
+		respondWith( method, url, response ) {
+			responses.push( { method, url, response } );
+		},
+		restore() {
+			window.XMLHttpRequest = OriginalXMLHttpRequest;
+		}
+	};
 }

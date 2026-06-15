@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { LinkEditing, LinkImageEditing } from '@ckeditor/ckeditor5-link';
 import {
@@ -16,7 +17,6 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { CloudServices, Token } from '@ckeditor/ckeditor5-cloud-services';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
@@ -31,13 +31,16 @@ describe( 'CKBoxUtils', () => {
 	let editor, ckboxUtils, originalCKBox;
 	const token = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 
-	testUtils.createSinonSandbox();
-
 	let fetchStub;
 
 	beforeEach( async () => {
 		TokenMock.initialToken = token;
-		fetchStub = sinon.stub( window, 'fetch' ).resolves();
+		fetchStub = vi.spyOn( window, 'fetch' ).mockResolvedValue();
+
+		// `CKBoxEditing#init()` fires an unawaited upload permission request. Stub the network layer out so
+		// the request does not end up as an unhandled rejection that fails the Vitest run. Tests exercising
+		// HTTP requests replace `window.XMLHttpRequest` with a fake server, so they are not affected.
+		vi.spyOn( window.XMLHttpRequest.prototype, 'send' ).mockImplementation( () => {} );
 
 		originalCKBox = window.CKBox;
 		window.CKBox = {};
@@ -54,30 +57,31 @@ describe( 'CKBoxUtils', () => {
 
 	afterEach( async () => {
 		window.CKBox = originalCKBox;
-		fetchStub.restore();
 
 		await editor.destroy();
+
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have proper name', () => {
-		expect( CKBoxUtils.pluginName ).to.equal( 'CKBoxUtils' );
+		expect( CKBoxUtils.pluginName ).toEqual( 'CKBoxUtils' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKBoxUtils.isOfficialPlugin ).to.be.true;
+		expect( CKBoxUtils.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKBoxUtils.isPremiumPlugin ).to.be.false;
+		expect( CKBoxUtils.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( ckboxUtils ).to.be.instanceOf( CKBoxUtils );
+		expect( ckboxUtils ).toBeInstanceOf( CKBoxUtils );
 	} );
 
 	describe( 'getToken()', () => {
 		it( 'should return an instance of token', async () => {
-			expect( await ckboxUtils.getToken() ).to.be.instanceOf( Token );
+			expect( await ckboxUtils.getToken() ).toBeInstanceOf( Token );
 		} );
 	} );
 
@@ -85,7 +89,7 @@ describe( 'CKBoxUtils', () => {
 		it( 'should be called when retrieving a token', async () => {
 			await editor.destroy();
 
-			const authorizeSpy = sinon.spy( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' );
+			const authorizeSpy = vi.spyOn( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' );
 
 			editor = await createTestEditor( {
 				ckbox: {
@@ -94,46 +98,45 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( authorizeSpy.calledOnce ).to.be.true;
-			expect( authorizeSpy.firstCall.args[ 0 ] ).to.equal( token );
+			expect( authorizeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( authorizeSpy.mock.calls[ 0 ][ 0 ] ).toEqual( token );
 
-			authorizeSpy.restore();
+			authorizeSpy.mockRestore();
 		} );
 
 		it( 'should make a fetch request with correct headers', async () => {
-			fetchStub.reset();
+			fetchStub.mockClear();
 
 			await ckboxUtils._authorizePrivateCategoriesAccess( 'test-token' );
 
-			expect( fetchStub.calledOnce ).to.be.true;
+			expect( fetchStub ).toHaveBeenCalledTimes( 1 );
 
-			const fetchCall = fetchStub.firstCall;
-			const url = fetchCall.args[ 0 ];
-			const options = fetchCall.args[ 1 ];
+			const url = fetchStub.mock.calls[ 0 ][ 0 ];
+			const options = fetchStub.mock.calls[ 0 ][ 1 ];
 
-			expect( url ).to.equal( `${ CKBOX_API_URL }/categories/authorizePrivateAccess` );
-			expect( options.method ).to.equal( 'POST' );
-			expect( options.credentials ).to.equal( 'include' );
-			expect( options.mode ).to.equal( 'no-cors' );
+			expect( url ).toEqual( `${ CKBOX_API_URL }/categories/authorizePrivateAccess` );
+			expect( options.method ).toEqual( 'POST' );
+			expect( options.credentials ).toEqual( 'include' );
+			expect( options.mode ).toEqual( 'no-cors' );
 		} );
 
 		it( 'should make a fetch request with proper form data', async () => {
 			const testToken = 'example-token';
 
-			fetchStub.restore();
-			fetchStub = sinon.stub( window, 'fetch' ).callsFake( ( url, options ) => {
+			fetchStub.mockRestore();
+			fetchStub = vi.spyOn( window, 'fetch' ).mockImplementation( ( url, options ) => {
 				const formData = options.body;
 
-				expect( formData ).to.be.instanceOf( FormData );
-				expect( formData.get( 'token' ) ).to.equal( testToken );
+				expect( formData ).toBeInstanceOf( FormData );
+				expect( formData.get( 'token' ) ).toEqual( testToken );
 
 				return Promise.resolve();
 			} );
 
 			await ckboxUtils._authorizePrivateCategoriesAccess( testToken );
 
-			expect( fetchStub.calledOnce ).to.be.true;
-			expect( fetchStub.firstCall.args[ 0 ] ).to.equal( `${ CKBOX_API_URL }/categories/authorizePrivateAccess` );
+			expect( fetchStub ).toHaveBeenCalledTimes( 1 );
+			expect( fetchStub.mock.calls[ 0 ][ 0 ] ).toEqual( `${ CKBOX_API_URL }/categories/authorizePrivateAccess` );
 		} );
 	} );
 
@@ -144,7 +147,7 @@ describe( 'CKBoxUtils', () => {
 
 			await editor.destroy();
 
-			sinon.stub( CloudServices.prototype, 'registerTokenUrl' ).callsFake( async () => {
+			vi.spyOn( CloudServices.prototype, 'registerTokenUrl' ).mockImplementation( async () => {
 				await defer.promise;
 				return slowToken;
 			} );
@@ -173,10 +176,10 @@ describe( 'CKBoxUtils', () => {
 			} );
 
 			ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Promise );
+			expect( ckboxUtils.getToken() ).toBeInstanceOf( Promise );
 
 			defer.resolve();
-			expect( await ckboxUtils.getToken() ).to.be.equal( slowToken );
+			expect( await ckboxUtils.getToken() ).toEqual( slowToken );
 		} );
 	} );
 
@@ -184,9 +187,9 @@ describe( 'CKBoxUtils', () => {
 		it( 'should create an instance of Token class which is ready to use (specified ckbox.tokenUrl)', async () => {
 			const resolvedToken = await ckboxUtils.getToken();
 
-			expect( resolvedToken ).to.be.instanceOf( Token );
-			expect( resolvedToken.value ).to.equal( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://cs.example.com' );
+			expect( resolvedToken ).toBeInstanceOf( Token );
+			expect( resolvedToken.value ).toEqual( token );
+			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://cs.example.com' );
 		} );
 
 		it( 'should not create a new token if already created (specified cloudServices.tokenUrl)', async () => {
@@ -219,9 +222,9 @@ describe( 'CKBoxUtils', () => {
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
 			const resolvedToken = await ckboxUtils.getToken();
 
-			expect( resolvedToken ).to.be.instanceOf( Token );
-			expect( resolvedToken.value ).to.equal( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://cs.example.com' );
+			expect( resolvedToken ).toBeInstanceOf( Token );
+			expect( resolvedToken.value ).toEqual( token );
+			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://cs.example.com' );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -258,9 +261,9 @@ describe( 'CKBoxUtils', () => {
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
 			const resolvedToken = await ckboxUtils.getToken();
 
-			expect( resolvedToken ).to.be.instanceOf( Token );
-			expect( resolvedToken.value ).to.equal( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://ckbox.example.com' );
+			expect( resolvedToken ).toBeInstanceOf( Token );
+			expect( resolvedToken.value ).toEqual( token );
+			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://ckbox.example.com' );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -297,9 +300,9 @@ describe( 'CKBoxUtils', () => {
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
 			const resolvedToken = await ckboxUtils.getToken();
 
-			expect( resolvedToken ).to.be.instanceOf( Token );
-			expect( resolvedToken.value ).to.equal( token );
-			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://example.com' );
+			expect( resolvedToken ).toBeInstanceOf( Token );
+			expect( resolvedToken.value ).toEqual( token );
+			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).toEqual( 'http://example.com' );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -315,7 +318,7 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'ckbox' ) ).to.deep.equal( {
+			expect( editor.config.get( 'ckbox' ) ).toEqual( {
 				serviceOrigin: 'https://api.ckbox.io',
 				defaultUploadCategories: null,
 				ignoreDataId: false,
@@ -336,7 +339,7 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'ckbox' ) ).to.deep.equal( {
+			expect( editor.config.get( 'ckbox' ) ).toEqual( {
 				serviceOrigin: 'https://api.ckbox.io',
 				defaultUploadCategories: null,
 				ignoreDataId: false,
@@ -357,7 +360,7 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'ckbox' ) ).to.be.undefined;
+			expect( editor.config.get( 'ckbox' ) ).toBeUndefined();
 
 			await editor.destroy();
 		} );
@@ -373,7 +376,7 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'ckbox' ).language ).to.equal( 'de' );
+			expect( editor.config.get( 'ckbox' ).language ).toEqual( 'de' );
 
 			await editor.destroy();
 		} );
@@ -389,7 +392,7 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'ckbox' ).tokenUrl ).to.equal( 'bar' );
+			expect( editor.config.get( 'ckbox' ).tokenUrl ).toEqual( 'bar' );
 
 			await editor.destroy();
 		} );
@@ -402,7 +405,7 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( editor.config.get( 'ckbox' ).theme ).to.equal( 'newTheme' );
+			expect( editor.config.get( 'ckbox' ).theme ).toEqual( 'newTheme' );
 
 			await editor.destroy();
 		} );
@@ -414,13 +417,13 @@ describe( 'CKBoxUtils', () => {
 						throw new Error( 'Expected to be rejected' );
 					},
 					error => {
-						expect( error.message ).to.match( /ckbox-plugin-missing-token-url/ );
+						expect( error.message ).toMatch( /ckbox-plugin-missing-token-url/ );
 					}
 				);
 		} );
 
 		it( 'should log an error if there is no image feature loaded in the editor', async () => {
-			sinon.stub( console, 'error' );
+			const consoleErrorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
 			const editor = await createTestEditor( {
 				plugins: [
@@ -440,9 +443,9 @@ describe( 'CKBoxUtils', () => {
 				}
 			} );
 
-			expect( console.error.callCount ).to.equal( 1 );
-			expect( console.error.args[ 0 ][ 0 ] ).to.equal( 'ckbox-plugin-image-feature-missing' );
-			expect( console.error.args[ 0 ][ 1 ] ).to.equal( editor );
+			expect( consoleErrorStub ).toHaveBeenCalledTimes( 1 );
+			expect( consoleErrorStub.mock.calls[ 0 ][ 0 ] ).toEqual( 'ckbox-plugin-image-feature-missing' );
+			expect( consoleErrorStub.mock.calls[ 0 ][ 1 ] ).toEqual( editor );
 
 			await editor.destroy();
 		} );
@@ -454,12 +457,12 @@ describe( 'CKBoxUtils', () => {
 		const options = { signal: new AbortController().signal };
 
 		beforeEach( () => {
-			fetchStub.reset();
-			fetchStub = fetchStub.resolves( new Response( null, { headers: { 'content-type': 'image/jpeg' } } ) );
+			fetchStub.mockReset();
+			fetchStub.mockResolvedValue( new Response( null, { headers: { 'content-type': 'image/jpeg' } } ) );
 		} );
 
 		it( 'should pass abort signal to other calls (file)', async () => {
-			const getCategoriesStub = sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			const getCategoriesStub = vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -467,11 +470,11 @@ describe( 'CKBoxUtils', () => {
 
 			await ckboxUtils.getCategoryIdForFile( file, options );
 
-			expect( getCategoriesStub.firstCall.args[ 0 ].signal ).to.equal( options.signal );
+			expect( getCategoriesStub.mock.calls[ 0 ][ 0 ].signal ).toEqual( options.signal );
 		} );
 
 		it( 'should pass abort signal to other calls (url)', async () => {
-			const getCategoriesStub = sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			const getCategoriesStub = vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -479,12 +482,12 @@ describe( 'CKBoxUtils', () => {
 
 			await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( getCategoriesStub.firstCall.args[ 0 ].signal ).to.equal( options.signal );
-			expect( fetchStub.firstCall.args[ 1 ].signal ).to.equal( options.signal );
+			expect( getCategoriesStub.mock.calls[ 0 ][ 0 ].signal ).toEqual( options.signal );
+			expect( fetchStub.mock.calls[ 0 ][ 1 ].signal ).toEqual( options.signal );
 		} );
 
 		it( 'should return the first category if many of them accepts a jpg file', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -493,23 +496,23 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-2' );
-			expect( urlResult ).to.equal( 'id-category-2' );
+			expect( fileResult ).toEqual( 'id-category-2' );
+			expect( urlResult ).toEqual( 'id-category-2' );
 		} );
 
 		it( 'should return the first category if many of them accepts a jpg file (uppercase file extension)', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
 			] );
 			const fileResult = await ckboxUtils.getCategoryIdForFile( { name: 'image.JPG' }, options );
 
-			expect( fileResult ).to.equal( 'id-category-2' );
+			expect( fileResult ).toEqual( 'id-category-2' );
 		} );
 
 		it( 'should return the first category if many of them accepts a JPG file', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', id: 'id-category-1', extensions: [ 'PNG' ] },
 				{ name: 'category 2', id: 'id-category-2', extensions: [ 'WEBP', 'JPG' ] },
 				{ name: 'category 3', id: 'id-category-3', extensions: [ 'GIF', 'JPG' ] }
@@ -518,12 +521,12 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-2' );
-			expect( urlResult ).to.equal( 'id-category-2' );
+			expect( fileResult ).toEqual( 'id-category-2' );
+			expect( urlResult ).toEqual( 'id-category-2' );
 		} );
 
 		it( 'should return the first category that allows uploading the file if provided configuration is empty', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', id: 'id-category-1', extensions: [ 'png', 'jpg' ] },
 				{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp' ] },
 				{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif' ] }
@@ -537,12 +540,12 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-1' );
-			expect( urlResult ).to.equal( 'id-category-1' );
+			expect( fileResult ).toEqual( 'id-category-1' );
+			expect( urlResult ).toEqual( 'id-category-1' );
 		} );
 
 		it( 'should return the first category matching with the configuration (category specified as a name)', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -555,12 +558,12 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-3' );
-			expect( urlResult ).to.equal( 'id-category-3' );
+			expect( fileResult ).toEqual( 'id-category-3' );
+			expect( urlResult ).toEqual( 'id-category-3' );
 		} );
 
 		it( 'should return the first category matching with the configuration (category specified as ID)', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -573,12 +576,12 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-3' );
-			expect( urlResult ).to.equal( 'id-category-3' );
+			expect( fileResult ).toEqual( 'id-category-3' );
+			expect( urlResult ).toEqual( 'id-category-3' );
 		} );
 
 		it( 'should return the first category matching with the configuration (uppercase file extension)', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -590,11 +593,11 @@ describe( 'CKBoxUtils', () => {
 
 			const fileResult = await ckboxUtils.getCategoryIdForFile( { name: 'image.JPG' }, options );
 
-			expect( fileResult ).to.equal( 'id-category-3' );
+			expect( fileResult ).toEqual( 'id-category-3' );
 		} );
 
 		it( 'should return the first category matching with the configuration (uppercase configuration)', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -607,12 +610,12 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-3' );
-			expect( urlResult ).to.equal( 'id-category-3' );
+			expect( fileResult ).toEqual( 'id-category-3' );
+			expect( urlResult ).toEqual( 'id-category-3' );
 		} );
 
 		it( 'should return the first allowed category for a file not covered by the plugin configuration', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
 				{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
 				{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
@@ -625,12 +628,12 @@ describe( 'CKBoxUtils', () => {
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options );
 			const urlResult = await ckboxUtils.getCategoryIdForFile( url, options );
 
-			expect( fileResult ).to.equal( 'id-category-2' );
-			expect( urlResult ).to.equal( 'id-category-2' );
+			expect( fileResult ).toEqual( 'id-category-2' );
+			expect( urlResult ).toEqual( 'id-category-2' );
 		} );
 
 		it( 'should fail when no category accepts a jpg file', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( [
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( [
 				{ name: 'category 1', extensions: [ 'png' ] },
 				{ name: 'category 2', extensions: [ 'webp' ] },
 				{ name: 'category 3', extensions: [ 'gif' ] }
@@ -645,12 +648,12 @@ describe( 'CKBoxUtils', () => {
 				err => err
 			);
 
-			expect( fileResult ).to.equal( 'Cannot determine a category for the uploaded file.' );
-			expect( urlResult ).to.equal( 'Cannot determine a category for the uploaded file.' );
+			expect( fileResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
+			expect( urlResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
 		} );
 
 		it( 'should fail when cannot load categories', async () => {
-			sinon.stub( ckboxUtils, '_getAvailableCategories' ).resolves( undefined );
+			vi.spyOn( ckboxUtils, '_getAvailableCategories' ).mockResolvedValue( undefined );
 
 			const fileResult = await ckboxUtils.getCategoryIdForFile( file, options ).then(
 				() => { throw new Error( 'Expected to be rejected.' ); },
@@ -661,31 +664,29 @@ describe( 'CKBoxUtils', () => {
 				err => err
 			);
 
-			expect( fileResult ).to.equal( 'Cannot determine a category for the uploaded file.' );
-			expect( urlResult ).to.equal( 'Cannot determine a category for the uploaded file.' );
+			expect( fileResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
+			expect( urlResult ).toEqual( 'Cannot determine a category for the uploaded file.' );
 		} );
 	} );
 
 	describe( '_getAvailableCategories', () => {
-		let sinonXHR;
+		let fakeXHRServer;
 		const options = { signal: new AbortController().signal };
 
 		beforeEach( () => {
-			sinonXHR = testUtils.sinon.useFakeServer();
-			sinonXHR.autoRespond = true;
-			sinonXHR.respondImmediately = true;
+			fakeXHRServer = createFakeXHRServer();
 		} );
 
 		afterEach( () => {
-			sinonXHR.restore();
+			fakeXHRServer.restore();
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/16040
 		it( 'should not use `Number#toString()` method due to minification issues on some bundlers', async () => {
 			const categories = createCategories( 10 );
-			const toStringSpy = sinon.spy( Number.prototype, 'toString' );
+			const toStringSpy = vi.spyOn( Number.prototype, 'toString' );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -695,13 +696,13 @@ describe( 'CKBoxUtils', () => {
 
 			await ckboxUtils._getAvailableCategories( options );
 
-			expect( toStringSpy ).not.to.be.called;
+			expect( toStringSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should return categories in one call', async () => {
 			const categories = createCategories( 10 );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -711,13 +712,13 @@ describe( 'CKBoxUtils', () => {
 
 			const result = await ckboxUtils._getAvailableCategories( options );
 
-			expect( result ).to.deep.equal( categories );
+			expect( result ).toEqual( categories );
 		} );
 
 		it( 'should return categories in three calls', async () => {
 			const categories = createCategories( 120 );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -725,7 +726,7 @@ describe( 'CKBoxUtils', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -733,7 +734,7 @@ describe( 'CKBoxUtils', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -743,26 +744,26 @@ describe( 'CKBoxUtils', () => {
 
 			const result = await ckboxUtils._getAvailableCategories( options );
 
-			expect( result ).to.deep.equal( categories );
+			expect( result ).toEqual( categories );
 		} );
 
 		it( 'should return undefined if first request fails', async () => {
-			const consoleStub = sinon.stub( console, 'error' );
+			const consoleStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', r => r.error() );
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', xhr => xhr.error() );
 
 			const result = await ckboxUtils._getAvailableCategories( options );
 
-			expect( result ).to.be.undefined;
-			expect( consoleStub.firstCall.args[ 0 ] ).to.match( /^ckbox-fetch-category-http-error/ );
+			expect( result ).toBeUndefined();
+			expect( consoleStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^ckbox-fetch-category-http-error/ );
 		} );
 
 		it( 'should return undefined if third request fails', async () => {
-			const consoleStub = sinon.stub( console, 'error' );
+			const consoleStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
 			const categories = createCategories( 120 );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -770,7 +771,7 @@ describe( 'CKBoxUtils', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
+			fakeXHRServer.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -778,12 +779,14 @@ describe( 'CKBoxUtils', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', r => r.error() );
+			fakeXHRServer.respondWith(
+				'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', xhr => xhr.error()
+			);
 
 			const result = await ckboxUtils._getAvailableCategories( options );
 
-			expect( result ).to.be.undefined;
-			expect( consoleStub.firstCall.args[ 0 ] ).to.match( /^ckbox-fetch-category-http-error/ );
+			expect( result ).toBeUndefined();
+			expect( consoleStub.mock.calls[ 0 ][ 0 ] ).toMatch( /^ckbox-fetch-category-http-error/ );
 		} );
 
 		function createCategories( count ) {
@@ -851,4 +854,111 @@ function createDefer() {
 	} );
 
 	return deferred;
+}
+
+// Minimal fake XHR server used in this file:
+// - `respondWith( method, url, [ status, headers, body ] )` — register an immediate response.
+// - `respondWith( method, url, xhr => { ... } )` — register a callback response.
+//   The callback receives the request and may call `xhr.error()`.
+// - `restore()` — revert the `XMLHttpRequest` global.
+//
+// Responses fire synchronously from `send()`.
+function createFakeXHRServer() {
+	const responses = [];
+	const OriginalXMLHttpRequest = window.XMLHttpRequest;
+
+	class FakeXMLHttpRequest {
+		constructor() {
+			this.listeners = new Map();
+			this.requestHeaders = {};
+			this.upload = {
+				addEventListener: () => {},
+				removeEventListener: () => {}
+			};
+			this.status = 0;
+			this.response = null;
+			this.responseText = '';
+			this.responseType = '';
+			this.aborted = false;
+		}
+
+		open( method, url ) {
+			this.method = method;
+			this.url = url;
+		}
+
+		setRequestHeader( name, value ) {
+			this.requestHeaders[ name ] = value;
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		removeEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+			const index = callbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				callbacks.splice( index, 1 );
+			}
+		}
+
+		abort() {
+			this.aborted = true;
+			this._dispatchEvent( 'abort' );
+		}
+
+		send() {
+			this._dispatchEvent( 'loadstart' );
+
+			const match = responses.find( entry => entry.method === this.method && entry.url === this.url );
+
+			if ( !match ) {
+				this.status = 404;
+				this._dispatchEvent( 'load' );
+				this._dispatchEvent( 'loadend' );
+				return;
+			}
+
+			if ( typeof match.response === 'function' ) {
+				match.response( this );
+				return;
+			}
+
+			const [ status, headers, body ] = match.response;
+
+			this.status = status;
+			this.responseHeaders = headers;
+			this.responseText = body;
+			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+
+			this._dispatchEvent( 'load' );
+			this._dispatchEvent( 'loadend' );
+		}
+
+		error() {
+			this._dispatchEvent( 'error' );
+			this._dispatchEvent( 'loadend' );
+		}
+
+		_dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	window.XMLHttpRequest = FakeXMLHttpRequest;
+
+	return {
+		respondWith( method, url, response ) {
+			responses.push( { method, url, response } );
+		},
+		restore() {
+			window.XMLHttpRequest = OriginalXMLHttpRequest;
+		}
+	};
 }
