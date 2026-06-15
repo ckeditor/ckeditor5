@@ -10,6 +10,7 @@ import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 
 const REPO_ROOT = dirname( fileURLToPath( import.meta.url ) );
+const CHROME_EXECUTABLE_PATH = process.env.PUPPETEER_EXECUTABLE_PATH;
 
 type TestOptions = NonNullable<ViteUserConfig[ 'test' ]>;
 
@@ -54,9 +55,9 @@ export function createVitestConfig( { name, ...testOverrides }: TestOptions ): V
 				browser: {
 					enabled: true,
 					provider: playwright( {
-						launchOptions: {
-							channel: 'chrome'
-						}
+						launchOptions: CHROME_EXECUTABLE_PATH ?
+							{ executablePath: CHROME_EXECUTABLE_PATH } :
+							{ channel: 'chrome' }
 					} ),
 					screenshotFailures: false,
 					instances: [
