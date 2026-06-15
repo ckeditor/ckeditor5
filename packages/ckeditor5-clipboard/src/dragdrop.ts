@@ -654,12 +654,15 @@ export class DragDrop extends Plugin {
 			this._draggedRange = ModelLiveRange.fromRange( blockRange );
 			this._blockMode = true;
 			// TODO block mode for dragging from outside editor? or inline? or both?
-		} else if ( blocks.length == 1 ) {
-			const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
+		} else {
+			/* v8 ignore else -- @preserve */
+			if ( blocks.length == 1 ) {
+				const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
 					draggedRange.end.isTouching( blockRange.end );
 
-			this._draggedRange = ModelLiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
-			this._blockMode = touchesBlockEdges;
+				this._draggedRange = ModelLiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+				this._blockMode = touchesBlockEdges;
+			}
 		}
 
 		model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );

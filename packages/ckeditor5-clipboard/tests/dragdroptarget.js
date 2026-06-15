@@ -3,12 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { DragDrop } from '../src/dragdrop.js';
 import { DragDropTarget } from '../src/dragdroptarget.js';
 import { PastePlainText } from '../src/pasteplaintext.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table } from '@ckeditor/ckeditor5-table';
@@ -26,7 +27,10 @@ import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 describe( 'Drag and Drop target', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropTarget;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+		vi.useRealTimers();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -64,11 +68,11 @@ describe( 'Drag and Drop target', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( DragDropTarget.isOfficialPlugin ).to.be.true;
+		expect( DragDropTarget.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( DragDropTarget.isPremiumPlugin ).to.be.false;
+		expect( DragDropTarget.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'getFinalDropRange', () => {
@@ -93,7 +97,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position before paragraph', () => {
@@ -117,7 +121,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 'before' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position after widget in none block mode', () => {
@@ -146,7 +150,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 1 ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position without target ranges', () => {
@@ -175,7 +179,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position before paragraph in none block mode', () => {
@@ -199,7 +203,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 2 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position in inline mode before text', () => {
@@ -223,7 +227,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 0 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position in inline mode after text', () => {
@@ -247,7 +251,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 1 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position inside block before paragraph', () => {
@@ -275,7 +279,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 1 ), 'before' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should return drop position inside block after paragraph', () => {
@@ -303,7 +307,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 1 ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should through a warn in case when something went wrong', () => {
@@ -318,7 +322,7 @@ describe( 'Drag and Drop target', () => {
 			const nestedViewParagraph = mapper.toViewElement( nestedModelParagraph );
 			const nestedParagraphDomNode = domConverter.mapViewToDom( nestedViewParagraph );
 
-			sinon.stub( model.schema, 'checkChild' ).returns( null );
+			vi.spyOn( model.schema, 'checkChild' ).mockReturnValue( null );
 
 			const { clientX, clientY } = getMockedMousePosition( { domNode: nestedParagraphDomNode } );
 
@@ -330,7 +334,7 @@ describe( 'Drag and Drop target', () => {
 				true
 			);
 
-			expect( targetPosition ).to.be.null;
+			expect( targetPosition ).toBeNull();
 		} );
 
 		it( 'should return drop position for $text element when hovering widget', () => {
@@ -354,7 +358,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( targetPosition.start.isEqual(
 				model.createPositionAt( root.getChild( 1 ), 'before' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 	} );
 
@@ -381,7 +385,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 'before' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should find drop position before block element', () => {
@@ -405,7 +409,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getNodeByPath( [ 1 ] ), 'before' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should find drop position after block element', () => {
@@ -429,7 +433,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getNodeByPath( [ 0 ] ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should find drop position inside empty container element', () => {
@@ -456,7 +460,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 0 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should hide drop target if target is not in editing root', () => {
@@ -470,7 +474,7 @@ describe( 'Drag and Drop target', () => {
 
 			const { clientX, clientY } = getMockedMousePosition( { domNode, position: 'after' } );
 
-			sinon.stub( domNode.parentElement, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( domNode.parentElement, 'getBoundingClientRect' ).mockReturnValue( {
 				bottom: 0,
 				top: 0
 			} );
@@ -483,7 +487,7 @@ describe( 'Drag and Drop target', () => {
 				false
 			);
 
-			expect( document.querySelector( '.ck-clipboard-drop-target-line.ck-hidden' ) ).not.to.be.null;
+			expect( document.querySelector( '.ck-clipboard-drop-target-line.ck-hidden' ) ).not.toBeNull();
 		} );
 
 		it( 'should put drop target marker inside a text node', () => {
@@ -505,7 +509,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 2 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should put drop target marker inside a text node (even if dragged range is an inline object with block content)', () => {
@@ -545,7 +549,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 0 ), 4 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should put drop target marker inside a text node even if dragged range contains also not-allowed elements', () => {
@@ -604,7 +608,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 1 ).getChild( 0 ), 1 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should not put drop target marker inside a text node if dragged range contains only disallowed elements', () => {
@@ -663,14 +667,14 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root, 1 )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should not remove drop target marker if dragging left some nested element', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const spy = sinon.spy();
-			const clock = sinon.useFakeTimers();
+			const spy = vi.fn();
+			vi.useFakeTimers();
 
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			const viewPosition = mapper.toViewPosition( modelPosition );
@@ -692,15 +696,15 @@ describe( 'Drag and Drop target', () => {
 				false
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			viewDocument.fire( 'dragleave' );
 
-			clock.tick( 10 );
+			vi.advanceTimersByTime( 10 );
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				modelPosition
-			) ).to.be.true;
+			) ).toBe( true );
 
 			const newModelPosition = model.createPositionAt( root.getChild( 0 ), 4 );
 			const newViewPosition = mapper.toViewPosition( newModelPosition );
@@ -713,13 +717,13 @@ describe( 'Drag and Drop target', () => {
 				false
 			);
 
-			clock.tick( 60 );
+			vi.advanceTimersByTime( 60 );
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				newModelPosition
-			) ).to.be.true;
+			) ).toBe( true );
 
-			expect( spy.notCalled ).to.be.true;
+			expect( spy.mock.calls.length ).toBe( 0 );
 		} );
 
 		it( 'should hide drop target if range is collapsed', () => {
@@ -739,10 +743,10 @@ describe( 'Drag and Drop target', () => {
 				} );
 			} );
 
-			expect( document.querySelector( '.ck-clipboard-drop-target-line.ck-hidden' ) ).not.to.be.null;
+			expect( document.querySelector( '.ck-clipboard-drop-target-line.ck-hidden' ) ).not.toBeNull();
 		} );
 
-		it( 'should reconvert drop target on scroll event', done => {
+		it( 'should reconvert drop target on scroll event', () => {
 			_setModelData( model,
 				'<paragraph>[]foo</paragraph>' +
 				'<paragraph>bar</paragraph>'
@@ -754,7 +758,7 @@ describe( 'Drag and Drop target', () => {
 			const firstParagraphModelElement = root.getChild( 1 );
 			const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
 
-			const spy = sinon.spy( editor.editing, 'reconvertMarker' );
+			const spy = vi.spyOn( editor.editing, 'reconvertMarker' );
 
 			const { clientX, clientY } = getMockedMousePosition( { domNode } );
 
@@ -770,9 +774,50 @@ describe( 'Drag and Drop target', () => {
 
 			document.body.dispatchEvent( scrollEvent );
 
-			setTimeout( () => {
-				expect( spy.withArgs( 'drop-target' ).called ).to.be.true;
-				done();
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( spy ).toHaveBeenCalledWith( 'drop-target' );
+					resolve();
+				} );
+			} );
+		} );
+
+		it( 'should not reconvert drop target on scroll event when marker does not exist', () => {
+			_setModelData( model,
+				'<paragraph>[]foo</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const rootElement = viewDocument.getRoot();
+			const domNode = domConverter.mapViewToDom( rootElement );
+
+			const firstParagraphModelElement = root.getChild( 1 );
+			const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
+
+			const spy = vi.spyOn( editor.editing, 'reconvertMarker' );
+
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			// Register scroll listener by calling updateDropMarker, then immediately remove the marker.
+			dragDropTarget.updateDropMarker(
+				rootElement,
+				[ view.createRangeOn( firstParagraphViewElement ) ],
+				clientX,
+				clientY,
+				false
+			);
+
+			dragDropTarget.removeDropMarker();
+
+			const scrollEvent = new Event( 'scroll' );
+
+			document.body.dispatchEvent( scrollEvent );
+
+			return new Promise( resolve => {
+				setTimeout( () => {
+					expect( spy ).not.toHaveBeenCalled();
+					resolve();
+				} );
 			} );
 		} );
 
@@ -800,15 +845,15 @@ describe( 'Drag and Drop target', () => {
 				ModelLiveRange.fromRange( model.createRangeOn( root.getChild( 0 ) ) )
 			);
 
-			expect( model.markers.get( 'drop-target' ) ).to.be.null;
+			expect( model.markers.get( 'drop-target' ) ).toBeNull();
 		} );
 
 		it( 'should find place to drop target marker when dropping is not allowed on a given element', () => {
 			_setModelData( model,
 				'<paragraph>' +
-					'[<imageInline src="/assets/sample.png"></imageInline>]' +
+					'[<imageInline src="/sample.png"></imageInline>]' +
 				'</paragraph>' +
-				'<imageBlock src="/assets/sample.png">' +
+				'<imageBlock src="/sample.png">' +
 					'<caption></caption>' +
 				'</imageBlock>'
 			);
@@ -830,7 +875,7 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 1 ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should drop position when mouse is over the bottom half of the block element', () => {
@@ -856,13 +901,13 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( hrElement, 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should show drop target if the dragged element cannot be dropped on a given position, but is a block element', () => {
 			_setModelData( model,
 				'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' +
-				'<imageBlock alt="bar" src="/assets/sample.png">' +
+				'<imageBlock alt="bar" src="/sample.png">' +
 					'<caption>Caption</caption>' +
 				'</imageBlock>'
 			);
@@ -887,7 +932,7 @@ describe( 'Drag and Drop target', () => {
 			// Marker should be places after the `<imageBlock>` element.
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( imageBlock, 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 
 			const captionViewElement = mapper.toViewElement( imageBlock.getChild( 0 ) );
 			const captionDomRect = domConverter
@@ -907,13 +952,13 @@ describe( 'Drag and Drop target', () => {
 			// Marker should be places after the `<imageBlock>` element.
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( imageBlock, 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 
 		it( 'should find drop position when hovering over object element', () => {
 			_setModelData( model,
 				'<paragraph>[foo]</paragraph>' +
-				'<imageBlock alt="bar" src="/assets/sample.png">' +
+				'<imageBlock alt="bar" src="/sample.png">' +
 					'<caption>Caption</caption>' +
 				'</imageBlock>'
 			);
@@ -935,15 +980,15 @@ describe( 'Drag and Drop target', () => {
 				ModelLiveRange.fromRange( model.createRangeOn( modelElement ) )
 			);
 
-			expect( model.markers.get( 'drop-target' ) ).to.not.be.undefined;
+			expect( model.markers.get( 'drop-target' ) ).not.toBeUndefined();
 		} );
 
 		it( 'should find the drop target if element cannot be dropped on a given position', () => {
 			_setModelData( model,
 				'<paragraph>' +
-					'<imageInline alt="foo" src="/assets/sample.png"></imageInline>' +
+					'<imageInline alt="foo" src="/sample.png"></imageInline>' +
 				'</paragraph>' +
-				'<imageBlock alt="bar" src="/assets/sample.png">' +
+				'<imageBlock alt="bar" src="/sample.png">' +
 					'<caption>Caption</caption>' +
 				'</imageBlock>'
 			);
@@ -968,7 +1013,7 @@ describe( 'Drag and Drop target', () => {
 			// Marker should be places after the `<imageBlock>` element.
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( blockImageElement, 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 
 			const captionViewElement = mapper.toViewElement( blockImageElement.getChild( 0 ) );
 			const captionDomRect = domConverter
@@ -988,7 +1033,7 @@ describe( 'Drag and Drop target', () => {
 			// Marker should be placed after the `<imageBlock>`, because `<imageInline>` can't be dropped inside the `<caption>`.
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( root.getChild( 1 ), 'after' )
-			) ).to.be.true;
+			) ).toBe( true );
 		} );
 	} );
 
@@ -996,14 +1041,14 @@ describe( 'Drag and Drop target', () => {
 		it( 'should remove drop target with delay', () => {
 			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 2 );
 			const viewPosition = mapper.toViewPosition( modelPosition );
 			const domNode = domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode;
 
 			const { clientX, clientY } = getMockedMousePosition( { domNode } );
 
-			const spy = sinon.spy( dragDropTarget, 'removeDropMarker' );
+			const spy = vi.spyOn( dragDropTarget, 'removeDropMarker' );
 
 			dragDropTarget.updateDropMarker(
 				mapper.findMappedViewAncestor( viewPosition ),
@@ -1015,11 +1060,11 @@ describe( 'Drag and Drop target', () => {
 
 			dragDropTarget.removeDropMarkerDelayed();
 
-			expect( spy.called ).to.be.false;
+			expect( spy ).not.toHaveBeenCalled();
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spy.called ).to.be.true;
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should remove drop target marker ', () => {
@@ -1041,7 +1086,7 @@ describe( 'Drag and Drop target', () => {
 
 			dragDropTarget.removeDropMarker();
 
-			expect( model.markers.has( 'drop-target' ) ).to.be.false;
+			expect( model.markers.has( 'drop-target' ) ).toBe( false );
 		} );
 	} );
 

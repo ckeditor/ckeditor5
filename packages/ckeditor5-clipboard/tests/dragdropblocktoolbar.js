@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { DragDropTarget } from '../src/dragdroptarget.js';
 import { DragDrop } from '../src/dragdrop.js';
 import { PastePlainText } from '../src/pasteplaintext.js';
 import { DragDropBlockToolbar } from '../src/dragdropblocktoolbar.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table } from '@ckeditor/ckeditor5-table';
@@ -27,7 +28,9 @@ describe( 'Drag and Drop Block Toolbar', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropBlockToolbar,
 		blockToolbar, blockToolbarButton;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -72,24 +75,24 @@ describe( 'Drag and Drop Block Toolbar', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( DragDropBlockToolbar.isOfficialPlugin ).to.be.true;
+		expect( DragDropBlockToolbar.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( DragDropBlockToolbar.isPremiumPlugin ).to.be.false;
+		expect( DragDropBlockToolbar.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'init', () => {
 		it( 'should toggle read only mode', () => {
-			expect( dragDropBlockToolbar.isEnabled ).to.be.true;
+			expect( dragDropBlockToolbar.isEnabled ).toBe( true );
 
 			editor.enableReadOnlyMode( 'test' );
 
-			expect( dragDropBlockToolbar.isEnabled ).to.be.false;
+			expect( dragDropBlockToolbar.isEnabled ).toBe( false );
 
 			editor.disableReadOnlyMode( 'test' );
 
-			expect( dragDropBlockToolbar.isEnabled ).to.be.true;
+			expect( dragDropBlockToolbar.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled on android', async () => {
@@ -99,9 +102,39 @@ describe( 'Drag and Drop Block Toolbar', () => {
 				plugins: [ DragDrop, DragDropBlockToolbar ]
 			} );
 
-			expect( editor.plugins.get( DragDropBlockToolbar ).isEnabled ).to.be.false;
+			expect( editor.plugins.get( DragDropBlockToolbar ).isEnabled ).toBe( false );
 
 			await editor.destroy();
+
+			env.isAndroid = false;
+		} );
+
+		it( 'should not set draggable="true" on BlockToolbar button when disabled on Android init', async () => {
+			env.isAndroid = true;
+
+			const localElement = document.createElement( 'div' );
+			document.body.appendChild( localElement );
+
+			const localEditor = await ClassicTestEditor.create( localElement, {
+				plugins: [
+					DragDrop,
+					DragDropBlockToolbar,
+					DragDropTarget,
+					PastePlainText,
+					Paragraph,
+					BlockToolbar,
+					Bold
+				],
+				blockToolbar: [ 'bold' ]
+			} );
+
+			const localBlockToolbar = localEditor.plugins.get( BlockToolbar );
+			const buttonElement = localBlockToolbar.buttonView.element;
+
+			expect( buttonElement.getAttribute( 'draggable' ) ).not.toBe( 'true' );
+
+			await localEditor.destroy();
+			localElement.remove();
 
 			env.isAndroid = false;
 		} );
@@ -109,8 +142,8 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		it( 'should display block toolbar button', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			expect( blockToolbarButton ).not.to.be.null;
-			expect( blockToolbarButton.className.includes( 'ck-hidden' ) ).to.be.false;
+			expect( blockToolbarButton ).not.toBeNull();
+			expect( blockToolbarButton.className.includes( 'ck-hidden' ) ).toBe( false );
 		} );
 	} );
 
@@ -118,12 +151,12 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		it( 'should set selection on drag block toolbar button', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			const dragEvent = new DragEvent( 'dragstart' );
 
 			viewDocument.on( 'dragstart', ( evt, data ) => {
-				expect( data.domEvent ).to.equal( dragEvent );
+				expect( data.domEvent ).toBe( dragEvent );
 				evt.stop();
 			}, 'highest' );
 
@@ -132,10 +165,10 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const modelSelection = model.document.selection;
 			const { focus, anchor } = modelSelection;
 
-			expect( focus.path ).to.deep.equal( [ 0, 6 ] );
-			expect( anchor.path ).to.deep.equal( [ 0, 0 ] );
-			expect( dragDropBlockToolbar._isBlockDragging ).to.be.true;
-			expect( editor.editing.view.focus.calledOnce ).to.be.true;
+			expect( focus.path ).toEqual( [ 0, 6 ] );
+			expect( anchor.path ).toEqual( [ 0, 0 ] );
+			expect( dragDropBlockToolbar._isBlockDragging ).toBe( true );
+			expect( focusSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not set selection if plugin is disabled', () => {
@@ -150,8 +183,8 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const modelSelection = model.document.selection;
 			const { focus, anchor } = modelSelection;
 
-			expect( focus.path ).to.deep.equal( [ 0, 3 ] );
-			expect( anchor.path ).to.deep.equal( [ 0, 0 ] );
+			expect( focus.path ).toEqual( [ 0, 3 ] );
+			expect( anchor.path ).toEqual( [ 0, 0 ] );
 		} );
 
 		it( 'should display dragging marker', () => {
@@ -228,7 +261,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			document.dispatchEvent( dragOverEvent );
 
-			expect( model.markers.has( 'drop-target' ) ).to.be.false;
+			expect( model.markers.has( 'drop-target' ) ).toBe( false );
 		} );
 
 		it( 'should not display dragging marker', () => {
@@ -248,7 +281,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			document.dispatchEvent( dragOverEvent );
 
-			expect( model.markers.has( 'drop-target' ) ).to.be.false;
+			expect( model.markers.has( 'drop-target' ) ).toBe( false );
 		} );
 
 		it( 'should drop element', () => {
@@ -257,7 +290,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const modelParagraph = root.getNodeByPath( [ 0 ] );
 			const viewParagraph = mapper.toViewElement( modelParagraph );
 			const domNode = domConverter.mapViewToDom( viewParagraph );
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardInput = vi.fn();
 
 			const { x: clientX, y: clientY } = domNode.getBoundingClientRect();
 			const dragStartEvent = new DragEvent( 'dragstart', {
@@ -288,8 +321,8 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			document.dispatchEvent( dropEvent );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
 		} );
 
 		it( 'should end drag and drop', () => {
@@ -298,7 +331,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const modelParagraph = root.getNodeByPath( [ 0 ] );
 			const viewParagraph = mapper.toViewElement( modelParagraph );
 			const domNode = domConverter.mapViewToDom( viewParagraph );
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardInput = vi.fn();
 
 			const { x: clientX, y: clientY } = domNode.getBoundingClientRect();
 			const dragStartEvent = new DragEvent( 'dragstart', {
@@ -325,7 +358,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			document.dispatchEvent( dragEndEvent );
 
-			expect( dragDropBlockToolbar._isBlockDragging ).to.be.false;
+			expect( dragDropBlockToolbar._isBlockDragging ).toBe( false );
 		} );
 
 		it( 'should show preview with white background on iOS', () => {
@@ -336,7 +369,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dataTransfer = new DataTransfer();
-			const spy = sinon.spy( dataTransfer, 'setDragImage' );
+			const spy = vi.spyOn( dataTransfer, 'setDragImage' );
 
 			const dragStartEvent = new DragEvent( 'dragstart', {
 				dataTransfer
@@ -344,19 +377,17 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			blockToolbarButton.dispatchEvent( dragStartEvent );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			sinon.assert.calledWith( spy, sinon.match( {
-				style: {
-					backgroundColor: 'var(--ck-color-base-background)',
-					width: sinon.match( /^[\d.]+px$/ )
-				},
-				className: 'ck ck-content ck-clipboard-preview',
-				firstChild: sinon.match( {
-					tagName: 'P',
-					innerHTML: 'foobar'
-				} )
-			} ), 0, 0 );
+			const [ previewElement, offsetX, offsetY ] = spy.mock.calls[ 0 ];
+
+			expect( previewElement.style.backgroundColor ).toBe( 'var(--ck-color-base-background)' );
+			expect( previewElement.style.width ).toMatch( /^[\d.]+px$/ );
+			expect( previewElement.className ).toBe( 'ck ck-content ck-clipboard-preview' );
+			expect( previewElement.firstChild.tagName ).toBe( 'P' );
+			expect( previewElement.firstChild.innerHTML ).toBe( 'foobar' );
+			expect( offsetX ).toBe( 0 );
+			expect( offsetY ).toBe( 0 );
 
 			env.isiOS = originalEnviOs;
 		} );
@@ -369,7 +400,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dataTransfer = new DataTransfer();
-			const spy = sinon.spy( dataTransfer, 'setDragImage' );
+			const spy = vi.spyOn( dataTransfer, 'setDragImage' );
 
 			const dragStartEvent = new DragEvent( 'dragstart', {
 				dataTransfer
@@ -377,32 +408,30 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			blockToolbarButton.dispatchEvent( dragStartEvent );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			sinon.assert.calledWith( spy, sinon.match( {
-				style: {
-					backgroundColor: '',
-					width: sinon.match( /^[\d.]+px$/ )
-				},
-				className: 'ck ck-content ck-clipboard-preview',
-				firstChild: sinon.match( {
-					tagName: 'P',
-					innerHTML: 'foobar'
-				} )
-			} ), 0, 0 );
+			const [ previewElement, offsetX, offsetY ] = spy.mock.calls[ 0 ];
+
+			expect( previewElement.style.backgroundColor ).toBe( '' );
+			expect( previewElement.style.width ).toMatch( /^[\d.]+px$/ );
+			expect( previewElement.className ).toBe( 'ck ck-content ck-clipboard-preview' );
+			expect( previewElement.firstChild.tagName ).toBe( 'P' );
+			expect( previewElement.firstChild.innerHTML ).toBe( 'foobar' );
+			expect( offsetX ).toBe( 0 );
+			expect( offsetY ).toBe( 0 );
 
 			env.isiOS = originalEnviOs;
 		} );
 	} );
 
 	function expectDraggingMarker( targetPositionOrRange ) {
-		expect( model.markers.has( 'drop-target' ) ).to.be.true;
+		expect( model.markers.has( 'drop-target' ) ).toBe( true );
 
 		if ( targetPositionOrRange.is( 'position' ) ) {
-			expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).to.be.true;
-			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).toBe( true );
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).toBe( true );
 		} else {
-			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).toBe( true );
 		}
 	}
 } );

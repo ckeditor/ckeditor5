@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClipboardPipeline } from '../src/clipboardpipeline.js';
 import { DragDrop } from '../src/dragdrop.js';
 import { DragDropTarget } from '../src/dragdroptarget.js';
@@ -10,7 +12,6 @@ import { PastePlainText } from '../src/pasteplaintext.js';
 import { DragDropBlockToolbar } from '../src/dragdropblocktoolbar.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Widget, WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -29,22 +30,25 @@ import { CustomTitle } from './utils/customtitleplugin.js';
 describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+		vi.useRealTimers();
+	} );
 
 	it( 'requires DragDropTarget, ClipboardPipeline and Widget', () => {
-		expect( DragDrop.requires ).to.deep.equal( [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] );
+		expect( DragDrop.requires ).toEqual( [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] );
 	} );
 
 	it( 'has proper name', () => {
-		expect( DragDrop.pluginName ).to.equal( 'DragDrop' );
+		expect( DragDrop.pluginName ).toBe( 'DragDrop' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( DragDrop.isOfficialPlugin ).to.be.true;
+		expect( DragDrop.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( DragDrop.isPremiumPlugin ).to.be.false;
+		expect( DragDrop.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be disabled on Android', async () => {
@@ -59,7 +63,7 @@ describe( 'Drag and Drop', () => {
 
 		const plugin = editor.plugins.get( 'DragDrop' );
 
-		expect( plugin.isEnabled ).to.be.false;
+		expect( plugin.isEnabled ).toBe( false );
 
 		await editor.destroy();
 		editorElement.remove();
@@ -108,10 +112,10 @@ describe( 'Drag and Drop', () => {
 
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
@@ -125,24 +129,22 @@ describe( 'Drag and Drop', () => {
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			dataTransferMock.effectAllowed = 'copyMove';
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
 			dataTransferMock.effectAllowed = 'copy';
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}ba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}ba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>' );
 
 			// Dropping.
 
@@ -150,17 +152,17 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'move';
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>barfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>barfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>barfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>barfoo{}</p>' );
 
 			env.isGecko = originalEnvGecko;
 		} );
@@ -172,13 +174,13 @@ describe( 'Drag and Drop', () => {
 
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
-			sinon.stub( dataTransferMock, 'setDragImage' ).returns( () => null );
+			vi.spyOn( dataTransferMock, 'setDragImage' ).mockReturnValue( () => null );
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -190,40 +192,38 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}ba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}ba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>' );
 
 			// Dropping.
 
 			dataTransferMock.dropEffect = 'move';
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>barfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>barfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>barfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>barfoo{}</p>' );
 
 			env.isGecko = originalEnvGecko;
 		} );
@@ -235,10 +235,10 @@ describe( 'Drag and Drop', () => {
 
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
@@ -252,20 +252,18 @@ describe( 'Drag and Drop', () => {
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			dataTransferMock.effectAllowed = 'copy';
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			// Dropping.
 
@@ -273,17 +271,17 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'copy';
 			dataTransferMock.effectAllowed = 'copy';
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobarfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>foobarfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foobarfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>foobarfoo{}</p>' );
 
 			env.isGecko = originalEnvGecko;
 		} );
@@ -295,10 +293,10 @@ describe( 'Drag and Drop', () => {
 
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
@@ -311,20 +309,18 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			// Dropping.
 
@@ -332,17 +328,17 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'copy';
 			dataTransferMock.effectAllowed = 'copy';
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobarfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>foobarfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foobarfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>foobarfoo{}</p>' );
 
 			env.isGecko = originalEnvGecko;
 		} );
@@ -350,10 +346,10 @@ describe( 'Drag and Drop', () => {
 		it( 'should move text to other place in the same editor (over some widget)', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph><horizontalLine></horizontalLine>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -365,11 +361,10 @@ describe( 'Drag and Drop', () => {
 
 			const targetRange = model.createPositionAt( root.getChild( 1 ), 'after' );
 			fireDragging( dataTransferMock, targetRange );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetRange );
-			expect( _getViewData( view ) ).to.equal(
-				'<p>{foo}bar</p>' +
+			expect( _getViewData( view ) ).toBe( '<p>{foo}bar</p>' +
 				'<div class="ck-horizontal-line ck-widget" contenteditable="false">' +
 					'<hr></hr>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -380,17 +375,16 @@ describe( 'Drag and Drop', () => {
 
 			dataTransferMock.dropEffect = 'move';
 			fireDrop( dataTransferMock, targetRange );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>bar</paragraph>' +
+			expect( _getModelData( model ) ).toBe( '<paragraph>bar</paragraph>' +
 				'<horizontalLine></horizontalLine>' +
 				'<paragraph>foo[]</paragraph>'
 			);
@@ -399,10 +393,10 @@ describe( 'Drag and Drop', () => {
 		it( 'should do nothing if dropped on dragged range', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -416,23 +410,23 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'move';
 			dataTransferMock.effectAllowed = 'copyMove';
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.false;
+			expect( spyClipboardInput ).not.toHaveBeenCalled();
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]bar</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>{foo}bar</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[foo]bar</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>{foo}bar</p>' );
 		} );
 
 		it( 'should copy text to from outside the editor', () => {
 			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer( { 'text/html': 'abc' } );
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -441,13 +435,12 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( dataTransferMock.dropEffect ).to.equal( 'copy' );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{}fooba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>'
-			);
+			expect( dataTransferMock.dropEffect ).toBe( 'copy' );
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{}fooba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>' );
 
 			// Dropping.
 
@@ -455,26 +448,26 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'copy';
 			dataTransferMock.effectAllowed = 'copy';
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fooabc[]bar</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>fooabc{}bar</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fooabc[]bar</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>fooabc{}bar</p>' );
 		} );
 
 		it( 'should finalize dragging when drop target range cannot be determined', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -486,36 +479,36 @@ describe( 'Drag and Drop', () => {
 
 			const targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
 
 			// Stub getFinalDropRange to return null.
 			const dragDropTarget = editor.plugins.get( DragDropTarget );
-			sinon.stub( dragDropTarget, 'getFinalDropRange' ).returns( null );
+			vi.spyOn( dragDropTarget, 'getFinalDropRange' ).mockReturnValue( null );
 
 			// Dropping.
 
 			dataTransferMock.dropEffect = 'move';
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			// The clipboardInput event should have been stopped before reaching further listeners.
-			expect( spyClipboardInput.called ).to.be.false;
+			expect( spyClipboardInput ).not.toHaveBeenCalled();
 
 			expectFinalized();
 
 			// Data should remain unchanged.
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]bar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[foo]bar</paragraph>' );
 		} );
 
 		it( 'should not remove dragged range if it is from other drag session', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			let dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -529,12 +522,11 @@ describe( 'Drag and Drop', () => {
 
 			let targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			// Dropping.
 
@@ -542,17 +534,17 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'copy';
 			dataTransferMock.effectAllowed = 'copy';
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fooabc[]bar</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>fooabc{}bar</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fooabc[]bar</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>fooabc{}bar</p>' );
 		} );
 
 		it( 'should not remove dragged range if insert into drop target was not allowed', () => {
@@ -592,15 +584,13 @@ describe( 'Drag and Drop', () => {
 				stopPropagation: () => {}
 			} );
 
-			expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-				'<table class="table"><tbody><tr><td>bar</td></tr></tbody></table>'
+			expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<table class="table"><tbody><tr><td>bar</td></tr></tbody></table>'
 			);
 
 			const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
 			fireDrop( dataTransferMock, targetPosition );
 
-			expect( _getModelData( model ) ).to.equal(
-				'<caption>foo</caption>' +
+			expect( _getModelData( model ) ).toBe( '<caption>foo</caption>' +
 				'[<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>]'
 			);
 		} );
@@ -608,10 +598,10 @@ describe( 'Drag and Drop', () => {
 		it( 'should properly move content even if dragend event is not fired', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
@@ -624,37 +614,35 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			// Dragging.
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}ba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}ba<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>r</p>' );
 
 			// Dropping.
 
 			dataTransferMock.dropEffect = 'move';
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>barfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>barfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>barfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>barfoo{}</p>' );
 
 			expectFinalized();
 		} );
@@ -662,10 +650,10 @@ describe( 'Drag and Drop', () => {
 		it( 'should not allow dropping if the editor is read-only', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
@@ -678,12 +666,11 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
@@ -691,11 +678,11 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( dataTransferMock.dropEffect ).to.equal( 'none' );
-			expect( model.markers.has( 'drop-target' ) ).to.be.false;
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal( '<p>{foo}bar</p>' );
+			expect( dataTransferMock.dropEffect ).toBe( 'none' );
+			expect( model.markers.has( 'drop-target' ) ).toBe( false );
+			expect( _getViewData( view, { renderUIElements: true } ) ).toBe( '<p>{foo}bar</p>' );
 
 			editor.disableReadOnlyMode( 'unit-test' );
 			// Dropping.
@@ -703,27 +690,27 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'move';
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobarfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>foobarfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foobarfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>foobarfoo{}</p>' );
 		} );
 
 		it( 'should not allow dropping if the plugin is disabled', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const plugin = editor.plugins.get( 'DragDrop' );
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardOutput = sinon.spy();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardOutput = vi.fn();
+			const spyClipboardInput = vi.fn();
 			let targetPosition;
 
 			viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
@@ -736,12 +723,11 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			expectDraggingMarker( targetPosition );
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
-			);
+			expect( _getViewData( view, { renderUIElements: true } ) )
+				.toBe( '<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>' );
 
 			plugin.forceDisabled( 'test' );
 
@@ -749,11 +735,11 @@ describe( 'Drag and Drop', () => {
 
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 5 );
 			fireDragging( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( dataTransferMock.dropEffect ).to.equal( 'none' );
-			expect( model.markers.has( 'drop-target' ) ).to.be.false;
-			expect( _getViewData( view, { renderUIElements: true } ) ).to.equal( '<p>{foo}bar</p>' );
+			expect( dataTransferMock.dropEffect ).toBe( 'none' );
+			expect( model.markers.has( 'drop-target' ) ).toBe( false );
+			expect( _getViewData( view, { renderUIElements: true } ) ).toBe( '<p>{foo}bar</p>' );
 
 			plugin.clearForceDisabled( 'test' );
 			// Dropping.
@@ -761,17 +747,17 @@ describe( 'Drag and Drop', () => {
 			dataTransferMock.dropEffect = 'move';
 			targetPosition = model.createPositionAt( root.getChild( 0 ), 6 );
 			fireDrop( dataTransferMock, targetPosition );
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( spyClipboardInput.called ).to.be.true;
-			expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-			expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+			expect( spyClipboardInput ).toHaveBeenCalled();
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+			expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 			fireDragEnd( dataTransferMock );
 			expectFinalized();
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foobarfoo[]</paragraph>' );
-			expect( _getViewData( view ) ).to.equal( '<p>foobarfoo{}</p>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foobarfoo[]</paragraph>' );
+			expect( _getViewData( view ) ).toBe( '<p>foobarfoo{}</p>' );
 		} );
 
 		it( 'should do nothing if dragging on Android', () => {
@@ -780,16 +766,16 @@ describe( 'Drag and Drop', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dataTransferMock = createDataTransfer();
-			const spyClipboardInput = sinon.spy();
+			const spyClipboardInput = vi.fn();
 
 			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
 
 			fireDragStart( dataTransferMock );
 
-			expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'foo' );
-			expect( dataTransferMock.effectAllowed ).to.equal( 'copyMove' );
+			expect( dataTransferMock.getData( 'text/html' ) ).toBe( 'foo' );
+			expect( dataTransferMock.effectAllowed ).toBe( 'copyMove' );
 
-			expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
+			expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).toBe( false );
 
 			env.isAndroid = false;
 		} );
@@ -799,23 +785,23 @@ describe( 'Drag and Drop', () => {
 				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyPreventDefault = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyPreventDefault = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
 				fireDragStart( dataTransferMock, spyPreventDefault );
 
-				expect( spyPreventDefault.called ).to.be.true;
-				expect( spyClipboardOutput.notCalled ).to.be.true;
+				expect( spyPreventDefault ).toHaveBeenCalled();
+				expect( spyClipboardOutput ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not start dragging if the root editable would be dragged itself', () => {
 				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyPreventDefault = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyPreventDefault = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
@@ -838,16 +824,16 @@ describe( 'Drag and Drop', () => {
 					}
 				} );
 
-				expect( spyPreventDefault.called ).to.be.true;
-				expect( spyClipboardOutput.notCalled ).to.be.true;
+				expect( spyPreventDefault ).toHaveBeenCalled();
+				expect( spyClipboardOutput ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not start dragging if the editable would be dragged itself', () => {
 				_setModelData( model, '<table><tableRow><tableCell><paragraph>[foo]bar</paragraph></tableCell></tableRow></table>' );
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyPreventDefault = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyPreventDefault = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
@@ -859,7 +845,7 @@ describe( 'Drag and Drop', () => {
 					isPrimary: true
 				};
 
-				expect( eventData.target.is( 'editableElement', 'td' ) ).to.be.true;
+				expect( eventData.target.is( 'editableElement', 'td' ) ).toBe( true );
 
 				viewDocument.fire( 'pointerdown', {
 					...eventData
@@ -873,15 +859,15 @@ describe( 'Drag and Drop', () => {
 					}
 				} );
 
-				expect( spyPreventDefault.called ).to.be.true;
-				expect( spyClipboardOutput.notCalled ).to.be.true;
+				expect( spyPreventDefault ).toHaveBeenCalled();
+				expect( spyClipboardOutput ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should mark allowed effect as "copy" if the editor is read-only', () => {
 				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
 
 				editor.enableReadOnlyMode( 'unit-test' );
 
@@ -889,8 +875,8 @@ describe( 'Drag and Drop', () => {
 
 				fireDragStart( dataTransferMock );
 
-				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
-				expect( dataTransferMock.effectAllowed ).to.equal( 'copy' );
+				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).toBe( false );
+				expect( dataTransferMock.effectAllowed ).toBe( 'copy' );
 			} );
 
 			it( 'should start dragging by grabbing the widget selection handle', () => {
@@ -900,8 +886,8 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -910,7 +896,7 @@ describe( 'Drag and Drop', () => {
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const selectionHandleElement = widgetViewElement.getChild( 0 );
 
-				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -930,32 +916,29 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
 				);
 
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
-				);
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) )
+					.toBe( '<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>' );
 
 				dataTransferMock.dropEffect = 'move';
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
-				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( spyClipboardInput ).toHaveBeenCalled();
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 				fireDragEnd( dataTransferMock );
 				expectFinalized();
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foobar</paragraph>' +
+				expect( _getModelData( model ) ).toBe( '<paragraph>foobar</paragraph>' +
 					'[<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>]'
 				);
 			} );
@@ -969,7 +952,7 @@ describe( 'Drag and Drop', () => {
 				editor.enableReadOnlyMode( 'unit-test' );
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
@@ -977,7 +960,7 @@ describe( 'Drag and Drop', () => {
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const selectionHandleElement = widgetViewElement.getChild( 0 );
 
-				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -997,18 +980,16 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
 				);
 
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
-				);
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) )
+					.toBe( '<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>' );
 			} );
 
 			it( 'should start dragging by grabbing the widget element directly', () => {
@@ -1018,8 +999,8 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -1045,28 +1026,27 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<hr>' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<hr>' );
 
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( '<hr></hr>' );
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) ).toBe( '<hr></hr>' );
 
 				dataTransferMock.dropEffect = 'move';
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
-				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( spyClipboardInput ).toHaveBeenCalled();
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 				fireDragEnd( dataTransferMock );
 				expectFinalized();
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foobar</paragraph>' +
+				expect( _getModelData( model ) ).toBe( '<paragraph>foobar</paragraph>' +
 					'[<horizontalLine></horizontalLine>]'
 				);
 			} );
@@ -1077,8 +1057,8 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -1102,26 +1082,25 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'foo' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( 'foo' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( 'foo' );
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) ).toBe( 'foo' );
 
 				dataTransferMock.dropEffect = 'move';
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 4 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
-				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( spyClipboardInput ).toHaveBeenCalled();
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 				fireDragEnd( dataTransferMock );
 				expectFinalized();
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>bfoo[]ar</paragraph>'
+				expect( _getModelData( model ) ).toBe( '<paragraph>bfoo[]ar</paragraph>'
 				);
 			} );
 
@@ -1133,8 +1112,8 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -1143,7 +1122,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = widgetViewElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'hr' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'hr' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -1163,28 +1142,27 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<hr>' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<hr>' );
 
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( '<hr></hr>' );
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) ).toBe( '<hr></hr>' );
 
 				dataTransferMock.dropEffect = 'move';
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
-				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( spyClipboardInput ).toHaveBeenCalled();
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 				fireDragEnd( dataTransferMock );
 				expectFinalized();
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foobar</paragraph>' +
+				expect( _getModelData( model ) ).toBe( '<paragraph>foobar</paragraph>' +
 					'[<horizontalLine></horizontalLine>]'
 				);
 			} );
@@ -1196,7 +1174,7 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
@@ -1222,8 +1200,8 @@ describe( 'Drag and Drop', () => {
 					preventDefault: () => {}
 				} );
 
-				expect( spyClipboardOutput.notCalled ).to.be.true;
-				expect( dataTransferMock.getData( 'text/html' ) ).to.be.undefined;
+				expect( spyClipboardOutput ).not.toHaveBeenCalled();
+				expect( dataTransferMock.getData( 'text/html' ) ).toBeUndefined();
 			} );
 
 			// TODO: this test looks invalid, "this._draggedRange" in experimental in most cases is not undefined.
@@ -1234,7 +1212,7 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 
@@ -1260,8 +1238,8 @@ describe( 'Drag and Drop', () => {
 					preventDefault: () => {}
 				} );
 
-				expect( spyClipboardOutput.notCalled ).to.be.true;
-				expect( dataTransferMock.getData( 'text/html' ) ).to.be.undefined;
+				expect( spyClipboardOutput ).not.toHaveBeenCalled();
+				expect( dataTransferMock.getData( 'text/html' ) ).toBeUndefined();
 			} );
 
 			it( 'should drag parent paragraph if entire content is selected', () => {
@@ -1271,8 +1249,8 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -1281,7 +1259,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'br' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'br' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -1301,31 +1279,30 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<p><br>&nbsp;</p>' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<p><br>&nbsp;</p>' );
 
 				const modelCellElement = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
 				const viewCellElement = mapper.toViewElement( modelCellElement );
-				expect( viewCellElement.is( 'editableElement', 'td' ) ).to.be.true;
-				expect( viewCellElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( viewCellElement.is( 'editableElement', 'td' ) ).toBe( true );
+				expect( viewCellElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( '<p><br></br></p>' );
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) ).toBe( '<p><br></br></p>' );
 
 				dataTransferMock.dropEffect = 'move';
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
-				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( spyClipboardInput ).toHaveBeenCalled();
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 				fireDragEnd( dataTransferMock );
 				expectFinalized();
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foobar</paragraph><paragraph><softBreak></softBreak> []</paragraph>' +
+				expect( _getModelData( model ) ).toBe( '<paragraph>foobar</paragraph><paragraph><softBreak></softBreak> []</paragraph>' +
 					'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 				);
 			} );
@@ -1350,7 +1327,7 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'World' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( 'World' );
 
 				fireDragging( dataTransferMock, positionAfterHr );
 				expectDraggingMarker( positionAfterHr );
@@ -1360,7 +1337,7 @@ describe( 'Drag and Drop', () => {
 					model.createPositionAt( root.getChild( 1 ), 5 )
 				);
 
-				expect( _getModelData( model ) ).to.equal( trim`
+				expect( _getModelData( model ) ).toBe( trim`
 					<imageBlock src="">
 						<caption></caption>
 					</imageBlock>
@@ -1386,7 +1363,7 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'Foo' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( 'Foo' );
 
 				fireDragging( dataTransferMock, position );
 				expectDraggingMarker( position );
@@ -1396,7 +1373,7 @@ describe( 'Drag and Drop', () => {
 					model.createPositionAt( root.getChild( 1 ), 3 )
 				);
 
-				expect( _getModelData( model ) ).to.equal( trim`
+				expect( _getModelData( model ) ).toBe( trim`
 					<title><title-content> Bar</title-content></title>
 					<paragraph>BarFoo[]</paragraph>
 				` );
@@ -1419,7 +1396,7 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<p>Baz</p>' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<p>Baz</p>' );
 
 				fireDragging( dataTransferMock, model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 3 ) );
 
@@ -1428,7 +1405,7 @@ describe( 'Drag and Drop', () => {
 					model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 3 )
 				);
 
-				expect( _getModelData( model ) ).to.equal( trim`
+				expect( _getModelData( model ) ).toBe( trim`
 					<paragraph>Baz[]</paragraph>
 					<title><title-content>Foo Bar</title-content></title>
 				` );
@@ -1441,8 +1418,8 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardOutput = sinon.spy();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardOutput = vi.fn();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
@@ -1451,7 +1428,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'br' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'br' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -1471,31 +1448,30 @@ describe( 'Drag and Drop', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<br>' );
+				expect( dataTransferMock.getData( 'text/html' ) ).toBe( '<br>' );
 
 				const modelCellElement = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
 				const viewCellElement = mapper.toViewElement( modelCellElement );
-				expect( viewCellElement.is( 'editableElement', 'td' ) ).to.be.true;
-				expect( viewCellElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( viewCellElement.is( 'editableElement', 'td' ) ).toBe( true );
+				expect( viewCellElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
-				expect( spyClipboardOutput.called ).to.be.true;
-				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( '<br></br>' );
+				expect( spyClipboardOutput ).toHaveBeenCalled();
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+				expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+				expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) ).toBe( '<br></br>' );
 
 				dataTransferMock.dropEffect = 'move';
 				const targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
-				expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
-				expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( spyClipboardInput ).toHaveBeenCalled();
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].method ).toBe( 'drop' );
+				expect( spyClipboardInput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
 
 				fireDragEnd( dataTransferMock );
 				expectFinalized();
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>foo<softBreak></softBreak>[]bar</paragraph>' +
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo<softBreak></softBreak>[]bar</paragraph>' +
 					'<table><tableRow><tableCell><paragraph>baz</paragraph></tableCell></tableRow></table>'
 				);
 			} );
@@ -1506,12 +1482,12 @@ describe( 'Drag and Drop', () => {
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
 				);
 
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 				const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const selectionHandleElement = widgetViewElement.getChild( 0 );
 
-				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -1525,12 +1501,12 @@ describe( 'Drag and Drop', () => {
 					...eventData
 				} );
 
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
 				viewDocument.fire( 'pointerup' );
-				clock.tick( 50 );
+				vi.advanceTimersByTime( 50 );
 
-				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
+				expect( widgetViewElement.hasAttribute( 'draggable' ) ).toBe( false );
 			} );
 
 			it( 'should remove "draggable" attribute from widget element if pointerup before dragging start (widget)', () => {
@@ -1539,12 +1515,12 @@ describe( 'Drag and Drop', () => {
 					'<horizontalLine></horizontalLine>'
 				);
 
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
 				const viewElement = widgetViewElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'hr' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'hr' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -1558,12 +1534,12 @@ describe( 'Drag and Drop', () => {
 					...eventData
 				} );
 
-				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
 				viewDocument.fire( 'pointerup' );
-				clock.tick( 50 );
+				vi.advanceTimersByTime( 50 );
 
-				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
+				expect( widgetViewElement.hasAttribute( 'draggable' ) ).toBe( false );
 			} );
 
 			it( 'can drag multiple elements', () => {
@@ -1589,12 +1565,12 @@ describe( 'Drag and Drop', () => {
 			it( 'should remove "draggable" attribute from editable element', () => {
 				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 				const editableElement = viewDocument.getRoot();
 				const viewElement = editableElement.getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'p' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'p' ) ).toBe( true );
 
 				const eventData = {
 					domTarget: domNode,
@@ -1608,12 +1584,36 @@ describe( 'Drag and Drop', () => {
 					...eventData
 				} );
 
-				expect( editableElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+				expect( editableElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 
 				viewDocument.fire( 'pointerup' );
-				clock.tick( 50 );
+				vi.advanceTimersByTime( 50 );
 
-				expect( editableElement.hasAttribute( 'draggable' ) ).to.be.false;
+				expect( editableElement.hasAttribute( 'draggable' ) ).toBe( false );
+			} );
+
+			it( 'should not clear "draggable" attribute on pointerup when on Android', () => {
+				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+				vi.useFakeTimers();
+				const editableElement = viewDocument.getRoot();
+				const viewElement = editableElement.getChild( 0 );
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				viewDocument.fire( 'pointerdown', {
+					domTarget: domNode,
+					target: viewElement,
+					domEvent: { isPrimary: true }
+				} );
+
+				expect( editableElement.getAttribute( 'draggable' ) ).toBe( 'true' );
+
+				env.isAndroid = true;
+				viewDocument.fire( 'pointerup' );
+				vi.advanceTimersByTime( 50 );
+				env.isAndroid = false;
+
+				expect( editableElement.getAttribute( 'draggable' ) ).toBe( 'true' );
 			} );
 
 			it( 'should only show one preview element when you drag element outside the editing root', () => {
@@ -1639,7 +1639,7 @@ describe( 'Drag and Drop', () => {
 					.length;
 
 				// There should be two elements with the `.ck-content` class - editor and drag-and-drop preview.
-				expect( numberOfCkContentElements ).to.equal( 2 );
+				expect( numberOfCkContentElements ).toBe( 2 );
 			} );
 
 			it( 'should show preview with custom implementation if drag element outside the editing root', () => {
@@ -1647,13 +1647,13 @@ describe( 'Drag and Drop', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
-				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+				const spy = vi.spyOn( dataTransfer, 'setDragImage' );
 				const clientX = 10;
 
 				viewDocument.fire( 'dragstart', {
 					dataTransfer,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domEvent: {
 						clientX
 					}
@@ -1667,17 +1667,20 @@ describe( 'Drag and Drop', () => {
 
 				const domRect = new Rect( domEditable );
 
-				sinon.assert.calledWith( spy, sinon.match( {
-					style: {
-						'padding-left': `${ domRect.left - clientX + paddingLeft }px`
-					},
-					className: 'ck ck-content ck-clipboard-preview',
-					firstChild: sinon.match( {
-						tagName: 'P',
-						innerHTML: 'Foo.'
-					} )
-				} ), 0, 0 );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+
+				const [ previewElement, x, y ] = spy.mock.calls[ 0 ];
+				expect( x ).toBe( 0 );
+				expect( y ).toBe( 0 );
+				// Note: browsers silently reject negative padding-left values, so we check via style.width instead.
+				// width = editableWidth + offsetLeft, where offsetLeft = domRect.left - clientX + paddingLeft.
+				const offsetLeft = domRect.left - clientX + paddingLeft;
+				const domEditablePaddingRight = parseFloat( window.getComputedStyle( domEditable ).paddingRight );
+				const editableWidth = parseFloat( window.getComputedStyle( domEditable ).width ) - paddingLeft - domEditablePaddingRight;
+				expect( previewElement.style.width ).toBe( `${ editableWidth + offsetLeft }px` );
+				expect( previewElement.className ).toBe( 'ck ck-content ck-clipboard-preview' );
+				expect( previewElement.firstChild.tagName ).toBe( 'P' );
+				expect( previewElement.firstChild.innerHTML ).toBe( 'Foo.' );
 			} );
 
 			it( 'should show preview with custom implementation on iOS', () => {
@@ -1688,7 +1691,7 @@ describe( 'Drag and Drop', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
-				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+				const spy = vi.spyOn( dataTransfer, 'setDragImage' );
 
 				const modelElement = root.getNodeByPath( [ 0 ] );
 				const viewElement = mapper.toViewElement( modelElement );
@@ -1696,29 +1699,26 @@ describe( 'Drag and Drop', () => {
 
 				viewDocument.fire( 'dragstart', {
 					dataTransfer,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domEvent: getMockedMousePosition( domElement ),
 					domTarget: domElement
 				} );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 
-				sinon.assert.calledWith( spy, sinon.match( {
-					style: {
-						'padding': '10px',
-						'min-width': '200px',
-						'min-height': '20px',
-						'box-sizing': 'border-box',
-						'max-width': sinon.match( /px$/ ),
-						'background-color': 'var(--ck-color-base-background)'
-					},
-					className: 'ck ck-content ck-clipboard-preview',
-					firstChild: sinon.match( {
-						tagName: 'P',
-						innerHTML: 'Foo.'
-					} )
-				} ), 0, 0 );
+				const [ previewElementiOS, xi, yi ] = spy.mock.calls[ 0 ];
+				expect( xi ).toBe( 0 );
+				expect( yi ).toBe( 0 );
+				expect( previewElementiOS.style.getPropertyValue( 'padding' ) ).toBe( '10px' );
+				expect( previewElementiOS.style.getPropertyValue( 'min-width' ) ).toBe( '200px' );
+				expect( previewElementiOS.style.getPropertyValue( 'min-height' ) ).toBe( '20px' );
+				expect( previewElementiOS.style.getPropertyValue( 'box-sizing' ) ).toBe( 'border-box' );
+				expect( previewElementiOS.style.getPropertyValue( 'max-width' ) ).toMatch( /px$/ );
+				expect( previewElementiOS.style.getPropertyValue( 'background-color' ) ).toBe( 'var(--ck-color-base-background)' );
+				expect( previewElementiOS.className ).toBe( 'ck ck-content ck-clipboard-preview' );
+				expect( previewElementiOS.firstChild.tagName ).toBe( 'P' );
+				expect( previewElementiOS.firstChild.innerHTML ).toBe( 'Foo.' );
 
 				env.isiOS = originalEnviOs;
 			} );
@@ -1728,7 +1728,7 @@ describe( 'Drag and Drop', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
-				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+				const spy = vi.spyOn( dataTransfer, 'setDragImage' );
 
 				const modelElement = root.getNodeByPath( [ 0 ] );
 				const viewElement = mapper.toViewElement( modelElement );
@@ -1736,33 +1736,69 @@ describe( 'Drag and Drop', () => {
 
 				viewDocument.fire( 'dragstart', {
 					dataTransfer,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domEvent: getMockedMousePosition( domElement ),
 					domTarget: domElement
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should not fail when preview container exists but has no child on second drag', () => {
+				_setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+				const spySetDragImage = vi.spyOn( dataTransfer, 'setDragImage' );
+
+				const modelElement = root.getNodeByPath( [ 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domElement = domConverter.mapViewToDom( viewElement );
+
+				// First drag inside the editable — creates the preview container but returns early without
+				// appending a child (browser handles the preview natively).
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
+					domEvent: getMockedMousePosition( domElement ),
+					domTarget: domElement
+				} );
+
+				expect( spySetDragImage ).not.toHaveBeenCalled();
+
+				// Second drag outside the editable — the container already exists but has no firstElementChild.
+				const outsideElement = document.createElement( 'div' );
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
+					domEvent: { clientX: 0 },
+					domTarget: outsideElement
+				} );
+
+				expect( spySetDragImage ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		describe( 'dragenter', () => {
 			it( 'should focus the editor while dragging over the editable', () => {
-				const stubFocus = sinon.stub( view, 'focus' );
+				const stubFocus = vi.spyOn( view, 'focus' ).mockImplementation( () => {} );
 
 				viewDocument.fire( 'dragenter', {} );
 
-				expect( stubFocus.calledOnce ).to.be.true;
+				expect( stubFocus ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should not focus the editor while dragging over disabled editor', () => {
-				const stubFocus = sinon.stub( view, 'focus' );
+				const stubFocus = vi.spyOn( view, 'focus' ).mockImplementation( () => {} );
 
 				editor.enableReadOnlyMode( 'unit-test' );
 
 				viewDocument.fire( 'dragenter' );
 
-				expect( stubFocus.calledOnce ).to.be.false;
+				expect( stubFocus ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -1770,27 +1806,27 @@ describe( 'Drag and Drop', () => {
 			it( 'should remove drop target marker', () => {
 				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 				const dataTransferMock = createDataTransfer();
 
 				fireDragStart( dataTransferMock );
 				expectDragStarted( dataTransferMock, 'foo' );
 
 				fireDragging( dataTransferMock, model.createPositionAt( root.getChild( 0 ), 3 ) );
-				clock.tick( 100 );
+				vi.advanceTimersByTime( 100 );
 
 				viewDocument.fire( 'dragleave' );
-				expect( model.markers.has( 'drop-target' ) ).to.be.true;
+				expect( model.markers.has( 'drop-target' ) ).toBe( true );
 
-				clock.tick( 100 );
-				expect( model.markers.has( 'drop-target' ) ).to.be.false;
+				vi.advanceTimersByTime( 100 );
+				expect( model.markers.has( 'drop-target' ) ).toBe( false );
 			} );
 
 			it( 'should not remove drop target marker if dragging left some nested element', () => {
 				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
-				const spy = sinon.spy();
-				const clock = sinon.useFakeTimers();
+				const spy = vi.fn();
+				vi.useFakeTimers();
 				const dataTransferMock = createDataTransfer();
 
 				model.markers.on( 'update:drop-target', ( evt, marker, oldRange, newRange ) => {
@@ -1804,30 +1840,30 @@ describe( 'Drag and Drop', () => {
 
 				let targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 				fireDragging( dataTransferMock, targetPosition );
-				clock.tick( 100 );
+				vi.advanceTimersByTime( 100 );
 
 				viewDocument.fire( 'dragleave' );
 				expectDraggingMarker( targetPosition );
 
-				clock.tick( 10 );
+				vi.advanceTimersByTime( 10 );
 				expectDraggingMarker( targetPosition );
 
 				targetPosition = model.createPositionAt( root.getChild( 0 ), 4 );
 				fireDragging( dataTransferMock, targetPosition );
-				clock.tick( 60 );
+				vi.advanceTimersByTime( 60 );
 
 				expectDraggingMarker( targetPosition );
-				expect( spy.notCalled ).to.be.true;
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not focus the editor while dragging over disabled editor', () => {
-				const stubFocus = sinon.stub( view, 'focus' );
+				const stubFocus = vi.spyOn( view, 'focus' ).mockImplementation( () => {} );
 
 				editor.enableReadOnlyMode( 'unit-test' );
 
 				viewDocument.fire( 'dragenter' );
 
-				expect( stubFocus.calledOnce ).to.be.false;
+				expect( stubFocus ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -1857,7 +1893,7 @@ describe( 'Drag and Drop', () => {
 
 				fireDragging( dataTransferMock, targetPosition );
 
-				expect( model.markers.has( 'drop-target' ) ).to.be.false;
+				expect( model.markers.has( 'drop-target' ) ).toBe( false );
 			} );
 
 			it( 'should put drop target marker inside and attribute element', () => {
@@ -1868,7 +1904,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'attributeElement' ) ).to.be.true;
+				expect( viewElement.is( 'attributeElement' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -1892,7 +1928,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -1915,7 +1951,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).toBe( true );
 
 				const widgetUIHeight = 25;
 
@@ -1941,7 +1977,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'tr' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'tr' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -1965,7 +2001,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'td' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'td' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -1993,7 +2029,7 @@ describe( 'Drag and Drop', () => {
 				const nestedViewParagraph = mapper.toViewElement( nestedModelParagraph );
 				const nestedParagraphDomNode = domConverter.mapViewToDom( nestedViewParagraph );
 
-				expect( viewElement.is( 'rootElement' ) ).to.be.true;
+				expect( viewElement.is( 'rootElement' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -2019,7 +2055,7 @@ describe( 'Drag and Drop', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				expect( viewElement.is( 'element', 'td' ) ).to.be.true;
+				expect( viewElement.is( 'element', 'td' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -2074,7 +2110,7 @@ describe( 'Drag and Drop', () => {
 				const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
 				const firstParagraphDomNode = domConverter.mapViewToDom( firstParagraphViewElement );
 
-				expect( viewElement.is( 'rootElement' ) ).to.be.true;
+				expect( viewElement.is( 'rootElement' ) ).toBe( true );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
@@ -2172,16 +2208,16 @@ describe( 'Drag and Drop', () => {
 					target: viewElement,
 					domEvent: {},
 					dataTransfer: createDataTransfer( {} ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
 				// Fire the 'dragend' event on the document
 				document.dispatchEvent( new Event( 'dragend' ) );
 
 				// Check if the blockMode changes to 'false'
-				expect( plugin._blockMode ).to.be.false;
-				expect( model.markers.has( 'drop-target' ) ).to.be.false;
+				expect( plugin._blockMode ).toBe( false );
+				expect( model.markers.has( 'drop-target' ) ).toBe( false );
 			} );
 		} );
 
@@ -2194,7 +2230,7 @@ describe( 'Drag and Drop', () => {
 				);
 
 				const dataTransferMock = createDataTransfer();
-				const spyClipboardInput = sinon.spy();
+				const spyClipboardInput = vi.fn();
 
 				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
 
@@ -2202,13 +2238,13 @@ describe( 'Drag and Drop', () => {
 				const targetPosition = model.createPositionAt( root.getChild( 1 ), 0 );
 				fireDrop( dataTransferMock, targetPosition );
 
-				expect( spyClipboardInput.called ).to.be.true;
+				expect( spyClipboardInput ).toHaveBeenCalled();
 
-				const data = spyClipboardInput.firstCall.firstArg;
-				expect( data.method ).to.equal( 'drop' );
-				expect( data.dataTransfer ).to.equal( dataTransferMock );
-				expect( data.targetRanges.length ).to.equal( 1 );
-				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
+				const data = spyClipboardInput.mock.calls[ 0 ][ 0 ];
+				expect( data.method ).toBe( 'drop' );
+				expect( data.dataTransfer ).toBe( dataTransferMock );
+				expect( data.targetRanges.length ).toBe( 1 );
+				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).toBe( true );
 			} );
 		} );
 
@@ -2366,7 +2402,7 @@ describe( 'Drag and Drop', () => {
 
 		describe( 'WidgetToolbarRepository#isEnabled', () => {
 			it( 'is enabled by default', () => {
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'is enabled when starts dragging the text node', () => {
@@ -2379,12 +2415,12 @@ describe( 'Drag and Drop', () => {
 
 				viewDocument.fire( 'dragstart', {
 					dataTransfer,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'is disabled when plugin is disabled', () => {
@@ -2398,14 +2434,14 @@ describe( 'Drag and Drop', () => {
 				plugin.isEnabled = false;
 
 				viewDocument.fire( 'dragstart', {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					target: viewDocument.getRoot().getChild( 1 ),
 					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy(),
+					stopPropagation: vi.fn(),
 					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				expect( widgetToolbarRepository.isEnabled ).toBe( false );
 			} );
 
 			it( 'is disabled when starts dragging the widget', () => {
@@ -2416,14 +2452,14 @@ describe( 'Drag and Drop', () => {
 				const nodeDOM = domConverter.mapViewToDom( nodeView );
 
 				viewDocument.fire( 'dragstart', {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					target: viewDocument.getRoot().getChild( 1 ),
 					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy(),
+					stopPropagation: vi.fn(),
 					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				expect( widgetToolbarRepository.isEnabled ).toBe( false );
 			} );
 
 			it( 'is enabled when ends dragging (drop in the editable)', () => {
@@ -2436,28 +2472,28 @@ describe( 'Drag and Drop', () => {
 				const nodeDOM = domConverter.mapViewToDom( nodeView );
 
 				viewDocument.fire( 'dragstart', {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
-					stopPropagation: sinon.spy(),
+					stopPropagation: vi.fn(),
 					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				expect( widgetToolbarRepository.isEnabled ).toBe( false );
 
 				viewDocument.fire( 'drop', {
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
 					method: 'drop',
 					domEvent: {
-						clientX: sinon.spy(),
-						clientY: sinon.spy()
+						clientX: vi.fn(),
+						clientY: vi.fn()
 					}
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 
 			it( 'is enabled when ends dragging (drop outside the editable)', () => {
@@ -2470,21 +2506,21 @@ describe( 'Drag and Drop', () => {
 				const nodeDOM = domConverter.mapViewToDom( nodeView );
 
 				viewDocument.fire( 'dragstart', {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
 					stopPropagation() {},
 					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+				expect( widgetToolbarRepository.isEnabled ).toBe( false );
 
 				viewDocument.fire( 'dragend', {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					dataTransfer
 				} );
 
-				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+				expect( widgetToolbarRepository.isEnabled ).toBe( true );
 			} );
 		} );
 	} );
@@ -2503,7 +2539,7 @@ describe( 'Drag and Drop', () => {
 			dragDrop = editor.plugins.get( DragDrop );
 
 			targetElement = document.createElement( 'div' );
-			warnStub = sinon.stub( console, 'warn' );
+			warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( async () => {
@@ -2511,7 +2547,6 @@ describe( 'Drag and Drop', () => {
 
 			editorElement.remove();
 			targetElement.remove();
-			warnStub.restore();
 		} );
 
 		it( 'should not append unsafe html tags from malformed data transfer object to the preview', () => {
@@ -2527,9 +2562,9 @@ describe( 'Drag and Drop', () => {
 				} )
 			} );
 
-			expect( dragDrop._previewContainer.querySelector( 'script' ) ).to.be.null;
-			expect( dragDrop._previewContainer.querySelector( 'style' ) ).to.be.null;
-			expect( dragDrop._previewContainer.querySelector( 'strong' ) ).not.to.be.null;
+			expect( dragDrop._previewContainer.querySelector( 'script' ) ).toBeNull();
+			expect( dragDrop._previewContainer.querySelector( 'style' ) ).toBeNull();
+			expect( dragDrop._previewContainer.querySelector( 'strong' ) ).not.toBeNull();
 		} );
 
 		it( 'should not append unsafe attributes to the preview', () => {
@@ -2543,17 +2578,17 @@ describe( 'Drag and Drop', () => {
 
 			const insertedElement = dragDrop._previewContainer.querySelector( 'strong' );
 
-			expect( insertedElement.getAttribute( 'onclick' ) ).to.be.null;
+			expect( insertedElement.getAttribute( 'onclick' ) ).toBeNull();
 
-			sinon.assert.calledOnce( warnStub );
-			sinon.assert.calledWithExactly( warnStub,
-				sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+			expect( warnStub ).toHaveBeenCalledTimes( 1 );
+			expect( warnStub ).toHaveBeenCalledWith(
+				expect.stringMatching( /^domconverter-unsafe-attribute-detected/ ),
 				{
 					domElement: insertedElement,
 					key: 'onclick',
 					value: 'alert(\'abc\')'
 				},
-				sinon.match.string // Link to the documentation
+				expect.any( String ) // Link to the documentation
 			);
 		} );
 	} );
@@ -2635,34 +2670,34 @@ describe( 'Drag and Drop', () => {
 	}
 
 	function expectDragStarted( dataTransferMock, data, spyClipboardOutput, effectAllowed = 'copyMove' ) {
-		expect( dataTransferMock.getData( 'text/html' ) ).to.equal( data );
-		expect( dataTransferMock.effectAllowed ).to.equal( effectAllowed );
+		expect( dataTransferMock.getData( 'text/html' ) ).toBe( data );
+		expect( dataTransferMock.effectAllowed ).toBe( effectAllowed );
 
-		expect( viewDocument.getRoot().getAttribute( 'draggable' ) ).to.equal( 'true' );
+		expect( viewDocument.getRoot().getAttribute( 'draggable' ) ).toBe( 'true' );
 
 		if ( spyClipboardOutput ) {
-			expect( spyClipboardOutput.called ).to.be.true;
-			expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
-			expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
-			expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal( data );
+			expect( spyClipboardOutput ).toHaveBeenCalled();
+			expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].method ).toBe( 'dragstart' );
+			expect( spyClipboardOutput.mock.calls[ 0 ][ 0 ].dataTransfer ).toBe( dataTransferMock );
+			expect( _stringifyView( spyClipboardOutput.mock.calls[ 0 ][ 0 ].content ) ).toBe( data );
 		}
 	}
 
 	function expectDraggingMarker( targetPositionOrRange ) {
-		expect( model.markers.has( 'drop-target' ) ).to.be.true;
+		expect( model.markers.has( 'drop-target' ) ).toBe( true );
 
 		if ( targetPositionOrRange.is( 'position' ) ) {
-			expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).to.be.true;
-			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).toBe( true );
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).toBe( true );
 		} else {
-			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).toBe( true );
 		}
 	}
 
 	function expectFinalized() {
-		expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
+		expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).toBe( false );
 
-		expect( model.markers.has( 'drop-target' ) ).to.be.false;
+		expect( model.markers.has( 'drop-target' ) ).toBe( false );
 	}
 
 	function createDataTransfer( data = {} ) {

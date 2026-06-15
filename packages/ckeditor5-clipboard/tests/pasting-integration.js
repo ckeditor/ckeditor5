@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Clipboard } from '../src/clipboard.js';
@@ -36,7 +37,7 @@ describe( 'Pasting – integration', () => {
 
 					pasteHtml( editor, 'x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>' +
 							'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
 							'<$text linkHref="x">link</$text> y[]' +
@@ -55,7 +56,7 @@ describe( 'Pasting – integration', () => {
 
 					pasteHtml( editor, '<p>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</p>' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>' +
 							'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
 							'<$text linkHref="x">link</$text> y[]' +
@@ -74,7 +75,7 @@ describe( 'Pasting – integration', () => {
 
 					pasteHtml( editor, '<div>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</div>' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>' +
 							'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
 							'<$text linkHref="x">link</$text> y[]' +
@@ -93,7 +94,7 @@ describe( 'Pasting – integration', () => {
 
 					pasteHtml( editor, '<blockquote>x <strong>bold</strong> <i>italic</i> <a href="x">link</a> y</blockquote>' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<blockQuote>' +
 							'<paragraph>' +
 								'x <$text bold="true">bold</$text> <$text italic="true">italic</$text> ' +
@@ -124,7 +125,7 @@ describe( 'Pasting – integration', () => {
 						'<span style="color: rgb(0, 0, 0); font-family: Times;">.</span>'
 					);
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>' +
 							'xThis is the ' +
 							'<$text linkHref="url">third developer preview</$text> of <$text bold="true">CKEditor\u00a05</$text>' +
@@ -153,7 +154,7 @@ describe( 'Pasting – integration', () => {
 					);
 					/* eslint-enable @stylistic/max-len */
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>' +
 							'xThis is the ' +
 							'<$text linkHref="url">third developer preview</$text> of <$text bold="true">CKEditor\u00a05</$text>' +
@@ -177,7 +178,7 @@ describe( 'Pasting – integration', () => {
 						'This is the <a href="url">third developer preview</a> of <strong>CKEditor\u00a05</strong>.'
 					);
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>' +
 							'xThis is the ' +
 							'<$text linkHref="url">third developer preview</$text> of <$text bold="true">CKEditor\u00a05</$text>' +
@@ -200,7 +201,7 @@ describe( 'Pasting – integration', () => {
 
 					pasteText( editor, 'https://example.com?x=1&quot=2&timestamp=t' );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						'<paragraph>https://example.com?x=1&quot=2&timestamp=t[]</paragraph>' // keeps "&quot" and "&times" unchanged
 					);
 
