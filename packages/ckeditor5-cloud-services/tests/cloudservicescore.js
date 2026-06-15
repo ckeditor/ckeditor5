@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Context } from '@ckeditor/ckeditor5-core';
 import { CloudServicesCore } from '../src/cloudservicescore.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { UploadGateway } from '../src/uploadgateway/uploadgateway.js';
 import { Token } from '../src/token/token.js';
@@ -22,42 +22,86 @@ describe( 'CloudServicesCore', () => {
 
 		cloudServicesCorePlugin = context.plugins.get( CloudServicesCore );
 
-		const xhr = sinon.useFakeXMLHttpRequest();
+		class FakeXMLHttpRequest {
+			constructor() {
+				this.aborted = false;
+				this.listeners = new Map();
+				requests.push( this );
+			}
 
-		xhr.onCreate = request => {
-			requests.push( request );
-		};
+			open( method, url, async ) {
+				this.method = method;
+				this.url = url;
+				this.async = async;
+			}
+
+			send( body ) {
+				this.requestBody = body;
+			}
+
+			abort() {
+				this.aborted = true;
+				this.dispatchEvent( 'abort' );
+			}
+
+			addEventListener( event, callback ) {
+				const callbacks = this.listeners.get( event ) || [];
+				callbacks.push( callback );
+				this.listeners.set( event, callbacks );
+			}
+
+			respond( status, headers, body ) {
+				this.status = status;
+				this.responseHeaders = headers;
+				this.responseText = body;
+				this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+				this.dispatchEvent( 'load' );
+			}
+
+			error() {
+				this.dispatchEvent( 'error' );
+			}
+
+			dispatchEvent( event, data ) {
+				for ( const callback of this.listeners.get( event ) || [] ) {
+					callback( data );
+				}
+			}
+		}
+
+		vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
+		vi.unstubAllGlobals();
 
 		return context.destroy();
 	} );
 
 	it( 'should be named', () => {
-		expect( CloudServicesCore.pluginName ).to.equal( 'CloudServicesCore' );
+		expect( CloudServicesCore.pluginName ).toBe( 'CloudServicesCore' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CloudServicesCore.isOfficialPlugin ).to.be.true;
+		expect( CloudServicesCore.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CloudServicesCore.isPremiumPlugin ).to.be.false;
+		expect( CloudServicesCore.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'createToken()', () => {
 		it( 'should throw an error when no tokenUrl provided', () => {
-			expect( () => cloudServicesCorePlugin.createToken() ).to.throw(
-				CKEditorError,
+			expectToThrowCKEditorError(
+				() => cloudServicesCorePlugin.createToken(),
 				'token-missing-token-url'
 			);
 		} );
 
 		it( 'should throw an error if the token passed in options is not a string', () => {
-			expect( () => cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: 123456 } ) ).to.throw(
-				CKEditorError,
+			expectToThrowCKEditorError(
+				() => cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: 123456 } ),
 				'token-not-in-jwt-format'
 			);
 		} );
@@ -65,15 +109,15 @@ describe( 'CloudServicesCore', () => {
 		it( 'should throw an error if the token passed in options is wrapped in additional quotes', () => {
 			const tokenInitValue = getTestTokenValue();
 
-			expect( () => cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: `"${ tokenInitValue }"` } ) ).to.throw(
-				CKEditorError,
+			expectToThrowCKEditorError(
+				() => cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: `"${ tokenInitValue }"` } ),
 				'token-not-in-jwt-format'
 			);
 		} );
 
 		it( 'should throw an error if the token passed in options is not a valid JWT token', () => {
-			expect( () => cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: 'token' } ) ).to.throw(
-				CKEditorError,
+			expectToThrowCKEditorError(
+				() => cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: 'token' } ),
 				'token-not-in-jwt-format'
 			);
 		} );
@@ -82,35 +126,37 @@ describe( 'CloudServicesCore', () => {
 			const tokenInitValue = getTestTokenValue();
 			const token = cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: tokenInitValue } );
 
-			expect( token ).instanceOf( Token );
+			expect( token ).toBeInstanceOf( Token );
 		} );
 
 		it( 'should set token value if the token passed in options is valid', () => {
 			const tokenInitValue = getTestTokenValue();
 			const token = cloudServicesCorePlugin.createToken( 'http://token-endpoint', { initValue: tokenInitValue } );
 
-			expect( token.value ).to.equal( tokenInitValue );
+			expect( token.value ).toBe( tokenInitValue );
 		} );
 
-		it( 'should fire `change:value` event if the value of the token has changed', done => {
+		it( 'should fire `change:value` event if the value of the token has changed', () => {
 			const tokenValue = getTestTokenValue();
 			const token = cloudServicesCorePlugin.createToken( 'http://token-endpoint', { autoRefresh: false } );
 
-			token.on( 'change:value', ( event, name, newValue ) => {
-				expect( newValue ).to.equal( tokenValue );
+			return new Promise( resolve => {
+				token.on( 'change:value', ( event, name, newValue ) => {
+					expect( newValue ).toBe( tokenValue );
 
-				done();
+					resolve();
+				} );
+
+				token.init();
+
+				requests[ 0 ].respond( 200, '', tokenValue );
 			} );
-
-			token.init();
-
-			requests[ 0 ].respond( 200, '', tokenValue );
 		} );
 
 		it( 'should accept the callback in the constructor', () => {
 			expect( () => {
 				cloudServicesCorePlugin.createToken( () => Promise.resolve( 'token' ) );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -135,7 +181,7 @@ describe( 'CloudServicesCore', () => {
 			const token = cloudServicesCorePlugin.createToken( 'http://token-endpoint' );
 			const uploadGateway = cloudServicesCorePlugin.createUploadGateway( token, '127.0.0.1' );
 
-			expect( uploadGateway ).instanceOf( UploadGateway );
+			expect( uploadGateway ).toBeInstanceOf( UploadGateway );
 		} );
 	} );
 } );

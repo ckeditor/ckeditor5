@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { FileUploader } from '../../src/uploadgateway/fileuploader.js';
 import { UploadGateway } from '../../src/uploadgateway/uploadgateway.js';
 import { Token } from '../../src/token/token.js';
@@ -35,7 +36,7 @@ describe( 'UploadGateway', () => {
 		it( 'should return `FileUploader` instance', () => {
 			const uploader = new UploadGateway( token, 'test' );
 
-			expect( uploader.upload( 'file' ) ).to.be.instanceOf( FileUploader );
+			expect( uploader.upload( 'file' ) ).toBeInstanceOf( FileUploader );
 		} );
 	} );
 } );

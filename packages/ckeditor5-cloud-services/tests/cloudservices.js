@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CloudServices } from '../src/cloudservices.js';
 import { CloudServicesCore } from '../src/cloudservicescore.js';
 import { Context } from '@ckeditor/ckeditor5-core';
@@ -32,19 +33,19 @@ describe( 'CloudServices', () => {
 	} );
 
 	it( 'should require CloudServicesCore', () => {
-		expect( CloudServices.requires ).to.deep.equal( [ CloudServicesCore ] );
+		expect( CloudServices.requires ).toEqual( [ CloudServicesCore ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( CloudServices.pluginName ).to.equal( 'CloudServices' );
+		expect( CloudServices.pluginName ).toBe( 'CloudServices' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CloudServices.isOfficialPlugin ).to.be.true;
+		expect( CloudServices.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CloudServices.isPremiumPlugin ).to.be.false;
+		expect( CloudServices.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'init()', () => {
@@ -61,9 +62,9 @@ describe( 'CloudServices', () => {
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
-					expect( cloudServicesPlugin ).to.be.instanceOf( CloudServices );
-					expect( cloudServicesPlugin.tokenUrl ).to.equal( 'http://token-endpoint' );
-					expect( cloudServicesPlugin.additionalOption ).to.equal( 'some-value' );
+					expect( cloudServicesPlugin ).toBeInstanceOf( CloudServices );
+					expect( cloudServicesPlugin.tokenUrl ).toBe( 'http://token-endpoint' );
+					expect( cloudServicesPlugin.additionalOption ).toBe( 'some-value' );
 
 					return context.destroy();
 				} );
@@ -81,7 +82,7 @@ describe( 'CloudServices', () => {
 				} )
 				.then( editor => {
 					const cloudServicesPlugin = editor.plugins.get( 'CloudServices' );
-					expect( cloudServicesPlugin ).to.be.instanceOf( CloudServices );
+					expect( cloudServicesPlugin ).toBeInstanceOf( CloudServices );
 
 					return editor.destroy();
 				} );
@@ -93,7 +94,7 @@ describe( 'CloudServices', () => {
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( 'CloudServices' );
 
-					expect( cloudServicesPlugin ).to.be.instanceOf( CloudServices );
+					expect( cloudServicesPlugin ).toBeInstanceOf( CloudServices );
 
 					return context.destroy();
 				} );
@@ -111,7 +112,7 @@ describe( 'CloudServices', () => {
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
-					expect( cloudServicesPlugin.uploadUrl ).to.be.undefined;
+					expect( cloudServicesPlugin.uploadUrl ).toBeUndefined();
 
 					return context.destroy();
 				} );
@@ -129,7 +130,7 @@ describe( 'CloudServices', () => {
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
-					expect( cloudServicesPlugin.uploadUrl ).to.equal( 'https://some-upload-url/' );
+					expect( cloudServicesPlugin.uploadUrl ).toBe( 'https://some-upload-url/' );
 
 					return context.destroy();
 				} );
@@ -149,7 +150,7 @@ describe( 'CloudServices', () => {
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
-					expect( cloudServicesPlugin.token.value ).to.equal( 'initial-token' );
+					expect( cloudServicesPlugin.token.value ).toBe( 'initial-token' );
 
 					return context.destroy();
 				} );
@@ -163,18 +164,18 @@ describe( 'CloudServices', () => {
 				.then( context => {
 					const cloudServicesPlugin = context.plugins.get( CloudServices );
 
-					expect( cloudServicesPlugin.token ).to.equal( null );
+					expect( cloudServicesPlugin.token ).toBe( null );
 
 					return context.destroy();
 				} );
 		} );
 
 		it( 'if token url crashes, then it should not create infinity loop of requests after destroy of the editor', async () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 
-			const tokenUrlStub = sinon.stub().rejects( new Error( 'Token URL crashed' ) );
+			const tokenUrlStub = vi.fn().mockRejectedValue( new Error( 'Token URL crashed' ) );
 
 			try {
 				await Context.create( {
@@ -184,18 +185,20 @@ describe( 'CloudServices', () => {
 					}
 				} );
 
-				expect.fail( 'Context.create should reject' );
+				throw new Error( 'Context.create should reject' );
 			} catch ( error ) {
-				expect( error.message ).to.equal( 'Token URL crashed' );
+				expect( error.message ).toBe( 'Token URL crashed' );
 			}
 
-			expect( tokenUrlStub ).to.be.calledOnce;
+			expect( tokenUrlStub ).toHaveBeenCalledOnce();
 
-			clock.tick( 17000 );
-			clock.restore();
+			vi.advanceTimersByTime( 17000 );
+			vi.useRealTimers();
 
 			// Editor was destroyed at this moment, so no more requests should be made.
-			expect( tokenUrlStub ).to.be.calledOnce;
+			expect( tokenUrlStub ).toHaveBeenCalledOnce();
+
+			vi.restoreAllMocks();
 		} );
 	} );
 
@@ -216,8 +219,8 @@ describe( 'CloudServices', () => {
 			const cloudServicesPlugin = context.plugins.get( CloudServices );
 			const extraToken = await cloudServicesPlugin.registerTokenUrl( 'http://another-token-endpoint' );
 
-			expect( cloudServicesPlugin.token.value ).to.equal( 'initial-token' );
-			expect( extraToken.value ).to.equal( 'another-token' );
+			expect( cloudServicesPlugin.token.value ).toBe( 'initial-token' );
+			expect( extraToken.value ).toBe( 'another-token' );
 
 			await context.destroy();
 		} );
@@ -234,7 +237,7 @@ describe( 'CloudServices', () => {
 			const cloudServicesPlugin = context.plugins.get( CloudServices );
 			const token = await cloudServicesPlugin.registerTokenUrl( 'http://token-endpoint' );
 
-			expect( token ).to.equal( cloudServicesPlugin.token );
+			expect( token ).toBe( cloudServicesPlugin.token );
 
 			await context.destroy();
 		} );
@@ -254,7 +257,7 @@ describe( 'CloudServices', () => {
 			const token = await cloudServicesPlugin.registerTokenUrl( 'http://token-endpoint' );
 			const token2 = cloudServicesPlugin.getTokenFor( 'http://token-endpoint' );
 
-			expect( token ).to.equal( token2 );
+			expect( token ).toBe( token2 );
 
 			await context.destroy();
 		} );
@@ -272,10 +275,7 @@ describe( 'CloudServices', () => {
 
 			expect( () => {
 				cloudServicesPlugin.getTokenFor( 'http://another-token-endpoint' );
-			} ).to.throw(
-				CKEditorError,
-				'cloudservices-token-not-registered'
-			);
+			} ).toThrow( CKEditorError );
 
 			await context.destroy();
 		} );
@@ -295,11 +295,11 @@ describe( 'CloudServices', () => {
 
 			const cloudServicesPlugin = context.plugins.get( CloudServices );
 
-			const destroySpy = sinon.spy( cloudServicesPlugin.token, 'destroy' );
+			const destroySpy = vi.spyOn( cloudServicesPlugin.token, 'destroy' );
 
 			await context.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not crash when tokenUrl was not provided', async () => {
@@ -308,7 +308,7 @@ describe( 'CloudServices', () => {
 			try {
 				await context.destroy();
 			} catch {
-				expect.fail( 'Error should not be thrown.' );
+				throw new Error( 'Error should not be thrown.' );
 			}
 		} );
 	} );
@@ -330,7 +330,7 @@ describe( 'CloudServices', () => {
 				}
 			} );
 
-			expect( context.plugins.get( 'CloudServices' ).autoRefresh ).to.be.true;
+			expect( context.plugins.get( 'CloudServices' ).autoRefresh ).toBe( true );
 		} );
 
 		it( 'should use provided value from config', async () => {
@@ -343,7 +343,7 @@ describe( 'CloudServices', () => {
 				}
 			} );
 
-			expect( context.plugins.get( 'CloudServices' ).autoRefresh ).to.be.false;
+			expect( context.plugins.get( 'CloudServices' ).autoRefresh ).toBe( false );
 		} );
 
 		it( 'should pass autoRefresh to token when registering new token URL', async () => {
@@ -359,7 +359,7 @@ describe( 'CloudServices', () => {
 			const cloudServices = context.plugins.get( 'CloudServices' );
 			const token = await cloudServices.registerTokenUrl( 'http://example.com/new' );
 
-			expect( token._options.autoRefresh ).to.be.false;
+			expect( token._options.autoRefresh ).toBe( false );
 		} );
 
 		it( 'should pass autoRefresh to token during initialization', async () => {
@@ -374,7 +374,7 @@ describe( 'CloudServices', () => {
 
 			const cloudServices = context.plugins.get( 'CloudServices' );
 
-			expect( cloudServices.token._options.autoRefresh ).to.be.false;
+			expect( cloudServices.token._options.autoRefresh ).toBe( false );
 		} );
 	} );
 } );
