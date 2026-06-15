@@ -3,16 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { isRange } from '../../src/dom/isrange.js';
 
 describe( 'isRange()', () => {
 	it( 'detects native DOM Range', () => {
-		expect( isRange( new Range() ) ).to.be.true;
+		expect( isRange( new Range() ) ).toBe( true );
 
-		expect( isRange( {} ) ).to.be.false;
-		expect( isRange( null ) ).to.be.false;
-		expect( isRange( undefined ) ).to.be.false;
-		expect( isRange( new Date() ) ).to.be.false;
-		expect( isRange( 42 ) ).to.be.false;
+		expect( isRange( {} ) ).toBe( false );
+		expect( isRange( null ) ).toBe( false );
+		expect( isRange( undefined ) ).toBe( false );
+		expect( isRange( new Date() ) ).toBe( false );
+		expect( isRange( 42 ) ).toBe( false );
 	} );
 } );

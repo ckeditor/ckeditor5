@@ -286,7 +286,7 @@ export function EmitterMixin( base?: Constructor ): unknown {
 				return eventInfo.return;
 			} catch ( err ) {
 				// @if CK_DEBUG // throw err;
-				/* istanbul ignore next -- @preserve */
+				/* v8 ignore next -- @preserve */
 				CKEditorError.rethrowUnexpectedError( err as Error, this );
 			}
 		}

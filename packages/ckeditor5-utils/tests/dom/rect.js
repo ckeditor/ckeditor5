@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Rect } from '../../src/dom/rect.js';
 
 describe( 'Rect', () => {
@@ -18,11 +19,11 @@ describe( 'Rect', () => {
 			height: 20
 		};
 
-		sinon.stub( console, 'warn' );
+		vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
@@ -30,13 +31,13 @@ describe( 'Rect', () => {
 			const obj = {};
 			const rect = new Rect( obj );
 
-			expect( rect._source ).to.equal( obj );
+			expect( rect._source ).toBe( obj );
 		} );
 
 		it( 'should accept HTMLElement', () => {
 			const element = document.createElement( 'div' );
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
 
 			assertRect( new Rect( element ), geometry );
 		} );
@@ -45,7 +46,7 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.selectNode( document.body );
-			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ geometry ] );
 
 			assertRect( new Rect( range ), geometry );
 		} );
@@ -60,7 +61,7 @@ describe( 'Rect', () => {
 
 			const range = document.createRange();
 			range.selectNode( document.body );
-			sinon.stub( range, 'getClientRects' ).returns( [ firstGeometry, secondGeometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ firstGeometry, secondGeometry ] );
 
 			const expectedGeometry = Object.assign( {}, geometry, {
 				width: 30,
@@ -79,7 +80,7 @@ describe( 'Rect', () => {
 
 			const range = document.createRange();
 			range.selectNode( document.body );
-			sinon.stub( range, 'getClientRects' ).returns( [ firstGeometry, secondGeometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ firstGeometry, secondGeometry ] );
 
 			const expectedGeometry = Object.assign( {}, geometry, {
 				height: 30,
@@ -94,7 +95,7 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.collapse();
-			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ geometry ] );
 
 			assertRect( new Rect( range ), geometry );
 		} );
@@ -106,8 +107,8 @@ describe( 'Rect', () => {
 
 			range.setStart( element, 0 );
 			range.collapse();
-			sinon.stub( range, 'getClientRects' ).returns( [] );
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [] );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
 			expectedGeometry.right = expectedGeometry.left;
@@ -117,10 +118,10 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should accept the window (viewport)', () => {
-			sinon.stub( window, 'innerWidth' ).value( 1000 );
-			sinon.stub( window, 'innerHeight' ).value( 500 );
-			sinon.stub( window, 'scrollX' ).value( 100 );
-			sinon.stub( window, 'scrollY' ).value( 200 );
+			vi.spyOn( window, 'innerWidth', 'get' ).mockReturnValue( 1000 );
+			vi.spyOn( window, 'innerHeight', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
 
 			assertRect( new Rect( window ), {
 				top: 0,
@@ -136,7 +137,7 @@ describe( 'Rect', () => {
 			const sourceRect = new Rect( geometry );
 			const rect = new Rect( sourceRect );
 
-			expect( rect ).to.not.equal( sourceRect );
+			expect( rect ).not.toBe( sourceRect );
 			assertRect( rect, geometry );
 		} );
 
@@ -152,26 +153,28 @@ describe( 'Rect', () => {
 			assertRect( new Rect( geometry ), geometry );
 		} );
 
-		it( 'should accept objects from another window\'s scope', done => {
+		it( 'should accept objects from another window\'s scope', async () => {
 			const iframe = document.createElement( 'iframe' );
 
-			iframe.addEventListener( 'load', () => {
-				const iframeWindow = iframe.contentWindow;
-				const element = iframeWindow.document.createElement( 'p' );
-				const range = document.createRange();
-				range.selectNode( iframeWindow.document.body );
+			await new Promise( resolve => {
+				iframe.addEventListener( 'load', () => {
+					const iframeWindow = iframe.contentWindow;
+					const element = iframeWindow.document.createElement( 'p' );
+					const range = document.createRange();
+					range.selectNode( iframeWindow.document.body );
 
-				sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
-				assertRect( new Rect( range ), geometry );
+					vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ geometry ] );
+					assertRect( new Rect( range ), geometry );
 
-				sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-				assertRect( new Rect( element ), geometry );
+					vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
+					assertRect( new Rect( element ), geometry );
 
-				iframe.remove();
-				done();
+					iframe.remove();
+					resolve();
+				} );
+
+				document.body.appendChild( iframe );
 			} );
-
-			document.body.appendChild( iframe );
 		} );
 
 		it( 'should copy the properties (Rect)', () => {
@@ -205,8 +208,8 @@ describe( 'Rect', () => {
 			const rect = new Rect( geometry );
 			const clone = rect.clone();
 
-			expect( clone ).to.be.instanceOf( Rect );
-			expect( clone ).not.equal( rect );
+			expect( clone ).toBeInstanceOf( Rect );
+			expect( clone ).not.toBe( rect );
 			assertRect( clone, rect );
 		} );
 
@@ -214,7 +217,7 @@ describe( 'Rect', () => {
 			const rect = new Rect( geometry );
 			const clone = rect.clone();
 
-			expect( clone._source ).to.equal( rect._source );
+			expect( clone._source ).toBe( rect._source );
 			assertRect( clone, rect );
 		} );
 	} );
@@ -224,7 +227,7 @@ describe( 'Rect', () => {
 			const rect = new Rect( geometry );
 			const returned = rect.moveTo( 100, 200 );
 
-			expect( returned ).to.equal( rect );
+			expect( returned ).toBe( rect );
 		} );
 
 		it( 'should move the rect', () => {
@@ -248,7 +251,7 @@ describe( 'Rect', () => {
 			const rect = new Rect( geometry );
 			const returned = rect.moveBy( 100, 200 );
 
-			expect( returned ).to.equal( rect );
+			expect( returned ).toBe( rect );
 		} );
 
 		it( 'should move the rect', () => {
@@ -272,8 +275,8 @@ describe( 'Rect', () => {
 			const rect = new Rect( geometry );
 			const insersect = rect.getIntersection( new Rect( geometry ) );
 
-			expect( insersect ).to.be.instanceOf( Rect );
-			expect( insersect ).to.not.equal( rect );
+			expect( insersect ).toBeInstanceOf( Rect );
+			expect( insersect ).not.toBe( rect );
 		} );
 
 		it( 'should pass the original Rect source on for further processing', () => {
@@ -283,9 +286,9 @@ describe( 'Rect', () => {
 			const rectB = new Rect( elementB );
 			const insersect = rectA.getIntersection( rectB );
 
-			expect( rectA._source ).to.equal( elementA );
-			expect( rectB._source ).to.equal( elementB );
-			expect( insersect._source ).to.equal( elementA );
+			expect( rectA._source ).toBe( elementA );
+			expect( rectB._source ).toBe( elementB );
+			expect( insersect._source ).toBe( elementA );
 		} );
 
 		it( 'should calculate the geometry (#1)', () => {
@@ -369,7 +372,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.getIntersection( rectB ) ).to.be.null;
+			expect( rectA.getIntersection( rectB ) ).toBeNull();
 		} );
 	} );
 
@@ -393,7 +396,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.getIntersectionArea( rectB ) ).to.equal( 2500 );
+			expect( rectA.getIntersectionArea( rectB ) ).toBe( 2500 );
 		} );
 
 		it( 'should calculate the area (#2)', () => {
@@ -415,7 +418,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.getIntersectionArea( rectB ) ).to.equal( 0 );
+			expect( rectA.getIntersectionArea( rectB ) ).toBe( 0 );
 		} );
 
 		it( 'should calculate the area (#3)', () => {
@@ -437,7 +440,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.getIntersectionArea( rectB ) ).to.equal( 0 );
+			expect( rectA.getIntersectionArea( rectB ) ).toBe( 0 );
 		} );
 	} );
 
@@ -448,7 +451,7 @@ describe( 'Rect', () => {
 				height: 50
 			} );
 
-			expect( rect.getArea() ).to.equal( 5000 );
+			expect( rect.getArea() ).toBe( 5000 );
 		} );
 	} );
 
@@ -474,11 +477,11 @@ describe( 'Rect', () => {
 			const rect = new Rect( element );
 			const visible = rect.getVisible();
 
-			expect( visible ).to.not.equal( rect );
+			expect( visible ).not.toBe( rect );
 		} );
 
 		it( 'should not fail when the rect is for document#body', () => {
-			sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( document.body, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -497,55 +500,57 @@ describe( 'Rect', () => {
 			} );
 		} );
 
-		it( 'should not fail when the rect is for an object in another window\'s scope', done => {
+		it( 'should not fail when the rect is for an object in another window\'s scope', async () => {
 			const iframe = document.createElement( 'iframe' );
 
-			iframe.addEventListener( 'load', () => {
-				const iframeWindow = iframe.contentWindow;
-				const element = iframeWindow.document.createElement( 'p' );
-				const ancestor = iframeWindow.document.createElement( 'p' );
+			await new Promise( resolve => {
+				iframe.addEventListener( 'load', () => {
+					const iframeWindow = iframe.contentWindow;
+					const element = iframeWindow.document.createElement( 'p' );
+					const ancestor = iframeWindow.document.createElement( 'p' );
 
-				ancestor.appendChild( element );
-				iframeWindow.document.body.appendChild( ancestor );
+					ancestor.appendChild( element );
+					iframeWindow.document.body.appendChild( ancestor );
 
-				sinon.stub( ancestor, 'getBoundingClientRect' ).returns( {
-					top: 0,
-					right: 50,
-					bottom: 50,
-					left: 0,
-					width: 50,
-					height: 50
+					vi.spyOn( ancestor, 'getBoundingClientRect' ).mockReturnValue( {
+						top: 0,
+						right: 50,
+						bottom: 50,
+						left: 0,
+						width: 50,
+						height: 50
+					} );
+
+					vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
+						top: 0,
+						right: 100,
+						bottom: 100,
+						left: 0,
+						width: 100,
+						height: 100
+					} );
+
+					assertRect( new Rect( element ).getVisible(), {
+						top: 0,
+						right: 100,
+						bottom: 100,
+						left: 0,
+						width: 100,
+						height: 100
+					} );
+
+					iframe.remove();
+					resolve();
 				} );
 
-				sinon.stub( element, 'getBoundingClientRect' ).returns( {
-					top: 0,
-					right: 100,
-					bottom: 100,
-					left: 0,
-					width: 100,
-					height: 100
-				} );
-
-				assertRect( new Rect( element ).getVisible(), {
-					top: 0,
-					right: 100,
-					bottom: 100,
-					left: 0,
-					width: 100,
-					height: 100
-				} );
-
-				iframe.remove();
-				done();
+				document.body.appendChild( iframe );
 			} );
-
-			document.body.appendChild( iframe );
 		} );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
 			ancestorA.style.overflow = 'scroll';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -554,7 +559,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -574,7 +579,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the visible rect (HTMLElement), fully visible', () => {
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -583,7 +588,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 150,
 				bottom: 150,
@@ -608,7 +613,7 @@ describe( 'Rect', () => {
 			ancestorA.style.overflow = 'scroll';
 			ancestorB.style.overflow = 'scroll';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -617,7 +622,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 100,
 				bottom: 100,
@@ -626,7 +631,7 @@ describe( 'Rect', () => {
 				height: 50
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 150,
 				bottom: 100,
@@ -655,7 +660,7 @@ describe( 'Rect', () => {
 			ancestorB.style.overflow = 'scroll';
 			ancestorB.style.position = 'relative';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -664,7 +669,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 50,
 				bottom: 100,
@@ -673,7 +678,7 @@ describe( 'Rect', () => {
 				height: 50
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 150,
 				bottom: 100,
@@ -697,7 +702,7 @@ describe( 'Rect', () => {
 			range.setEnd( ancestorA, 1 );
 			ancestorA.style.overflow = 'scroll';
 
-			sinon.stub( range, 'getClientRects' ).returns( [ {
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -706,7 +711,7 @@ describe( 'Rect', () => {
 				height: 100
 			} ] );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -726,7 +731,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return null if there\'s no visible rect and parent has overflow scroll', () => {
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -737,7 +742,7 @@ describe( 'Rect', () => {
 
 			ancestorA.style.overflow = 'scroll';
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 150,
 				right: 200,
 				bottom: 200,
@@ -746,11 +751,11 @@ describe( 'Rect', () => {
 				height: 50
 			} );
 
-			expect( new Rect( element ).getVisible() ).to.equal( null );
+			expect( new Rect( element ).getVisible() ).toBe( null );
 		} );
 
 		it( 'should ignore a parent if target is an element with position: absolute', () => {
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -761,7 +766,7 @@ describe( 'Rect', () => {
 
 			element.style.position = 'absolute';
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -784,7 +789,7 @@ describe( 'Rect', () => {
 			ancestorB.appendChild( ancestorA );
 			document.body.appendChild( ancestorB );
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -795,7 +800,7 @@ describe( 'Rect', () => {
 
 			element.style.position = 'absolute';
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -804,7 +809,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 200,
 				right: 300,
 				bottom: 300,
@@ -825,7 +830,7 @@ describe( 'Rect', () => {
 
 		it( 'should ignore a parent if target is an element with position: absolute ' +
 			'but parent has position: relative but no overflow', () => {
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -837,7 +842,7 @@ describe( 'Rect', () => {
 			element.style.position = 'absolute';
 			ancestorA.style.position = 'relative';
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -858,7 +863,7 @@ describe( 'Rect', () => {
 
 		it( 'should not ignore a parent if target is an element with position: absolute ' +
 			'but parent has position: relative and overflow', () => {
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -871,7 +876,7 @@ describe( 'Rect', () => {
 			ancestorA.style.position = 'relative';
 			ancestorA.style.overflow = 'hidden';
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 50,
 				right: 150,
 				bottom: 150,
@@ -905,7 +910,7 @@ describe( 'Rect', () => {
 			ancestorC.style.position = 'static';
 			ancestorC.style.overflow = 'hidden';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 30,
 				right: 130,
 				bottom: 130,
@@ -914,7 +919,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 20,
 				right: 120,
 				bottom: 120,
@@ -923,7 +928,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 10,
 				right: 110,
 				bottom: 110,
@@ -932,7 +937,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorC, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -968,7 +973,7 @@ describe( 'Rect', () => {
 			ancestorC.style.position = 'static';
 			ancestorC.style.overflow = 'hidden';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 30,
 				right: 130,
 				bottom: 130,
@@ -977,7 +982,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 20,
 				right: 120,
 				bottom: 120,
@@ -986,7 +991,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 10,
 				right: 110,
 				bottom: 110,
@@ -995,7 +1000,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorC, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -1031,7 +1036,7 @@ describe( 'Rect', () => {
 			ancestorC.style.position = 'fixed';
 			ancestorC.style.overflow = 'hidden';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 30,
 				right: 130,
 				bottom: 130,
@@ -1040,7 +1045,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 20,
 				right: 120,
 				bottom: 120,
@@ -1049,7 +1054,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 10,
 				right: 110,
 				bottom: 110,
@@ -1058,7 +1063,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorC, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -1094,7 +1099,7 @@ describe( 'Rect', () => {
 			ancestorC.style.position = 'fixed';
 			ancestorC.style.overflow = 'hidden';
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 30,
 				right: 130,
 				bottom: 130,
@@ -1103,7 +1108,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorA, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 20,
 				right: 120,
 				bottom: 120,
@@ -1112,7 +1117,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorB, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 10,
 				right: 110,
 				bottom: 110,
@@ -1121,7 +1126,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			sinon.stub( ancestorC, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( ancestorC, 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -1163,9 +1168,9 @@ describe( 'Rect', () => {
 				height: 20
 			} );
 
-			expect( rectA.isEqual( rectB ) ).to.be.true;
-			expect( rectB.isEqual( rectA ) ).to.be.true;
-			expect( rectA.isEqual( rectA ) ).to.be.true;
+			expect( rectA.isEqual( rectB ) ).toBe( true );
+			expect( rectB.isEqual( rectA ) ).toBe( true );
+			expect( rectA.isEqual( rectA ) ).toBe( true );
 		} );
 
 		it( 'returns `false` when rects are different', () => {
@@ -1187,8 +1192,8 @@ describe( 'Rect', () => {
 				height: 30 // !
 			} );
 
-			expect( rectA.isEqual( rectB ) ).to.be.false;
-			expect( rectB.isEqual( rectA ) ).to.be.false;
+			expect( rectA.isEqual( rectB ) ).toBe( false );
+			expect( rectB.isEqual( rectA ) ).toBe( false );
 		} );
 	} );
 
@@ -1212,9 +1217,9 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.isEqual( rectB ) ).to.be.true;
-			expect( rectA.contains( rectB ) ).to.be.true;
-			expect( rectB.contains( rectA ) ).to.be.true;
+			expect( rectA.isEqual( rectB ) ).toBe( true );
+			expect( rectA.contains( rectB ) ).toBe( true );
+			expect( rectB.contains( rectA ) ).toBe( true );
 		} );
 
 		it( 'should return true if rect is within', () => {
@@ -1236,8 +1241,8 @@ describe( 'Rect', () => {
 				height: 80
 			} );
 
-			expect( rectA.contains( rectB ) ).to.be.true;
-			expect( rectB.contains( rectA ) ).to.be.false;
+			expect( rectA.contains( rectB ) ).toBe( true );
+			expect( rectB.contains( rectA ) ).toBe( false );
 		} );
 
 		it( 'should return false if rect extends beyond the boundaries', () => {
@@ -1259,8 +1264,8 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.contains( rectB ) ).to.be.false;
-			expect( rectB.contains( rectA ) ).to.be.false;
+			expect( rectA.contains( rectB ) ).toBe( false );
+			expect( rectB.contains( rectA ) ).toBe( false );
 		} );
 
 		it( 'should return false if rect is completely beyond the boundaries', () => {
@@ -1282,8 +1287,69 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			expect( rectA.contains( rectB ) ).to.be.false;
-			expect( rectB.contains( rectA ) ).to.be.false;
+			expect( rectA.contains( rectB ) ).toBe( false );
+			expect( rectB.contains( rectA ) ).toBe( false );
+		} );
+	} );
+
+	describe( 'toAbsoluteRect()', () => {
+		it( 'should compensate for the positioned ancestor when source is a DOM element', () => {
+			const positionedAncestor = document.createElement( 'div' );
+			const element = document.createElement( 'div' );
+
+			positionedAncestor.appendChild( element );
+			document.body.appendChild( positionedAncestor );
+
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
+			vi.spyOn( positionedAncestor, 'getBoundingClientRect' ).mockReturnValue( {
+				top: 60,
+				right: 100,
+				bottom: 90,
+				left: 50,
+				width: 50,
+				height: 30
+			} );
+			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
+				if ( target === positionedAncestor ) {
+					return {
+						borderTopWidth: '3px',
+						borderRightWidth: '0px',
+						borderBottomWidth: '0px',
+						borderLeftWidth: '2px'
+					};
+				}
+			} );
+
+			Object.defineProperty( positionedAncestor, 'scrollLeft', { value: 5 } );
+			Object.defineProperty( positionedAncestor, 'scrollTop', { value: 7 } );
+			Object.defineProperty( element, 'offsetParent', { value: positionedAncestor } );
+
+			assertRect( new Rect( element ).toAbsoluteRect(), {
+				top: 154,
+				right: 93,
+				bottom: 174,
+				left: 73,
+				width: 20,
+				height: 20
+			} );
+
+			positionedAncestor.remove();
+		} );
+
+		it( 'should only use scroll offsets when source is not a DOM element', () => {
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
+
+			assertRect( new Rect( geometry ).toAbsoluteRect(), {
+				top: 210,
+				right: 140,
+				bottom: 230,
+				left: 120,
+				width: 20,
+				height: 20
+			} );
 		} );
 	} );
 
@@ -1291,16 +1357,18 @@ describe( 'Rect', () => {
 		it( 'should exclude scrollbars and borders of a HTMLElement (dir="ltr")', () => {
 			const element = document.createElement( 'div' );
 
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-			sinon.stub( window, 'getComputedStyle' )
-				.withArgs( element )
-				.returns( {
-					borderTopWidth: '5px',
-					borderRightWidth: '10px',
-					borderLeftWidth: '5px',
-					borderBottomWidth: '10px',
-					direction: 'ltr'
-				} );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
+			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
+				if ( target === element ) {
+					return {
+						borderTopWidth: '5px',
+						borderRightWidth: '10px',
+						borderLeftWidth: '5px',
+						borderBottomWidth: '10px',
+						direction: 'ltr'
+					};
+				}
+			} );
 
 			// Simulate 5px scrollbars.
 			Object.defineProperties( element, {
@@ -1332,16 +1400,18 @@ describe( 'Rect', () => {
 			const element = document.createElement( 'div' );
 
 			element.setAttribute( 'dir', 'rtl' );
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
-			sinon.stub( window, 'getComputedStyle' )
-				.withArgs( element )
-				.returns( {
-					borderTopWidth: '5px',
-					borderRightWidth: '10px',
-					borderLeftWidth: '5px',
-					borderBottomWidth: '10px',
-					direction: 'rtl'
-				} );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
+			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
+				if ( target === element ) {
+					return {
+						borderTopWidth: '5px',
+						borderRightWidth: '10px',
+						borderLeftWidth: '5px',
+						borderBottomWidth: '10px',
+						direction: 'rtl'
+					};
+				}
+			} );
 
 			// Simulate 5px scrollbars.
 			Object.defineProperties( element, {
@@ -1370,21 +1440,23 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should exclude scrollbars from viewport\'s rect (dir="ltr")', () => {
-			sinon.stub( window, 'innerWidth' ).value( 1000 );
-			sinon.stub( window, 'innerHeight' ).value( 500 );
-			sinon.stub( window, 'scrollX' ).value( 100 );
-			sinon.stub( window, 'scrollY' ).value( 200 );
+			vi.spyOn( window, 'innerWidth', 'get' ).mockReturnValue( 1000 );
+			vi.spyOn( window, 'innerHeight', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
 
-			sinon.stub( document, 'documentElement' ).value( {
+			vi.spyOn( document, 'documentElement', 'get' ).mockReturnValue( {
 				clientWidth: 990,
 				clientHeight: 490
 			} );
 
-			sinon.stub( window, 'getComputedStyle' )
-				.withArgs( document.documentElement )
-				.returns( {
-					direction: 'ltr'
-				} );
+			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
+				if ( target === document.documentElement ) {
+					return {
+						direction: 'ltr'
+					};
+				}
+			} );
 
 			assertRect( new Rect( window ).excludeScrollbarsAndBorders(), {
 				top: 0,
@@ -1397,21 +1469,23 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should exclude scrollbars from viewport\'s rect (dir="rtl")', () => {
-			sinon.stub( window, 'innerWidth' ).value( 1000 );
-			sinon.stub( window, 'innerHeight' ).value( 500 );
-			sinon.stub( window, 'scrollX' ).value( 100 );
-			sinon.stub( window, 'scrollY' ).value( 200 );
+			vi.spyOn( window, 'innerWidth', 'get' ).mockReturnValue( 1000 );
+			vi.spyOn( window, 'innerHeight', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
 
-			sinon.stub( document, 'documentElement' ).value( {
+			vi.spyOn( document, 'documentElement', 'get' ).mockReturnValue( {
 				clientWidth: 990,
 				clientHeight: 490
 			} );
 
-			sinon.stub( window, 'getComputedStyle' )
-				.withArgs( document.documentElement )
-				.returns( {
-					direction: 'rtl'
-				} );
+			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
+				if ( target === document.documentElement ) {
+					return {
+						direction: 'rtl'
+					};
+				}
+			} );
 
 			assertRect( new Rect( window ).excludeScrollbarsAndBorders(), {
 				top: 0,
@@ -1423,62 +1497,68 @@ describe( 'Rect', () => {
 			} );
 		} );
 
-		it( 'should work for a window in an iframe', done => {
+		it( 'should work for a window in an iframe', async () => {
 			const iframe = document.createElement( 'iframe' );
 
 			// Mock the properties of the top window. Then make sure the ones
 			// from the child are used.
-			sinon.stub( window, 'innerWidth' ).value( 1000 );
-			sinon.stub( window, 'innerHeight' ).value( 500 );
-			sinon.stub( window, 'scrollX' ).value( 100 );
-			sinon.stub( window, 'scrollY' ).value( 200 );
-			sinon.stub( document, 'documentElement' ).value( {
+			vi.spyOn( window, 'innerWidth', 'get' ).mockReturnValue( 1000 );
+			vi.spyOn( window, 'innerHeight', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 100 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 200 );
+			vi.spyOn( document, 'documentElement', 'get' ).mockReturnValue( {
 				clientWidth: 990,
 				clientHeight: 490
 			} );
 
-			sinon.stub( window, 'getComputedStyle' )
-				.withArgs( document.documentElement )
-				.returns( {
-					direction: 'ltr'
-				} );
-
-			iframe.addEventListener( 'load', () => {
-				const iframeWindow = iframe.contentWindow;
-
-				sinon.stub( iframeWindow, 'innerWidth' ).value( 500 );
-				sinon.stub( iframeWindow, 'innerHeight' ).value( 250 );
-				sinon.stub( iframeWindow, 'scrollX' ).value( 50 );
-				sinon.stub( iframeWindow, 'scrollY' ).value( 100 );
-
-				sinon.stub( iframeWindow.document, 'documentElement' ).value( {
-					clientWidth: 480,
-					clientHeight: 230
-				} );
-
-				sinon.stub( iframeWindow, 'getComputedStyle' )
-					.withArgs( iframeWindow.document.documentElement )
-					.returns( {
+			vi.spyOn( window, 'getComputedStyle' ).mockImplementation( target => {
+				if ( target === document.documentElement ) {
+					return {
 						direction: 'ltr'
-					} );
-
-				assertRect( new Rect( iframeWindow ).excludeScrollbarsAndBorders(), {
-					top: 0,
-					right: 480,
-					bottom: 230,
-					left: 0,
-					width: 480,
-					height: 230
-				} );
-
-				// Safari fails because of "afterEach()" hook tries to restore values from removed element.
-				// We need to restore these values manually.
-				sinon.restore();
-				iframe.remove();
-				done();
+					};
+				}
 			} );
 
-			document.body.appendChild( iframe );
+			await new Promise( resolve => {
+				iframe.addEventListener( 'load', () => {
+					const iframeWindow = iframe.contentWindow;
+
+					vi.spyOn( iframeWindow, 'innerWidth', 'get' ).mockReturnValue( 500 );
+					vi.spyOn( iframeWindow, 'innerHeight', 'get' ).mockReturnValue( 250 );
+					vi.spyOn( iframeWindow, 'scrollX', 'get' ).mockReturnValue( 50 );
+					vi.spyOn( iframeWindow, 'scrollY', 'get' ).mockReturnValue( 100 );
+
+					vi.spyOn( iframeWindow.document, 'documentElement', 'get' ).mockReturnValue( {
+						clientWidth: 480,
+						clientHeight: 230
+					} );
+
+					vi.spyOn( iframeWindow, 'getComputedStyle' ).mockImplementation( target => {
+						if ( target === iframeWindow.document.documentElement ) {
+							return {
+								direction: 'ltr'
+							};
+						}
+					} );
+
+					assertRect( new Rect( iframeWindow ).excludeScrollbarsAndBorders(), {
+						top: 0,
+						right: 480,
+						bottom: 230,
+						left: 0,
+						width: 480,
+						height: 230
+					} );
+
+					// Safari fails because of "afterEach()" hook tries to restore values from removed element.
+					// We need to restore these values manually.
+					vi.restoreAllMocks();
+					iframe.remove();
+					resolve();
+				} );
+
+				document.body.appendChild( iframe );
+			} );
 		} );
 	} );
 
@@ -1487,10 +1567,10 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.selectNode( document.body );
-			sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ geometry ] );
 
 			const rects = Rect.getDomRangeRects( range );
-			expect( rects ).to.have.length( 1 );
+			expect( rects ).toHaveLength( 1 );
 			assertRect( rects[ 0 ], geometry );
 		} );
 
@@ -1500,10 +1580,10 @@ describe( 'Rect', () => {
 			const secondGeometry = { top: 20, right: 80, bottom: 60, left: 40, width: 40, height: 40 };
 
 			range.collapse();
-			sinon.stub( range, 'getClientRects' ).returns( [ geometry, secondGeometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ geometry, secondGeometry ] );
 
 			const rects = Rect.getDomRangeRects( range );
-			expect( rects ).to.have.length( 2 );
+			expect( rects ).toHaveLength( 2 );
 
 			assertRect( rects[ 0 ], geometry );
 			assertRect( rects[ 1 ], secondGeometry );
@@ -1516,15 +1596,15 @@ describe( 'Rect', () => {
 
 			range.setStart( element, 0 );
 			range.collapse();
-			sinon.stub( range, 'getClientRects' ).returns( [] );
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [] );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
 			expectedGeometry.right = expectedGeometry.left;
 			expectedGeometry.width = 0;
 
 			const rects = Rect.getDomRangeRects( range );
-			expect( rects ).to.have.length( 1 );
+			expect( rects ).toHaveLength( 1 );
 			assertRect( rects[ 0 ], expectedGeometry );
 		} );
 
@@ -1537,15 +1617,15 @@ describe( 'Rect', () => {
 
 			range.setStart( textNode, 3 );
 			range.collapse();
-			sinon.stub( range, 'getClientRects' ).returns( [] );
-			sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [] );
+			vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( geometry );
 
 			const expectedGeometry = Object.assign( {}, geometry );
 			expectedGeometry.right = expectedGeometry.left;
 			expectedGeometry.width = 0;
 
 			const rects = Rect.getDomRangeRects( range );
-			expect( rects ).to.have.length( 1 );
+			expect( rects ).toHaveLength( 1 );
 			assertRect( rects[ 0 ], expectedGeometry );
 		} );
 
@@ -1553,12 +1633,12 @@ describe( 'Rect', () => {
 			const range = document.createRange();
 
 			range.selectNode( document.body );
-			sinon.stub( range, 'getClientRects' ).returns( [ geometry, geometry ] );
+			vi.spyOn( range, 'getClientRects' ).mockReturnValue( [ geometry, geometry ] );
 
 			const rects = Rect.getDomRangeRects( range );
 
 			rects.forEach( rect => {
-				expect( rect._source ).to.equal( range );
+				expect( rect._source ).toBe( range );
 			} );
 		} );
 	} );
@@ -1567,10 +1647,10 @@ describe( 'Rect', () => {
 		it( 'should return rects for an element with a single client rect', () => {
 			const element = document.createElement( 'div' );
 
-			sinon.stub( element, 'getClientRects' ).returns( [ geometry ] );
+			vi.spyOn( element, 'getClientRects' ).mockReturnValue( [ geometry ] );
 
 			const rects = Rect.getDomElementRects( element );
-			expect( rects ).to.have.length( 1 );
+			expect( rects ).toHaveLength( 1 );
 			assertRect( rects[ 0 ], geometry );
 		} );
 
@@ -1582,10 +1662,10 @@ describe( 'Rect', () => {
 				height: 20
 			} );
 
-			sinon.stub( element, 'getClientRects' ).returns( [ geometry, secondGeometry ] );
+			vi.spyOn( element, 'getClientRects' ).mockReturnValue( [ geometry, secondGeometry ] );
 
 			const rects = Rect.getDomElementRects( element );
-			expect( rects ).to.have.length( 2 );
+			expect( rects ).toHaveLength( 2 );
 			assertRect( rects[ 0 ], geometry );
 			assertRect( rects[ 1 ], secondGeometry );
 		} );
@@ -1593,29 +1673,29 @@ describe( 'Rect', () => {
 		it( 'should return empty array when element has no client rects', () => {
 			const element = document.createElement( 'div' );
 
-			sinon.stub( element, 'getClientRects' ).returns( [] );
+			vi.spyOn( element, 'getClientRects' ).mockReturnValue( [] );
 
 			const rects = Rect.getDomElementRects( element );
-			expect( rects ).to.have.length( 0 );
-			expect( rects ).to.be.an( 'array' );
+			expect( rects ).toHaveLength( 0 );
+			expect( Array.isArray( rects ) ).toBe( true );
 		} );
 
 		it( 'should point the rect sources to the DOM element instead of client rects to allow proper clipping in getVisible()', () => {
 			const element = document.createElement( 'div' );
 
-			sinon.stub( element, 'getClientRects' ).returns( [ geometry, geometry ] );
+			vi.spyOn( element, 'getClientRects' ).mockReturnValue( [ geometry, geometry ] );
 
 			const rects = Rect.getDomElementRects( element );
 
 			rects.forEach( rect => {
-				expect( rect._source ).to.equal( element );
+				expect( rect._source ).toBe( element );
 			} );
 		} );
 	} );
 
 	describe( 'getBoundingRect()', () => {
 		it( 'should not return a rect instance when no rectangles were given', () => {
-			expect( Rect.getBoundingRect( [] ) ).to.be.null;
+			expect( Rect.getBoundingRect( [] ) ).toBeNull();
 		} );
 
 		it( 'should calculate proper rectangle when multiple rectangles were given', () => {
@@ -1656,11 +1736,11 @@ describe( 'Rect', () => {
 
 		it( 'should return proper type', () => {
 			const rectangles = new Set( [ new Rect( geometry ) ] );
-			expect( Rect.getBoundingRect( rectangles ) ).to.be.instanceOf( Rect );
+			expect( Rect.getBoundingRect( rectangles ) ).toBeInstanceOf( Rect );
 		} );
 	} );
 } );
 
 function assertRect( rect, expected ) {
-	expect( rect ).to.deep.equal( expected );
+	expect( rect ).toEqual( expected );
 }

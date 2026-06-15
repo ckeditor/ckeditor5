@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { findClosestScrollableAncestor } from '../../src/dom/findclosestscrollableancestor.js';
 import { createElement } from '../../src/dom/createelement.js';
 
@@ -24,7 +25,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
 		createElement( document, 'div', {}, [ p1, p2 ] );
 
-		expect( findClosestScrollableAncestor( b ) ).to.equal( span );
+		expect( findClosestScrollableAncestor( b ) ).toBe( span );
 	} );
 
 	it( 'returns first scrollable ancestor if there are many', () => {
@@ -41,7 +42,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
 		createElement( document, 'div', overflowAutoStyleAttribute, [ p1, p2 ] );
 
-		expect( findClosestScrollableAncestor( b ) ).to.equal( p1 );
+		expect( findClosestScrollableAncestor( b ) ).toBe( p1 );
 	} );
 
 	it( 'works for both `auto` and `scroll` overflow-y values', () => {
@@ -49,7 +50,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		//    |- B
 		const b = createElement( document, 'b' );
 		const span = createElement( document, 'span', overflowAutoStyleAttribute, [ b ] );
-		expect( findClosestScrollableAncestor( b ) ).to.equal( span );
+		expect( findClosestScrollableAncestor( b ) ).toBe( span );
 
 		//  SPAN
 		//    |- B
@@ -57,13 +58,13 @@ describe( 'findClosestScrollableAncestor', () => {
 		//    |- B (2)
 		const b2 = createElement( document, 'b' );
 		const span2 = createElement( document, 'span', overflowScrollStyleAttribute, [ b2 ] );
-		expect( findClosestScrollableAncestor( b2 ) ).to.equal( span2 );
+		expect( findClosestScrollableAncestor( b2 ) ).toBe( span2 );
 	} );
 
 	it( 'returns null in if chosen element doeasn\'t have parent', () => {
 		//  B
 		const b = createElement( document, 'b' );
-		expect( findClosestScrollableAncestor( b ) ).to.equal( null );
+		expect( findClosestScrollableAncestor( b ) ).toBeNull();
 	} );
 
 	it( 'returns null in simple element tree without scrollable ancestors', () => {
@@ -72,7 +73,7 @@ describe( 'findClosestScrollableAncestor', () => {
 		const b = createElement( document, 'b' );
 		createElement( document, 'span', {}, [ b ] );
 
-		expect( findClosestScrollableAncestor( b ) ).to.equal( null );
+		expect( findClosestScrollableAncestor( b ) ).toBeNull();
 	} );
 
 	it( 'returns null in complex element tree without scrollable ancestors', () => {
@@ -89,6 +90,6 @@ describe( 'findClosestScrollableAncestor', () => {
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
 		createElement( document, 'div', {}, [ p1, p2 ] );
 
-		expect( findClosestScrollableAncestor( b ) ).to.equal( null );
+		expect( findClosestScrollableAncestor( b ) ).toBeNull();
 	} );
 } );

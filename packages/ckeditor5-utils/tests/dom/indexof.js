@@ -3,13 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import { indexOf } from '../../src/dom/indexof.js';
 
 describe( 'indexOf', () => {
 	it( 'should return 0 if element has no parent', () => {
 		const p = document.createElement( 'p' );
 
-		expect( indexOf( p ) ).to.equal( 0 );
+		expect( indexOf( p ) ).toBe( 0 );
 	} );
 
 	it( 'should return index of the node in parent', () => {
@@ -22,8 +24,8 @@ describe( 'indexOf', () => {
 		div.appendChild( p1 );
 		div.appendChild( p2 );
 
-		expect( indexOf( p0 ) ).to.equal( 0 );
-		expect( indexOf( p1 ) ).to.equal( 1 );
-		expect( indexOf( p2 ) ).to.equal( 2 );
+		expect( indexOf( p0 ) ).toBe( 0 );
+		expect( indexOf( p1 ) ).toBe( 1 );
+		expect( indexOf( p2 ) ).toBe( 2 );
 	} );
 } );

@@ -3,15 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { stubGeometry, assertScrollPosition } from '../_utils/scroll.js';
 import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.js';
+
+const testUtils = {
+	sinon: {
+		stub: stubWithVi
+	}
+};
+
+afterEach( () => {
+	vi.restoreAllMocks();
+} );
 
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;
 	const ancestorOffset = 10;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'p' );
@@ -23,7 +31,7 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 		firstAncestor.appendChild( element );
 
 		// Make the element immune to the border-width-* styles in the test environment.
-		testUtils.sinon.stub( window, 'getComputedStyle' ).returns( {
+		stubWithVi( window, 'getComputedStyle' ).returns( {
 			borderTopWidth: '0px',
 			borderRightWidth: '0px',
 			borderBottomWidth: '0px',
@@ -103,8 +111,6 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( firstAncestor, { scrollTop: 0, scrollLeft: 100 } );
 		} );
 	} );
-
-	/* eslint-disable mocha/no-identical-title */
 
 	function testWithoutAncestorOffset() {
 		it( 'should not touch the #scrollTop #scrollLeft of the ancestor if target is visible', () => {
@@ -365,16 +371,45 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 			assertScrollPosition( secondAncestor, { scrollTop: 190, scrollLeft: 310 } );
 		} );
 	}
-
-	/* eslint-enable mocha/no-identical-title */
 } );
+
+function stubWithVi( obj, property ) {
+	const methodSpy = typeof obj[ property ] == 'function' ?
+		vi.spyOn( obj, property ).mockImplementation( () => {} ) :
+		null;
+
+	return {
+		returns( value ) {
+			if ( methodSpy ) {
+				methodSpy.mockReturnValue( value );
+			} else {
+				vi.spyOn( obj, property, 'get' ).mockReturnValue( value );
+			}
+		},
+
+		value( value ) {
+			vi.spyOn( obj, property, 'get' ).mockReturnValue( value );
+		},
+
+		get( getter ) {
+			vi.spyOn( obj, property, 'get' ).mockImplementation( getter );
+		}
+	};
+}
+
+function expectNotCalled( mock ) {
+	expect( mock ).not.toHaveBeenCalled();
+}
+
+function expectCalledWithExactly( mock, ...args ) {
+	expect( mock ).toHaveBeenCalledTimes( 1 );
+	expect( mock ).toHaveBeenCalledWith( ...args );
+}
 
 describe( 'scrollViewportToShowTarget()', () => {
 	let target, firstAncestor, element;
 	const viewportOffset = 30;
 	const ancestorOffset = 10;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'p' );
@@ -389,12 +424,12 @@ describe( 'scrollViewportToShowTarget()', () => {
 			scrollLeft: 100, scrollTop: 100
 		} );
 
-		testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
-		testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-		testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
-		testUtils.sinon.stub( window, 'scrollY' ).value( 100 );
-		testUtils.sinon.stub( window, 'scrollTo' );
-		testUtils.sinon.stub( window, 'getComputedStyle' ).returns( {
+		stubWithVi( window, 'innerWidth' ).value( 1000 );
+		stubWithVi( window, 'innerHeight' ).value( 500 );
+		stubWithVi( window, 'scrollX' ).value( 100 );
+		stubWithVi( window, 'scrollY' ).value( 100 );
+		stubWithVi( window, 'scrollTo' );
+		stubWithVi( window, 'getComputedStyle' ).returns( {
 			borderTopWidth: '0px',
 			borderRightWidth: '0px',
 			borderBottomWidth: '0px',
@@ -403,7 +438,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 		} );
 
 		// Assuming 20px v- and h-scrollbars here.
-		testUtils.sinon.stub( window.document, 'documentElement' ).value( {
+		stubWithVi( window.document, 'documentElement' ).value( {
 			clientWidth: 980,
 			clientHeight: 480
 		} );
@@ -486,48 +521,47 @@ describe( 'scrollViewportToShowTarget()', () => {
 	describe( 'in an iframe', () => {
 		let iframe, iframeWindow, iframeAncestor, target, targetAncestor;
 
-		beforeEach( done => {
+		beforeEach( async () => {
 			iframe = document.createElement( 'iframe' );
 			iframeAncestor = document.createElement( 'div' );
 
-			iframe.addEventListener( 'load', () => {
-				iframeWindow = iframe.contentWindow;
+			await new Promise( resolve => {
+				iframe.addEventListener( 'load', () => {
+					iframeWindow = iframe.contentWindow;
 
-				testUtils.sinon.stub( iframeWindow, 'innerWidth' ).value( 1000 );
-				testUtils.sinon.stub( iframeWindow, 'innerHeight' ).value( 500 );
-				testUtils.sinon.stub( iframeWindow, 'scrollX' ).value( 100 );
-				testUtils.sinon.stub( iframeWindow, 'scrollY' ).value( 100 );
-				testUtils.sinon.stub( iframeWindow, 'scrollTo' );
-				testUtils.sinon.stub( iframeWindow, 'getComputedStyle' ).returns( {
-					borderTopWidth: '0px',
-					borderRightWidth: '0px',
-					borderBottomWidth: '0px',
-					borderLeftWidth: '0px',
-					direction: 'ltr'
-				} );
+					stubWithVi( iframeWindow, 'innerWidth' ).value( 1000 );
+					stubWithVi( iframeWindow, 'innerHeight' ).value( 500 );
+					stubWithVi( iframeWindow, 'scrollX' ).value( 100 );
+					stubWithVi( iframeWindow, 'scrollY' ).value( 100 );
+					stubWithVi( iframeWindow, 'scrollTo' );
+					stubWithVi( iframeWindow, 'getComputedStyle' ).returns( {
+						borderTopWidth: '0px',
+						borderRightWidth: '0px',
+						borderBottomWidth: '0px',
+						borderLeftWidth: '0px',
+						direction: 'ltr'
+					} );
 
-				// Assuming 20px v- and h-scrollbars here.
-				testUtils.sinon.stub( iframeWindow.document, 'documentElement' ).value( {
-					clientWidth: 980,
-					clientHeight: 480
-				} );
+					// Assuming 20px v- and h-scrollbars here.
+					stubWithVi( iframeWindow.document, 'documentElement' ).value( {
+						clientWidth: 980,
+						clientHeight: 480
+					} );
 
-				target = iframeWindow.document.createElement( 'p' );
-				targetAncestor = iframeWindow.document.createElement( 'div' );
-				iframeWindow.document.body.appendChild( targetAncestor );
-				targetAncestor.appendChild( target );
+					target = iframeWindow.document.createElement( 'p' );
+					targetAncestor = iframeWindow.document.createElement( 'div' );
+					iframeWindow.document.body.appendChild( targetAncestor );
+					targetAncestor.appendChild( target );
 
-				done();
+					resolve();
+				}, { once: true } );
+
+				iframeAncestor.appendChild( iframe );
+				document.body.appendChild( iframeAncestor );
 			} );
-
-			iframeAncestor.appendChild( iframe );
-			document.body.appendChild( iframeAncestor );
 		} );
 
 		afterEach( () => {
-			// Safari fails because of "afterEach()" hook tries to restore values from removed element.
-			// We need to restore these values manually.
-			testUtils.sinon.restore();
 			iframeAncestor.remove();
 		} );
 
@@ -546,8 +580,8 @@ describe( 'scrollViewportToShowTarget()', () => {
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( targetAncestor, { scrollLeft: 200, scrollTop: -100 } );
 			assertScrollPosition( iframeAncestor, { scrollTop: 100, scrollLeft: 100 } );
-			sinon.assert.notCalled( iframeWindow.scrollTo );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( iframeWindow.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -565,8 +599,8 @@ describe( 'scrollViewportToShowTarget()', () => {
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( targetAncestor, { scrollTop: -500, scrollLeft: 200 } );
 			assertScrollPosition( iframeAncestor, { scrollTop: 1900, scrollLeft: 2700 } );
-			sinon.assert.calledWithExactly( iframeWindow.scrollTo, 100, -100 );
-			sinon.assert.calledWithExactly( window.scrollTo, 1820, 1520 );
+			expectCalledWithExactly( iframeWindow.scrollTo, 100, -100 );
+			expectCalledWithExactly( window.scrollTo, 1820, 1520 );
 		} );
 
 		it( 'scroll content to the ancestor viewport if target is larger than it', () => {
@@ -589,15 +623,13 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/930
 		it( 'should not throw if the child frame has no access to the #frameElement of the parent', () => {
-			sinon.stub( iframeWindow, 'frameElement' ).get( () => null );
+			vi.spyOn( iframeWindow, 'frameElement', 'get' ).mockReturnValue( null );
 
 			expect( () => {
 				scrollViewportToShowTarget( { target } );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
-
-	/* eslint-disable mocha/no-identical-title */
 
 	// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change
 	// the getBoundingClientRect geometry of the target. That's why scrolling the viewport
@@ -612,7 +644,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 200 } );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -620,7 +652,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -100 );
+			expectCalledWithExactly( window.scrollTo, 100, -100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -628,7 +660,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 50, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 50 );
+			expectCalledWithExactly( window.scrollTo, 100, 50 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -636,7 +668,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 700, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 320 );
+			expectCalledWithExactly( window.scrollTo, 100, 320 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -644,7 +676,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 550, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 170 );
+			expectCalledWithExactly( window.scrollTo, 100, 170 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -652,7 +684,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -100 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -100, 100 );
+			expectCalledWithExactly( window.scrollTo, -100, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -660,7 +692,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 50 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 50, 100 );
+			expectCalledWithExactly( window.scrollTo, 50, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -668,7 +700,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 320, 100 );
+			expectCalledWithExactly( window.scrollTo, 320, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -676,7 +708,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 170, 100 );
+			expectCalledWithExactly( window.scrollTo, 170, 100 );
 		} );
 	}
 
@@ -686,7 +718,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 150, scrollLeft: 200 } );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -694,7 +726,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -130 );
+			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -702,7 +734,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 50, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 20 );
+			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -710,7 +742,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 700, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 350 );
+			expectCalledWithExactly( window.scrollTo, 100, 350 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -718,7 +750,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 550, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 200 );
+			expectCalledWithExactly( window.scrollTo, 100, 200 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -726,7 +758,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -100 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -130, 70 );
+			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -734,7 +766,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 50 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 20, 70 );
+			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -742,7 +774,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 350, 70 );
+			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -750,7 +782,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 200, 70 );
+			expectCalledWithExactly( window.scrollTo, 200, 70 );
 		} );
 
 		it( 'works for the viewportOffset option provided as an object', () => {
@@ -758,7 +790,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset: { top: 10, bottom: 20, left: 30, right: 40 } } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 1050 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 210, -110 );
+			expectCalledWithExactly( window.scrollTo, 210, -110 );
 		} );
 	}
 
@@ -768,7 +800,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 160, scrollLeft: 210 } );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -776,7 +808,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -100 );
+			expectCalledWithExactly( window.scrollTo, 100, -100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -784,7 +816,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 50 );
+			expectCalledWithExactly( window.scrollTo, 100, 50 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -792,7 +824,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 710, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 320 );
+			expectCalledWithExactly( window.scrollTo, 100, 320 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -800,7 +832,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 560, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 170 );
+			expectCalledWithExactly( window.scrollTo, 100, 170 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -808,7 +840,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -110 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -100, 100 );
+			expectCalledWithExactly( window.scrollTo, -100, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -816,7 +848,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 40 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 50, 100 );
+			expectCalledWithExactly( window.scrollTo, 50, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -824,7 +856,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 320, 100 );
+			expectCalledWithExactly( window.scrollTo, 320, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -832,7 +864,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1060 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 170, 100 );
+			expectCalledWithExactly( window.scrollTo, 170, 100 );
 		} );
 	}
 
@@ -842,7 +874,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 160, scrollLeft: 210 } );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -850,7 +882,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -130 );
+			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -858,7 +890,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 20 );
+			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -866,7 +898,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 710, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 350 );
+			expectCalledWithExactly( window.scrollTo, 100, 350 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -874,7 +906,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 560, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 200 );
+			expectCalledWithExactly( window.scrollTo, 100, 200 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -882,7 +914,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -110 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -130, 70 );
+			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -890,7 +922,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 40 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 20, 70 );
+			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -898,7 +930,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 350, 70 );
+			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -906,7 +938,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1060 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 200, 70 );
+			expectCalledWithExactly( window.scrollTo, 200, 70 );
 		} );
 	}
 
@@ -916,7 +948,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 200 } );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -924,7 +956,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -100 );
+			expectCalledWithExactly( window.scrollTo, 100, -100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -932,7 +964,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 50, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 50 );
+			expectCalledWithExactly( window.scrollTo, 100, 50 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -940,7 +972,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 700, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 700 );
+			expectCalledWithExactly( window.scrollTo, 100, 700 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -948,7 +980,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 550, scrollLeft: 200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 550 );
+			expectCalledWithExactly( window.scrollTo, 100, 550 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -956,7 +988,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -100 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -100, 100 );
+			expectCalledWithExactly( window.scrollTo, -100, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -964,7 +996,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 50 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 50, 100 );
+			expectCalledWithExactly( window.scrollTo, 50, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -972,7 +1004,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1200 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 320, 100 );
+			expectCalledWithExactly( window.scrollTo, 320, 100 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -980,7 +1012,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 170, 100 );
+			expectCalledWithExactly( window.scrollTo, 170, 100 );
 		} );
 	}
 
@@ -990,7 +1022,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 140, scrollLeft: 210 } );
-			sinon.assert.notCalled( window.scrollTo );
+			expectNotCalled( window.scrollTo );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -998,7 +1030,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -130 );
+			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -1006,7 +1038,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 20 );
+			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -1014,7 +1046,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 690, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 670 );
+			expectCalledWithExactly( window.scrollTo, 100, 670 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -1022,7 +1054,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 540, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 520 );
+			expectCalledWithExactly( window.scrollTo, 100, 520 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -1030,7 +1062,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: -110 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -130, 70 );
+			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -1038,7 +1070,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 40 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 20, 70 );
+			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -1046,7 +1078,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 350, 70 );
+			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -1054,7 +1086,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1060 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 200, 70 );
+			expectCalledWithExactly( window.scrollTo, 200, 70 );
 		} );
 	}
 
@@ -1064,7 +1096,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 140, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 120 );
+			expectCalledWithExactly( window.scrollTo, 100, 120 );
 		} );
 
 		it( 'scrolls the viewport to show the target (above)', () => {
@@ -1072,7 +1104,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: -110, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, -130 );
+			expectCalledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially above)', () => {
@@ -1080,7 +1112,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 40, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 20 );
+			expectCalledWithExactly( window.scrollTo, 100, 20 );
 		} );
 
 		it( 'scrolls the viewport to show the target (below)', () => {
@@ -1088,7 +1120,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 690, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 670 );
+			expectCalledWithExactly( window.scrollTo, 100, 670 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially below)', () => {
@@ -1096,7 +1128,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 540, scrollLeft: 210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 100, 520 );
+			expectCalledWithExactly( window.scrollTo, 100, 520 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the left)', () => {
@@ -1104,7 +1136,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: -110 } );
-			sinon.assert.calledWithExactly( window.scrollTo, -130, 70 );
+			expectCalledWithExactly( window.scrollTo, -130, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the left)', () => {
@@ -1112,7 +1144,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 40 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 20, 70 );
+			expectCalledWithExactly( window.scrollTo, 20, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (to the right)', () => {
@@ -1120,7 +1152,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 1210 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 350, 70 );
+			expectCalledWithExactly( window.scrollTo, 350, 70 );
 		} );
 
 		it( 'scrolls the viewport to show the target (partially to the right)', () => {
@@ -1128,9 +1160,7 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 1060 } );
-			sinon.assert.calledWithExactly( window.scrollTo, 200, 70 );
+			expectCalledWithExactly( window.scrollTo, 200, 70 );
 		} );
 	}
-
-	/* eslint-enable mocha/no-identical-title */
 } );
