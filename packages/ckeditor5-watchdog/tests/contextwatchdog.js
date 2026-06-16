@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ContextWatchdog } from '../src/contextwatchdog.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Context } from '@ckeditor/ckeditor5-core';
@@ -22,7 +23,7 @@ describe( 'ContextWatchdog', () => {
 		document.body.appendChild( element2 );
 
 		originalErrorHandler = window.onerror;
-		window.onerror = sinon.spy();
+		window.onerror = vi.fn();
 	} );
 
 	afterEach( () => {
@@ -31,7 +32,7 @@ describe( 'ContextWatchdog', () => {
 		element1.remove();
 		element2.remove();
 
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should disable adding items once the ContextWatchdog is destroyed', async () => {
@@ -89,25 +90,25 @@ describe( 'ContextWatchdog', () => {
 		it( 'should set custom creator and destructor if provided', async () => {
 			const mainWatchdog = new ContextWatchdog( Context );
 
-			const customCreator = sinon.spy( config => Context.create( config ) );
-			const customDestructor = sinon.spy( context => context.destroy() );
+			const customCreator = vi.fn( config => Context.create( config ) );
+			const customDestructor = vi.fn( context => context.destroy() );
 
 			mainWatchdog.setCreator( customCreator );
 			mainWatchdog.setDestructor( customDestructor );
 
 			await mainWatchdog.create();
 
-			sinon.assert.calledOnce( customCreator );
+			expect( customCreator ).toHaveBeenCalledOnce();
 
 			await mainWatchdog.destroy();
 
-			sinon.assert.calledOnce( customDestructor );
+			expect( customDestructor ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should log if an error happens during the component destroying', async () => {
 			const mainWatchdog = new ContextWatchdog( Context );
 
-			const consoleErrorStub = sinon.stub( console, 'error' );
+			const consoleErrorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 			const err = new Error( 'foo' );
 
 			mainWatchdog.setDestructor( async editor => {
@@ -119,8 +120,7 @@ describe( 'ContextWatchdog', () => {
 			await mainWatchdog.create();
 			await mainWatchdog._restart();
 
-			sinon.assert.calledWith(
-				consoleErrorStub,
+			expect( consoleErrorStub ).toHaveBeenCalledWith(
 				'An error happened during destroying the context or items.',
 				err
 			);
@@ -150,7 +150,7 @@ describe( 'ContextWatchdog', () => {
 			it( 'should restart the `Context`', async () => {
 				watchdog = new ContextWatchdog( Context );
 
-				const errorSpy = sinon.spy();
+				const errorSpy = vi.fn();
 
 				await watchdog.create();
 
@@ -162,7 +162,7 @@ describe( 'ContextWatchdog', () => {
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( errorSpy );
+				expect( errorSpy ).toHaveBeenCalledOnce();
 
 				expect( watchdog.context ).to.not.equal( oldContext );
 			} );
@@ -262,7 +262,7 @@ describe( 'ContextWatchdog', () => {
 
 			watchdog.create();
 
-			const destructorSpy = sinon.spy( editor => editor.destroy() );
+			const destructorSpy = vi.fn( editor => editor.destroy() );
 
 			watchdog.add( {
 				id: 'editor1',
@@ -275,7 +275,7 @@ describe( 'ContextWatchdog', () => {
 
 			await watchdog.destroy();
 
-			sinon.assert.calledOnce( destructorSpy );
+			expect( destructorSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should throw when the item is of not known type', async () => {
@@ -385,11 +385,11 @@ describe( 'ContextWatchdog', () => {
 
 			let res1, res2;
 
-			const p1 = sinon.stub().resolves( new Promise( res => {
+			const p1 = vi.fn().mockResolvedValue( new Promise( res => {
 				res1 = res;
 			} ) );
 
-			const p2 = sinon.stub().resolves( new Promise( res => {
+			const p2 = vi.fn().mockResolvedValue( new Promise( res => {
 				res2 = res;
 			} ) );
 
@@ -411,8 +411,8 @@ describe( 'ContextWatchdog', () => {
 
 			await waitCycle();
 
-			sinon.assert.calledOnce( p1 );
-			sinon.assert.calledOnce( p2 );
+			expect( p1 ).toHaveBeenCalledOnce();
+			expect( p2 ).toHaveBeenCalledOnce();
 
 			// Resolve only the second promise to test if the second editor loads before the first one.
 			res2();
@@ -438,11 +438,11 @@ describe( 'ContextWatchdog', () => {
 
 			let resolve;
 
-			const p1 = sinon.stub().resolves( new Promise( res => {
+			const p1 = vi.fn().mockResolvedValue( new Promise( res => {
 				resolve = res;
 			} ) );
 
-			const destructionSpy = sinon.spy();
+			const destructionSpy = vi.fn();
 
 			watchdog.add( {
 				id: 'editor1',
@@ -467,7 +467,7 @@ describe( 'ContextWatchdog', () => {
 			await waitCycle();
 
 			// The second editor should be destroyed while the first one is still being created.
-			sinon.assert.calledOnce( destructionSpy );
+			expect( destructionSpy ).toHaveBeenCalledOnce();
 
 			resolve();
 
@@ -489,7 +489,7 @@ describe( 'ContextWatchdog', () => {
 				} ] );
 
 				const oldContext = watchdog.context;
-				const restartSpy = sinon.spy();
+				const restartSpy = vi.fn();
 
 				watchdog.on( 'restart', restartSpy );
 
@@ -497,7 +497,7 @@ describe( 'ContextWatchdog', () => {
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
 				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
 				expect( watchdog.context ).to.not.equal( oldContext );
@@ -519,7 +519,7 @@ describe( 'ContextWatchdog', () => {
 				} );
 
 				const oldContext = watchdog.context;
-				const restartSpy = sinon.spy();
+				const restartSpy = vi.fn();
 
 				const oldEditor = watchdog.getItem( 'editor1' );
 
@@ -529,7 +529,7 @@ describe( 'ContextWatchdog', () => {
 
 				await waitCycle();
 
-				sinon.assert.notCalled( restartSpy );
+				expect( restartSpy ).not.toHaveBeenCalled();
 
 				expect( watchdog.context ).to.equal( oldContext );
 
@@ -565,9 +565,9 @@ describe( 'ContextWatchdog', () => {
 				const oldEditor1 = watchdog.getItem( 'editor1' );
 				const oldEditor2 = watchdog.getItem( 'editor2' );
 
-				const mainWatchdogRestartSpy = sinon.spy();
-				const editorWatchdog1RestartSpy = sinon.spy();
-				const editorWatchdog2RestartSpy = sinon.spy();
+				const mainWatchdogRestartSpy = vi.fn();
+				const editorWatchdog1RestartSpy = vi.fn();
+				const editorWatchdog2RestartSpy = vi.fn();
 
 				watchdog.on( 'restart', mainWatchdogRestartSpy );
 				editorWatchdog1.on( 'restart', editorWatchdog1RestartSpy );
@@ -577,10 +577,10 @@ describe( 'ContextWatchdog', () => {
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( editorWatchdog1RestartSpy );
+				expect( editorWatchdog1RestartSpy ).toHaveBeenCalledOnce();
 
-				sinon.assert.notCalled( mainWatchdogRestartSpy );
-				sinon.assert.notCalled( editorWatchdog2RestartSpy );
+				expect( mainWatchdogRestartSpy ).not.toHaveBeenCalled();
+				expect( editorWatchdog2RestartSpy ).not.toHaveBeenCalled();
 
 				expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
 				expect( watchdog.getItemState( 'editor2' ) ).to.equal( 'ready' );
@@ -673,23 +673,21 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				watchdog.on(
-					'itemError',
-					sinon.mock()
-						.once()
-						.withArgs( sinon.match.any, sinon.match( data => {
-							return data.itemId === 'editor1';
-						} ) )
-						.callsFake( () => {
-							expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'crashed' );
-						} )
-				);
+				const itemErrorSpy = vi.fn( () => {
+					expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'crashed' );
+				} );
+
+				watchdog.on( 'itemError', itemErrorSpy );
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
 
 				await waitCycle();
 
-				sinon.verify();
+				expect( itemErrorSpy ).toHaveBeenCalledOnce();
+				expect( itemErrorSpy ).toHaveBeenCalledWith(
+					expect.any( Object ),
+					expect.objectContaining( { itemId: 'editor1' } )
+				);
 
 				await watchdog.destroy();
 			} );
@@ -707,23 +705,21 @@ describe( 'ContextWatchdog', () => {
 					config: {}
 				} ] );
 
-				watchdog.on(
-					'itemRestart',
-					sinon.mock()
-						.once()
-						.withArgs( sinon.match.any, sinon.match( data => {
-							return data.itemId === 'editor1';
-						} ) )
-						.callsFake( () => {
-							expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
-						} )
-				);
+				const itemRestartSpy = vi.fn( () => {
+					expect( watchdog.getItemState( 'editor1' ) ).to.equal( 'ready' );
+				} );
+
+				watchdog.on( 'itemRestart', itemRestartSpy );
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
 
 				await waitCycle();
 
-				sinon.verify();
+				expect( itemRestartSpy ).toHaveBeenCalledOnce();
+				expect( itemRestartSpy ).toHaveBeenCalledWith(
+					expect.any( Object ),
+					expect.objectContaining( { itemId: 'editor1' } )
+				);
 
 				await watchdog.destroy();
 			} );
@@ -737,13 +733,13 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 
 	beforeEach( () => {
 		originalErrorHandler = window.onerror;
-		window.onerror = sinon.spy();
+		window.onerror = vi.fn();
 	} );
 
 	afterEach( () => {
 		window.onerror = originalErrorHandler;
 
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	function configBasedCreator( elementOrData, config ) {
@@ -789,14 +785,14 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 			}
 		} );
 
-		const restartSpy = sinon.spy();
+		const restartSpy = vi.fn();
 		watchdog.on( 'itemRestart', restartSpy );
 
 		setTimeout( () => throwCKEditorError( 'foo', watchdog.getItem( 'editor1' ) ) );
 
 		await waitCycle();
 
-		sinon.assert.calledOnce( restartSpy );
+		expect( restartSpy ).toHaveBeenCalledOnce();
 
 		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
 
@@ -818,14 +814,14 @@ describe( 'ContextWatchdog - config-based editor creator', () => {
 			}
 		} );
 
-		const restartSpy = sinon.spy();
+		const restartSpy = vi.fn();
 		watchdog.on( 'restart', restartSpy );
 
 		setTimeout( () => throwCKEditorError( 'foo', watchdog.context ) );
 
 		await waitCycle();
 
-		sinon.assert.calledOnce( restartSpy );
+		expect( restartSpy ).toHaveBeenCalledOnce();
 
 		expect( watchdog.getItem( 'editor1' ).getData() ).to.equal( '<p>foo</p>' );
 

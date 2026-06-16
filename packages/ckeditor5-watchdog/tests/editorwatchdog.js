@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { EditorWatchdog } from '../src/editorwatchdog.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
@@ -148,7 +149,7 @@ class TrackChangesEditing extends Plugin {
 }
 
 // The error handling testing with mocha & chai is quite broken and hard to test.
-// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 //
 describe( 'EditorWatchdog', () => {
 	let element;
@@ -160,27 +161,27 @@ describe( 'EditorWatchdog', () => {
 
 	afterEach( () => {
 		element.remove();
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'create()', () => {
 		it( 'should create an editor instance', async () => {
 			const watchdog = new EditorWatchdog();
 
-			const editorCreateSpy = sinon.spy( ClassicTestEditor, 'create' );
-			const editorDestroySpy = sinon.spy( ClassicTestEditor.prototype, 'destroy' );
+			const editorCreateSpy = vi.spyOn( ClassicTestEditor, 'create' );
+			const editorDestroySpy = vi.spyOn( ClassicTestEditor.prototype, 'destroy' );
 
 			watchdog.setCreator( ( el, config ) => ClassicTestEditor.create( el, config ) );
 
 			await watchdog.create( element, {} );
 
-			sinon.assert.calledOnce( editorCreateSpy );
-			sinon.assert.notCalled( editorDestroySpy );
+			expect( editorCreateSpy ).toHaveBeenCalledOnce();
+			expect( editorDestroySpy ).not.toHaveBeenCalled();
 
 			await watchdog.destroy();
 
-			sinon.assert.calledOnce( editorCreateSpy );
-			sinon.assert.calledOnce( editorDestroySpy );
+			expect( editorCreateSpy ).toHaveBeenCalledOnce();
+			expect( editorDestroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should properly copy the config', async () => {
@@ -194,8 +195,8 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.create( element, config );
 
-			expect( watchdog.editor.config._config.foo ).to.not.equal( config.foo );
-			expect( watchdog.editor.config._config.bar ).to.equal( config.bar );
+			expect( watchdog.editor.config._config.foo ).not.toBe( config.foo );
+			expect( watchdog.editor.config._config.bar ).toBe( config.bar );
 
 			await watchdog.destroy();
 		} );
@@ -205,14 +206,14 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -223,10 +224,10 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			// Watchdog should set data in a non-undoable batch to prevent the undo feature from reverting to empty editor.
-			expect( watchdog.editor.model.document.history.getOperation( 0 ).batch.isUndoable ).to.be.false;
+			expect( watchdog.editor.model.document.history.getOperation( 0 ).batch.isUndoable ).toBe( false );
 
 			await watchdog.destroy();
 		} );
@@ -236,9 +237,9 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
@@ -249,7 +250,7 @@ describe( 'EditorWatchdog', () => {
 				writer.setAttribute( 'test', 1, root );
 			} );
 
-			expect( root.getAttribute( 'test' ) ).to.equal( 1 );
+			expect( root.getAttribute( 'test' ) ).toBe( 1 );
 
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -260,7 +261,7 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			expect( root.getAttribute( 'test' ) ).to.equal( 1 );
+			expect( root.getAttribute( 'test' ) ).toBe( 1 );
 
 			await watchdog.destroy();
 		} );
@@ -270,9 +271,9 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
@@ -312,8 +313,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			expect( watchdog.editor.model.markers.get( 'first' ) ).to.be.null;
-			expect( watchdog.editor.model.markers.get( 'second' ).name ).to.equal( marker.name );
+			expect( watchdog.editor.model.markers.get( 'first' ) ).toBeNull();
+			expect( watchdog.editor.model.markers.get( 'second' ).name ).toBe( marker.name );
 
 			await watchdog.destroy();
 		} );
@@ -340,8 +341,8 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor ).to.not.be.null;
-			expect( watchdog.state ).to.equal( 'ready' );
+			expect( watchdog.editor ).not.toBeNull();
+			expect( watchdog.state ).toBe( 'ready' );
 
 			await watchdog.destroy();
 		} );
@@ -351,19 +352,19 @@ describe( 'EditorWatchdog', () => {
 		it( 'should be the current editor instance', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
-			expect( watchdog.editor ).to.be.null;
+			expect( watchdog.editor ).toBeNull();
 
 			let oldEditor;
 
 			return watchdog.create( element, {} )
 				.then( () => {
 					oldEditor = watchdog.editor;
-					expect( watchdog.editor ).to.be.instanceOf( ClassicTestEditor );
+					expect( watchdog.editor ).toBeInstanceOf( ClassicTestEditor );
 
 					return new Promise( res => {
 						setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -375,13 +376,13 @@ describe( 'EditorWatchdog', () => {
 					} );
 				} )
 				.then( () => {
-					expect( watchdog.editor ).to.be.instanceOf( ClassicTestEditor );
-					expect( watchdog.editor ).to.not.equal( oldEditor );
+					expect( watchdog.editor ).toBeInstanceOf( ClassicTestEditor );
+					expect( watchdog.editor ).not.toBe( oldEditor );
 
 					return watchdog.destroy();
 				} )
 				.then( () => {
-					expect( watchdog.editor ).to.be.null;
+					expect( watchdog.editor ).toBeNull();
 				} );
 		} );
 	} );
@@ -408,15 +409,15 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			const commentsRepository = watchdog.editor.plugins.get( 'CommentsRepository' );
 
 			commentsRepository.addCommentThread( { threadId: 't1', target: () => null } );
 
-			expect( commentsRepository.getCommentThreads().length ).to.be.equal( 1 );
-			expect( commentsRepository.getCommentThreads()[ 0 ].threadId ).to.be.equal( 't1' );
+			expect( commentsRepository.getCommentThreads().length ).toBe( 1 );
+			expect( commentsRepository.getCommentThreads()[ 0 ].threadId ).toBe( 't1' );
 
 			watchdog._save();
 
@@ -432,8 +433,8 @@ describe( 'EditorWatchdog', () => {
 
 			const restoredCommentThreads = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
 
-			expect( restoredCommentThreads.length ).to.be.equal( 1 );
-			expect( restoredCommentThreads[ 0 ].threadId ).to.be.equal( 't1' );
+			expect( restoredCommentThreads.length ).toBe( 1 );
+			expect( restoredCommentThreads[ 0 ].threadId ).toBe( 't1' );
 		} );
 
 		it( 'should support suggestions', async () => {
@@ -445,7 +446,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			const suggestionData = {
@@ -463,8 +464,8 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog._save();
 
-			expect( trackChanges.getSuggestions().length ).to.equal( 1 );
-			expect( trackChanges.getSuggestions()[ 0 ] ).to.deep.equal( suggestionData );
+			expect( trackChanges.getSuggestions().length ).toBe( 1 );
+			expect( trackChanges.getSuggestions()[ 0 ] ).toEqual( suggestionData );
 
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -477,8 +478,8 @@ describe( 'EditorWatchdog', () => {
 
 			const restoredSuggestions = watchdog.editor.plugins.get( 'TrackChanges' ).getSuggestions();
 
-			expect( restoredSuggestions.length ).to.equal( 1 );
-			expect( restoredSuggestions[ 0 ] ).to.deep.equal( suggestionData );
+			expect( restoredSuggestions.length ).toBe( 1 );
+			expect( restoredSuggestions[ 0 ] ).toEqual( suggestionData );
 		} );
 
 		it( 'should support comment data created by another plugins', async () => {
@@ -503,7 +504,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			// Set comment thread attributes to test if it will be restored after restart.
@@ -522,7 +523,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			// Should keep the comment thread up to date even if the InitPlugin creates the new instance.
-			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ).attributes ).to.deep.equal( {
+			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ).attributes ).toEqual( {
 				test: 'value'
 			} );
 		} );
@@ -549,7 +550,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			const commentThread = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' );
@@ -567,7 +568,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			// Should not keep the comment since it has been removed before crash.
-			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ) ).to.be.null;
+			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ) ).toBeNull();
 		} );
 
 		it( 'should support suggestion data created by another plugins', async () => {
@@ -599,7 +600,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			// Set comment thread attributes to test if it will be restored after restart.
@@ -620,7 +621,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			// Should keep the suggestion attributes up to date even if the InitPlugin creates the new instance.
-			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ).attributes ).to.deep.equal( {
+			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ).attributes ).toEqual( {
 				test: 'value'
 			} );
 		} );
@@ -654,7 +655,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			const suggestion = watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' );
@@ -672,7 +673,7 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			// Should not keep the suggestion since it has been removed before crash.
-			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ) ).to.be.null;
+			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ) ).toBeNull();
 		} );
 	} );
 
@@ -689,8 +690,8 @@ describe( 'EditorWatchdog', () => {
 			return watchdog.create( element ).then(
 				() => { throw new Error( '`watchdog.create()` should throw an error.' ); },
 				err => {
-					expect( err ).to.be.instanceOf( Error );
-					expect( err.message ).to.equal( 'foo' );
+					expect( err ).toBeInstanceOf( Error );
+					expect( err.message ).toBe( 'foo' );
 
 					return editor.destroy();
 				}
@@ -711,8 +712,8 @@ describe( 'EditorWatchdog', () => {
 				await watchdog.destroy();
 			} catch ( err ) {
 				caughtError = true;
-				expect( err ).to.be.instanceOf( Error );
-				expect( err.message ).to.equal( 'foo' );
+				expect( err ).toBeInstanceOf( Error );
+				expect( err.message ).toBe( 'foo' );
 
 				await editor.destroy();
 			}
@@ -725,9 +726,9 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should not hide intercepted errors', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
-			const windowErrorSpy = sinon.spy();
+			const windowErrorSpy = vi.fn();
 			window.onerror = windowErrorSpy;
 
 			return watchdog.create( element ).then( () => {
@@ -737,10 +738,10 @@ describe( 'EditorWatchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						sinon.assert.calledOnce( windowErrorSpy );
+						expect( windowErrorSpy ).toHaveBeenCalledOnce();
 
 						// Various browsers will display the error slightly differently.
-						expect( windowErrorSpy.getCall( 0 ).args[ 0 ] ).to.match( /foo/ );
+						expect( windowErrorSpy.mock.calls[ 0 ][ 0 ] ).toMatch( /foo/ );
 
 						watchdog.destroy().then( res );
 					} );
@@ -751,7 +752,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor during the runtime', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -771,12 +772,12 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should not intercept non-editor errors', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			const editorErrorSpy = sinon.spy();
+			const editorErrorSpy = vi.fn();
 			watchdog.on( 'error', editorErrorSpy );
 
-			const watchdogErrorHandlerSpy = sinon.spy( watchdog, '_handleError' );
+			const watchdogErrorHandlerSpy = vi.spyOn( watchdog, '_handleError' );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -799,11 +800,11 @@ describe( 'EditorWatchdog', () => {
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
-						sinon.assert.notCalled( editorErrorSpy );
+						expect( editorErrorSpy ).not.toHaveBeenCalled();
 
 						// Assert that only instances of the `Error` class will be checked deeper.
-						sinon.assert.calledOnce( watchdogErrorHandlerSpy );
-						expect( watchdogErrorHandlerSpy.getCall( 0 ).args[ 0 ] ).to.equal( error );
+						expect( watchdogErrorHandlerSpy ).toHaveBeenCalledOnce();
+						expect( watchdogErrorHandlerSpy.mock.calls[ 0 ][ 0 ] ).toBe( error );
 
 						watchdog.destroy().then( res );
 					} );
@@ -819,7 +820,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: []
 			};
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -828,8 +829,8 @@ describe( 'EditorWatchdog', () => {
 				watchdog2.create( element, config )
 			] ).then( () => {
 				return new Promise( res => {
-					const watchdog1ErrorSpy = sinon.spy();
-					const watchdog2ErrorSpy = sinon.spy();
+					const watchdog1ErrorSpy = vi.fn();
+					const watchdog2ErrorSpy = vi.fn();
 
 					watchdog1.on( 'restart', watchdog1ErrorSpy );
 					watchdog2.on( 'restart', watchdog2ErrorSpy );
@@ -839,8 +840,8 @@ describe( 'EditorWatchdog', () => {
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
-						sinon.assert.notCalled( watchdog1ErrorSpy );
-						sinon.assert.calledOnce( watchdog2ErrorSpy );
+						expect( watchdog1ErrorSpy ).not.toHaveBeenCalled();
+						expect( watchdog2ErrorSpy ).toHaveBeenCalledOnce();
 
 						Promise.all( [ watchdog1.destroy(), watchdog2.destroy() ] )
 							.then( res );
@@ -852,7 +853,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -872,7 +873,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should intercept editor errors and restart the editor if the editor can be found from the context #2', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -902,13 +903,13 @@ describe( 'EditorWatchdog', () => {
 			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (default values)', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			const errorSpy = sinon.spy();
+			const errorSpy = vi.fn();
 			watchdog.on( 'error', errorSpy );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -921,9 +922,9 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			expect( errorSpy.callCount ).to.equal( 4 );
-			expect( watchdog.crashes.length ).to.equal( 4 );
-			expect( restartSpy.callCount ).to.equal( 3 );
+			expect( errorSpy ).toHaveBeenCalledTimes( 4 );
+			expect( watchdog.crashes.length ).toBe( 4 );
+			expect( restartSpy ).toHaveBeenCalledTimes( 3 );
 
 			window.onerror = originalErrorHandler;
 
@@ -934,13 +935,13 @@ describe( 'EditorWatchdog', () => {
 			' and the average time between errors is lower than `minimumNonErrorTimePeriod` (custom values)', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor, { crashNumberLimit: 2, minimumNonErrorTimePeriod: 1000 } );
 
-			const errorSpy = sinon.spy();
+			const errorSpy = vi.fn();
 			watchdog.on( 'error', errorSpy );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -953,9 +954,9 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			expect( errorSpy.callCount ).to.equal( 3 );
-			expect( watchdog.crashes.length ).to.equal( 3 );
-			expect( restartSpy.callCount ).to.equal( 2 );
+			expect( errorSpy ).toHaveBeenCalledTimes( 3 );
+			expect( watchdog.crashes.length ).toBe( 3 );
+			expect( restartSpy ).toHaveBeenCalledTimes( 2 );
 
 			window.onerror = originalErrorHandler;
 
@@ -966,13 +967,13 @@ describe( 'EditorWatchdog', () => {
 			' is longer than `minimumNonErrorTimePeriod`', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor, { crashNumberLimit: 2, minimumNonErrorTimePeriod: 0 } );
 
-			const errorSpy = sinon.spy();
+			const errorSpy = vi.fn();
 			watchdog.on( 'error', errorSpy );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -987,9 +988,9 @@ describe( 'EditorWatchdog', () => {
 				setTimeout( res, 20 );
 			} );
 
-			expect( errorSpy.callCount ).to.equal( 4 );
-			expect( watchdog.crashes.length ).to.equal( 4 );
-			expect( restartSpy.callCount ).to.equal( 4 );
+			expect( errorSpy ).toHaveBeenCalledTimes( 4 );
+			expect( watchdog.crashes.length ).toBe( 4 );
+			expect( restartSpy ).toHaveBeenCalledTimes( 4 );
 
 			window.onerror = originalErrorHandler;
 
@@ -999,11 +1000,11 @@ describe( 'EditorWatchdog', () => {
 		it.skip( 'Watchdog should warn if the CKEditorError is missing its context', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			await watchdog.create( element );
 
@@ -1013,10 +1014,9 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			expect( watchdog.crashes ).to.deep.equal( [] );
+			expect( watchdog.crashes ).toEqual( [] );
 
-			sinon.assert.calledWithExactly(
-				console.warn,
+			expect( consoleWarnStub ).toHaveBeenCalledWith(
 				'The error is missing its context and Watchdog cannot restart the proper item.'
 			);
 
@@ -1026,7 +1026,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'Watchdog should omit error if the CKEditorError context is equal to null', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -1038,7 +1038,7 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			expect( watchdog.crashes ).to.deep.equal( [] );
+			expect( watchdog.crashes ).toEqual( [] );
 
 			await watchdog.destroy();
 		} );
@@ -1046,7 +1046,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the data from before the crash #1', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -1060,7 +1060,7 @@ describe( 'EditorWatchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+						expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 						watchdog.destroy().then( res );
 					} );
@@ -1071,7 +1071,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the data before the crash #2', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -1091,7 +1091,7 @@ describe( 'EditorWatchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>bar' );
+						expect( watchdog.editor.getData() ).toBe( '<p>foo</p>bar' );
 
 						watchdog.destroy().then( res );
 					} );
@@ -1102,9 +1102,9 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the data of the latest document version before the crash', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
-			window.onerror = sinon.spy();
+			window.onerror = vi.fn();
 
 			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1134,7 +1134,7 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdogRestartPromise;
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -1142,11 +1142,11 @@ describe( 'EditorWatchdog', () => {
 		it( 'editor should be restarted with the latest available data before the crash', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			sinon.stub( console, 'error' );
+			const consoleErrorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
 			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1154,9 +1154,11 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const editorGetDataError = new Error( 'Some error' );
-			const getDataStub = sinon.stub( watchdog, '_getData' )
-				.onCall( 0 ).throwsException( editorGetDataError )
-				.onCall( 1 ).returns( {} );
+			const getDataStub = vi.spyOn( watchdog, '_getData' )
+				.mockImplementationOnce( () => {
+					throw editorGetDataError;
+				} )
+				.mockImplementationOnce( () => ( {} ) );
 			// Keep the reference to cleanly destroy it at in the end, as during the TC it
 			// throws an exception during destruction.
 			const firstEditor = watchdog.editor;
@@ -1175,19 +1177,18 @@ describe( 'EditorWatchdog', () => {
 
 					// It is called second time by during the default editor destruction
 					// to update the source element.
-					sinon.assert.calledTwice( getDataStub );
+					expect( getDataStub ).toHaveBeenCalledTimes( 2 );
 
-					expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+					expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
-					sinon.assert.calledWith(
-						console.error,
+					expect( consoleErrorStub ).toHaveBeenCalledWith(
 						editorGetDataError,
 						'An error happened during restoring editor data. Editor will be restored from the previously saved data.'
 					);
 
 					await watchdog.destroy();
 
-					getDataStub.restore();
+					getDataStub.mockRestore();
 
 					await firstEditor.destroy();
 
@@ -1198,14 +1199,14 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should use the custom destructor if passed', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
-			const destructionSpy = sinon.spy();
+			const destructionSpy = vi.fn();
 
 			watchdog.setDestructor( editor => {
 				destructionSpy();
 				return editor.destroy();
 			} );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -1216,7 +1217,7 @@ describe( 'EditorWatchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						sinon.assert.calledOnce( destructionSpy );
+						expect( destructionSpy ).toHaveBeenCalledOnce();
 
 						watchdog.destroy().then( res );
 					} );
@@ -1227,11 +1228,11 @@ describe( 'EditorWatchdog', () => {
 		it( 'should handle the error when the editor destroying failed', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			sinon.stub( console, 'error' );
+			const consoleErrorStub = vi.spyOn( console, 'error' ).mockImplementation( () => {} );
 
 			await watchdog.create( element, {
 				initialData: '<p>foo</p>',
@@ -1239,8 +1240,10 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const editorGetDataError = new Error( 'Some error' );
-			const destroyStub = sinon.stub( watchdog, '_destroy' )
-				.throwsException( editorGetDataError );
+			const destroyStub = vi.spyOn( watchdog, '_destroy' )
+				.mockImplementation( () => {
+					throw editorGetDataError;
+				} );
 
 			// Keep the reference to cleanly destroy it at in the end, as during the TC it
 			// throws an exception during destruction.
@@ -1252,12 +1255,12 @@ describe( 'EditorWatchdog', () => {
 				watchdog.on( 'restart', async () => {
 					window.onerror = originalErrorHandler;
 
-					sinon.assert.calledWith(
-						console.error,
-						'An error happened during the editor destroying.'
+					expect( consoleErrorStub ).toHaveBeenCalledWith(
+						'An error happened during the editor destroying.',
+						expect.anything()
 					);
 
-					destroyStub.restore();
+					destroyStub.mockRestore();
 
 					await watchdog.destroy();
 					await firstEditor.destroy();
@@ -1271,7 +1274,7 @@ describe( 'EditorWatchdog', () => {
 	describe( 'async error handling', () => {
 		let unhandledRejectionEventSupported;
 
-		before( () => {
+		beforeAll( () => {
 			return isUnhandledRejectionEventSupported()
 				.then( val => {
 					unhandledRejectionEventSupported = val;
@@ -1300,8 +1303,8 @@ describe( 'EditorWatchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.editor ).to.not.equal( oldEditor );
-						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+						expect( watchdog.editor ).not.toBe( oldEditor );
+						expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 						watchdog.destroy().then( res );
 					} );
@@ -1316,7 +1319,7 @@ describe( 'EditorWatchdog', () => {
 
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 			const originalErrorHandler = window.onerror;
-			const editorErrorSpy = sinon.spy();
+			const editorErrorSpy = vi.fn();
 
 			window.onerror = undefined;
 
@@ -1326,16 +1329,33 @@ describe( 'EditorWatchdog', () => {
 			} ).then( () => {
 				watchdog.on( 'error', editorErrorSpy );
 
+				// These async errors are unhandled by design – the test verifies that the watchdog ignores them.
+				// Wait until both `unhandledrejection` events have actually been dispatched so they are
+				// handled here (and thus not reported as unexpected by the test runner) instead of leaking
+				// out after the test has finished.
+				const bothRejectionsDispatched = new Promise( res => {
+					let count = 0;
+					const handler = evt => {
+						evt.preventDefault();
+
+						if ( ++count === 2 ) {
+							window.removeEventListener( 'unhandledrejection', handler );
+							res();
+						}
+					};
+
+					window.addEventListener( 'unhandledrejection', handler );
+				} );
+
 				Promise.resolve().then( () => Promise.reject( 'foo' ) );
 				Promise.resolve().then( () => Promise.reject( new Error( 'bar' ) ) );
 
-				// Wait a cycle.
-				return new Promise( res => setTimeout( res ) );
+				return bothRejectionsDispatched;
 			} ).then( () => {
 				window.onerror = originalErrorHandler;
 
-				sinon.assert.notCalled( editorErrorSpy );
-				expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+				expect( editorErrorSpy ).not.toHaveBeenCalled();
+				expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 				return watchdog.destroy();
 			} );
@@ -1373,9 +1393,9 @@ describe( 'EditorWatchdog', () => {
 				// on the non-existing editor.
 				return new Promise( res => setTimeout( res, SAVE_INTERVAL ) );
 			} ).then( () => {
-				expect( watchdog.editor ).to.equal( null );
-				expect( watchdog.state ).to.equal( 'destroyed' );
-				expect( watchdog.crashes ).to.deep.equal( [] );
+				expect( watchdog.editor ).toBe( null );
+				expect( watchdog.state ).toBe( 'destroyed' );
+				expect( watchdog.crashes ).toEqual( [] );
 			} );
 		} );
 
@@ -1383,7 +1403,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'watchdog should remove the listener for `change:data` event before destroying the editor', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			// A plugin that modifies the editor data during the destruction phase.
 			class InvalidPlugin {
@@ -1409,12 +1429,12 @@ describe( 'EditorWatchdog', () => {
 			await watchdog._restart();
 
 			// The watchdog during destroying the editor should not listen to the data changes.
-			sinon.assert.calledOnce( spy );
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should destroy the editor after finishing the ongoing creation process', async () => {
@@ -1428,8 +1448,8 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.destroy();
 
-			expect( watchdog.editor ).to.equal( null );
-			expect( watchdog.state ).to.equal( 'destroyed' );
+			expect( watchdog.editor ).toBe( null );
+			expect( watchdog.state ).toBe( 'destroyed' );
 		} );
 	} );
 
@@ -1437,7 +1457,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should be an array of caught errors by the watchdog', () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
@@ -1449,14 +1469,14 @@ describe( 'EditorWatchdog', () => {
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.crashes[ 0 ].message ).to.match( /^foo/ );
-						expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
-						expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
-						expect( watchdog.crashes[ 0 ].filename ).to.be.a( 'string' );
-						expect( watchdog.crashes[ 0 ].lineno ).to.be.a( 'number' );
-						expect( watchdog.crashes[ 0 ].colno ).to.be.a( 'number' );
+						expect( watchdog.crashes[ 0 ].message ).toMatch( /^foo/ );
+						expect( watchdog.crashes[ 0 ].stack ).toBeTypeOf( 'string' );
+						expect( watchdog.crashes[ 0 ].date ).toBeTypeOf( 'number' );
+						expect( watchdog.crashes[ 0 ].filename ).toBeTypeOf( 'string' );
+						expect( watchdog.crashes[ 0 ].lineno ).toBeTypeOf( 'number' );
+						expect( watchdog.crashes[ 0 ].colno ).toBeTypeOf( 'number' );
 
-						expect( watchdog.crashes[ 1 ].message ).to.match( /^bar/ );
+						expect( watchdog.crashes[ 1 ].message ).toMatch( /^bar/ );
 
 						watchdog.destroy().then( res );
 					} );
@@ -1472,7 +1492,7 @@ describe( 'EditorWatchdog', () => {
 
 				const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-				// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+				// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 				const originalErrorHandler = window.onerror;
 				window.onerror = undefined;
 
@@ -1485,12 +1505,12 @@ describe( 'EditorWatchdog', () => {
 						setTimeout( () => {
 							window.onerror = originalErrorHandler;
 
-							expect( watchdog.crashes[ 0 ].message ).to.match( /^foo/ );
-							expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
-							expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
-							expect( watchdog.crashes[ 0 ].filename ).to.be.an( 'undefined' );
-							expect( watchdog.crashes[ 0 ].lineno ).to.be.an( 'undefined' );
-							expect( watchdog.crashes[ 0 ].colno ).to.be.an( 'undefined' );
+							expect( watchdog.crashes[ 0 ].message ).toMatch( /^foo/ );
+							expect( watchdog.crashes[ 0 ].stack ).toBeTypeOf( 'string' );
+							expect( watchdog.crashes[ 0 ].date ).toBeTypeOf( 'number' );
+							expect( watchdog.crashes[ 0 ].filename ).toBeUndefined();
+							expect( watchdog.crashes[ 0 ].lineno ).toBeUndefined();
+							expect( watchdog.crashes[ 0 ].colno ).toBeUndefined();
 
 							watchdog.destroy().then( res );
 						}, 10 );
@@ -1504,15 +1524,15 @@ describe( 'EditorWatchdog', () => {
 		it( 'should reflect the state of the watchdog', async () => {
 			const watchdog = new EditorWatchdog( ClassicTestEditor );
 
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			// Mocking `window.onerror` via the spy library does not work reliably, so it is assigned manually.
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
 
-			expect( watchdog.state ).to.equal( 'initializing' );
+			expect( watchdog.state ).toBe( 'initializing' );
 
 			await watchdog.create( element );
 
-			expect( watchdog.state ).to.equal( 'ready' );
+			expect( watchdog.state ).toBe( 'ready' );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 			setTimeout( () => throwCKEditorError( 'bar', watchdog.editor ) );
@@ -1521,11 +1541,11 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			expect( watchdog.state ).to.equal( 'ready' );
+			expect( watchdog.state ).toBe( 'ready' );
 
 			await watchdog.destroy();
 
-			expect( watchdog.state ).to.equal( 'destroyed' );
+			expect( watchdog.state ).toBe( 'destroyed' );
 		} );
 
 		it( 'should be observable', async () => {
@@ -1552,7 +1572,7 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.destroy();
 
-			expect( states ).to.deep.equal( [
+			expect( states ).toEqual( [
 				'ready',
 				'crashed',
 				'initializing',
@@ -1579,7 +1599,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -1600,7 +1620,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -1616,7 +1636,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1625,9 +1645,9 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -1649,9 +1669,9 @@ describe( 'EditorWatchdog', () => {
 				writer.setAttribute( 'test', 1, root );
 			} );
 
-			expect( root.getAttribute( 'test' ) ).to.equal( 1 );
+			expect( root.getAttribute( 'test' ) ).toBe( 1 );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1660,9 +1680,9 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.model.document.getRoot().getAttribute( 'test' ) ).to.equal( 1 );
+			expect( watchdog.editor.model.document.getRoot().getAttribute( 'test' ) ).toBe( 1 );
 
 			await watchdog.destroy();
 		} );
@@ -1678,7 +1698,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+			expect( watchdog.editor.getFullData() ).toEqual( {
 				header: '<p>Foo</p>',
 				content: '<p>Bar</p>'
 			} );
@@ -1706,7 +1726,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1715,14 +1735,14 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+			expect( watchdog.editor.getFullData() ).toEqual( {
 				header: '<p>Foo</p>',
 				content: '<p>Bar</p>'
 			} );
 
-			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+			expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 				header: { order: 1, $rootEditableOptions: {} },
 				content: { order: 2, $rootEditableOptions: {} }
 			} );
@@ -1730,9 +1750,68 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
+		it( 'should restore a root containing an empty element after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					content: { initialData: '<p>Foo</p><p></p>' }
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			const restartSpy = vi.fn();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			expect( restartSpy ).toHaveBeenCalledOnce();
+
+			// The empty paragraph (an element node without children) is restored along with the non-empty one.
+			expect( watchdog.editor.getData( { rootName: 'content' } ) ).toBe( '<p>Foo</p><p>&nbsp;</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should keep a detached config-provided root element after crash', async () => {
+			const watchdog = new EditorWatchdog( MultiRootEditor );
+			const contentElement = document.createElement( 'div' );
+
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			await watchdog.create( {
+				roots: {
+					content: { initialData: '<p>Bar</p>', element: contentElement }
+				},
+				plugins: [ Paragraph ]
+			} );
+
+			const restartSpy = vi.fn();
+			watchdog.on( 'restart', restartSpy );
+
+			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+			await waitCycle();
+
+			window.onerror = originalErrorHandler;
+
+			expect( restartSpy ).toHaveBeenCalledOnce();
+			expect( watchdog.editor.getData( { rootName: 'content' } ) ).toBe( '<p>Bar</p>' );
+
+			await watchdog.destroy();
+		} );
+
 		it( 'should properly handle added and removed roots in a multi-root editor after crash', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
@@ -1755,10 +1834,10 @@ describe( 'EditorWatchdog', () => {
 			watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
 
 			// Wait for throttled save.
-			clock.tick( 6000 );
-			clock.restore();
+			vi.advanceTimersByTime( 6000 );
+			vi.useRealTimers();
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1767,14 +1846,14 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+			expect( watchdog.editor.getFullData() ).toEqual( {
 				header: '<p>Foo</p>',
 				new: '<p>New</p>'
 			} );
 
-			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+			expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 				header: { order: 1, $rootEditableOptions: {} },
 				new: { order: 3, $rootEditableOptions: {} }
 			} );
@@ -1801,12 +1880,12 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
-			expect( watchdog.editor.model.document.getRoot( 'content' ).name ).to.equal( '$root' );
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
+			expect( watchdog.editor.model.document.getRoot( 'content' ).name ).toBe( '$root' );
 
 			const dataBefore = watchdog.editor.getFullData();
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1815,20 +1894,20 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			// The inline root must not degrade to a generic `$root` after the restart.
-			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
-			expect( watchdog.editor.model.document.getRoot( 'content' ).name ).to.equal( '$root' );
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
+			expect( watchdog.editor.model.document.getRoot( 'content' ).name ).toBe( '$root' );
 
-			expect( watchdog.editor.getFullData() ).to.deep.equal( dataBefore );
+			expect( watchdog.editor.getFullData() ).toEqual( dataBefore );
 
 			await watchdog.destroy();
 		} );
 
 		it( 'should bring back an inline root added at runtime after crash', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
@@ -1845,14 +1924,14 @@ describe( 'EditorWatchdog', () => {
 			watchdog.editor.addRoot( 'intro', { data: 'Runtime title', modelElement: '$inlineRoot' } );
 
 			// Wait for throttled save.
-			clock.tick( 6000 );
-			clock.restore();
+			vi.advanceTimersByTime( 6000 );
+			vi.useRealTimers();
 
-			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
 
 			const dataBefore = watchdog.editor.getFullData();
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1861,17 +1940,17 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
-			expect( watchdog.editor.getFullData() ).to.deep.equal( dataBefore );
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
+			expect( watchdog.editor.getFullData() ).toEqual( dataBefore );
 
 			await watchdog.destroy();
 		} );
 
 		it( 'should restore editable options of an inline root added at runtime after crash', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
@@ -1894,10 +1973,10 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			// Wait for throttled save.
-			clock.tick( 6000 );
-			clock.restore();
+			vi.advanceTimersByTime( 6000 );
+			vi.useRealTimers();
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1906,13 +1985,13 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
 
 			// The editable element tag name, placeholder and label are rebuilt from `$rootEditableOptions` restored after the restart.
-			expect( watchdog.editor.ui.getEditableElement( 'intro' ).tagName ).to.equal( 'H1' );
-			expect( watchdog.editor.getRootsAttributes().intro.$rootEditableOptions ).to.deep.equal( {
+			expect( watchdog.editor.ui.getEditableElement( 'intro' ).tagName ).toBe( 'H1' );
+			expect( watchdog.editor.getRootsAttributes().intro.$rootEditableOptions ).toEqual( {
 				element: { name: 'h1' },
 				placeholder: 'Type title',
 				label: 'Article title'
@@ -1940,7 +2019,7 @@ describe( 'EditorWatchdog', () => {
 			const headerEditable = watchdog.editor.ui.getEditableElement( 'header' );
 			document.body.appendChild( headerEditable );
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1949,12 +2028,12 @@ describe( 'EditorWatchdog', () => {
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
 			// The previously connected DOM editable is reused instead of creating a fresh detached one.
-			expect( watchdog.editor.ui.getEditableElement( 'header' ) ).to.equal( headerEditable );
-			expect( headerEditable.isConnected ).to.be.true;
-			expect( watchdog.editor.getData( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.ui.getEditableElement( 'header' ) ).toBe( headerEditable );
+			expect( headerEditable.isConnected ).toBe( true );
+			expect( watchdog.editor.getData( { rootName: 'header' } ) ).toBe( '<p>Foo</p>' );
 
 			await watchdog.destroy();
 
@@ -1963,7 +2042,7 @@ describe( 'EditorWatchdog', () => {
 
 		it( 'should not break the restart when the saved $rootEditableOptions value is invalid', async () => {
 			const watchdog = new EditorWatchdog( MultiRootEditor );
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			const originalErrorHandler = window.onerror;
 			window.onerror = undefined;
@@ -1983,12 +2062,12 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			// Wait for throttled save.
-			clock.tick( 6000 );
-			clock.restore();
+			vi.advanceTimersByTime( 6000 );
+			vi.useRealTimers();
 
 			const dataBefore = watchdog.editor.getFullData();
 
-			const restartSpy = sinon.spy();
+			const restartSpy = vi.fn();
 			watchdog.on( 'restart', restartSpy );
 
 			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
@@ -1998,10 +2077,10 @@ describe( 'EditorWatchdog', () => {
 			window.onerror = originalErrorHandler;
 
 			// The invalid value must be ignored instead of breaking the restart.
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).to.equal( '$inlineRoot' );
-			expect( watchdog.editor.getFullData() ).to.deep.equal( dataBefore );
+			expect( watchdog.editor.model.document.getRoot( 'intro' ).name ).toBe( '$inlineRoot' );
+			expect( watchdog.editor.getFullData() ).toEqual( dataBefore );
 
 			await watchdog.destroy();
 		} );
@@ -2013,7 +2092,7 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.create( { foo: '<p>Foo</p>' }, { plugins: [ Paragraph ] } );
 
-			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).toBe( '<p>Foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -2026,7 +2105,7 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).toBe( '<p>Foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -2041,7 +2120,19 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.create( { foo: '<p>Foo</p>' } );
 
-			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).toBe( '<p>Foo</p>' );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should detect config-based signature when called without arguments', async () => {
+			const watchdog = new EditorWatchdog();
+
+			watchdog.setCreator( () => ClassicTestEditor.create( '<p>foo</p>', { plugins: [ Paragraph ] } ) );
+
+			await watchdog.create();
+
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -2057,8 +2148,8 @@ describe( 'EditorWatchdog', () => {
 				plugins: [ Paragraph ]
 			} );
 
-			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
-			expect( watchdog.editor.getData( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p>' );
+			expect( watchdog.editor.getData( { rootName: 'foo' } ) ).toBe( '<p>Foo</p>' );
+			expect( watchdog.editor.getData( { rootName: 'bar' } ) ).toBe( '<p>Bar</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -2074,7 +2165,7 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.create( '<p>foo</p>' );
 
-			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( watchdog.editor.getData() ).toBe( '<p>foo</p>' );
 
 			await watchdog.destroy();
 		} );
@@ -2089,7 +2180,7 @@ describe( 'EditorWatchdog', () => {
 
 			watchdog = new EditorWatchdog( MultiRootEditor );
 
-			restartSpy = sinon.spy();
+			restartSpy = vi.fn();
 
 			originalErrorHandler = window.onerror;
 			window.onerror = undefined;
@@ -2104,8 +2195,6 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		describe( 'init using data', () => {
-			let clock;
-
 			beforeEach( async () => {
 				await watchdog.create( {
 					header: '<p>Foo</p>',
@@ -2136,68 +2225,68 @@ describe( 'EditorWatchdog', () => {
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				expect( watchdog.editor.getFullData() ).toEqual( {
 					header: '<p>Foo</p>',
 					content: '<p>Bar</p>'
 				} );
 
-				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 					header: { order: 1, $rootEditableOptions: {} },
 					content: { order: 2, $rootEditableOptions: {} }
 				} );
 			} );
 
 			it( 'should properly handle added and removed roots', async () => {
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
 
 				// Wait for throttled save.
-				clock.tick( 6000 );
-				clock.restore();
+				vi.advanceTimersByTime( 6000 );
+				vi.useRealTimers();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				expect( watchdog.editor.getFullData() ).toEqual( {
 					header: '<p>Foo</p>',
 					new: '<p>New</p>'
 				} );
 
-				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 					header: { order: 1, $rootEditableOptions: {} },
 					new: { order: 3, $rootEditableOptions: {} }
 				} );
 			} );
 
 			it( 'should properly handle lazy roots', async () => {
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
 				watchdog.editor.detachRoot( 'lazyOne' );
 				watchdog.editor.loadRoot( 'lazyTwo', { data: '<p>Two</p>', attributes: { order: 5 } } );
 
-				clock.tick( 6000 );
-				clock.restore();
+				vi.advanceTimersByTime( 6000 );
+				vi.useRealTimers();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				expect( watchdog.editor.getFullData() ).toEqual( {
 					header: '<p>Foo</p>',
 					content: '<p>Bar</p>',
 					lazyTwo: '<p>Two</p>'
 				} );
 
-				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 					header: { order: 1, $rootEditableOptions: {} },
 					content: { order: 2, $rootEditableOptions: {} },
 					lazyTwo: { order: 5, $rootEditableOptions: {} }
@@ -2206,8 +2295,6 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		describe( 'init using elements', () => {
-			let clock;
-
 			beforeEach( async () => {
 				class MultiRootEditorIntegration {
 					constructor( editor ) {
@@ -2278,60 +2365,60 @@ describe( 'EditorWatchdog', () => {
 
 				window.onerror = originalErrorHandler;
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
-				expect( watchdog.editor.data.get( { rootName: 'content' } ) ).to.equal( '<p>Bar</p>' );
+				expect( watchdog.editor.data.get( { rootName: 'header' } ) ).toBe( '<p>Foo</p>' );
+				expect( watchdog.editor.data.get( { rootName: 'content' } ) ).toBe( '<p>Bar</p>' );
 			} );
 
 			it( 'should properly handle added and removed roots', async () => {
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
 
-				clock.tick( 6000 );
-				clock.restore();
+				vi.advanceTimersByTime( 6000 );
+				vi.useRealTimers();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				expect( watchdog.editor.getFullData() ).toEqual( {
 					header: '<p>Foo</p>',
 					new: '<p>New</p>'
 				} );
 
-				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 					header: { order: 1, $rootEditableOptions: {} },
 					new: { order: 3, $rootEditableOptions: {} }
 				} );
 			} );
 
 			it( 'should properly handle lazy roots', async () => {
-				clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 
 				watchdog.editor.detachRoot( 'lazyOne' );
 				watchdog.editor.loadRoot( 'lazyTwo', { data: '<p>Two</p>', attributes: { order: 5 } } );
 
-				clock.tick( 6000 );
-				clock.restore();
+				vi.advanceTimersByTime( 6000 );
+				vi.useRealTimers();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
 				await waitCycle();
 
-				sinon.assert.calledOnce( restartSpy );
+				expect( restartSpy ).toHaveBeenCalledOnce();
 
-				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+				expect( watchdog.editor.getFullData() ).toEqual( {
 					header: '<p>Foo</p>',
 					content: '<p>Bar</p>',
 					lazyTwo: '<p>Two</p>'
 				} );
 
-				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+				expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 					header: { order: 1, $rootEditableOptions: {} },
 					content: { order: 2, $rootEditableOptions: {} },
 					lazyTwo: { order: 5, $rootEditableOptions: {} }
@@ -2364,22 +2451,22 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+			expect( watchdog.editor.getFullData() ).toEqual( {
 				header: '<p>Foo</p>',
 				content: '<p>Bar</p>'
 			} );
 
-			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+			expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 				header: { order: 1, $rootEditableOptions: { placeholder: 'Type in header' } },
 				content: { order: 2, $rootEditableOptions: { placeholder: 'Type in content' } }
 			} );
 
 			const editables = watchdog.editor.ui.view.editables;
 
-			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in header' );
-			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in content' );
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).toBe( 'Type in header' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).toBe( 'Type in content' );
 		} );
 
 		it( 'should recover original legacy placeholder after restart', async () => {
@@ -2404,22 +2491,22 @@ describe( 'EditorWatchdog', () => {
 
 			await waitCycle();
 
-			sinon.assert.calledOnce( restartSpy );
+			expect( restartSpy ).toHaveBeenCalledOnce();
 
-			expect( watchdog.editor.getFullData() ).to.deep.equal( {
+			expect( watchdog.editor.getFullData() ).toEqual( {
 				header: '<p>Foo</p>',
 				content: '<p>Bar</p>'
 			} );
 
-			expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+			expect( watchdog.editor.getRootsAttributes() ).toEqual( {
 				header: { order: 1, $rootEditableOptions: { placeholder: 'Type in some content' } },
 				content: { order: 2, $rootEditableOptions: { placeholder: 'Type in some content' } }
 			} );
 
 			const editables = watchdog.editor.ui.view.editables;
 
-			expect( editables.header.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
-			expect( editables.content.element.children[ 0 ].dataset.placeholder ).to.equal( 'Type in some content' );
+			expect( editables.header.element.children[ 0 ].dataset.placeholder ).toBe( 'Type in some content' );
+			expect( editables.content.element.children[ 0 ].dataset.placeholder ).toBe( 'Type in some content' );
 		} );
 	} );
 } );

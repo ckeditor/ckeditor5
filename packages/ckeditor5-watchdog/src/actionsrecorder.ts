@@ -7,7 +7,7 @@
  * @module watchdog/actionsrecorder
  */
 
-/* istanbul ignore file -- @preserve */
+/* v8 ignore start -- @preserve */
 
 import type {
 	Command,
@@ -784,3 +784,5 @@ function serializeDomEvent( event: Event ): any {
 function isTypeCheckable( value: any ): value is ViewTypeCheckable & ModelTypeCheckable {
 	return value && typeof value.is === 'function';
 }
+
+/* v8 ignore stop -- @preserve */
