@@ -124,6 +124,52 @@ describe( 'ToggleImageCaptionCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be false when an inline image lives in $inlineRoot (no place for imageBlock)', async () => {
+			const inlineEditor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing, Paragraph ],
+				root: { modelElement: '$inlineRoot' }
+			} );
+
+			try {
+				_setModelData( inlineEditor.model, 'foo[<imageInline src="assets/sample.png"></imageInline>]bar' );
+
+				expect( inlineEditor.commands.get( 'toggleImageCaption' ).isEnabled ).to.be.false;
+			} finally {
+				await inlineEditor.destroy();
+			}
+		} );
+
+		it( 'should be false when an inline image is inside a container that disallows imageBlock', () => {
+			model.schema.register( 'inlineOnlyContainer', {
+				allowIn: '$root',
+				allowContentOf: '$root',
+				isLimit: true
+			} );
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( context.endsWith( 'inlineOnlyContainer' ) && childDefinition.name === 'imageBlock' ) {
+					return false;
+				}
+			} );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineOnlyContainer', view: 'div' } );
+
+			_setModelData(
+				model,
+				'<inlineOnlyContainer>' +
+					'<paragraph>foo[<imageInline src="assets/sample.png"></imageInline>]bar</paragraph>' +
+				'</inlineOnlyContainer>'
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should remain enabled for a block image inside a custom limit element that allows imageBlock', () => {
+			// Sanity check: the new schema guard only restricts the inline → block direction. A block image
+			// in a limit context that allows imageBlock should still be toggleable.
+			_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( '#value', () => {
