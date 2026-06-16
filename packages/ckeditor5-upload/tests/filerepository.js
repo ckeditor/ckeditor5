@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { Plugin, PendingActions } from '@ckeditor/ckeditor5-core';
@@ -38,7 +39,7 @@ describe( 'FileRepository', () => {
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
@@ -60,38 +61,44 @@ describe( 'FileRepository', () => {
 			expect( fileRepository.loaders ).to.be.instanceOf( Collection );
 		} );
 
-		it( 'should initialize uploaded observable', done => {
-			expect( fileRepository.uploaded ).to.equal( 0 );
+		it( 'should initialize uploaded observable', () => {
+			return new Promise( done => {
+				expect( fileRepository.uploaded ).to.equal( 0 );
 
-			fileRepository.on( 'change:uploaded', ( evt, name, value ) => {
-				expect( value ).to.equal( 10 );
-				done();
+				fileRepository.on( 'change:uploaded', ( evt, name, value ) => {
+					expect( value ).to.equal( 10 );
+					done();
+				} );
+
+				fileRepository.uploaded = 10;
 			} );
-
-			fileRepository.uploaded = 10;
 		} );
 
-		it( 'should initialize uploadTotal', done => {
-			expect( fileRepository.uploadTotal ).to.be.null;
+		it( 'should initialize uploadTotal', () => {
+			return new Promise( done => {
+				expect( fileRepository.uploadTotal ).to.be.null;
 
-			fileRepository.on( 'change:uploadTotal', ( evt, name, value ) => {
-				expect( value ).to.equal( 10 );
-				done();
+				fileRepository.on( 'change:uploadTotal', ( evt, name, value ) => {
+					expect( value ).to.equal( 10 );
+					done();
+				} );
+
+				fileRepository.uploadTotal = 10;
 			} );
-
-			fileRepository.uploadTotal = 10;
 		} );
 
-		it( 'should initialize uploadedPercent', done => {
-			expect( fileRepository.uploadedPercent ).to.equal( 0 );
+		it( 'should initialize uploadedPercent', () => {
+			return new Promise( done => {
+				expect( fileRepository.uploadedPercent ).to.equal( 0 );
 
-			fileRepository.on( 'change:uploadedPercent', ( evt, name, value ) => {
-				expect( value ).to.equal( 20 );
-				done();
+				fileRepository.on( 'change:uploadedPercent', ( evt, name, value ) => {
+					expect( value ).to.equal( 20 );
+					done();
+				} );
+
+				fileRepository.uploadTotal = 200;
+				fileRepository.uploaded = 40;
 			} );
-
-			fileRepository.uploadTotal = 200;
-			fileRepository.uploaded = 40;
 		} );
 	} );
 
@@ -174,17 +181,16 @@ describe( 'FileRepository', () => {
 
 	describe( 'createLoader()', () => {
 		it( 'should return null if adapter is not present', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			fileRepository.createUploadAdapter = undefined;
 
 			expect( fileRepository.createLoader( createNativeFileMock() ) ).to.be.null;
 
-			sinon.assert.calledOnce( consoleWarnStub );
-			sinon.assert.calledWithExactly(
-				consoleWarnStub,
-				sinon.match( /^filerepository-no-upload-adapter/ ),
-				sinon.match.string // Link to the documentation
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub ).toHaveBeenCalledWith(
+				expect.stringMatching( /^filerepository-no-upload-adapter/ ),
+				expect.any( String ) // Link to the documentation
 			);
 		} );
 
@@ -208,19 +214,21 @@ describe( 'FileRepository', () => {
 		// This is a test for a super edge case when a file promise was rejected,
 		// but no one called read() or upload() yet. In this case we want to be sure
 		// that we did not swallow this file promise rejection somewhere in createLoader().
-		it( 'does not swallow the file promise rejection', done => {
-			let fileRejecter;
-			const fileMock = createNativeFileMock();
-			const filePromise = new Promise( ( resolve, reject ) => {
-				fileRejecter = reject;
-			} );
+		it( 'does not swallow the file promise rejection', () => {
+			return new Promise( done => {
+				let fileRejecter;
+				const fileMock = createNativeFileMock();
+				const filePromise = new Promise( ( resolve, reject ) => {
+					fileRejecter = reject;
+				} );
 
-			const loader = fileRepository.createLoader( filePromise );
-			loader.file.catch( () => {
-				done();
-			} );
+				const loader = fileRepository.createLoader( filePromise );
+				loader.file.catch( () => {
+					done();
+				} );
 
-			fileRejecter( fileMock );
+				fileRejecter( fileMock );
+			} );
 		} );
 	} );
 
@@ -247,13 +255,15 @@ describe( 'FileRepository', () => {
 			expect( fileRepository.getLoader( promise ) ).to.equal( loader );
 		} );
 
-		it( 'should return loader by file instance (initialized with promise)', done => {
-			const promise = Promise.resolve( createNativeFileMock() );
-			const loader = fileRepository.createLoader( promise );
+		it( 'should return loader by file instance (initialized with promise)', () => {
+			return new Promise( done => {
+				const promise = Promise.resolve( createNativeFileMock() );
+				const loader = fileRepository.createLoader( promise );
 
-			loader.file.then( fileInstance => {
-				expect( fileRepository.getLoader( fileInstance ) ).to.equal( loader );
-				done();
+				loader.file.then( fileInstance => {
+					expect( fileRepository.getLoader( fileInstance ) ).to.equal( loader );
+					done();
+				} );
 			} );
 		} );
 	} );
@@ -264,13 +274,13 @@ describe( 'FileRepository', () => {
 		beforeEach( () => {
 			file = createNativeFileMock();
 			loader = fileRepository.createLoader( file );
-			destroySpy = sinon.spy( loader, '_destroy' );
+			destroySpy = vi.spyOn( loader, '_destroy' );
 		} );
 
 		it( 'should destroy provided loader', () => {
 			fileRepository.destroyLoader( loader );
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 			expect( fileRepository.getLoader( file ) ).to.be.null;
 			expect( fileRepository.loaders.length ).to.equal( 0 );
 			expect( Array.from( fileRepository._loadersMap.keys ).length ).to.equal( 0 );
@@ -279,7 +289,7 @@ describe( 'FileRepository', () => {
 		it( 'should destroy loader by provided file (initialized with file)', () => {
 			fileRepository.destroyLoader( file );
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 			expect( fileRepository.getLoader( file ) ).to.be.null;
 			expect( fileRepository.loaders.length ).to.equal( 0 );
 			expect( Array.from( fileRepository._loadersMap.keys ).length ).to.equal( 0 );
@@ -291,11 +301,11 @@ describe( 'FileRepository', () => {
 			const promise = new Promise( resolve => resolve( createNativeFileMock() ) );
 			const newLoader = fileRepository.createLoader( promise );
 
-			destroySpy = sinon.spy( newLoader, '_destroy' );
+			destroySpy = vi.spyOn( newLoader, '_destroy' );
 
 			fileRepository.destroyLoader( promise );
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 			expect( fileRepository.getLoader( promise ) ).to.be.null;
 			expect( fileRepository.loaders.length ).to.equal( 0 );
 			expect( Array.from( fileRepository._loadersMap.keys() ).length ).to.equal( 0 );
@@ -307,7 +317,7 @@ describe( 'FileRepository', () => {
 			const promise = Promise.resolve( createNativeFileMock() );
 			const newLoader = fileRepository.createLoader( promise );
 
-			destroySpy = sinon.spy( newLoader, '_destroy' );
+			destroySpy = vi.spyOn( newLoader, '_destroy' );
 
 			return newLoader.file.then( fileInstance => {
 				expect( fileRepository.loaders.length ).to.equal( 1 );
@@ -315,7 +325,7 @@ describe( 'FileRepository', () => {
 
 				fileRepository.destroyLoader( fileInstance );
 
-				sinon.assert.calledOnce( destroySpy );
+				expect( destroySpy ).toHaveBeenCalledOnce();
 
 				expect( fileRepository.getLoader( fileInstance ) ).to.be.null;
 				expect( fileRepository.loaders.length ).to.equal( 0 );
@@ -328,7 +338,7 @@ describe( 'FileRepository', () => {
 		let loader, file, nativeReaderMock;
 
 		beforeEach( () => {
-			sinon.stub( window, 'FileReader' ).callsFake( () => {
+			vi.spyOn( window, 'FileReader' ).mockImplementation( function() {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;
@@ -344,6 +354,8 @@ describe( 'FileRepository', () => {
 			} );
 
 			it( 'should initialize filePromiseWrapper', () => {
+				const loader = fileRepository.createLoader( file );
+
 				expect( loader._filePromiseWrapper ).to.not.be.null;
 				expect( loader._filePromiseWrapper.promise ).to.be.instanceOf( Promise );
 				expect( loader._filePromiseWrapper.rejecter ).to.be.instanceOf( Function );
@@ -358,62 +370,72 @@ describe( 'FileRepository', () => {
 				expect( loader._reader ).to.be.instanceOf( FileReader );
 			} );
 
-			it( 'should initialize status observable', done => {
-				expect( loader.status ).to.equal( 'idle' );
+			it( 'should initialize status observable', () => {
+				return new Promise( done => {
+					expect( loader.status ).to.equal( 'idle' );
 
-				loader.on( 'change:status', ( evt, name, value ) => {
-					expect( value ).to.equal( 'uploading' );
-					done();
+					loader.on( 'change:status', ( evt, name, value ) => {
+						expect( value ).to.equal( 'uploading' );
+						done();
+					} );
+
+					loader.status = 'uploading';
 				} );
-
-				loader.status = 'uploading';
 			} );
 
-			it( 'should initialize uploaded observable', done => {
-				expect( loader.uploaded ).to.equal( 0 );
+			it( 'should initialize uploaded observable', () => {
+				return new Promise( done => {
+					expect( loader.uploaded ).to.equal( 0 );
 
-				loader.on( 'change:uploaded', ( evt, name, value ) => {
-					expect( value ).to.equal( 100 );
-					done();
+					loader.on( 'change:uploaded', ( evt, name, value ) => {
+						expect( value ).to.equal( 100 );
+						done();
+					} );
+
+					loader.uploaded = 100;
 				} );
-
-				loader.uploaded = 100;
 			} );
 
-			it( 'should initialize uploadTotal observable', done => {
-				expect( loader.uploadTotal ).to.equal( null );
+			it( 'should initialize uploadTotal observable', () => {
+				return new Promise( done => {
+					expect( loader.uploadTotal ).to.equal( null );
 
-				loader.on( 'change:uploadTotal', ( evt, name, value ) => {
-					expect( value ).to.equal( 100 );
-					done();
+					loader.on( 'change:uploadTotal', ( evt, name, value ) => {
+						expect( value ).to.equal( 100 );
+						done();
+					} );
+
+					loader.uploadTotal = 100;
 				} );
-
-				loader.uploadTotal = 100;
 			} );
 
-			it( 'should initialize uploadedPercent observable', done => {
-				expect( loader.uploadedPercent ).to.equal( 0 );
+			it( 'should initialize uploadedPercent observable', () => {
+				return new Promise( done => {
+					expect( loader.uploadedPercent ).to.equal( 0 );
 
-				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
-					expect( value ).to.equal( 23 );
-					done();
+					loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
+						expect( value ).to.equal( 23 );
+						done();
+					} );
+
+					loader.uploaded = 23;
+					loader.uploadTotal = 100;
 				} );
-
-				loader.uploaded = 23;
-				loader.uploadTotal = 100;
 			} );
 
-			it( 'should initialize uploadResponse observable', done => {
-				const response = {};
+			it( 'should initialize uploadResponse observable', () => {
+				return new Promise( done => {
+					const response = {};
 
-				expect( loader.uploadResponse ).to.equal( null );
+					expect( loader.uploadResponse ).to.equal( null );
 
-				loader.on( 'change:uploadResponse', ( evt, name, value ) => {
-					expect( value ).to.equal( response );
-					done();
+					loader.on( 'change:uploadResponse', ( evt, name, value ) => {
+						expect( value ).to.equal( response );
+						done();
+					} );
+
+					loader.uploadResponse = response;
 				} );
-
-				loader.uploadResponse = response;
 			} );
 		} );
 
@@ -545,6 +567,8 @@ describe( 'FileRepository', () => {
 			} );
 
 			it( 'should reject promise when reading is aborted (before file promise is resolved)', () => {
+				const loader = fileRepository.createLoader( file );
+
 				const promise = loader.read().catch( e => {
 					expect( e ).to.equal( 'aborted' );
 					expect( loader.status ).to.equal( 'aborted' );
@@ -593,7 +617,7 @@ describe( 'FileRepository', () => {
 				const file = createNativeFileMock();
 				const loader = fileRepository.createLoader( file );
 
-				sinon.stub( loader._reader, 'read' ).callsFake( () => {
+				vi.spyOn( loader._reader, 'read' ).mockImplementation( () => {
 					expect( loader.status ).to.equal( 'reading' );
 
 					// Reader is being aborted after file was read.
@@ -675,6 +699,8 @@ describe( 'FileRepository', () => {
 			} );
 
 			it( 'should reject promise when uploading is aborted (before file promise is resolved)', () => {
+				const loader = fileRepository.createLoader( file );
+
 				const promise = loader.upload().catch( e => {
 					expect( e ).to.equal( 'aborted' );
 					expect( loader.status ).to.equal( 'aborted' );
@@ -749,17 +775,23 @@ describe( 'FileRepository', () => {
 			let filePromiseRejecterSpy, readerAbortSpy, adapterAbortSpy;
 
 			beforeEach( () => {
-				filePromiseRejecterSpy = sinon.spy( loader._filePromiseWrapper, 'rejecter' );
-				readerAbortSpy = sinon.spy( loader._reader, 'abort' );
-				adapterAbortSpy = sinon.spy( loader._adapter, 'abort' );
+				filePromiseRejecterSpy = vi.spyOn( loader._filePromiseWrapper, 'rejecter' );
+				readerAbortSpy = vi.spyOn( loader._reader, 'abort' );
+				adapterAbortSpy = vi.spyOn( loader._adapter, 'abort' );
 			} );
 
 			it( 'should abort correctly before read/upload is called', () => {
+				const loader = fileRepository.createLoader( file );
+
+				filePromiseRejecterSpy = vi.spyOn( loader._filePromiseWrapper, 'rejecter' );
+				readerAbortSpy = vi.spyOn( loader._reader, 'abort' );
+				adapterAbortSpy = vi.spyOn( loader._adapter, 'abort' );
+
 				loader.abort();
 
-				expect( filePromiseRejecterSpy.callCount ).to.equal( 1 );
-				expect( readerAbortSpy.callCount ).to.equal( 0 );
-				expect( adapterAbortSpy.callCount ).to.equal( 0 );
+				expect( filePromiseRejecterSpy ).toHaveBeenCalledTimes( 1 );
+				expect( readerAbortSpy ).toHaveBeenCalledTimes( 0 );
+				expect( adapterAbortSpy ).toHaveBeenCalledTimes( 0 );
 			} );
 
 			it( 'should abort correctly after successful read', () => {
@@ -770,9 +802,9 @@ describe( 'FileRepository', () => {
 
 						loader.abort();
 
-						expect( filePromiseRejecterSpy.callCount ).to.equal( 0 );
-						expect( readerAbortSpy.callCount ).to.equal( 0 );
-						expect( adapterAbortSpy.callCount ).to.equal( 0 );
+						expect( filePromiseRejecterSpy ).toHaveBeenCalledTimes( 0 );
+						expect( readerAbortSpy ).toHaveBeenCalledTimes( 0 );
+						expect( adapterAbortSpy ).toHaveBeenCalledTimes( 0 );
 					} );
 
 				loader.file.then( () => nativeReaderMock.mockSuccess( 'result data' ) );
@@ -788,9 +820,9 @@ describe( 'FileRepository', () => {
 
 						loader.abort();
 
-						expect( filePromiseRejecterSpy.callCount ).to.equal( 0 );
-						expect( readerAbortSpy.callCount ).to.equal( 0 );
-						expect( adapterAbortSpy.callCount ).to.equal( 0 );
+						expect( filePromiseRejecterSpy ).toHaveBeenCalledTimes( 0 );
+						expect( readerAbortSpy ).toHaveBeenCalledTimes( 0 );
+						expect( adapterAbortSpy ).toHaveBeenCalledTimes( 0 );
 					} );
 
 				loader.file.then( () => adapterMock.mockSuccess( 'result data' ) );
