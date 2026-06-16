@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { SelectAllEditing } from '../src/selectallediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -31,19 +32,19 @@ describe( 'SelectAllCommand', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets public properties', () => {
-			expect( command ).to.have.property( 'affectsData', false );
+			expect( command ).toHaveProperty( 'affectsData', false );
 		} );
 	} );
 
 	describe( 'isEnabled', () => {
 		it( 'should always be "true" because the command is stateless', () => {
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should not depend on editor read-only state', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -53,7 +54,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[foo]</paragraph>' );
 		} );
 
 		it( 'should select all (collapsed selection in a content with an object)', () => {
@@ -61,7 +62,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]'
 			);
 		} );
@@ -71,7 +72,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]'
 			);
 		} );
@@ -81,7 +82,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 		} );
 
@@ -90,7 +91,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 		} );
 
@@ -114,7 +115,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
@@ -147,7 +148,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+			expect( _getModelData( model ) ).toBe( '<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -164,7 +165,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption>bar</caption></imageBlock>]' );
 		} );
 
@@ -184,7 +185,7 @@ describe( 'SelectAllCommand', () => {
 			editor.execute( 'selectAll' );
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+			expect( _getModelData( model ) ).toBe( '<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -197,7 +198,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
+			expect( _getModelData( model ) ).toBe( '<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -224,7 +225,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
+			expect( _getModelData( model ) ).toBe( '<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
