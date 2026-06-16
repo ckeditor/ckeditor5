@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ViewDomConverter, StylesProcessor, ViewDocument, ViewDowncastWriter, _parseView } from '@ckeditor/ckeditor5-engine';
 import { viewToPlainText } from '../../src/utils/viewtoplaintext.js';
 
@@ -22,7 +23,7 @@ describe( 'viewToPlainText()', () => {
 		const view = _parseView( viewString );
 		const text = viewToPlainText( converter, view );
 
-		expect( text ).to.equal( expectedText );
+		expect( text ).toBe( expectedText );
 	}
 
 	it( 'should output text contents of given view', () => {
@@ -53,7 +54,7 @@ describe( 'viewToPlainText()', () => {
 
 		const text = viewToPlainText( converter, view );
 
-		expect( text ).to.equal( expectedText );
+		expect( text ).toBe( expectedText );
 	} );
 
 	it( 'should turn a soft break into a single empty line', () => {
@@ -144,7 +145,7 @@ describe( 'viewToPlainText()', () => {
 		} );
 		const text = viewToPlainText( converter, rawElement );
 
-		expect( text ).to.equal( 'Foo\nBar' );
+		expect( text ).toBe( 'Foo\nBar' );
 	} );
 
 	it( 'should not execute img#onerror js handler while conversion a view RawElement', async () => {
@@ -158,7 +159,7 @@ describe( 'viewToPlainText()', () => {
 
 		await timeout( 50 );
 
-		expect( window.__testOnErrorExecuted ).to.be.false;
+		expect( window.__testOnErrorExecuted ).toBe( false );
 		delete window.__testOnErrorExecuted;
 	} );
 } );

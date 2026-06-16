@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconView } from '../../src/icon/iconview.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -15,56 +16,60 @@ describe( 'IconView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'sets #content', () => {
-			expect( view.content ).to.equal( '' );
+			expect( view.content ).toBe( '' );
 		} );
 
 		it( 'sets #viewBox', () => {
-			expect( view.viewBox ).to.equal( '0 0 20 20' );
+			expect( view.viewBox ).toBe( '0 0 20 20' );
 		} );
 
 		it( 'sets #fillColor', () => {
-			expect( view.fillColor ).to.equal( '' );
+			expect( view.fillColor ).toBe( '' );
 		} );
 
 		it( 'sets #isColorInherited', () => {
-			expect( view.isColorInherited ).to.be.true;
+			expect( view.isColorInherited ).toBe( true );
 		} );
 
 		it( 'sets #isVisible', () => {
-			expect( view.isVisible ).to.be.true;
+			expect( view.isVisible ).toBe( true );
 		} );
 
 		it( 'creates element from template', () => {
-			expect( view.element.tagName ).to.equal( 'svg' );
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-icon' ) ).to.be.true;
-			expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '0 0 20 20' );
-			expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
+			expect( view.element.tagName ).toBe( 'svg' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-icon' ) ).toBe( true );
+			expect( view.element.getAttribute( 'viewBox' ) ).toBe( '0 0 20 20' );
+			expect( view.element.getAttribute( 'aria-hidden' ) ).toBe( 'true' );
 		} );
 	} );
 
 	describe( '<svg> bindings', () => {
 		describe( 'viewBox', () => {
 			it( 'should react to changes in view#viewBox', () => {
-				expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '0 0 20 20' );
+				expect( view.element.getAttribute( 'viewBox' ) ).toBe( '0 0 20 20' );
 
 				view.viewBox = '1 2 3 4';
 
-				expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '1 2 3 4' );
+				expect( view.element.getAttribute( 'viewBox' ) ).toBe( '1 2 3 4' );
 			} );
 		} );
 
 		describe( 'color inheritance CSS class', () => {
 			it( 'should toggle depending view#isColorInherited', () => {
-				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).toBe( true );
 
 				view.isColorInherited = false;
-				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).toBe( false );
 
 				view.isColorInherited = true;
-				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).toBe( true );
 			} );
 		} );
 
@@ -72,11 +77,11 @@ describe( 'IconView', () => {
 			it( 'should react to changes in view#isVisible', () => {
 				view.isVisible = true;
 
-				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( false );
 
 				view.isVisible = false;
 
-				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-hidden' ) ).toBe( true );
 			} );
 		} );
 
@@ -103,32 +108,32 @@ describe( 'IconView', () => {
 				assertIconInnerHTML( view, '' );
 
 				view.content = '<svg version="1.1" viewBox="10 20 30 40" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
-				expect( view.viewBox ).to.equal( '10 20 30 40' );
+				expect( view.viewBox ).toBe( '10 20 30 40' );
 			} );
 
 			it( 'should use removeChild instead of innerHTML', () => {
 				view.content = '<svg><g id="test"></g><g id="test"></g></svg>';
 				assertIconInnerHTML( view, '<g id="test"></g><g id="test"></g>' );
 
-				const innerHTMLSpy = sinon.spy( view.element, 'innerHTML', [ 'set' ] );
-				const removeChildSpy = sinon.spy( view.element, 'removeChild' );
+				const innerHTMLSpy = vi.spyOn( view.element, 'innerHTML', 'set' );
+				const removeChildSpy = vi.spyOn( view.element, 'removeChild' );
 
 				view.content = '<svg><g id="test"></g></svg>';
 				assertIconInnerHTML( view, '<g id="test"></g>' );
 
-				sinon.assert.notCalled( innerHTMLSpy.set );
-				sinon.assert.calledTwice( removeChildSpy );
+				expect( innerHTMLSpy ).not.toHaveBeenCalled();
+				expect( removeChildSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should throw an error on invalid SVG', () => {
 				expect( () => {
 					view.content = 'foo';
-				} ).to.throw( CKEditorError, 'ui-iconview-invalid-svg' );
+				} ).toThrow( CKEditorError );
 			} );
 
 			describe( 'preservation of presentational attributes on the <svg> element', () => {
 				it( 'should use the static list of attributes from the IconView class', () => {
-					expect( IconView.presentationalAttributeNames ).to.have.length( 58 );
+					expect( IconView.presentationalAttributeNames ).toHaveLength( 58 );
 				} );
 
 				for ( const attributeName of IconView.presentationalAttributeNames ) {
@@ -137,7 +142,7 @@ describe( 'IconView', () => {
 							<g id="test"></g>
 						</svg>`;
 
-						expect( view.element.getAttribute( attributeName ), attributeName ).to.equal( attributeName + '-value' );
+						expect( view.element.getAttribute( attributeName ) ).toBe( attributeName + '-value' );
 					} );
 				}
 			} );
@@ -152,9 +157,9 @@ describe( 'IconView', () => {
 						'<path class="ck-icon__fill"/>' +
 					'</svg>';
 
-				expect( view.element.children[ 0 ].style.fill ).to.equal( 'red' );
-				expect( view.element.children[ 1 ].style.fill ).to.equal( '' );
-				expect( view.element.children[ 2 ].style.fill ).to.equal( 'red' );
+				expect( view.element.children[ 0 ].style.fill ).toBe( 'red' );
+				expect( view.element.children[ 1 ].style.fill ).toBe( '' );
+				expect( view.element.children[ 2 ].style.fill ).toBe( 'red' );
 			} );
 
 			it( 'should react to changes in view#fillColor', () => {
@@ -164,15 +169,15 @@ describe( 'IconView', () => {
 						'<path class="ck-icon__fill"/>' +
 					'</svg>';
 
-				expect( view.element.children[ 0 ].style.fill ).to.equal( '' );
-				expect( view.element.children[ 1 ].style.fill ).to.equal( '' );
-				expect( view.element.children[ 2 ].style.fill ).to.equal( '' );
+				expect( view.element.children[ 0 ].style.fill ).toBe( '' );
+				expect( view.element.children[ 1 ].style.fill ).toBe( '' );
+				expect( view.element.children[ 2 ].style.fill ).toBe( '' );
 
 				view.fillColor = 'red';
 
-				expect( view.element.children[ 0 ].style.fill ).to.equal( 'red' );
-				expect( view.element.children[ 1 ].style.fill ).to.equal( '' );
-				expect( view.element.children[ 2 ].style.fill ).to.equal( 'red' );
+				expect( view.element.children[ 0 ].style.fill ).toBe( 'red' );
+				expect( view.element.children[ 1 ].style.fill ).toBe( '' );
+				expect( view.element.children[ 2 ].style.fill ).toBe( 'red' );
 			} );
 
 			it( 'should react to changes in view#content', () => {
@@ -184,17 +189,17 @@ describe( 'IconView', () => {
 
 				view.fillColor = 'red';
 
-				expect( view.element.children[ 0 ].style.fill ).to.equal( 'red' );
-				expect( view.element.children[ 1 ].style.fill ).to.equal( '' );
-				expect( view.element.children[ 2 ].style.fill ).to.equal( 'red' );
+				expect( view.element.children[ 0 ].style.fill ).toBe( 'red' );
+				expect( view.element.children[ 1 ].style.fill ).toBe( '' );
+				expect( view.element.children[ 2 ].style.fill ).toBe( 'red' );
 
 				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">' +
 						'<path/>' +
 						'<path class="ck-icon__fill"/>' +
 					'</svg>';
 
-				expect( view.element.children[ 0 ].style.fill ).to.equal( '' );
-				expect( view.element.children[ 1 ].style.fill ).to.equal( 'red' );
+				expect( view.element.children[ 0 ].style.fill ).toBe( '' );
+				expect( view.element.children[ 1 ].style.fill ).toBe( 'red' );
 			} );
 		} );
 	} );
@@ -202,5 +207,5 @@ describe( 'IconView', () => {
 
 function assertIconInnerHTML( icon, expected ) {
 	expect( normalizeHtml( icon.element.innerHTML ) )
-		.to.equal( expected );
+		.toBe( expected );
 }

@@ -144,7 +144,7 @@ export class FileUploader extends FileUploaderBase {
 		xhr.addEventListener( 'error', onError( 'Network Error' ) );
 		xhr.addEventListener( 'abort', onError( 'Abort' ) );
 
-		/* istanbul ignore else -- @preserve */
+		/* v8 ignore else -- @preserve */
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', event => {
 				if ( event.lengthComputable ) {

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { IframeView } from '../../src/iframe/iframeview.js';
 
 describe( 'IframeView', () => {
@@ -14,9 +15,9 @@ describe( 'IframeView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
-			expect( view.element.attributes.getNamedItem( 'sandbox' ).value ).to.equal( 'allow-same-origin allow-scripts' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-reset_all' ) ).toBe( true );
+			expect( view.element.attributes.getNamedItem( 'sandbox' ).value ).toBe( 'allow-same-origin allow-scripts' );
 
 			view.element.remove();
 		} );
@@ -26,7 +27,7 @@ describe( 'IframeView', () => {
 		it( 'returns a promise', () => {
 			view = new IframeView();
 
-			expect( view.render() ).to.be.an.instanceof( Promise );
+			expect( view.render() ).toBeInstanceOf( Promise );
 		} );
 
 		it( 'returns promise which is resolved when iframe finished loading', () => {
@@ -34,7 +35,7 @@ describe( 'IframeView', () => {
 
 			const promise = view.render()
 				.then( () => {
-					expect( view.element.contentDocument.readyState ).to.equal( 'complete' );
+					expect( view.element.contentDocument.readyState ).toBe( 'complete' );
 
 					view.element.remove();
 				} );
@@ -47,19 +48,21 @@ describe( 'IframeView', () => {
 	} );
 
 	describe( 'loaded event', () => {
-		it( 'is fired when frame finished loading', done => {
-			view = new IframeView();
+		it( 'is fired when frame finished loading', () => {
+			return new Promise( resolve => {
+				view = new IframeView();
 
-			view.on( 'loaded', () => {
-				view.element.remove();
+				view.on( 'loaded', () => {
+					view.element.remove();
 
-				done();
+					resolve();
+				} );
+
+				view.render();
+
+				// Moving iframe into DOM trigger creation of a document inside iframe.
+				document.body.appendChild( view.element );
 			} );
-
-			view.render();
-
-			// Moving iframe into DOM trigger creation of a document inside iframe.
-			document.body.appendChild( view.element );
 		} );
 	} );
 } );

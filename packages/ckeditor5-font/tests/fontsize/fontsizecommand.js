@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { FontSizeCommand } from '../../src/fontsize/fontsizecommand.js';
 import { FontCommand } from '../../src/fontcommand.js';
 
@@ -25,11 +27,11 @@ describe( 'FontSizeCommand', () => {
 	} );
 
 	it( 'is a FontCommand', () => {
-		expect( FontSizeCommand.prototype ).to.be.instanceOf( FontCommand );
-		expect( command ).to.be.instanceOf( FontCommand );
+		expect( FontSizeCommand.prototype ).toBeInstanceOf( FontCommand );
+		expect( command ).toBeInstanceOf( FontCommand );
 	} );
 
 	it( 'operates on fontSize attribute', () => {
-		expect( command ).to.have.property( 'attributeKey', 'fontSize' );
+		expect( command ).toHaveProperty( 'attributeKey', 'fontSize' );
 	} );
 } );

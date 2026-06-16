@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
 	FocusTracker,
 	KeystrokeHandler,
@@ -24,8 +24,6 @@ import {
 describe( 'MenuBarMenuView', () => {
 	let menuView, locale;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		locale = new Locale();
 		menuView = new MenuBarMenuView( locale );
@@ -33,79 +31,80 @@ describe( 'MenuBarMenuView', () => {
 
 	afterEach( () => {
 		menuView.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should have a button view', () => {
-			expect( menuView.buttonView ).to.be.instanceOf( MenuBarMenuButtonView );
+			expect( menuView.buttonView ).toBeInstanceOf( MenuBarMenuButtonView );
 		} );
 
 		it( 'should have a panel view', () => {
-			expect( menuView.panelView ).to.be.instanceOf( MenuBarMenuPanelView );
+			expect( menuView.panelView ).toBeInstanceOf( MenuBarMenuPanelView );
 		} );
 
 		it( 'should have a focus tracker instance', () => {
-			expect( menuView.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( menuView.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should have a keystrokes handler instance', () => {
-			expect( menuView.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( menuView.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should have #isOpen property set false by default', () => {
-			expect( menuView.isOpen ).to.be.false;
+			expect( menuView.isOpen ).toBe( false );
 		} );
 
 		it( 'should have #isEnabled property set true by default', () => {
-			expect( menuView.isEnabled ).to.be.true;
+			expect( menuView.isEnabled ).toBe( true );
 		} );
 
 		it( 'should have #class property', () => {
-			expect( menuView.class ).to.be.undefined;
+			expect( menuView.class ).toBeUndefined();
 		} );
 
 		it( 'should have #panelPosition property', () => {
-			expect( menuView.panelPosition ).to.equal( 'w' );
+			expect( menuView.panelPosition ).toBe( 'w' );
 		} );
 
 		it( 'should have #parentMenuView reference', () => {
-			expect( menuView.parentMenuView ).to.be.null;
+			expect( menuView.parentMenuView ).toBeNull();
 		} );
 
 		describe( '#buttonView', () => {
 			it( 'should delegate mouseenter to the menu', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				menuView.on( 'mouseenter', spy );
 				menuView.buttonView.fire( 'mouseenter' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should have #isOn state bound to the menu\'s #isOpen', () => {
-				expect( menuView.buttonView.isOn ).to.be.false;
+				expect( menuView.buttonView.isOn ).toBe( false );
 
 				menuView.isOpen = true;
 
-				expect( menuView.buttonView.isOn ).to.be.true;
+				expect( menuView.buttonView.isOn ).toBe( true );
 			} );
 
 			it( 'should have #isEnabled state bound to the menu\'s #isEnabled', () => {
 				menuView.isEnabled = true;
-				expect( menuView.buttonView.isEnabled ).to.be.true;
+				expect( menuView.buttonView.isEnabled ).toBe( true );
 
 				menuView.isEnabled = false;
-				expect( menuView.buttonView.isEnabled ).to.be.false;
+				expect( menuView.buttonView.isEnabled ).toBe( false );
 			} );
 		} );
 
 		describe( '#panelView', () => {
 			it( 'should bind its #isVisible to menu\'s #isOpen', () => {
-				expect( menuView.panelView.isVisible ).to.be.false;
+				expect( menuView.panelView.isVisible ).toBe( false );
 
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.isVisible ).to.be.true;
+				expect( menuView.panelView.isVisible ).toBe( true );
 			} );
 		} );
 
@@ -115,21 +114,21 @@ describe( 'MenuBarMenuView', () => {
 			} );
 
 			it( 'should have CSS classes', () => {
-				expect( menuView.template.attributes.class ).to.include.members( [ 'ck', 'ck-menu-bar__menu' ] );
+				expect( menuView.template.attributes.class ).toEqual( expect.arrayContaining( [ 'ck', 'ck-menu-bar__menu' ] ) );
 			} );
 
 			it( 'should have CSS classes bound to #class', () => {
 				menuView.class = 'my-class';
 
-				expect( menuView.element.classList.contains( 'my-class' ) ).to.be.true;
+				expect( menuView.element.classList.contains( 'my-class' ) ).toBe( true );
 			} );
 
 			it( 'should bind #isEnabled to a CSS class', () => {
 				menuView.isEnabled = false;
-				expect( menuView.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+				expect( menuView.element.classList.contains( 'ck-disabled' ) ).toBe( true );
 
 				menuView.isEnabled = true;
-				expect( menuView.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+				expect( menuView.element.classList.contains( 'ck-disabled' ) ).toBe( false );
 			} );
 
 			it( 'should bind #parentMenuView to a CSS class', () => {
@@ -140,8 +139,8 @@ describe( 'MenuBarMenuView', () => {
 				menuView.render();
 				parentMenuView.render();
 
-				expect( menuView.element.classList.contains( 'ck-menu-bar__menu_top-level' ) ).to.be.false;
-				expect( parentMenuView.element.classList.contains( 'ck-menu-bar__menu_top-level' ) ).to.be.true;
+				expect( menuView.element.classList.contains( 'ck-menu-bar__menu_top-level' ) ).toBe( false );
+				expect( parentMenuView.element.classList.contains( 'ck-menu-bar__menu_top-level' ) ).toBe( true );
 
 				menuView.destroy();
 				parentMenuView.destroy();
@@ -151,20 +150,21 @@ describe( 'MenuBarMenuView', () => {
 
 	describe( 'render()', () => {
 		it( 'should add button and panel to the focus tracker', () => {
-			const focusTrackerAddSpy = sinon.spy( menuView.focusTracker, 'add' );
+			const focusTrackerAddSpy = vi.spyOn( menuView.focusTracker, 'add' );
 
 			menuView.render();
 
-			sinon.assert.calledWithExactly( focusTrackerAddSpy.firstCall, menuView.buttonView.element );
-			sinon.assert.calledWithExactly( focusTrackerAddSpy.secondCall, menuView.panelView.element );
+			expect( focusTrackerAddSpy ).toHaveBeenNthCalledWith( 1, menuView.buttonView.element );
+			expect( focusTrackerAddSpy ).toHaveBeenNthCalledWith( 2, menuView.panelView.element );
 		} );
 
 		it( 'should start listening to keystrokes', () => {
-			const keystrokeHandlerAddSpy = sinon.spy( menuView.keystrokes, 'listenTo' );
+			const keystrokeHandlerAddSpy = vi.spyOn( menuView.keystrokes, 'listenTo' );
 
 			menuView.render();
 
-			sinon.assert.calledOnceWithExactly( keystrokeHandlerAddSpy, menuView.element );
+			expect( keystrokeHandlerAddSpy ).toHaveBeenCalledOnce();
+			expect( keystrokeHandlerAddSpy ).toHaveBeenCalledWith( menuView.element );
 		} );
 
 		describe( 'top-level menu', () => {
@@ -180,17 +180,17 @@ describe( 'MenuBarMenuView', () => {
 			} );
 
 			it( 'should fire arrowright and arrowleft events upon arrow key press', () => {
-				const spyRight = sinon.spy();
-				const spyLeft = sinon.spy();
+				const spyRight = vi.fn();
+				const spyLeft = vi.fn();
 				const keyEvtDataRight = {
 					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 				const keyEvtDataLeft = {
 					keyCode: keyCodes.arrowleft,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				menuView.on( 'arrowright', spyRight );
@@ -200,25 +200,26 @@ describe( 'MenuBarMenuView', () => {
 				menuBarView.render();
 
 				menuView.keystrokes.press( keyEvtDataRight );
-				sinon.assert.calledOnce( spyRight );
-				sinon.assert.notCalled( spyLeft );
-				sinon.assert.calledOnce( keyEvtDataRight.preventDefault );
-				sinon.assert.notCalled( keyEvtDataLeft.preventDefault );
+				expect( spyRight ).toHaveBeenCalledOnce();
+				expect( spyLeft ).not.toHaveBeenCalled();
+				expect( keyEvtDataRight.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtDataLeft.preventDefault ).not.toHaveBeenCalled();
 
 				menuView.keystrokes.press( keyEvtDataLeft );
-				sinon.assert.calledOnce( spyRight );
-				sinon.assert.calledOnce( spyLeft );
-				sinon.assert.calledOnce( keyEvtDataRight.preventDefault );
-				sinon.assert.calledOnce( keyEvtDataLeft.preventDefault );
+				expect( spyRight ).toHaveBeenCalledOnce();
+				expect( spyLeft ).toHaveBeenCalledOnce();
+				expect( keyEvtDataRight.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtDataLeft.preventDefault ).toHaveBeenCalledOnce();
 			} );
 		} );
 
 		it( 'should enable a behavior that closes the menu upon the Esc key press', () => {
-			const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnEscKey' );
+			const spy = vi.spyOn( MenuBarMenuBehaviors, 'closeOnEscKey' );
 
 			menuView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuView );
 		} );
 
 		it( 'should close the menu when it gets disabled', () => {
@@ -227,7 +228,7 @@ describe( 'MenuBarMenuView', () => {
 
 			menuView.isEnabled = false;
 
-			expect( menuView.isOpen ).to.be.false;
+			expect( menuView.isOpen ).toBe( false );
 		} );
 
 		it( 'should not close the menu when it gets enabled', () => {
@@ -237,7 +238,7 @@ describe( 'MenuBarMenuView', () => {
 
 			menuView.isEnabled = true;
 
-			expect( menuView.isOpen ).to.be.true;
+			expect( menuView.isOpen ).toBe( true );
 		} );
 
 		describe( 'panel repositioning upon open', () => {
@@ -249,29 +250,29 @@ describe( 'MenuBarMenuView', () => {
 				menuView.panelView.position = null;
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.not.be.null;
+				expect( menuView.panelView.position ).not.toBeNull();
 
 				const newPositionName = menuView.panelView.position;
 				menuView.isOpen = false;
-				expect( menuView.panelView.position ).to.equal( newPositionName );
+				expect( menuView.panelView.position ).toBe( newPositionName );
 			} );
 
 			it( 'should use the default position if none were considered optimal (because off the viewport, etc.)', () => {
 				createTopLevelMenuWithLocale( locale );
 
-				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+				vi.spyOn( MenuBarMenuView, '_getOptimalPosition' ).mockReturnValue( null );
 
 				menuView.panelView.position = null;
 
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.equal( 'se' );
+				expect( menuView.panelView.position ).toBe( 'se' );
 			} );
 
 			it( 'should use the default position if none were considered optimal (has parent menu)', () => {
 				createTopLevelMenuWithLocale( locale );
 
-				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+				vi.spyOn( MenuBarMenuView, '_getOptimalPosition' ).mockReturnValue( null );
 
 				menuView.parentMenuView = new MenuBarMenuView( locale );
 
@@ -279,13 +280,13 @@ describe( 'MenuBarMenuView', () => {
 
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.equal( 'es' );
+				expect( menuView.panelView.position ).toBe( 'es' );
 			} );
 
 			it( 'should use the default position if none were considered optimal (RTL)', () => {
 				createTopLevelMenuWithLocale( locale );
 
-				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+				vi.spyOn( MenuBarMenuView, '_getOptimalPosition' ).mockReturnValue( null );
 
 				menuView.locale.uiLanguageDirection = 'rtl';
 
@@ -293,13 +294,13 @@ describe( 'MenuBarMenuView', () => {
 
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.equal( 'sw' );
+				expect( menuView.panelView.position ).toBe( 'sw' );
 			} );
 
 			it( 'should use the default position if none were considered optimal (RTL, has parent menu)', () => {
 				createTopLevelMenuWithLocale( locale );
 
-				sinon.stub( MenuBarMenuView, '_getOptimalPosition' ).returns( null );
+				vi.spyOn( MenuBarMenuView, '_getOptimalPosition' ).mockReturnValue( null );
 
 				menuView.locale.uiLanguageDirection = 'rtl';
 
@@ -309,7 +310,7 @@ describe( 'MenuBarMenuView', () => {
 
 				menuView.isOpen = true;
 
-				expect( menuView.panelView.position ).to.equal( 'ws' );
+				expect( menuView.panelView.position ).toBe( 'ws' );
 			} );
 
 			afterEach( () => {
@@ -320,14 +321,14 @@ describe( 'MenuBarMenuView', () => {
 			describe( 'top-level menu', () => {
 				describe( 'when the UI language is LTR', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
-						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const spy = vi.spyOn( MenuBarMenuView, '_getOptimalPosition' );
 						const locale = new Locale( { uiLanguage: 'pl' } );
 
 						createTopLevelMenuWithLocale( locale );
 
 						menuView.isOpen = true;
 
-						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+						expect( spy.mock.calls[ 0 ][ 0 ].positions ).toEqual( [
 							MenuBarMenuViewPanelPositioningFunctions.southEast,
 							MenuBarMenuViewPanelPositioningFunctions.southWest,
 							MenuBarMenuViewPanelPositioningFunctions.northEast,
@@ -338,14 +339,14 @@ describe( 'MenuBarMenuView', () => {
 
 				describe( 'when the UI language is RTL', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
-						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const spy = vi.spyOn( MenuBarMenuView, '_getOptimalPosition' );
 						const locale = new Locale( { uiLanguage: 'ar' } );
 
 						createTopLevelMenuWithLocale( locale );
 
 						menuView.isOpen = true;
 
-						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+						expect( spy.mock.calls[ 0 ][ 0 ].positions ).toEqual( [
 							MenuBarMenuViewPanelPositioningFunctions.southWest,
 							MenuBarMenuViewPanelPositioningFunctions.southEast,
 							MenuBarMenuViewPanelPositioningFunctions.northWest,
@@ -358,14 +359,14 @@ describe( 'MenuBarMenuView', () => {
 			describe( 'sub-menu', () => {
 				describe( 'when the UI language is LTR', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
-						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const spy = vi.spyOn( MenuBarMenuView, '_getOptimalPosition' );
 						const locale = new Locale( { uiLanguage: 'pl' } );
 
 						createSubMenuWithLocale( locale );
 
 						menuView.isOpen = true;
 
-						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+						expect( spy.mock.calls[ 0 ][ 0 ].positions ).toEqual( [
 							MenuBarMenuViewPanelPositioningFunctions.eastSouth,
 							MenuBarMenuViewPanelPositioningFunctions.eastNorth,
 							MenuBarMenuViewPanelPositioningFunctions.westSouth,
@@ -376,14 +377,14 @@ describe( 'MenuBarMenuView', () => {
 
 				describe( 'when the UI language is RTL', () => {
 					it( 'should use a specific set of positioning functions in a specific priority order', () => {
-						const spy = sinon.spy( MenuBarMenuView, '_getOptimalPosition' );
+						const spy = vi.spyOn( MenuBarMenuView, '_getOptimalPosition' );
 						const locale = new Locale( { uiLanguage: 'ar' } );
 
 						createSubMenuWithLocale( locale );
 
 						menuView.isOpen = true;
 
-						expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+						expect( spy.mock.calls[ 0 ][ 0 ].positions ).toEqual( [
 							MenuBarMenuViewPanelPositioningFunctions.westSouth,
 							MenuBarMenuViewPanelPositioningFunctions.westNorth,
 							MenuBarMenuViewPanelPositioningFunctions.eastSouth,
@@ -414,19 +415,21 @@ describe( 'MenuBarMenuView', () => {
 	describe( '_attachBehaviors', () => {
 		describe( 'top-level menu', () => {
 			it( 'should enable a behavior that opens and focuses the panel on arrow down key', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'openAndFocusPanelOnArrowDownKey' );
+				const spy = vi.spyOn( MenuBarMenuBehaviors, 'openAndFocusPanelOnArrowDownKey' );
 
 				menuView._attachBehaviors();
 
-				sinon.assert.calledOnceWithExactly( spy, menuView );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( menuView );
 			} );
 
 			it( 'should enable a behavior that toggles visibility of the menu upon clicking', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'toggleOnButtonClick' );
+				const spy = vi.spyOn( MenuBarMenuBehaviors, 'toggleOnButtonClick' );
 
 				menuView._attachBehaviors();
 
-				sinon.assert.calledOnceWithExactly( spy, menuView );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( menuView );
 			} );
 		} );
 
@@ -444,35 +447,39 @@ describe( 'MenuBarMenuView', () => {
 			} );
 
 			it( 'should enable a behavior that opens the menu upon clicking (but does not close it)', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'openOnButtonClick' );
+				const spy = vi.spyOn( MenuBarMenuBehaviors, 'openOnButtonClick' );
 
 				menuView._attachBehaviors();
 
-				sinon.assert.calledOnceWithExactly( spy, menuView );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( menuView );
 			} );
 
 			it( 'should enable a behavior that opens the menu upon arrow right key press', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'openOnArrowRightKey' );
+				const spy = vi.spyOn( MenuBarMenuBehaviors, 'openOnArrowRightKey' );
 
 				menuView._attachBehaviors();
 
-				sinon.assert.calledOnceWithExactly( spy, menuView );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( menuView );
 			} );
 
 			it( 'should enable a behavior that closes the menu upon arrow left key press', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnArrowLeftKey' );
+				const spy = vi.spyOn( MenuBarMenuBehaviors, 'closeOnArrowLeftKey' );
 
 				menuView._attachBehaviors();
 
-				sinon.assert.calledOnceWithExactly( spy, menuView );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( menuView );
 			} );
 
 			it( 'should enable a behavior that closes the menu when its parent closes', () => {
-				const spy = sinon.spy( MenuBarMenuBehaviors, 'closeOnParentClose' );
+				const spy = vi.spyOn( MenuBarMenuBehaviors, 'closeOnParentClose' );
 
 				menuView._attachBehaviors();
 
-				sinon.assert.calledOnceWithExactly( spy, menuView );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( menuView );
 			} );
 		} );
 	} );

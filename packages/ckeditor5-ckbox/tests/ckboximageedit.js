@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -18,15 +19,15 @@ import { CKBoxImageEditUI } from '../src/ckboximageedit/ckboximageeditui.ts';
 
 describe( 'CKBoxImageEdit', () => {
 	it( 'should be correctly named', () => {
-		expect( CKBoxImageEdit.pluginName ).to.equal( 'CKBoxImageEdit' );
+		expect( CKBoxImageEdit.pluginName ).toBe( 'CKBoxImageEdit' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( CKBoxImageEdit.isOfficialPlugin ).to.be.true;
+		expect( CKBoxImageEdit.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( CKBoxImageEdit.isPremiumPlugin ).to.be.false;
+		expect( CKBoxImageEdit.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'init()', () => {
@@ -59,22 +60,22 @@ describe( 'CKBoxImageEdit', () => {
 		it( 'should load CKBoxImageEdit plugin', () => {
 			const CKBoxImageEditPlugin = editor.plugins.get( 'CKBoxImageEdit' );
 
-			expect( CKBoxImageEditPlugin ).to.be.an.instanceof( CKBoxImageEdit );
+			expect( CKBoxImageEditPlugin ).toBeInstanceOf( CKBoxImageEdit );
 		} );
 
 		it( 'should have proper "requires" value', () => {
-			expect( CKBoxImageEdit.requires ).to.deep.equal( [
+			expect( CKBoxImageEdit.requires ).toEqual( [
 				CKBoxImageEditEditing,
 				CKBoxImageEditUI
 			] );
 		} );
 
 		it( 'should load CKBoxImageEditEditing plugin', () => {
-			expect( editor.plugins.get( CKBoxImageEditEditing ) ).to.instanceOf( CKBoxImageEditEditing );
+			expect( editor.plugins.get( CKBoxImageEditEditing ) ).toBeInstanceOf( CKBoxImageEditEditing );
 		} );
 
 		it( 'should load CKBoxImageEditUI plugin', () => {
-			expect( editor.plugins.get( CKBoxImageEditUI ) ).to.instanceOf( CKBoxImageEditUI );
+			expect( editor.plugins.get( CKBoxImageEditUI ) ).toBeInstanceOf( CKBoxImageEditUI );
 		} );
 	} );
 } );

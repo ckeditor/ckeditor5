@@ -7,14 +7,16 @@
  * @module image/image/utils
  */
 
-import type {
-	ModelDocumentSelection,
-	MatcherPattern,
-	ModelSchema,
-	ModelSelection,
-	ViewContainerElement,
-	ViewDowncastWriter,
-	ViewElement
+import {
+	type ModelDocumentSelection,
+	type MatcherPattern,
+	type ModelPosition,
+	type ModelSchema,
+	type ModelSelection,
+	type ViewContainerElement,
+	type ViewDowncastWriter,
+	type ViewElement,
+	_isParagraphableModelNode as isParagraphable
 } from '@ckeditor/ckeditor5-engine';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import { first } from '@ckeditor/ckeditor5-utils';
@@ -59,6 +61,7 @@ export function createBlockImageViewElement( writer: ViewDowncastWriter ): ViewC
 /**
  * A function returning a `MatcherPattern` for a particular type of View images.
  *
+ * @deprecated
  * @internal
  * @param matchImageType The type of created image.
  */
@@ -77,11 +80,7 @@ export function getImgViewElementMatcher( editor: Editor, matchImageType: 'image
 			return getPositiveMatchPattern( element );
 		}
 
-		// The <img> can be standalone, wrapped in <figure>...</figure> (ImageBlock plugin) or
-		// wrapped in <figure><a>...</a></figure> (LinkImage plugin).
-		const imageType = element.getStyle( 'display' ) == 'block' || element.findAncestor( imageUtils.isBlockImageView ) ?
-			'imageBlock' :
-			'imageInline';
+		const imageType = getViewImageType( element, imageUtils );
 
 		if ( imageType !== matchImageType ) {
 			return null;
@@ -102,6 +101,52 @@ export function getImgViewElementMatcher( editor: Editor, matchImageType: 'image
 
 		return pattern;
 	}
+}
+
+/**
+ * Resolves the model image type (`'imageBlock'` or `'imageInline'`) that a given `<img>` view element represents,
+ * based purely on its view structure.
+ *
+ * An `<img>` is treated as a block image when it has a `display: block` style or is wrapped in a block image figure
+ * (`<figure class="image">`, also `<figure class="image"><a>...</a></figure>` added by the `LinkImage` plugin).
+ * Otherwise it is treated as an inline image.
+ *
+ * Note that this only reflects the view representation - it does not check whether the resolved type is allowed by the
+ * schema at the insertion position.
+ *
+ * @internal
+ * @param element The `<img>` view element to resolve the type for.
+ * @param imageUtils The `ImageUtils` plugin instance.
+ */
+export function getViewImageType( element: ViewElement, imageUtils: ImageUtils ): 'imageBlock' | 'imageInline' {
+	// The <img> can be standalone, wrapped in <figure>...</figure> (ImageBlock plugin) or
+	// wrapped in <figure><a>...</a></figure> (LinkImage plugin).
+	return ( element.getStyle( 'display' ) == 'block' || element.findAncestor( imageUtils.isBlockImageView ) ?
+		'imageBlock' :
+		'imageInline'
+	);
+}
+
+/**
+ * Checks whether the given image type can be placed at the specified position - either directly (or after hoisting
+ * to an allowed ancestor) or, for inline images, wrapped in an auto-created paragraph.
+ *
+ * This is the predicate that decides whether a block image may land at a position or must degrade to an inline image
+ * (for example, inside an `$inlineRoot` that disallows block content) and, symmetrically, whether an inline image may
+ * become a block image. `isParagraphable()` is always `false` for `imageBlock` (a block object never fits in a
+ * paragraph), so the auto-paragraph relaxation only applies to the inline target.
+ *
+ * @internal
+ * @param schema The model schema to check against.
+ * @param position The position at which the image type should be placed.
+ * @param imageType The image type to check.
+ */
+export function isImageTypePlaceable(
+	schema: ModelSchema,
+	position: ModelPosition,
+	imageType: 'imageBlock' | 'imageInline'
+): boolean {
+	return !!schema.findAllowedParent( position, imageType ) || isParagraphable( position, imageType, schema );
 }
 
 /**

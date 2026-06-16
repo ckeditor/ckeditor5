@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
 	normalizeRootsConfig,
 	normalizeSingleRootEditorConstructorParams,
@@ -25,7 +26,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>foo</p>' );
+			expect( roots.main.initialData ).toBe( '<p>foo</p>' );
 		} );
 
 		it( 'should set initialData from an empty string', () => {
@@ -33,7 +34,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '' );
+			expect( roots.main.initialData ).toBe( '' );
 		} );
 
 		it( 'should use custom default root name', () => {
@@ -41,8 +42,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.content.initialData ).to.equal( '<p>foo</p>' );
-			expect( roots.main ).to.be.undefined;
+			expect( roots.content.initialData ).toBe( '<p>foo</p>' );
+			expect( roots.main ).toBeUndefined();
 		} );
 
 		it( 'should use initialData from config.root if set', () => {
@@ -52,7 +53,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>bar</p>' );
+			expect( roots.main.initialData ).toBe( '<p>bar</p>' );
 		} );
 
 		it( 'should use initialData from legacy config.initialData', () => {
@@ -64,7 +65,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>legacy</p>' );
+			expect( roots.main.initialData ).toBe( '<p>legacy</p>' );
 		} );
 
 		it( 'should throw when both config.root and config.roots.main are set', () => {
@@ -115,7 +116,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>element data</p>' );
+			expect( roots.main.initialData ).toBe( '<p>element data</p>' );
 		} );
 
 		it( 'should prefer legacy config.initialData over source element', () => {
@@ -125,7 +126,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>legacy</p>' );
+			expect( roots.main.initialData ).toBe( '<p>legacy</p>' );
 		} );
 	} );
 
@@ -138,8 +139,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.header.initialData ).to.equal( '<p>header</p>' );
-			expect( roots.content.initialData ).to.equal( '<p>content</p>' );
+			expect( roots.header.initialData ).toBe( '<p>header</p>' );
+			expect( roots.content.initialData ).toBe( '<p>content</p>' );
 		} );
 
 		it( 'should merge source data with existing roots config', () => {
@@ -154,9 +155,9 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.header.initialData ).to.equal( '<p>header</p>' );
-			expect( roots.header.placeholder ).to.equal( 'Type header...' );
-			expect( roots.content.initialData ).to.equal( '<p>content</p>' );
+			expect( roots.header.initialData ).toBe( '<p>header</p>' );
+			expect( roots.header.placeholder ).toBe( 'Type header...' );
+			expect( roots.content.initialData ).toBe( '<p>content</p>' );
 		} );
 
 		it( 'should use initialData from roots config over source data elements', () => {
@@ -173,7 +174,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.header.initialData ).to.equal( '<p>from config</p>' );
+			expect( roots.header.initialData ).toBe( '<p>from config</p>' );
 		} );
 
 		it( 'should throw when both source data string and rootConfig.initialData are set for a root', () => {
@@ -198,8 +199,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.header.initialData ).to.equal( '<p>legacy header</p>' );
-			expect( roots.content.initialData ).to.equal( '<p>legacy content</p>' );
+			expect( roots.header.initialData ).toBe( '<p>legacy header</p>' );
+			expect( roots.content.initialData ).toBe( '<p>legacy content</p>' );
 		} );
 
 		it( 'should collect root names from all sources', () => {
@@ -216,9 +217,9 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.fromRoots ).to.not.be.undefined;
-			expect( roots.fromLegacy ).to.not.be.undefined;
-			expect( roots.fromSource ).to.not.be.undefined;
+			expect( roots.fromRoots ).not.toBeUndefined();
+			expect( roots.fromLegacy ).not.toBeUndefined();
+			expect( roots.fromSource ).not.toBeUndefined();
 		} );
 	} );
 
@@ -228,7 +229,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main ).to.not.be.undefined;
+			expect( roots.main ).not.toBeUndefined();
 		} );
 
 		it( 'should not create a default root when set to false', () => {
@@ -236,7 +237,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main ).to.be.undefined;
+			expect( roots.main ).toBeUndefined();
 		} );
 
 		it( 'should throw when config.root is set and defaultRootName is false', () => {
@@ -256,7 +257,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.placeholder ).to.equal( 'Type here...' );
+			expect( roots.main.placeholder ).toBe( 'Type here...' );
 		} );
 
 		it( 'should set placeholder from legacy config.placeholder object', () => {
@@ -273,8 +274,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.header.placeholder ).to.equal( 'Type header...' );
-			expect( roots.content.placeholder ).to.equal( 'Type content...' );
+			expect( roots.header.placeholder ).toBe( 'Type header...' );
+			expect( roots.content.placeholder ).toBe( 'Type content...' );
 		} );
 
 		it( 'should set label from legacy config.label string', () => {
@@ -284,7 +285,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.label ).to.equal( 'Editor' );
+			expect( roots.main.label ).toBe( 'Editor' );
 		} );
 
 		it( 'should set label from legacy config.label object', () => {
@@ -301,8 +302,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.header.label ).to.equal( 'Header editor' );
-			expect( roots.content.label ).to.equal( 'Content editor' );
+			expect( roots.header.label ).toBe( 'Header editor' );
+			expect( roots.content.label ).toBe( 'Content editor' );
 		} );
 
 		it( 'should not override placeholder already set in root config', () => {
@@ -315,7 +316,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.placeholder ).to.equal( 'Root placeholder' );
+			expect( roots.main.placeholder ).toBe( 'Root placeholder' );
 		} );
 
 		it( 'should not override label already set in root config', () => {
@@ -328,7 +329,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.label ).to.equal( 'Root label' );
+			expect( roots.main.label ).toBe( 'Root label' );
 		} );
 	} );
 
@@ -336,7 +337,7 @@ describe( 'normalizeRootsConfig()', () => {
 		it( 'should always set config.roots', () => {
 			normalizeRootsConfig( '<p>foo</p>', config );
 
-			expect( config.get( 'roots' ) ).to.be.an( 'object' );
+			expect( config.get( 'roots' ) ).toBeTypeOf( 'object' );
 		} );
 
 		it( 'should update config.roots with all processed roots', () => {
@@ -349,9 +350,9 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( Object.keys( roots ) ).to.include( 'main' );
-			expect( Object.keys( roots ) ).to.include( 'header' );
-			expect( Object.keys( roots ) ).to.include( 'content' );
+			expect( Object.keys( roots ) ).toContain( 'main' );
+			expect( Object.keys( roots ) ).toContain( 'header' );
+			expect( Object.keys( roots ) ).toContain( 'content' );
 		} );
 	} );
 
@@ -383,13 +384,13 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( {}, config, false );
 
-			expect( config.get( 'roots' ).foo.initialData ).to.equal( '<p>Foo</p>' );
+			expect( config.get( 'roots' ).foo.initialData ).toBe( '<p>Foo</p>' );
 		} );
 
 		it( 'should not throw when config.roots is omitted', () => {
 			normalizeRootsConfig( {}, config, false );
 
-			expect( config.get( 'roots' ) ).to.deep.equal( {} );
+			expect( config.get( 'roots' ) ).toEqual( {} );
 		} );
 
 		it( 'should not throw when config.roots is null', () => {
@@ -397,7 +398,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( {}, config, false );
 
-			expect( config.get( 'roots' ) ).to.deep.equal( {} );
+			expect( config.get( 'roots' ) ).toEqual( {} );
 		} );
 	} );
 
@@ -410,7 +411,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element ).to.equal( el );
+			expect( config.get( 'roots' ).main.element ).toBe( el );
 		} );
 
 		it( 'should turn a tag-name string into a canonical descriptor', () => {
@@ -418,7 +419,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'h1' } );
+			expect( config.get( 'roots' ).main.element ).toEqual( { name: 'h1' } );
 		} );
 
 		it( 'should normalize a view element definition object', () => {
@@ -435,7 +436,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element ).to.deep.equal( {
+			expect( config.get( 'roots' ).main.element ).toEqual( {
 				name: 'section',
 				classes: [ 'foo', 'bar' ],
 				styles: { color: 'red' },
@@ -458,10 +459,10 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const element = config.get( 'roots' ).main.element;
 
-			expect( element.classes ).to.deep.equal( [ 'a', 'b' ] );
+			expect( element.classes ).toEqual( [ 'a', 'b' ] );
 			// `class` is moved into `classes` and replaced with an empty-string sentinel so the deep-merge in
 			// `Config.set()` does not preserve the user-provided value.
-			expect( element.attributes ).to.deep.equal( { class: '' } );
+			expect( element.attributes ).toEqual( { class: '' } );
 		} );
 
 		it( 'should keep attributes.style as a string when no styles object is provided', () => {
@@ -476,7 +477,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element.attributes ).to.deep.equal( { style: 'color: red' } );
+			expect( config.get( 'roots' ).main.element.attributes ).toEqual( { style: 'color: red' } );
 		} );
 
 		it( 'should prefer styles object over attributes.style string and warn', () => {
@@ -490,21 +491,21 @@ describe( 'normalizeRootsConfig()', () => {
 				}
 			} );
 
-			const stub = sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			try {
 				normalizeRootsConfig( '', config );
 
-				sinon.assert.calledWithMatch( console.warn, 'editor-root-element-styles-overspecified' );
+				expect( warnSpy.mock.calls[ 0 ][ 0 ] ).toContain( 'editor-root-element-styles-overspecified' );
 
 				const element = config.get( 'roots' ).main.element;
 
-				expect( element.styles ).to.deep.equal( { color: 'blue' } );
+				expect( element.styles ).toEqual( { color: 'blue' } );
 				// `style` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does not
 				// preserve the user-provided value.
-				expect( element.attributes ).to.deep.equal( { style: '' } );
+				expect( element.attributes ).toEqual( { style: '' } );
 			} finally {
-				stub.restore();
+				warnSpy.mockRestore();
 			}
 		} );
 
@@ -601,7 +602,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'my-element' } );
+			expect( config.get( 'roots' ).main.element ).toEqual( { name: 'my-element' } );
 		} );
 
 		it( 'should not extract initial data from a non-HTMLElement element', () => {
@@ -609,7 +610,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.initialData ).to.equal( '' );
+			expect( config.get( 'roots' ).main.initialData ).toBe( '' );
 		} );
 	} );
 
@@ -659,7 +660,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'h1' } );
+			expect( config.get( 'roots' ).main.element ).toEqual( { name: 'h1' } );
 		} );
 
 		it( 'should not throw for a custom element name with a hyphen', () => {
@@ -667,37 +668,37 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( '', config );
 
-			expect( config.get( 'roots' ).main.element ).to.deep.equal( { name: 'my-element' } );
+			expect( config.get( 'roots' ).main.element ).toEqual( { name: 'my-element' } );
 		} );
 	} );
 
 	describe( 'normalizeViewRootElementDefinition()', () => {
 		it( 'should return undefined for undefined input', () => {
-			expect( normalizeViewRootElementDefinition( undefined ) ).to.be.undefined;
+			expect( normalizeViewRootElementDefinition( undefined ) ).toBeUndefined();
 		} );
 
 		it( 'should return undefined for null input', () => {
-			expect( normalizeViewRootElementDefinition( null ) ).to.be.undefined;
+			expect( normalizeViewRootElementDefinition( null ) ).toBeUndefined();
 		} );
 
 		it( 'should return an HTMLElement as-is', () => {
 			const el = document.createElement( 'div' );
 
-			expect( normalizeViewRootElementDefinition( el ) ).to.equal( el );
+			expect( normalizeViewRootElementDefinition( el ) ).toBe( el );
 		} );
 
 		it( 'should turn a tag-name string into `{ name: <string> }`', () => {
-			expect( normalizeViewRootElementDefinition( 'h1' ) ).to.deep.equal( { name: 'h1' } );
+			expect( normalizeViewRootElementDefinition( 'h1' ) ).toEqual( { name: 'h1' } );
 		} );
 
 		it( 'should not include undefined fields in the output for a tag-name string', () => {
 			const result = normalizeViewRootElementDefinition( 'h1' );
 
-			expect( Object.keys( result ) ).to.deep.equal( [ 'name' ] );
+			expect( Object.keys( result ) ).toEqual( [ 'name' ] );
 		} );
 
 		it( 'should keep the existing `name` for an object input', () => {
-			expect( normalizeViewRootElementDefinition( { name: 'section' } ) ).to.deep.equal( { name: 'section' } );
+			expect( normalizeViewRootElementDefinition( { name: 'section' } ) ).toEqual( { name: 'section' } );
 		} );
 
 		it( 'should leave a canonical descriptor unchanged when passed back in', () => {
@@ -707,31 +708,31 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { 'data-id': '123' }
 			} );
 
-			expect( normalizeViewRootElementDefinition( canonical ) ).to.deep.equal( canonical );
+			expect( normalizeViewRootElementDefinition( canonical ) ).toEqual( canonical );
 		} );
 
 		it( 'should split a whitespace-separated `classes` string into individual tokens', () => {
 			const result = normalizeViewRootElementDefinition( { name: 'section', classes: 'foo bar' } );
 
-			expect( result.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( result.classes ).toEqual( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should keep `classes` as an array when already an array', () => {
 			const result = normalizeViewRootElementDefinition( { name: 'section', classes: [ 'foo', 'bar' ] } );
 
-			expect( result.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( result.classes ).toEqual( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should split whitespace inside array entries of `classes`', () => {
 			const result = normalizeViewRootElementDefinition( { name: 'section', classes: [ 'foo bar', 'baz' ] } );
 
-			expect( result.classes ).to.deep.equal( [ 'foo', 'bar', 'baz' ] );
+			expect( result.classes ).toEqual( [ 'foo', 'bar', 'baz' ] );
 		} );
 
 		it( 'should drop empty entries produced by extra whitespace in `classes`', () => {
 			const result = normalizeViewRootElementDefinition( { name: 'section', classes: '  foo   bar  ' } );
 
-			expect( result.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( result.classes ).toEqual( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should split a whitespace-separated `attributes.class` string into individual tokens', () => {
@@ -740,7 +741,7 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { class: 'foo bar' }
 			} );
 
-			expect( result.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( result.classes ).toEqual( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should lift `attributes.class` into `classes`', () => {
@@ -749,10 +750,10 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { class: 'foo' }
 			} );
 
-			expect( result.classes ).to.deep.equal( [ 'foo' ] );
+			expect( result.classes ).toEqual( [ 'foo' ] );
 			// `class` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does not preserve
 			// the user-provided value.
-			expect( result.attributes ).to.deep.equal( { class: '' } );
+			expect( result.attributes ).toEqual( { class: '' } );
 		} );
 
 		it( 'should concatenate `classes` with `attributes.class`', () => {
@@ -762,7 +763,7 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { class: 'b' }
 			} );
 
-			expect( result.classes ).to.deep.equal( [ 'a', 'b' ] );
+			expect( result.classes ).toEqual( [ 'a', 'b' ] );
 		} );
 
 		it( 'should keep `attributes.style` as a string when no `styles` object is provided', () => {
@@ -771,7 +772,7 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { style: 'color: red' }
 			} );
 
-			expect( result.attributes ).to.deep.equal( { style: 'color: red' } );
+			expect( result.attributes ).toEqual( { style: 'color: red' } );
 		} );
 
 		it( 'should keep `styles` as an object', () => {
@@ -780,11 +781,11 @@ describe( 'normalizeRootsConfig()', () => {
 				styles: { color: 'red' }
 			} );
 
-			expect( result.styles ).to.deep.equal( { color: 'red' } );
+			expect( result.styles ).toEqual( { color: 'red' } );
 		} );
 
 		it( 'should prefer `styles` object over `attributes.style` and log a warning', () => {
-			const stub = sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			try {
 				const result = normalizeViewRootElementDefinition( {
@@ -793,18 +794,18 @@ describe( 'normalizeRootsConfig()', () => {
 					attributes: { style: 'color: red' }
 				} );
 
-				sinon.assert.calledWithMatch( console.warn, 'editor-root-element-styles-overspecified' );
-				expect( result.styles ).to.deep.equal( { color: 'blue' } );
+				expect( warnSpy.mock.calls[ 0 ][ 0 ] ).toContain( 'editor-root-element-styles-overspecified' );
+				expect( result.styles ).toEqual( { color: 'blue' } );
 				// `style` is replaced with an empty-string sentinel so the deep-merge in `Config.set()` does not
 				// preserve the user-provided value.
-				expect( result.attributes ).to.deep.equal( { style: '' } );
+				expect( result.attributes ).toEqual( { style: '' } );
 			} finally {
-				stub.restore();
+				warnSpy.mockRestore();
 			}
 		} );
 
 		it( 'should not treat an empty `styles` object as overriding `attributes.style`', () => {
-			const stub = sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			try {
 				const result = normalizeViewRootElementDefinition( {
@@ -813,11 +814,11 @@ describe( 'normalizeRootsConfig()', () => {
 					attributes: { style: 'color: red' }
 				} );
 
-				sinon.assert.notCalled( console.warn );
-				expect( result ).to.not.have.property( 'styles' );
-				expect( result.attributes ).to.deep.equal( { style: 'color: red' } );
+				expect( warnSpy ).not.toHaveBeenCalled();
+				expect( result ).not.toHaveProperty( 'styles' );
+				expect( result.attributes ).toEqual( { style: 'color: red' } );
 			} finally {
-				stub.restore();
+				warnSpy.mockRestore();
 			}
 		} );
 
@@ -827,7 +828,7 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { 'data-id': '123', 'data-role': 'editor' }
 			} );
 
-			expect( result.attributes ).to.deep.equal( { 'data-id': '123', 'data-role': 'editor' } );
+			expect( result.attributes ).toEqual( { 'data-id': '123', 'data-role': 'editor' } );
 		} );
 
 		it( 'should omit `name` from the normalized output when not provided', () => {
@@ -836,15 +837,15 @@ describe( 'normalizeRootsConfig()', () => {
 				attributes: { 'data-id': '123' }
 			} );
 
-			expect( result ).to.not.have.property( 'name' );
-			expect( result.classes ).to.deep.equal( [ 'foo' ] );
-			expect( result.attributes ).to.deep.equal( { 'data-id': '123' } );
+			expect( result ).not.toHaveProperty( 'name' );
+			expect( result.classes ).toEqual( [ 'foo' ] );
+			expect( result.attributes ).toEqual( { 'data-id': '123' } );
 		} );
 
 		it( 'should not throw when `name` is omitted', () => {
 			expect( () => {
 				normalizeViewRootElementDefinition( { classes: [ 'foo' ] } );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'should throw on `<textarea>` HTMLElement input', () => {
@@ -968,17 +969,17 @@ describe( 'normalizeRootsConfig()', () => {
 		} );
 
 		it( 'should not throw for a custom element name with a hyphen', () => {
-			expect( normalizeViewRootElementDefinition( 'my-element' ) ).to.deep.equal( { name: 'my-element' } );
+			expect( normalizeViewRootElementDefinition( 'my-element' ) ).toEqual( { name: 'my-element' } );
 		} );
 
 		it( 'should not throw for a custom element name with an underscore', () => {
-			expect( normalizeViewRootElementDefinition( 'my_element' ) ).to.deep.equal( { name: 'my_element' } );
+			expect( normalizeViewRootElementDefinition( 'my_element' ) ).toEqual( { name: 'my_element' } );
 		} );
 
 		it( 'should ignore the `priority` field from ViewElementDefinition', () => {
 			const result = normalizeViewRootElementDefinition( { name: 'section', priority: 5 } );
 
-			expect( result ).to.not.have.property( 'priority' );
+			expect( result ).not.toHaveProperty( 'priority' );
 		} );
 	} );
 
@@ -991,7 +992,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.element ).to.equal( sourceElement );
+			expect( roots.main.element ).toBe( sourceElement );
 		} );
 
 		it( 'should not assign source element to rootConfig.element when separateAttachTo is true', () => {
@@ -1002,7 +1003,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.element ).to.be.undefined;
+			expect( roots.main.element ).toBeUndefined();
 		} );
 
 		it( 'should set config.attachTo when separateAttachTo is true and source is an element', () => {
@@ -1011,7 +1012,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( sourceElement, config, 'main', true );
 
-			expect( config.get( 'attachTo' ) ).to.equal( sourceElement );
+			expect( config.get( 'attachTo' ) ).toBe( sourceElement );
 		} );
 
 		it( 'should not set config.attachTo when separateAttachTo is false', () => {
@@ -1020,13 +1021,13 @@ describe( 'normalizeRootsConfig()', () => {
 
 			normalizeRootsConfig( sourceElement, config );
 
-			expect( config.get( 'attachTo' ) ).to.be.undefined;
+			expect( config.get( 'attachTo' ) ).toBeUndefined();
 		} );
 
 		it( 'should not set config.attachTo when source is a string', () => {
 			normalizeRootsConfig( '<p>data</p>', config, 'main', true );
 
-			expect( config.get( 'attachTo' ) ).to.be.undefined;
+			expect( config.get( 'attachTo' ) ).toBeUndefined();
 		} );
 
 		it( 'should extract initialData from config.attachTo when separateAttachTo is true and source is empty', () => {
@@ -1039,7 +1040,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>from attachTo</p>' );
+			expect( roots.main.initialData ).toBe( '<p>from attachTo</p>' );
 		} );
 
 		it( 'should extract initialData from rootConfig.element when source is empty', () => {
@@ -1052,7 +1053,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.initialData ).to.equal( '<p>from element</p>' );
+			expect( roots.main.initialData ).toBe( '<p>from element</p>' );
 		} );
 
 		it( 'should assign source elements to rootConfig.element for multi-root', () => {
@@ -1065,8 +1066,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.foo.element ).to.equal( fooEl );
-			expect( roots.bar.element ).to.equal( barEl );
+			expect( roots.foo.element ).toBe( fooEl );
+			expect( roots.bar.element ).toBe( barEl );
 		} );
 
 		it( 'should throw when source element conflicts with rootConfig.element', () => {
@@ -1103,14 +1104,14 @@ describe( 'normalizeRootsConfig()', () => {
 
 			config.set( 'roots', { main: { element: el } } );
 
-			const stub = sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			try {
 				normalizeRootsConfig( '', config, 'main', true );
 
-				sinon.assert.calledWithMatch( console.warn, 'editor-create-root-element-not-supported' );
+				expect( warnSpy.mock.calls[ 0 ][ 0 ] ).toContain( 'editor-create-root-element-not-supported' );
 			} finally {
-				stub.restore();
+				warnSpy.mockRestore();
 			}
 		} );
 
@@ -1120,16 +1121,16 @@ describe( 'normalizeRootsConfig()', () => {
 
 			config.set( 'roots', { main: { element: el } } );
 
-			const stub = sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			try {
 				normalizeRootsConfig( '', config, 'main', true );
 
 				const roots = config.get( 'roots' );
 
-				expect( roots.main.element ).to.be.undefined;
+				expect( roots.main.element ).toBeUndefined();
 			} finally {
-				stub.restore();
+				warnSpy.mockRestore();
 			}
 		} );
 
@@ -1139,7 +1140,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			config.set( 'roots', { main: { element: el } } );
 
-			const stub = sinon.stub( console, 'warn' );
+			const warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			try {
 				normalizeRootsConfig( '', config, 'main', true );
@@ -1148,9 +1149,9 @@ describe( 'normalizeRootsConfig()', () => {
 
 				// The unsupported DOM element is ignored entirely - its content is not used as initial data.
 				// Integrators should use `config.attachTo` for the placement element or `config.root.initialData` for data.
-				expect( roots.main.initialData ).to.equal( '' );
+				expect( roots.main.initialData ).toBe( '' );
 			} finally {
-				stub.restore();
+				warnSpy.mockRestore();
 			}
 		} );
 
@@ -1161,7 +1162,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const roots = config.get( 'roots' );
 
-			expect( roots.main.element ).to.deep.equal( { name: 'h1' } );
+			expect( roots.main.element ).toEqual( { name: 'h1' } );
 		} );
 
 		it( 'should throw when config.attachTo is set without separateAttachTo', () => {
@@ -1194,8 +1195,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeSingleRootEditorConstructorParams( el, editorConfig );
 
-			expect( result.sourceElementOrData ).to.equal( el );
-			expect( result.editorConfig ).to.equal( editorConfig );
+			expect( result.sourceElementOrData ).toBe( el );
+			expect( result.editorConfig ).toBe( editorConfig );
 		} );
 
 		it( 'should return source string and config when string is first argument', () => {
@@ -1203,8 +1204,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeSingleRootEditorConstructorParams( '<p>Foo</p>', editorConfig );
 
-			expect( result.sourceElementOrData ).to.equal( '<p>Foo</p>' );
-			expect( result.editorConfig ).to.equal( editorConfig );
+			expect( result.sourceElementOrData ).toBe( '<p>Foo</p>' );
+			expect( result.editorConfig ).toBe( editorConfig );
 		} );
 
 		it( 'should return empty string and config when config object is first argument', () => {
@@ -1212,8 +1213,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeSingleRootEditorConstructorParams( editorConfig );
 
-			expect( result.sourceElementOrData ).to.equal( '' );
-			expect( result.editorConfig ).to.equal( editorConfig );
+			expect( result.sourceElementOrData ).toBe( '' );
+			expect( result.editorConfig ).toBe( editorConfig );
 		} );
 
 		it( 'should return first argument as sourceElementOrData when it is an object but non-empty config is provided', () => {
@@ -1222,8 +1223,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeSingleRootEditorConstructorParams( sourceData, editorConfig );
 
-			expect( result.sourceElementOrData ).to.equal( sourceData );
-			expect( result.editorConfig ).to.equal( editorConfig );
+			expect( result.sourceElementOrData ).toBe( sourceData );
+			expect( result.editorConfig ).toBe( editorConfig );
 		} );
 	} );
 
@@ -1234,8 +1235,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeMultiRootEditorConstructorParams( sourceData, editorConfig );
 
-			expect( result.sourceElementsOrData ).to.equal( sourceData );
-			expect( result.editorConfig ).to.equal( editorConfig );
+			expect( result.sourceElementsOrData ).toBe( sourceData );
+			expect( result.editorConfig ).toBe( editorConfig );
 		} );
 
 		it( 'should return empty object and config when config object is first argument', () => {
@@ -1243,8 +1244,8 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeMultiRootEditorConstructorParams( editorConfig );
 
-			expect( result.sourceElementsOrData ).to.deep.equal( {} );
-			expect( result.editorConfig ).to.equal( editorConfig );
+			expect( result.sourceElementsOrData ).toEqual( {} );
+			expect( result.editorConfig ).toBe( editorConfig );
 		} );
 
 		it( 'should return source data and empty config when source data is passed without config', () => {
@@ -1252,7 +1253,7 @@ describe( 'normalizeRootsConfig()', () => {
 
 			const result = normalizeMultiRootEditorConstructorParams( sourceData );
 
-			expect( result.sourceElementsOrData ).to.equal( sourceData );
+			expect( result.sourceElementsOrData ).toBe( sourceData );
 		} );
 	} );
 } );

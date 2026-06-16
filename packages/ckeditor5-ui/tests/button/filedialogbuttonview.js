@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { FileDialogButtonView } from '../../src/button/filedialogbuttonview.ts';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { FileDialogButtonView, FileDialogListItemButtonView } from '../../src/button/filedialogbuttonview.ts';
 import { ButtonView } from '../../src/button/buttonview.js';
+import { ListItemButtonView } from '../../src/button/listitembuttonview.js';
 import { View } from '../../src/view.js';
 
 describe( 'FileDialogButtonView', () => {
@@ -18,53 +20,66 @@ describe( 'FileDialogButtonView', () => {
 	} );
 
 	it( 'should be rendered from a template', () => {
-		expect( view.element.classList.contains( 'ck-file-dialog-button' ) ).to.true;
+		expect( view.element.classList.contains( 'ck-file-dialog-button' ) ).toBe( true );
 	} );
 
 	describe( 'child views', () => {
 		describe( 'button view', () => {
 			it( 'should be rendered', () => {
-				expect( view ).to.instanceof( ButtonView );
+				expect( view ).toBeInstanceOf( ButtonView );
 			} );
 
 			it( 'should open file dialog on execute', () => {
-				const spy = sinon.spy( view._fileInputView, 'open' );
-				const stub = sinon.stub( view._fileInputView.element, 'click' );
+				const spy = vi.spyOn( view._fileInputView, 'open' );
+				vi.spyOn( view._fileInputView.element, 'click' ).mockImplementation( () => {} );
 				view.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
-				stub.restore();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
 		describe( 'file dialog', () => {
 			it( 'should be rendered', () => {
-				expect( view._fileInputView ).to.instanceof( View );
-				expect( view._fileInputView ).to.equal( view.children.get( 1 ) );
+				expect( view._fileInputView ).toBeInstanceOf( View );
+				expect( view._fileInputView ).toBe( view.children.get( 1 ) );
 			} );
 
 			it( 'should be bound to view#acceptedType', () => {
 				view.set( { acceptedType: 'audio/*' } );
 
-				expect( view._fileInputView.acceptedType ).to.equal( 'audio/*' );
+				expect( view._fileInputView.acceptedType ).toBe( 'audio/*' );
 			} );
 
 			it( 'should be bound to view#allowMultipleFiles', () => {
 				view.set( { allowMultipleFiles: true } );
 
-				expect( view._fileInputView.allowMultipleFiles ).to.be.true;
+				expect( view._fileInputView.allowMultipleFiles ).toBe( true );
 			} );
 
 			it( 'should delegate done event to view', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				const files = [];
 
 				view.on( 'done', spy );
 				view._fileInputView.fire( 'done', files );
 
-				sinon.assert.calledOnce( spy );
-				expect( spy.lastCall.args[ 1 ] ).to.equal( files );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( files );
 			} );
+		} );
+	} );
+
+	describe( 'FileDialogListItemButtonView', () => {
+		it( 'should use list item button view as a base', () => {
+			const view = new FileDialogListItemButtonView( localeMock );
+
+			view.render();
+
+			expect( view ).toBeInstanceOf( ListItemButtonView );
+			expect( view.element.classList.contains( 'ck-file-dialog-button' ) ).toBe( true );
+			expect( view._fileInputView ).toBe( view.children.get( 1 ) );
+
+			view.destroy();
 		} );
 	} );
 } );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi } from 'vitest';
 import { getRangeFromMouseEvent } from '../../src/dom/getrangefrommouseevent.js';
 
 describe( 'getRangeFromMouseEvent()', () => {
@@ -12,7 +13,7 @@ describe( 'getRangeFromMouseEvent()', () => {
 			endOffset: 0
 		};
 
-		const caretRangeFromPointSpy = sinon.stub().returns( fakeRange );
+		const caretRangeFromPointSpy = vi.fn().mockReturnValue( fakeRange );
 		const evt = {
 			clientX: 10,
 			clientY: 11,
@@ -23,16 +24,16 @@ describe( 'getRangeFromMouseEvent()', () => {
 			}
 		};
 
-		expect( getRangeFromMouseEvent( evt ) ).to.be.equal( fakeRange );
-		expect( caretRangeFromPointSpy ).to.be.calledWith( 10, 11 );
+		expect( getRangeFromMouseEvent( evt ) ).toBe( fakeRange );
+		expect( caretRangeFromPointSpy ).toHaveBeenCalledWith( 10, 11 );
 	} );
 
 	it( 'should use Document#createRange method to obtain range on Firefox', () => {
 		const fakeRange = {
 			startOffset: 0,
 			endOffset: 0,
-			setStart: sinon.stub(),
-			collapse: sinon.stub()
+			setStart: vi.fn(),
+			collapse: vi.fn()
 		};
 
 		const evt = {
@@ -42,15 +43,15 @@ describe( 'getRangeFromMouseEvent()', () => {
 			rangeParent: { parent: true },
 			target: {
 				ownerDocument: {
-					createRange: sinon.stub().returns( fakeRange )
+					createRange: vi.fn().mockReturnValue( fakeRange )
 				}
 			}
 		};
 
-		expect( getRangeFromMouseEvent( evt ) ).to.be.equal( fakeRange );
+		expect( getRangeFromMouseEvent( evt ) ).toBe( fakeRange );
 
-		expect( fakeRange.collapse ).to.be.calledWith( true );
-		expect( fakeRange.setStart ).to.be.calledWith( evt.rangeParent, evt.rangeOffset );
+		expect( fakeRange.collapse ).toHaveBeenCalledWith( true );
+		expect( fakeRange.setStart ).toHaveBeenCalledWith( evt.rangeParent, evt.rangeOffset );
 	} );
 
 	it( 'should return null if event target is null', () => {
@@ -58,7 +59,7 @@ describe( 'getRangeFromMouseEvent()', () => {
 			target: null
 		};
 
-		expect( getRangeFromMouseEvent( evt ) ).to.be.null;
+		expect( getRangeFromMouseEvent( evt ) ).toBeNull();
 	} );
 
 	it( 'should return null if event target is not null but it\'s not possible to create range on document', () => {
@@ -71,6 +72,6 @@ describe( 'getRangeFromMouseEvent()', () => {
 			}
 		};
 
-		expect( getRangeFromMouseEvent( evt ) ).to.be.null;
+		expect( getRangeFromMouseEvent( evt ) ).toBeNull();
 	} );
 } );

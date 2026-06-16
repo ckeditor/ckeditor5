@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Watchdog } from '../src/watchdog.js';
 
 describe( 'Watchdog', () => {
@@ -10,7 +11,7 @@ describe( 'Watchdog', () => {
 		expect( () => {
 			// eslint-disable-next-line no-unused-vars
 			const watchdog = new Watchdog( {} );
-		} ).to.throw( /Please, use `EditorWatchdog` if you have used the `Watchdog` class previously\./ );
+		} ).toThrow( /Please, use `EditorWatchdog` if you have used the `Watchdog` class previously\./ );
 	} );
 
 	it( 'should be created using the inheritance', () => {
@@ -22,6 +23,6 @@ describe( 'Watchdog', () => {
 		expect( () => {
 			// eslint-disable-next-line no-unused-vars
 			const fooWatchdog = new FooWatchdog( {} );
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 } );

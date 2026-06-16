@@ -3,16 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { FileReader } from '../src/filereader.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { NativeFileReaderMock, createNativeFileMock } from './_utils/mocks.js';
 
 describe( 'FileReader', () => {
 	let reader, fileMock, nativeReaderMock;
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
+		vi.spyOn( window, 'FileReader' ).mockImplementation( function() {
 			nativeReaderMock = new NativeFileReaderMock();
 
 			return nativeReaderMock;
@@ -20,6 +19,10 @@ describe( 'FileReader', () => {
 
 		fileMock = createNativeFileMock();
 		reader = new FileReader();
+	} );
+
+	afterEach( () => {
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should initialize loaded property', () => {

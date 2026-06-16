@@ -318,6 +318,7 @@ export class ColorGridsFragmentView extends View {
 		this.focusTracker.add( this.removeColorButtonView.element! );
 		this._focusables.add( this.removeColorButtonView );
 
+		/* v8 ignore else -- @preserve */
 		if ( this.staticColorsGrid ) {
 			this.focusTracker.add( this.staticColorsGrid.element! );
 			this._focusables.add( this.staticColorsGrid );

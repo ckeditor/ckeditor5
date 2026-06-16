@@ -473,4 +473,116 @@ describe( 'InsertImageCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'execute() in an inline-only insertion context', () => {
+		describe( 'with $inlineRoot as the editor root', () => {
+			let inlineEditor, inlineModel;
+
+			beforeEach( async () => {
+				inlineEditor = await VirtualTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+					root: { modelElement: '$inlineRoot' }
+				} );
+				inlineModel = inlineEditor.model;
+			} );
+
+			afterEach( () => inlineEditor.destroy() );
+
+			it( 'should insert an inline image when image.insert.type is not set (defaults to block)', () => {
+				_setModelData( inlineModel, 'foo[]bar' );
+
+				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
+
+				expect( _getModelData( inlineModel ) ).to.equal(
+					'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
+				);
+			} );
+
+			it( 'should insert an inline image when image.insert.type is set to "block"', () => {
+				inlineEditor.config.set( 'image.insert.type', 'block' );
+
+				_setModelData( inlineModel, 'foo[]bar' );
+
+				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
+
+				expect( _getModelData( inlineModel ) ).to.equal(
+					'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
+				);
+			} );
+
+			it( 'should insert an inline image when image.insert.type is set to "auto"', () => {
+				inlineEditor.config.set( 'image.insert.type', 'auto' );
+
+				_setModelData( inlineModel, 'foo[]bar' );
+
+				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
+
+				expect( _getModelData( inlineModel ) ).to.equal(
+					'foo[<imageInline src="assets/sample.png"></imageInline>]bar'
+				);
+			} );
+
+			it( 'should not silently fall back to inline when caller passes explicit imageType="imageBlock"', () => {
+				_setModelData( inlineModel, 'foo[]bar' );
+
+				inlineEditor.execute( 'insertImage', {
+					source: 'assets/sample.png',
+					imageType: 'imageBlock'
+				} );
+
+				// The schema rejects imageBlock inside $inlineRoot, so insertContent leaves the root unchanged.
+				// The key assertion is that no imageInline was inserted - the explicit caller choice is respected
+				// over the inline-root override.
+				expect( _getModelData( inlineModel ) ).to.not.match( /imageInline/ );
+			} );
+
+			it( 'should insert an inline image when the root is empty', () => {
+				_setModelData( inlineModel, '[]' );
+
+				inlineEditor.execute( 'insertImage', { source: 'assets/sample.png' } );
+
+				expect( _getModelData( inlineModel ) ).to.equal(
+					'[<imageInline src="assets/sample.png"></imageInline>]'
+				);
+			} );
+		} );
+
+		describe( 'with a deeper container that disallows imageBlock', () => {
+			let editor, model;
+
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
+				} );
+				model = editor.model;
+
+				// A limit element that allows blocks like a paragraph but explicitly disallows imageBlock as a child.
+				model.schema.register( 'inlineOnlyContainer', {
+					allowIn: '$root',
+					allowContentOf: '$root',
+					isLimit: true
+				} );
+				model.schema.addChildCheck( ( context, childDefinition ) => {
+					if ( context.endsWith( 'inlineOnlyContainer' ) && childDefinition.name === 'imageBlock' ) {
+						return false;
+					}
+				} );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'inlineOnlyContainer', view: 'div' } );
+			} );
+
+			afterEach( () => editor.destroy() );
+
+			it( 'should insert an inline image even though the default config is "block"', () => {
+				_setModelData( model, '<inlineOnlyContainer><paragraph>foo[]bar</paragraph></inlineOnlyContainer>' );
+
+				editor.execute( 'insertImage', { source: 'assets/sample.png' } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<inlineOnlyContainer>' +
+						'<paragraph>foo[<imageInline src="assets/sample.png"></imageInline>]bar</paragraph>' +
+					'</inlineOnlyContainer>'
+				);
+			} );
+		} );
+	} );
 } );

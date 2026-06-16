@@ -6,7 +6,14 @@
 import { isVisible, parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
 import { View, type ViewCollection } from '../../src/index.js';
 import type { FocusableView, FocusCyclerActions, ViewWithFocusCycler } from '../../src/focuscycler.js';
-import sinon from 'sinon';
+// sinon and vi are globals injected by Karma and Vitest respectively.
+// No imports — adding either as a dependency of ckeditor5-ui is not desired.
+declare const sinon: any;
+
+// vi is a Vitest global; not available in Karma environments.
+// Captured once at module load to avoid repeated typeof checks throughout the file.
+// See: https://github.com/ckeditor/ckeditor5-internal/issues/4309
+const _vi: any = ( globalThis as any ).vi ?? null;
 
 /**
  * Automates testing of focus cycling in a view with a focus cycler. It runs a test per each configured action.
@@ -103,7 +110,9 @@ export function testFocusCycling( {
 			}
 
 			const visibleFocusables = Array.from( focusables ).filter( view => isVisible( view.element ) );
-			const focusSpies = visibleFocusables.map( view => sinon.spy( view, 'focus' ) );
+			const focusSpies: Array<any> = visibleFocusables.map( view =>
+				_vi ? _vi.spyOn( view, 'focus' ) : sinon.spy( view, 'focus' )
+			);
 
 			getView().focusCycler.focusFirst();
 
@@ -127,8 +136,13 @@ export function testFocusCycling( {
 				await wait( 10 );
 
 				if ( event ) {
-					sinon.assert.calledOnce( event.preventDefault as sinon.SinonSpy );
-					sinon.assert.calledOnce( event.stopPropagation as sinon.SinonSpy );
+					if ( _vi ) {
+						expect( event.preventDefault ).toHaveBeenCalledOnce();
+						expect( event.stopPropagation ).toHaveBeenCalledOnce();
+					} else {
+						sinon.assert.calledOnce( event.preventDefault );
+						sinon.assert.calledOnce( event.stopPropagation );
+					}
 				}
 
 				currentElement = document.activeElement as HTMLElement;
@@ -141,12 +155,29 @@ export function testFocusCycling( {
 				expect( visitedElements, 'Elements visited by focus' ).to.have.ordered.members( expectedElements );
 			}
 
-			expect( focusSpies.map( spy => spy.called ).every( isCalled => isCalled ), 'Focus was called' ).to.be.true;
+			if ( _vi ) {
+				expect(
+					focusSpies.map( spy => spy.mock.calls.length > 0 ).every( isCalled => isCalled ),
+					'Focus was called'
+				).toBe( true );
 
-			if ( action === 'focusNext' ) {
-				sinon.assert.callOrder( ...focusSpies );
+				const orderedSpies = action === 'focusNext' ? focusSpies : focusSpies.reverse();
+				const callOrders = orderedSpies.map( spy => spy.mock.invocationCallOrder[ 0 ] );
+
+				for ( let i = 1; i < callOrders.length; i++ ) {
+					expect( callOrders[ i ] ).toBeGreaterThan( callOrders[ i - 1 ] );
+				}
 			} else {
-				sinon.assert.callOrder( ...focusSpies.reverse() );
+				expect(
+					focusSpies.map( spy => spy.called ).every( isCalled => isCalled ),
+					'Focus was called'
+				).to.be.true;
+
+				if ( action === 'focusNext' ) {
+					sinon.assert.callOrder( ...focusSpies );
+				} else {
+					sinon.assert.callOrder( ...focusSpies.reverse() );
+				}
 			}
 		} );
 	}
@@ -158,8 +189,13 @@ export function getDomKeyboardEvent( keyCode: number, options = { bubbles: true 
 		...options
 	} );
 
-	sinon.spy( event, 'preventDefault' );
-	sinon.spy( event, 'stopPropagation' );
+	if ( _vi ) {
+		_vi.spyOn( event, 'preventDefault' );
+		_vi.spyOn( event, 'stopPropagation' );
+	} else {
+		sinon.spy( event, 'preventDefault' );
+		sinon.spy( event, 'stopPropagation' );
+	}
 
 	return event;
 }
@@ -216,7 +252,8 @@ type TestFocusCyclingOptions = {
 
 	/**
 	 * When specified, this callback should extends the collection of focusable views.
-	 * This will result with additional test being run that checks what happens when new focusables are added.
+	 * This will result with additional test being run that checks how the focus cycling
+	 * works when the collection of focusable views is modified.
 	 */
 	addFocusables?: () => void;
 

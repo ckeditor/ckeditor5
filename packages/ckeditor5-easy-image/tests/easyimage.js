@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { EasyImage } from '../src/easyimage.js';
@@ -16,8 +18,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { CloudServices, CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 // EasyImage requires the `CloudServicesCore` plugin as a dependency.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
@@ -33,22 +33,24 @@ class CloudServicesCoreMock extends CloudServicesCore {
 }
 
 describe( 'EasyImage', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	it( 'should require other plugins', () => {
-		expect( EasyImage.requires ).to.include( CloudServicesUploadAdapter );
+		expect( EasyImage.requires ).toContain( CloudServicesUploadAdapter );
 	} );
 
 	it( 'should require ImageUpload', () => {
-		expect( EasyImage.requires ).to.include( ImageUpload );
+		expect( EasyImage.requires ).toContain( ImageUpload );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EasyImage.isOfficialPlugin ).to.be.true;
+		expect( EasyImage.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EasyImage.isPremiumPlugin ).to.be.false;
+		expect( EasyImage.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be able to initialize editor with itself', () => {
@@ -66,7 +68,7 @@ describe( 'EasyImage', () => {
 			} )
 			.then( editor => {
 				const easyImage = editor.plugins.get( EasyImage );
-				expect( easyImage ).to.be.an.instanceOf( EasyImage );
+				expect( easyImage ).toBeInstanceOf( EasyImage );
 
 				window.document.body.removeChild( div );
 
@@ -75,7 +77,7 @@ describe( 'EasyImage', () => {
 	} );
 
 	it( 'should warn if there is no image feature loaded in the editor', async () => {
-		const stub = testUtils.sinon.stub( console, 'warn' );
+		const stub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		const div = window.document.createElement( 'div' );
 
 		window.document.body.appendChild( div );
@@ -89,7 +91,8 @@ describe( 'EasyImage', () => {
 			}
 		} );
 
-		sinon.assert.calledOnceWithExactly( stub, 'easy-image-image-feature-missing', editor, sinon.match.string );
+		expect( stub ).toHaveBeenCalledOnce();
+		expect( stub ).toHaveBeenCalledWith( 'easy-image-image-feature-missing', editor, expect.any( String ) );
 
 		window.document.body.removeChild( div );
 
@@ -99,17 +102,17 @@ describe( 'EasyImage', () => {
 	describe( 'integration tests', () => {
 		let div;
 
-		before( () => {
-			sinon.stub( window, 'FileReader' ).callsFake( () => {
-				const reader = {
-					readAsDataURL: () => {
-						reader.result = 'http://some-fake-url.jpg';
-						reader.onload();
-					}
+		beforeAll( () => {
+			vi.stubGlobal( 'FileReader', vi.fn( function() {
+				this.readAsDataURL = () => {
+					this.result = 'http://some-fake-url.jpg';
+					this.onload();
 				};
+			} ) );
+		} );
 
-				return reader;
-			} );
+		afterAll( () => {
+			vi.unstubAllGlobals();
 		} );
 
 		beforeEach( () => {
@@ -119,7 +122,7 @@ describe( 'EasyImage', () => {
 
 		afterEach( () => {
 			window.document.body.removeChild( div );
-			sinon.restore();
+			vi.restoreAllMocks();
 		} );
 
 		it( 'should enable easy image uploading', () => {

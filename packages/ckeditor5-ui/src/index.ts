@@ -99,7 +99,7 @@ export { ColorPickerFragmentView } from './colorselector/colorpickerfragmentview
 
 export { ComponentFactory } from './componentfactory.js';
 
-export { Dialog, type DialogDefinition, type DialogShowEvent, type DialogHideEvent } from './dialog/dialog.js';
+export { Dialog, type DialogDefinition, type DialogShowEvent, type DialogHideEvent, type DialogPositionCallback } from './dialog/dialog.js';
 export { DialogView, DialogViewPosition, type DialogViewMoveToEvent, type DialogViewCloseEvent } from './dialog/dialogview.js';
 export { DialogActionsView, type DialogActionButtonDefinition } from './dialog/dialogactionsview.js';
 export { DialogContentView } from './dialog/dialogcontentview.js';

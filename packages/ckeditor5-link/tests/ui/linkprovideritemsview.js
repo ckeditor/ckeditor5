@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import {
 	KeystrokeHandler,
 	FocusTracker,
@@ -17,8 +19,6 @@ import {
 	ButtonView
 } from '@ckeditor/ckeditor5-ui';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 import { LinkProviderItemsView } from '../../src/ui/linkprovideritemsview.js';
 
 const mockLocale = { t: val => val };
@@ -26,7 +26,9 @@ const mockLocale = { t: val => val };
 describe( 'LinkProviderItemsView', () => {
 	let view, linksButtonsArrayMock;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		view = new LinkProviderItemsView( mockLocale );
@@ -47,74 +49,74 @@ describe( 'LinkProviderItemsView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName.toLowerCase() ).to.equal( 'div' );
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-link-providers' ) ).to.true;
-			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( view.element.tagName.toLowerCase() ).toBe( 'div' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-link-providers' ) ).toBe( true );
+			expect( view.element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 		} );
 
 		it( 'should create child views', () => {
-			expect( view.backButtonView ).to.be.instanceOf( ButtonView );
-			expect( view.listView ).to.be.instanceOf( ListView );
-			expect( view.emptyListInformation ).to.be.instanceOf( View );
-			expect( view.children ).to.be.instanceOf( ViewCollection );
-			expect( view.listChildren ).to.be.instanceOf( ViewCollection );
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.backButtonView ).toBeInstanceOf( ButtonView );
+			expect( view.listView ).toBeInstanceOf( ListView );
+			expect( view.emptyListInformation ).toBeInstanceOf( View );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
+			expect( view.listChildren ).toBeInstanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should create #keystrokes instance', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( view._focusCycler ).toBeInstanceOf( FocusCycler );
 		} );
 
 		it( 'should create #_focusables view collection', () => {
-			expect( view._focusables ).to.be.instanceOf( ViewCollection );
+			expect( view._focusables ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should create #hasItems instance and set it to `false`', () => {
-			expect( view.hasItems ).to.be.equal( false );
+			expect( view.hasItems ).toBe( false );
 
 			view.listChildren.addMany( linksButtonsArrayMock );
 
-			expect( view.hasItems ).to.be.equal( true );
+			expect( view.hasItems ).toBe( true );
 
 			view.listChildren.clear();
 
-			expect( view.hasItems ).to.be.equal( false );
+			expect( view.hasItems ).toBe( false );
 		} );
 
 		it( 'should fire `cancel` event on backButtonView#execute', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'cancel', spy );
 
 			view.backButtonView.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		describe( 'template', () => {
 			it( 'has back button', () => {
 				const button = view.template.children[ 0 ].get( 0 ).template.children[ 0 ].get( 0 );
 
-				expect( button ).to.equal( view.backButtonView );
-				expect( button.template.children[ 0 ].get( 1 ).text ).to.equal( 'Back' );
+				expect( button ).toBe( view.backButtonView );
+				expect( button.template.children[ 0 ].get( 1 ).text ).toBe( 'Back' );
 			} );
 		} );
 
 		it( 'should create emptyListInformation element from template', () => {
 			const emptyListInformation = view.emptyListInformation;
 
-			expect( emptyListInformation.element.tagName.toLowerCase() ).to.equal( 'p' );
-			expect( emptyListInformation.element.classList.contains( 'ck' ) ).to.true;
-			expect( emptyListInformation.element.classList.contains( 'ck-link__empty-list-info' ) ).to.true;
+			expect( emptyListInformation.element.tagName.toLowerCase() ).toBe( 'p' );
+			expect( emptyListInformation.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( emptyListInformation.element.classList.contains( 'ck-link__empty-list-info' ) ).toBe( true );
 		} );
 	} );
 
@@ -122,61 +124,61 @@ describe( 'LinkProviderItemsView', () => {
 		it( 'should hide after Esc key press', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'cancel', spy );
 
 			view.keystrokes.press( keyEvtData );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledOnce( keyEvtData.preventDefault );
-			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+			expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should bind the #title to headerView.label', () => {
 			view.title = 'Mocked header label';
 
-			expect( view.children.get( 0 ).label ).to.equal( 'Mocked header label' );
+			expect( view.children.get( 0 ).label ).toBe( 'Mocked header label' );
 		} );
 
 		it( 'should bind the #emptyListInformation to emptyListInformation', () => {
 			view.emptyListPlaceholder = 'Mocked empty list information';
 
-			expect( view.emptyListInformation.element.innerText ).to.equal( 'Mocked empty list information' );
+			expect( view.emptyListInformation.element.innerText ).toBe( 'Mocked empty list information' );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
-			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.backButtonView,
-				view.listView
-			] );
+			expect( view._focusables.map( f => f ) ).toEqual(
+				expect.arrayContaining( [ view.backButtonView, view.listView ] )
+			);
+			expect( view._focusables.length ).toBe( 2 );
 		} );
 
 		it( 'should register child views #element in #focusTracker', () => {
 			const view = new LinkProviderItemsView( mockLocale );
-			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+			const spy = vi.spyOn( view.focusTracker, 'add' );
 
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.listView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.backButtonView.element );
+			expect( spy.mock.calls[ 0 ][ 0 ] ).toBe( view.listView.element );
+			expect( spy.mock.calls[ 1 ][ 0 ] ).toBe( view.backButtonView.element );
 
 			view.destroy();
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			const view = new LinkProviderItemsView( mockLocale );
-			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+			const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 			view.render();
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.element );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( view.element );
 
 			view.destroy();
 		} );
@@ -184,7 +186,9 @@ describe( 'LinkProviderItemsView', () => {
 		describe( 'activates keyboard navigation', () => {
 			let view;
 
-			testUtils.createSinonSandbox();
+			afterEach( () => {
+				vi.restoreAllMocks();
+			} );
 
 			beforeEach( () => {
 				view = new LinkProviderItemsView( mockLocale );
@@ -200,13 +204,13 @@ describe( 'LinkProviderItemsView', () => {
 			} );
 
 			it( 'so "tab" focuses the next focusable item', () => {
-				expect( view.hasItems ).to.be.equal( true );
+				expect( view.hasItems ).toBe( true );
 
-				const spy = sinon.spy( view.backButtonView, 'focus' );
+				const spy = vi.spyOn( view.backButtonView, 'focus' );
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the focus on list.
@@ -214,20 +218,20 @@ describe( 'LinkProviderItemsView', () => {
 				view.focusTracker.focusedElement = view.listView.element;
 				view.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "shift + tab" focuses the previous focusable item', () => {
-				expect( view.hasItems ).to.be.equal( true );
+				expect( view.hasItems ).toBe( true );
 
-				const spy = sinon.spy( view.listView, 'focus' );
+				const spy = vi.spyOn( view.listView, 'focus' );
 				const keyEvtData = {
 					keyCode: keyCodes.tab,
 					shiftKey: true,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the back button is focused.
@@ -235,51 +239,51 @@ describe( 'LinkProviderItemsView', () => {
 				view.focusTracker.focusedElement = view.backButtonView.element;
 				view.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the back button when links list is empty', () => {
-			const backButtonSpy = sinon.spy( view.backButtonView, 'focus' );
+			const backButtonSpy = vi.spyOn( view.backButtonView, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( backButtonSpy );
+			expect( backButtonSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'focuses the back button when links list is not empty', () => {
-			const backButtonSpy = sinon.spy( view.backButtonView, 'focus' );
+			const backButtonSpy = vi.spyOn( view.backButtonView, 'focus' );
 
 			view.listChildren.addMany( linksButtonsArrayMock );
 
-			const listItemSpy = sinon.spy( view.listChildren.first, 'focus' );
+			const listItemSpy = vi.spyOn( view.listChildren.first, 'focus' );
 
 			view.focus();
 
-			sinon.assert.notCalled( backButtonSpy );
-			sinon.assert.calledOnce( listItemSpy );
+			expect( backButtonSpy ).not.toHaveBeenCalled();
+			expect( listItemSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 

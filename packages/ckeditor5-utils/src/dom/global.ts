@@ -38,14 +38,16 @@ let globalVar: GlobalType; // named globalVar instead of global: https://github.
 try {
 	globalVar = { window, document };
 } catch {
-	// It's not possible to mock a window object to simulate lack of a window object without writing extremely convoluted code.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore start -- @preserve */
 
+	// It's not possible to mock a window object to simulate lack of a window object without writing extremely convoluted code.
 	// Let's cast it to not change module's API.
 	// We only handle this so loading editor in environments without window and document doesn't fail.
 	// For better DX we shouldn't introduce mixed types and require developers to check the type manually.
 	// This module should not be used on purpose in any environment outside browser.
 	globalVar = { window: {} as any, document: {} as any };
+
+	/* v8 ignore stop -- @preserve */
 }
 
 export { globalVar as global };

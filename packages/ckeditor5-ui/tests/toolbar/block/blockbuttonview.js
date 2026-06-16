@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { BlockButtonView } from '../../../src/toolbar/block/blockbuttonview.js';
 
 describe( 'BlockButtonView', () => {
@@ -15,36 +16,36 @@ describe( 'BlockButtonView', () => {
 	} );
 
 	it( 'should be not visible on init', () => {
-		expect( view.isVisible ).to.be.false;
+		expect( view.isVisible ).toBe( false );
 	} );
 
 	it( 'should create element from template', () => {
-		expect( view.element.classList.contains( 'ck-block-toolbar-button' ) ).to.be.true;
+		expect( view.element.classList.contains( 'ck-block-toolbar-button' ) ).toBe( true );
 	} );
 
 	it( 'should be initialized as toggleable button', () => {
-		expect( view.isToggleable ).to.be.true;
+		expect( view.isToggleable ).toBe( true );
 	} );
 
 	describe( 'DOM binding', () => {
 		it( 'should react on `view#top` change', () => {
 			view.top = 0;
 
-			expect( view.element.style.top ).to.equal( '0px' );
+			expect( view.element.style.top ).toBe( '0px' );
 
 			view.top = 10;
 
-			expect( view.element.style.top ).to.equal( '10px' );
+			expect( view.element.style.top ).toBe( '10px' );
 		} );
 
 		it( 'should react on `view#left` change', () => {
 			view.left = 0;
 
-			expect( view.element.style.left ).to.equal( '0px' );
+			expect( view.element.style.left ).toBe( '0px' );
 
 			view.left = 10;
 
-			expect( view.element.style.left ).to.equal( '10px' );
+			expect( view.element.style.left ).toBe( '10px' );
 		} );
 	} );
 } );

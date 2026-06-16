@@ -3,13 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EmojiUtils } from '../../src/emojiutils.ts';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'EmojiUtils', () => {
 	let editor, emojiUtils, editorElement;
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -26,18 +25,20 @@ describe( 'EmojiUtils', () => {
 		editorElement.remove();
 
 		await editor.destroy();
+
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have proper name', () => {
-		expect( EmojiUtils.pluginName ).to.equal( 'EmojiUtils' );
+		expect( EmojiUtils.pluginName ).toBe( 'EmojiUtils' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( EmojiUtils.isOfficialPlugin ).to.be.true;
+		expect( EmojiUtils.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( EmojiUtils.isPremiumPlugin ).to.be.false;
+		expect( EmojiUtils.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'isEmojiSupported()', () => {
@@ -46,7 +47,7 @@ describe( 'EmojiUtils', () => {
 
 			const result = emojiUtils.isEmojiSupported( { emoji: '😒', version: '16' }, 15, container );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 
 			container.remove();
 		} );
@@ -56,31 +57,31 @@ describe( 'EmojiUtils', () => {
 
 			const result = emojiUtils.isEmojiSupported( { emoji: '😒', version: '15' }, 15, container );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
 			container.remove();
 		} );
 
 		it( 'should return true if emoji version is supported by the os and is supported ZWJ', async () => {
-			sinon.stub( editor.plugins.get( EmojiUtils ), 'isEmojiZwjSupported' ).returns( true );
+			vi.spyOn( editor.plugins.get( EmojiUtils ), 'isEmojiZwjSupported' ).mockReturnValue( true );
 
 			const container = document.createElement( 'div' );
 
 			const result = emojiUtils.isEmojiSupported( { emoji: '🙂‍↔️', version: '15' }, 15, container );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
 			container.remove();
 		} );
 
 		it( 'should return false if emoji version is supported by the os and is not supported ZWJ', async () => {
-			sinon.stub( editor.plugins.get( EmojiUtils ), 'isEmojiZwjSupported' ).returns( false );
+			vi.spyOn( editor.plugins.get( EmojiUtils ), 'isEmojiZwjSupported' ).mockReturnValue( false );
 
 			const container = document.createElement( 'div' );
 
 			const result = emojiUtils.isEmojiSupported( { emoji: '🙂‍↔️', version: '15' }, 15, container );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 
 			container.remove();
 		} );
@@ -88,115 +89,115 @@ describe( 'EmojiUtils', () => {
 
 	describe( 'getEmojiSupportedVersionByOs()', () => {
 		it( 'should return version 16 for Face with Bags Under Eyes', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫩' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🫩' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 16 );
+			expect( result ).toBe( 16 );
 		} );
 
 		it( 'should return version 15 for Shaking Face', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫨' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🫨' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 15.1 );
+			expect( result ).toBe( 15.1 );
 		} );
 
 		it( 'should return version 14 for Melting Face', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫠' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🫠' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 14 );
+			expect( result ).toBe( 14 );
 		} );
 
 		it( 'should return version 13 for Face in Clouds', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😶‍🌫️' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '😶‍🌫️' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 13.1 );
+			expect( result ).toBe( 13.1 );
 		} );
 
 		it( 'should return version 12 for Technologist', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🧑‍💻' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🧑‍💻' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 12.1 );
+			expect( result ).toBe( 12.1 );
 		} );
 
 		it( 'should return version 11 for Smiling Face with Hearts', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🥰' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🥰' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 11 );
+			expect( result ).toBe( 11 );
 		} );
 
 		it( 'should return version 5 for Zany Face', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🤪' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🤪' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 5 );
+			expect( result ).toBe( 5 );
 		} );
 
 		it( 'should return version 4 for Medical Symbol', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '⚕️' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '⚕️' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 4 );
+			expect( result ).toBe( 4 );
 		} );
 
 		it( 'should return version 3 for Rolling on the Floor Laughing', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🤣' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '🤣' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 3 );
+			expect( result ).toBe( 3 );
 		} );
 
 		it( 'should return version 2 for Waving Hand: Medium Skin Tone', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '👋🏽' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '👋🏽' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 2 );
+			expect( result ).toBe( 2 );
 		} );
 
 		it( 'should return version 1 for Grinning Face', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😀' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '😀' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 1 );
+			expect( result ).toBe( 1 );
 		} );
 
 		it( 'should return version 0.7 for Neutral Face', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😐' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '😐' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 0.7 );
+			expect( result ).toBe( 0.7 );
 		} );
 
 		it( 'should return version 0.6 for Face with Tears of Joy', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😂' );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockImplementation( emoji => emoji === '😂' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 0.6 );
+			expect( result ).toBe( 0.6 );
 		} );
 
 		it( 'should return 0 when no emoji is supported', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).returns( false );
+			vi.spyOn( EmojiUtils, '_isEmojiSupported' ).mockReturnValue( false );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 0 );
+			expect( result ).toBe( 0 );
 		} );
 	} );
 
@@ -204,43 +205,41 @@ describe( 'EmojiUtils', () => {
 		it( 'should return false for a simple emoji', async () => {
 			const result = emojiUtils.hasZwj( '🙂' );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 		} );
 
 		it( 'should return true for a compound emoji', async () => {
 			const result = emojiUtils.hasZwj( '😮‍💨' );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 		} );
 	} );
 
 	describe( 'isEmojiZwjSupported()', () => {
 		it( 'uses fast-path by default', async () => {
-			sinon.stub( emojiUtils, 'getNodeWidthUsingCanvas' ).onFirstCall().returns( 30 );
-
-			const getNodeWidthSpy = sinon.spy( emojiUtils, 'getNodeWidth' );
+			const getNodeWidthUsingCanvasStub = vi.spyOn( emojiUtils, 'getNodeWidthUsingCanvas' ).mockReturnValueOnce( 30 );
+			const getNodeWidthSpy = vi.spyOn( emojiUtils, 'getNodeWidth' );
 
 			emojiUtils.isEmojiZwjSupported(
 				{ emoji: '' },
 				document.createElement( 'div' )
 			);
 
-			expect( emojiUtils.getNodeWidthUsingCanvas.called ).to.be.true;
-			expect( getNodeWidthSpy.called ).to.be.false;
+			expect( getNodeWidthUsingCanvasStub ).toHaveBeenCalled();
+			expect( getNodeWidthSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'falls back to slow-path if fast-path returns size larger than expected', async () => {
-			sinon.stub( emojiUtils, 'getNodeWidthUsingCanvas' ).onFirstCall().returns( Infinity );
-
-			const getNodeWidthSpy = sinon.spy( emojiUtils, 'getNodeWidth' );
+			const getNodeWidthUsingCanvasStub = vi.spyOn( emojiUtils, 'getNodeWidthUsingCanvas' ).mockReturnValueOnce( Infinity );
+			const getNodeWidthSpy = vi.spyOn( emojiUtils, 'getNodeWidth' );
 
 			emojiUtils.isEmojiZwjSupported(
 				{ emoji: '' },
 				document.createElement( 'div' )
 			);
 
-			expect( emojiUtils.getNodeWidthUsingCanvas.called ).to.be.true;
-			expect( getNodeWidthSpy.called ).to.be.true;
+			expect( getNodeWidthUsingCanvasStub ).toHaveBeenCalled();
+			expect( getNodeWidthSpy ).toHaveBeenCalled();
 		} );
 	} );
 
@@ -253,7 +252,7 @@ describe( 'EmojiUtils', () => {
 
 			const result = emojiUtils.isEmojiZwjSupported( emojiItem, container );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
 			container.remove();
 		} );
@@ -266,7 +265,7 @@ describe( 'EmojiUtils', () => {
 
 			const result = emojiUtils.isEmojiZwjSupported( emojiItem, container );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 
 			container.remove();
 		} );
@@ -281,7 +280,7 @@ describe( 'EmojiUtils', () => {
 
 			const result = emojiUtils.isEmojiZwjSupported( emojiItem, container );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
 			container.remove();
 		} );
@@ -294,7 +293,7 @@ describe( 'EmojiUtils', () => {
 
 			const result = emojiUtils.isEmojiZwjSupported( emojiItem, container );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 
 			container.remove();
 		} );
@@ -304,11 +303,11 @@ describe( 'EmojiUtils', () => {
 		it( 'should create a width testing container with correct attributes', async () => {
 			const container = emojiUtils.createEmojiWidthTestingContainer();
 
-			expect( container ).to.have.attribute( 'aria-hidden', 'true' );
-			expect( container.style.position ).to.equal( 'absolute' );
-			expect( container.style.left ).to.equal( '-9999px' );
-			expect( container.style.whiteSpace ).to.equal( 'nowrap' );
-			expect( container.style.fontSize ).to.equal( '24px' );
+			expect( container.getAttribute( 'aria-hidden' ) ).toBe( 'true' );
+			expect( container.style.position ).toBe( 'absolute' );
+			expect( container.style.left ).toBe( '-9999px' );
+			expect( container.style.whiteSpace ).toBe( 'nowrap' );
+			expect( container.style.fontSize ).toBe( '24px' );
 
 			container.remove();
 		} );
@@ -318,13 +317,13 @@ describe( 'EmojiUtils', () => {
 		it( 'should return true if emoji group is different than 2', async () => {
 			const result = emojiUtils.isEmojiCategoryAllowed( { group: 1 } );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 		} );
 
 		it( 'should return false if emoji group is equal to 2', async () => {
 			const result = emojiUtils.isEmojiCategoryAllowed( { group: 2 } );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 		} );
 	} );
 
@@ -334,8 +333,8 @@ describe( 'EmojiUtils', () => {
 				emoji: '👋'
 			} );
 
-			expect( result.skins.default ).to.equal( '👋' );
-			expect( Object.keys( result.skins ) ).to.have.length( 1 );
+			expect( result.skins.default ).toBe( '👋' );
+			expect( Object.keys( result.skins ) ).toHaveLength( 1 );
 		} );
 
 		it( 'normalize emoji skin tone if property exists', async () => {
@@ -350,13 +349,13 @@ describe( 'EmojiUtils', () => {
 				]
 			} );
 
-			expect( result.skins.default ).to.equal( '👋' );
-			expect( result.skins.light ).to.equal( '👋🏻' );
-			expect( result.skins[ 'medium-light' ] ).to.equal( '👋🏼' );
-			expect( result.skins.medium ).to.equal( '👋🏽' );
-			expect( result.skins[ 'medium-dark' ] ).to.equal( '👋🏾' );
-			expect( result.skins.dark ).to.equal( '👋🏿' );
-			expect( Object.keys( result.skins ) ).to.have.length( 6 );
+			expect( result.skins.default ).toBe( '👋' );
+			expect( result.skins.light ).toBe( '👋🏻' );
+			expect( result.skins[ 'medium-light' ] ).toBe( '👋🏼' );
+			expect( result.skins.medium ).toBe( '👋🏽' );
+			expect( result.skins[ 'medium-dark' ] ).toBe( '👋🏾' );
+			expect( result.skins.dark ).toBe( '👋🏿' );
+			expect( Object.keys( result.skins ) ).toHaveLength( 6 );
 		} );
 	} );
 } );

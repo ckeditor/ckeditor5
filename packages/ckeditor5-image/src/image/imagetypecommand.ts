@@ -7,9 +7,10 @@
  * @module image/image/imagetypecommand
  */
 
-import type { ModelElement } from '@ckeditor/ckeditor5-engine';
+import { type ModelElement } from '@ckeditor/ckeditor5-engine';
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { type ImageUtils } from '../imageutils.js';
+import { isImageTypePlaceable } from './utils.js';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
@@ -36,14 +37,29 @@ export class ImageTypeCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
-		const element = imageUtils.getClosestSelectedImageElement( this.editor.model.document.selection );
+		const element = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
-		if ( this._modelElementName === 'imageBlock' ) {
-			this.isEnabled = imageUtils.isInlineImage( element );
-		} else {
-			this.isEnabled = imageUtils.isBlockImage( element );
+		// The command converts the opposite image type into `_modelElementName`, so a matching source image
+		// must be selected.
+		const hasSourceImage = this._modelElementName === 'imageBlock' ?
+			imageUtils.isInlineImage( element ) :
+			imageUtils.isBlockImage( element );
+
+		if ( !hasSourceImage ) {
+			this.isEnabled = false;
+
+			return;
 		}
+
+		// The target type must also be placeable at the image's position. Otherwise the conversion would call
+		// `model.insertContent` with no valid landing spot (e.g. switching to `imageBlock` inside an `$inlineRoot`,
+		// or to `imageInline` inside a container that only accepts block images).
+		const position = model.createPositionBefore( element! );
+
+		this.isEnabled = isImageTypePlaceable( schema, position, this._modelElementName );
 	}
 
 	/**

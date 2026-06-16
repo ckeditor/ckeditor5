@@ -7,6 +7,7 @@ import { EmitterMixin } from '../src/emittermixin.js';
 import { KeystrokeHandler } from '../src/keystrokehandler.js';
 import { keyCodes } from '../src/keyboard.js';
 import { env } from '../src/env.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe( 'KeystrokeHandler', () => {
 	const Emitter = EmitterMixin();
@@ -29,29 +30,29 @@ describe( 'KeystrokeHandler', () => {
 
 	describe( 'listenTo()', () => {
 		it( 'activates the listening on the emitter', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const keyEvtData = getCtrlA();
 
 			keystrokes.set( 'Ctrl+A', spy );
 			emitter.fire( 'keydown', keyEvtData );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, keyEvtData, sinon.match.func );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( keyEvtData, expect.any( Function ) );
 		} );
 	} );
 
 	describe( 'press()', () => {
 		it( 'executes a callback', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const keyEvtData = getCtrlA();
 
 			keystrokes.set( 'Ctrl+A', spy );
 
 			const wasHandled = keystrokes.press( keyEvtData );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, keyEvtData, sinon.match.func );
-			expect( wasHandled ).to.be.true;
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( keyEvtData, expect.any( Function ) );
+			expect( wasHandled ).toBe( true );
 		} );
 
 		it( 'returns false when no handler', () => {
@@ -59,37 +60,37 @@ describe( 'KeystrokeHandler', () => {
 
 			const wasHandled = keystrokes.press( keyEvtData );
 
-			expect( wasHandled ).to.be.false;
+			expect( wasHandled ).toBe( false );
 		} );
 	} );
 
 	describe( 'set()', () => {
 		it( 'handles array format', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			keystrokes.set( [ 'Ctrl', 'A' ], spy );
 
-			expect( keystrokes.press( getCtrlA() ) ).to.be.true;
+			expect( keystrokes.press( getCtrlA() ) ).toBe( true );
 		} );
 
 		it( 'aggregates multiple callbacks for the same keystroke', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
+			const spy1 = vi.fn();
+			const spy2 = vi.fn();
 
 			keystrokes.set( [ 'Ctrl', 'A' ], spy1 );
 			keystrokes.set( [ 'Ctrl', 'A' ], spy2 );
 
 			keystrokes.press( getCtrlA() );
 
-			sinon.assert.calledOnce( spy1 );
-			sinon.assert.calledOnce( spy2 );
+			expect( spy1 ).toHaveBeenCalledTimes( 1 );
+			expect( spy2 ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'supports priorities', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-			const spy3 = sinon.spy();
-			const spy4 = sinon.spy();
+			const spy1 = vi.fn();
+			const spy2 = vi.fn();
+			const spy3 = vi.fn();
+			const spy4 = vi.fn();
 
 			keystrokes.set( [ 'Ctrl', 'A' ], spy1 );
 			keystrokes.set( [ 'Ctrl', 'A' ], spy2, { priority: 'high' } );
@@ -98,34 +99,34 @@ describe( 'KeystrokeHandler', () => {
 
 			keystrokes.press( getCtrlA() );
 
-			sinon.assert.callOrder( spy2, spy1, spy4, spy3 );
+			expect( spy2.mock.invocationCallOrder[ 0 ] ).toBeLessThan( spy1.mock.invocationCallOrder[ 0 ] );
+			expect( spy1.mock.invocationCallOrder[ 0 ] ).toBeLessThan( spy4.mock.invocationCallOrder[ 0 ] );
+			expect( spy4.mock.invocationCallOrder[ 0 ] ).toBeLessThan( spy3.mock.invocationCallOrder[ 0 ] );
 		} );
 
-		it( 'provides a callback which causes preventDefault and stopPropagation in the DOM', done => {
+		it( 'provides a callback which causes preventDefault and stopPropagation in the DOM', () => {
 			const keyEvtData = getCtrlA();
 
 			keystrokes.set( 'Ctrl+A', ( data, cancel ) => {
-				expect( data ).to.equal( keyEvtData );
+				expect( data ).toBe( keyEvtData );
 
-				sinon.assert.notCalled( keyEvtData.preventDefault );
-				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
+				expect( keyEvtData.stopPropagation ).not.toHaveBeenCalled();
 
 				cancel();
 
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-
-				done();
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			emitter.fire( 'keydown', keyEvtData );
 		} );
 
 		it( 'provides a callback which stops the event and remaining callbacks in the keystroke handler', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
-			const spy3 = sinon.spy();
-			const spy4 = sinon.spy();
+			const spy1 = vi.fn();
+			const spy2 = vi.fn();
+			const spy3 = vi.fn();
+			const spy4 = vi.fn();
 
 			keystrokes.set( [ 'Ctrl', 'A' ], spy1 );
 			keystrokes.set( [ 'Ctrl', 'A' ], spy2, { priority: 'high' } );
@@ -137,12 +138,13 @@ describe( 'KeystrokeHandler', () => {
 
 			keystrokes.press( getCtrlA() );
 
-			sinon.assert.callOrder( spy2, spy1, spy4 );
-			sinon.assert.notCalled( spy3 );
+			expect( spy2.mock.invocationCallOrder[ 0 ] ).toBeLessThan( spy1.mock.invocationCallOrder[ 0 ] );
+			expect( spy1.mock.invocationCallOrder[ 0 ] ).toBeLessThan( spy4.mock.invocationCallOrder[ 0 ] );
+			expect( spy3 ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should support event filtering using a callback', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			const keyEvtDataFails = getCtrlA();
 			const keyEvtDataPasses = getCtrlA();
@@ -153,16 +155,16 @@ describe( 'KeystrokeHandler', () => {
 			} );
 
 			emitter.fire( 'keydown', keyEvtDataFails );
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			emitter.fire( 'keydown', keyEvtDataPasses );
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'stopListening()', () => {
 		it( 'detaches events from the given emitter', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const newEmitter = new Emitter();
 
 			keystrokes.listenTo( newEmitter );
@@ -172,15 +174,15 @@ describe( 'KeystrokeHandler', () => {
 
 			emitter.fire( 'keydown', getCtrlA() );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			newEmitter.fire( 'keydown', getCtrlA() );
 
-			sinon.assert.called( spy );
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'detaches events from all emitters', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const newEmitter = new Emitter();
 
 			keystrokes.listenTo( newEmitter );
@@ -191,17 +193,17 @@ describe( 'KeystrokeHandler', () => {
 			emitter.fire( 'keydown', getCtrlA() );
 			newEmitter.fire( 'keydown', getCtrlA() );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'detaches events from all emitters', () => {
-			const spy = sinon.spy( keystrokes, 'stopListening' );
+			const spy = vi.spyOn( keystrokes, 'stopListening' );
 
 			keystrokes.destroy();
 
-			sinon.assert.calledWithExactly( spy );
+			expect( spy ).toHaveBeenCalledWith();
 		} );
 	} );
 } );
@@ -210,7 +212,7 @@ function getCtrlA() {
 	return {
 		keyCode: keyCodes.a,
 		ctrlKey: true,
-		preventDefault: sinon.spy(),
-		stopPropagation: sinon.spy()
+		preventDefault: vi.fn(),
+		stopPropagation: vi.fn()
 	};
 }

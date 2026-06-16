@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { View } from '../../src/index.js';
 import { DraggableViewMixin } from '../../src/bindings/draggableviewmixin.js';
 
@@ -41,10 +42,11 @@ describe( 'DraggableViewMixin', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should set `isDragging` to false', () => {
-		expect( view.isDragging ).to.be.false;
+		expect( view.isDragging ).toBe( false );
 	} );
 
 	describe( 'before rendering', () => {
@@ -53,13 +55,13 @@ describe( 'DraggableViewMixin', () => {
 				bubbles: true
 			} ) );
 
-			expect( view.isDragging ).to.be.false;
+			expect( view.isDragging ).toBe( false );
 
 			view.dragable.element.dispatchEvent( new MouseEvent( 'touchstart', {
 				bubbles: true
 			} ) );
 
-			expect( view.isDragging ).to.be.false;
+			expect( view.isDragging ).toBe( false );
 		} );
 	} );
 
@@ -70,15 +72,15 @@ describe( 'DraggableViewMixin', () => {
 
 		describe( 'on mouse device', () => {
 			it( 'should not start dragging if the view does not have dragHandleElement', () => {
-				const stub = sinon.stub( view, 'dragHandleElement' ).get( () => null );
+				const stub = vi.spyOn( view, 'dragHandleElement', 'get' ).mockReturnValue( null );
 
 				view.dragable.element.dispatchEvent( new MouseEvent( 'mousedown', {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.false;
+				expect( view.isDragging ).toBe( false );
 
-				stub.restore();
+				stub.mockRestore();
 			} );
 
 			it( 'should not start dragging if nondraggable part of view was pressed', () => {
@@ -86,7 +88,7 @@ describe( 'DraggableViewMixin', () => {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.false;
+				expect( view.isDragging ).toBe( false );
 			} );
 
 			it( 'should set `isDragging` to true when dragging started', () => {
@@ -94,11 +96,11 @@ describe( 'DraggableViewMixin', () => {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.true;
+				expect( view.isDragging ).toBe( true );
 			} );
 
 			it( 'should not react to mousemove if view is not being dragged', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'drag', spy );
 
@@ -113,11 +115,11 @@ describe( 'DraggableViewMixin', () => {
 					clientY: 20
 				} ) );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should fire `drag` events with changed coordinates', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'drag', spy );
 
@@ -125,18 +127,18 @@ describe( 'DraggableViewMixin', () => {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.true;
+				expect( view.isDragging ).toBe( true );
 
 				document.dispatchEvent( new MouseEvent( 'mousemove', {
 					clientX: 10,
 					clientY: 20
 				} ) );
 
-				sinon.assert.calledWithMatch( spy, {}, { deltaX: 10, deltaY: 20 } );
+				expect( spy ).toHaveBeenCalledWith( expect.anything(), expect.objectContaining( { deltaX: 10, deltaY: 20 } ) );
 			} );
 
 			it( 'should stop dragging after `mouseup` event', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'drag', spy );
 
@@ -144,41 +146,41 @@ describe( 'DraggableViewMixin', () => {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.true;
+				expect( view.isDragging ).toBe( true );
 
 				document.dispatchEvent( new MouseEvent( 'mousemove', {
 					clientX: 10,
 					clientY: 20
 				} ) );
 
-				sinon.assert.calledWithMatch( spy, {}, { deltaX: 10, deltaY: 20 } );
+				expect( spy ).toHaveBeenCalledWith( expect.anything(), expect.objectContaining( { deltaX: 10, deltaY: 20 } ) );
 
 				document.dispatchEvent( new MouseEvent( 'mouseup', {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.false;
+				expect( view.isDragging ).toBe( false );
 
 				document.dispatchEvent( new MouseEvent( 'mousemove', {
 					clientX: 20,
 					clientY: 30
 				} ) );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 
 		describe( 'on touch device', () => {
 			it( 'should not start dragging if the view does not have dragHandleElement', () => {
-				const stub = sinon.stub( view, 'dragHandleElement' ).get( () => null );
+				const stub = vi.spyOn( view, 'dragHandleElement', 'get' ).mockReturnValue( null );
 
 				view.dragable.element.dispatchEvent( new TouchEvent( 'touchstart', {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.false;
+				expect( view.isDragging ).toBe( false );
 
-				stub.restore();
+				stub.mockRestore();
 			} );
 
 			it( 'should not start dragging if nondraggable part of view was pressed', () => {
@@ -186,7 +188,7 @@ describe( 'DraggableViewMixin', () => {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.false;
+				expect( view.isDragging ).toBe( false );
 			} );
 
 			it( 'should set `isDragging` to true when dragging started', () => {
@@ -200,11 +202,11 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				expect( view.isDragging ).to.be.true;
+				expect( view.isDragging ).toBe( true );
 			} );
 
 			it( 'should not react to mousemove if view is not being dragged', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'drag', spy );
 
@@ -229,11 +231,11 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should fire `drag` events with changed coordinates', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'drag', spy );
 
@@ -247,7 +249,7 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				expect( view.isDragging ).to.be.true;
+				expect( view.isDragging ).toBe( true );
 
 				document.dispatchEvent( new TouchEvent( 'touchmove', {
 					touches: [ new Touch( {
@@ -258,11 +260,11 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				sinon.assert.calledWithMatch( spy, {}, { deltaX: 10, deltaY: 20 } );
+				expect( spy ).toHaveBeenCalledWith( expect.anything(), expect.objectContaining( { deltaX: 10, deltaY: 20 } ) );
 			} );
 
 			it( 'should stop dragging after `mouseup` event', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'drag', spy );
 
@@ -276,7 +278,7 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				expect( view.isDragging ).to.be.true;
+				expect( view.isDragging ).toBe( true );
 
 				document.dispatchEvent( new TouchEvent( 'touchmove', {
 					touches: [ new Touch( {
@@ -287,13 +289,13 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				sinon.assert.calledWithMatch( spy, {}, { deltaX: 10, deltaY: 20 } );
+				expect( spy ).toHaveBeenCalledWith( expect.anything(), expect.objectContaining( { deltaX: 10, deltaY: 20 } ) );
 
 				document.dispatchEvent( new TouchEvent( 'touchend', {
 					bubbles: true
 				} ) );
 
-				expect( view.isDragging ).to.be.false;
+				expect( view.isDragging ).toBe( false );
 
 				document.dispatchEvent( new TouchEvent( 'touchmove', {
 					touches: [ new Touch( {
@@ -304,7 +306,7 @@ describe( 'DraggableViewMixin', () => {
 					} ) ]
 				} ) );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );

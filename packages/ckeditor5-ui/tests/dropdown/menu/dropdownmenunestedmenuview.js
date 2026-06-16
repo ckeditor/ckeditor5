@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	FocusTracker,
 	KeystrokeHandler,
@@ -19,7 +19,9 @@ import { DropdownMenuBehaviors } from '../../../src/dropdown/menu/dropdownmenube
 describe( 'DropdownMenuNestedMenuView', () => {
 	let menuView, element, editor, parentMenuView, locale, body;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -52,65 +54,65 @@ describe( 'DropdownMenuNestedMenuView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should have a button view', () => {
-			expect( menuView.buttonView ).to.be.instanceOf( DropdownMenuButtonView );
+			expect( menuView.buttonView ).toBeInstanceOf( DropdownMenuButtonView );
 		} );
 
 		it( 'should have a panel view', () => {
-			expect( menuView.panelView ).to.be.instanceOf( DropdownMenuNestedMenuPanelView );
+			expect( menuView.panelView ).toBeInstanceOf( DropdownMenuNestedMenuPanelView );
 		} );
 
 		it( 'should have a focus tracker instance', () => {
-			expect( menuView.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( menuView.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should have a keystrokes handler instance', () => {
-			expect( menuView.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( menuView.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should have #isOpen property set false by default', () => {
-			expect( menuView.isOpen ).to.be.false;
+			expect( menuView.isOpen ).toBe( false );
 		} );
 
 		it( 'should have #isEnabled property set true by default', () => {
-			expect( menuView.isEnabled ).to.be.true;
+			expect( menuView.isEnabled ).toBe( true );
 		} );
 
 		it( 'should have #class property', () => {
-			expect( menuView.class ).to.be.undefined;
+			expect( menuView.class ).toBeUndefined();
 		} );
 
 		it( 'should have #panelPosition property', () => {
-			expect( menuView.panelPosition ).to.equal( 'w' );
+			expect( menuView.panelPosition ).toBe( 'w' );
 		} );
 
 		it( 'should have #parentMenuView reference', () => {
-			expect( menuView.parentMenuView ).not.to.be.null;
+			expect( menuView.parentMenuView ).not.toBeNull();
 		} );
 
 		describe( '#buttonView', () => {
 			it( 'should delegate mouseenter to the menu', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				menuView.on( 'mouseenter', spy );
 				menuView.buttonView.fire( 'mouseenter' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should have #isOn state bound to the menu\'s #isOpen', () => {
-				expect( menuView.buttonView.isOn ).to.be.false;
+				expect( menuView.buttonView.isOn ).toBe( false );
 
 				menuView.isOpen = true;
 
-				expect( menuView.buttonView.isOn ).to.be.true;
+				expect( menuView.buttonView.isOn ).toBe( true );
 			} );
 
 			it( 'should have #isEnabled state bound to the menu\'s #isEnabled', () => {
 				menuView.isEnabled = true;
-				expect( menuView.buttonView.isEnabled ).to.be.true;
+				expect( menuView.buttonView.isEnabled ).toBe( true );
 
 				menuView.isEnabled = false;
-				expect( menuView.buttonView.isEnabled ).to.be.false;
+				expect( menuView.buttonView.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -120,54 +122,60 @@ describe( 'DropdownMenuNestedMenuView', () => {
 			} );
 
 			it( 'should have CSS classes', () => {
-				expect( menuView.template.attributes.class ).to.include.members( [ 'ck', 'ck-dropdown-menu-list__nested-menu' ] );
+				expect( menuView.template.attributes.class ).toEqual(
+					expect.arrayContaining( [ 'ck', 'ck-dropdown-menu-list__nested-menu' ] )
+				);
 			} );
 
 			it( 'should have a presentation role to keep the a11y tree clean', () => {
-				expect( menuView.template.attributes.role ).to.include.members( [ 'presentation' ] );
+				expect( menuView.template.attributes.role ).toEqual(
+					expect.arrayContaining( [ 'presentation' ] )
+				);
 			} );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'should add button and panel to the focus tracker', () => {
-			const focusTrackerAddSpy = sinon.spy( menuView.focusTracker, 'add' );
+			const focusTrackerAddSpy = vi.spyOn( menuView.focusTracker, 'add' );
 
 			menuView.render();
 
-			sinon.assert.calledWithExactly( focusTrackerAddSpy.firstCall, menuView.buttonView.element );
-			sinon.assert.calledWithExactly( focusTrackerAddSpy.secondCall, menuView.panelView.element );
+			expect( focusTrackerAddSpy ).toHaveBeenCalledWith( menuView.buttonView.element );
+			expect( focusTrackerAddSpy.mock.calls[ 0 ][ 0 ] ).toBe( menuView.buttonView.element );
+			expect( focusTrackerAddSpy.mock.calls[ 1 ][ 0 ] ).toBe( menuView.panelView.element );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-commercial/issues/6633
 		it( 'should add the #listView to the focus tracker to allow for linking focus trackers and sharing state of nested menus', () => {
-			const focusTrackerAddSpy = sinon.spy( menuView.focusTracker, 'add' );
+			const focusTrackerAddSpy = vi.spyOn( menuView.focusTracker, 'add' );
 
 			menuView.render();
 
-			sinon.assert.calledWithExactly( focusTrackerAddSpy.thirdCall, menuView.listView );
+			expect( focusTrackerAddSpy.mock.calls[ 2 ][ 0 ] ).toBe( menuView.listView );
 		} );
 
 		it( 'should start listening to keystrokes', () => {
-			const keystrokeHandlerAddSpy = sinon.spy( menuView.keystrokes, 'listenTo' );
+			const keystrokeHandlerAddSpy = vi.spyOn( menuView.keystrokes, 'listenTo' );
 
 			menuView.render();
 
-			sinon.assert.calledOnceWithExactly( keystrokeHandlerAddSpy, menuView.element );
+			expect( keystrokeHandlerAddSpy ).toHaveBeenCalledOnce();
+			expect( keystrokeHandlerAddSpy ).toHaveBeenCalledWith( menuView.element );
 		} );
 	} );
 
 	describe( 'panel repositioning upon open', () => {
 		it( 'should use a specific set of positioning functions in a specific priority order (LTR)', () => {
-			const spy = sinon.spy( menuView.panelView, 'pin' );
+			const spy = vi.spyOn( menuView.panelView, 'pin' );
 
 			menuView.render();
 			document.body.appendChild( menuView.element );
 
 			menuView.isOpen = true;
 
-			expect( spy ).to.be.calledOnce;
-			expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 0 ].positions ).toEqual( [
 				DropdownMenuPanelPositioningFunctions.eastSouth,
 				DropdownMenuPanelPositioningFunctions.eastNorth,
 				DropdownMenuPanelPositioningFunctions.westSouth,
@@ -183,14 +191,14 @@ describe( 'DropdownMenuNestedMenuView', () => {
 				new Locale( { uiLanguage: 'ar' } ), body, 'menu', 'Menu', rtlParentMenuView
 			);
 
-			const spy = sinon.spy( rtlMenuView.panelView, 'pin' );
+			const spy = vi.spyOn( rtlMenuView.panelView, 'pin' );
 
 			rtlMenuView.render();
 			document.body.appendChild( rtlMenuView.element );
 
 			rtlMenuView.isOpen = true;
 
-			expect( spy.firstCall.args[ 0 ].positions ).to.have.ordered.members( [
+			expect( spy.mock.calls[ 0 ][ 0 ].positions ).toEqual( [
 				DropdownMenuPanelPositioningFunctions.westSouth,
 				DropdownMenuPanelPositioningFunctions.westNorth,
 				DropdownMenuPanelPositioningFunctions.eastSouth,
@@ -203,40 +211,61 @@ describe( 'DropdownMenuNestedMenuView', () => {
 		} );
 	} );
 
+	describe( '_addPanelToBody()', () => {
+		it( 'should not add the panel to body if already added (opening menu twice)', () => {
+			menuView.render();
+			document.body.appendChild( menuView.element );
+
+			menuView.isOpen = true;
+			const panelCountBefore = body.length;
+
+			// Setting isOpen to true again should not add the panel again.
+			menuView.isOpen = false;
+			menuView.isOpen = true;
+
+			expect( body.length ).toBe( panelCountBefore );
+
+			menuView.element.remove();
+		} );
+	} );
+
 	describe( 'focus()', () => {
 		it( 'should focus the button view', () => {
-			const spy = sinon.spy( menuView.buttonView, 'focus' );
+			const spy = vi.spyOn( menuView.buttonView, 'focus' );
 
 			menuView.render();
 			menuView.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( '_attachBehaviors', () => {
 		it( 'should enable a behavior that shows the menu upon clicking', () => {
-			const spy = sinon.spy( DropdownMenuBehaviors, 'openOnButtonClick' );
+			const spy = vi.spyOn( DropdownMenuBehaviors, 'openOnButtonClick' );
 
 			menuView._attachBehaviors();
 
-			sinon.assert.calledOnceWithExactly( spy, menuView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuView );
 		} );
 
 		it( 'should enable a behavior that opens the menu upon arrow right key press', () => {
-			const spy = sinon.spy( DropdownMenuBehaviors, 'openOnArrowRightKey' );
+			const spy = vi.spyOn( DropdownMenuBehaviors, 'openOnArrowRightKey' );
 
 			menuView._attachBehaviors();
 
-			sinon.assert.calledOnceWithExactly( spy, menuView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuView );
 		} );
 
 		it( 'should enable a behavior that closes the menu upon arrow left key press', () => {
-			const spy = sinon.spy( DropdownMenuBehaviors, 'closeOnArrowLeftKey' );
+			const spy = vi.spyOn( DropdownMenuBehaviors, 'closeOnArrowLeftKey' );
 
 			menuView._attachBehaviors();
 
-			sinon.assert.calledOnceWithExactly( spy, menuView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuView );
 		} );
 	} );
 } );

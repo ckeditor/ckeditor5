@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { SimpleUploadAdapter } from '../../src/adapters/simpleuploadadapter.js';
 import { FileRepository } from '../../src/filerepository.js';
 import { createNativeFileMock } from '../_utils/mocks.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SimpleUploadAdapter', () => {
-	let editor, editorElement, sinonXHR, consoleWarnStub, fileRepository;
-
-	testUtils.createSinonSandbox();
+	let editor, editorElement, fakeXHR, consoleWarnStub, fileRepository;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		sinonXHR = testUtils.sinon.useFakeServer();
-		consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+		fakeXHR = createFakeXHRServer();
+		consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -35,7 +33,8 @@ describe( 'SimpleUploadAdapter', () => {
 	} );
 
 	afterEach( () => {
-		sinonXHR.restore();
+		vi.unstubAllGlobals();
+		vi.restoreAllMocks();
 
 		editorElement.remove();
 
@@ -129,8 +128,8 @@ describe( 'SimpleUploadAdapter', () => {
 					}
 				} )
 				.then( editor => {
-					expect( consoleWarnStub.callCount ).to.equal( 1 );
-					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadurl/ );
+					expect( consoleWarnStub.mock.calls.length ).to.equal( 1 );
+					expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadurl/ );
 
 					const fileRepository = editor.plugins.get( FileRepository );
 
@@ -160,7 +159,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 					return loader.file
 						.then( () => {
-							const request = sinonXHR.requests[ 0 ];
+							const request = fakeXHR.requests[ 0 ];
 							request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 							expect( request.url ).to.equal( 'http://example.com' );
@@ -202,7 +201,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 							return loader.file
 								.then( () => {
-									const request = sinonXHR.requests[ 0 ];
+									const request = fakeXHR.requests[ 0 ];
 									request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 									const requestHeaders = request.requestHeaders;
@@ -252,7 +251,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 							return loader.file
 								.then( () => {
-									const request = sinonXHR.requests[ 0 ];
+									const request = fakeXHR.requests[ 0 ];
 									request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 									const requestHeaders = request.requestHeaders;
@@ -298,7 +297,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 							return loader.file
 								.then( () => {
-									const request = sinonXHR.requests[ 0 ];
+									const request = fakeXHR.requests[ 0 ];
 									request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 									const requestHeaders = request.requestHeaders;
@@ -344,7 +343,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 							return loader.file
 								.then( () => {
-									const request = sinonXHR.requests[ 0 ];
+									const request = fakeXHR.requests[ 0 ];
 									request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 									expect( request ).to.have.property( 'withCredentials', true );
@@ -386,7 +385,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 							return loader.file
 								.then( () => {
-									const request = sinonXHR.requests[ 0 ];
+									const request = fakeXHR.requests[ 0 ];
 									request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
 									expect( request ).to.have.property( 'withCredentials', false );
@@ -421,7 +420,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 				return loader.file
 					.then( () => {
-						sinonXHR.requests[ 0 ].respond( 200, {
+						fakeXHR.requests[ 0 ].respond( 200, {
 							'Content-Type': 'application/json'
 						}, JSON.stringify( validResponse ) );
 
@@ -446,7 +445,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 				return loader.file
 					.then( () => {
-						sinonXHR.requests[ 0 ].respond( 200, {
+						fakeXHR.requests[ 0 ].respond( 200, {
 							'Content-Type': 'application/json'
 						}, JSON.stringify( validResponse ) );
 
@@ -467,7 +466,7 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 
 				loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.error();
 				} );
 
@@ -490,7 +489,7 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 
 				loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
@@ -511,7 +510,7 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 
 				loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
 
@@ -530,7 +529,7 @@ describe( 'SimpleUploadAdapter', () => {
 					} );
 
 				loader.file.then( () => {
-					request = sinonXHR.requests[ 0 ];
+					request = fakeXHR.requests[ 0 ];
 					adapter.abort();
 				} );
 
@@ -547,7 +546,7 @@ describe( 'SimpleUploadAdapter', () => {
 				adapter.upload();
 
 				return loader.file.then( () => {
-					const request = sinonXHR.requests[ 0 ];
+					const request = fakeXHR.requests[ 0 ];
 					request.uploadProgress( { loaded: 4, total: 10 } );
 
 					expect( loader.uploadTotal ).to.equal( 10 );
@@ -557,3 +556,94 @@ describe( 'SimpleUploadAdapter', () => {
 		} );
 	} );
 } );
+
+function createFakeXHRServer() {
+	const requests = [];
+
+	class FakeXMLHttpRequest {
+		constructor() {
+			this.aborted = false;
+			this.withCredentials = false;
+			this.requestHeaders = {};
+			this.listeners = new Map();
+			this.upload = new FakeXMLHttpRequestUpload();
+
+			requests.push( this );
+		}
+
+		open( method, url, async ) {
+			this.method = method;
+			this.url = url;
+			this.async = async;
+		}
+
+		setRequestHeader( name, value ) {
+			this.requestHeaders[ name ] = value;
+		}
+
+		send( body ) {
+			this.requestBody = body;
+		}
+
+		abort() {
+			this.aborted = true;
+			this.dispatchEvent( 'abort' );
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		respond( status, headers, body ) {
+			this.status = status;
+			this.responseHeaders = headers;
+			this.responseText = body;
+			this.response = this.responseType === 'json' ? JSON.parse( body ) : body;
+
+			this.dispatchEvent( 'load' );
+		}
+
+		error() {
+			this.dispatchEvent( 'error' );
+		}
+
+		uploadProgress( event ) {
+			this.upload.dispatchEvent( 'progress', {
+				lengthComputable: true,
+				...event
+			} );
+		}
+
+		dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	class FakeXMLHttpRequestUpload {
+		constructor() {
+			this.listeners = new Map();
+		}
+
+		addEventListener( event, callback ) {
+			const callbacks = this.listeners.get( event ) || [];
+
+			callbacks.push( callback );
+			this.listeners.set( event, callbacks );
+		}
+
+		dispatchEvent( event, data ) {
+			for ( const callback of this.listeners.get( event ) || [] ) {
+				callback( data );
+			}
+		}
+	}
+
+	vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
+
+	return { requests };
+}

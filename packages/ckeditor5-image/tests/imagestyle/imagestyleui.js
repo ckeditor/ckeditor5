@@ -13,6 +13,7 @@ import { ImageStyleEditing } from '../../src/imagestyle/imagestyleediting.js';
 import { ImageStyleUI } from '../../src/imagestyle/imagestyleui.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ButtonView, DropdownView, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -37,7 +38,7 @@ describe( 'ImageStyleUI', () => {
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI, Paragraph ],
 				image: {
 					styles: { options: allStyles },
 					toolbar: customDropdowns
@@ -124,14 +125,24 @@ describe( 'ImageStyleUI', () => {
 			}
 		} );
 
-		it( 'should enable the button if the command is enabled', () => {
-			const command = editor.commands.get( 'imageStyle' );
+		it( 'should enable the button when the style applies to the selected image', () => {
+			// With a block image selected, every style applicable to either image type should be enabled
+			// (inline-only styles can convert the block image to inline, block-only styles apply directly,
+			// and dual-type styles apply directly too).
+			_setModelData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 
 			for ( const { buttonView } of buttons ) {
-				command.isEnabled = true;
-				expect( buttonView.isEnabled ).to.be.true;
-				command.isEnabled = false;
-				expect( buttonView.isEnabled ).to.be.false;
+				expect( buttonView.isEnabled, buttonView.label ).to.be.true;
+			}
+		} );
+
+		it( 'should disable every button when no image is selected', () => {
+			// The `imageStyle` command is not enabled without an image, so `isStyleEnabled()` returns
+			// `false` for every style regardless of which command would otherwise apply.
+			editor.commands.get( 'imageStyle' ).isEnabled = false;
+
+			for ( const { buttonView } of buttons ) {
+				expect( buttonView.isEnabled, buttonView.label ).to.be.false;
 			}
 		} );
 

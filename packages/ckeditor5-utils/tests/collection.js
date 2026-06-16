@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Collection } from '../src/collection.js';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
@@ -18,10 +19,12 @@ function getItem( id, idProperty ) {
 describe( 'Collection', () => {
 	let collection;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		collection = new Collection();
+	} );
+
+	afterEach( () => {
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
@@ -31,12 +34,12 @@ describe( 'Collection', () => {
 				const item2 = getItem( 'bar' );
 				const collection = new Collection( [ item1, item2 ] );
 
-				expect( collection ).to.have.length( 2 );
+				expect( collection ).toHaveLength( 2 );
 
-				expect( collection.get( 0 ) ).to.equal( item1 );
-				expect( collection.get( 1 ) ).to.equal( item2 );
-				expect( collection.get( 'foo' ) ).to.equal( item1 );
-				expect( collection.get( 'bar' ) ).to.equal( item2 );
+				expect( collection.get( 0 ) ).toBe( item1 );
+				expect( collection.get( 1 ) ).toBe( item2 );
+				expect( collection.get( 'foo' ) ).toBe( item1 );
+				expect( collection.get( 'bar' ) ).toBe( item2 );
 			} );
 
 			it( 'should work using an iterable', () => {
@@ -45,18 +48,18 @@ describe( 'Collection', () => {
 				const itemsSet = new Set( [ item1, item2 ] );
 				const collection = new Collection( itemsSet );
 
-				expect( collection ).to.have.length( 2 );
+				expect( collection ).toHaveLength( 2 );
 
-				expect( collection.get( 0 ) ).to.equal( item1 );
-				expect( collection.get( 1 ) ).to.equal( item2 );
+				expect( collection.get( 0 ) ).toBe( item1 );
+				expect( collection.get( 1 ) ).toBe( item2 );
 			} );
 
 			it( 'should generate ids for items that doesn\'t have it', () => {
 				const item = {};
 				const collection = new Collection( [ item ] );
 
-				expect( collection.get( 0 ).id ).to.be.a( 'string' );
-				expect( collection.get( 0 ).id ).not.to.be.empty;
+				expect( collection.get( 0 ).id ).toBeTypeOf( 'string' );
+				expect( collection.get( 0 ).id ).not.toBe( '' );
 			} );
 
 			it( 'should throw an error when an invalid item key is provided', () => {
@@ -86,10 +89,10 @@ describe( 'Collection', () => {
 				collection.add( item1 );
 				collection.add( item2 );
 
-				expect( collection ).to.have.length( 2 );
+				expect( collection ).toHaveLength( 2 );
 
-				expect( collection.get( 'xx' ) ).to.equal( item1 );
-				expect( collection.remove( 'yy' ) ).to.equal( item2 );
+				expect( collection.get( 'xx' ) ).toBe( item1 );
+				expect( collection.remove( 'yy' ) ).toBe( item2 );
 			} );
 
 			it( 'should allow to change the id property used by the collection (initial items passed to the constructor)', () => {
@@ -97,21 +100,21 @@ describe( 'Collection', () => {
 				const item2 = { id: 'foo', name: 'yy' };
 				const collection = new Collection( [ item1, item2 ], { idProperty: 'name' } );
 
-				expect( collection ).to.have.length( 2 );
+				expect( collection ).toHaveLength( 2 );
 
-				expect( collection.get( 'xx' ) ).to.equal( item1 );
-				expect( collection.remove( 'yy' ) ).to.equal( item2 );
+				expect( collection.get( 'xx' ) ).toBe( item1 );
+				expect( collection.remove( 'yy' ) ).toBe( item2 );
 			} );
 		} );
 	} );
 
 	describe( 'length', () => {
 		it( 'should return collection length', () => {
-			expect( collection.length ).to.equal( 0 );
+			expect( collection.length ).toBe( 0 );
 
 			collection.add( { foo: 'bar' } );
 
-			expect( collection.length ).to.equal( 1 );
+			expect( collection.length ).toBe( 1 );
 		} );
 	} );
 
@@ -123,11 +126,11 @@ describe( 'Collection', () => {
 			collection.add( item1 );
 			collection.add( item2 );
 
-			expect( collection.first ).to.equal( item1 );
+			expect( collection.first ).toBe( item1 );
 		} );
 
 		it( 'should return null when collection is empty', () => {
-			expect( collection.first ).to.null;
+			expect( collection.first ).toBeNull();
 		} );
 	} );
 
@@ -139,27 +142,27 @@ describe( 'Collection', () => {
 			collection.add( item1 );
 			collection.add( item2 );
 
-			expect( collection.last ).to.equal( item2 );
+			expect( collection.last ).toBe( item2 );
 		} );
 
 		it( 'should return null when collection is empty', () => {
-			expect( collection.last ).to.null;
+			expect( collection.last ).toBeNull();
 		} );
 	} );
 
 	describe( 'add()', () => {
 		it( 'should be chainable', () => {
-			expect( collection.add( {} ) ).to.equal( collection );
+			expect( collection.add( {} ) ).toBe( collection );
 		} );
 
 		it( 'should change the length', () => {
-			expect( collection ).to.have.length( 0 );
+			expect( collection ).toHaveLength( 0 );
 
 			collection.add( {} );
-			expect( collection ).to.have.length( 1 );
+			expect( collection ).toHaveLength( 1 );
 
 			collection.add( {} );
-			expect( collection ).to.have.length( 2 );
+			expect( collection ).toHaveLength( 2 );
 		} );
 
 		it( 'should enable get( index )', () => {
@@ -167,11 +170,11 @@ describe( 'Collection', () => {
 			const item2 = {};
 
 			collection.add( item1 );
-			expect( collection.get( 0 ) ).to.equal( item1 );
+			expect( collection.get( 0 ) ).toBe( item1 );
 
 			collection.add( item2 );
-			expect( collection.get( 0 ) ).to.equal( item1 );
-			expect( collection.get( 1 ) ).to.equal( item2 );
+			expect( collection.get( 0 ) ).toBe( item1 );
+			expect( collection.get( 1 ) ).toBe( item2 );
 		} );
 
 		it( 'should enable get( id )', () => {
@@ -181,8 +184,8 @@ describe( 'Collection', () => {
 			collection.add( item1 );
 			collection.add( item2 );
 
-			expect( collection.get( 'foo' ) ).to.equal( item1 );
-			expect( collection.get( 'bar' ) ).to.equal( item2 );
+			expect( collection.get( 'foo' ) ).toBe( item1 );
+			expect( collection.get( 'bar' ) ).toBe( item2 );
 		} );
 
 		it( 'should enable get( id ) - custom id property', () => {
@@ -193,8 +196,8 @@ describe( 'Collection', () => {
 			collection.add( item1 );
 			collection.add( item2 );
 
-			expect( collection.get( 'foo' ) ).to.equal( item1 );
-			expect( collection.get( 'bar' ) ).to.equal( item2 );
+			expect( collection.get( 'foo' ) ).toBe( item1 );
+			expect( collection.get( 'bar' ) ).toBe( item2 );
 		} );
 
 		it( 'should generate an id when not defined', () => {
@@ -202,8 +205,8 @@ describe( 'Collection', () => {
 
 			collection.add( item );
 
-			expect( item.id ).to.be.a( 'string' );
-			expect( collection.get( item.id ) ).to.equal( item );
+			expect( item.id ).toBeTypeOf( 'string' );
+			expect( collection.get( item.id ) ).toBe( item );
 		} );
 
 		it( 'should generate an id when not defined - custom id property', () => {
@@ -212,8 +215,8 @@ describe( 'Collection', () => {
 
 			collection.add( item );
 
-			expect( item.name ).to.be.a( 'string' );
-			expect( collection.get( item.name ) ).to.equal( item );
+			expect( item.name ).toBeTypeOf( 'string' );
+			expect( collection.get( item.name ) ).toBe( item );
 		} );
 
 		it( 'should not change an existing id of an item', () => {
@@ -221,7 +224,7 @@ describe( 'Collection', () => {
 
 			collection.add( item );
 
-			expect( item.id ).to.equal( 'foo' );
+			expect( item.id ).toBe( 'foo' );
 		} );
 
 		it( 'should throw when item with this id already exists', () => {
@@ -256,12 +259,12 @@ describe( 'Collection', () => {
 				collectionB.add( itemB );
 				collectionB.add( collectionA.remove( itemA ) );
 
-				expect( collectionA.length ).to.equal( 0 );
-				expect( collectionB.length ).to.equal( 2 );
-				expect( collectionB.get( 0 ) ).to.equal( itemB );
-				expect( collectionB.get( 1 ) ).to.equal( itemA );
+				expect( collectionA.length ).toBe( 0 );
+				expect( collectionB.length ).toBe( 2 );
+				expect( collectionB.get( 0 ) ).toBe( itemB );
+				expect( collectionB.get( 1 ) ).toBe( itemA );
 
-				expect( itemA.id ).to.not.equal( itemB.id );
+				expect( itemA.id ).not.toBe( itemB.id );
 			}
 		);
 
@@ -279,12 +282,12 @@ describe( 'Collection', () => {
 				collectionB.add( itemB );
 				collectionB.add( collectionA.remove( itemA ) );
 
-				expect( collectionA.length ).to.equal( 0 );
-				expect( collectionB.length ).to.equal( 2 );
-				expect( collectionB.get( 0 ) ).to.equal( itemB );
-				expect( collectionB.get( 1 ) ).to.equal( itemA );
+				expect( collectionA.length ).toBe( 0 );
+				expect( collectionB.length ).toBe( 2 );
+				expect( collectionB.get( 0 ) ).toBe( itemB );
+				expect( collectionB.get( 1 ) ).toBe( itemA );
 
-				expect( itemA.foo ).to.not.equal( itemB.foo );
+				expect( itemA.foo ).not.toBe( itemB.foo );
 			}
 		);
 
@@ -296,20 +299,20 @@ describe( 'Collection', () => {
 			collectionA.add( item );
 			collectionB.add( item );
 
-			expect( collectionA.length ).to.equal( 1 );
-			expect( collectionB.length ).to.equal( 1 );
-			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
+			expect( collectionA.length ).toBe( 1 );
+			expect( collectionB.length ).toBe( 1 );
+			expect( collectionA.get( item.id ) ).toBe( collectionB.get( 0 ) );
 		} );
 
 		it( 'should fire the "add" event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const item = {};
 
 			collection.on( 'add', spy );
 
 			collection.add( item );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 0 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item, 0 );
 		} );
 
 		it( 'should support an optional index argument', () => {
@@ -323,10 +326,10 @@ describe( 'Collection', () => {
 			collection.add( item3, 1 );
 			collection.add( item4, 3 );
 
-			expect( collection.get( 0 ) ).to.equal( item2 );
-			expect( collection.get( 1 ) ).to.equal( item3 );
-			expect( collection.get( 2 ) ).to.equal( item1 );
-			expect( collection.get( 3 ) ).to.equal( item4 );
+			expect( collection.get( 0 ) ).toBe( item2 );
+			expect( collection.get( 1 ) ).toBe( item3 );
+			expect( collection.get( 2 ) ).toBe( item1 );
+			expect( collection.get( 3 ) ).toBe( item4 );
 		} );
 
 		it( 'should throw when index argument is invalid', () => {
@@ -347,11 +350,11 @@ describe( 'Collection', () => {
 			collection.add( item2, 1 );
 			collection.add( item3, 0 );
 
-			expect( collection.length ).to.equal( 3 );
+			expect( collection.length ).toBe( 3 );
 		} );
 
 		it( 'should fire the "add" event with the index argument', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			collection.add( {} );
 			collection.add( {} );
@@ -361,23 +364,23 @@ describe( 'Collection', () => {
 			const item = {};
 			collection.add( item, 1 );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item, 1 );
 		} );
 	} );
 
 	describe( 'addMany()', () => {
 		it( 'should be chainable', () => {
-			expect( collection.addMany( [ {} ] ) ).to.equal( collection );
+			expect( collection.addMany( [ {} ] ) ).toBe( collection );
 		} );
 
 		it( 'should change the length', () => {
-			expect( collection ).to.have.length( 0 );
+			expect( collection ).toHaveLength( 0 );
 
 			collection.addMany( [ {}, {} ] );
-			expect( collection ).to.have.length( 2 );
+			expect( collection ).toHaveLength( 2 );
 
 			collection.addMany( [ {} ] );
-			expect( collection ).to.have.length( 3 );
+			expect( collection ).toHaveLength( 3 );
 		} );
 
 		it( 'should enable get( index )', () => {
@@ -385,8 +388,8 @@ describe( 'Collection', () => {
 			const item2 = {};
 
 			collection.addMany( [ item1, item2 ] );
-			expect( collection.get( 0 ) ).to.equal( item1 );
-			expect( collection.get( 1 ) ).to.equal( item2 );
+			expect( collection.get( 0 ) ).toBe( item1 );
+			expect( collection.get( 1 ) ).toBe( item2 );
 		} );
 
 		it( 'should enable get( id )', () => {
@@ -395,8 +398,8 @@ describe( 'Collection', () => {
 
 			collection.addMany( [ item1, item2 ] );
 
-			expect( collection.get( 'foo' ) ).to.equal( item1 );
-			expect( collection.get( 'bar' ) ).to.equal( item2 );
+			expect( collection.get( 'foo' ) ).toBe( item1 );
+			expect( collection.get( 'bar' ) ).toBe( item2 );
 		} );
 
 		it( 'should enable get( id ) - custom id property', () => {
@@ -407,8 +410,8 @@ describe( 'Collection', () => {
 			collection.add( item1 );
 			collection.add( item2 );
 
-			expect( collection.get( 'foo' ) ).to.equal( item1 );
-			expect( collection.get( 'bar' ) ).to.equal( item2 );
+			expect( collection.get( 'foo' ) ).toBe( item1 );
+			expect( collection.get( 'bar' ) ).toBe( item2 );
 		} );
 
 		it( 'should generate an id when not defined', () => {
@@ -416,8 +419,8 @@ describe( 'Collection', () => {
 
 			collection.addMany( [ item ] );
 
-			expect( item.id ).to.be.a( 'string' );
-			expect( collection.get( item.id ) ).to.equal( item );
+			expect( item.id ).toBeTypeOf( 'string' );
+			expect( collection.get( item.id ) ).toBe( item );
 		} );
 
 		it( 'should generate an id when not defined - custom id property', () => {
@@ -426,8 +429,8 @@ describe( 'Collection', () => {
 
 			collection.addMany( [ item ] );
 
-			expect( item.name ).to.be.a( 'string' );
-			expect( collection.get( item.name ) ).to.equal( item );
+			expect( item.name ).toBeTypeOf( 'string' );
+			expect( collection.get( item.name ) ).toBe( item );
 		} );
 
 		it( 'should not change an existing id of an item', () => {
@@ -435,7 +438,7 @@ describe( 'Collection', () => {
 
 			collection.addMany( [ item ] );
 
-			expect( item.id ).to.equal( 'foo' );
+			expect( item.id ).toBe( 'foo' );
 		} );
 
 		it( 'should throw when item with this id already exists - single call', () => {
@@ -478,12 +481,12 @@ describe( 'Collection', () => {
 				collectionB.addMany( [ itemB ] );
 				collectionB.addMany( [ collectionA.remove( itemA ) ] );
 
-				expect( collectionA.length ).to.equal( 0 );
-				expect( collectionB.length ).to.equal( 2 );
-				expect( collectionB.get( 0 ) ).to.equal( itemB );
-				expect( collectionB.get( 1 ) ).to.equal( itemA );
+				expect( collectionA.length ).toBe( 0 );
+				expect( collectionB.length ).toBe( 2 );
+				expect( collectionB.get( 0 ) ).toBe( itemB );
+				expect( collectionB.get( 1 ) ).toBe( itemA );
 
-				expect( itemA.id ).to.not.equal( itemB.id );
+				expect( itemA.id ).not.toBe( itemB.id );
 			}
 		);
 
@@ -501,12 +504,12 @@ describe( 'Collection', () => {
 				collectionB.addMany( [ itemB ] );
 				collectionB.addMany( [ collectionA.remove( itemA ) ] );
 
-				expect( collectionA.length ).to.equal( 0 );
-				expect( collectionB.length ).to.equal( 2 );
-				expect( collectionB.get( 0 ) ).to.equal( itemB );
-				expect( collectionB.get( 1 ) ).to.equal( itemA );
+				expect( collectionA.length ).toBe( 0 );
+				expect( collectionB.length ).toBe( 2 );
+				expect( collectionB.get( 0 ) ).toBe( itemB );
+				expect( collectionB.get( 1 ) ).toBe( itemA );
 
-				expect( itemA.foo ).to.not.equal( itemB.foo );
+				expect( itemA.foo ).not.toBe( itemB.foo );
 			}
 		);
 
@@ -518,38 +521,38 @@ describe( 'Collection', () => {
 			collectionA.addMany( [ item ] );
 			collectionB.addMany( [ item ] );
 
-			expect( collectionA.length ).to.equal( 1 );
-			expect( collectionB.length ).to.equal( 1 );
-			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
+			expect( collectionA.length ).toBe( 1 );
+			expect( collectionB.length ).toBe( 1 );
+			expect( collectionA.get( item.id ) ).toBe( collectionB.get( 0 ) );
 		} );
 
 		it( 'should fire the "add" event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const item = {};
 
 			collection.on( 'add', spy );
 
 			collection.addMany( [ item ] );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 0 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item, 0 );
 		} );
 
 		it( 'should fire the "add" event for each item', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const items = [ {}, {} ];
 
 			collection.on( 'add', spy );
 
 			collection.addMany( items );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 0 ], 0 );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 1 ], 1 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), items[ 0 ], 0 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), items[ 1 ], 1 );
 
-			expect( spy.callCount ).to.equal( 2 );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should fire the "add" event with the index argument', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			collection.addMany( [ {} ] );
 			collection.addMany( [ {} ] );
@@ -559,19 +562,19 @@ describe( 'Collection', () => {
 			const item = {};
 			collection.addMany( [ item ], 1 );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item, 1 );
 		} );
 
 		it( 'should fire the "change" event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const items = [ {}, {} ];
 
 			collection.on( 'change', spy );
 
 			collection.addMany( items );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( {
 				added: items,
 				removed: [],
 				index: 0
@@ -579,7 +582,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should fire the "change" event with the index argument', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const firstBatch = [ {}, {} ];
 			const secondBatch = [ {}, {} ];
 
@@ -589,8 +592,8 @@ describe( 'Collection', () => {
 
 			collection.addMany( secondBatch, 1 );
 
-			expect( spy.callCount, 'call count' ).to.equal( 1 );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+			expect( spy, 'call count' ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( {
 				added: secondBatch,
 				removed: [],
 				index: 1
@@ -608,10 +611,10 @@ describe( 'Collection', () => {
 			collection.addMany( [ item3 ], 1 );
 			collection.addMany( [ item4 ], 3 );
 
-			expect( collection.get( 0 ) ).to.equal( item2 );
-			expect( collection.get( 1 ) ).to.equal( item3 );
-			expect( collection.get( 2 ) ).to.equal( item1 );
-			expect( collection.get( 3 ) ).to.equal( item4 );
+			expect( collection.get( 0 ) ).toBe( item2 );
+			expect( collection.get( 1 ) ).toBe( item3 );
+			expect( collection.get( 2 ) ).toBe( item1 );
+			expect( collection.get( 3 ) ).toBe( item4 );
 		} );
 
 		it( 'should throw when index argument is invalid', () => {
@@ -632,7 +635,7 @@ describe( 'Collection', () => {
 			collection.addMany( [ item2 ], 1 );
 			collection.addMany( [ item3 ], 0 );
 
-			expect( collection.length ).to.equal( 3 );
+			expect( collection.length ).toBe( 3 );
 		} );
 	} );
 
@@ -641,13 +644,13 @@ describe( 'Collection', () => {
 			const item = getItem( 'foo' );
 			collection.add( item );
 
-			expect( collection.get( 'foo' ) ).to.equal( item );
+			expect( collection.get( 'foo' ) ).toBe( item );
 		} );
 
 		it( 'should return null if id does not exist', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( collection.get( 'bar' ) ).to.be.null;
+			expect( collection.get( 'bar' ) ).toBeNull();
 		} );
 
 		it( 'should throw if neither string or number given', () => {
@@ -661,13 +664,13 @@ describe( 'Collection', () => {
 		it( 'should return true if collection contains item with given id', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( collection.has( 'foo' ) ).to.equal( true );
+			expect( collection.has( 'foo' ) ).toBe( true );
 		} );
 
 		it( 'should return false if collection does not contain item with given id', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( collection.has( 'bar' ) ).to.equal( false );
+			expect( collection.has( 'bar' ) ).toBe( false );
 		} );
 
 		it( 'should return true if collection contains item', () => {
@@ -675,13 +678,13 @@ describe( 'Collection', () => {
 
 			collection.add( item );
 
-			expect( collection.has( item ) ).to.equal( true );
+			expect( collection.has( item ) ).toBe( true );
 		} );
 
 		it( 'should return false if collection does not contains item', () => {
 			collection.add( getItem( 'foo' ) );
 
-			expect( collection.has( getItem( 'bar' ) ) ).to.equal( false );
+			expect( collection.has( getItem( 'bar' ) ) ).toBe( false );
 		} );
 	} );
 
@@ -695,9 +698,9 @@ describe( 'Collection', () => {
 			collection.add( item2 );
 			collection.add( item3 );
 
-			expect( collection.getIndex( item1 ) ).to.equal( 0 );
-			expect( collection.getIndex( item2 ) ).to.equal( 1 );
-			expect( collection.getIndex( item3 ) ).to.equal( 2 );
+			expect( collection.getIndex( item1 ) ).toBe( 0 );
+			expect( collection.getIndex( item2 ) ).toBe( 1 );
+			expect( collection.getIndex( item3 ) ).toBe( 2 );
 		} );
 
 		it( 'should return index of item with given id', () => {
@@ -705,19 +708,19 @@ describe( 'Collection', () => {
 			collection.add( { id: 'id2' } );
 			collection.add( { id: 'id3' } );
 
-			expect( collection.getIndex( 'id1' ) ).to.equal( 0 );
-			expect( collection.getIndex( 'id2' ) ).to.equal( 1 );
-			expect( collection.getIndex( 'id3' ) ).to.equal( 2 );
+			expect( collection.getIndex( 'id1' ) ).toBe( 0 );
+			expect( collection.getIndex( 'id2' ) ).toBe( 1 );
+			expect( collection.getIndex( 'id3' ) ).toBe( 2 );
 		} );
 
 		it( 'should return index equal to -1 when given item is not defined in the collection', () => {
 			const item1 = { foo: 'bar' };
 
-			expect( collection.getIndex( item1 ) ).to.equal( -1 );
+			expect( collection.getIndex( item1 ) ).toBe( -1 );
 		} );
 
 		it( 'should return index equal to -1 when item of given id is not defined in the collection', () => {
-			expect( collection.getIndex( 'id1' ) ).to.equal( -1 );
+			expect( collection.getIndex( 'id1' ) ).toBe( -1 );
 		} );
 	} );
 
@@ -727,14 +730,14 @@ describe( 'Collection', () => {
 			collection.add( getItem( 'foo' ) );
 			collection.add( getItem( 'bar' ) );
 
-			expect( collection ).to.have.length( 3 );
+			expect( collection ).toHaveLength( 3 );
 
 			const removedItem = collection.remove( 1 );
 
-			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 'foo' ) ).to.be.null;
-			expect( collection.get( 1 ) ).to.have.property( 'id', 'bar' );
-			expect( removedItem ).to.have.property( 'id', 'foo' );
+			expect( collection ).toHaveLength( 2 );
+			expect( collection.get( 'foo' ) ).toBeNull();
+			expect( collection.get( 1 ) ).toHaveProperty( 'id', 'bar' );
+			expect( removedItem ).toHaveProperty( 'id', 'foo' );
 		} );
 
 		it( 'should remove the model by index - custom id property', () => {
@@ -744,9 +747,9 @@ describe( 'Collection', () => {
 
 			const removedItem = collection.remove( 0 );
 
-			expect( collection ).to.have.length( 0 );
-			expect( collection.get( 'foo' ) ).to.be.null;
-			expect( removedItem ).to.have.property( 'name', 'foo' );
+			expect( collection ).toHaveLength( 0 );
+			expect( collection.get( 'foo' ) ).toBeNull();
+			expect( removedItem ).toHaveProperty( 'name', 'foo' );
 		} );
 
 		it( 'should remove the model by id', () => {
@@ -754,14 +757,14 @@ describe( 'Collection', () => {
 			collection.add( getItem( 'foo' ) );
 			collection.add( getItem( 'bar' ) );
 
-			expect( collection ).to.have.length( 3 );
+			expect( collection ).toHaveLength( 3 );
 
 			const removedItem = collection.remove( 'foo' );
 
-			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 'foo' ) ).to.be.null;
-			expect( collection.get( 1 ) ).to.have.property( 'id', 'bar' );
-			expect( removedItem ).to.have.property( 'id', 'foo' );
+			expect( collection ).toHaveLength( 2 );
+			expect( collection.get( 'foo' ) ).toBeNull();
+			expect( collection.get( 1 ) ).toHaveProperty( 'id', 'bar' );
+			expect( removedItem ).toHaveProperty( 'id', 'foo' );
 		} );
 
 		it( 'should remove the model by model', () => {
@@ -771,14 +774,14 @@ describe( 'Collection', () => {
 			collection.add( item );
 			collection.add( getItem( 'bar' ) );
 
-			expect( collection ).to.have.length( 3 );
+			expect( collection ).toHaveLength( 3 );
 
 			const removedItem = collection.remove( item );
 
-			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 'foo' ) ).to.be.null;
-			expect( collection.get( 1 ) ).to.have.property( 'id', 'bar' );
-			expect( removedItem ).to.equal( item );
+			expect( collection ).toHaveLength( 2 );
+			expect( collection.get( 'foo' ) ).toBeNull();
+			expect( collection.get( 1 ) ).toHaveProperty( 'id', 'bar' );
+			expect( removedItem ).toBe( item );
 		} );
 
 		it( 'should remove the model by model - custom id property', () => {
@@ -789,9 +792,9 @@ describe( 'Collection', () => {
 
 			const removedItem = collection.remove( item );
 
-			expect( collection ).to.have.length( 0 );
-			expect( collection.get( 'foo' ) ).to.be.null;
-			expect( removedItem ).to.have.property( 'name', 'foo' );
+			expect( collection ).toHaveLength( 0 );
+			expect( collection.get( 'foo' ) ).toBeNull();
+			expect( removedItem ).toHaveProperty( 'name', 'foo' );
 		} );
 
 		it( 'should fire the "remove" event', () => {
@@ -803,7 +806,7 @@ describe( 'Collection', () => {
 			collection.add( item2 );
 			collection.add( item3 );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			collection.on( 'remove', spy );
 
@@ -811,23 +814,23 @@ describe( 'Collection', () => {
 			collection.remove( item1 ); // by model
 			collection.remove( 'bom' ); // by id
 
-			sinon.assert.calledThrice( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item1, 0 );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item2, 1 );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item3, 0 );
+			expect( spy ).toHaveBeenCalledTimes( 3 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item1, 0 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item2, 1 );
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( { source: collection } ), item3, 0 );
 		} );
 
 		it( 'should fire the "change" event', () => {
 			const item = getItem( 'foo' );
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			collection.add( item );
 			collection.on( 'change', spy );
 
 			collection.remove( item );
 
-			sinon.assert.calledOnce( spy );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( {
 				added: [],
 				removed: [ item ],
 				index: 0
@@ -841,7 +844,7 @@ describe( 'Collection', () => {
 				collection.remove( 1 );
 			}, /^collection-remove-404/ );
 
-			expect( collection ).to.have.length( 1 );
+			expect( collection ).toHaveLength( 1 );
 		} );
 
 		it( 'should throw an error on invalid id', () => {
@@ -851,7 +854,7 @@ describe( 'Collection', () => {
 				collection.remove( 'bar' );
 			}, /^collection-remove-404/ );
 
-			expect( collection ).to.have.length( 1 );
+			expect( collection ).toHaveLength( 1 );
 		} );
 
 		it( 'should throw an error on invalid model', () => {
@@ -861,19 +864,24 @@ describe( 'Collection', () => {
 				collection.remove( getItem( 'bar' ) );
 			}, /^collection-remove-404/ );
 
-			expect( collection ).to.have.length( 1 );
+			expect( collection ).toHaveLength( 1 );
 		} );
 	} );
 
 	describe( 'map()', () => {
 		it( 'uses native map', () => {
-			const spy = testUtils.sinon.stub( Array.prototype, 'map' ).returns( [ 'foo' ] );
+			const spy = vi.spyOn( Array.prototype, 'map' ).mockReturnValue( [ 'foo' ] );
 			const ctx = {};
 
 			const ret = collection.map( callback, ctx );
 
-			sinon.assert.calledWithExactly( spy, callback, ctx );
-			expect( ret ).to.deep.equal( [ 'foo' ], 'ret value was forwarded' );
+			// Collect the call data and restore the global stub before any assertion is made.
+			const calls = spy.mock.calls.slice();
+
+			spy.mockRestore();
+
+			expect( calls ).toEqual( [ [ callback, ctx ] ] );
+			expect( ret, 'ret value was forwarded' ).toEqual( [ 'foo' ] );
 
 			function callback() {}
 		} );
@@ -881,12 +889,17 @@ describe( 'Collection', () => {
 
 	describe( 'forEach()', () => {
 		it( 'uses native forEach', () => {
-			const spy = testUtils.sinon.stub( Array.prototype, 'forEach' ).returns( undefined );
+			const spy = vi.spyOn( Array.prototype, 'forEach' ).mockReturnValue( undefined );
 			const ctx = {};
 
 			collection.forEach( callback, ctx );
 
-			sinon.assert.calledWithExactly( spy, callback, ctx );
+			// Collect the call data and restore the global stub before any assertion is made.
+			const calls = spy.mock.calls.slice();
+
+			spy.mockRestore();
+
+			expect( calls ).toEqual( [ [ callback, ctx ] ] );
 
 			function callback() {}
 		} );
@@ -896,13 +909,18 @@ describe( 'Collection', () => {
 		it( 'uses native find', () => {
 			const needl = getItem( 'foo' );
 
-			const spy = testUtils.sinon.stub( Array.prototype, 'find' ).returns( needl );
+			const spy = vi.spyOn( Array.prototype, 'find' ).mockReturnValue( needl );
 			const ctx = {};
 
 			const ret = collection.find( callback, ctx );
 
-			sinon.assert.calledWithExactly( spy, callback, ctx );
-			expect( ret ).to.equal( needl, 'ret value was forwarded' );
+			// Collect the call data and restore the global stub before any assertion is made.
+			const calls = spy.mock.calls.slice();
+
+			spy.mockRestore();
+
+			expect( calls ).toEqual( [ [ callback, ctx ] ] );
+			expect( ret, 'ret value was forwarded' ).toBe( needl );
 
 			function callback() {}
 		} );
@@ -913,13 +931,13 @@ describe( 'Collection', () => {
 			const needl = getItem( 'foo' );
 
 			// See: https://github.com/sinonjs/sinon/issues/1521
-			const spy = testUtils.sinon.stub( collection._items, 'filter' ).returns( [ needl ] );
+			const spy = vi.spyOn( collection._items, 'filter' ).mockReturnValue( [ needl ] );
 			const ctx = {};
 
 			const ret = collection.filter( callback, ctx );
 
-			sinon.assert.calledWithExactly( spy, callback, ctx );
-			expect( ret ).to.deep.equal( [ needl ], 'ret value was forwarded' );
+			expect( spy ).toHaveBeenCalledWith( callback, ctx );
+			expect( ret, 'ret value was forwarded' ).toEqual( [ needl ] );
 
 			function callback() {}
 		} );
@@ -928,7 +946,7 @@ describe( 'Collection', () => {
 	describe( 'clear()', () => {
 		it( 'removes all items', () => {
 			const items = [ {}, {}, {} ];
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			collection.on( 'remove', spy );
 
@@ -936,8 +954,8 @@ describe( 'Collection', () => {
 
 			collection.clear();
 
-			expect( spy.callCount ).to.equal( 3 );
-			expect( collection.length ).to.equal( 0 );
+			expect( spy ).toHaveBeenCalledTimes( 3 );
+			expect( collection.length ).toBe( 0 );
 		} );
 
 		it( 'breaks the binding', () => {
@@ -945,31 +963,31 @@ describe( 'Collection', () => {
 			collection.bindTo( external ).using( i => i );
 
 			external.add( { foo: 'bar' } );
-			expect( collection ).to.have.length( 1 );
+			expect( collection ).toHaveLength( 1 );
 
 			collection.clear();
 
 			external.add( { foo: 'baz' } );
-			expect( collection ).to.have.length( 0 );
+			expect( collection ).toHaveLength( 0 );
 
 			external.remove( 0 );
-			expect( collection ).to.have.length( 0 );
+			expect( collection ).toHaveLength( 0 );
 
-			expect( collection._bindToCollection ).to.be.null;
+			expect( collection._bindToCollection ).toBeNull();
 		} );
 
 		it( 'should fire the "change" event', () => {
 			const items = [ {}, {}, {} ];
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			collection.addMany( items );
 			collection.on( 'change', spy );
 
 			collection.clear();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( {
 				added: [],
 				removed: items,
 				index: 0
@@ -985,7 +1003,7 @@ describe( 'Collection', () => {
 		}
 
 		function assertItems( collection, expectedItems ) {
-			expect( collection.map( i => i.v ) ).to.deep.equal( expectedItems );
+			expect( collection.map( i => i.v ) ).toEqual( expectedItems );
 		}
 
 		it( 'throws when binding more than once', () => {
@@ -999,21 +1017,21 @@ describe( 'Collection', () => {
 		it( 'provides "using()" and "as()" interfaces', () => {
 			const returned = collection.bindTo( {} );
 
-			expect( returned ).to.have.keys( 'using', 'as' );
-			expect( returned.using ).to.be.a( 'function' );
-			expect( returned.as ).to.be.a( 'function' );
+			expect( Object.keys( returned ).sort() ).toEqual( [ 'as', 'using' ] );
+			expect( returned.using ).toBeTypeOf( 'function' );
+			expect( returned.as ).toBeTypeOf( 'function' );
 		} );
 
 		it( 'stores reference to bound collection', () => {
 			const collectionB = new Collection();
 
-			expect( collection._bindToCollection ).to.be.undefined;
-			expect( collectionB._bindToCollection ).to.be.undefined;
+			expect( collection._bindToCollection ).toBeUndefined();
+			expect( collectionB._bindToCollection ).toBeUndefined();
 
 			collection.bindTo( collectionB ).as( FactoryClass );
 
-			expect( collection._bindToCollection ).to.equal( collectionB );
-			expect( collectionB._bindToCollection ).to.be.undefined;
+			expect( collection._bindToCollection ).toBe( collectionB );
+			expect( collectionB._bindToCollection ).toBeUndefined();
 		} );
 
 		describe( 'as()', () => {
@@ -1026,7 +1044,7 @@ describe( 'Collection', () => {
 			it( 'does not chain', () => {
 				const returned = collection.bindTo( new Collection() ).as( FactoryClass );
 
-				expect( returned ).to.be.undefined;
+				expect( returned ).toBeUndefined();
 			} );
 
 			it( 'creates a binding (initial content)', () => {
@@ -1035,44 +1053,44 @@ describe( 'Collection', () => {
 
 				collection.bindTo( items ).as( FactoryClass );
 
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				expect( collection ).toHaveLength( 2 );
+				expect( collection.get( 0 ) ).toBeInstanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).toBeInstanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).toBe( items.get( 1 ) );
 			} );
 
 			it( 'creates a binding (new content)', () => {
 				collection.bindTo( items ).as( FactoryClass );
 
-				expect( collection ).to.have.length( 0 );
+				expect( collection ).toHaveLength( 0 );
 
 				items.add( { id: '1' } );
 				items.add( { id: '2' } );
 
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				expect( collection ).toHaveLength( 2 );
+				expect( collection.get( 0 ) ).toBeInstanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).toBeInstanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).toBe( items.get( 1 ) );
 			} );
 
 			it( 'creates a binding (item removal)', () => {
 				collection.bindTo( items ).as( FactoryClass );
 
-				expect( collection ).to.have.length( 0 );
+				expect( collection ).toHaveLength( 0 );
 
 				items.add( { id: '1' } );
 				items.add( { id: '2' } );
 
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				expect( collection ).toHaveLength( 2 );
+				expect( collection.get( 0 ) ).toBeInstanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).toBeInstanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).toBe( items.get( 1 ) );
 
 				items.remove( 1 );
-				expect( collection.get( 0 ).data ).to.equal( items.get( 0 ) );
+				expect( collection.get( 0 ).data ).toBe( items.get( 0 ) );
 
 				items.remove( 0 );
-				expect( collection ).to.have.length( 0 );
+				expect( collection ).toHaveLength( 0 );
 			} );
 		} );
 
@@ -1086,7 +1104,7 @@ describe( 'Collection', () => {
 			it( 'does not chain', () => {
 				const returned = collection.bindTo( new Collection() ).using( () => {} );
 
-				expect( returned ).to.be.undefined;
+				expect( returned ).toBeUndefined();
 			} );
 
 			describe( 'callback', () => {
@@ -1095,15 +1113,15 @@ describe( 'Collection', () => {
 						return new FactoryClass( item );
 					} );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					items.add( { id: '1' } );
 					items.add( { id: '2' } );
 
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+					expect( collection ).toHaveLength( 2 );
+					expect( collection.get( 0 ) ).toBeInstanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).toBeInstanceOf( FactoryClass );
+					expect( collection.get( 1 ).data ).toBe( items.get( 1 ) );
 				} );
 
 				// https://github.com/ckeditor/ckeditor5-ui/issues/113
@@ -1114,19 +1132,19 @@ describe( 'Collection', () => {
 
 					items.add( { id: '1' } );
 
-					expect( collection ).to.have.length( 1 );
+					expect( collection ).toHaveLength( 1 );
 
 					const view = collection.get( 0 );
 
 					// Wrong args will be passed to the callback if it's treated as the view constructor.
-					expect( view ).to.be.instanceOf( FactoryClass );
-					expect( view.data ).to.equal( items.get( 0 ) );
+					expect( view ).toBeInstanceOf( FactoryClass );
+					expect( view.data ).toBe( items.get( 0 ) );
 				} );
 
 				it( 'creates a 1:1 binding', () => {
 					collection.bindTo( items ).using( item => item );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					const item1 = { id: '100' };
 					const item2 = { id: '200' };
@@ -1134,9 +1152,9 @@ describe( 'Collection', () => {
 					items.add( item1 );
 					items.add( item2 );
 
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ) ).to.equal( item1 );
-					expect( collection.get( 1 ) ).to.equal( item2 );
+					expect( collection ).toHaveLength( 2 );
+					expect( collection.get( 0 ) ).toBe( item1 );
+					expect( collection.get( 1 ) ).toBe( item2 );
 				} );
 
 				it( 'creates a conditional binding', () => {
@@ -1154,7 +1172,7 @@ describe( 'Collection', () => {
 						}
 					} );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					const item1 = { id: 'FactoryClass' };
 					const item2 = { id: 'CustomClass' };
@@ -1162,29 +1180,29 @@ describe( 'Collection', () => {
 					items.add( item1 );
 					items.add( item2 );
 
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ) ).to.be.instanceOf( CustomClass );
+					expect( collection ).toHaveLength( 2 );
+					expect( collection.get( 0 ) ).toBeInstanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).toBeInstanceOf( CustomClass );
 				} );
 
 				it( 'creates a binding to a property name', () => {
 					collection.bindTo( items ).using( item => item.prop );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					items.add( { prop: { value: 'foo' } } );
 					items.add( { prop: { value: 'bar' } } );
 
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ).value ).to.equal( 'foo' );
-					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+					expect( collection ).toHaveLength( 2 );
+					expect( collection.get( 0 ).value ).toBe( 'foo' );
+					expect( collection.get( 1 ).value ).toBe( 'bar' );
 				} );
 
 				it( 'skips when there is no item', () => {
 					// Add before collection is bound.
 					items.add( { value: 1, skip: true } );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					collection.bindTo( items ).using( item => {
 						if ( item.skip ) {
@@ -1195,17 +1213,17 @@ describe( 'Collection', () => {
 					} );
 
 					// Still 0 because initial item was skipped.
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					items.add( { value: 2, skip: false } );
 					items.add( { value: 3, skip: true } );
 					items.add( { value: 4, skip: false } );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 4 ] );
+					expect( Array.from( collection, item => item.value ) ).toEqual( [ 2, 4 ] );
 
 					items.add( { value: 5, skip: false }, 2 );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 5, 4 ] );
+					expect( Array.from( collection, item => item.value ) ).toEqual( [ 2, 5, 4 ] );
 				} );
 			} );
 
@@ -1213,34 +1231,34 @@ describe( 'Collection', () => {
 				it( 'creates a binding', () => {
 					collection.bindTo( items ).using( 'prop' );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					items.add( { prop: { value: 'foo' } } );
 					items.add( { prop: { value: 'bar' } } );
 
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ).value ).to.equal( 'foo' );
-					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+					expect( collection ).toHaveLength( 2 );
+					expect( collection.get( 0 ).value ).toBe( 'foo' );
+					expect( collection.get( 1 ).value ).toBe( 'bar' );
 				} );
 
 				it( 'creates a binding (item removal)', () => {
 					collection.bindTo( items ).using( 'prop' );
 
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					items.add( { prop: { value: 'foo' } } );
 					items.add( { prop: { value: 'bar' } } );
 
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ).value ).to.equal( 'foo' );
-					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+					expect( collection ).toHaveLength( 2 );
+					expect( collection.get( 0 ).value ).toBe( 'foo' );
+					expect( collection.get( 1 ).value ).toBe( 'bar' );
 
 					items.remove( 1 );
-					expect( collection ).to.have.length( 1 );
-					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection ).toHaveLength( 1 );
+					expect( collection.get( 0 ).value ).toBe( 'foo' );
 
 					items.remove( 0 );
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 				} );
 
 				it( 'skips when there is no item', () => {
@@ -1249,17 +1267,17 @@ describe( 'Collection', () => {
 					collection.bindTo( items ).using( 'prop' );
 
 					// Still 0 because initial item was skipped.
-					expect( collection ).to.have.length( 0 );
+					expect( collection ).toHaveLength( 0 );
 
 					items.add( { prop: { value: 2, skip: false } } );
 					items.add( { prop: null } );
 					items.add( { prop: { value: 4, skip: false } } );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 4 ] );
+					expect( Array.from( collection, item => item.value ) ).toEqual( [ 2, 4 ] );
 
 					items.add( { prop: { value: 5 } }, 2 );
 
-					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 5, 4 ] );
+					expect( Array.from( collection, item => item.value ) ).toEqual( [ 2, 5, 4 ] );
 				} );
 			} );
 		} );
@@ -1269,8 +1287,8 @@ describe( 'Collection', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				const spyA = sinon.spy();
-				const spyB = sinon.spy();
+				const spyA = vi.fn();
+				const spyB = vi.fn();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
@@ -1293,16 +1311,16 @@ describe( 'Collection', () => {
 				assertItems( collectionA, [ 4, 6, 8 ] );
 				assertItems( collectionB, [ 2, 3, 4 ] );
 
-				sinon.assert.callCount( spyA, 3 );
-				sinon.assert.callCount( spyB, 3 );
+				expect( spyA ).toHaveBeenCalledTimes( 3 );
+				expect( spyB ).toHaveBeenCalledTimes( 3 );
 			} );
 
 			it( 'works with custom factories (2)', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				const spyA = sinon.spy();
-				const spyB = sinon.spy();
+				const spyA = vi.fn();
+				const spyB = vi.fn();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
@@ -1314,25 +1332,25 @@ describe( 'Collection', () => {
 				collectionA.add( { v: 4 } );
 				collectionA.add( { v: 6 } );
 
-				expect( [ ...collectionB ].every( i => i instanceof FactoryClass ) ).to.be.true;
-				expect( [ ...collectionB ].map( i => i.data ) ).to.deep.equal( [ ...collectionA ] );
-				expect( collectionB.map( i => i.data.v ) ).to.deep.equal( [ 4, 6 ] );
-				expect( collectionA.map( i => i.v ) ).to.deep.equal( [ 4, 6 ] );
+				expect( [ ...collectionB ].every( i => i instanceof FactoryClass ) ).toBe( true );
+				expect( [ ...collectionB ].map( i => i.data ) ).toEqual( [ ...collectionA ] );
+				expect( collectionB.map( i => i.data.v ) ).toEqual( [ 4, 6 ] );
+				expect( collectionA.map( i => i.v ) ).toEqual( [ 4, 6 ] );
 
 				collectionB.add( new FactoryClass( { v: 8 } ) );
 
-				expect( [ ...collectionB ].every( i => i instanceof FactoryClass ) ).to.be.true;
-				expect( [ ...collectionB ].map( i => i.data ) ).to.deep.equal( [ ...collectionA ] );
-				expect( collectionB.map( i => i.data.v ) ).to.deep.equal( [ 4, 6, 8 ] );
-				expect( collectionA.map( i => i.v ) ).to.deep.equal( [ 4, 6, 8 ] );
+				expect( [ ...collectionB ].every( i => i instanceof FactoryClass ) ).toBe( true );
+				expect( [ ...collectionB ].map( i => i.data ) ).toEqual( [ ...collectionA ] );
+				expect( collectionB.map( i => i.data.v ) ).toEqual( [ 4, 6, 8 ] );
+				expect( collectionA.map( i => i.v ) ).toEqual( [ 4, 6, 8 ] );
 			} );
 
 			it( 'works with custom factories (custom index)', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				const spyA = sinon.spy();
-				const spyB = sinon.spy();
+				const spyA = vi.fn();
+				const spyB = vi.fn();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
@@ -1355,16 +1373,16 @@ describe( 'Collection', () => {
 				assertItems( collectionA, [ 6, 8, 4 ] );
 				assertItems( collectionB, [ 3, 4, 2 ] );
 
-				sinon.assert.callCount( spyA, 3 );
-				sinon.assert.callCount( spyB, 3 );
+				expect( spyA ).toHaveBeenCalledTimes( 3 );
+				expect( spyB ).toHaveBeenCalledTimes( 3 );
 			} );
 
 			it( 'works with 1:1 binding', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				const spyA = sinon.spy();
-				const spyB = sinon.spy();
+				const spyA = vi.fn();
+				const spyB = vi.fn();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
@@ -1387,10 +1405,10 @@ describe( 'Collection', () => {
 				assertItems( collectionA, [ 4, 6, 8 ] );
 				assertItems( collectionB, [ 4, 6, 8 ] );
 
-				expect( [ ...collectionA ] ).to.deep.equal( [ ...collectionB ] );
+				expect( [ ...collectionA ] ).toEqual( [ ...collectionB ] );
 
-				sinon.assert.callCount( spyA, 3 );
-				sinon.assert.callCount( spyB, 3 );
+				expect( spyA ).toHaveBeenCalledTimes( 3 );
+				expect( spyB ).toHaveBeenCalledTimes( 3 );
 			} );
 
 			it( 'works with double chaining', () => {
@@ -1398,9 +1416,9 @@ describe( 'Collection', () => {
 				const collectionB = new Collection();
 				const collectionC = new Collection();
 
-				const spyA = sinon.spy();
-				const spyB = sinon.spy();
-				const spyC = sinon.spy();
+				const spyA = vi.fn();
+				const spyB = vi.fn();
+				const spyC = vi.fn();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
@@ -1434,19 +1452,19 @@ describe( 'Collection', () => {
 				assertItems( collectionB, [ 2, 3, 4 ] );
 				assertItems( collectionC, [ -2, -3, -4, -1000 ] );
 
-				sinon.assert.callCount( spyA, 3 );
-				sinon.assert.callCount( spyB, 3 );
-				sinon.assert.callCount( spyC, 4 );
+				expect( spyA ).toHaveBeenCalledTimes( 3 );
+				expect( spyB ).toHaveBeenCalledTimes( 3 );
+				expect( spyC ).toHaveBeenCalledTimes( 4 );
 			} );
 
 			it( 'removes items correctly', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				const spyAddA = sinon.spy();
-				const spyAddB = sinon.spy();
-				const spyRemoveA = sinon.spy();
-				const spyRemoveB = sinon.spy();
+				const spyAddA = vi.fn();
+				const spyAddB = vi.fn();
+				const spyRemoveA = vi.fn();
+				const spyRemoveB = vi.fn();
 
 				collectionA.on( 'add', spyAddA );
 				collectionB.on( 'add', spyAddB );
@@ -1476,20 +1494,20 @@ describe( 'Collection', () => {
 				assertItems( collectionA, [ 6, 8 ] );
 				assertItems( collectionB, [ 3, 4 ] );
 
-				sinon.assert.callCount( spyAddA, 3 );
-				sinon.assert.callCount( spyAddB, 3 );
-				sinon.assert.callCount( spyRemoveA, 1 );
-				sinon.assert.callCount( spyRemoveB, 1 );
+				expect( spyAddA ).toHaveBeenCalledTimes( 3 );
+				expect( spyAddB ).toHaveBeenCalledTimes( 3 );
+				expect( spyRemoveA ).toHaveBeenCalledTimes( 1 );
+				expect( spyRemoveB ).toHaveBeenCalledTimes( 1 );
 
 				collectionA.remove( 1 );
 
 				assertItems( collectionA, [ 6 ] );
 				assertItems( collectionB, [ 3 ] );
 
-				sinon.assert.callCount( spyAddA, 3 );
-				sinon.assert.callCount( spyAddB, 3 );
-				sinon.assert.callCount( spyRemoveA, 2 );
-				sinon.assert.callCount( spyRemoveB, 2 );
+				expect( spyAddA ).toHaveBeenCalledTimes( 3 );
+				expect( spyAddB ).toHaveBeenCalledTimes( 3 );
+				expect( spyRemoveA ).toHaveBeenCalledTimes( 2 );
+				expect( spyRemoveB ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			describe( 'skipping items', () => {
@@ -1523,8 +1541,8 @@ describe( 'Collection', () => {
 					collectionA.add( { v: 'C', skip: true } );
 					collectionA.add( { v: 'D' } );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1, 2 ] );
 					assertItems( collectionA, [ 'A', 'B', 'C', 'D' ] );
 					assertItems( collectionB, [ 'A', 'D' ] );
 
@@ -1532,8 +1550,8 @@ describe( 'Collection', () => {
 					collectionB.add( { v: 'F', skip: true } );
 					collectionB.add( { v: 'G' } );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 3 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1, 2 ] );
 					assertItems( collectionA, [ 'A', 'B', 'C', 'D', 'E', 'G' ] );
 					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G' ] );
 				} );
@@ -1549,22 +1567,22 @@ describe( 'Collection', () => {
 					collectionB.add( { v: 'G', skip: true } );
 					collectionB.add( { v: 'H' } );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3, 4 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 3, 4 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1, 2 ] );
 					assertItems( collectionA, [ 'A', 'B', 'C', 'D', 'E', 'H' ] );
 					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G', 'H' ] );
 
 					collectionA.add( { v: 'I' }, 2 );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 4, 5 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 4, 5 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1, 2 ] );
 					assertItems( collectionA, [ 'A', 'B', 'I', 'C', 'D', 'E', 'H' ] );
 					assertItems( collectionB, [ 'A', 'I', 'D', 'E', 'F', 'G', 'H' ] );
 
 					collectionB.add( { v: 'J' }, 5 );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 4, 5 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 4, 5 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1, 2 ] );
 					assertItems( collectionA, [ 'A', 'B', 'I', 'C', 'D', 'E', 'J', 'H' ] );
 					assertItems( collectionB, [ 'A', 'I', 'D', 'E', 'F', 'J', 'G', 'H' ] );
 				} );
@@ -1580,22 +1598,22 @@ describe( 'Collection', () => {
 					collectionB.add( { v: 'G', skip: true } );
 					collectionB.add( { v: 'H' } );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3, 4 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 3, 4 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1, 2 ] );
 					assertItems( collectionA, [ 'A', 'B', 'C', 'D', 'E', 'H' ] );
 					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G', 'H' ] );
 
 					collectionA.remove( 2 );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3, 4 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 3, 4 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1 ] );
 					assertItems( collectionA, [ 'A', 'B', 'D', 'E', 'H' ] );
 					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G', 'H' ] );
 
 					collectionB.remove( 3 );
 
-					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3 ] );
-					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1 ] );
+					expect( [ ...collectionA._skippedIndexesFromExternal ].sort() ).toEqual( [ 3 ] );
+					expect( [ ...collectionB._skippedIndexesFromExternal ].sort() ).toEqual( [ 1 ] );
 					assertItems( collectionA, [ 'A', 'B', 'D', 'E', 'H' ] );
 					assertItems( collectionB, [ 'A', 'D', 'E', 'G', 'H' ] );
 				} );
@@ -1618,7 +1636,7 @@ describe( 'Collection', () => {
 				items.push( item.id );
 			}
 
-			expect( items ).to.deep.equal( [ 'foo', 'bar', 'bom' ] );
+			expect( items ).toEqual( [ 'foo', 'bar', 'bom' ] );
 		} );
 	} );
 } );

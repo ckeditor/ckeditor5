@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
@@ -15,9 +15,9 @@ import { IndentBlock } from '../src/indentblock.js';
 describe( 'IndentBlock - integration', () => {
 	let editor, doc;
 
-	testUtils.createSinonSandbox();
-
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		if ( editor ) {
 			return editor.destroy();
 		}
@@ -37,12 +37,12 @@ describe( 'IndentBlock - integration', () => {
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
-			expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
+			expect( paragraph.hasAttribute( 'blockIndent' ) ).toBe( true );
+			expect( paragraph.getAttribute( 'blockIndent' ) ).toEqual( '50px' );
 
-			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
+			expect( editor.getData() ).toEqual( '<p style="margin-left:50px;">foo</p>' );
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<p style="margin-left:50px">foo</p>' );
+				.toEqual( '<p style="margin-left:50px">foo</p>' );
 		} );
 	} );
 
@@ -62,12 +62,12 @@ describe( 'IndentBlock - integration', () => {
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
-			expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
+			expect( paragraph.hasAttribute( 'blockIndent' ) ).toBe( true );
+			expect( paragraph.getAttribute( 'blockIndent' ) ).toEqual( '50px' );
 
-			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
+			expect( editor.getData() ).toEqual( '<p style="margin-left:50px;">foo</p>' );
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<p style="margin-left:50px">foo</p>' );
+				.toEqual( '<p style="margin-left:50px">foo</p>' );
 		} );
 	} );
 
@@ -105,12 +105,12 @@ describe( 'IndentBlock - integration', () => {
 
 			const customHeading = doc.getRoot().getChild( 0 );
 
-			expect( customHeading.hasAttribute( 'blockIndent' ) ).to.be.true;
-			expect( customHeading.getAttribute( 'blockIndent' ) ).to.equal( '150px' );
+			expect( customHeading.hasAttribute( 'blockIndent' ) ).toBe( true );
+			expect( customHeading.getAttribute( 'blockIndent' ) ).toEqual( '150px' );
 
-			expect( editor.getData() ).to.equal( '<h2 class="fancy" style="margin-left:150px;">foo</h2>' );
+			expect( editor.getData() ).toEqual( '<h2 class="fancy" style="margin-left:150px;">foo</h2>' );
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<h2 class="fancy" style="margin-left:150px">foo</h2>' );
+				.toEqual( '<h2 class="fancy" style="margin-left:150px">foo</h2>' );
 		} );
 	} );
 
@@ -127,7 +127,7 @@ describe( 'IndentBlock - integration', () => {
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.true;
+			expect( paragraph.hasAttribute( 'blockIndent' ) ).toBe( true );
 		} );
 	} );
 

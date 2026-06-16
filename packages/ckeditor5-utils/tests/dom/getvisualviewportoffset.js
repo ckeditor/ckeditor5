@@ -3,66 +3,68 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, afterEach } from 'vitest';
+
 import { getVisualViewportOffset } from '../../src/dom/getvisualviewportoffset.js';
 import { env } from '../../src/env.js';
 
 describe( 'getVisualViewportOffset()', () => {
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should return 0 offsets if there is no window.visualViewport', () => {
-		sinon.stub( window, 'visualViewport' ).get( () => null );
+		vi.spyOn( window, 'visualViewport', 'get' ).mockReturnValue( null );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 0, top: 0 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 0, top: 0 } );
 	} );
 
 	it( 'should return 0 offsets on non Safari', () => {
-		sinon.stub( env, 'isiOS' ).get( () => false );
-		sinon.stub( env, 'isSafari' ).get( () => false );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
+		vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( false );
+		vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( false );
+		vi.spyOn( window.visualViewport, 'offsetLeft', 'get' ).mockReturnValue( 14 );
+		vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockReturnValue( 234 );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 0, top: 0 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 0, top: 0 } );
 	} );
 
 	it( 'should return offsets on iOS', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
+		vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+		vi.spyOn( window.visualViewport, 'offsetLeft', 'get' ).mockReturnValue( 14 );
+		vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockReturnValue( 234 );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 14, top: 234 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 14, top: 234 } );
 	} );
 
 	it( 'should return offsets in Safari', () => {
-		sinon.stub( env, 'isSafari' ).get( () => true );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
+		vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
+		vi.spyOn( window.visualViewport, 'offsetLeft', 'get' ).mockReturnValue( 14 );
+		vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockReturnValue( 234 );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 14, top: 234 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 14, top: 234 } );
 	} );
 
 	it( 'should return round offsets', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14.3 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 233.7 );
+		vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+		vi.spyOn( window.visualViewport, 'offsetLeft', 'get' ).mockReturnValue( 14.3 );
+		vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockReturnValue( 233.7 );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 14, top: 234 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 14, top: 234 } );
 	} );
 
 	it( 'should not return negative offset left', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => -14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => 234 );
+		vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+		vi.spyOn( window.visualViewport, 'offsetLeft', 'get' ).mockReturnValue( -14 );
+		vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockReturnValue( 234 );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 0, top: 234 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 0, top: 234 } );
 	} );
 
 	it( 'should not return negative offset top', () => {
-		sinon.stub( env, 'isiOS' ).get( () => true );
-		sinon.stub( window.visualViewport, 'offsetLeft' ).get( () => 14 );
-		sinon.stub( window.visualViewport, 'offsetTop' ).get( () => -234 );
+		vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+		vi.spyOn( window.visualViewport, 'offsetLeft', 'get' ).mockReturnValue( 14 );
+		vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockReturnValue( -234 );
 
-		expect( getVisualViewportOffset() ).to.deep.equal( { left: 14, top: 0 } );
+		expect( getVisualViewportOffset() ).toEqual( { left: 14, top: 0 } );
 	} );
 } );

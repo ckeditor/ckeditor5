@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Editor } from '../../src/editor/editor.js';
 import { ClassicTestEditor } from '../../tests/_utils/classictesteditor.js';
 
@@ -12,14 +14,15 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { EditorUI, BoxedEditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 
-import { testUtils } from '../../tests/_utils/utils.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
 
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -34,13 +37,13 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates an instance of editor', async () => {
 			const editor = new ClassicTestEditor( editorElement, { foo: 1 } );
 
-			expect( editor ).to.be.instanceof( Editor );
-			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-			expect( editor.sourceElement ).to.equal( editorElement );
-			expect( editor.ui ).to.be.instanceOf( EditorUI );
-			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
-			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( '$root' );
+			expect( editor ).toBeInstanceOf( Editor );
+			expect( editor.config.get( 'foo' ) ).toBe( 1 );
+			expect( editor.sourceElement ).toBe( editorElement );
+			expect( editor.ui ).toBeInstanceOf( EditorUI );
+			expect( editor.ui.view ).toBeInstanceOf( BoxedEditorUIView );
+			expect( editor.data.processor ).toBeInstanceOf( HtmlDataProcessor );
+			expect( editor.model.document.getRoot( 'main' ).name ).toBe( '$root' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -49,8 +52,8 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates the instance of the editable (without rendering)', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
-			expect( editor.ui.view.editable ).to.be.instanceOf( InlineEditableUIView );
-			expect( editor.ui.view.editable.isRendered ).to.be.false;
+			expect( editor.ui.view.editable ).toBeInstanceOf( InlineEditableUIView );
+			expect( editor.ui.view.editable.isRendered ).toBe( false );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -59,10 +62,10 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates the #ui and ui#view (without rendering)', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
-			expect( editor.ui ).to.be.instanceOf( EditorUI );
-			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
-			expect( editor.ui.view.isRendered ).to.be.false;
-			expect( editor.ui.getEditableElement() ).to.be.undefined;
+			expect( editor.ui ).toBeInstanceOf( EditorUI );
+			expect( editor.ui.view ).toBeInstanceOf( BoxedEditorUIView );
+			expect( editor.ui.view.isRendered ).toBe( false );
+			expect( editor.ui.getEditableElement() ).toBeUndefined();
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -71,7 +74,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates main root element', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).toBeInstanceOf( ModelRootElement );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -85,14 +88,15 @@ describe( 'ClassicTestEditor', () => {
 				}
 			} );
 
-			expect( editor.model.document.getRoot( 'main' ).name ).to.equal( 'customRoot' );
+			expect( editor.model.document.getRoot( 'main' ).name ).toBe( 'customRoot' );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
 		} );
 
 		it( 'mixes ElementApiMixin', () => {
-			expect( ClassicTestEditor.prototype ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
+			expect( ClassicTestEditor.prototype ).toHaveProperty( 'updateSourceElement' );
+			expect( typeof ClassicTestEditor.prototype.updateSourceElement ).toBe( 'function' );
 		} );
 	} );
 
@@ -100,10 +104,10 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates an instance of editor', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor ).to.be.instanceof( ClassicTestEditor );
+					expect( editor ).toBeInstanceOf( ClassicTestEditor );
 
-					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-					expect( editor.sourceElement ).to.equal( editorElement );
+					expect( editor.config.get( 'foo' ) ).toBe( 1 );
+					expect( editor.sourceElement ).toBe( editorElement );
 
 					return editor.destroy();
 				} );
@@ -115,10 +119,10 @@ describe( 'ClassicTestEditor', () => {
 					const ui = editor.ui;
 					const view = ui.view;
 
-					expect( view.isRendered ).to.be.true;
-					expect( ui.getEditableElement().tagName ).to.equal( 'DIV' );
-					expect( ui.getEditableElement() ).to.equal( view.editable.element );
-					expect( view.editable.name ).to.equal( 'main' );
+					expect( view.isRendered ).toBe( true );
+					expect( ui.getEditableElement().tagName ).toBe( 'DIV' );
+					expect( ui.getEditableElement() ).toBe( view.editable.element );
+					expect( view.editable.name ).toBe( 'main' );
 
 					return editor.destroy();
 				} );
@@ -135,7 +139,7 @@ describe( 'ClassicTestEditor', () => {
 
 			return ClassicTestEditor.create( editorElement, { plugins: [ PluginTextInRoot ] } )
 				.then( editor => {
-					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( 'foo' );
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe( 'foo' );
 
 					return editor.destroy();
 				} );
@@ -161,7 +165,7 @@ describe( 'ClassicTestEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( editor => {
-					expect( fired ).to.deep.equal( [
+					expect( fired ).toEqual( [
 						'ready-classictesteditorui',
 						'ready-datacontroller',
 						'ready-classictesteditor'
@@ -174,13 +178,13 @@ describe( 'ClassicTestEditor', () => {
 		it( 'sets proper states', () => {
 			const baseEditor = new ClassicTestEditor();
 
-			expect( baseEditor.state ).to.equal( 'initializing' );
+			expect( baseEditor.state ).toBe( 'initializing' );
 
 			return ClassicTestEditor.create( editorElement ).then( editor => {
-				expect( editor.state ).to.equal( 'ready' );
+				expect( editor.state ).toBe( 'ready' );
 
 				return editor.destroy().then( () => {
-					expect( editor.state ).to.equal( 'destroyed' );
+					expect( editor.state ).toBe( 'destroyed' );
 
 					baseEditor.fire( 'ready' );
 					return baseEditor.destroy();
@@ -191,7 +195,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'inserts editor UI next to editor element', () => {
 			return ClassicTestEditor.create( editorElement )
 				.then( editor => {
-					expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
+					expect( editor.ui.view.element.previousSibling ).toBe( editorElement );
 
 					return editor.destroy();
 				} );
@@ -200,7 +204,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'attaches editable UI as view\'s DOM root', () => {
 			return ClassicTestEditor.create( editorElement )
 				.then( editor => {
-					expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+					expect( editor.editing.view.getDomRoot() ).toBe( editor.ui.view.editable.element );
 
 					return editor.destroy();
 				} );
@@ -209,7 +213,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'initializes the data controller with `config.initialData` if this option is provided', () => {
 			return ClassicTestEditor.create( editorElement, { initialData: '<p>foo</p>', plugins: [ Paragraph ] } )
 				.then( editor => {
-					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+					expect( editor.getData() ).toBe( '<p>foo</p>' );
 
 					return editor.destroy();
 				} );
@@ -218,7 +222,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'initializes the data controller with an empty string if the `config.initialData` is not provided', () => {
 			return ClassicTestEditor.create( editorElement )
 				.then( editor => {
-					expect( editor.getData() ).to.equal( '' );
+					expect( editor.getData() ).toBe( '' );
 
 					return editor.destroy();
 				} );
@@ -229,7 +233,7 @@ describe( 'ClassicTestEditor', () => {
 
 			return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( editor => {
-					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+					expect( editor.getData() ).toBe( '<p>foo</p>' );
 
 					return editor.destroy();
 				} );
@@ -238,7 +242,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'initializes the data controller with the data from the first argument if it is a string', () => {
 			return ClassicTestEditor.create( '<p>foo</p>', { plugins: [ Paragraph ] } )
 				.then( editor => {
-					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+					expect( editor.getData() ).toBe( '<p>foo</p>' );
 
 					return editor.destroy();
 				} );
@@ -259,13 +263,13 @@ describe( 'ClassicTestEditor', () => {
 		it( 'destroys UI and calls super.destroy()', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					const superSpy = testUtils.sinon.spy( Editor.prototype, 'destroy' );
-					const uiSpy = sinon.spy( editor.ui, 'destroy' );
+					const superSpy = vi.spyOn( Editor.prototype, 'destroy' );
+					const uiSpy = vi.spyOn( editor.ui, 'destroy' );
 
 					return editor.destroy()
 						.then( () => {
-							expect( superSpy.calledOnce ).to.be.true;
-							expect( uiSpy.calledOnce ).to.be.true;
+							expect( superSpy ).toHaveBeenCalledOnce();
+							expect( uiSpy ).toHaveBeenCalledOnce();
 						} );
 				} );
 		} );
@@ -273,11 +277,11 @@ describe( 'ClassicTestEditor', () => {
 		it( 'restores the editor element', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor.sourceElement.style.display ).to.equal( 'none' );
+					expect( editor.sourceElement.style.display ).toBe( 'none' );
 
 					return editor.destroy()
 						.then( () => {
-							expect( editor.sourceElement.style.display ).to.equal( '' );
+							expect( editor.sourceElement.style.display ).toBe( '' );
 						} );
 				} );
 		} );
@@ -286,12 +290,18 @@ describe( 'ClassicTestEditor', () => {
 			const newEditor = await ClassicTestEditor.create( editorElement, { foo: 1 } );
 			const parentEditorUIPrototype = Object.getPrototypeOf( newEditor.ui.constructor.prototype );
 
-			const parentDestroySpy = testUtils.sinon.spy( parentEditorUIPrototype, 'destroy' );
-			const viewDestroySpy = testUtils.sinon.spy( newEditor.ui.view, 'destroy' );
+			const parentDestroySpy = vi.spyOn( parentEditorUIPrototype, 'destroy' );
+			const viewDestroySpy = vi.spyOn( newEditor.ui.view, 'destroy' );
 
 			await newEditor.destroy();
 
-			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
+			expect( parentDestroySpy ).toHaveBeenCalled();
+			expect( viewDestroySpy ).toHaveBeenCalled();
+
+			// Verify call order by checking invocation order
+			const parentCallOrder = parentDestroySpy.mock.invocationCallOrder[ 0 ];
+			const viewCallOrder = viewDestroySpy.mock.invocationCallOrder[ 0 ];
+			expect( parentCallOrder ).toBeLessThan( viewCallOrder );
 		} );
 	} );
 } );

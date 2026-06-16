@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { generateLicenseKey } from '../_utils/generatelicensekey.js';
 
 describe( 'generateLicenseKey util', () => {
@@ -18,11 +19,11 @@ describe( 'generateLicenseKey util', () => {
 
 			const decodedPayload = JSON.parse( atob( licenseKey.split( '.' )[ 1 ] ) );
 
-			expect( decodedPayload.licensedHosts ).to.deep.equal( [ 'example.com' ] );
-			expect( decodedPayload.licenseType ).to.equal( 'trial' );
-			expect( decodedPayload.usageEndpoint ).to.equal( 'https://example.com/usage' );
-			expect( decodedPayload.distributionChannel ).to.equal( 'cdn' );
-			expect( decodedPayload.whiteLabel ).to.be.true;
+			expect( decodedPayload.licensedHosts ).toEqual( [ 'example.com' ] );
+			expect( decodedPayload.licenseType ).toBe( 'trial' );
+			expect( decodedPayload.usageEndpoint ).toBe( 'https://example.com/usage' );
+			expect( decodedPayload.distributionChannel ).toBe( 'cdn' );
+			expect( decodedPayload.whiteLabel ).toBe( true );
 		} );
 
 		it( 'should generate a license key without header and tail', () => {
@@ -31,8 +32,8 @@ describe( 'generateLicenseKey util', () => {
 				skipTail: true
 			} );
 
-			expect( licenseKey.startsWith( 'foo.' ) ).to.be.false;
-			expect( licenseKey.endsWith( '.bar' ) ).to.be.false;
+			expect( licenseKey.startsWith( 'foo.' ) ).toBe( false );
+			expect( licenseKey.endsWith( '.bar' ) ).toBe( false );
 		} );
 
 		it( 'should generate a license key with custom VC', () => {
@@ -42,7 +43,7 @@ describe( 'generateLicenseKey util', () => {
 
 			const decodedPayload = JSON.parse( atob( licenseKey.split( '.' )[ 1 ] ) );
 
-			expect( decodedPayload.vc ).to.equal( 'abc123' );
+			expect( decodedPayload.vc ).toBe( 'abc123' );
 		} );
 
 		it( 'should generate a license key with custom expiration date', () => {
@@ -52,7 +53,7 @@ describe( 'generateLicenseKey util', () => {
 
 			const decodedPayload = JSON.parse( atob( licenseKey.split( '.' )[ 1 ] ) );
 
-			expect( decodedPayload.exp ).to.be.below( Date.now() / 1000 );
+			expect( decodedPayload.exp ).toBeLessThan( Date.now() / 1000 );
 		} );
 
 		it( 'should generate a license key with custom jti', () => {
@@ -62,7 +63,7 @@ describe( 'generateLicenseKey util', () => {
 
 			const decodedPayload = JSON.parse( atob( licenseKey.split( '.' )[ 1 ] ) );
 
-			expect( decodedPayload.jti ).to.be.undefined;
+			expect( decodedPayload.jti ).toBeUndefined();
 		} );
 	} );
 } );

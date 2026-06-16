@@ -934,7 +934,7 @@ export abstract class Editor extends EditorBase {
 			return this.commands.execute( commandName, ...commandParams );
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
-			/* istanbul ignore next -- @preserve */
+			/* v8 ignore next -- @preserve */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}
@@ -1007,7 +1007,6 @@ export abstract class Editor extends EditorBase {
 		return rootAttributes;
 	}
 
-	/* istanbul ignore next -- @preserve */
 	/**
 	 * Creates and initializes a new editor instance.
 	 *
@@ -1168,6 +1167,7 @@ export abstract class Editor extends EditorBase {
 				throw new CKEditorError( 'license-key-usage-limit' );
 			}
 
+			/* v8 ignore else -- @preserve */
 			if ( reason == 'distributionChannel' ) {
 				/**
 				 * Your license does not allow the current distribution channel.
@@ -1196,9 +1196,8 @@ export abstract class Editor extends EditorBase {
 				throw new CKEditorError( 'license-key-invalid-distribution-channel' );
 			}
 
-			/* istanbul ignore next -- @preserve */
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const unreachable: never = reason;
+			/* v8 ignore next -- @preserve */
+			const unreachable: never = reason; // eslint-disable-line @typescript-eslint/no-unused-vars
 		}, 0 );
 
 		this._showLicenseError = () => {};

@@ -9,6 +9,7 @@
 
 import { CKEditorError } from './ckeditorerror.js';
 
+/* v8 ignore next -- @preserve */
 if ( false ) {
 	/**
 	 * The `Locale#language` property was deprecated and will

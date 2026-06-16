@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
@@ -32,28 +34,28 @@ describe( 'ReplaceCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
 			_setModelData( model, '[]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled by default', () => {
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled at the end of paragraph', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be disabled in readonly editor', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
 	describe( 'state', () => {
 		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
+			expect( command._state ).toBe( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
@@ -74,7 +76,7 @@ describe( 'ReplaceCommand', () => {
 				editor.execute( 'replace', 'new', { marker } );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo new baz</p>' );
+			expect( editor.getData() ).toBe( '<p>Foo bar baz</p><p>Foo new baz</p>' );
 		} );
 
 		it( 'should replace all with text', () => {
@@ -93,7 +95,7 @@ describe( 'ReplaceCommand', () => {
 				editor.execute( 'replace', 'new', { marker } );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>new</p>' );
+			expect( editor.getData() ).toBe( '<p>new</p>' );
 		} );
 
 		it( 'should highlight next match', () => {
@@ -114,7 +116,7 @@ describe( 'ReplaceCommand', () => {
 				}
 			}
 
-			expect( _getModelData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).toBe(
 				'<paragraph>bar <findResult:1:start></findResult:1:start>' +
 					'<findResultHighlighted:x:start></findResultHighlighted:x:start>' +
 						'foo' +
@@ -133,7 +135,7 @@ describe( 'ReplaceCommand', () => {
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text italic="true">foo bom foo</$text></paragraph>'
 			);
 		} );
@@ -144,7 +146,7 @@ describe( 'ReplaceCommand', () => {
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text bold="true" italic="true">foo bom foo</$text></paragraph>'
 			);
 		} );
@@ -155,7 +157,7 @@ describe( 'ReplaceCommand', () => {
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>foo <$text bold="true">bom</$text> foo</paragraph>'
 			);
 		} );
@@ -167,7 +169,7 @@ describe( 'ReplaceCommand', () => {
 			const { results } = editor.execute( 'find', 'foo' );
 			editor.execute( 'replace', 'bar', results.get( 0 ) );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>foo</paragraph>'
 			);
 		} );
@@ -178,7 +180,7 @@ describe( 'ReplaceCommand', () => {
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
 		} );

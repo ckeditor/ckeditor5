@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Clipboard } from '../src/clipboard.js';
 import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
 import { ClipboardPipeline } from '../src/clipboardpipeline.js';
@@ -31,35 +32,41 @@ describe( 'Clipboard Feature', () => {
 	} );
 
 	it( 'requires ClipboardPipeline, DragDrop and PastePlainText', () => {
-		expect( Clipboard.requires ).to.deep.equal( [ ClipboardMarkersUtils, ClipboardPipeline, DragDrop, PastePlainText ] );
+		expect( Clipboard.requires ).toEqual( [ ClipboardMarkersUtils, ClipboardPipeline, DragDrop, PastePlainText ] );
 	} );
 
 	it( 'has proper name', () => {
-		expect( Clipboard.pluginName ).to.equal( 'Clipboard' );
+		expect( Clipboard.pluginName ).toBe( 'Clipboard' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Clipboard.isOfficialPlugin ).to.be.true;
+		expect( Clipboard.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Clipboard.isPremiumPlugin ).to.be.false;
+		expect( Clipboard.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should provide keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
-			label: 'Copy selected content',
-			keystroke: 'CTRL+C'
-		} );
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toEqual(
+			expect.arrayContaining( [ {
+				label: 'Copy selected content',
+				keystroke: 'CTRL+C'
+			} ] )
+		);
 
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
-			label: 'Paste content',
-			keystroke: 'CTRL+V'
-		} );
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toEqual(
+			expect.arrayContaining( [ {
+				label: 'Paste content',
+				keystroke: 'CTRL+V'
+			} ] )
+		);
 
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
-			label: 'Paste content as plain text',
-			keystroke: 'CTRL+SHIFT+V'
-		} );
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toEqual(
+			expect.arrayContaining( [ {
+				label: 'Paste content as plain text',
+				keystroke: 'CTRL+SHIFT+V'
+			} ] )
+		);
 	} );
 } );

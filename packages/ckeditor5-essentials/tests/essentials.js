@@ -5,6 +5,7 @@
 
 import { Essentials } from '../src/essentials.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
@@ -33,24 +34,24 @@ describe( 'Essentials preset', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( Essentials ) ).to.be.instanceOf( Essentials );
+		expect( editor.plugins.get( Essentials ) ).toBeInstanceOf( Essentials );
 	} );
 
 	it( 'should load all its dependencies', () => {
-		expect( editor.plugins.get( AccessibilityHelp ) ).to.be.instanceOf( AccessibilityHelp );
-		expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
-		expect( editor.plugins.get( Enter ) ).to.be.instanceOf( Enter );
-		expect( editor.plugins.get( SelectAll ) ).to.be.instanceOf( SelectAll );
-		expect( editor.plugins.get( ShiftEnter ) ).to.be.instanceOf( ShiftEnter );
-		expect( editor.plugins.get( Typing ) ).to.be.instanceOf( Typing );
-		expect( editor.plugins.get( Undo ) ).to.be.instanceOf( Undo );
+		expect( editor.plugins.get( AccessibilityHelp ) ).toBeInstanceOf( AccessibilityHelp );
+		expect( editor.plugins.get( Clipboard ) ).toBeInstanceOf( Clipboard );
+		expect( editor.plugins.get( Enter ) ).toBeInstanceOf( Enter );
+		expect( editor.plugins.get( SelectAll ) ).toBeInstanceOf( SelectAll );
+		expect( editor.plugins.get( ShiftEnter ) ).toBeInstanceOf( ShiftEnter );
+		expect( editor.plugins.get( Typing ) ).toBeInstanceOf( Typing );
+		expect( editor.plugins.get( Undo ) ).toBeInstanceOf( Undo );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Essentials.isOfficialPlugin ).to.be.true;
+		expect( Essentials.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Essentials.isPremiumPlugin ).to.be.false;
+		expect( Essentials.isPremiumPlugin ).toBe( false );
 	} );
 } );

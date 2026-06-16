@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ViewCollection } from '../../../src/viewcollection.js';
 import { BalloonPanelView } from '../../../src/panel/balloon/balloonpanelview.js';
 import { ButtonView } from '../../../src/button/buttonview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect, ResizeObserver, global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {
 	let view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		view = new BalloonPanelView();
@@ -31,25 +33,25 @@ describe( 'BalloonPanelView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName ).to.equal( 'DIV' );
-			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-balloon-panel' ) ).to.true;
+			expect( view.element.tagName ).toBe( 'DIV' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-balloon-panel' ) ).toBe( true );
 		} );
 
 		it( 'should set default values', () => {
-			expect( view.top ).to.equal( 0 );
-			expect( view.left ).to.equal( 0 );
-			expect( view.position ).to.equal( 'arrow_nw' );
-			expect( view.isVisible ).to.equal( false );
-			expect( view.withArrow ).to.equal( true );
+			expect( view.top ).toBe( 0 );
+			expect( view.left ).toBe( 0 );
+			expect( view.position ).toBe( 'arrow_nw' );
+			expect( view.isVisible ).toBe( false );
+			expect( view.withArrow ).toBe( true );
 		} );
 
 		it( 'creates view#content collection', () => {
-			expect( view.content ).to.be.instanceOf( ViewCollection );
+			expect( view.content ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should initialize _resizeObserver with null value', () => {
-			expect( view._resizeObserver ).to.be.null;
+			expect( view._resizeObserver ).toBeNull();
 		} );
 	} );
 
@@ -59,11 +61,11 @@ describe( 'BalloonPanelView', () => {
 
 			view.show();
 
-			expect( view.isVisible ).to.true;
+			expect( view.isVisible ).toBe( true );
 
 			view.destroy();
 
-			expect( view.isVisible ).to.false;
+			expect( view.isVisible ).toBe( false );
 		} );
 
 		it( 'should destroy the _resizeObserver if present', () => {
@@ -79,13 +81,13 @@ describe( 'BalloonPanelView', () => {
 				limiter
 			} );
 
-			const spy = sinon.spy( view._resizeObserver, 'destroy' );
+			const spy = vi.spyOn( view._resizeObserver, 'destroy' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			view.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			target.remove();
 			limiter.remove();
@@ -95,47 +97,47 @@ describe( 'BalloonPanelView', () => {
 	describe( 'DOM bindings', () => {
 		describe( 'arrow', () => {
 			it( 'should react on view#position', () => {
-				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_nw' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_nw' ) ).toBe( true );
 
 				view.position = 'arrow_ne';
 
-				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_ne' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_ne' ) ).toBe( true );
 			} );
 
 			it( 'should react on view#withArrow', () => {
-				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).toBe( true );
 
 				view.withArrow = false;
 
-				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).toBe( false );
 			} );
 		} );
 
 		describe( 'isVisible', () => {
 			it( 'should react on view#isvisible', () => {
-				expect( view.element.classList.contains( 'ck-balloon-panel_visible' ) ).to.false;
+				expect( view.element.classList.contains( 'ck-balloon-panel_visible' ) ).toBe( false );
 
 				view.isVisible = true;
 
-				expect( view.element.classList.contains( 'ck-balloon-panel_visible' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-balloon-panel_visible' ) ).toBe( true );
 			} );
 		} );
 
 		describe( 'styles', () => {
 			it( 'should react on view#top', () => {
-				expect( view.element.style.top ).to.equal( '0px' );
+				expect( view.element.style.top ).toBe( '0px' );
 
 				view.top = 10;
 
-				expect( view.element.style.top ).to.equal( '10px' );
+				expect( view.element.style.top ).toBe( '10px' );
 			} );
 
 			it( 'should react on view#left', () => {
-				expect( view.element.style.left ).to.equal( '0px' );
+				expect( view.element.style.left ).toBe( '0px' );
 
 				view.left = 10;
 
-				expect( view.element.style.left ).to.equal( '10px' );
+				expect( view.element.style.left ).toBe( '10px' );
 			} );
 		} );
 
@@ -143,22 +145,22 @@ describe( 'BalloonPanelView', () => {
 			it( 'should set additional class to the view#element', () => {
 				view.class = 'foo';
 
-				expect( view.element.classList.contains( 'foo' ) ).to.true;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( true );
 
 				view.class = '';
 
-				expect( view.element.classList.contains( 'foo' ) ).to.false;
+				expect( view.element.classList.contains( 'foo' ) ).toBe( false );
 			} );
 		} );
 
 		describe( 'children', () => {
 			it( 'should react on view#content', () => {
-				expect( view.element.childNodes.length ).to.equal( 0 );
+				expect( view.element.childNodes.length ).toBe( 0 );
 
 				const button = new ButtonView( { t() {} } );
 
 				view.content.add( button );
-				expect( view.element.childNodes.length ).to.equal( 1 );
+				expect( view.element.childNodes.length ).toBe( 1 );
 			} );
 		} );
 	} );
@@ -169,7 +171,7 @@ describe( 'BalloonPanelView', () => {
 
 			view.show();
 
-			expect( view.isVisible ).to.true;
+			expect( view.isVisible ).toBe( true );
 		} );
 	} );
 
@@ -179,7 +181,7 @@ describe( 'BalloonPanelView', () => {
 
 			view.hide();
 
-			expect( view.isVisible ).to.false;
+			expect( view.isVisible ).toBe( false );
 		} );
 	} );
 
@@ -202,10 +204,10 @@ describe( 'BalloonPanelView', () => {
 			} );
 
 			// Mock window dimensions.
-			testUtils.sinon.stub( window, 'innerWidth' ).value( 500 );
-			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( window, 'scrollX' ).value( 0 );
-			testUtils.sinon.stub( window, 'scrollY' ).value( 0 );
+			vi.spyOn( window, 'innerWidth', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( window, 'innerHeight', 'get' ).mockReturnValue( 500 );
+			vi.spyOn( window, 'scrollX', 'get' ).mockReturnValue( 0 );
+			vi.spyOn( window, 'scrollY', 'get' ).mockReturnValue( 0 );
 		} );
 
 		afterEach( () => {
@@ -214,11 +216,11 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should use default options', () => {
-			const spy = testUtils.sinon.spy( BalloonPanelView, '_getOptimalPosition' );
+			const spy = vi.spyOn( BalloonPanelView, '_getOptimalPosition' );
 
 			view.attachTo( { target } );
 
-			sinon.assert.calledWithExactly( spy, sinon.match( {
+			expect( spy ).toHaveBeenCalledWith( expect.objectContaining( {
 				element: view.element,
 				target,
 				positions: [
@@ -240,7 +242,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should parse optimal position offset to int', () => {
-			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+			vi.spyOn( BalloonPanelView, '_getOptimalPosition' ).mockReturnValue( {
 				top: 10.345,
 				left: 10.345,
 				name: 'position'
@@ -248,12 +250,12 @@ describe( 'BalloonPanelView', () => {
 
 			view.attachTo( { target, limiter } );
 
-			expect( view.top ).to.equal( 10 );
-			expect( view.left ).to.equal( 10 );
+			expect( view.top ).toBe( 10 );
+			expect( view.left ).toBe( 10 );
 		} );
 
 		it( 'should set and override withArrow property', () => {
-			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+			const stub = vi.spyOn( BalloonPanelView, '_getOptimalPosition' ).mockReturnValue( {
 				top: 10.345,
 				left: 10.345,
 				name: 'position'
@@ -262,16 +264,16 @@ describe( 'BalloonPanelView', () => {
 			view.withArrow = false;
 			view.attachTo( { target, limiter } );
 
-			expect( view.withArrow ).to.be.true;
+			expect( view.withArrow ).toBe( true );
 
 			view.set( 'withArrow', false );
 			view.attachTo( { target, limiter } );
 
-			expect( view.withArrow ).to.be.true;
+			expect( view.withArrow ).toBe( true );
 
-			BalloonPanelView._getOptimalPosition.restore();
+			stub.mockRestore();
 
-			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+			vi.spyOn( BalloonPanelView, '_getOptimalPosition' ).mockReturnValue( {
 				top: 10.345,
 				left: 10.345,
 				name: 'position',
@@ -281,7 +283,7 @@ describe( 'BalloonPanelView', () => {
 			} );
 
 			view.attachTo( { target, limiter } );
-			expect( view.withArrow ).to.be.false;
+			expect( view.withArrow ).toBe( false );
 		} );
 
 		describe( 'limited by limiter element', () => {
@@ -306,7 +308,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_n' );
+				expect( view.position ).toBe( 'arrow_n' );
 			} );
 
 			it( 'should put balloon on the `south east` side of the target element when ' +
@@ -320,7 +322,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_nw' );
+				expect( view.position ).toBe( 'arrow_nw' );
 			} );
 
 			it( 'should put balloon on the `south west` side of the target element when target is on the right side of the limiter', () => {
@@ -333,7 +335,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_ne' );
+				expect( view.position ).toBe( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `north east` side of the target element when target is on the bottom of the limiter ', () => {
@@ -346,7 +348,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_sw' );
+				expect( view.position ).toBe( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `north west` side of the target element when ' +
@@ -360,7 +362,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_se' );
+				expect( view.position ).toBe( 'arrow_se' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
@@ -391,8 +393,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( BalloonPanelView.arrowHeightOffset );
-				expect( view.left ).to.equal( -100 );
+				expect( view.top ).toBe( BalloonPanelView.arrowHeightOffset );
+				expect( view.left ).toBe( -100 );
 
 				positionedAncestor.remove();
 			} );
@@ -416,8 +418,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( BalloonPanelView.arrowHeightOffset + 100 );
-				expect( view.left ).to.equal( 0 );
+				expect( view.top ).toBe( BalloonPanelView.arrowHeightOffset + 100 );
+				expect( view.left ).toBe( 0 );
 
 				positionedAncestor.remove();
 			} );
@@ -440,11 +442,11 @@ describe( 'BalloonPanelView', () => {
 				} );
 
 				// Note: No sandboxing here. Otherwise, it would restore to the previously stubbed value.
-				sinon.stub( window, 'innerWidth' ).value( 275 );
+				vi.spyOn( window, 'innerWidth', 'get' ).mockReturnValue( 275 );
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_ne' );
+				expect( view.position ).toBe( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `south west` is limited', () => {
@@ -464,7 +466,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_nw' );
+				expect( view.position ).toBe( 'arrow_nw' );
 			} );
 
 			it( 'should put balloon on the `north east` position when `south east` is limited', () => {
@@ -483,11 +485,11 @@ describe( 'BalloonPanelView', () => {
 				} );
 
 				// Note: No sandboxing here. Otherwise, it would restore to the previously stubbed value.
-				sinon.stub( window, 'innerHeight' ).value( 275 );
+				vi.spyOn( window, 'innerHeight', 'get' ).mockReturnValue( 275 );
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_sw' );
+				expect( view.position ).toBe( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
@@ -507,7 +509,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_nw' );
+				expect( view.position ).toBe( 'arrow_nw' );
 			} );
 		} );
 
@@ -556,8 +558,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should not show the balloon if the target is not visible (vertical bottom)', () => {
@@ -570,8 +572,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should not show the balloon if the target is not visible (horizontal left)', () => {
@@ -584,8 +586,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should not show the balloon if the target is not visible (horizontal right)', () => {
@@ -598,16 +600,16 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should get proper HTML element when callback is passed as a target', () => {
-				const callback = sinon.stub().returns( document.createElement( 'a' ) );
+				const callback = vi.fn().mockReturnValue( document.createElement( 'a' ) );
 
 				view.attachTo( { target: callback, limiter } );
 
-				sinon.assert.called( callback );
+				expect( callback ).toHaveBeenCalled();
 			} );
 
 			it( 'should show the balloon when limiter is not defined', () => {
@@ -620,7 +622,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target } );
 
-				expect( view.left ).to.equal( 25 );
+				expect( view.left ).toBe( 25 );
 			} );
 		} );
 
@@ -665,8 +667,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should not show the balloon if the target is not visible (vertical bottom)', () => {
@@ -679,8 +681,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should not show the balloon if the target is not visible (horizontal left)', () => {
@@ -693,8 +695,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should not show the balloon if the target is not visible (horizontal right)', () => {
@@ -707,8 +709,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 
 			it( 'should show the balloon when limiter is not defined', () => {
@@ -721,7 +723,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target } );
 
-				expect( view.left ).to.equal( 25 );
+				expect( view.left ).toBe( 25 );
 			} );
 		} );
 
@@ -786,8 +788,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
+				expect( view.top ).toBe( OFF_THE_SCREEN_POSITION );
+				expect( view.left ).toBe( OFF_THE_SCREEN_POSITION );
 			} );
 		} );
 	} );
@@ -796,7 +798,7 @@ describe( 'BalloonPanelView', () => {
 		let attachToSpy, target, targetParent, limiter, notRelatedElement;
 
 		beforeEach( () => {
-			attachToSpy = sinon.spy( view, 'attachTo' );
+			attachToSpy = vi.spyOn( view, 'attachTo' );
 			limiter = document.createElement( 'div' );
 			targetParent = document.createElement( 'div' );
 			target = document.createElement( 'div' );
@@ -818,95 +820,95 @@ describe( 'BalloonPanelView', () => {
 
 		describe( 'pin()', () => {
 			it( 'should show the balloon', () => {
-				const spy = sinon.spy( view, 'show' );
+				const spy = vi.spyOn( view, 'show' );
 
 				view.hide();
 
 				view.pin( { target, limiter } );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should start pinning when the balloon is visible', () => {
 				view.pin( { target, limiter } );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				view.hide();
 				targetParent.dispatchEvent( new Event( 'scroll' ) );
 
 				view.show();
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 
 				targetParent.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.calledThrice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 3 );
 			} );
 
 			it( 'should stop pinning when the balloon becomes invisible', () => {
 				view.show();
 
 				view.pin( { target, limiter } );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				view.hide();
 
 				targetParent.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should unpin if already pinned', () => {
-				const unpinSpy = testUtils.sinon.spy( view, 'unpin' );
+				const unpinSpy = vi.spyOn( view, 'unpin' );
 
 				view.show();
-				sinon.assert.notCalled( attachToSpy );
+				expect( attachToSpy ).not.toHaveBeenCalled();
 
 				view.pin( { target, limiter } );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				view.pin( { target, limiter } );
-				sinon.assert.calledTwice( unpinSpy );
+				expect( unpinSpy ).toHaveBeenCalledTimes( 2 );
 
 				targetParent.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.calledThrice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 3 );
 			} );
 
 			it( 'should keep the balloon pinned to the target when any of the related elements is scrolled', () => {
 				view.pin( { target, limiter } );
 
-				sinon.assert.calledOnce( attachToSpy );
-				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
+				expect( attachToSpy ).toHaveBeenLastCalledWith( { target, limiter } );
 
 				targetParent.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledTwice( attachToSpy );
-				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
+				expect( attachToSpy ).toHaveBeenLastCalledWith( { target, limiter } );
 
 				limiter.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledThrice( attachToSpy );
-				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 3 );
+				expect( attachToSpy ).toHaveBeenLastCalledWith( { target, limiter } );
 
 				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
 
 				// Nothing's changed.
-				sinon.assert.calledThrice( attachToSpy );
-				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 3 );
+				expect( attachToSpy ).toHaveBeenLastCalledWith( { target, limiter } );
 			} );
 
 			it( 'should keep the balloon pinned to the target when the browser window is being resized', () => {
 				view.pin( { target, limiter } );
 
-				sinon.assert.calledOnce( attachToSpy );
-				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
+				expect( attachToSpy ).toHaveBeenLastCalledWith( { target, limiter } );
 
 				window.dispatchEvent( new Event( 'resize' ) );
 
-				sinon.assert.calledTwice( attachToSpy );
-				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
+				expect( attachToSpy ).toHaveBeenLastCalledWith( { target, limiter } );
 			} );
 
 			it( 'should stop attaching when the balloon is hidden', () => {
 				view.pin( { target, limiter } );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				view.hide();
 
@@ -914,13 +916,13 @@ describe( 'BalloonPanelView', () => {
 				window.dispatchEvent( new Event( 'scroll' ) );
 
 				// Still once.
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should stop attaching once the view is destroyed', () => {
 				view.pin( { target, limiter } );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				view.destroy();
 				view.element.remove();
@@ -930,17 +932,17 @@ describe( 'BalloonPanelView', () => {
 				window.dispatchEvent( new Event( 'scroll' ) );
 
 				// Still once.
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should set document.body as the default limiter', () => {
 				view.pin( { target } );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				document.body.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should work for Range as a target', () => {
@@ -953,11 +955,11 @@ describe( 'BalloonPanelView', () => {
 
 				view.pin( { target: range } );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				element.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 
 				element.remove();
 			} );
@@ -968,11 +970,11 @@ describe( 'BalloonPanelView', () => {
 
 				view.pin( { target: rect, limiter } );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				limiter.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should work for a function as a target/limiter', () => {
@@ -984,11 +986,11 @@ describe( 'BalloonPanelView', () => {
 					limiter() { return limiter; }
 				} );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				limiter.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui/issues/227
@@ -996,10 +998,10 @@ describe( 'BalloonPanelView', () => {
 				const rect = {};
 
 				view.pin( { target: rect } );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui/issues/260
@@ -1007,102 +1009,100 @@ describe( 'BalloonPanelView', () => {
 				const rect = {};
 
 				view.pin( { target, limiter: rect } );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.calledTwice( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			describe( 'observe element visibility', () => {
-				let clock;
-
 				beforeEach( () => {
-					clock = sinon.useFakeTimers();
+					vi.useFakeTimers();
 				} );
 
 				afterEach( () => {
-					clock.restore();
+					vi.useRealTimers();
 				} );
 
 				it( 'should hide if the target is not visible (display: none)', () => {
-					const showSpy = sinon.spy( view, 'show' );
-					const hideSpy = sinon.spy( view, 'hide' );
+					const showSpy = vi.spyOn( view, 'show' );
+					const hideSpy = vi.spyOn( view, 'hide' );
 
 					target.style.display = 'none';
 					view.pin( { target, limiter } );
 
-					sinon.assert.notCalled( hideSpy );
-					sinon.assert.notCalled( showSpy );
+					expect( hideSpy ).not.toHaveBeenCalled();
+					expect( showSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should not hide if the target is not visible (visibility: hidden)', () => {
-					const showSpy = sinon.spy( view, 'show' );
-					const hideSpy = sinon.spy( view, 'hide' );
+					const showSpy = vi.spyOn( view, 'show' );
+					const hideSpy = vi.spyOn( view, 'hide' );
 
 					target.style.visibility = 'hidden';
 					view.pin( { target, limiter } );
 
-					sinon.assert.notCalled( hideSpy );
-					sinon.assert.calledOnce( showSpy );
+					expect( hideSpy ).not.toHaveBeenCalled();
+					expect( showSpy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should hide if the target is being hidden (display: none)', () => {
 					const resizeCallbackRef = createResizeObserverCallbackRef();
 
 					view.pin( { target, limiter } );
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( view.isVisible ).to.be.true;
+					expect( view.isVisible ).toBe( true );
 
 					// It's still visible, nothing changed.
 					resizeCallbackRef.current( [ { target } ] );
-					clock.tick( 100 );
-					expect( view.isVisible ).to.be.true;
+					vi.advanceTimersByTime( 100 );
+					expect( view.isVisible ).toBe( true );
 
 					// Hide the target and force call resize callback.
 					target.style.display = 'none';
 					resizeCallbackRef.current( [ { target } ] );
 
 					// It should be hidden now.
-					clock.tick( 100 );
-					expect( view.isVisible ).to.be.false;
+					vi.advanceTimersByTime( 100 );
+					expect( view.isVisible ).toBe( false );
 				} );
 
 				it( 'should not hide if the target is being hidden (visibility: hidden)', () => {
 					const resizeCallbackRef = createResizeObserverCallbackRef();
 
 					view.pin( { target, limiter } );
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( view.isVisible ).to.be.true;
+					expect( view.isVisible ).toBe( true );
 
 					// It's still visible, nothing changed.
 					resizeCallbackRef.current( [ { target } ] );
-					clock.tick( 100 );
-					expect( view.isVisible ).to.be.true;
+					vi.advanceTimersByTime( 100 );
+					expect( view.isVisible ).toBe( true );
 
 					// Hide the target and force call resize callback.
 					target.style.visibility = 'hidden';
 					resizeCallbackRef.current( [ { target } ] );
 
 					// It should be still visible.
-					clock.tick( 100 );
-					expect( view.isVisible ).to.be.true;
+					vi.advanceTimersByTime( 100 );
+					expect( view.isVisible ).toBe( true );
 				} );
 
 				it( 'should properly cleanup resize observer when stop pinning', () => {
 					view.pin( { target, limiter } );
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( view._resizeObserver ).not.to.be.null;
+					expect( view._resizeObserver ).not.toBeNull();
 
-					const destroyObserverSpy = sinon.spy( view._resizeObserver, 'destroy' );
+					const destroyObserverSpy = vi.spyOn( view._resizeObserver, 'destroy' );
 
 					view.unpin();
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( destroyObserverSpy ).to.be.calledOnce;
-					expect( view._resizeObserver ).to.be.null;
+					expect( destroyObserverSpy ).toHaveBeenCalledOnce();
+					expect( view._resizeObserver ).toBeNull();
 				} );
 
 				it( 'should watch parent element visibility changes if target is text node', () => {
@@ -1116,29 +1116,29 @@ describe( 'BalloonPanelView', () => {
 					range.setEnd( textNode, 8 );
 
 					view.pin( { target: range, limiter } );
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( view.isVisible ).to.be.true;
+					expect( view.isVisible ).toBe( true );
 
 					// It's still visible, nothing changed.
 					resizeCallbackRef.current( [ { target } ] );
-					clock.tick( 100 );
-					expect( view.isVisible ).to.be.true;
+					vi.advanceTimersByTime( 100 );
+					expect( view.isVisible ).toBe( true );
 
 					// Hide the target and force call resize callback.
 					target.style.display = 'none';
 					resizeCallbackRef.current( [ { target } ] );
 
 					// It should be hidden now.
-					clock.tick( 100 );
-					expect( view.isVisible ).to.be.false;
+					vi.advanceTimersByTime( 100 );
+					expect( view.isVisible ).toBe( false );
 				} );
 
 				function createResizeObserverCallbackRef() {
 					const resizeCallbackRef = { current: null };
 
 					ResizeObserver._observerInstance = null;
-					testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+					vi.spyOn( global.window, 'ResizeObserver' ).mockImplementation( function( callback ) {
 						resizeCallbackRef.current = callback;
 
 						return {
@@ -1154,17 +1154,17 @@ describe( 'BalloonPanelView', () => {
 
 		describe( 'unpin()', () => {
 			it( 'should hide the balloon if pinned', () => {
-				const spy = sinon.spy( view, 'hide' );
+				const spy = vi.spyOn( view, 'hide' );
 
 				view.pin( { target, limiter } );
 				view.unpin();
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should stop attaching', () => {
 				view.pin( { target, limiter } );
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 
 				view.unpin();
 
@@ -1175,7 +1175,7 @@ describe( 'BalloonPanelView', () => {
 				window.dispatchEvent( new Event( 'resize' ) );
 				document.dispatchEvent( new Event( 'scroll' ) );
 
-				sinon.assert.calledOnce( attachToSpy );
+				expect( attachToSpy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -1217,13 +1217,13 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 33 );
+			expect( Object.keys( positions ) ).toHaveLength( 33 );
 		} );
 
 		// ------- North
 
 		it( 'should define the "northArrowSouth" position', () => {
-			expect( positions.northArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northArrowSouth( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 125,
 				name: 'arrow_s'
@@ -1231,7 +1231,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northArrowSouthEast" position', () => {
-			expect( positions.northArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northArrowSouthEast( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 100 + arrowHOffset,
 				name: 'arrow_se'
@@ -1239,7 +1239,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northArrowSouthMiddleEast" position', () => {
-			expect( positions.northArrowSouthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northArrowSouthMiddleEast( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 112.5 + arrowHOffset,
 				name: 'arrow_sme'
@@ -1247,7 +1247,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northArrowSouthWest" position', () => {
-			expect( positions.northArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northArrowSouthWest( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 150 - arrowHOffset,
 				name: 'arrow_sw'
@@ -1255,7 +1255,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northArrowSouthMiddleWest" position', () => {
-			expect( positions.northArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northArrowSouthMiddleWest( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 137.5 - arrowHOffset,
 				name: 'arrow_smw'
@@ -1265,7 +1265,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- North west
 
 		it( 'should define the "northWestArrowSouth" position', () => {
-			expect( positions.northWestArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northWestArrowSouth( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 75,
 				name: 'arrow_s'
@@ -1273,7 +1273,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northWestArrowSouthWest" position', () => {
-			expect( positions.northWestArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northWestArrowSouthWest( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 100 - arrowHOffset,
 				name: 'arrow_sw'
@@ -1281,7 +1281,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northWestArrowSouthMiddleWest" position', () => {
-			expect( positions.northWestArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northWestArrowSouthMiddleWest( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 87.5 - arrowHOffset,
 				name: 'arrow_smw'
@@ -1289,7 +1289,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northWestArrowSouthEast" position', () => {
-			expect( positions.northWestArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northWestArrowSouthEast( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 50 + arrowHOffset,
 				name: 'arrow_se'
@@ -1297,7 +1297,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northWestArrowSouthMiddleEast" position', () => {
-			expect( positions.northWestArrowSouthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northWestArrowSouthMiddleEast( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 62.5 + arrowHOffset,
 				name: 'arrow_sme'
@@ -1307,7 +1307,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- North east
 
 		it( 'should define the "northEastArrowSouth" position', () => {
-			expect( positions.northEastArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northEastArrowSouth( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 175,
 				name: 'arrow_s'
@@ -1315,7 +1315,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northEastArrowSouthEast" position', () => {
-			expect( positions.northEastArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northEastArrowSouthEast( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 150 + arrowHOffset,
 				name: 'arrow_se'
@@ -1323,7 +1323,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northEastArrowSouthMiddleEast" position', () => {
-			expect( positions.northEastArrowSouthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northEastArrowSouthMiddleEast( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 162.5 + arrowHOffset,
 				name: 'arrow_sme'
@@ -1331,7 +1331,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northEastArrowSouthWest" position', () => {
-			expect( positions.northEastArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northEastArrowSouthWest( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 200 - arrowHOffset,
 				name: 'arrow_sw'
@@ -1339,7 +1339,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "northEastArrowSouthMiddleWest" position', () => {
-			expect( positions.northEastArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.northEastArrowSouthMiddleWest( targetRect, balloonRect ) ).toEqual( {
 				top: 50 - arrowVOffset,
 				left: 187.5 - arrowHOffset,
 				name: 'arrow_smw'
@@ -1349,7 +1349,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- South
 
 		it( 'should define the "southArrowNorth" position', () => {
-			expect( positions.southArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southArrowNorth( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 125,
 				name: 'arrow_n'
@@ -1357,7 +1357,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southArrowNorthEast" position', () => {
-			expect( positions.southArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southArrowNorthEast( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 100 + arrowHOffset,
 				name: 'arrow_ne'
@@ -1365,7 +1365,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southArrowNorthMiddleEast" position', () => {
-			expect( positions.southArrowNorthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southArrowNorthMiddleEast( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 112.5 + arrowHOffset,
 				name: 'arrow_nme'
@@ -1373,7 +1373,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southArrowNorthWest" position', () => {
-			expect( positions.southArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southArrowNorthWest( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 150 - arrowHOffset,
 				name: 'arrow_nw'
@@ -1381,7 +1381,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southArrowNorthMiddleWest" position', () => {
-			expect( positions.southArrowNorthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southArrowNorthMiddleWest( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 137.5 - arrowHOffset,
 				name: 'arrow_nmw'
@@ -1391,7 +1391,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- South west
 
 		it( 'should define the "southWestArrowNorth" position', () => {
-			expect( positions.southWestArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southWestArrowNorth( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 75,
 				name: 'arrow_n'
@@ -1399,7 +1399,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southWestArrowNorthWest" position', () => {
-			expect( positions.southWestArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southWestArrowNorthWest( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 100 - arrowHOffset,
 				name: 'arrow_nw'
@@ -1407,7 +1407,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southWestArrowNorthMiddleWest" position', () => {
-			expect( positions.southWestArrowNorthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southWestArrowNorthMiddleWest( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 87.5 - arrowHOffset,
 				name: 'arrow_nmw'
@@ -1415,7 +1415,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southWestArrowNorthEast" position', () => {
-			expect( positions.southWestArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southWestArrowNorthEast( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 50 + arrowHOffset,
 				name: 'arrow_ne'
@@ -1423,7 +1423,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southWestArrowNorthMiddleEast" position', () => {
-			expect( positions.southWestArrowNorthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southWestArrowNorthMiddleEast( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 62.5 + arrowHOffset,
 				name: 'arrow_nme'
@@ -1433,7 +1433,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- South east
 
 		it( 'should define the "southEastArrowNorth" position', () => {
-			expect( positions.southEastArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southEastArrowNorth( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 175,
 				name: 'arrow_n'
@@ -1441,7 +1441,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southEastArrowNorthEast" position', () => {
-			expect( positions.southEastArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southEastArrowNorthEast( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 150 + arrowHOffset,
 				name: 'arrow_ne'
@@ -1449,7 +1449,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southEastArrowNorthMiddleEast" position', () => {
-			expect( positions.southEastArrowNorthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southEastArrowNorthMiddleEast( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 162.5 + arrowHOffset,
 				name: 'arrow_nme'
@@ -1457,7 +1457,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southEastArrowNorthWest" position', () => {
-			expect( positions.southEastArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southEastArrowNorthWest( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 200 - arrowHOffset,
 				name: 'arrow_nw'
@@ -1465,7 +1465,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should define the "southEastArrowNorthMiddleWest" position', () => {
-			expect( positions.southEastArrowNorthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.southEastArrowNorthMiddleWest( targetRect, balloonRect ) ).toEqual( {
 				top: 200 + arrowVOffset,
 				left: 187.5 - arrowHOffset,
 				name: 'arrow_nmw'
@@ -1475,7 +1475,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- West
 
 		it( 'should define the "westArrowEast" position', () => {
-			expect( positions.westArrowEast( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.westArrowEast( targetRect, balloonRect ) ).toEqual( {
 				top: 125,
 				left: 50 - arrowVOffset,
 				name: 'arrow_e'
@@ -1485,7 +1485,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- East
 
 		it( 'should define the "eastArrowWest" position', () => {
-			expect( positions.eastArrowWest( targetRect, balloonRect ) ).to.deep.equal( {
+			expect( positions.eastArrowWest( targetRect, balloonRect ) ).toEqual( {
 				top: 125,
 				left: 200 + arrowVOffset,
 				name: 'arrow_w'
@@ -1495,7 +1495,7 @@ describe( 'BalloonPanelView', () => {
 		// ------- Sticky
 
 		it( 'should define the "viewportStickyNorth" position and return null if not sticky', () => {
-			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).toBeNull();
 		} );
 	} );
 
@@ -1545,7 +1545,7 @@ describe( 'BalloonPanelView', () => {
 				height: 600
 			} );
 
-			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.deep.equal( {
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).toEqual( {
 				top: 300 + stickyOffset,
 				left: 50,
 				name: 'arrowless',
@@ -1584,7 +1584,7 @@ describe( 'BalloonPanelView', () => {
 				height: 890
 			} );
 
-			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.deep.equal( {
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).toEqual( {
 				top: stickyOffset,
 				left: 275,
 				name: 'arrowless',
@@ -1613,7 +1613,7 @@ describe( 'BalloonPanelView', () => {
 				height: 100
 			} );
 
-			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).toBeNull();
 		} );
 	} );
 
@@ -1658,7 +1658,7 @@ describe( 'BalloonPanelView', () => {
 				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
 				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				expect( generatedResult ).to.deep.equal( defaultResult, name );
+				expect( generatedResult ).toEqual( defaultResult );
 			}
 		} );
 
@@ -1678,7 +1678,7 @@ describe( 'BalloonPanelView', () => {
 
 				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				expect( generatedResult ).to.deep.equal( defaultResult, name );
+				expect( generatedResult ).toEqual( defaultResult );
 			}
 		} );
 
@@ -1708,7 +1708,7 @@ describe( 'BalloonPanelView', () => {
 
 				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				expect( generatedResult ).to.deep.equal( defaultResult, name );
+				expect( generatedResult ).toEqual( defaultResult );
 			}
 		} );
 
@@ -1753,7 +1753,7 @@ describe( 'BalloonPanelView', () => {
 
 				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				expect( generatedResult ).to.deep.equal( defaultResult, name );
+				expect( generatedResult ).toEqual( defaultResult );
 			}
 		} );
 
@@ -1795,10 +1795,10 @@ describe( 'BalloonPanelView', () => {
 			for ( const name in generatedPositions ) {
 				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
 
-				expect( generatedResult.config ).to.deep.equal( {
+				expect( generatedResult.config ).toEqual( {
 					foo: 'bar',
 					withArrow: true
-				}, name );
+				} );
 			}
 		} );
 	} );
@@ -1810,5 +1810,5 @@ function mockBoundingBox( element, data ) {
 	boundingBox.right = boundingBox.left + boundingBox.width;
 	boundingBox.bottom = boundingBox.top + boundingBox.height;
 
-	testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( boundingBox );
+	vi.spyOn( element, 'getBoundingClientRect' ).mockReturnValue( boundingBox );
 }

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ColorGridView } from './../../src/colorgrid/colorgridview.js';
 import { ColorTileView } from '../../src/colorgrid/colortileview.js';
 
 import { ViewCollection } from '../../src/viewcollection.js';
 import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
-
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ColorGridView', () => {
 	let locale, view;
@@ -46,14 +46,13 @@ describe( 'ColorGridView', () => {
 
 	afterEach( () => {
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
-
-	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-color-grid' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-color-grid' ) ).toBe( true );
 		} );
 
 		it( 'uses the options#columns to control the grid', () => {
@@ -61,7 +60,7 @@ describe( 'ColorGridView', () => {
 			view.render();
 
 			// Note: Different browsers use different value optimization.
-			expect( view.element.style.gridTemplateColumns ).to.be.oneOf( [ '1fr 1fr 1fr', 'repeat(3, 1fr)' ] );
+			expect( [ '1fr 1fr 1fr', 'repeat(3, 1fr)' ] ).toContain( view.element.style.gridTemplateColumns );
 
 			view.destroy();
 		} );
@@ -70,34 +69,34 @@ describe( 'ColorGridView', () => {
 			const view = new ColorGridView( locale );
 			view.render();
 
-			expect( view.items ).to.have.length( 0 );
+			expect( view.items ).toHaveLength( 0 );
 
 			view.destroy();
 		} );
 
 		it( 'creates view collection with children', () => {
-			expect( view.items ).to.be.instanceOf( ViewCollection );
+			expect( view.items ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'creates focus tracker', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'creates keystroke handler', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'reacts to changes in #selectedColor by setting the item#isOn', () => {
-			expect( view.items.map( item => item ).some( item => item.isOn ) ).to.be.false;
+			expect( view.items.map( item => item ).some( item => item.isOn ) ).toBe( false );
 
 			view.selectedColor = 'red';
 
-			expect( view.items.get( 2 ).isOn ).to.be.true;
+			expect( view.items.get( 2 ).isOn ).toBe( true );
 
 			view.selectedColor = 'rgb(255, 255, 255)';
 
-			expect( view.items.get( 1 ).isOn ).to.be.true;
-			expect( view.items.get( 2 ).isOn ).to.be.false;
+			expect( view.items.get( 1 ).isOn ).toBe( true );
+			expect( view.items.get( 2 ).isOn ).toBe( false );
 		} );
 
 		it( 'should determine #isOn value when a ColorTileView is added', () => {
@@ -114,12 +113,12 @@ describe( 'ColorGridView', () => {
 
 			view.items.add( tile );
 
-			expect( view.items.get( 3 ).isOn ).to.be.true;
+			expect( view.items.get( 3 ).isOn ).toBe( true );
 		} );
 
 		describe( 'add colors from definition as child items', () => {
 			it( 'has proper number of elements', () => {
-				expect( view.items.length ).to.equal( 3 );
+				expect( view.items.length ).toEqual( 3 );
 			} );
 
 			colorDefinitions.forEach( ( color, index ) => {
@@ -127,8 +126,8 @@ describe( 'ColorGridView', () => {
 					it( `for (index: ${ index }, color: ${ color.color }) child`, () => {
 						const colorTile = view.items.get( index );
 
-						expect( colorTile ).to.be.instanceOf( ColorTileView );
-						expect( colorTile.color ).to.equal( color.color );
+						expect( colorTile ).toBeInstanceOf( ColorTileView );
+						expect( colorTile.color ).toEqual( color.color );
 					} );
 				} );
 			} );
@@ -154,64 +153,64 @@ describe( 'ColorGridView', () => {
 			it( '"arrow right" should focus the next focusable grid item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the first grid item is focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.items.first.element;
 
-				const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+				const spy = vi.spyOn( view.items.get( 1 ), 'focus' );
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( '"arrow down" should focus the focusable grid item in the second row', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowdown,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// Mock the first grid item is focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.items.first.element;
 
-				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
+				const spy = vi.spyOn( view.items.get( 2 ), 'focus' );
 
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'execute()', () => {
 		it( 'fires event for rendered tiles', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const firstTile = view.items.first;
 
 			view.on( 'execute', spy );
@@ -219,47 +218,47 @@ describe( 'ColorGridView', () => {
 			firstTile.isEnabled = true;
 
 			firstTile.element.dispatchEvent( new Event( 'click' ) );
-			sinon.assert.callCount( spy, 1 );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			firstTile.isEnabled = false;
 
 			firstTile.element.dispatchEvent( new Event( 'click' ) );
-			sinon.assert.callCount( spy, 1 );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'focus', () => {
 		it( 'focuses the tile in DOM', () => {
-			const spy = sinon.spy( view.items.first, 'focus' );
+			const spy = vi.spyOn( view.items.first, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			view.items.clear();
 			view.focus();
 
-			expect( view.items.length ).to.equal( 0 );
-			sinon.assert.calledOnce( spy );
+			expect( view.items.length ).toEqual( 0 );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'focuses last the tile in DOM', () => {
-			const spy = sinon.spy( view.items.last, 'focus' );
+			const spy = vi.spyOn( view.items.last, 'focus' );
 
 			view.focusLast();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			view.items.clear();
 			view.focusLast();
 
-			expect( view.items.length ).to.equal( 0 );
-			sinon.assert.calledOnce( spy );
+			expect( view.items.length ).toEqual( 0 );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		describe( 'update elements in focus tracker', () => {
 			it( 'adding new element', () => {
-				const spy = sinon.spy( view.focusTracker, 'add' );
+				const spy = vi.spyOn( view.focusTracker, 'add' );
 
 				const colorTile = new ColorTileView();
 				colorTile.set( {
@@ -272,17 +271,17 @@ describe( 'ColorGridView', () => {
 				} );
 				view.items.add( colorTile );
 
-				expect( view.items.length ).to.equal( 4 );
-				sinon.assert.calledOnce( spy );
+				expect( view.items.length ).toEqual( 4 );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'removes element', () => {
-				const spy = sinon.spy( view.focusTracker, 'remove' );
+				const spy = vi.spyOn( view.focusTracker, 'remove' );
 
 				view.items.remove( view.items.length - 1 );
 
-				expect( view.items.length ).to.equal( 2 );
-				sinon.assert.calledOnce( spy );
+				expect( view.items.length ).toEqual( 2 );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );

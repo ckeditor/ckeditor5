@@ -3,109 +3,148 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Token } from '../../src/token/token.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Token', () => {
 	let requests;
 
-	testUtils.createSinonSandbox();
+	function createFakeXHRServer() {
+		const requests = [];
+		class FakeXMLHttpRequest {
+			constructor() {
+				this.aborted = false;
+				this.listeners = new Map();
+				this.upload = new FakeXMLHttpRequestUpload();
+				requests.push( this );
+			}
+			open( method, url ) {
+				this.method = method;
+				this.url = url;
+			}
+			send() {}
+			abort() {
+				this.aborted = true;
+				this.dispatchEvent( 'abort' );
+			}
+			addEventListener( event, callback ) {
+				const callbacks = this.listeners.get( event ) || [];
+				callbacks.push( callback );
+				this.listeners.set( event, callbacks );
+			}
+			respond( status, headers, body ) {
+				this.status = status;
+				this.response = body;
+				this.dispatchEvent( 'load' );
+			}
+			error() { this.dispatchEvent( 'error' ); }
+			dispatchEvent( event, data ) {
+				for ( const callback of this.listeners.get( event ) || [] ) {
+					callback( data );
+				}
+			}
+		}
+		class FakeXMLHttpRequestUpload {
+			constructor() { this.listeners = new Map(); }
+			addEventListener( event, callback ) {
+				const callbacks = this.listeners.get( event ) || [];
+				callbacks.push( callback );
+				this.listeners.set( event, callbacks );
+			}
+			dispatchEvent( event, data ) {
+				for ( const callback of this.listeners.get( event ) || [] ) {
+					callback( data );
+				}
+			}
+		}
+		vi.stubGlobal( 'XMLHttpRequest', FakeXMLHttpRequest );
+		return { requests };
+	}
+
+	let fakeXHR;
 
 	beforeEach( () => {
-		requests = [];
-
-		const xhr = sinon.useFakeXMLHttpRequest();
-
-		xhr.onCreate = request => {
-			requests.push( request );
-		};
+		fakeXHR = createFakeXHRServer();
+		requests = fakeXHR.requests;
 	} );
 
 	afterEach( () => {
-		sinon.restore();
+		vi.restoreAllMocks();
+		vi.unstubAllGlobals();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should throw an error when no tokenUrl provided', () => {
-			expect( () => new Token() ).to.throw(
-				CKEditorError,
-				'token-missing-token-url'
-			);
+			expect( () => new Token() ).toThrow( 'token-missing-token-url' );
 		} );
 
 		it( 'should throw an error if the token passed in options is not a string', () => {
-			expect( () => new Token( 'http://token-endpoint', { initValue: 123456 } ) ).to.throw(
-				CKEditorError,
-				'token-not-in-jwt-format'
-			);
+			expect( () => new Token( 'http://token-endpoint', { initValue: 123456 } ) ).toThrow( 'token-not-in-jwt-format' );
 		} );
 
 		it( 'should throw an error if the token passed in options is wrapped in additional quotes', () => {
 			const tokenInitValue = getTestTokenValue();
 
-			expect( () => new Token( 'http://token-endpoint', { initValue: `"${ tokenInitValue }"` } ) ).to.throw(
-				CKEditorError,
-				'token-not-in-jwt-format'
-			);
+			expect( () => new Token( 'http://token-endpoint', { initValue: `"${ tokenInitValue }"` } ) )
+				.toThrow( 'token-not-in-jwt-format' );
 		} );
 
 		it( 'should throw an error if the token passed in options is not a valid JWT token', () => {
-			expect( () => new Token( 'http://token-endpoint', { initValue: 'token' } ) ).to.throw(
-				CKEditorError,
-				'token-not-in-jwt-format'
-			);
+			expect( () => new Token( 'http://token-endpoint', { initValue: 'token' } ) ).toThrow( 'token-not-in-jwt-format' );
 		} );
 
 		it( 'should set token value if the token passed in options is valid', () => {
 			const tokenInitValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
-			expect( token.value ).to.equal( tokenInitValue );
+			expect( token.value ).toBe( tokenInitValue );
 
 			token.destroy();
 		} );
 
-		it( 'should fire `change:value` event if the value of the token has changed', done => {
+		it( 'should fire `change:value` event if the value of the token has changed', () => {
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			token.on( 'change:value', ( event, name, newValue ) => {
-				expect( newValue ).to.equal( tokenValue );
+			return new Promise( resolve => {
+				token.on( 'change:value', ( event, name, newValue ) => {
+					expect( newValue ).toBe( tokenValue );
 
-				done();
+					resolve();
+				} );
+
+				token.init();
+
+				requests[ 0 ].respond( 200, '', tokenValue );
+
+				token.destroy();
 			} );
-
-			token.init();
-
-			requests[ 0 ].respond( 200, '', tokenValue );
-
-			token.destroy();
 		} );
 
 		it( 'should accept the callback in the constructor', () => {
 			expect( () => {
 				// eslint-disable-next-line
 				const token = new Token( () => Promise.resolve( 'token' ) );
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 
 	describe( 'init()', () => {
-		it( 'should get a token value from the endpoint', done => {
+		it( 'should get a token value from the endpoint', () => {
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			token.init()
+			const promise = token.init()
 				.then( () => {
-					expect( token.value ).to.equal( tokenValue );
+					expect( token.value ).toBe( tokenValue );
 
 					token.destroy();
-
-					done();
 				} );
 
 			requests[ 0 ].respond( 200, '', tokenValue );
+
+			return promise;
 		} );
 
 		it( 'should get a token from the refreshToken function when is provided', () => {
@@ -114,131 +153,128 @@ describe( 'Token', () => {
 
 			return token.init()
 				.then( () => {
-					expect( token.value ).to.equal( tokenValue );
+					expect( token.value ).toBe( tokenValue );
 
 					token.destroy();
 				} );
 		} );
 
 		it( 'should not refresh token if autoRefresh is disabled in options', async () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 
 			await token.init();
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 
-			expect( requests ).to.be.empty;
+			expect( requests ).toHaveLength( 0 );
 
-			clock.restore();
+			vi.useRealTimers();
 
 			token.destroy();
 		} );
 
 		it( 'should refresh token with the time specified in token `exp` payload property', async () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
 			await token.init();
 
-			await clock.tickAsync( 1800000 );
+			await vi.advanceTimersByTimeAsync( 1800000 );
 			requests[ 0 ].respond( 200, '', getTestTokenValue( 1500 ) );
 
-			await clock.tickAsync( 750000 );
+			await vi.advanceTimersByTimeAsync( 750000 );
 			requests[ 1 ].respond( 200, '', getTestTokenValue( 900 ) );
 
-			await clock.tickAsync( 450000 );
+			await vi.advanceTimersByTimeAsync( 450000 );
 			requests[ 2 ].respond( 200, '', getTestTokenValue( 450 ) );
 
-			await clock.tickAsync( 225000 );
+			await vi.advanceTimersByTimeAsync( 225000 );
 			requests[ 3 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-			await clock.tickAsync( 10000 );
+			await vi.advanceTimersByTimeAsync( 10000 );
 			requests[ 4 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-			expect( requests.length ).to.equal( 5 );
+			expect( requests.length ).toBe( 5 );
 
 			token.destroy();
 
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'should refresh the token with the default time if getting token expiration time failed', async () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const tokenValue = 'header.test.signature';
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
 
 			await token.init();
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 			requests[ 0 ].respond( 200, '', tokenValue );
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 			requests[ 1 ].respond( 200, '', tokenValue );
 
-			expect( requests.length ).to.equal( 2 );
+			expect( requests.length ).toBe( 2 );
 
 			token.destroy();
 
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'should refresh the token with the default time if the token payload does not contain `exp` property', async () => {
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 			const tokenValue = `header.${ btoa( JSON.stringify( {} ) ) }.signature`;
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
 
 			await token.init();
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 			requests[ 0 ].respond( 200, '', tokenValue );
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 			requests[ 1 ].respond( 200, '', tokenValue );
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 			requests[ 2 ].respond( 200, '', tokenValue );
 
-			expect( requests.length ).to.equal( 3 );
+			expect( requests.length ).toBe( 3 );
 
 			token.destroy();
 
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'should warn when token expiration time exceeds 32-bit integer range', () => {
-			const consoleStub = sinon.stub( console, 'warn' );
+			const consoleStub = vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 			const tokenValue = `header.${ btoa( JSON.stringify( { exp: 2147483648 } ) ) }.signature`;
 			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
 
 			token.init();
 
-			sinon.assert.calledWithMatch( consoleStub,
+			expect( consoleStub ).toHaveBeenCalledWith(
 				'Token expiration time exceeds 32-bit integer range. This might cause unpredictable token refresh timing. ' +
 				'Token expiration time should always be provided in seconds.',
-				{ tokenExpireTime: 2147483648 }
+				expect.objectContaining( { tokenExpireTime: 2147483648 } )
 			);
 
-			consoleStub.restore();
 			token.destroy();
 		} );
 	} );
 
 	describe( 'destroy', () => {
-		let clock;
-
 		beforeEach( () => {
-			clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 		} );
 
 		afterEach( () => {
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'should stop refreshing the token', async () => {
@@ -248,29 +284,29 @@ describe( 'Token', () => {
 
 			await token.init();
 
-			await clock.tickAsync( 1800000 );
+			await vi.advanceTimersByTimeAsync( 1800000 );
 			requests[ 0 ].respond( 200, '', getTestTokenValue( 1500 ) );
-			await clock.tickAsync( 100 );
+			await vi.advanceTimersByTimeAsync( 100 );
 
-			await clock.tickAsync( 750000 );
+			await vi.advanceTimersByTimeAsync( 750000 );
 			requests[ 1 ].respond( 200, '', getTestTokenValue( 900 ) );
-			await clock.tickAsync( 100 );
+			await vi.advanceTimersByTimeAsync( 100 );
 
 			token.destroy();
 
-			await clock.tickAsync( 3600000 );
-			await clock.tickAsync( 3600000 );
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 
-			expect( requests.length ).to.equal( 2 );
+			expect( requests.length ).toBe( 2 );
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/17462.
 		it( 'should stop refreshing the token when editor destroyed before token request rejects', async () => {
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 
 			const token = new Token( 'http://token-endpoint', { autoRefresh: true } );
-			const registerRefreshTokenTimeoutSpy = testUtils.sinon.spy( token, '_registerRefreshTokenTimeout' );
+			const registerRefreshTokenTimeoutSpy = vi.spyOn( token, '_registerRefreshTokenTimeout' );
 
 			const initPromise = token.init();
 
@@ -284,31 +320,31 @@ describe( 'Token', () => {
 				await initPromise;
 				throw new Error( 'Promise should be rejected' );
 			} catch ( error ) {
-				expect( error ).to.match( /Network Error/ );
+				expect( error.message ).toMatch( /Network Error/ );
 			}
 
-			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
-			sinon.assert.calledOnce( consoleWarnStub );
-			expect( requests.length ).to.equal( 1 );
+			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( requests.length ).toBe( 1 );
 
-			await clock.tickAsync( 10 * 1000 );
+			await vi.advanceTimersByTimeAsync( 10 * 1000 );
 
-			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
-			sinon.assert.calledOnce( consoleWarnStub );
-			expect( requests.length ).to.equal( 1 );
+			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( requests.length ).toBe( 1 );
 
-			await clock.tickAsync( 3600000 );
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 
-			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
-			sinon.assert.calledOnce( consoleWarnStub );
-			expect( requests.length ).to.equal( 1 );
+			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
+			expect( consoleWarnStub ).toHaveBeenCalledOnce();
+			expect( requests.length ).toBe( 1 );
 		} );
 
 		// Related to https://github.com/ckeditor/ckeditor5/issues/17462.
 		it( 'should stop refreshing the token when editor destroyed before token request resolves', async () => {
 			const token = new Token( 'http://token-endpoint', { autoRefresh: true } );
-			const registerRefreshTokenTimeoutSpy = testUtils.sinon.spy( token, '_registerRefreshTokenTimeout' );
+			const registerRefreshTokenTimeoutSpy = vi.spyOn( token, '_registerRefreshTokenTimeout' );
 
 			const initPromise = token.init();
 
@@ -324,75 +360,77 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should not be rejected' );
 			}
 
-			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
-			expect( requests.length ).to.equal( 1 );
+			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
+			expect( requests.length ).toBe( 1 );
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 
-			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
-			expect( requests.length ).to.equal( 1 );
+			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
+			expect( requests.length ).toBe( 1 );
 
-			await clock.tickAsync( 3600000 );
+			await vi.advanceTimersByTimeAsync( 3600000 );
 
-			sinon.assert.calledOnce( registerRefreshTokenTimeoutSpy );
-			expect( requests.length ).to.equal( 1 );
+			expect( registerRefreshTokenTimeoutSpy ).toHaveBeenCalledOnce();
+			expect( requests.length ).toBe( 1 );
 		} );
 	} );
 
 	describe( 'refreshToken()', () => {
-		it( 'should get a token from the specified address', done => {
+		it( 'should get a token from the specified address', () => {
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			token.refreshToken()
+			const promise = token.refreshToken()
 				.then( newToken => {
-					expect( newToken.value ).to.equal( tokenValue );
+					expect( newToken.value ).toBe( tokenValue );
 
 					token.destroy();
-
-					done();
 				} );
 
 			requests[ 0 ].respond( 200, '', tokenValue );
+
+			return promise;
 		} );
 
-		it( 'should throw an error if the returned token is wrapped in additional quotes', done => {
-			testUtils.sinon.stub( console, 'warn' );
+		it( 'should throw an error if the returned token is wrapped in additional quotes', () => {
+			vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 
 			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			token.refreshToken()
+			const promise = token.refreshToken()
 				.then( () => {
-					done( new Error( 'Promise should be rejected' ) );
+					throw new Error( 'Promise should be rejected' );
 				} )
 				.catch( error => {
-					expect( error.constructor ).to.equal( CKEditorError );
-					expect( error ).to.match( /token-not-in-jwt-format/ );
+					expect( error.constructor ).toBe( CKEditorError );
+					expect( error.message ).toMatch( /token-not-in-jwt-format/ );
 					token.destroy();
-					done();
 				} );
 
 			requests[ 0 ].respond( 200, '', `"${ tokenValue }"` );
+
+			return promise;
 		} );
 
-		it( 'should throw an error if the returned token is not a valid JWT token', done => {
-			testUtils.sinon.stub( console, 'warn' );
+		it( 'should throw an error if the returned token is not a valid JWT token', () => {
+			vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
-			token.refreshToken()
+			const promise = token.refreshToken()
 				.then( () => {
-					done( new Error( 'Promise should be rejected' ) );
+					throw new Error( 'Promise should be rejected' );
 				} )
 				.catch( error => {
-					expect( error.constructor ).to.equal( CKEditorError );
-					expect( error ).to.match( /token-not-in-jwt-format/ );
+					expect( error.constructor ).toBe( CKEditorError );
+					expect( error.message ).toMatch( /token-not-in-jwt-format/ );
 					token.destroy();
-					done();
 				} );
 
 			requests[ 0 ].respond( 200, '', 'token' );
+
+			return promise;
 		} );
 
 		it( 'should get a token from the specified callback function', () => {
@@ -401,7 +439,7 @@ describe( 'Token', () => {
 
 			return token.refreshToken()
 				.then( newToken => {
-					expect( newToken.value ).to.equal( tokenValue );
+					expect( newToken.value ).toBe( tokenValue );
 					token.destroy();
 				} );
 		} );
@@ -416,8 +454,8 @@ describe( 'Token', () => {
 			return promise.then( () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
-				expect( error.constructor ).to.equal( CKEditorError );
-				expect( error ).to.match( /token-cannot-download-new-token/ );
+				expect( error.constructor ).toBe( CKEditorError );
+				expect( error.message ).toMatch( /token-cannot-download-new-token/ );
 				token.destroy();
 			} );
 		} );
@@ -432,7 +470,7 @@ describe( 'Token', () => {
 			return promise.then( () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
-				expect( error ).to.match( /Abort/ );
+				expect( error.message ).toMatch( /Abort/ );
 				token.destroy();
 			} );
 		} );
@@ -447,7 +485,7 @@ describe( 'Token', () => {
 			return promise.then( () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
-				expect( error ).to.match( /Network Error/ );
+				expect( error.message ).toMatch( /Network Error/ );
 				token.destroy();
 			} );
 		} );
@@ -458,24 +496,22 @@ describe( 'Token', () => {
 
 			token.refreshToken()
 				.catch( error => {
-					expect( error ).to.equal( 'Custom error occurred' );
+					expect( error ).toBe( 'Custom error occurred' );
 					token.destroy();
 				} );
 		} );
 
 		describe( 'refresh failure handling', () => {
-			let clock;
-
 			beforeEach( () => {
-				clock = sinon.useFakeTimers( {
+				vi.useFakeTimers( {
 					toFake: [ 'setTimeout', 'clearTimeout' ]
 				} );
 
-				testUtils.sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockReturnValue( undefined );
 			} );
 
 			afterEach( () => {
-				clock.restore();
+				vi.useRealTimers();
 			} );
 
 			it( 'should log a warning in the console', () => {
@@ -488,7 +524,11 @@ describe( 'Token', () => {
 				return promise.then( () => {
 					throw new Error( 'Promise should fail' );
 				}, () => {
-					sinon.assert.calledWithMatch( console.warn, 'token-refresh-failed', { autoRefresh: false } );
+					expect( console.warn ).toHaveBeenCalledWith(
+						expect.stringContaining( 'token-refresh-failed' ),
+						expect.objectContaining( { autoRefresh: false } ),
+						expect.anything()
+					);
 					token.destroy();
 				} );
 			} );
@@ -498,6 +538,11 @@ describe( 'Token', () => {
 				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
 				const promise = token.refreshToken();
 
+				// The timer-driven refreshToken() calls re-throw after logging+rescheduling.
+				// Suppress those unhandled rejections — they are expected in this test.
+				const suppressUnhandledRejection = event => event.preventDefault();
+				window.addEventListener( 'unhandledrejection', suppressUnhandledRejection );
+
 				requests[ 0 ].error();
 
 				return promise
@@ -505,22 +550,23 @@ describe( 'Token', () => {
 						throw new Error( 'Promise should fail' );
 					} )
 					.catch( async err => {
-						expect( err ).to.match( /Network Error/ );
+						expect( err.message ).toMatch( /Network Error/ );
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 2 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 2 );
 
 						requests[ 1 ].error();
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 3 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 3 );
 
 						requests[ 2 ].error();
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 4 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 4 );
 
 						token.destroy();
+						window.removeEventListener( 'unhandledrejection', suppressUnhandledRejection );
 					} );
 			} );
 
@@ -536,24 +582,24 @@ describe( 'Token', () => {
 						throw new Error( 'Promise should fail' );
 					} )
 					.catch( async err => {
-						expect( err ).to.match( /Network Error/ );
+						expect( err.message ).toMatch( /Network Error/ );
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 2 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 2 );
 
 						requests[ 1 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-						await clock.tickAsync( '05' );
+						await vi.advanceTimersByTimeAsync( 5000 );
 						// Switched to 10s interval because refresh was successful.
-						expect( requests.length ).to.equal( 2 );
+						expect( requests.length ).toBe( 2 );
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 3 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 3 );
 
 						requests[ 2 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-						await clock.tickAsync( '10' );
-						expect( requests.length ).to.equal( 4 );
+						await vi.advanceTimersByTimeAsync( 10000 );
+						expect( requests.length ).toBe( 4 );
 
 						token.destroy();
 					} );
@@ -571,13 +617,13 @@ describe( 'Token', () => {
 						throw new Error( 'Promise should fail' );
 					} )
 					.catch( async err => {
-						expect( err ).to.match( /Network Error/ );
+						expect( err.message ).toMatch( /Network Error/ );
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 1 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 1 );
 
-						await clock.tickAsync( '10' );
-						expect( requests.length ).to.equal( 1 );
+						await vi.advanceTimersByTimeAsync( 10000 );
+						expect( requests.length ).toBe( 1 );
 
 						token.destroy();
 					} );
@@ -588,6 +634,10 @@ describe( 'Token', () => {
 				const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: true } );
 				const promise = token.refreshToken();
 
+				// requests[1] is a timer-driven call that re-throws after logging+rescheduling.
+				const suppressUnhandledRejection = event => event.preventDefault();
+				window.addEventListener( 'unhandledrejection', suppressUnhandledRejection );
+
 				requests[ 0 ].error();
 
 				return promise
@@ -595,59 +645,60 @@ describe( 'Token', () => {
 						throw new Error( 'Promise should fail' );
 					} )
 					.catch( async err => {
-						expect( err ).to.match( /Network Error/ );
+						expect( err.message ).toMatch( /Network Error/ );
 
-						await clock.tickAsync( '05' );
-						expect( requests.length ).to.equal( 2 );
+						await vi.advanceTimersByTimeAsync( 5000 );
+						expect( requests.length ).toBe( 2 );
 
-						token.refreshToken();
-						token.refreshToken();
-						token.refreshToken();
+						token.refreshToken().catch( () => {} );
+						token.refreshToken().catch( () => {} );
+						token.refreshToken().catch( () => {} );
 
 						requests[ 1 ].error();
 						requests[ 2 ].error();
 						requests[ 3 ].error();
 						requests[ 4 ].error();
 
-						await clock.tickAsync( '05' );
+						await vi.advanceTimersByTimeAsync( 5000 );
 
-						expect( requests.length ).to.equal( 6 );
+						expect( requests.length ).toBe( 6 );
 
 						token.destroy();
+						window.removeEventListener( 'unhandledrejection', suppressUnhandledRejection );
 					} );
 			} );
 		} );
 	} );
 
 	describe( 'static create()', () => {
-		it( 'should return an initialized token', done => {
+		it( 'should return an initialized token', () => {
 			const tokenValue = getTestTokenValue();
 
-			Token.create( 'http://token-endpoint', { autoRefresh: false } )
+			const promise = Token.create( 'http://token-endpoint', { autoRefresh: false } )
 				.then( token => {
-					expect( token.value ).to.equal( tokenValue );
+					expect( token.value ).toBe( tokenValue );
 
 					token.destroy();
-
-					done();
 				} );
 
 			requests[ 0 ].respond( 200, '', tokenValue );
+
+			return promise;
 		} );
 
-		it( 'should use default options when none passed', done => {
+		it( 'should use default options when none passed', () => {
 			const tokenValue = getTestTokenValue();
 
-			Token.create( 'http://token-endpoint' )
+			const promise = Token.create( 'http://token-endpoint' )
 				.then( token => {
-					expect( token._options ).to.eql( { autoRefresh: true } );
+					expect( token._options ).toEqual( { autoRefresh: true } );
 
 					token.destroy();
-
-					done();
 				} );
 
 			requests[ 0 ].respond( 200, '', tokenValue );
+
+			return promise;
 		} );
 	} );
 } );

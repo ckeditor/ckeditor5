@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Plugin } from '../src/plugin.js';
 import { Editor } from '../src/editor/editor.js';
 
@@ -14,22 +15,22 @@ describe( 'Plugin', () => {
 	} );
 
 	it( 'should not be marked as a context plugin', () => {
-		expect( Plugin.isContextPlugin ).to.false;
+		expect( Plugin.isContextPlugin ).toBe( false );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `false`', () => {
-		expect( Plugin.isOfficialPlugin ).to.be.false;
+		expect( Plugin.isOfficialPlugin ).toBe( false );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Plugin.isPremiumPlugin ).to.be.false;
+		expect( Plugin.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should set the `editor` property', () => {
 			const plugin = new Plugin( editor );
 
-			expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
+			expect( plugin ).toHaveProperty( 'editor', editor );
 		} );
 	} );
 
@@ -37,16 +38,16 @@ describe( 'Plugin', () => {
 		it( 'should be defined', () => {
 			const plugin = new Plugin( editor );
 
-			expect( plugin.destroy ).to.be.a( 'function' );
+			expect( plugin.destroy ).toBeTypeOf( 'function' );
 		} );
 
 		it( 'should stop listening', () => {
 			const plugin = new Plugin( editor );
-			const stopListeningSpy = sinon.spy( plugin, 'stopListening' );
+			const stopListeningSpy = vi.spyOn( plugin, 'stopListening' );
 
 			plugin.destroy();
 
-			expect( stopListeningSpy.calledOnce ).to.equal( true );
+			expect( stopListeningSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -65,14 +66,14 @@ describe( 'Plugin', () => {
 			plugin.forceDisabled( 'foo' );
 			plugin.isEnabled = true;
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 		} );
 
 		it( 'clearForceDisabled() should enable the plugin', () => {
 			plugin.forceDisabled( 'foo' );
 			plugin.clearForceDisabled( 'foo' );
 
-			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).toBe( true );
 		} );
 
 		it( 'clearForceDisabled() used with wrong identifier should not enable the plugin', () => {
@@ -80,7 +81,7 @@ describe( 'Plugin', () => {
 			plugin.clearForceDisabled( 'bar' );
 			plugin.isEnabled = true;
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 		} );
 
 		it( 'using forceDisabled() twice with the same identifier should not have any effect', () => {
@@ -88,7 +89,7 @@ describe( 'Plugin', () => {
 			plugin.forceDisabled( 'foo' );
 			plugin.clearForceDisabled( 'foo' );
 
-			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).toBe( true );
 		} );
 
 		it( 'plugin is enabled only after all disables were cleared', () => {
@@ -97,11 +98,11 @@ describe( 'Plugin', () => {
 			plugin.clearForceDisabled( 'foo' );
 			plugin.isEnabled = true;
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 
 			plugin.clearForceDisabled( 'bar' );
 
-			expect( plugin.isEnabled ).to.be.true;
+			expect( plugin.isEnabled ).toBe( true );
 		} );
 
 		it( 'plugin should remain disabled if isEnabled has a callback disabling it', () => {
@@ -114,7 +115,7 @@ describe( 'Plugin', () => {
 			plugin.clearForceDisabled( 'foo' );
 			plugin.isEnabled = true;
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 		} );
 	} );
 } );

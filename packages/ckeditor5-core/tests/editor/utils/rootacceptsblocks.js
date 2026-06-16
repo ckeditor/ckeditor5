@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { Editor } from '../../../src/editor/editor.js';
 import { rootAcceptsBlocks } from '../../../src/editor/utils/rootacceptsblocks.js';
 
@@ -14,7 +15,7 @@ describe( 'rootAcceptsBlocks()', () => {
 
 		editor.model.document.createRoot( '$root', 'main' );
 
-		expect( rootAcceptsBlocks( editor, 'main' ) ).to.be.true;
+		expect( rootAcceptsBlocks( editor, 'main' ) ).toBe( true );
 
 		editor.fire( 'ready' );
 		return editor.destroy();
@@ -25,7 +26,7 @@ describe( 'rootAcceptsBlocks()', () => {
 
 		editor.model.document.createRoot( '$inlineRoot', 'main' );
 
-		expect( rootAcceptsBlocks( editor, 'main' ) ).to.be.false;
+		expect( rootAcceptsBlocks( editor, 'main' ) ).toBe( false );
 
 		editor.fire( 'ready' );
 		return editor.destroy();
@@ -37,8 +38,8 @@ describe( 'rootAcceptsBlocks()', () => {
 		editor.model.document.createRoot( '$root', 'block' );
 		editor.model.document.createRoot( '$inlineRoot', 'inline' );
 
-		expect( rootAcceptsBlocks( editor, 'block' ) ).to.be.true;
-		expect( rootAcceptsBlocks( editor, 'inline' ) ).to.be.false;
+		expect( rootAcceptsBlocks( editor, 'block' ) ).toBe( true );
+		expect( rootAcceptsBlocks( editor, 'inline' ) ).toBe( false );
 
 		editor.fire( 'ready' );
 		return editor.destroy();
@@ -50,11 +51,11 @@ describe( 'rootAcceptsBlocks()', () => {
 		editor.model.schema.register( 'customRoot', { isLimit: true } );
 		editor.model.document.createRoot( 'customRoot', 'main' );
 
-		expect( rootAcceptsBlocks( editor, 'main' ) ).to.be.false;
+		expect( rootAcceptsBlocks( editor, 'main' ) ).toBe( false );
 
 		editor.model.schema.extend( '$block', { allowIn: 'customRoot' } );
 
-		expect( rootAcceptsBlocks( editor, 'main' ) ).to.be.true;
+		expect( rootAcceptsBlocks( editor, 'main' ) ).toBe( true );
 
 		editor.fire( 'ready' );
 		return editor.destroy();

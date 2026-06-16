@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { normalizeOptions } from '../../src/fontsize/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'FontSizeEditing Utils', () => {
 	describe( 'normalizeOptions()', () => {
 		it( 'should discard unsupported values', () => {
-			expect( normalizeOptions( [ () => {}, 'default', 'unknown' ] ) ).to.deep.equal( [ { title: 'Default', model: undefined } ] );
+			expect( normalizeOptions( [ () => {}, 'default', 'unknown' ] ) ).toEqual( [ { title: 'Default', model: undefined } ] );
 		} );
 
 		it( 'should pass through object definition', () => {
@@ -17,7 +18,7 @@ describe( 'FontSizeEditing Utils', () => {
 				title: 'My Size',
 				model: 'my-size',
 				view: { name: 'span', styles: 'font-size: 12em;', priority: 7 }
-			} ] ) ).to.deep.equal( [
+			} ] ) ).toEqual( [
 				{
 					title: 'My Size',
 					model: 'my-size',
@@ -28,7 +29,7 @@ describe( 'FontSizeEditing Utils', () => {
 
 		describe( 'named presets', () => {
 			it( 'should return defined presets', () => {
-				expect( normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] ) ).toEqual( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } },
 					{ title: 'Small', model: 'small', view: { name: 'span', classes: 'text-small', priority: 7 } },
 					{ title: 'Default', model: undefined },
@@ -43,7 +44,7 @@ describe( 'FontSizeEditing Utils', () => {
 					model: 'tiny'
 				};
 
-				expect( normalizeOptions( [ tinyOption ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ tinyOption ] ) ).toEqual( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } }
 				] );
 			} );
@@ -58,7 +59,7 @@ describe( 'FontSizeEditing Utils', () => {
 					}
 				};
 
-				expect( normalizeOptions( [ tinyOption ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ tinyOption ] ) ).toEqual( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } }
 				] );
 			} );
@@ -74,7 +75,7 @@ describe( 'FontSizeEditing Utils', () => {
 					}
 				};
 
-				expect( normalizeOptions( [ tinyOption ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ tinyOption ] ) ).toEqual( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 10 } }
 				] );
 			} );
@@ -82,7 +83,7 @@ describe( 'FontSizeEditing Utils', () => {
 
 		describe( 'numerical presets', () => {
 			it( 'should return generated presets', () => {
-				expect( normalizeOptions( [ '10', '12', 'default', '14.1', 18.3 ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ '10', '12', 'default', '14.1', 18.3 ] ) ).toEqual( [
 					{ title: '10', model: '10px', view: { name: 'span', styles: { 'font-size': '10px' }, priority: 7 } },
 					{ title: '12', model: '12px', view: { name: 'span', styles: { 'font-size': '12px' }, priority: 7 } },
 					{ title: 'Default', model: undefined },
@@ -97,7 +98,7 @@ describe( 'FontSizeEditing Utils', () => {
 					model: '18px'
 				};
 
-				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ numericOption ] ) ).toEqual( [
 					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } }
 				] );
 			} );
@@ -108,7 +109,7 @@ describe( 'FontSizeEditing Utils', () => {
 					model: 'unknown'
 				};
 
-				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [] );
+				expect( normalizeOptions( [ numericOption ] ) ).toEqual( [] );
 			} );
 
 			it( 'should add "view.priority" to returned definition if missing', () => {
@@ -121,7 +122,7 @@ describe( 'FontSizeEditing Utils', () => {
 					}
 				};
 
-				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ numericOption ] ) ).toEqual( [
 					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } }
 				] );
 			} );
@@ -137,7 +138,7 @@ describe( 'FontSizeEditing Utils', () => {
 					}
 				};
 
-				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ numericOption ] ) ).toEqual( [
 					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 10 } }
 				] );
 			} );

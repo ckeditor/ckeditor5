@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { getBorderWidths } from '../../src/dom/getborderwidths.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'getBorderWidths()', () => {
-	testUtils.createSinonSandbox();
-
 	it( 'returns CSS border widths', () => {
 		const elementMock = {
 			ownerDocument: {
@@ -25,7 +23,7 @@ describe( 'getBorderWidths()', () => {
 			}
 		};
 
-		expect( getBorderWidths( elementMock ) ).to.deep.equal( {
+		expect( getBorderWidths( elementMock ) ).toEqual( {
 			top: 10,
 			right: 20,
 			bottom: 30,

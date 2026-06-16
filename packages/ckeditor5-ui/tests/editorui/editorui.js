@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { EditorUI } from '../../src/editorui/editorui.js';
 
 import { ComponentFactory } from '../../src/componentfactory.js';
@@ -15,7 +17,6 @@ import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src
 
 import { FocusTracker, keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { Editor } from '@ckeditor/ckeditor5-core';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor, ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 class MyEditorUI extends EditorUI {
@@ -34,7 +35,9 @@ class MyEditorUI extends EditorUI {
 describe( 'EditorUI', () => {
 	let editor, ui;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editor = new Editor();
@@ -53,95 +56,95 @@ describe( 'EditorUI', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should set #editor', () => {
-			expect( ui.editor ).to.equal( editor );
+			expect( ui.editor ).toBe( editor );
 		} );
 
 		it( 'should create #componentFactory factory', () => {
-			expect( ui.componentFactory ).to.be.instanceOf( ComponentFactory );
+			expect( ui.componentFactory ).toBeInstanceOf( ComponentFactory );
 		} );
 
 		it( 'should create #focusTracker', () => {
-			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( ui.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should create #tooltipManager', () => {
-			expect( ui.tooltipManager ).to.be.instanceOf( TooltipManager );
+			expect( ui.tooltipManager ).toBeInstanceOf( TooltipManager );
 		} );
 
 		it( 'should create #poweredBy', () => {
-			expect( ui.poweredBy ).to.be.instanceOf( PoweredBy );
+			expect( ui.poweredBy ).toBeInstanceOf( PoweredBy );
 		} );
 
 		it( 'should create #evaluationBadge', () => {
-			expect( ui.evaluationBadge ).to.be.instanceOf( EvaluationBadge );
+			expect( ui.evaluationBadge ).toBeInstanceOf( EvaluationBadge );
 		} );
 
 		it( 'should create the aria live announcer instance', () => {
-			expect( ui.ariaLiveAnnouncer ).to.be.instanceOf( AriaLiveAnnouncer );
+			expect( ui.ariaLiveAnnouncer ).toBeInstanceOf( AriaLiveAnnouncer );
 		} );
 
 		it( 'should have #element getter', () => {
-			expect( ui.element ).to.null;
+			expect( ui.element ).toBeNull();
 		} );
 
 		it( 'should set isReady to false', () => {
-			expect( ui.isReady ).to.be.false;
+			expect( ui.isReady ).toBe( false );
 		} );
 
 		it( 'should set isReady to true after #ready is fired', () => {
 			ui.fire( 'ready' );
-			expect( ui.isReady ).to.be.true;
+			expect( ui.isReady ).toBe( true );
 		} );
 
 		it( 'should fire update event after viewDocument#layoutChanged', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			ui.on( 'update', spy );
 
 			editor.editing.view.document.fire( 'layoutChanged' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			editor.editing.view.document.fire( 'layoutChanged' );
 
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 	} );
 
 	describe( 'update()', () => {
 		it( 'should fire update event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			ui.on( 'update', spy );
 
 			ui.update();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 
 			ui.update();
 
-			sinon.assert.calledTwice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should stop listening', () => {
-			const spy = sinon.spy( ui, 'stopListening' );
+			const spy = vi.spyOn( ui, 'stopListening' );
 
 			ui.destroy();
 
-			sinon.assert.called( spy );
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should reset editables array', () => {
 			ui.setEditableElement( 'foo', document.createElement( 'div' ) );
 			ui.setEditableElement( 'bar', document.createElement( 'div' ) );
 
-			expect( [ ...ui.getEditableElementsNames() ] ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( [ ...ui.getEditableElementsNames() ] ).toEqual( [ 'foo', 'bar' ] );
 
 			ui.destroy();
 
-			expect( [ ...ui.getEditableElementsNames() ] ).to.have.length( 0 );
+			expect( [ ...ui.getEditableElementsNames() ] ).toHaveLength( 0 );
 		} );
 
 		it( 'removes domElement#ckeditorInstance references from registered root elements', () => {
@@ -151,21 +154,21 @@ describe( 'EditorUI', () => {
 			ui.setEditableElement( 'foo', fooElement );
 			ui.setEditableElement( 'bar', barElement );
 
-			expect( fooElement.ckeditorInstance ).to.equal( editor );
-			expect( barElement.ckeditorInstance ).to.equal( editor );
+			expect( fooElement.ckeditorInstance ).toBe( editor );
+			expect( barElement.ckeditorInstance ).toBe( editor );
 
 			ui.destroy();
 
-			expect( fooElement.ckeditorInstance ).to.be.null;
-			expect( barElement.ckeditorInstance ).to.be.null;
+			expect( fooElement.ckeditorInstance ).toBeNull();
+			expect( barElement.ckeditorInstance ).toBeNull();
 		} );
 
 		it( 'should destroy #focusTracker', () => {
-			const destroySpy = sinon.spy( ui.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( ui.focusTracker, 'destroy' );
 
 			ui.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should remove elements from keystroke handler', () => {
@@ -175,38 +178,38 @@ describe( 'EditorUI', () => {
 			ui.setEditableElement( 'foo', fooElement );
 			ui.setEditableElement( 'bar', barElement );
 
-			const keystrokesSpy = sinon.spy( editor.keystrokes, 'stopListening' );
+			const keystrokesSpy = vi.spyOn( editor.keystrokes, 'stopListening' );
 
 			ui.destroy();
 
-			sinon.assert.calledTwice( keystrokesSpy );
-			sinon.assert.calledWithExactly( keystrokesSpy, fooElement );
-			sinon.assert.calledWithExactly( keystrokesSpy, barElement );
+			expect( keystrokesSpy ).toHaveBeenCalledTimes( 2 );
+			expect( keystrokesSpy ).toHaveBeenCalledWith( fooElement );
+			expect( keystrokesSpy ).toHaveBeenCalledWith( barElement );
 		} );
 
 		it( 'should destroy #tooltipManager', () => {
-			const destroySpy = sinon.spy( ui.tooltipManager, 'destroy' );
+			const destroySpy = vi.spyOn( ui.tooltipManager, 'destroy' );
 
 			ui.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
-			sinon.assert.calledWithExactly( destroySpy, editor );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
+			expect( destroySpy ).toHaveBeenCalledWith( editor );
 		} );
 
 		it( 'should destroy #poweredBy', () => {
-			const destroySpy = sinon.spy( ui.poweredBy, 'destroy' );
+			const destroySpy = vi.spyOn( ui.poweredBy, 'destroy' );
 
 			ui.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should destroy #evaluationBadge', () => {
-			const destroySpy = sinon.spy( ui.evaluationBadge, 'destroy' );
+			const destroySpy = vi.spyOn( ui.evaluationBadge, 'destroy' );
 
 			ui.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
@@ -222,7 +225,7 @@ describe( 'EditorUI', () => {
 
 			ui.setEditableElement( 'main', element );
 
-			expect( ui.getEditableElement( 'main' ) ).to.equal( element );
+			expect( ui.getEditableElement( 'main' ) ).toBe( element );
 		} );
 
 		it( 'puts a reference to the editor instance in domElement#ckeditorInstance', () => {
@@ -230,7 +233,7 @@ describe( 'EditorUI', () => {
 
 			ui.setEditableElement( 'main', element );
 
-			expect( element.ckeditorInstance ).to.equal( editor );
+			expect( element.ckeditorInstance ).toBe( editor );
 		} );
 
 		it( 'does not override a reference to the editor instance in domElement#ckeditorInstance', () => {
@@ -240,49 +243,49 @@ describe( 'EditorUI', () => {
 
 			ui.setEditableElement( 'main', element );
 
-			expect( element.ckeditorInstance ).to.equal( 'foo' );
+			expect( element.ckeditorInstance ).toBe( 'foo' );
 		} );
 
 		describe( 'Focus tracking and accessibility', () => {
 			it( 'should add the passed DOM element to EditorUI#focusTracker', () => {
-				const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
+				const spy = vi.spyOn( ui.focusTracker, 'add' );
 
 				ui.setEditableElement( 'main', element );
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, element );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledWith( element );
 			} );
 
 			it( 'should add a DOM element to Editor#keystokeHandler', () => {
-				const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+				const spy = vi.spyOn( editor.keystrokes, 'listenTo' );
 
 				ui.setEditableElement( 'main', element );
 				ui.fire( 'ready' );
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, element );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
+				expect( spy ).toHaveBeenCalledWith( element );
 			} );
 
 			it( 'should not add a DOM element to Editor#keystokeHandler if an editing DOM root (to avoid duplication)', () => {
-				const keystrokesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
+				const keystrokesSpy = vi.spyOn( editor.keystrokes, 'listenTo' );
 
 				ui.setEditableElement( 'main', element );
 
-				sinon.assert.notCalled( keystrokesSpy );
+				expect( keystrokesSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should enable accessibility features after the editor UI was ready', () => {
-				const focusTrackerSpy = testUtils.sinon.spy( ui.focusTracker, 'add' );
-				const keystrokesSpy = sinon.spy( editor.keystrokes, 'listenTo' );
+				const focusTrackerSpy = vi.spyOn( ui.focusTracker, 'add' );
+				const keystrokesSpy = vi.spyOn( editor.keystrokes, 'listenTo' );
 
 				ui.fire( 'ready' );
 				ui.setEditableElement( 'main', element );
 
-				sinon.assert.calledOnce( focusTrackerSpy );
-				sinon.assert.calledWithExactly( focusTrackerSpy, element );
+				expect( focusTrackerSpy ).toHaveBeenCalledTimes( 1 );
+				expect( focusTrackerSpy ).toHaveBeenCalledWith( element );
 
-				sinon.assert.calledOnce( keystrokesSpy );
-				sinon.assert.calledWithExactly( keystrokesSpy, element );
+				expect( keystrokesSpy ).toHaveBeenCalledTimes( 1 );
+				expect( keystrokesSpy ).toHaveBeenCalledWith( element );
 			} );
 		} );
 	} );
@@ -294,7 +297,7 @@ describe( 'EditorUI', () => {
 
 			ui.setEditableElement( editableMock.name, editableMock.element );
 
-			expect( ui.getEditableElement() ).to.equal( editableMock.element );
+			expect( ui.getEditableElement() ).toBe( editableMock.element );
 		} );
 
 		it( 'should return editable element (custom root name)', () => {
@@ -305,14 +308,14 @@ describe( 'EditorUI', () => {
 			ui.setEditableElement( editableMock1.name, editableMock1.element );
 			ui.setEditableElement( editableMock2.name, editableMock2.element );
 
-			expect( ui.getEditableElement( 'root1' ) ).to.equal( editableMock1.element );
-			expect( ui.getEditableElement( 'root2' ) ).to.equal( editableMock2.element );
+			expect( ui.getEditableElement( 'root1' ) ).toBe( editableMock1.element );
+			expect( ui.getEditableElement( 'root2' ) ).toBe( editableMock2.element );
 		} );
 
 		it( 'should return null if editable with specified name does not exist', () => {
 			const ui = new MyEditorUI( editor );
 
-			expect( ui.getEditableElement() ).to.be.undefined;
+			expect( ui.getEditableElement() ).toBeUndefined();
 		} );
 	} );
 
@@ -330,33 +333,33 @@ describe( 'EditorUI', () => {
 		it( 'should remove the element from the editor ui', () => {
 			ui.removeEditableElement( editableMock.name );
 
-			expect( ui.getEditableElement( editableMock.name ) ).to.be.undefined;
+			expect( ui.getEditableElement( editableMock.name ) ).toBeUndefined();
 		} );
 
 		it( 'should remove the element from focus tracker', () => {
-			const spy = testUtils.sinon.spy( ui.focusTracker, 'remove' );
+			const spy = vi.spyOn( ui.focusTracker, 'remove' );
 
 			ui.removeEditableElement( editableMock.name );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, editableMock.element );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( editableMock.element );
 		} );
 
 		it( 'should remove the element from the keystroke handler', () => {
-			const keystrokesSpy = sinon.spy( editor.keystrokes, 'stopListening' );
+			const keystrokesSpy = vi.spyOn( editor.keystrokes, 'stopListening' );
 
 			ui.removeEditableElement( editableMock.name );
 
-			sinon.assert.calledOnce( keystrokesSpy );
-			sinon.assert.calledWithExactly( keystrokesSpy, editableMock.element );
+			expect( keystrokesSpy ).toHaveBeenCalledTimes( 1 );
+			expect( keystrokesSpy ).toHaveBeenCalledWith( editableMock.element );
 		} );
 
 		it( 'should remove editor instance reference from the element', () => {
-			expect( editableMock.element.ckeditorInstance ).not.to.be.undefined;
+			expect( editableMock.element.ckeditorInstance ).not.toBeUndefined();
 
 			ui.removeEditableElement( editableMock.name );
 
-			expect( editableMock.element.ckeditorInstance ).to.be.null;
+			expect( editableMock.element.ckeditorInstance ).toBeNull();
 		} );
 
 		it( 'should not crash if called twice for the same editable', () => {
@@ -364,7 +367,7 @@ describe( 'EditorUI', () => {
 
 			expect( () => {
 				ui.removeEditableElement( editableMock.name );
-			} ).not.to.throw();
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -378,42 +381,53 @@ describe( 'EditorUI', () => {
 			ui.setEditableElement( editableMock2.name, editableMock2.element );
 
 			const names = ui.getEditableElementsNames();
-			expect( names[ Symbol.iterator ] ).to.instanceof( Function );
-			expect( Array.from( names ) ).to.deep.equal( [ 'main', 'root2' ] );
+			expect( names[ Symbol.iterator ] ).toBeInstanceOf( Function );
+			expect( Array.from( names ) ).toEqual( [ 'main', 'root2' ] );
 		} );
 
 		it( 'should return empty array if no editables', () => {
 			const ui = new MyEditorUI( editor );
 
-			expect( ui.getEditableElementsNames() ).to.be.empty;
+			expect( Array.from( ui.getEditableElementsNames() ) ).toHaveLength( 0 );
 		} );
 	} );
 
 	describe( 'viewportOffset', () => {
 		it( 'should return offset object', () => {
-			const stub = testUtils.sinon.stub( editor.config, 'get' )
-				.withArgs( 'ui.viewportOffset' )
-				.returns( { top: 200 } );
+			const originalGet = editor.config.get.bind( editor.config );
+			const stub = vi.spyOn( editor.config, 'get' )
+				.mockImplementation( key => {
+					if ( key === 'ui.viewportOffset' ) {
+						return { top: 200 };
+					}
+					return originalGet( key );
+				} );
 
 			const ui = new MyEditorUI( editor );
 
-			expect( ui.viewportOffset ).to.deep.equal( { top: 200, visualTop: 200 } );
-			sinon.assert.calledOnce( stub );
+			expect( ui.viewportOffset ).toEqual( { top: 200, visualTop: 200 } );
+			expect( stub ).toHaveBeenCalledWith( 'ui.viewportOffset' );
 		} );
 
 		it( 'should warn about deprecation', () => {
-			testUtils.sinon.stub( editor.config, 'get' )
-				.withArgs( 'ui.viewportOffset' )
-				.returns( null )
-				.withArgs( 'toolbar.viewportTopOffset' )
-				.returns( 200 );
+			const originalGet = editor.config.get.bind( editor.config );
+			vi.spyOn( editor.config, 'get' )
+				.mockImplementation( key => {
+					if ( key === 'ui.viewportOffset' ) {
+						return null;
+					}
+					if ( key === 'toolbar.viewportTopOffset' ) {
+						return 200;
+					}
+					return originalGet( key );
+				} );
 
-			const consoleStub = testUtils.sinon.stub( console, 'warn' );
+			const consoleStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const ui = new MyEditorUI( editor );
 
-			expect( ui.viewportOffset ).to.deep.equal( { top: 200, visualTop: 200 } );
-			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
+			expect( ui.viewportOffset ).toEqual( { top: 200, visualTop: 200 } );
+			expect( consoleStub ).toHaveBeenCalledWith( expect.stringContaining( 'editor-ui-deprecated-viewport-offset-config' ) );
 		} );
 
 		it( 'should generate viewportOffset.visualTop property when viewportOffset is set', () => {
@@ -421,183 +435,185 @@ describe( 'EditorUI', () => {
 
 			ui.viewportOffset = { top: 100, left: 20 };
 
-			expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100, left: 20 } );
+			expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100, left: 20 } );
 		} );
 
 		it( 'should not create domEmitter if visualViewport is not supported', () => {
-			testUtils.sinon.stub( window, 'visualViewport' ).get( () => null );
+			vi.spyOn( window, 'visualViewport', 'get' ).mockReturnValue( null );
 
 			const ui = new MyEditorUI( editor );
 
-			expect( ui._domEmitter ).to.be.undefined;
+			expect( ui._domEmitter ).toBeUndefined();
+
+			expect( () => ui.destroy() ).not.toThrow();
 		} );
 
 		describe( 'on iOS', () => {
 			beforeEach( () => {
-				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
 			} );
 
 			it( 'should update viewportOffset.visualTop when visual viewport is scrolled', () => {
 				let offsetTop = 0;
 
-				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				const ui = new MyEditorUI( editor );
 
 				ui.viewportOffset = { top: 100 };
 
 				// Fully visible top offset.
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Partly non-visible top offset.
 				offsetTop = 30;
 				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 70 } );
 
 				// Top offset fully outside the visual viewport.
 				offsetTop = 110;
 				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 0 } );
 			} );
 
 			it( 'should update viewportOffset.visualTop when visual viewport is resized', () => {
 				let offsetTop = 0;
 
-				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				const ui = new MyEditorUI( editor );
 
 				ui.viewportOffset = { top: 100 };
 
 				// Fully visible top offset.
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Partly non-visible top offset.
 				offsetTop = 30;
 				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 70 } );
 
 				// Top offset fully outside the visual viewport.
 				offsetTop = 110;
 				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 0 } );
 			} );
 		} );
 
 		describe( 'in Safari', () => {
 			beforeEach( () => {
-				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+				vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 			} );
 
 			it( 'should not update viewportOffset.visualTop when visual viewport is scrolled', () => {
 				let offsetTop = 0;
 
-				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				const ui = new MyEditorUI( editor );
 
 				ui.viewportOffset = { top: 100 };
 
 				// Fully visible top offset.
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Partly non-visible top offset.
 				offsetTop = 30;
 				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 70 } );
 
 				// Top offset fully outside the visual viewport.
 				offsetTop = 110;
 				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 0 } );
 			} );
 
 			it( 'should not update viewportOffset.visualTop when visual viewport is resized', () => {
 				let offsetTop = 0;
 
-				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				const ui = new MyEditorUI( editor );
 
 				ui.viewportOffset = { top: 100 };
 
 				// Fully visible top offset.
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Partly non-visible top offset.
 				offsetTop = 30;
 				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 70 } );
 
 				// Top offset fully outside the visual viewport.
 				offsetTop = 110;
 				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 0 } );
 			} );
 		} );
 
 		describe( 'in non-Safari browser', () => {
 			beforeEach( () => {
-				testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
-				testUtils.sinon.stub( env, 'isiOS' ).get( () => false );
+				vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( false );
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( false );
 			} );
 
 			it( 'should not update viewportOffset.visualTop when visual viewport is scrolled', () => {
 				let offsetTop = 0;
 
-				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				const ui = new MyEditorUI( editor );
 
 				ui.viewportOffset = { top: 100 };
 
 				// Fully visible top offset.
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Partly non-visible top offset.
 				offsetTop = 30;
 				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Top offset fully outside the visual viewport.
 				offsetTop = 110;
 				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 			} );
 
 			it( 'should not update viewportOffset.visualTop when visual viewport is resized', () => {
 				let offsetTop = 0;
 
-				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+				vi.spyOn( window.visualViewport, 'offsetTop', 'get' ).mockImplementation( () => offsetTop );
 
 				const ui = new MyEditorUI( editor );
 
 				ui.viewportOffset = { top: 100 };
 
 				// Fully visible top offset.
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Partly non-visible top offset.
 				offsetTop = 30;
 				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 
 				// Top offset fully outside the visual viewport.
 				offsetTop = 110;
 				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
 
-				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+				expect( ui.viewportOffset ).toEqual( { top: 100, visualTop: 100 } );
 			} );
 		} );
 	} );
@@ -606,21 +622,21 @@ describe( 'EditorUI', () => {
 		it( 'should add element to array', () => {
 			const ui = new MyEditorUI( editor );
 
-			expect( ui._extraMenuBarElements ).to.have.lengthOf( 0 );
+			expect( ui._extraMenuBarElements ).toHaveLength( 0 );
 
 			ui.extendMenuBar( {
 				item: 'foo',
 				position: 'after:bar'
 			} );
 
-			expect( ui._extraMenuBarElements ).to.have.lengthOf( 1 );
+			expect( ui._extraMenuBarElements ).toHaveLength( 1 );
 
 			ui.extendMenuBar( {
 				item: 'foo2',
 				position: 'after:bar'
 			} );
 
-			expect( ui._extraMenuBarElements ).to.have.lengthOf( 2 );
+			expect( ui._extraMenuBarElements ).toHaveLength( 2 );
 		} );
 	} );
 
@@ -643,7 +659,7 @@ describe( 'EditorUI', () => {
 			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
 				const range = editor.editing.view.document.selection.getFirstRange();
 
-				expect( data ).to.deep.equal( {
+				expect( data ).toEqual( {
 					target: editor.editing.view.domConverter.viewRangeToDom( range ),
 					viewportOffset: {
 						top: 110,
@@ -681,7 +697,7 @@ describe( 'EditorUI', () => {
 			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
 				const range = editor.editing.view.document.selection.getFirstRange();
 
-				expect( data ).to.deep.equal( {
+				expect( data ).toEqual( {
 					target: editor.editing.view.domConverter.viewRangeToDom( range ),
 					viewportOffset: {
 						top: 300,
@@ -716,35 +732,37 @@ describe( 'EditorUI', () => {
 
 				describe( 'for a ToolbarView that has already been rendered', () => {
 					it( 'adds ToolbarView to the EditorUI#focusTracker', () => {
-						const spy = testUtils.sinon.spy( ui.focusTracker, 'add' );
+						const spy = vi.spyOn( ui.focusTracker, 'add' );
 						toolbar.render();
 
 						ui.addToolbar( toolbar );
 
-						sinon.assert.calledOnceWithExactly( spy, toolbar );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
+						expect( spy ).toHaveBeenCalledWith( toolbar );
 					} );
 
 					it( 'adds ToolbarView#element to Editor#keystokeHandler', () => {
-						const spy = sinon.spy( editor.keystrokes, 'listenTo' );
+						const spy = vi.spyOn( editor.keystrokes, 'listenTo' );
 						toolbar.render();
 
 						ui.addToolbar( toolbar );
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledTimes( 1 );
 					} );
 				} );
 
 				describe( 'for a toolbar that has not been yet rendered', () => {
 					it( 'delayes changes to EditorUI#focusTracker and Editor#keystokeHandler until the toolbar gets rendered', async () => {
-						const spy = sinon.spy( editor.keystrokes, 'listenTo' );
-						const spy2 = testUtils.sinon.spy( ui.focusTracker, 'add' );
+						const spy = vi.spyOn( editor.keystrokes, 'listenTo' );
+						const spy2 = vi.spyOn( ui.focusTracker, 'add' );
 
 						ui.addToolbar( toolbar );
 
 						await new Promise( resolve => {
 							toolbar.once( 'render', () => {
-								sinon.assert.calledOnce( spy );
-								sinon.assert.calledOnceWithExactly( spy2, toolbar );
+								expect( spy ).toHaveBeenCalledTimes( 1 );
+								expect( spy2 ).toHaveBeenCalledTimes( 1 );
+								expect( spy2 ).toHaveBeenCalledWith( toolbar );
 
 								resolve();
 							} );
@@ -757,14 +775,14 @@ describe( 'EditorUI', () => {
 				it( 'adds toolbar to the `_focusableToolbarDefinitions` array', () => {
 					ui.addToolbar( toolbar );
 
-					expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
+					expect( ui._focusableToolbarDefinitions.length ).toBe( 1 );
 				} );
 
 				it( 'adds toolbar to the `_focusableToolbarDefinitions` array with passed options', () => {
 					ui.addToolbar( toolbar, { isContextual: true } );
 
-					expect( ui._focusableToolbarDefinitions.length ).to.equal( 1 );
-					expect( ui._focusableToolbarDefinitions[ 0 ].options ).to.not.be.undefined;
+					expect( ui._focusableToolbarDefinitions.length ).toBe( 1 );
+					expect( ui._focusableToolbarDefinitions[ 0 ].options ).not.toBeUndefined();
 				} );
 			} );
 
@@ -818,10 +836,10 @@ describe( 'EditorUI', () => {
 					ui.focusTracker.isFocused = true;
 					ui.focusTracker.focusedElement = editingArea;
 
-					visibleSpy = sinon.spy( visibleToolbar, 'focus' ).named( 'visible' );
-					visibleContextualSpy = sinon.spy( visibleContextualToolbar, 'focus' ).named( 'visibleContextual' );
-					invisibleSpy = sinon.spy( invisibleToolbar, 'focus' ).named( 'invisible' );
-					toolbarWithSetupAndCleanupSpy = sinon.spy( toolbarWithSetupAndCleanup, 'focus' ).named( 'withSetupAndCleanup' );
+					visibleSpy = vi.spyOn( visibleToolbar, 'focus' );
+					visibleContextualSpy = vi.spyOn( visibleContextualToolbar, 'focus' );
+					invisibleSpy = vi.spyOn( invisibleToolbar, 'focus' );
+					toolbarWithSetupAndCleanupSpy = vi.spyOn( toolbarWithSetupAndCleanup, 'focus' );
 				} );
 
 				afterEach( () => {
@@ -844,13 +862,12 @@ describe( 'EditorUI', () => {
 
 					pressAltF10();
 
-					sinon.assert.notCalled( visibleContextualSpy );
-					sinon.assert.notCalled( visibleContextualSpy );
-					sinon.assert.notCalled( toolbarWithSetupAndCleanupSpy );
-					sinon.assert.notCalled( invisibleSpy );
+					expect( visibleContextualSpy ).not.toHaveBeenCalled();
+					expect( toolbarWithSetupAndCleanupSpy ).not.toHaveBeenCalled();
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 				} );
 
-				it( 'should do nothing if no toolbars were registered', done => {
+				it( 'should do nothing if no toolbars were registered', async () => {
 					const editor = new Editor();
 					const ui = editor.ui = new MyEditorUI( editor );
 					const editingArea = document.createElement( 'div' );
@@ -861,13 +878,13 @@ describe( 'EditorUI', () => {
 
 					expect( () => {
 						pressAltF10( editor );
-					} ).to.not.throw();
+					} ).not.toThrow();
 
 					editingArea.remove();
 
 					editor.fire( 'ready' );
-					editor.destroy().then( () => done() );
 					ui.destroy();
+					await editor.destroy();
 				} );
 
 				it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go ' +
@@ -879,15 +896,15 @@ describe( 'EditorUI', () => {
 					pressAltF10();
 					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
 
-					sinon.assert.calledOnce( visibleContextualSpy );
+					expect( visibleContextualSpy ).toHaveBeenCalledTimes( 1 );
 
 					pressAltF10();
-					sinon.assert.calledOnce( visibleContextualSpy );
-					sinon.assert.notCalled( visibleSpy );
-					sinon.assert.notCalled( toolbarWithSetupAndCleanupSpy );
-					sinon.assert.notCalled( invisibleSpy );
+					expect( visibleContextualSpy ).toHaveBeenCalledTimes( 1 );
+					expect( visibleSpy ).not.toHaveBeenCalled();
+					expect( toolbarWithSetupAndCleanupSpy ).not.toHaveBeenCalled();
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 
-					expect( visibleContextualToolbar.element.parentNode ).to.equal( document.body );
+					expect( visibleContextualToolbar.element.parentNode ).toBe( document.body );
 				} );
 
 				it( 'should do nothing if the toolbar is already focused and there is nowhere else for the focus to go ' +
@@ -899,23 +916,23 @@ describe( 'EditorUI', () => {
 					pressAltF10();
 					ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
 
-					sinon.assert.calledOnce( toolbarWithSetupAndCleanupSpy );
+					expect( toolbarWithSetupAndCleanupSpy ).toHaveBeenCalledTimes( 1 );
 
 					pressAltF10();
-					sinon.assert.calledOnce( toolbarWithSetupAndCleanupSpy );
-					sinon.assert.notCalled( visibleSpy );
-					sinon.assert.notCalled( visibleContextualSpy );
-					sinon.assert.notCalled( invisibleSpy );
+					expect( toolbarWithSetupAndCleanupSpy ).toHaveBeenCalledTimes( 1 );
+					expect( visibleSpy ).not.toHaveBeenCalled();
+					expect( visibleContextualSpy ).not.toHaveBeenCalled();
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 
-					expect( toolbarWithSetupAndCleanup.element.parentNode ).to.equal( document.body );
+					expect( toolbarWithSetupAndCleanup.element.parentNode ).toBe( document.body );
 				} );
 
 				it( 'should focus the first focusable toolbar (and pick the contextual one first)', () => {
 					pressAltF10();
 
-					sinon.assert.calledOnce( visibleContextualSpy );
-					sinon.assert.notCalled( visibleSpy );
-					sinon.assert.notCalled( invisibleSpy );
+					expect( visibleContextualSpy ).toHaveBeenCalledTimes( 1 );
+					expect( visibleSpy ).not.toHaveBeenCalled();
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should focus the next focusable toolbar', () => {
@@ -925,8 +942,10 @@ describe( 'EditorUI', () => {
 					pressAltF10();
 					ui.focusTracker.focusedElement = visibleToolbar.element;
 
-					sinon.assert.callOrder( visibleContextualSpy, visibleSpy );
-					sinon.assert.notCalled( invisibleSpy );
+					expect( visibleContextualSpy ).toHaveBeenCalled();
+					expect( visibleSpy ).toHaveBeenCalled();
+					expect( visibleContextualSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( visibleSpy.mock.invocationCallOrder[ 0 ] );
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should navigate across focusable toolbars and go back to the first one respecting priorities', () => {
@@ -942,8 +961,16 @@ describe( 'EditorUI', () => {
 					pressAltF10();
 					ui.focusTracker.focusedElement = visibleContextualToolbar.element;
 
-					sinon.assert.callOrder( visibleContextualSpy, visibleSpy, toolbarWithSetupAndCleanupSpy, visibleContextualSpy );
-					sinon.assert.notCalled( invisibleSpy );
+					expect( visibleContextualSpy ).toHaveBeenCalledTimes( 2 );
+					expect( visibleSpy ).toHaveBeenCalledTimes( 1 );
+					expect( toolbarWithSetupAndCleanupSpy ).toHaveBeenCalledTimes( 1 );
+					expect( visibleContextualSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( visibleSpy.mock.invocationCallOrder[ 0 ] );
+					expect( visibleSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( toolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 0 ] );
+					expect( toolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( visibleContextualSpy.mock.invocationCallOrder[ 1 ] );
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should avoid race betwen toolbars with beforeFocus()/afterBlur()', () => {
@@ -953,8 +980,7 @@ describe( 'EditorUI', () => {
 
 					visibleToolbar.element.style.display = 'none';
 
-					const secondToolbarWithSetupAndCleanupSpy = sinon.spy( secondToolbarWithSetupAndCleanup, 'focus' )
-						.named( 'secondWithSetupAndCleanup' );
+					const secondToolbarWithSetupAndCleanupSpy = vi.spyOn( secondToolbarWithSetupAndCleanup, 'focus' );
 
 					ui.addToolbar( secondToolbarWithSetupAndCleanup, {
 						beforeFocus: () => {
@@ -982,15 +1008,20 @@ describe( 'EditorUI', () => {
 					pressAltF10();
 					ui.focusTracker.focusedElement = toolbarWithSetupAndCleanup.element;
 
-					sinon.assert.callOrder(
-						visibleContextualSpy,
-						toolbarWithSetupAndCleanupSpy,
-						secondToolbarWithSetupAndCleanupSpy,
-						visibleContextualSpy,
-						toolbarWithSetupAndCleanupSpy
-					);
+					expect( visibleContextualSpy ).toHaveBeenCalledTimes( 2 );
+					expect( toolbarWithSetupAndCleanupSpy ).toHaveBeenCalledTimes( 2 );
+					expect( secondToolbarWithSetupAndCleanupSpy ).toHaveBeenCalledTimes( 1 );
 
-					sinon.assert.notCalled( invisibleSpy );
+					expect( visibleContextualSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( toolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 0 ] );
+					expect( toolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( secondToolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 0 ] );
+					expect( secondToolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( visibleContextualSpy.mock.invocationCallOrder[ 1 ] );
+					expect( visibleContextualSpy.mock.invocationCallOrder[ 1 ] )
+						.toBeLessThan( toolbarWithSetupAndCleanupSpy.mock.invocationCallOrder[ 1 ] );
+
+					expect( invisibleSpy ).not.toHaveBeenCalled();
 
 					// ----------------------------------------
 
@@ -1004,8 +1035,8 @@ describe( 'EditorUI', () => {
 					pressAltF10();
 					ui.focusTracker.focusedElement = visibleToolbar.element;
 
-					sinon.assert.calledOnce( visibleSpy );
-					sinon.assert.notCalled( visibleContextualSpy );
+					expect( visibleSpy ).toHaveBeenCalledTimes( 1 );
+					expect( visibleContextualSpy ).not.toHaveBeenCalled();
 				} );
 			} );
 
@@ -1070,11 +1101,11 @@ describe( 'EditorUI', () => {
 					ui.focusTracker.isFocused = true;
 					ui.focusTracker.focusedElement = editingAreaA;
 
-					editingFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-					editingAreaASpy = sinon.spy( editingAreaA, 'focus' );
-					editingAreaBSpy = sinon.spy( editingAreaB, 'focus' );
-					nonEngineEditingAreaSpy = sinon.spy( nonEngineEditingArea, 'focus' );
-					invisibleEditingAreaSpy = sinon.spy( invisibleEditingArea, 'focus' );
+					editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+					editingAreaASpy = vi.spyOn( editingAreaA, 'focus' );
+					editingAreaBSpy = vi.spyOn( editingAreaB, 'focus' );
+					nonEngineEditingAreaSpy = vi.spyOn( nonEngineEditingArea, 'focus' );
+					invisibleEditingAreaSpy = vi.spyOn( invisibleEditingArea, 'focus' );
 				} );
 
 				afterEach( () => {
@@ -1095,12 +1126,12 @@ describe( 'EditorUI', () => {
 				it( 'should do nothing if no toolbar is focused', () => {
 					expect( () => {
 						pressEsc();
-					} ).to.not.throw();
+					} ).not.toThrow();
 				} );
 
 				it( 'should return focus back to the editing view if it came from there', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
@@ -1109,16 +1140,16 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should return focus back from menu bar to the editing view if it came from there', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = editor.editing.view.getDomRoot();
 
@@ -1127,11 +1158,11 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should return focus back to the last focused editing area that does not belong to the editing view', () => {
@@ -1142,10 +1173,10 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( nonEngineEditingAreaSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should return focus back from menu bar to the last focused editing area' +
@@ -1157,15 +1188,15 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( nonEngineEditingAreaSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should return focus back to the last focused editing area after navigating across multiple toolbars', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = editingAreaB;
 
@@ -1177,16 +1208,16 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should return focus back to the last focused editing area after navigating across toolbar and menu bar', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = editingAreaB;
 
@@ -1198,16 +1229,16 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should return focus back to the last focused editing area after navigating across menu bar and toolbar', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = editingAreaB;
 
@@ -1219,48 +1250,48 @@ describe( 'EditorUI', () => {
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should focus the first editing area if the focus went straight to the toolbar' +
 					'without focusing any editing areas', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = visibleToolbarA.element;
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should focus the first editing area if the focus went straight to the menu bar' +
 					'without focusing any editing areas', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					ui.focusTracker.focusedElement = visibleMenuBar.element;
 
 					pressEsc();
 
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should clean up after a focused toolbar that had afterBlur() defined in options', () => {
 					// Catches the `There is no selection in any editable to focus.` warning.
-					sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					const toolbarWithCallbacks = new ToolbarView( locale );
 					toolbarWithCallbacks.ariaLabel = 'with callbacks';
@@ -1286,11 +1317,11 @@ describe( 'EditorUI', () => {
 					ui.focusTracker.focusedElement = toolbarWithCallbacks.element;
 
 					pressEsc();
-					sinon.assert.calledOnce( editingFocusSpy );
-					sinon.assert.notCalled( editingAreaASpy );
-					sinon.assert.notCalled( editingAreaBSpy );
-					sinon.assert.notCalled( nonEngineEditingAreaSpy );
-					sinon.assert.notCalled( invisibleEditingAreaSpy );
+					expect( editingFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( editingAreaASpy ).not.toHaveBeenCalled();
+					expect( editingAreaBSpy ).not.toHaveBeenCalled();
+					expect( nonEngineEditingAreaSpy ).not.toHaveBeenCalled();
+					expect( invisibleEditingAreaSpy ).not.toHaveBeenCalled();
 				} );
 			} );
 		} );
@@ -1325,22 +1356,22 @@ describe( 'EditorUI', () => {
 				} );
 
 				it( 'should enable focus border once focused using keyboard', () => {
-					expect( menuBarView.isFocusBorderEnabled ).to.be.false;
+					expect( menuBarView.isFocusBorderEnabled ).toBe( false );
 					pressAltF9( menuBarEditor );
-					expect( menuBarView.isFocusBorderEnabled ).to.be.true;
+					expect( menuBarView.isFocusBorderEnabled ).toBe( true );
 				} );
 
 				it( 'should focus the menu bar when the focus is in the editing root', () => {
-					const spy = testUtils.sinon.spy( menuBarView, 'focus' );
+					const spy = vi.spyOn( menuBarView, 'focus' );
 
 					pressAltF9( menuBarEditor );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( 'should do nothing if the menu bar is already focused', () => {
-					const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-					const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+					const domRootFocusSpy = vi.spyOn( domRoot, 'focus' );
+					const menuBarFocusSpy = vi.spyOn( menuBarView, 'focus' );
 
 					// Focus the toolbar.
 					pressAltF9( menuBarEditor );
@@ -1349,8 +1380,8 @@ describe( 'EditorUI', () => {
 					// Try Alt+F9 again.
 					pressAltF9( menuBarEditor );
 
-					sinon.assert.calledOnce( menuBarFocusSpy );
-					sinon.assert.notCalled( domRootFocusSpy );
+					expect( menuBarFocusSpy ).toHaveBeenCalledTimes( 1 );
+					expect( domRootFocusSpy ).not.toHaveBeenCalled();
 				} );
 			} );
 
@@ -1361,8 +1392,8 @@ describe( 'EditorUI', () => {
 				} );
 
 				it( 'should move the focus back from the main toolbar to the editing root', () => {
-					const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-					const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+					const domRootFocusSpy = vi.spyOn( domRoot, 'focus' );
+					const menuBarFocusSpy = vi.spyOn( menuBarView, 'focus' );
 
 					// Focus the menu bar.
 					pressAltF9( menuBarEditor );
@@ -1371,17 +1402,18 @@ describe( 'EditorUI', () => {
 					pressEsc( menuBarEditor );
 
 					// sinon.assert.calledOnce( domRootFocusSpy );
-					sinon.assert.callOrder( menuBarFocusSpy, domRootFocusSpy );
+					expect( menuBarFocusSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( domRootFocusSpy.mock.invocationCallOrder[ 0 ] );
 				} );
 
 				it( 'should do nothing if it was pressed when menu bar was not focused', () => {
-					const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-					const menuBarFocusSpy = testUtils.sinon.spy( menuBarView, 'focus' );
+					const domRootFocusSpy = vi.spyOn( domRoot, 'focus' );
+					const menuBarFocusSpy = vi.spyOn( menuBarView, 'focus' );
 
 					pressEsc( menuBarEditor );
 
-					sinon.assert.notCalled( domRootFocusSpy );
-					sinon.assert.notCalled( menuBarFocusSpy );
+					expect( domRootFocusSpy ).not.toHaveBeenCalled();
+					expect( menuBarFocusSpy ).not.toHaveBeenCalled();
 				} );
 			} );
 
@@ -1438,8 +1470,8 @@ describe( 'EditorUI', () => {
 			( specificEditor || editor ).keystrokes.press( {
 				keyCode: keyCodes.f9,
 				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			} );
 		}
 
@@ -1447,16 +1479,16 @@ describe( 'EditorUI', () => {
 			( specificEditor || editor ).keystrokes.press( {
 				keyCode: keyCodes.f10,
 				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			} );
 		}
 
 		function pressEsc( specificEditor ) {
 			( specificEditor || editor ).keystrokes.press( {
 				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			} );
 		}
 	} );
@@ -1468,12 +1500,12 @@ describe( 'EditorUI', () => {
 
 			ui.view.body.add( view );
 
-			sinon.spy( ui.focusTracker, 'add' );
+			vi.spyOn( ui.focusTracker, 'add' );
 
 			ui.fire( 'ready' );
 
-			expect( view.element ).not.to.be.undefined;
-			expect( ui.focusTracker.add.calledWithExactly( view.element ) ).to.be.true;
+			expect( view.element ).not.toBeUndefined();
+			expect( ui.focusTracker.add ).toHaveBeenCalledWith( view.element );
 		} );
 
 		it( 'after body event, add and remove views elements as they are added', () => {
@@ -1482,17 +1514,17 @@ describe( 'EditorUI', () => {
 
 			ui.fire( 'ready' );
 
-			sinon.spy( ui.focusTracker, 'add' );
-			sinon.spy( ui.focusTracker, 'remove' );
+			vi.spyOn( ui.focusTracker, 'add' );
+			vi.spyOn( ui.focusTracker, 'remove' );
 
 			ui.view.body.add( view );
 
-			expect( view.element ).not.to.be.undefined;
-			expect( ui.focusTracker.add.calledWithExactly( view.element ) ).to.be.true;
+			expect( view.element ).not.toBeUndefined();
+			expect( ui.focusTracker.add ).toHaveBeenCalledWith( view.element );
 
 			ui.view.body.remove( view );
 
-			expect( ui.focusTracker.remove.calledWithExactly( view.element ) ).to.be.true;
+			expect( ui.focusTracker.remove ).toHaveBeenCalledWith( view.element );
 		} );
 	} );
 } );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { LinkEditing } from '../../src/linkediting.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -37,7 +38,7 @@ describe( 'Link integration: clipboard paste', () => {
 				content: _parseView( '<a href="http://ckedtior.com">foo</a>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="http://ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -49,7 +50,7 @@ describe( 'Link integration: clipboard paste', () => {
 				content: _parseView( '<a href="ckedtior.com">foo</a>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -81,7 +82,7 @@ describe( 'Link integration: clipboard paste', () => {
 				content: _parseView( '<a href="http://ckedtior.com">foo</a>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="http://ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -93,7 +94,7 @@ describe( 'Link integration: clipboard paste', () => {
 				content: _parseView( '<a href="www.ckedtior.com">foo</a>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="http://www.ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -105,7 +106,7 @@ describe( 'Link integration: clipboard paste', () => {
 				content: _parseView( '<a href="ckedtior.com">foo</a><a href="www.ckedtior.com">bar</a>' )
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text linkHref="http://ckedtior.com">foo</$text>' +
 					'<$text linkHref="http://www.ckedtior.com">bar</$text>[]' +
@@ -124,7 +125,7 @@ describe( 'Link integration: clipboard paste', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<table><tableRow><tableCell><paragraph>' +
 					'<$text linkHref="http://ckedtior.com">foo</$text>' +
 				'</paragraph></tableCell></tableRow></table>]'
@@ -146,7 +147,7 @@ describe( 'Link integration: clipboard paste', () => {
 				)
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'[<table><tableRow>' +
 					'<tableCell><paragraph>' +
 						'<$text linkHref="http://ckedtior.com">foo</$text>' +

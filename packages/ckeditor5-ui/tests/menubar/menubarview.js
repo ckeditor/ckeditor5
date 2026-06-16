@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import {
 	View,
 	ButtonView,
@@ -23,7 +24,6 @@ import {
 	_clearTranslations
 } from '@ckeditor/ckeditor5-utils';
 import { ListSeparatorView } from '../../src/list/listseparatorview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	barDump,
 	getButtonCreator,
@@ -35,9 +35,11 @@ import {
 describe( 'MenuBarView', () => {
 	let menuBarView, locale, factory;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'en', {
 			'MENU_BAR_MENU_EDIT': 'Edit',
 			'MENU_BAR_MENU_FORMAT': 'Format',
@@ -52,7 +54,7 @@ describe( 'MenuBarView', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -71,7 +73,7 @@ describe( 'MenuBarView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should have collection of #children connected to the main element', () => {
-			expect( menuBarView.children ).to.be.instanceOf( ViewCollection );
+			expect( menuBarView.children ).toBeInstanceOf( ViewCollection );
 
 			const view = new View();
 
@@ -81,38 +83,38 @@ describe( 'MenuBarView', () => {
 			menuBarView.render();
 			menuBarView.children.add( view );
 
-			expect( menuBarView.element.firstChild ).to.equal( view.element );
+			expect( menuBarView.element.firstChild ).toBe( view.element );
 		} );
 
 		it( 'should an array of #menus', () => {
-			expect( menuBarView.menus ).to.be.instanceOf( Array );
-			expect( menuBarView.menus ).to.be.empty;
+			expect( menuBarView.menus ).toBeInstanceOf( Array );
+			expect( menuBarView.menus ).toHaveLength( 0 );
 		} );
 
 		describe( 'template and DOM element', () => {
 			it( 'should have CSS classes', () => {
-				expect( menuBarView.template.attributes.class ).to.include.members( [ 'ck', 'ck-menu-bar' ] );
+				expect( menuBarView.template.attributes.class ).toEqual( expect.arrayContaining( [ 'ck', 'ck-menu-bar' ] ) );
 			} );
 
 			it( 'should have an ARIA role attribute', () => {
-				expect( menuBarView.template.attributes.role ).to.include.members( [ 'menubar' ] );
+				expect( menuBarView.template.attributes.role ).toEqual( expect.arrayContaining( [ 'menubar' ] ) );
 			} );
 
 			it( 'should have an aria-label attribute', () => {
-				expect( menuBarView.template.attributes[ 'aria-label' ] ).to.include.members( [ 'Editor menu bar' ] );
+				expect( menuBarView.template.attributes[ 'aria-label' ] ).toEqual( expect.arrayContaining( [ 'Editor menu bar' ] ) );
 			} );
 
 			it( 'has `isFocusBorderEnabled` bound to proper class name', () => {
 				menuBarView.isFocusBorderEnabled = true;
 				menuBarView.render();
 
-				expect( menuBarView.element.classList.contains( 'ck-menu-bar_focus-border-enabled' ) ).to.be.true;
+				expect( menuBarView.element.classList.contains( 'ck-menu-bar_focus-border-enabled' ) ).toBe( true );
 			} );
 		} );
 
 		describe( '#isOpen', () => {
 			it( 'should be false by default', () => {
-				expect( menuBarView.isOpen ).to.be.false;
+				expect( menuBarView.isOpen ).toBe( false );
 			} );
 
 			it( 'should be a sum of #isOpen of top-level sub-menus and never go false when going ' +
@@ -142,32 +144,32 @@ describe( 'MenuBarView', () => {
 					]
 				} ), factory );
 
-				const changeSpy = sinon.spy();
+				const changeSpy = vi.fn();
 
 				menuBarView.on( 'change:isOpen', changeSpy );
 
-				expect( menuBarView.isOpen ).to.be.false;
+				expect( menuBarView.isOpen ).toBe( false );
 
 				// Change #1 ---------------------------------------
 				menuBarView.menus[ 0 ].isOpen = true;
 				await wait( 10 );
 
-				expect( menuBarView.isOpen ).to.be.true;
-				sinon.assert.callCount( changeSpy, 1 );
+				expect( menuBarView.isOpen ).toBe( true );
+				expect( changeSpy ).toHaveBeenCalledTimes( 1 );
 
 				// Change #2 ---------------------------------------
 				menuBarView.menus[ 1 ].isOpen = true;
 				await wait( 10 );
 
-				expect( menuBarView.isOpen ).to.be.true;
-				sinon.assert.callCount( changeSpy, 1 );
+				expect( menuBarView.isOpen ).toBe( true );
+				expect( changeSpy ).toHaveBeenCalledTimes( 1 );
 
 				// Change #3 ---------------------------------------
 				menuBarView.menus[ 0 ].isOpen = false;
 				await wait( 10 );
 
-				expect( menuBarView.isOpen ).to.be.true;
-				sinon.assert.callCount( changeSpy, 1 );
+				expect( menuBarView.isOpen ).toBe( true );
+				expect( changeSpy ).toHaveBeenCalledTimes( 1 );
 
 				// Change #4 ---------------------------------------
 				// This one is the most important: the state should not change even though one of the menus is closed **first**
@@ -177,16 +179,16 @@ describe( 'MenuBarView', () => {
 				menuBarView.menus[ 0 ].isOpen = true;
 				await wait( 10 );
 
-				expect( menuBarView.isOpen ).to.be.true;
-				sinon.assert.callCount( changeSpy, 1 );
+				expect( menuBarView.isOpen ).toBe( true );
+				expect( changeSpy ).toHaveBeenCalledTimes( 1 );
 
 				// Change #5 ---------------------------------------
 				menuBarView.menus[ 1 ].isOpen = false;
 				menuBarView.menus[ 0 ].isOpen = false;
 				await wait( 10 );
 
-				expect( menuBarView.isOpen ).to.be.false;
-				sinon.assert.callCount( changeSpy, 2 );
+				expect( menuBarView.isOpen ).toBe( false );
+				expect( changeSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 		} );
 	} );
@@ -204,9 +206,9 @@ describe( 'MenuBarView', () => {
 
 			menuBarView.fillFromConfig( normalizeMenuBarConfig( {} ), factory );
 
-			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
-				'Edit', 'View', 'Insert', 'Format'
-			] );
+			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).toEqual(
+				expect.arrayContaining( [ 'Edit', 'View', 'Insert', 'Format' ] )
+			);
 
 			menuBarView.destroy();
 		} );
@@ -233,9 +235,9 @@ describe( 'MenuBarView', () => {
 				]
 			} ), factory );
 
-			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
-				'Edit', 'View', 'Insert', 'Format'
-			] );
+			expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).toEqual(
+				expect.arrayContaining( [ 'Edit', 'View', 'Insert', 'Format' ] )
+			);
 
 			menuBarView.destroy();
 		} );
@@ -263,7 +265,7 @@ describe( 'MenuBarView', () => {
 				]
 			} ), factory );
 
-			expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal(
+			expect( barDump( menuBarView, { fullDump: true } ) ).toEqual(
 				[
 					{
 						label: 'My menu 1', isOpen: true, isFocused: false,
@@ -308,7 +310,7 @@ describe( 'MenuBarView', () => {
 				}
 			] );
 
-			expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal(
+			expect( barDump( menuBarView, { fullDump: true } ) ).toEqual(
 				[
 					{
 						label: 'A', isOpen: true, isFocused: false,
@@ -326,7 +328,7 @@ describe( 'MenuBarView', () => {
 		describe( 'config normalization and clean-up', () => {
 			describe( 'user config', () => {
 				beforeEach( () => {
-					testUtils.sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 				} );
 
 				it( 'should localize top-level category labels from the config', () => {
@@ -360,7 +362,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Edycja', isOpen: true, isFocused: false,
 							items: [
@@ -420,7 +422,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Edycja', isOpen: true, isFocused: false,
 							items: [
@@ -466,7 +468,7 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( config, factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
@@ -475,13 +477,13 @@ describe( 'MenuBarView', () => {
 						}
 					] );
 
-					sinon.assert.callCount( console.warn, 1 );
+					expect( console.warn ).toHaveBeenCalledTimes( 1 );
 
-					sinon.assert.calledWith( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 1, 'menu-bar-item-unavailable', {
 						menuBarConfig: config,
 						parentMenuConfig: config.items[ 0 ],
 						componentName: 'unavailable'
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
 					menuBarView.destroy();
 				} );
@@ -536,7 +538,7 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( config, factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
@@ -551,17 +553,17 @@ describe( 'MenuBarView', () => {
 						}
 					] );
 
-					sinon.assert.callCount( console.warn, 2 );
+					expect( console.warn ).toHaveBeenCalledTimes( 2 );
 
-					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 1, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 2, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
 					menuBarView.destroy();
 				} );
@@ -617,46 +619,46 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( config, factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [] );
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [] );
 
-					sinon.assert.callCount( console.warn, 7 );
+					expect( console.warn ).toHaveBeenCalledTimes( 7 );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 0 ), 'menu-bar-item-unavailable', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 1, 'menu-bar-item-unavailable', {
 						menuBarConfig: config,
 						parentMenuConfig: config.items[ 0 ],
 						componentName: 'invalid'
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 1 ), 'menu-bar-item-unavailable', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 2, 'menu-bar-item-unavailable', {
 						menuBarConfig: config,
 						parentMenuConfig: config.items[ 1 ],
 						componentName: 'invalid'
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 2 ), 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 3, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BAA (empty)', label: 'BAA (empty)', groups: [] }
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 3 ), 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 4, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'A', label: 'A', groups: [] }
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 4 ), 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 5, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'BA (empty)', label: 'BA (empty)', groups: [] }
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 5 ), 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 6, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: { menuId: 'B', label: 'B', groups: [] }
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.getCall( 6 ), 'menu-bar-menu-empty', {
+					expect( console.warn ).toHaveBeenNthCalledWith( 7, 'menu-bar-menu-empty', {
 						menuBarConfig: config,
 						emptyMenuConfig: config
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
 					menuBarView.destroy();
 				} );
@@ -710,7 +712,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
@@ -741,7 +743,7 @@ describe( 'MenuBarView', () => {
 					// Pass undefined to force the default config.
 					menuBarView.fillFromConfig( normalizeMenuBarConfig( {} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Edycja', isOpen: true, isFocused: false,
 							items: [
@@ -762,14 +764,14 @@ describe( 'MenuBarView', () => {
 				it( 'should not warn if the bar became empty because there were no components in the factory', () => {
 					const locale = new Locale( { uiLanguage: 'pl' } );
 					const menuBarView = new MenuBarView( locale );
-					const spy = sinon.spy( console, 'warn' );
+					const spy = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					// Pass undefined to force the default config.
 					menuBarView.fillFromConfig( normalizeMenuBarConfig( {} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [] );
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [] );
 
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 
 					menuBarView.destroy();
 				} );
@@ -790,7 +792,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Format', isOpen: true, isFocused: false,
 							items: [
@@ -824,7 +826,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Format', isOpen: true, isFocused: false,
 							items: [
@@ -876,7 +878,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
@@ -903,7 +905,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Insert', isOpen: true, isFocused: false,
 							items: [
@@ -919,7 +921,7 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
 
-					testUtils.sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
@@ -947,7 +949,7 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( config, factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'A', isOpen: true, isFocused: false,
 							items: [
@@ -956,10 +958,11 @@ describe( 'MenuBarView', () => {
 						}
 					] );
 
-					sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-item-could-not-be-removed', {
+					expect( console.warn ).toHaveBeenCalledOnce();
+					expect( console.warn ).toHaveBeenCalledWith( 'menu-bar-item-could-not-be-removed', {
 						menuBarConfig: config,
 						itemName: 'doesNotExist'
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
 					menuBarView.destroy();
 				} );
@@ -968,7 +971,7 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
 
-					testUtils.sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 
@@ -980,10 +983,11 @@ describe( 'MenuBarView', () => {
 
 					menuBarView.fillFromConfig( config, factory );
 
-					sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-item-could-not-be-removed', {
-						menuBarConfig: sinon.match.object,
+					expect( console.warn ).toHaveBeenCalledOnce();
+					expect( console.warn ).toHaveBeenCalledWith( 'menu-bar-item-could-not-be-removed', {
+						menuBarConfig: expect.any( Object ),
 						itemName: 'doesNotExist'
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
 					menuBarView.destroy();
 				} );
@@ -1016,7 +1020,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'My menu', isOpen: true, isFocused: false,
 								items: [
@@ -1066,7 +1070,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1116,7 +1120,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Insert', isOpen: true, isFocused: false,
 								items: [
@@ -1173,7 +1177,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Insert', isOpen: true, isFocused: false,
 								items: [
@@ -1231,7 +1235,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [ {
@@ -1279,7 +1283,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1329,7 +1333,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [ {
@@ -1377,7 +1381,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1425,7 +1429,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1467,7 +1471,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1515,7 +1519,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1557,7 +1561,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1596,7 +1600,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1632,7 +1636,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Format', isOpen: true, isFocused: false,
 								items: [
@@ -1667,7 +1671,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Insert', isOpen: true, isFocused: false,
 								items: [
@@ -1707,7 +1711,7 @@ describe( 'MenuBarView', () => {
 							]
 						} ), factory );
 
-						expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+						expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 							{
 								label: 'Insert', isOpen: true, isFocused: false,
 								items: [
@@ -1739,7 +1743,7 @@ describe( 'MenuBarView', () => {
 					const locale = new Locale();
 					const menuBarView = new MenuBarView( locale );
 
-					testUtils.sinon.stub( console, 'warn' );
+					vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 					factory.add( 'menuBar:bold', getButtonCreator( 'menuBar:bold', locale ) );
 					factory.add( 'menuBar:italic', getButtonCreator( 'menuBar:italic', locale ) );
@@ -1762,7 +1766,7 @@ describe( 'MenuBarView', () => {
 						]
 					} ), factory );
 
-					expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+					expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 						{
 							label: 'Format', isOpen: true, isFocused: false,
 							items: [
@@ -1777,18 +1781,18 @@ describe( 'MenuBarView', () => {
 						}
 					] );
 
-					sinon.assert.callCount( console.warn, 2 );
+					expect( console.warn ).toHaveBeenCalledTimes( 2 );
 
-					sinon.assert.calledWithExactly( console.warn.firstCall, 'menu-bar-item-could-not-be-added', {
-						menuBarConfig: sinon.match.object,
+					expect( console.warn ).toHaveBeenNthCalledWith( 1, 'menu-bar-item-could-not-be-added', {
+						menuBarConfig: expect.any( Object ),
 						addedItemConfig: {
 							item: 'menuBar:italic',
 							position: 'doesNotExist'
 						}
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
-					sinon.assert.calledWithExactly( console.warn.secondCall, 'menu-bar-item-could-not-be-added', {
-						menuBarConfig: sinon.match.object,
+					expect( console.warn ).toHaveBeenNthCalledWith( 2, 'menu-bar-item-could-not-be-added', {
+						menuBarConfig: expect.any( Object ),
 						addedItemConfig: {
 							group: {
 								groupId: 'MY',
@@ -1798,7 +1802,7 @@ describe( 'MenuBarView', () => {
 							},
 							position: 'doesNotExistEither'
 						}
-					}, sinon.match.string );
+					}, expect.any( String ) );
 
 					menuBarView.destroy();
 				} );
@@ -1807,7 +1811,7 @@ describe( 'MenuBarView', () => {
 
 		describe( 'menu creation', () => {
 			beforeEach( () => {
-				testUtils.sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				factory.add( 'A#1', getButtonCreator( 'A#1', locale ) );
 				factory.add( 'A#2', getButtonCreator( 'A#2', locale ) );
@@ -1899,22 +1903,23 @@ describe( 'MenuBarView', () => {
 			} );
 
 			it( 'should deliver MenuBarMenuView instances', () => {
-				expect( Array.from( menuBarView.children ).every( childMenuView => childMenuView instanceof MenuBarMenuView ) ).to.be.true;
+				expect( Array.from( menuBarView.children )
+					.every( childMenuView => childMenuView instanceof MenuBarMenuView ) ).toBe( true );
 			} );
 
 			it( 'should set the menu button\'s label', () => {
-				expect( menuBarView.children.map( childMenuView => childMenuView.buttonView.label ) ).to.deep.equal( [ 'A', 'B' ] );
+				expect( menuBarView.children.map( childMenuView => childMenuView.buttonView.label ) ).toEqual( [ 'A', 'B' ] );
 			} );
 
 			it( 'should defer menu view\'s initialization until first open (performance)', () => {
 				expect( Array.from( menuBarView.children ).every(
 					childMenuView => childMenuView.panelView.children.length === 0 )
-				).to.be.true;
+				).toBe( true );
 
 				getMenuByLabel( menuBarView, 'A' ).isOpen = true;
 
-				expect( getMenuByLabel( menuBarView, 'A' ).panelView.children.length ).to.equal( 1 );
-				expect( getMenuByLabel( menuBarView, 'B' ).panelView.children.length ).to.equal( 0 );
+				expect( getMenuByLabel( menuBarView, 'A' ).panelView.children.length ).toBe( 1 );
+				expect( getMenuByLabel( menuBarView, 'B' ).panelView.children.length ).toBe( 0 );
 			} );
 
 			it( 'should use MenuBarMenuListView instances in MenuBarMenuView panels', () => {
@@ -1924,11 +1929,11 @@ describe( 'MenuBarView', () => {
 
 				expect( Array.from( menuBarView.children ).every(
 					childMenuView => childMenuView.panelView.children.first instanceof MenuBarMenuListView
-				) ).to.be.true;
+				) ).toBe( true );
 			} );
 
 			it( 'should populate recursively in the correct structure and order', () => {
-				expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal( [
+				expect( barDump( menuBarView, { fullDump: true } ) ).toEqual( [
 					{
 						label: 'A', isOpen: true, isFocused: false,
 						items: [
@@ -1967,9 +1972,11 @@ describe( 'MenuBarView', () => {
 					}
 				] );
 
-				expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).to.have.members( [
-					'A', 'B', 'AA', 'AAA (from-factory)', 'AAA#2 (first sub-menu)', 'AAA#2 (second sub-menu)'
-				] );
+				expect( menuBarView.menus.map( menuView => menuView.buttonView.label ) ).toEqual(
+					expect.arrayContaining( [
+						'A', 'B', 'AA', 'AAA (from-factory)', 'AAA#2 (first sub-menu)', 'AAA#2 (second sub-menu)'
+					] )
+				);
 			} );
 
 			describe( 'menu item creation', () => {
@@ -1980,35 +1987,36 @@ describe( 'MenuBarView', () => {
 				it( 'should create separators in place of "-"', () => {
 					expect(
 						getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 2 )
-					).to.be.instanceOf( ListSeparatorView );
+					).toBeInstanceOf( ListSeparatorView );
 				} );
 
 				it( 'should use MenuBarMenuListItemView for list items', () => {
 					expect(
 						getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 0 )
-					).to.be.instanceOf( MenuBarMenuListItemView );
+					).toBeInstanceOf( MenuBarMenuListItemView );
 				} );
 
 				it( 'should create sub-menus with MenuBarMenuView recursively and put them in MenuBarMenuListItemView', () => {
 					expect(
 						getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 3 ).children.first
-					).to.be.instanceOf( MenuBarMenuView );
+					).toBeInstanceOf( MenuBarMenuView );
 				} );
 
 				describe( 'feature component creation using component factory', () => {
 					it( 'should produce a component and put in MenuBarMenuListItemView', () => {
 						expect(
 							getMenuByLabel( menuBarView, 'A' ).panelView.children.first.items.get( 0 ).children.first
-						).to.be.instanceOf( MenuBarMenuListItemButtonView );
+						).toBeInstanceOf( MenuBarMenuListItemButtonView );
 					} );
 
 					it( 'should warn if the compoent is not MenuBarMenuView or MenuBarMenuListItemButtonView', () => {
 						getMenuByLabel( menuBarView, 'B' ).isOpen = true;
 
-						sinon.assert.calledOnceWithExactly( console.warn, 'menu-bar-component-unsupported', {
-							componentView: sinon.match.object,
+						expect( console.warn ).toHaveBeenCalledOnce();
+						expect( console.warn ).toHaveBeenCalledWith( 'menu-bar-component-unsupported', {
+							componentView: expect.any( Object ),
 							componentName: 'B#3 (incorrect)'
-						}, sinon.match.string );
+						}, expect.any( String ) );
 					} );
 
 					it( 'should register nested MenuBarMenuView produced by the factory', () => {
@@ -2016,27 +2024,27 @@ describe( 'MenuBarView', () => {
 
 						const menuViewAAAFromFactory = getMenuByLabel( menuBarView, 'AAA (from-factory)' );
 
-						expect( menuViewAAAFromFactory ).to.be.instanceOf( MenuBarMenuView );
-						expect( menuBarView.menus ).to.include( menuViewAAAFromFactory );
+						expect( menuViewAAAFromFactory ).toBeInstanceOf( MenuBarMenuView );
+						expect( menuBarView.menus ).toContain( menuViewAAAFromFactory );
 					} );
 
 					it( 'should delegate #mouseenter from feature list items to the parent menu', () => {
 						const buttonView = getItemByLabel( menuBarView, 'A#1' );
-						const spy = sinon.spy();
+						const spy = vi.fn();
 
 						menuBarView.children.first.on( 'mouseenter', spy );
 						buttonView.fire( 'mouseenter' );
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					it( 'should close parent menu when feature component fires #execute', () => {
 						const buttonView = getItemByLabel( menuBarView, 'A#1' ).children.first;
 
-						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).to.be.true;
+						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).toBe( true );
 
 						buttonView.fire( 'execute' );
 
-						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).to.be.false;
+						expect( getMenuByLabel( menuBarView, 'A' ).isOpen ).toBe( false );
 					} );
 
 					it( 'should set the correct parent element of custom multi-level sub-menu', () => {
@@ -2048,8 +2056,8 @@ describe( 'MenuBarView', () => {
 
 						const secondSubMenuViewAAA = getMenuByLabel( menuBarView, 'AAA#2 (second sub-menu)' );
 
-						expect( firstSubMenuViewAAA.parentMenuView.buttonView.label ).to.equal( 'AA' );
-						expect( secondSubMenuViewAAA.parentMenuView.buttonView.label ).to.equal( 'AAA#2 (first sub-menu)' );
+						expect( firstSubMenuViewAAA.parentMenuView.buttonView.label ).toBe( 'AA' );
+						expect( secondSubMenuViewAAA.parentMenuView.buttonView.label ).toBe( 'AAA#2 (first sub-menu)' );
 					} );
 				} );
 			} );
@@ -2059,51 +2067,57 @@ describe( 'MenuBarView', () => {
 	describe( 'render()', () => {
 		it( 'should add a behavior that makes the menus open and close while hovering using mouse by the user if ' +
 			'the bar is already open', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'toggleMenusAndFocusItemsOnHover' );
+			const spy = vi.spyOn( MenuBarBehaviors, 'toggleMenusAndFocusItemsOnHover' );
 
 			menuBarView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuBarView );
 		} );
 
 		it( 'should add a behavior that closes all menus (and sub-menus) when the bar closes', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'closeMenusWhenTheBarCloses' );
+			const spy = vi.spyOn( MenuBarBehaviors, 'closeMenusWhenTheBarCloses' );
 
 			menuBarView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuBarView );
 		} );
 
 		it( 'should add a behavior that closes a sub-menu when another one opens on the same level', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'closeMenuWhenAnotherOnTheSameLevelOpens' );
+			const spy = vi.spyOn( MenuBarBehaviors, 'closeMenuWhenAnotherOnTheSameLevelOpens' );
 
 			menuBarView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuBarView );
 		} );
 
 		it( 'should add a behavior that allows for moving horizontally across menus using arrow keys', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'focusCycleMenusOnArrows' );
+			const spy = vi.spyOn( MenuBarBehaviors, 'focusCycleMenusOnArrows' );
 
 			menuBarView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuBarView );
 		} );
 
 		it( 'should add a behavior that closes the bar when the user clicked somewhere outside of it', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'closeOnClickOutside' );
+			const spy = vi.spyOn( MenuBarBehaviors, 'closeOnClickOutside' );
 
 			menuBarView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuBarView );
 		} );
 
 		it( 'should add a behavior that tracks if user performed keyboard focus interaction', () => {
-			const spy = sinon.spy( MenuBarBehaviors, 'enableFocusHighlightOnInteraction' );
+			const spy = vi.spyOn( MenuBarBehaviors, 'enableFocusHighlightOnInteraction' );
 
 			menuBarView.render();
 
-			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( menuBarView );
 		} );
 	} );
 
@@ -2138,15 +2152,15 @@ describe( 'MenuBarView', () => {
 				]
 			} ), factory );
 
-			const spy = sinon.spy( getMenuByLabel( menuBarView, 'Edit' ), 'focus' );
+			const spy = vi.spyOn( getMenuByLabel( menuBarView, 'Edit' ), 'focus' );
 
 			menuBarView.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not focus anything unless there are some menus', () => {
-			testUtils.sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
 				items: []
@@ -2154,7 +2168,7 @@ describe( 'MenuBarView', () => {
 
 			expect( () => {
 				menuBarView.focus();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -2195,8 +2209,8 @@ describe( 'MenuBarView', () => {
 
 			menuBarView.close();
 
-			expect( getMenuByLabel( menuBarView, 'Edit' ).isOpen ).to.be.false;
-			expect( getMenuByLabel( menuBarView, 'Format' ).isOpen ).to.be.false;
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isOpen ).toBe( false );
+			expect( getMenuByLabel( menuBarView, 'Format' ).isOpen ).toBe( false );
 		} );
 
 		it( 'should synchronously set #isOpen to false without waiting for the timeout in _setupIsOpenUpdater', () => {
@@ -2223,14 +2237,14 @@ describe( 'MenuBarView', () => {
 
 			// Wait for the _setupIsOpenUpdater timeout to update isOpen to true.
 			return wait( 0 ).then( () => {
-				expect( menuBarView.isOpen ).to.be.true;
+				expect( menuBarView.isOpen ).toBe( true );
 
 				menuBarView.close();
 
 				// isOpen must be false synchronously, before any pending timeouts fire.
 				// This prevents deferred browser mouseenter events (e.g. after a DOM move)
 				// from re-opening menus via toggleMenusAndFocusItemsOnHover.
-				expect( menuBarView.isOpen ).to.be.false;
+				expect( menuBarView.isOpen ).toBe( false );
 			} );
 		} );
 	} );
@@ -2272,8 +2286,8 @@ describe( 'MenuBarView', () => {
 
 			menuBarView.disable();
 
-			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).to.be.false;
-			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).to.be.false;
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).toBe( false );
+			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -2313,8 +2327,8 @@ describe( 'MenuBarView', () => {
 			menuBarView.disable();
 			menuBarView.enable();
 
-			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).to.be.true;
-			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).to.be.true;
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).toBe( true );
+			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -2323,18 +2337,18 @@ describe( 'MenuBarView', () => {
 			const menuViewA = new MenuBarMenuView( locale );
 			const menuViewAA = new MenuBarMenuView( locale );
 
-			expect( menuViewA.parentMenuView ).to.be.null;
-			expect( menuBarView.menus ).to.be.empty;
+			expect( menuViewA.parentMenuView ).toBeNull();
+			expect( menuBarView.menus ).toHaveLength( 0 );
 
 			menuBarView.registerMenu( menuViewA );
 
-			expect( menuViewA.parentMenuView ).to.be.null;
-			expect( menuBarView.menus[ 0 ] ).to.equal( menuViewA );
+			expect( menuViewA.parentMenuView ).toBeNull();
+			expect( menuBarView.menus[ 0 ] ).toBe( menuViewA );
 
 			menuBarView.registerMenu( menuViewAA, menuViewA );
 
-			expect( menuViewAA.parentMenuView ).to.equal( menuViewA );
-			expect( menuBarView.menus[ 1 ] ).to.equal( menuViewAA );
+			expect( menuViewAA.parentMenuView ).toBe( menuViewA );
+			expect( menuBarView.menus[ 1 ] ).toBe( menuViewAA );
 		} );
 
 		it( 'should delegate specific events to the parent menu (sub-menu)', () => {
@@ -2344,11 +2358,11 @@ describe( 'MenuBarView', () => {
 			menuBarView.registerMenu( menuViewAA, menuViewA );
 
 			[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				menuViewA.on( eventName, spy );
 				menuViewAA.fire( eventName );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -2358,11 +2372,11 @@ describe( 'MenuBarView', () => {
 			menuBarView.registerMenu( menuViewA );
 
 			[ 'mouseenter', 'arrowleft', 'arrowright', 'change:isOpen' ].forEach( eventName => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				menuBarView.on( 'menu:' + eventName, spy );
 				menuViewA.fire( eventName );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );

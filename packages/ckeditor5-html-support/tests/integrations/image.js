@@ -1871,7 +1871,7 @@ describe( 'ImageElementSupport', () => {
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/10703.
-		it( 'should not break inside <dir> element if image contains an attribute', () => {
+		it( 'should hoist an image with attributes out of a <dir> element as a block image', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: 'img',
 				attributes: true
@@ -1881,12 +1881,46 @@ describe( 'ImageElementSupport', () => {
 
 			editor.setData( '<dir><img data-foo="bar">' );
 
+			// A `<dir>` (represented by GHS as `htmlDir`) does not accept image content. The image cannot land
+			// there as an inline image, so it degrades to a block image and is hoisted out of the (then empty,
+			// removed) `htmlDir`, keeping its GHS attributes.
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<htmlDir></htmlDir>',
-				attributes: {}
+				data: '<imageBlock htmlImgAttributes="(1)"></imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar'
+						}
+					}
+				}
 			} );
 
-			expect( editor.getData() ).to.equal( '' );
+			expect( editor.getData() ).to.equal( '<figure class="image"><img data-foo="bar"></figure>' );
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/10703.
+		it( 'should not crash when an <img> with attributes cannot be converted to any model element', () => {
+			// Force the `<img>` to have no valid model representation: disallow both image types and the GHS generic
+			// `<htmlImg>` fallback. The upcast then yields a `null` model range. The GHS image attribute converter
+			// used to call `writer.setAttribute()` with that `null` range and crash; it must skip setting the
+			// attribute instead.
+			model.schema.addChildCheck( () => false, 'imageBlock' );
+			model.schema.addChildCheck( () => false, 'imageInline' );
+			model.schema.addChildCheck( () => false, 'htmlImg' );
+
+			dataFilter.loadAllowedConfig( [ {
+				name: 'img',
+				attributes: true
+			} ] );
+
+			expect( () => {
+				editor.setData( '<p><img src="/assets/sample.png" data-foo="bar"></p>' );
+			} ).to.not.throw();
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph></paragraph>',
+				attributes: {}
+			} );
 		} );
 
 		it( 'should create a marker before GHS converts attributes', () => {

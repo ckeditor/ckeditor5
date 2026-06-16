@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -10,7 +11,7 @@ import { DropdownMenuRootListView } from '../../../src/dropdown/menu/dropdownmen
 import { createMockMenuDefinition } from './_utils/dropdowntreemock.js';
 
 describe( 'Menu Behaviors', () => {
-	let clock, editor, element, locale, body, rootListView;
+	let editor, element, locale, body, rootListView;
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -18,13 +19,13 @@ describe( 'Menu Behaviors', () => {
 		editor = await ClassicTestEditor.create( element );
 		locale = editor.locale;
 		body = editor.ui.view.body;
-		clock = sinon.useFakeTimers();
+		vi.useFakeTimers();
 	} );
 
 	afterEach( async () => {
 		element.remove();
 		await editor.destroy();
-		clock.restore();
+		vi.useRealTimers();
 	} );
 
 	describe( 'DropdownRootMenuBehaviors', () => {
@@ -44,24 +45,24 @@ describe( 'Menu Behaviors', () => {
 
 		describe( 'toggleMenusAndFocusItemsOnHover', () => {
 			it( 'should focus hovered item and set `isOpen` if it is a nested menu', () => {
-				const menuViewFocus = sinon.spy( menuView, 'focus' );
+				const menuViewFocus = vi.spyOn( menuView, 'focus' );
 
 				menuView.fire( 'mouseenter' );
 
-				expect( menuViewFocus ).to.be.calledOnce;
-				expect( menuView.isOpen ).to.be.true;
-				expect( otherMenu.isOpen ).to.be.false; // Just in case check that only `menuView` is opened.
+				expect( menuViewFocus ).toHaveBeenCalledOnce();
+				expect( menuView.isOpen ).toBe( true );
+				expect( otherMenu.isOpen ).toBe( false ); // Just in case check that only `menuView` is opened.
 
 				const itemView = itemByButtonId( 'menu_1_foo' );
-				const itemViewFocus = sinon.spy( itemView, 'focus' );
+				const itemViewFocus = vi.spyOn( itemView, 'focus' );
 
 				itemView.element.dispatchEvent( new Event( 'mouseenter' ) );
 
-				expect( itemViewFocus ).to.be.calledOnce;
+				expect( itemViewFocus ).toHaveBeenCalledOnce();
 
 				// Check if menus are still correctly open.
-				expect( menuView.isOpen ).to.be.true;
-				expect( otherMenu.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( true );
+				expect( otherMenu.isOpen ).toBe( false );
 			} );
 		} );
 
@@ -69,12 +70,12 @@ describe( 'Menu Behaviors', () => {
 			it( 'should close a nested menu if other opens on the same level', () => {
 				otherMenu.isOpen = true;
 
-				expect( menuView.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( false );
 
 				menuView.fire( 'mouseenter' );
 
-				expect( menuView.isOpen ).to.be.true;
-				expect( otherMenu.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( true );
+				expect( otherMenu.isOpen ).toBe( false );
 			} );
 
 			it( 'should not close a nested menu if other opens on nested level', () => {
@@ -82,12 +83,12 @@ describe( 'Menu Behaviors', () => {
 
 				const nestedMenu = menuViewById( 'menu_2_1' ); // Menu nested in Menu 2.
 
-				expect( nestedMenu.isOpen ).to.be.false;
+				expect( nestedMenu.isOpen ).toBe( false );
 
 				nestedMenu.fire( 'mouseenter' );
 
-				expect( nestedMenu.isOpen ).to.be.true;
-				expect( otherMenu.isOpen ).to.be.true;
+				expect( nestedMenu.isOpen ).toBe( true );
+				expect( otherMenu.isOpen ).toBe( true );
 			} );
 		} );
 	} );
@@ -119,14 +120,14 @@ describe( 'Menu Behaviors', () => {
 					it( 'should not open menu on arrow right key if not focused', () => {
 						menuView.isOpen = false;
 						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).to.be.false;
+						expect( menuView.isOpen ).toBe( false );
 					} );
 
 					it( 'should open menu on arrow right key if focused', () => {
 						menuView.isOpen = false;
 						menuView.focusTracker._focus( menuView.buttonView.element );
 						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).to.be.true;
+						expect( menuView.isOpen ).toBe( true );
 					} );
 
 					it( 'should not open menu on arrow right key if focused and disabled', () => {
@@ -134,14 +135,14 @@ describe( 'Menu Behaviors', () => {
 						menuView.isEnabled = false;
 						menuView.focusTracker._focus( menuView.buttonView.element );
 						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).to.be.false;
+						expect( menuView.isOpen ).toBe( false );
 					} );
 
 					it( 'should not toggle menu on arrow right key when menu is already open', () => {
 						menuView.isOpen = true;
 						menuView.focusTracker._focus( menuView.buttonView.element );
 						menuView.keystrokes.press( getArrowKeyData( openArrowKey ) );
-						expect( menuView.isOpen ).to.be.true;
+						expect( menuView.isOpen ).toBe( true );
 					} );
 				} );
 
@@ -150,13 +151,13 @@ describe( 'Menu Behaviors', () => {
 						menuView.isOpen = false;
 						menuView.focusTracker._focus( menuView.buttonView.element );
 						menuView.keystrokes.press( getArrowKeyData( hideArrowKey ) );
-						expect( menuView.isOpen ).to.be.false;
+						expect( menuView.isOpen ).toBe( false );
 					} );
 
 					it( 'should close menu on arrow left key', () => {
 						menuView.isOpen = true;
 						menuView.keystrokes.press( getArrowKeyData( hideArrowKey ) );
-						expect( menuView.isOpen ).to.be.false;
+						expect( menuView.isOpen ).toBe( false );
 					} );
 				} );
 			} );
@@ -172,13 +173,13 @@ describe( 'Menu Behaviors', () => {
 				menuView.isOpen = false;
 				menuView.focusTracker._focus( menuView.buttonView.element );
 				menuView.keystrokes.press( getEscKeyData() );
-				expect( menuView.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( false );
 			} );
 
 			it( 'should close menu on esc key', () => {
 				menuView.isOpen = true;
 				menuView.keystrokes.press( getEscKeyData() );
-				expect( menuView.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( false );
 			} );
 		} );
 
@@ -193,7 +194,7 @@ describe( 'Menu Behaviors', () => {
 				nestedMenuView.isOpen = true;
 
 				grandParentMenuView.isOpen = false;
-				expect( nestedMenuView.isOpen ).to.be.false;
+				expect( nestedMenuView.isOpen ).toBe( false );
 			} );
 		} );
 
@@ -206,7 +207,7 @@ describe( 'Menu Behaviors', () => {
 				const menuView = menuViewById( 'menu_1' );
 
 				menuView.buttonView.fire( 'execute' );
-				expect( menuView.isOpen ).to.be.true;
+				expect( menuView.isOpen ).toBe( true );
 			} );
 
 			it( 'should not open menu on button click if disabled', () => {
@@ -214,7 +215,7 @@ describe( 'Menu Behaviors', () => {
 
 				menuView.isEnabled = false;
 				menuView.buttonView.fire( 'execute' );
-				expect( menuView.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( false );
 			} );
 
 			it( 'should not close menu on button click if already open', () => {
@@ -222,7 +223,7 @@ describe( 'Menu Behaviors', () => {
 
 				menuView.isOpen = true;
 				menuView.buttonView.fire( 'execute' );
-				expect( menuView.isOpen ).to.be.true;
+				expect( menuView.isOpen ).toBe( true );
 			} );
 		} );
 
@@ -235,39 +236,39 @@ describe( 'Menu Behaviors', () => {
 				const menuView = menuViewById( 'menu_1' );
 				const keyEvtData = {
 					keyCode: keyCodes.enter,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
-				const focusSpy = sinon.spy( menuView.panelView, 'focus' );
+				const focusSpy = vi.spyOn( menuView.panelView, 'focus' );
 
 				menuView.buttonView.focus();
 				menuView.keystrokes.press( keyEvtData );
 
-				expect( menuView.isOpen ).to.be.true;
+				expect( menuView.isOpen ).toBe( true );
 
-				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( focusSpy ).toHaveBeenCalledOnce();
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not intercept enter key press from anywhere but the button view', () => {
 				const menuView = menuViewById( 'menu_1' );
 				const keyEvtData = {
 					keyCode: keyCodes.enter,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
-				const focusSpy = sinon.spy( menuView.panelView, 'focus' );
+				const focusSpy = vi.spyOn( menuView.panelView, 'focus' );
 
 				menuView.keystrokes.press( keyEvtData );
 
-				expect( menuView.isOpen ).to.be.false;
+				expect( menuView.isOpen ).toBe( false );
 
-				sinon.assert.notCalled( focusSpy );
-				sinon.assert.notCalled( keyEvtData.preventDefault );
-				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				expect( focusSpy ).not.toHaveBeenCalled();
+				expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
+				expect( keyEvtData.stopPropagation ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );
@@ -305,16 +306,16 @@ describe( 'Menu Behaviors', () => {
 	function getArrowKeyData( arrow ) {
 		return {
 			keyCode: keyCodes[ arrow ],
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		};
 	}
 
 	function getEscKeyData() {
 		return {
 			keyCode: keyCodes.esc,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
+			preventDefault: vi.fn(),
+			stopPropagation: vi.fn()
 		};
 	}
 } );

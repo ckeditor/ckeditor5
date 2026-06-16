@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Locale, env } from '@ckeditor/ckeditor5-utils';
 import { AccessibilityHelpContentView } from '../../../src/editorui/accessibilityhelp/accessibilityhelpcontentview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'AccessibilityHelpContentView', () => {
 	const defaultKeystrokes = new Map( [
@@ -28,7 +28,9 @@ describe( 'AccessibilityHelpContentView', () => {
 		]
 	] );
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'constructor()', () => {
 		let view;
@@ -43,25 +45,25 @@ describe( 'AccessibilityHelpContentView', () => {
 		} );
 
 		it( 'should have label', () => {
-			expect( view.element.lastChild.classList.contains( 'ck-label' ) ).to.be.true;
-			expect( view.element.lastChild.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
+			expect( view.element.lastChild.classList.contains( 'ck-label' ) ).toBe( true );
+			expect( view.element.lastChild.id ).toBe( view.element.getAttribute( 'aria-labelledby' ) );
 		} );
 
 		it( 'should have CSS class', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-accessibility-help-dialog__content' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-accessibility-help-dialog__content' ) ).toBe( true );
 		} );
 
 		it( 'should have the role attribute', () => {
-			expect( view.element.getAttribute( 'role' ) ).to.equal( 'document' );
+			expect( view.element.getAttribute( 'role' ) ).toBe( 'document' );
 		} );
 
 		it( 'should have tabindex', () => {
-			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( view.element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 		} );
 
 		it( 'should render an intro paragraph', () => {
-			expect( view.element.firstChild.outerHTML ).to.match( /^<p>Below, .+<\/p>$/ );
+			expect( view.element.firstChild.outerHTML ).toMatch( /^<p>Below, .+<\/p>$/ );
 		} );
 	} );
 
@@ -69,7 +71,7 @@ describe( 'AccessibilityHelpContentView', () => {
 		let view;
 
 		beforeEach( () => {
-			testUtils.sinon.stub( env, 'isMac' ).value( false );
+			vi.spyOn( env, 'isMac', 'get' ).mockReturnValue( false );
 		} );
 
 		afterEach( () => {
@@ -144,7 +146,7 @@ describe( 'AccessibilityHelpContentView', () => {
 
 			view.render();
 
-			expect( view.element.childNodes[ 1 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 1 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat A</h3>' +
 					'<h4>Group AA</h4>' +
@@ -159,7 +161,7 @@ describe( 'AccessibilityHelpContentView', () => {
 				'</section>'
 			);
 
-			expect( view.element.childNodes[ 2 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 2 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat B</h3>' +
 					'<p>Cat B description</p>' +
@@ -208,7 +210,7 @@ describe( 'AccessibilityHelpContentView', () => {
 
 			view.render();
 
-			expect( view.element.childNodes[ 1 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 1 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat A</h3>' +
 					'<h4>Group AA</h4>' +
@@ -222,7 +224,7 @@ describe( 'AccessibilityHelpContentView', () => {
 		} );
 
 		it( 'should use env-specific keystroke rendering', () => {
-			testUtils.sinon.stub( env, 'isMac' ).value( true );
+			vi.spyOn( env, 'isMac', 'get' ).mockReturnValue( true );
 
 			view = getView( new Map( [
 				[
@@ -260,7 +262,7 @@ describe( 'AccessibilityHelpContentView', () => {
 
 			view.render();
 
-			expect( view.element.childNodes[ 1 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 1 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat A</h3>' +
 					'<h4>Group AA</h4>' +
@@ -274,7 +276,7 @@ describe( 'AccessibilityHelpContentView', () => {
 		} );
 
 		it( 'should support the "mayRequireFn" flag in keystroke definition', () => {
-			testUtils.sinon.stub( env, 'isMac' ).value( true );
+			vi.spyOn( env, 'isMac', 'get' ).mockReturnValue( true );
 
 			view = getView( new Map( [
 				[
@@ -305,7 +307,7 @@ describe( 'AccessibilityHelpContentView', () => {
 
 			view.render();
 
-			expect( view.element.childNodes[ 1 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 1 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat A</h3>' +
 					'<h4>Group AA</h4>' +
@@ -345,7 +347,7 @@ describe( 'AccessibilityHelpContentView', () => {
 
 			view.render();
 
-			expect( view.element.childNodes[ 1 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 1 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat A</h3>' +
 					'<h4>Group AA</h4>' +
@@ -389,7 +391,7 @@ describe( 'AccessibilityHelpContentView', () => {
 
 			view.render();
 
-			expect( view.element.childNodes[ 1 ].outerHTML ).to.deep.equal(
+			expect( view.element.childNodes[ 1 ].outerHTML ).toEqual(
 				'<section>' +
 					'<h3>Cat A</h3>' +
 					'<h4>Group AA</h4>' +
@@ -409,13 +411,13 @@ describe( 'AccessibilityHelpContentView', () => {
 		it( 'should focus the view', () => {
 			const view = getView( defaultKeystrokes );
 			view.render();
-			const focusSpy = sinon.spy( view.element, 'focus' );
+			const focusSpy = vi.spyOn( view.element, 'focus' );
 
 			document.body.appendChild( view.element );
 
 			view.focus();
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledOnce();
 
 			view.element.remove();
 		} );

@@ -18,7 +18,7 @@ declare global {
 	var CKEDITOR_VERSION: string;
 }
 
-/* istanbul ignore next -- @preserve */
+/* v8 ignore next -- @preserve */
 if ( globalThis.CKEDITOR_VERSION ) {
 	/**
 	 * This error is thrown when, due to a mistake in the way CKEditor&nbsp;5 was installed,

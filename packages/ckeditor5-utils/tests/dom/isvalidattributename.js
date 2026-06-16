@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { isValidAttributeName } from '../../src/dom/isvalidattributename.js';
 
 describe( 'isValidAttributeName', () => {
@@ -32,7 +33,7 @@ describe( 'isValidAttributeName', () => {
 
 	for ( const name of validTestCases ) {
 		it( `should return true for '${ name }'`, () => {
-			expect( isValidAttributeName( name ) ).to.be.true;
+			expect( isValidAttributeName( name ) ).toBe( true );
 		} );
 	}
 
@@ -49,7 +50,7 @@ describe( 'isValidAttributeName', () => {
 
 	for ( const name of invalidTestCases ) {
 		it( `should return false for '${ name }'`, () => {
-			expect( isValidAttributeName( name ) ).to.be.false;
+			expect( isValidAttributeName( name ) ).toBe( false );
 		} );
 	}
 } );
