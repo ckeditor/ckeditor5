@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IconPageBreak } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { PageBreakEditing } from '../src/pagebreakediting.js';
 import { PageBreakUI } from '../src/pagebreakui.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'PageBreakUI', () => {
 	let editor, editorElement, button;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -29,19 +27,18 @@ describe( 'PageBreakUI', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		return editor.destroy()
-			.then( () => {
-				editorElement.remove();
-			} );
+	afterEach( async () => {
+		await editor.destroy();
+		editorElement.remove();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( PageBreakUI.isOfficialPlugin ).to.be.true;
+		expect( PageBreakUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PageBreakUI.isPremiumPlugin ).to.be.false;
+		expect( PageBreakUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'the "pageBreak" toolbar button', () => {
@@ -52,7 +49,7 @@ describe( 'PageBreakUI', () => {
 		testButton( 'pageBreak', 'Page break', ButtonView );
 
 		it( 'should have tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			expect( button.tooltip ).toBe( true );
 		} );
 	} );
 
@@ -66,36 +63,37 @@ describe( 'PageBreakUI', () => {
 
 	function testButton( featureName, label, Component ) {
 		it( 'should register feature component', () => {
-			expect( button ).to.be.instanceOf( Component );
+			expect( button ).toBeInstanceOf( Component );
 		} );
 
 		it( 'should create UI component with correct attribute values', () => {
-			expect( button.isOn ).to.be.false;
-			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.equal( IconPageBreak );
+			expect( button.isOn ).toBe( false );
+			expect( button.label ).toBe( label );
+			expect( button.icon ).toBe( IconPageBreak );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {
-			const executeSpy = testUtils.sinon.stub( editor, 'execute' );
-			const focusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' );
+			const executeSpy = vi.spyOn( editor, 'execute' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			button.fire( 'execute' );
 
-			sinon.assert.calledOnceWithExactly( executeSpy, featureName );
-			sinon.assert.calledOnce( focusSpy );
-			sinon.assert.callOrder( executeSpy, focusSpy );
+			expect( executeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy ).toHaveBeenCalledWith( featureName );
+			expect( focusSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 		} );
 
 		it( `should bind #isEnabled to ${ featureName } command`, () => {
 			const command = editor.commands.get( featureName );
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			const initState = command.isEnabled;
-			expect( button.isEnabled ).to.equal( initState );
+			expect( button.isEnabled ).toBe( initState );
 
 			command.isEnabled = !initState;
-			expect( button.isEnabled ).to.equal( !initState );
+			expect( button.isEnabled ).toBe( !initState );
 		} );
 	}
 } );
