@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'HtmlEmbedCommand', () => {
 	let editor, model, editorElement, command;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -30,6 +28,8 @@ describe( 'HtmlEmbedCommand', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		return editor.destroy()
 			.then( () => {
 				editorElement.remove();
@@ -42,19 +42,19 @@ describe( 'HtmlEmbedCommand', () => {
 				_setModelData( model, '[]' );
 
 				command.refresh();
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a paragraph', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
@@ -63,12 +63,12 @@ describe( 'HtmlEmbedCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			_setModelData( model, '<block>foo[]</block>' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is on another raw html element', () => {
 			_setModelData( model, '[<rawHtml></rawHtml>]' );
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is on another object', () => {
@@ -77,7 +77,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 			_setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows raw html', () => {
@@ -90,6 +90,8 @@ describe( 'HtmlEmbedCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'tableCell' } );
 
 			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false when schema disallows raw html', () => {
@@ -105,7 +107,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -113,19 +115,19 @@ describe( 'HtmlEmbedCommand', () => {
 		it( 'should reflect the content of the selected embed', () => {
 			_setModelData( model, '[<rawHtml value="foo"></rawHtml>]' );
 
-			expect( command.value ).to.equal( 'foo' );
+			expect( command.value ).toBe( 'foo' );
 		} );
 
 		it( 'should be empty string when the selected embed has no content', () => {
 			_setModelData( model, '[<rawHtml></rawHtml>]' );
 
-			expect( command.value ).to.equal( '' );
+			expect( command.value ).toBe( '' );
 		} );
 
 		it( 'should be null when no embed is selected', () => {
 			_setModelData( model, '<paragraph>fo[o]</paragraph>' );
 
-			expect( command.value ).to.be.null;
+			expect( command.value ).toBeNull();
 		} );
 	} );
 
@@ -142,13 +144,13 @@ describe( 'HtmlEmbedCommand', () => {
 			it( 'should create a single batch', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				model.document.on( 'change', spy );
 
 				command.execute();
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should insert a raw html in an empty root and select it (a paragraph cannot be inserted)', () => {
@@ -163,7 +165,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml></rawHtml>]' );
 			} );
 
 			it( 'should split an element where selection is placed and insert a raw html (non-collapsed selection)', () => {
@@ -171,7 +173,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>f</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
 				);
 			} );
@@ -181,7 +183,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>fo</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
 				);
 			} );
@@ -194,7 +196,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
 				);
 			} );
@@ -204,7 +206,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
 				);
 			} );
@@ -214,7 +216,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml></rawHtml>]' );
 			} );
 
 			it( 'should set the initial content of the HTML emebed', () => {
@@ -222,7 +224,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute( 'foo' );
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml value="foo"></rawHtml>]' );
 			} );
 		} );
 
@@ -230,13 +232,13 @@ describe( 'HtmlEmbedCommand', () => {
 			it( 'should create a single batch', () => {
 				_setModelData( model, '[<rawHtml></rawHtml>]' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				model.document.on( 'change', spy );
 
 				command.execute( '<b>Foo.</b>' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should update the `value` attribute of selected the `rawHtml` element', () => {
@@ -245,10 +247,10 @@ describe( 'HtmlEmbedCommand', () => {
 				const initialEmbedElement = model.document.getRoot().getChild( 0 );
 				command.execute( '<b>Foo.</b>' );
 
-				expect( _getModelData( model ) ).to.equal( '[<rawHtml value="<b>Foo.</b>"></rawHtml>]' );
+				expect( _getModelData( model ) ).toBe( '[<rawHtml value="<b>Foo.</b>"></rawHtml>]' );
 
 				// It's the same element but with a new value.
-				expect( model.document.getRoot().getChild( 0 ) ).to.equal( initialEmbedElement );
+				expect( model.document.getRoot().getChild( 0 ) ).toBe( initialEmbedElement );
 			} );
 		} );
 
@@ -276,7 +278,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute( '<b>Foo.</b>' );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toBe(
 					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
 				);
 			} );
@@ -286,7 +288,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute( '<b>Foo.</b>' );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toBe(
 					'[<rawHtml pretty="true" value="<b>Foo.</b>"></rawHtml>]'
 				);
 			} );
@@ -296,7 +298,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute( '<b>Foo.</b>' );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toBe(
 					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
 				);
 			} );
@@ -309,7 +311,7 @@ describe( 'HtmlEmbedCommand', () => {
 
 				command.execute( '<b>Foo.</b>' );
 
-				expect( _getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).toBe(
 					'[<rawHtml pretty="true" smart="true" value="<b>Foo.</b>"></rawHtml>]'
 				);
 			} );
