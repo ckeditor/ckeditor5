@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ViewCollection } from '../src/viewcollection.js';
 import { View } from '../src/view.js';
 import { FocusCycler, isViewWithFocusCycler } from '../src/focuscycler.js';
 import { KeystrokeHandler, keyCodes, FocusTracker, wait } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'FocusCycler', () => {
 	let focusables, focusTracker, cycler, viewIndex;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		focusables = new ViewCollection( [
@@ -38,61 +40,61 @@ describe( 'FocusCycler', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets class properties', () => {
-			expect( cycler.focusables ).to.equal( focusables );
-			expect( cycler.focusTracker ).to.equal( focusTracker );
+			expect( cycler.focusables ).toBe( focusables );
+			expect( cycler.focusTracker ).toBe( focusTracker );
 		} );
 	} );
 
 	describe( 'current()', () => {
 		it( 'returns null when no view is focused', () => {
-			expect( cycler.current ).to.equal( null );
+			expect( cycler.current ).toBe( null );
 
 			focusTracker.focusedElement = focusables.get( 2 ).element;
-			expect( cycler.current ).to.equal( 2 );
+			expect( cycler.current ).toBe( 2 );
 
 			focusTracker.focusedElement = null;
-			expect( cycler.current ).to.equal( null );
+			expect( cycler.current ).toBe( null );
 		} );
 	} );
 
 	describe( 'first()', () => {
 		it( 'returns first focusable view', () => {
-			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+			expect( cycler.first ).toBe( focusables.get( 1 ) );
 		} );
 
 		it( 'returns null when no focusable items', () => {
 			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.first ).to.be.null;
+			expect( cycler.first ).toBeNull();
 		} );
 
 		it( 'returns null when no items', () => {
 			focusables = new ViewCollection();
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.first ).to.be.null;
+			expect( cycler.first ).toBeNull();
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
 			focusables = new ViewCollection( [ focusable( { isDetached: true } ), focusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+			expect( cycler.first ).toBe( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with display: none', () => {
 			focusables = new ViewCollection( [ focusable( { display: 'none' } ), focusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+			expect( cycler.first ).toBe( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
 			focusables = new ViewCollection( [ focusable( { hiddenParent: true } ), focusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+			expect( cycler.first ).toBe( focusables.get( 1 ) );
 
 			focusables.get( 0 ).element.parentNode.remove();
 		} );
@@ -100,42 +102,42 @@ describe( 'FocusCycler', () => {
 
 	describe( 'last()', () => {
 		it( 'returns last focusable view', () => {
-			expect( cycler.last ).to.equal( focusables.get( 3 ) );
+			expect( cycler.last ).toBe( focusables.get( 3 ) );
 		} );
 
 		it( 'returns null when no focusable items', () => {
 			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.last ).to.be.null;
+			expect( cycler.last ).toBeNull();
 		} );
 
 		it( 'returns null when no items', () => {
 			focusables = new ViewCollection();
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.last ).to.be.null;
+			expect( cycler.last ).toBeNull();
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
 			focusables = new ViewCollection( [ focusable(), focusable( { isDetached: true } ) ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.last ).to.equal( focusables.get( 0 ) );
+			expect( cycler.last ).toBe( focusables.get( 0 ) );
 		} );
 
 		it( 'should ignore items with display: none', () => {
 			focusables = new ViewCollection( [ focusable(), focusable( { display: 'none' } ) ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.last ).to.equal( focusables.get( 0 ) );
+			expect( cycler.last ).toBe( focusables.get( 0 ) );
 		} );
 
 		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
 			focusables = new ViewCollection( [ focusable(), focusable( { hiddenParent: true } ) ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.last ).to.equal( focusables.get( 0 ) );
+			expect( cycler.last ).toBe( focusables.get( 0 ) );
 
 			focusables.get( 1 ).element.parentNode.remove();
 		} );
@@ -144,33 +146,33 @@ describe( 'FocusCycler', () => {
 	describe( 'next()', () => {
 		it( 'cycles to return the next focusable view', () => {
 			focusTracker.focusedElement = focusables.get( 2 ).element;
-			expect( cycler.next ).to.equal( focusables.get( 3 ) );
+			expect( cycler.next ).toBe( focusables.get( 3 ) );
 
 			focusTracker.focusedElement = focusables.get( 3 ).element;
-			expect( cycler.next ).to.equal( focusables.get( 1 ) );
+			expect( cycler.next ).toBe( focusables.get( 1 ) );
 
 			focusTracker.focusedElement = focusables.get( 1 ).element;
-			expect( cycler.next ).to.equal( focusables.get( 2 ) );
+			expect( cycler.next ).toBe( focusables.get( 2 ) );
 		} );
 
 		it( 'focuses the first focusable view when no view is focused', () => {
 			focusTracker.focusedElement = null;
 
-			expect( cycler.next ).to.equal( focusables.get( 1 ) );
+			expect( cycler.next ).toBe( focusables.get( 1 ) );
 		} );
 
 		it( 'returns null when no items', () => {
 			focusables = new ViewCollection();
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.next ).to.be.null;
+			expect( cycler.next ).toBeNull();
 		} );
 
 		it( 'returns null when no focusable items', () => {
 			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.next ).to.be.null;
+			expect( cycler.next ).toBeNull();
 		} );
 
 		it( 'returns null if the only focusable in focusables', () => {
@@ -179,8 +181,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.next ).to.equal( focusables.get( 1 ) );
+			expect( cycler.first ).toBe( focusables.get( 1 ) );
+			expect( cycler.next ).toBe( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -193,8 +195,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 0 ) );
-			expect( cycler.next ).to.equal( visibleFocusableB );
+			expect( cycler.first ).toBe( focusables.get( 0 ) );
+			expect( cycler.next ).toBe( visibleFocusableB );
 		} );
 
 		it( 'should ignore items with display: none', () => {
@@ -207,8 +209,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 0 ) );
-			expect( cycler.next ).to.equal( visibleFocusableB );
+			expect( cycler.first ).toBe( focusables.get( 0 ) );
+			expect( cycler.next ).toBe( visibleFocusableB );
 		} );
 
 		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
@@ -221,8 +223,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 0 ) );
-			expect( cycler.next ).to.equal( visibleFocusableB );
+			expect( cycler.first ).toBe( focusables.get( 0 ) );
+			expect( cycler.next ).toBe( visibleFocusableB );
 
 			inVisibleFocusable.element.parentNode.remove();
 		} );
@@ -231,33 +233,33 @@ describe( 'FocusCycler', () => {
 	describe( 'previous()', () => {
 		it( 'cycles to return the previous focusable view', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
-			expect( cycler.previous ).to.equal( focusables.get( 3 ) );
+			expect( cycler.previous ).toBe( focusables.get( 3 ) );
 
 			focusTracker.focusedElement = focusables.get( 2 ).element;
-			expect( cycler.previous ).to.equal( focusables.get( 1 ) );
+			expect( cycler.previous ).toBe( focusables.get( 1 ) );
 
 			focusTracker.focusedElement = focusables.get( 3 ).element;
-			expect( cycler.previous ).to.equal( focusables.get( 2 ) );
+			expect( cycler.previous ).toBe( focusables.get( 2 ) );
 		} );
 
 		it( 'focuses the last focusable view when no view is focused', () => {
 			focusTracker.focusedElement = null;
 
-			expect( cycler.previous ).to.equal( focusables.get( 3 ) );
+			expect( cycler.previous ).toBe( focusables.get( 3 ) );
 		} );
 
 		it( 'returns null when no items', () => {
 			focusables = new ViewCollection();
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.previous ).to.be.null;
+			expect( cycler.previous ).toBeNull();
 		} );
 
 		it( 'returns null when no focusable items', () => {
 			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			expect( cycler.previous ).to.be.null;
+			expect( cycler.previous ).toBeNull();
 		} );
 
 		it( 'returns null if the only focusable in focusables', () => {
@@ -266,8 +268,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.previous ).to.equal( focusables.get( 1 ) );
+			expect( cycler.first ).toBe( focusables.get( 1 ) );
+			expect( cycler.previous ).toBe( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -280,8 +282,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 0 ) );
-			expect( cycler.previous ).to.equal( visibleFocusableA );
+			expect( cycler.first ).toBe( focusables.get( 0 ) );
+			expect( cycler.previous ).toBe( visibleFocusableA );
 		} );
 
 		it( 'should ignore items with display: none', () => {
@@ -294,8 +296,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 0 ) );
-			expect( cycler.previous ).to.equal( visibleFocusableA );
+			expect( cycler.first ).toBe( focusables.get( 0 ) );
+			expect( cycler.previous ).toBe( visibleFocusableA );
 		} );
 
 		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
@@ -308,8 +310,8 @@ describe( 'FocusCycler', () => {
 
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 
-			expect( cycler.first ).to.equal( focusables.get( 0 ) );
-			expect( cycler.next ).to.equal( visibleFocusableA );
+			expect( cycler.first ).toBe( focusables.get( 0 ) );
+			expect( cycler.next ).toBe( visibleFocusableA );
 
 			inVisibleFocusable.element.parentNode.remove();
 		} );
@@ -319,7 +321,7 @@ describe( 'FocusCycler', () => {
 		it( 'focuses first focusable view', () => {
 			cycler.focusFirst();
 
-			sinon.assert.calledOnce( focusables.get( 1 ).focus );
+			expect( focusables.get( 1 ).focus ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -328,7 +330,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusFirst();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not throw when no items', () => {
@@ -337,7 +339,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusFirst();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'ignores invisible items', () => {
@@ -347,7 +349,7 @@ describe( 'FocusCycler', () => {
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			cycler.focusFirst();
-			sinon.assert.calledOnce( item.focus );
+			expect( item.focus ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -355,7 +357,7 @@ describe( 'FocusCycler', () => {
 		it( 'focuses last focusable view', () => {
 			cycler.focusLast();
 
-			sinon.assert.calledOnce( focusables.get( 3 ).focus );
+			expect( focusables.get( 3 ).focus ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -364,7 +366,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusLast();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not throw when no items', () => {
@@ -373,7 +375,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusLast();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 	} );
 
@@ -382,7 +384,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 			cycler.focusNext();
 
-			sinon.assert.calledOnce( focusables.get( 3 ).focus );
+			expect( focusables.get( 3 ).focus ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -391,7 +393,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusNext();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not throw when no items', () => {
@@ -400,7 +402,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusNext();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not refocus if there is only one focusable item', () => {
@@ -409,7 +411,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 
 			cycler.focusNext();
-			sinon.assert.notCalled( focusables.get( 0 ).focus );
+			expect( focusables.get( 0 ).focus ).not.toHaveBeenCalled();
 		} );
 
 		it( 'fires an event while making full cycle back to the beginning', () => {
@@ -417,8 +419,8 @@ describe( 'FocusCycler', () => {
 			cycler = new FocusCycler( { focusables, focusTracker } );
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 
-			const forwardCycleSpy = sinon.spy();
-			const backwardCycleSpy = sinon.spy();
+			const forwardCycleSpy = vi.fn();
+			const backwardCycleSpy = vi.fn();
 
 			cycler.on( 'forwardCycle', forwardCycleSpy );
 			cycler.on( 'backwardCycle', backwardCycleSpy );
@@ -427,8 +429,8 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 			cycler.focusNext();
 
-			sinon.assert.calledOnce( forwardCycleSpy );
-			sinon.assert.notCalled( backwardCycleSpy );
+			expect( forwardCycleSpy ).toHaveBeenCalledOnce();
+			expect( backwardCycleSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'fires an event that allows custom behavior once stopped on the normal priority', () => {
@@ -442,7 +444,7 @@ describe( 'FocusCycler', () => {
 
 			cycler.focusNext();
 
-			sinon.assert.notCalled( focusables.get( 0 ).focus );
+			expect( focusables.get( 0 ).focus ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -451,7 +453,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 			cycler.focusPrevious();
 
-			sinon.assert.calledOnce( focusables.get( 3 ).focus );
+			expect( focusables.get( 3 ).focus ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -460,7 +462,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusPrevious();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not throw when no items', () => {
@@ -469,7 +471,7 @@ describe( 'FocusCycler', () => {
 
 			expect( () => {
 				cycler.focusPrevious();
-			} ).to.not.throw();
+			} ).not.toThrow();
 		} );
 
 		it( 'does not refocus if there is only one focusable item', () => {
@@ -478,7 +480,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 
 			cycler.focusPrevious();
-			sinon.assert.notCalled( focusables.get( 0 ).focus );
+			expect( focusables.get( 0 ).focus ).not.toHaveBeenCalled();
 		} );
 
 		it( 'fires an event while making full cycle back to the end', () => {
@@ -486,8 +488,8 @@ describe( 'FocusCycler', () => {
 			cycler = new FocusCycler( { focusables, focusTracker } );
 			focusTracker.focusedElement = focusables.get( 0 ).element;
 
-			const forwardCycleSpy = sinon.spy();
-			const backwardCycleSpy = sinon.spy();
+			const forwardCycleSpy = vi.fn();
+			const backwardCycleSpy = vi.fn();
 
 			cycler.on( 'forwardCycle', forwardCycleSpy );
 			cycler.on( 'backwardCycle', backwardCycleSpy );
@@ -496,8 +498,8 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 			cycler.focusPrevious();
 
-			sinon.assert.notCalled( forwardCycleSpy );
-			sinon.assert.calledOnce( backwardCycleSpy );
+			expect( forwardCycleSpy ).not.toHaveBeenCalled();
+			expect( backwardCycleSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'fires an event that allows custom behavior once stopped on the normal priority', () => {
@@ -511,7 +513,7 @@ describe( 'FocusCycler', () => {
 
 			cycler.focusPrevious();
 
-			sinon.assert.notCalled( focusables.get( 2 ).focus );
+			expect( focusables.get( 2 ).focus ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -575,35 +577,35 @@ describe( 'FocusCycler', () => {
 
 			// ---------------------------------------------------------------------------
 
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 
 			viewBCycler.focusFirst();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBFocusablesCollection.first.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBFocusablesCollection.first.element );
 
 			// ---------------------------------------------------------------------------
 
 			viewBCycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBFocusablesCollection.get( 1 ).element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBFocusablesCollection.get( 1 ).element );
 
 			// ---------------------------------------------------------------------------
 
 			// This should exit the chained view and continue in the parent view.
 			viewBCycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.get( 2 ).element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.get( 2 ).element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 
 			// ---------------------------------------------------------------------------
 
 			rootCycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.get( 0 ).element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.get( 0 ).element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 		} );
 
 		it( 'should allow for continuous cycling across two focus cyclers ("backwardCycle" event handling)', async () => {
@@ -648,34 +650,34 @@ describe( 'FocusCycler', () => {
 
 			// ---------------------------------------------------------------------------
 
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 
 			viewBCycler.focusLast();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBFocusablesCollection.last.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBFocusablesCollection.last.element );
 
 			// ---------------------------------------------------------------------------
 
 			viewBCycler.focusPrevious();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBFocusablesCollection.first.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBFocusablesCollection.first.element );
 
 			// ---------------------------------------------------------------------------
 
 			// This should exit the chained view and continue in the parent view.
 			viewBCycler.focusPrevious();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.first.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.first.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 
 			// ---------------------------------------------------------------------------
 			rootCycler.focusPrevious();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.last.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.last.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 		} );
 
 		it( 'should allow for cycling in deep chains with single focusable view at some levels (forward)', async () => {
@@ -736,9 +738,9 @@ describe( 'FocusCycler', () => {
 
 			// ---------------------------------------------------------------------------
 
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
+			expect( viewBAFocusTracker.focusedElement ).toBe( null );
 
 			// 	<A />
 			// 	<B>
@@ -749,9 +751,9 @@ describe( 'FocusCycler', () => {
 			// 	</B>
 			viewBACycler.focusFirst();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBA.element );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( viewBAFocusablesCollection.first.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBA.element );
+			expect( viewBAFocusTracker.focusedElement ).toBe( viewBAFocusablesCollection.first.element );
 
 			// 	<A />
 			// 	<B>
@@ -762,9 +764,9 @@ describe( 'FocusCycler', () => {
 			// 	</B>
 			viewBACycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBA.element );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( viewBAFocusablesCollection.last.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBA.element );
+			expect( viewBAFocusTracker.focusedElement ).toBe( viewBAFocusablesCollection.last.element );
 
 			// This should exit the chained view and continue to <A> because there's no other view at the <B> level to focus.
 			//
@@ -777,9 +779,9 @@ describe( 'FocusCycler', () => {
 			// 	</B>
 			viewBACycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.first.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.first.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
+			expect( viewBAFocusTracker.focusedElement ).toBe( null );
 		} );
 
 		it( 'should allow for cycling in deep chains with single focusable view at some levels (backward)', async () => {
@@ -840,9 +842,9 @@ describe( 'FocusCycler', () => {
 
 			// ---------------------------------------------------------------------------
 
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
+			expect( viewBAFocusTracker.focusedElement ).toBe( null );
 
 			// 	<A />
 			// 	<B>
@@ -853,9 +855,9 @@ describe( 'FocusCycler', () => {
 			// 	</B>
 			viewBACycler.focusLast();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBA.element );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( viewBAFocusablesCollection.last.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBA.element );
+			expect( viewBAFocusTracker.focusedElement ).toBe( viewBAFocusablesCollection.last.element );
 
 			// 	<A />
 			// 	<B>
@@ -866,9 +868,9 @@ describe( 'FocusCycler', () => {
 			// 	</B>
 			viewBACycler.focusPrevious();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( viewB.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBA.element );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( viewBAFocusablesCollection.first.element );
+			expect( rootFocusTracker.focusedElement ).toBe( viewB.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBA.element );
+			expect( viewBAFocusTracker.focusedElement ).toBe( viewBAFocusablesCollection.first.element );
 
 			// This should exit the chained view and continue to <A> because there's no other view at the <B> level to focus.
 			//
@@ -881,9 +883,9 @@ describe( 'FocusCycler', () => {
 			// 	</B>
 			viewBACycler.focusPrevious();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.first.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBAFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.first.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
+			expect( viewBAFocusTracker.focusedElement ).toBe( null );
 		} );
 
 		it( 'should work for focus cycler of views that do not contain one another (horizontal navigation)', async () => {
@@ -918,35 +920,35 @@ describe( 'FocusCycler', () => {
 
 			// ---------------------------------------------------------------------------
 
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 
 			viewBCycler.focusFirst();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBFocusablesCollection.first.element );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBFocusablesCollection.first.element );
 
 			// ---------------------------------------------------------------------------
 
 			viewBCycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( null );
-			expect( viewBFocusTracker.focusedElement ).to.equal( viewBFocusablesCollection.get( 1 ).element );
+			expect( rootFocusTracker.focusedElement ).toBe( null );
+			expect( viewBFocusTracker.focusedElement ).toBe( viewBFocusablesCollection.get( 1 ).element );
 
 			// ---------------------------------------------------------------------------
 
 			// This should exit the chained view and continue in the parent view.
 			viewBCycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.first.element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.first.element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 
 			// ---------------------------------------------------------------------------
 
 			rootCycler.focusNext();
 			await wait( 10 );
-			expect( rootFocusTracker.focusedElement ).to.equal( rootFocusablesCollection.get( 1 ).element );
-			expect( viewBFocusTracker.focusedElement ).to.equal( null );
+			expect( rootFocusTracker.focusedElement ).toBe( rootFocusablesCollection.get( 1 ).element );
+			expect( viewBFocusTracker.focusedElement ).toBe( null );
 		} );
 	} );
 
@@ -955,11 +957,11 @@ describe( 'FocusCycler', () => {
 			const { focusCycler: focusCyclerA } = getCycleTestTools();
 			const { focusCycler: focusCyclerB } = getCycleTestTools();
 
-			const spy = sinon.spy( focusCyclerA, 'stopListening' );
+			const spy = vi.spyOn( focusCyclerA, 'stopListening' );
 
 			focusCyclerA.unchain( focusCyclerB );
 
-			sinon.assert.calledWithExactly( spy, focusCyclerB );
+			expect( spy ).toHaveBeenCalledWith( focusCyclerB );
 		} );
 	} );
 
@@ -977,28 +979,28 @@ describe( 'FocusCycler', () => {
 
 			const keyEvtData = {
 				keyCode: keyCodes.arrowup,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
-			const spy1 = sinon.spy( cycler, 'focusPrevious' );
-			const spy2 = sinon.spy( cycler, 'focusNext' );
+			const spy1 = vi.spyOn( cycler, 'focusPrevious' );
+			const spy2 = vi.spyOn( cycler, 'focusNext' );
 
 			keystrokeHandler.press( keyEvtData );
 
-			sinon.assert.calledOnce( spy1 );
-			sinon.assert.calledOnce( keyEvtData.preventDefault );
-			sinon.assert.calledOnce( keyEvtData.stopPropagation );
-			sinon.assert.notCalled( spy2 );
+			expect( spy1 ).toHaveBeenCalledOnce();
+			expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+			expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+			expect( spy2 ).not.toHaveBeenCalled();
 
 			keyEvtData.keyCode = keyCodes.arrowdown;
 
 			keystrokeHandler.press( keyEvtData );
 
-			sinon.assert.calledOnce( spy1 );
-			sinon.assert.calledTwice( keyEvtData.preventDefault );
-			sinon.assert.calledTwice( keyEvtData.stopPropagation );
-			sinon.assert.calledOnce( spy2 );
+			expect( spy1 ).toHaveBeenCalledOnce();
+			expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+			expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
+			expect( spy2 ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'supports array keystroke syntax', () => {
@@ -1013,17 +1015,17 @@ describe( 'FocusCycler', () => {
 
 			const keyEvtData = {
 				keyCode: keyCodes.arrowleft,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
-			const spy = sinon.spy( cycler, 'focusPrevious' );
+			const spy = vi.spyOn( cycler, 'focusPrevious' );
 
 			keystrokeHandler.press( keyEvtData );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledOnce( keyEvtData.preventDefault );
-			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+			expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should support keystroke handler filtering', () => {
@@ -1041,29 +1043,29 @@ describe( 'FocusCycler', () => {
 
 			const keyEvtData = {
 				keyCode: keyCodes.arrowleft,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
-			const spy = sinon.spy( cycler, 'focusPrevious' );
+			const spy = vi.spyOn( cycler, 'focusPrevious' );
 
 			keystrokeHandler.press( keyEvtData );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 
 			keyEvtData.foo = true;
 			keystrokeHandler.press( keyEvtData );
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'isViewWithFocusCycler', () => {
 		it( 'should return true if the view has its own focus cycler instance', () => {
-			expect( isViewWithFocusCycler( viewWithFocusCycler() ) ).to.be.true;
+			expect( isViewWithFocusCycler( viewWithFocusCycler() ) ).toBe( true );
 		} );
 
 		it( 'should return false if the view does not have a focus cycler instance', () => {
-			expect( isViewWithFocusCycler( new View() ) ).to.be.false;
+			expect( isViewWithFocusCycler( new View() ) ).toBe( false );
 		} );
 	} );
 
@@ -1102,7 +1104,7 @@ describe( 'FocusCycler', () => {
 
 		view.element.setAttribute( 'tabindex', -1 );
 
-		sinon.spy( view, 'focus' );
+		vi.spyOn( view, 'focus' );
 
 		return view;
 	}
@@ -1118,7 +1120,7 @@ describe( 'FocusCycler', () => {
 			}
 		} );
 
-		view.focus = sinon.spy();
+		view.focus = vi.fn();
 		view.focusCycler = focusCycler;
 
 		return view;

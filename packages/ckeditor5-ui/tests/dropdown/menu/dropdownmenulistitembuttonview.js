@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 import {
 	ButtonView,
@@ -23,23 +24,23 @@ describe( 'DropdownMenuListItemButtonView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from ButtonView', () => {
-			expect( buttonView ).to.be.instanceOf( ButtonView );
+			expect( buttonView ).toBeInstanceOf( ButtonView );
 		} );
 
 		it( 'should set #withText', () => {
-			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.withText ).toBe( true );
 		} );
 
 		it( 'should set #withKeystroke', () => {
-			expect( buttonView.withKeystroke ).to.be.true;
+			expect( buttonView.withKeystroke ).toBe( true );
 		} );
 
 		it( 'should set #tooltip', () => {
-			expect( buttonView.tooltip ).to.be.false;
+			expect( buttonView.tooltip ).toBe( false );
 		} );
 
 		it( 'should set #role', () => {
-			expect( buttonView.role ).to.equal( 'menuitem' );
+			expect( buttonView.role ).toBe( 'menuitem' );
 		} );
 	} );
 } );

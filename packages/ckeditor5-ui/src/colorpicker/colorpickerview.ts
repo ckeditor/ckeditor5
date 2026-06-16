@@ -168,6 +168,7 @@ export class ColorPickerView extends View {
 
 		this._createSlidersView();
 
+		/* v8 ignore else -- @preserve */
 		if ( this.element ) {
 			if ( this.hexInputRow.element ) {
 				this.element.insertBefore( this.picker, this.hexInputRow.element );
@@ -206,7 +207,7 @@ export class ColorPickerView extends View {
 		// editor collapses the selection and doesn't apply the color change.
 		// See: https://github.com/ckeditor/ckeditor5-internal/issues/3245, https://github.com/ckeditor/ckeditor5/issues/14119,
 		// https://github.com/ckeditor/ckeditor5-internal/issues/3268.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		if ( !this._config.hideInput && ( env.isGecko || env.isiOS || env.isSafari || env.isBlink ) ) {
 			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
 

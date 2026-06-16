@@ -1531,6 +1531,7 @@ function walkConfigMenus(
 	definition: NormalizedMenuBarConfigObject[ 'items' ] | MenuBarMenuDefinition,
 	callback: ( definition: MenuBarMenuDefinition ) => void
 ) {
+	/* v8 ignore else -- @preserve */
 	if ( Array.isArray( definition ) ) {
 		for ( const topLevelMenuDefinition of definition ) {
 			walk( topLevelMenuDefinition );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ViewCollection } from '../../src/viewcollection.js';
 import { ListView } from '../../src/list/listview.js';
 import { KeystrokeHandler, FocusTracker, keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -27,27 +28,27 @@ describe( 'ListView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
-			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-reset' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-list' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-reset' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-list' ) ).toBe( true );
 		} );
 
 		it( 'creates view#items collection', () => {
-			expect( view.items ).to.be.instanceOf( ViewCollection );
-			expect( view.template.children ).to.have.length( 1 );
-			expect( view.template.children[ 0 ] ).to.equal( view.items );
+			expect( view.items ).toBeInstanceOf( ViewCollection );
+			expect( view.template.children ).toHaveLength( 1 );
+			expect( view.template.children[ 0 ] ).toBe( view.items );
 		} );
 
 		it( 'creates #focusTracker instance', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'creates #keystrokeHandler instance', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'creates #_focusCycler instance', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( view._focusCycler ).toBeInstanceOf( FocusCycler );
 		} );
 	} );
 
@@ -57,8 +58,8 @@ describe( 'ListView', () => {
 
 			beforeEach( () => {
 				view = new ListView();
-				spyAdd = sinon.spy( view.focusTracker, 'add' );
-				spyRemove = sinon.spy( view.focusTracker, 'remove' );
+				spyAdd = vi.spyOn( view.focusTracker, 'add' );
+				spyRemove = vi.spyOn( view.focusTracker, 'remove' );
 			} );
 
 			afterEach( () => {
@@ -74,10 +75,10 @@ describe( 'ListView', () => {
 
 				view.render();
 
-				sinon.assert.callCount( spyAdd, 2 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item2.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 2 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item2.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item1, item2 ] );
 			} );
@@ -94,11 +95,11 @@ describe( 'ListView', () => {
 
 				view.items.add( item3 );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item2.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item3.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item2.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item3.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item1, item2, item3 ] );
 			} );
@@ -114,11 +115,11 @@ describe( 'ListView', () => {
 
 				view.items.addMany( [ item2, item3 ], 0 );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item3.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item2.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item3.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item2.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item2, item3, item1 ] );
 			} );
@@ -137,11 +138,11 @@ describe( 'ListView', () => {
 
 				view.render();
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item21.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item22.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item21.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item22.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item1, item21, item22 ] );
 			} );
@@ -161,11 +162,11 @@ describe( 'ListView', () => {
 
 				view.items.add( group1 );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item21.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item22.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item21.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item22.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item1, item21, item22 ] );
 			} );
@@ -185,11 +186,11 @@ describe( 'ListView', () => {
 				view.items.add( group1 );
 				group1.items.add( item22 );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item21.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item22.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item21.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item22.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item1, item21, item22 ] );
 			} );
@@ -208,11 +209,11 @@ describe( 'ListView', () => {
 				view.items.add( group1, 0 );
 				group1.items.addMany( [ item21, item22 ] );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item22.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item21.element );
-				sinon.assert.notCalled( spyRemove );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item22.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item21.element );
+				expect( spyRemove ).not.toHaveBeenCalled();
 
 				assertFocusables( view, [ item21, item22, item1 ] );
 			} );
@@ -223,7 +224,7 @@ describe( 'ListView', () => {
 				view.items.add( item );
 				view.render();
 
-				sinon.assert.notCalled( spyAdd );
+				expect( spyAdd ).not.toHaveBeenCalled();
 			} );
 
 			it( 'deregisters items upon removal', () => {
@@ -239,11 +240,11 @@ describe( 'ListView', () => {
 
 				view.items.remove( 0 );
 
-				sinon.assert.callCount( spyAdd, 2 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item2.element );
-				sinon.assert.callCount( spyRemove, 1 );
-				sinon.assert.calledWithExactly( spyRemove.firstCall, item1.element );
+				expect( spyAdd ).toHaveBeenCalledTimes( 2 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item2.element );
+				expect( spyRemove ).toHaveBeenCalledTimes( 1 );
+				expect( spyRemove ).toHaveBeenNthCalledWith( 1, item1.element );
 
 				assertFocusables( view, [ item2 ] );
 			} );
@@ -266,12 +267,12 @@ describe( 'ListView', () => {
 
 				group1.items.remove( 0 );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item21.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item22.element );
-				sinon.assert.callCount( spyRemove, 1 );
-				sinon.assert.calledWithExactly( spyRemove.firstCall, item21.element );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item21.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item22.element );
+				expect( spyRemove ).toHaveBeenCalledTimes( 1 );
+				expect( spyRemove ).toHaveBeenNthCalledWith( 1, item21.element );
 
 				assertFocusables( view, [ item1, item22 ] );
 			} );
@@ -294,13 +295,13 @@ describe( 'ListView', () => {
 
 				view.items.remove( 1 );
 
-				sinon.assert.callCount( spyAdd, 3 );
-				sinon.assert.calledWithExactly( spyAdd.firstCall, item1.element );
-				sinon.assert.calledWithExactly( spyAdd.secondCall, item21.element );
-				sinon.assert.calledWithExactly( spyAdd.thirdCall, item22.element );
-				sinon.assert.callCount( spyRemove, 2 );
-				sinon.assert.calledWithExactly( spyRemove.firstCall, item21.element );
-				sinon.assert.calledWithExactly( spyRemove.secondCall, item22.element );
+				expect( spyAdd ).toHaveBeenCalledTimes( 3 );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 1, item1.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 2, item21.element );
+				expect( spyAdd ).toHaveBeenNthCalledWith( 3, item22.element );
+				expect( spyRemove ).toHaveBeenCalledTimes( 2 );
+				expect( spyRemove ).toHaveBeenNthCalledWith( 1, item21.element );
+				expect( spyRemove ).toHaveBeenNthCalledWith( 2, item22.element );
 
 				assertFocusables( view, [ item1 ] );
 			} );
@@ -312,21 +313,21 @@ describe( 'ListView', () => {
 				view.render();
 				view.items.remove( 0 );
 
-				sinon.assert.notCalled( spyRemove );
+				expect( spyRemove ).not.toHaveBeenCalled();
 			} );
 
 			function assertFocusables( view, expected ) {
-				expect( Array.from( view.focusables ) ).to.have.ordered.members( expected );
+				expect( Array.from( view.focusables ) ).toEqual( expected );
 			}
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
 			const view = new ListView();
-			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+			const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 			view.render();
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.element );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy ).toHaveBeenCalledWith( view.element );
 
 			view.destroy();
 		} );
@@ -335,22 +336,22 @@ describe( 'ListView', () => {
 			it( 'so "arrowup" focuses previous focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowup,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// No children to focus.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 
 				view.items.add( nonFocusable() );
 				view.items.add( nonFocusable() );
 
 				// No focusable children.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledTwice( keyEvtData.preventDefault );
-				sinon.assert.calledTwice( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 
 				view.items.add( focusable() );
 				view.items.add( nonFocusable() );
@@ -360,33 +361,33 @@ describe( 'ListView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.items.get( 4 ).element;
 
-				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
+				const spy = vi.spyOn( view.items.get( 2 ), 'focus' );
 				view.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledThrice( keyEvtData.preventDefault );
-				sinon.assert.calledThrice( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 3 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'so "arrowdown" focuses next focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowdown,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				};
 
 				// No children to focus.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.preventDefault );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
 
 				view.items.add( nonFocusable() );
 				view.items.add( nonFocusable() );
 
 				// No focusable children.
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledTwice( keyEvtData.preventDefault );
-				sinon.assert.calledTwice( keyEvtData.stopPropagation );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 2 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 
 				view.items.add( focusable() );
 				view.items.add( nonFocusable() );
@@ -396,31 +397,31 @@ describe( 'ListView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.items.get( 4 ).element;
 
-				const spy = sinon.spy( view.items.get( 2 ), 'focus' );
+				const spy = vi.spyOn( view.items.get( 2 ), 'focus' );
 				view.keystrokes.press( keyEvtData );
 
-				sinon.assert.calledThrice( keyEvtData.preventDefault );
-				sinon.assert.calledThrice( keyEvtData.stopPropagation );
-				sinon.assert.calledOnce( spy );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 3 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -434,10 +435,10 @@ describe( 'ListView', () => {
 			view.items.add( focusable() );
 			view.items.add( nonFocusable() );
 
-			const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+			const spy = vi.spyOn( view.items.get( 1 ), 'focus' );
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -452,10 +453,10 @@ describe( 'ListView', () => {
 			view.items.add( focusable() );
 			view.items.add( nonFocusable() );
 
-			const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+			const spy = vi.spyOn( view.items.get( 1 ), 'focus' );
 			view.focusFirst();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -470,46 +471,46 @@ describe( 'ListView', () => {
 			view.items.add( focusable() );
 			view.items.add( nonFocusable() );
 
-			const spy = sinon.spy( view.items.get( 2 ), 'focus' );
+			const spy = vi.spyOn( view.items.get( 2 ), 'focus' );
 			view.focusLast();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( '#ariaLabel', () => {
 		it( 'should be not set by default', () => {
-			expect( view.element.attributes[ 'aria-label' ] ).to.be.undefined;
+			expect( view.element.attributes[ 'aria-label' ] ).toBeUndefined();
 		} );
 
 		it( 'should set aria-label', () => {
 			view.ariaLabel = 'foo';
 
-			expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'foo' );
+			expect( view.element.attributes[ 'aria-label' ].value ).toBe( 'foo' );
 		} );
 	} );
 
 	describe( '#ariaLabelledBy', () => {
 		it( 'should be not set by default', () => {
-			expect( view.element.attributes[ 'aria-labelledby' ] ).to.be.undefined;
+			expect( view.element.attributes[ 'aria-labelledby' ] ).toBeUndefined();
 		} );
 
 		it( 'should set aria-labelledby', () => {
 			view.ariaLabelledBy = 'foo';
 
-			expect( view.element.attributes[ 'aria-labelledby' ].value ).to.equal( 'foo' );
+			expect( view.element.attributes[ 'aria-labelledby' ].value ).toBe( 'foo' );
 		} );
 	} );
 
 	describe( '#role', () => {
 		it( 'should be not set by default', () => {
-			expect( view.element.attributes.role ).to.be.undefined;
+			expect( view.element.attributes.role ).toBeUndefined();
 		} );
 
 		it( 'should set role', () => {
 			view.role = 'foo';
 
-			expect( view.element.attributes.role.value ).to.equal( 'foo' );
+			expect( view.element.attributes.role.value ).toBe( 'foo' );
 		} );
 	} );
 } );

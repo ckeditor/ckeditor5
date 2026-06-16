@@ -3,32 +3,34 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconCancel } from '@ckeditor/ckeditor5-icons';
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src/index.js';
 import { DialogView, DialogViewPosition } from '../../src/dialog/dialogview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DialogView', () => {
 	let view, fakeDomRootElement;
 	let getDomRootElementStub, getViewportOffsetStub;
 	const locale = new Locale();
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		fakeDomRootElement = document.createElement( 'div' );
 
-		getDomRootElementStub = testUtils.sinon.stub().returns( fakeDomRootElement );
-		getViewportOffsetStub = testUtils.sinon.stub().returns( {
+		getDomRootElementStub = vi.fn().mockReturnValue( fakeDomRootElement );
+		getViewportOffsetStub = vi.fn().mockReturnValue( {
 			top: 0,
 			right: 0,
 			bottom: 0,
 			left: 0
 		} );
 
-		testUtils.sinon.stub( global.window, 'innerWidth' ).value( 500 );
-		testUtils.sinon.stub( global.window, 'innerHeight' ).value( 500 );
+		vi.spyOn( global.window, 'innerWidth', 'get' ).mockReturnValue( 500 );
+		vi.spyOn( global.window, 'innerHeight', 'get' ).mockReturnValue( 500 );
 
 		view = new DialogView( locale, {
 			getDomRootElement: getDomRootElementStub,
@@ -37,57 +39,57 @@ describe( 'DialogView', () => {
 	} );
 
 	it( 'should have #defaultOffset set', () => {
-		expect( DialogView.defaultOffset ).to.equal( 15 );
+		expect( DialogView.defaultOffset ).toBe( 15 );
 	} );
 
 	describe( 'constructor()', () => {
 		describe( 'properties', () => {
 			it( 'should include the collection of #parts', () => {
-				expect( view.parts ).to.be.an.instanceOf( ViewCollection );
+				expect( view.parts ).toBeInstanceOf( ViewCollection );
 			} );
 
 			it( 'should include an instance of KeystrokeHandler', () => {
-				expect( view.keystrokes ).to.be.an.instanceOf( KeystrokeHandler );
+				expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 			} );
 
 			it( 'should include an instance of FocusTracker', () => {
-				expect( view.focusTracker ).to.be.an.instanceOf( FocusTracker );
+				expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 			} );
 
 			it( 'should have #_isVisible set', () => {
-				expect( view._isVisible ).to.be.false;
+				expect( view._isVisible ).toBe( false );
 			} );
 
 			it( 'should have #_isTransparent set', () => {
-				expect( view._isTransparent ).to.be.false;
+				expect( view._isTransparent ).toBe( false );
 			} );
 
 			it( 'should have #isModal set', () => {
-				expect( view.isModal ).to.be.false;
+				expect( view.isModal ).toBe( false );
 			} );
 
 			it( 'should have #wasMoved set', () => {
-				expect( view.wasMoved ).to.be.false;
+				expect( view.wasMoved ).toBe( false );
 			} );
 
 			it( 'should have #className set', () => {
-				expect( view.className ).to.equal( '' );
+				expect( view.className ).toBe( '' );
 			} );
 
 			it( 'should have the `aria-label` attribute set', () => {
-				expect( view.ariaLabel ).to.equal( 'Editor dialog' );
+				expect( view.ariaLabel ).toBe( 'Editor dialog' );
 			} );
 
 			it( 'should have #position set', () => {
-				expect( view.position ).to.equal( DialogViewPosition.SCREEN_CENTER );
+				expect( view.position ).toBe( DialogViewPosition.SCREEN_CENTER );
 			} );
 
 			it( 'should have #_top set', () => {
-				expect( view._top ).to.equal( 0 );
+				expect( view._top ).toBe( 0 );
 			} );
 
 			it( 'should have #_left set', () => {
-				expect( view._left ).to.equal( 0 );
+				expect( view._left ).toBe( 0 );
 			} );
 		} );
 
@@ -104,38 +106,38 @@ describe( 'DialogView', () => {
 				} );
 
 				it( 'should have CSS classes', () => {
-					expect( overlayElement.classList.contains( 'ck' ) ).to.be.true;
-					expect( overlayElement.classList.contains( 'ck-dialog-overlay' ) ).to.be.true;
+					expect( overlayElement.classList.contains( 'ck' ) ).toBe( true );
+					expect( overlayElement.classList.contains( 'ck-dialog-overlay' ) ).toBe( true );
 				} );
 
 				it( 'should have a tabindex', () => {
-					expect( overlayElement.tabIndex ).to.equal( -1 );
+					expect( overlayElement.tabIndex ).toBe( -1 );
 				} );
 
 				it( 'should have a CSS class bound to #isModal', () => {
 					view.isModal = false;
-					expect( overlayElement.classList.contains( 'ck-dialog-overlay__transparent' ) ).to.be.true;
+					expect( overlayElement.classList.contains( 'ck-dialog-overlay__transparent' ) ).toBe( true );
 					view.isModal = true;
-					expect( overlayElement.classList.contains( 'ck-dialog-overlay__transparent' ) ).to.be.false;
+					expect( overlayElement.classList.contains( 'ck-dialog-overlay__transparent' ) ).toBe( false );
 				} );
 
 				it( 'should have a CSS class bound to #_isVisible', () => {
 					view._isVisible = false;
-					expect( overlayElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( overlayElement.classList.contains( 'ck-hidden' ) ).toBe( true );
 					view._isVisible = true;
-					expect( overlayElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( overlayElement.classList.contains( 'ck-hidden' ) ).toBe( false );
 				} );
 
 				it( 'should host the dialog', () => {
-					expect( overlayElement.firstChild.classList.contains( 'ck-dialog' ) ).to.be.true;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog' ) ).toBe( true );
 				} );
 
 				it( 'should set the CSS class on the dialog element in the modal mode', () => {
 					view.isModal = false;
-					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).to.be.false;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).toBe( false );
 
 					view.isModal = true;
-					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).to.be.true;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).toBe( true );
 				} );
 			} );
 
@@ -147,43 +149,43 @@ describe( 'DialogView', () => {
 				} );
 
 				it( 'should have CSS classes', () => {
-					expect( innerDialogElement.classList.contains( 'ck' ) ).to.be.true;
-					expect( innerDialogElement.classList.contains( 'ck-dialog' ) ).to.be.true;
+					expect( innerDialogElement.classList.contains( 'ck' ) ).toBe( true );
+					expect( innerDialogElement.classList.contains( 'ck-dialog' ) ).toBe( true );
 				} );
 
 				it( 'should have a CSS class bound to #className', () => {
 					view.className = 'foo';
-					expect( innerDialogElement.classList.contains( 'foo' ) ).to.be.true;
+					expect( innerDialogElement.classList.contains( 'foo' ) ).toBe( true );
 				} );
 
 				it( 'should have a tabindex', () => {
-					expect( innerDialogElement.tabIndex ).to.equal( -1 );
+					expect( innerDialogElement.tabIndex ).toBe( -1 );
 				} );
 
 				it( 'should have CSS top bound to #_top', () => {
 					view._top = 123;
-					expect( innerDialogElement.style.top ).to.equal( '123px' );
+					expect( innerDialogElement.style.top ).toBe( '123px' );
 				} );
 
 				it( 'should have CSS left bound to #_left', () => {
 					view._left = 123;
-					expect( innerDialogElement.style.left ).to.equal( '123px' );
+					expect( innerDialogElement.style.left ).toBe( '123px' );
 				} );
 
 				it( 'should have a role set', () => {
-					expect( innerDialogElement.role ).to.equal( 'dialog' );
+					expect( innerDialogElement.role ).toBe( 'dialog' );
 				} );
 
 				it( 'should have aria-label bound to #ariaLabel', () => {
 					view.ariaLabel = 'foo';
-					expect( innerDialogElement.ariaLabel ).to.equal( 'foo' );
+					expect( innerDialogElement.ariaLabel ).toBe( 'foo' );
 				} );
 
 				it( 'should have CSS visibility bound to #_isTransparent', () => {
 					view._isTransparent = true;
-					expect( innerDialogElement.style.visibility ).to.equal( 'hidden' );
+					expect( innerDialogElement.style.visibility ).toBe( 'hidden' );
 					view._isTransparent = false;
-					expect( innerDialogElement.style.visibility ).to.equal( '' );
+					expect( innerDialogElement.style.visibility ).toBe( '' );
 				} );
 
 				it( 'should host the collection of #parts', () => {
@@ -193,7 +195,7 @@ describe( 'DialogView', () => {
 
 					view.parts.add( testView );
 
-					expect( innerDialogElement.firstChild ).to.equal( testView.element );
+					expect( innerDialogElement.firstChild ).toBe( testView.element );
 				} );
 			} );
 		} );
@@ -225,11 +227,11 @@ describe( 'DialogView', () => {
 				await wait( 20 );
 
 				focusSpies = {
-					closeButton: testUtils.sinon.spy( view.headerView.children.last, 'focus' ),
-					childA: testUtils.sinon.spy( childViewA, 'focus' ),
-					childB: testUtils.sinon.spy( childViewB, 'focus' ),
-					actionFoo: testUtils.sinon.spy( view.actionsView.children.first, 'focus' ),
-					actionBar: testUtils.sinon.spy( view.actionsView.children.last, 'focus' )
+					closeButton: vi.spyOn( view.headerView.children.last, 'focus' ),
+					childA: vi.spyOn( childViewA, 'focus' ),
+					childB: vi.spyOn( childViewB, 'focus' ),
+					actionFoo: vi.spyOn( view.actionsView.children.first, 'focus' ),
+					actionBar: vi.spyOn( view.actionsView.children.last, 'focus' )
 				};
 			} );
 
@@ -241,8 +243,8 @@ describe( 'DialogView', () => {
 				beforeEach( () => {
 					keyEvtData = {
 						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 				} );
 
@@ -250,27 +252,27 @@ describe( 'DialogView', () => {
 					view.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.childB );
+					expect( focusSpies.childB ).toHaveBeenCalledOnce();
 
 					view.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionFoo );
+					expect( focusSpies.actionFoo ).toHaveBeenCalledOnce();
 
 					view.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionBar );
+					expect( focusSpies.actionBar ).toHaveBeenCalledOnce();
 
 					view.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.closeButton );
+					expect( focusSpies.closeButton ).toHaveBeenCalledOnce();
 
 					view.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.childA );
+					expect( focusSpies.childA ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should cycle forward correctly if there are only action buttons', async () => {
@@ -296,24 +298,24 @@ describe( 'DialogView', () => {
 					await wait( 10 );
 
 					focusSpies = {
-						actionFoo: testUtils.sinon.spy( newView.actionsView.children.first, 'focus' ),
-						actionBar: testUtils.sinon.spy( newView.actionsView.children.last, 'focus' )
+						actionFoo: vi.spyOn( newView.actionsView.children.first, 'focus' ),
+						actionBar: vi.spyOn( newView.actionsView.children.last, 'focus' )
 					};
 
 					newView.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionBar );
+					expect( focusSpies.actionBar ).toHaveBeenCalledOnce();
 
 					newView.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionFoo );
+					expect( focusSpies.actionFoo ).toHaveBeenCalledOnce();
 
 					newView.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledTwice( focusSpies.actionBar );
+					expect( focusSpies.actionBar ).toHaveBeenCalledTimes( 2 );
 
 					newView.element.remove();
 				} );
@@ -324,8 +326,8 @@ describe( 'DialogView', () => {
 					keyEvtData = {
 						keyCode: keyCodes.tab,
 						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 				} );
 
@@ -333,27 +335,27 @@ describe( 'DialogView', () => {
 					view.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.closeButton );
+					expect( focusSpies.closeButton ).toHaveBeenCalledOnce();
 
 					view.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionBar );
+					expect( focusSpies.actionBar ).toHaveBeenCalledOnce();
 
 					view.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionFoo );
+					expect( focusSpies.actionFoo ).toHaveBeenCalledOnce();
 
 					view.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.childB );
+					expect( focusSpies.childB ).toHaveBeenCalledOnce();
 
 					view.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.childA );
+					expect( focusSpies.childA ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should cycle backwards correctly if there are only action buttons', async () => {
@@ -379,24 +381,24 @@ describe( 'DialogView', () => {
 					await wait( 10 );
 
 					focusSpies = {
-						actionFoo: testUtils.sinon.spy( newView.actionsView.children.first, 'focus' ),
-						actionBar: testUtils.sinon.spy( newView.actionsView.children.last, 'focus' )
+						actionFoo: vi.spyOn( newView.actionsView.children.first, 'focus' ),
+						actionBar: vi.spyOn( newView.actionsView.children.last, 'focus' )
 					};
 
 					newView.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionBar );
+					expect( focusSpies.actionBar ).toHaveBeenCalledOnce();
 
 					newView.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledOnce( focusSpies.actionFoo );
+					expect( focusSpies.actionFoo ).toHaveBeenCalledOnce();
 
 					newView.actionsView.keystrokes.press( keyEvtData );
 					await wait( 10 );
 
-					sinon.assert.calledTwice( focusSpies.actionBar );
+					expect( focusSpies.actionBar ).toHaveBeenCalledTimes( 2 );
 
 					newView.element.remove();
 				} );
@@ -405,7 +407,7 @@ describe( 'DialogView', () => {
 
 		describe( 'keystrokeHandlerOptions', () => {
 			it( 'should use passed keystroke handler options filter', async () => {
-				const filterSpy = sinon.spy();
+				const filterSpy = vi.fn();
 
 				const newView = new DialogView( locale, {
 					getDomRootElement: getDomRootElementStub,
@@ -419,13 +421,13 @@ describe( 'DialogView', () => {
 
 				newView.keystrokes.press( {
 					keyCode: keyCodes.tab,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
 				await wait( 5 );
 
-				expect( filterSpy ).to.be.calledOnce;
+				expect( filterSpy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -437,7 +439,7 @@ describe( 'DialogView', () => {
 
 		describe( 'Esc key press handling', () => {
 			it( 'should emit the "close" event with data upon pressing Esc', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'close', spy );
 
@@ -447,14 +449,14 @@ describe( 'DialogView', () => {
 					cancelable: true
 				} );
 
-				sinon.stub( unrelatedDomEvent, 'stopPropagation' );
-				sinon.stub( unrelatedDomEvent, 'preventDefault' );
+				vi.spyOn( unrelatedDomEvent, 'stopPropagation' );
+				vi.spyOn( unrelatedDomEvent, 'preventDefault' );
 
 				view.element.dispatchEvent( unrelatedDomEvent );
 
-				sinon.assert.notCalled( spy );
-				sinon.assert.notCalled( unrelatedDomEvent.stopPropagation );
-				sinon.assert.notCalled( unrelatedDomEvent.preventDefault );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( unrelatedDomEvent.stopPropagation ).not.toHaveBeenCalled();
+				expect( unrelatedDomEvent.preventDefault ).not.toHaveBeenCalled();
 
 				const escDomEvent = new KeyboardEvent( 'keydown', {
 					keyCode: keyCodes.esc,
@@ -462,21 +464,21 @@ describe( 'DialogView', () => {
 					cancelable: true
 				} );
 
-				sinon.stub( escDomEvent, 'stopPropagation' );
-				sinon.stub( escDomEvent, 'preventDefault' );
+				vi.spyOn( escDomEvent, 'stopPropagation' );
+				vi.spyOn( escDomEvent, 'preventDefault' );
 
 				view.element.dispatchEvent( escDomEvent );
 
-				sinon.assert.calledWithExactly( spy, sinon.match.any, {
+				expect( spy ).toHaveBeenCalledWith( expect.anything(), {
 					source: 'escKeyPress'
 				} );
 
-				sinon.assert.calledOnce( escDomEvent.stopPropagation );
-				sinon.assert.calledOnce( escDomEvent.preventDefault );
+				expect( escDomEvent.stopPropagation ).toHaveBeenCalledOnce();
+				expect( escDomEvent.preventDefault ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not emit the "close" event if the original DOM event was preventDefaulted by some other logic', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				const childView = createContentView( 'A' );
 
 				view.setupParts( { content: childView } );
@@ -493,136 +495,145 @@ describe( 'DialogView', () => {
 					cancelable: true
 				} );
 
-				sinon.stub( escDomEvent, 'stopPropagation' );
+				vi.spyOn( escDomEvent, 'stopPropagation' );
 
 				childView.element.dispatchEvent( escDomEvent );
 
-				sinon.assert.notCalled( spy );
-				sinon.assert.notCalled( escDomEvent.stopPropagation );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( escDomEvent.stopPropagation ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		it( 'should move the dialog upon the #drag event', () => {
-			expect( view.wasMoved ).to.be.false;
-			expect( view.element.firstChild.style.left ).to.equal( '0px' );
-			expect( view.element.firstChild.style.top ).to.equal( '0px' );
+			expect( view.wasMoved ).toBe( false );
+			expect( view.element.firstChild.style.left ).toBe( '0px' );
+			expect( view.element.firstChild.style.top ).toBe( '0px' );
 
 			view.fire( 'drag', { deltaX: 40, deltaY: 50 } );
 
-			expect( view.wasMoved ).to.be.true;
-			expect( view.element.firstChild.style.left ).to.equal( '40px' );
-			expect( view.element.firstChild.style.top ).to.equal( '50px' );
+			expect( view.wasMoved ).toBe( true );
+			expect( view.element.firstChild.style.left ).toBe( '40px' );
+			expect( view.element.firstChild.style.top ).toBe( '50px' );
 
 			view.fire( 'drag', { deltaX: 10, deltaY: -20 } );
 
-			expect( view.wasMoved ).to.be.true;
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '30px' );
+			expect( view.wasMoved ).toBe( true );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '30px' );
 		} );
 
 		describe( 'position update on window resize', () => {
 			it( 'should update the position on window resize (if visible and not already moved)', () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = true;
 				view.wasMoved = false;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not update the position on window resize (if not visible)', () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = false;
 				view.wasMoved = false;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not update the position on window resize (if moved by the user)', () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = true;
 				view.wasMoved = true;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		describe( 'position update on window scroll', () => {
 			it( 'should update the position on window scroll (if visible and not already moved)', () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = true;
 				view.wasMoved = false;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not update the position on window scroll (if not visible)', () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = false;
 				view.wasMoved = false;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not update the position on window scroll (if moved by the user)', () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = true;
 				view.wasMoved = true;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
 		describe( 'position update on #_isVisible change', () => {
 			it( 'should not happen if the dialog becomes invisible', async () => {
-				const spy = sinon.spy( view, 'updatePosition' );
+				const spy = vi.spyOn( view, 'updatePosition' );
 
 				view._isVisible = true;
 				await wait( 20 );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 
 				view._isVisible = false;
 				await wait( 20 );
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should toggle dialog transparency to avoid unnecessary visual movement + should use a slight delay ' +
 				'to allow the browser to render the content of the dialog first', async () => {
-				const updatePositionSpy = sinon.spy( view, 'updatePosition' );
-				const _isTransparentSpy = sinon.spy();
+				const updatePositionSpy = vi.spyOn( view, 'updatePosition' );
+				const _isTransparentSpy = vi.fn();
 
 				view.on( 'change:_isTransparent', _isTransparentSpy );
 
 				view._isVisible = true;
 				await wait( 20 );
 
-				sinon.assert.callOrder( _isTransparentSpy, updatePositionSpy, _isTransparentSpy );
-				sinon.assert.calledWithMatch( _isTransparentSpy.firstCall, sinon.match.any, '_isTransparent', true );
-				sinon.assert.calledWithMatch( _isTransparentSpy.secondCall, sinon.match.any, '_isTransparent', false );
+				expect( _isTransparentSpy ).toHaveBeenCalledTimes( 2 );
+				expect( updatePositionSpy ).toHaveBeenCalledOnce();
+
+				// Verify call order: _isTransparentSpy(true), updatePositionSpy, _isTransparentSpy(false)
+				const transparentCallOrder = _isTransparentSpy.mock.invocationCallOrder;
+				const updatePositionCallOrder = updatePositionSpy.mock.invocationCallOrder;
+
+				expect( transparentCallOrder[ 0 ] ).toBeLessThan( updatePositionCallOrder[ 0 ] );
+				expect( updatePositionCallOrder[ 0 ] ).toBeLessThan( transparentCallOrder[ 1 ] );
+
+				expect( _isTransparentSpy.mock.calls[ 0 ][ 2 ] ).toBe( true );
+				expect( _isTransparentSpy.mock.calls[ 1 ][ 2 ] ).toBe( false );
 			} );
 		} );
 
 		it( 'should focus the view when it becomes visible', async () => {
-			const spy = sinon.spy( view, 'focus' );
+			const spy = vi.spyOn( view, 'focus' );
 
 			view._isVisible = true;
 			await wait( 20 );
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			view._isVisible = false;
 			await wait( 20 );
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -638,7 +649,7 @@ describe( 'DialogView', () => {
 		} );
 
 		it( 'should have #isDragging set', () => {
-			expect( view.isDragging ).to.be.false;
+			expect( view.isDragging ).toBe( false );
 		} );
 
 		it( 'should provide #dragHandleElement when #headerView exists', () => {
@@ -646,11 +657,11 @@ describe( 'DialogView', () => {
 				title: 'foo'
 			} );
 
-			expect( view.dragHandleElement ).to.equal( view.headerView.element );
+			expect( view.dragHandleElement ).toBe( view.headerView.element );
 		} );
 
 		it( 'should not provide #dragHandleElement when #headerView does not exist', () => {
-			expect( view.dragHandleElement ).to.be.null;
+			expect( view.dragHandleElement ).toBeNull();
 		} );
 
 		it( 'should not provide #dragHandleElement when in a modal mode because modals should not be draggable', () => {
@@ -660,7 +671,7 @@ describe( 'DialogView', () => {
 
 			view.isModal = true;
 
-			expect( view.dragHandleElement ).to.be.null;
+			expect( view.dragHandleElement ).toBeNull();
 		} );
 
 		it( 'should be possible by dragging the #headerView', () => {
@@ -672,35 +683,35 @@ describe( 'DialogView', () => {
 				bubbles: true
 			} ) );
 
-			expect( view.isDragging ).to.be.true;
+			expect( view.isDragging ).toBe( true );
 
 			global.document.dispatchEvent( new MouseEvent( 'mousemove', {
 				clientX: 50,
 				clientY: 20
 			} ) );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 
 			view.headerView.element.dispatchEvent( new MouseEvent( 'mouseup', {
 				bubbles: true
 			} ) );
 
-			expect( view.isDragging ).to.be.false;
+			expect( view.isDragging ).toBe( false );
 		} );
 	} );
 
 	describe( 'setupParts()', () => {
 		describe( 'dialog title', () => {
 			it( 'should be possible to set', () => {
-				expect( view.headerView ).to.be.undefined;
+				expect( view.headerView ).toBeUndefined();
 
 				view.setupParts( {
 					title: 'foo'
 				} );
 
-				expect( view.headerView ).to.be.instanceOf( FormHeaderView );
-				expect( view.headerView.label ).to.equal( 'foo' );
+				expect( view.headerView ).toBeInstanceOf( FormHeaderView );
+				expect( view.headerView.label ).toBe( 'foo' );
 			} );
 
 			describe( 'close button', () => {
@@ -712,7 +723,7 @@ describe( 'DialogView', () => {
 
 					const lastChild = view.headerView.children.last;
 
-					expect( lastChild ).to.not.be.instanceOf( ButtonView );
+					expect( lastChild ).not.toBeInstanceOf( ButtonView );
 				} );
 
 				it( 'should have all properties set', () => {
@@ -722,10 +733,10 @@ describe( 'DialogView', () => {
 
 					const closeButtonView = view.headerView.children.last;
 
-					expect( closeButtonView ).to.be.instanceOf( ButtonView );
-					expect( closeButtonView.label ).to.equal( 'Close' );
-					expect( closeButtonView.tooltip ).to.be.true;
-					expect( closeButtonView.icon ).to.equal( IconCancel );
+					expect( closeButtonView ).toBeInstanceOf( ButtonView );
+					expect( closeButtonView.label ).toBe( 'Close' );
+					expect( closeButtonView.tooltip ).toBe( true );
+					expect( closeButtonView.icon ).toBe( IconCancel );
 				} );
 
 				it( 'should fire an event with data upon clicking', () => {
@@ -734,11 +745,11 @@ describe( 'DialogView', () => {
 					} );
 
 					const closeButtonView = view.headerView.children.last;
-					const spy = sinon.spy();
+					const spy = vi.fn();
 					view.on( 'close', spy );
 
 					closeButtonView.fire( 'execute' );
-					sinon.assert.calledWithExactly( spy, sinon.match.any, { source: 'closeButton' } );
+					expect( spy ).toHaveBeenCalledWith( expect.anything(), { source: 'closeButton' } );
 				} );
 			} );
 		} );
@@ -751,8 +762,20 @@ describe( 'DialogView', () => {
 				content: childViewA
 			} );
 
-			expect( view.parts.last ).to.equal( view.contentView );
-			expect( view.contentView.children.first ).to.equal( childViewA );
+			expect( view.parts.last ).toBe( view.contentView );
+			expect( view.contentView.children.first ).toBe( childViewA );
+		} );
+
+		it( 'should not add non-focusable content children to focusables', () => {
+			const nonFocusableView = new View();
+			nonFocusableView.setTemplate( { tag: 'div' } );
+
+			view.setupParts( {
+				title: 'foo',
+				content: nonFocusableView
+			} );
+
+			expect( view._focusables.length ).toBe( 1 ); // Only the close button, not the non-focusable content
 		} );
 
 		it( 'should allow setting dialog content (multiple views)', () => {
@@ -764,14 +787,14 @@ describe( 'DialogView', () => {
 				content: [ childViewA, childViewB ]
 			} );
 
-			expect( view.parts.last ).to.equal( view.contentView );
-			expect( view.contentView.children.first ).to.equal( childViewA );
-			expect( view.contentView.children.last ).to.equal( childViewB );
+			expect( view.parts.last ).toBe( view.contentView );
+			expect( view.contentView.children.first ).toBe( childViewA );
+			expect( view.contentView.children.last ).toBe( childViewB );
 		} );
 
 		it( 'should allow setting dialog action buttons', () => {
-			const spyFoo = sinon.spy();
-			const spyBar = sinon.spy();
+			const spyFoo = vi.fn();
+			const spyBar = vi.fn();
 
 			view.setupParts( {
 				actionButtons: [
@@ -789,26 +812,26 @@ describe( 'DialogView', () => {
 				]
 			} );
 
-			expect( view.parts.first ).to.equal( view.actionsView );
-			expect( view.parts.last ).to.equal( view.actionsView );
+			expect( view.parts.first ).toBe( view.actionsView );
+			expect( view.parts.last ).toBe( view.actionsView );
 
-			expect( view.actionsView.children.first ).to.be.instanceOf( ButtonView );
-			expect( view.actionsView.children.first ).to.include( {
+			expect( view.actionsView.children.first ).toBeInstanceOf( ButtonView );
+			expect( view.actionsView.children.first ).toMatchObject( {
 				label: 'foo',
 				icon: '<svg></svg>',
 				withText: true
 			} );
-			expect( view.actionsView.children.last ).to.be.instanceOf( ButtonView );
-			expect( view.actionsView.children.last ).to.include( {
+			expect( view.actionsView.children.last ).toBeInstanceOf( ButtonView );
+			expect( view.actionsView.children.last ).toMatchObject( {
 				label: 'bar',
 				withText: true
 			} );
 
 			view.actionsView.children.first.fire( 'execute' );
-			sinon.assert.calledOnce( spyFoo );
+			expect( spyFoo ).toHaveBeenCalledOnce();
 
 			view.actionsView.children.last.fire( 'execute' );
-			sinon.assert.calledOnce( spyBar );
+			expect( spyBar ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should work if the dialog has content only (no title, no action buttons)', () => {
@@ -818,19 +841,19 @@ describe( 'DialogView', () => {
 				content: childViewA
 			} );
 
-			expect( view.parts.first ).to.equal( view.contentView );
-			expect( view.parts.last ).to.equal( view.contentView );
-			expect( view.contentView.children.first ).to.equal( childViewA );
+			expect( view.parts.first ).toBe( view.contentView );
+			expect( view.parts.last ).toBe( view.contentView );
+			expect( view.contentView.children.first ).toBe( childViewA );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus the first focusable child', () => {
-			const spy = sinon.spy( view._focusCycler, 'focusFirst' );
+			const spy = vi.spyOn( view._focusCycler, 'focusFirst' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -839,7 +862,7 @@ describe( 'DialogView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			testUtils.sinon.stub( view.element.firstChild, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
 				width: 100,
 				height: 50,
 				left: 0,
@@ -865,47 +888,47 @@ describe( 'DialogView', () => {
 
 			view.moveTo( 50, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '123px' );
-			expect( view.element.firstChild.style.top ).to.equal( '321px' );
+			expect( view.element.firstChild.style.left ).toBe( '123px' );
+			expect( view.element.firstChild.style.top ).toBe( '321px' );
 		} );
 
 		it( 'should change top and left CSS properties of the dialog', () => {
 			view.moveTo( 50, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 		} );
 
 		it( 'should prevent the dialog from sticking off the top edge of the viewport', () => {
 			view.moveTo( 50, -10 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '0px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '0px' );
 		} );
 
 		it( 'should prevent the dialog from sticking off the left edge of the viewport', () => {
 			view.moveTo( -10, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '0px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '0px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 		} );
 
 		it( 'should prevent the dialog from sticking off the right edge of the viewport', () => {
 			view.moveTo( 1000, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '400px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '400px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 		} );
 
 		it( 'should not consider the bottom edge of the viewport', () => {
 			view.moveTo( 50, 5000 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '5000px' );
 		} );
 
 		it( 'should consider viewport offset configuration (dialog mode)', () => {
-			getViewportOffsetStub.returns( {
+			getViewportOffsetStub.mockReturnValue( {
 				top: 10,
 				right: 20,
 				bottom: 30,
@@ -914,27 +937,27 @@ describe( 'DialogView', () => {
 
 			view.moveTo( 50, 5 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '10px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '10px' );
 
 			view.moveTo( 0, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '40px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '40px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 
 			view.moveTo( 1000, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '380px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '380px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 
 			view.moveTo( 1000, 5000 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '380px' );
-			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
+			expect( view.element.firstChild.style.left ).toBe( '380px' );
+			expect( view.element.firstChild.style.top ).toBe( '5000px' );
 		} );
 
 		it( 'should ignore viewport offset configuration (modal mode)', () => {
-			getViewportOffsetStub.returns( {
+			getViewportOffsetStub.mockReturnValue( {
 				top: 10,
 				right: 20,
 				bottom: 30,
@@ -945,23 +968,23 @@ describe( 'DialogView', () => {
 
 			view.moveTo( 50, 5 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '5px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '5px' );
 
 			view.moveTo( 0, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '0px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '0px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 
 			view.moveTo( 1000, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '400px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '400px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 
 			view.moveTo( 1000, 5000 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '400px' );
-			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
+			expect( view.element.firstChild.style.left ).toBe( '400px' );
+			expect( view.element.firstChild.style.top ).toBe( '5000px' );
 		} );
 	} );
 
@@ -973,13 +996,13 @@ describe( 'DialogView', () => {
 		it( 'should move the dialog by given distance', () => {
 			view.moveTo( 50, 20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '50px' );
-			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+			expect( view.element.firstChild.style.left ).toBe( '50px' );
+			expect( view.element.firstChild.style.top ).toBe( '20px' );
 
 			view.moveBy( 10, -20 );
 
-			expect( view.element.firstChild.style.left ).to.equal( '60px' );
-			expect( view.element.firstChild.style.top ).to.equal( '0px' );
+			expect( view.element.firstChild.style.left ).toBe( '60px' );
+			expect( view.element.firstChild.style.top ).toBe( '0px' );
 		} );
 	} );
 
@@ -988,7 +1011,7 @@ describe( 'DialogView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			testUtils.sinon.stub( view.element.firstChild, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( view.element.firstChild, 'getBoundingClientRect' ).mockReturnValue( {
 				width: 100,
 				height: 50,
 				left: 0,
@@ -997,7 +1020,7 @@ describe( 'DialogView', () => {
 				bottom: 50
 			} );
 
-			testUtils.sinon.stub( fakeDomRootElement, 'getBoundingClientRect' ).returns( {
+			vi.spyOn( fakeDomRootElement, 'getBoundingClientRect' ).mockReturnValue( {
 				width: 200,
 				height: 200,
 				left: 10,
@@ -1012,40 +1035,40 @@ describe( 'DialogView', () => {
 		} );
 
 		it( 'should always position the dialog on the center of the screen if there is no editing root available', () => {
-			getDomRootElementStub.returns( null );
+			getDomRootElementStub.mockReturnValue( null );
 
 			view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 
 			view.updatePosition();
 
-			expect( view.element.firstChild.style.left ).to.equal( '200px' );
-			expect( view.element.firstChild.style.top ).to.equal( '225px' );
+			expect( view.element.firstChild.style.left ).toBe( '200px' );
+			expect( view.element.firstChild.style.top ).toBe( '225px' );
 		} );
 
 		it( 'should return early when position is null', () => {
-			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+			const moveToSpy = vi.spyOn( view, '_moveTo' );
 
 			view.position = null;
 
 			view.updatePosition();
 
-			sinon.assert.notCalled( moveToSpy );
+			expect( moveToSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should call position function with correct arguments and use returned coordinates', () => {
 			const mockCoords = { left: 123, top: 456 };
-			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
-			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+			const positionFunctionSpy = vi.fn().mockReturnValue( mockCoords );
+			const moveToSpy = vi.spyOn( view, '_moveTo' );
 
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
-			sinon.assert.calledOnce( positionFunctionSpy );
+			expect( positionFunctionSpy ).toHaveBeenCalledOnce();
 
-			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.mock.calls[ 0 ];
 
-			expect( dialogRect ).to.deep.equal( {
+			expect( dialogRect ).toEqual( {
 				width: 100,
 				height: 50,
 				left: 0,
@@ -1055,7 +1078,7 @@ describe( 'DialogView', () => {
 			} );
 
 			// The DOM root is fully within the viewport, so both rects are equal.
-			expect( visibleDomRootRect ).to.deep.equal( {
+			expect( visibleDomRootRect ).toEqual( {
 				width: 200,
 				height: 200,
 				left: 10,
@@ -1064,7 +1087,7 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			expect( domRootRect ).to.deep.equal( {
+			expect( domRootRect ).toEqual( {
 				width: 200,
 				height: 200,
 				left: 10,
@@ -1073,24 +1096,25 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			sinon.assert.calledOnceWithExactly( moveToSpy, 123, 456 );
+			expect( moveToSpy ).toHaveBeenCalledOnce();
+			expect( moveToSpy ).toHaveBeenCalledWith( 123, 456 );
 		} );
 
 		it( 'should call position function with null root rects when no DOM root is available', () => {
 			const mockCoords = { left: 789, top: 101 };
-			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
-			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+			const positionFunctionSpy = vi.fn().mockReturnValue( mockCoords );
+			const moveToSpy = vi.spyOn( view, '_moveTo' );
 
-			getDomRootElementStub.returns( null );
+			getDomRootElementStub.mockReturnValue( null );
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
-			sinon.assert.calledOnce( positionFunctionSpy );
+			expect( positionFunctionSpy ).toHaveBeenCalledOnce();
 
-			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.mock.calls[ 0 ];
 
-			expect( dialogRect ).to.deep.equal( {
+			expect( dialogRect ).toEqual( {
 				width: 100,
 				height: 50,
 				left: 0,
@@ -1099,25 +1123,26 @@ describe( 'DialogView', () => {
 				bottom: 50
 			} );
 
-			expect( visibleDomRootRect ).to.be.null;
-			expect( domRootRect ).to.be.null;
+			expect( visibleDomRootRect ).toBeNull();
+			expect( domRootRect ).toBeNull();
 
-			sinon.assert.calledOnceWithExactly( moveToSpy, 789, 101 );
+			expect( moveToSpy ).toHaveBeenCalledOnce();
+			expect( moveToSpy ).toHaveBeenCalledWith( 789, 101 );
 		} );
 
 		it( 'should move dialog off screen when position function returns null', () => {
-			const positionFunctionSpy = testUtils.sinon.stub().returns( null );
-			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+			const positionFunctionSpy = vi.fn().mockReturnValue( null );
+			const moveToSpy = vi.spyOn( view, '_moveTo' );
 
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
-			sinon.assert.calledOnce( positionFunctionSpy );
+			expect( positionFunctionSpy ).toHaveBeenCalledOnce();
 
-			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ dialogRect, visibleDomRootRect, domRootRect ] = positionFunctionSpy.mock.calls[ 0 ];
 
-			expect( dialogRect ).to.deep.equal( {
+			expect( dialogRect ).toEqual( {
 				width: 100,
 				height: 50,
 				left: 0,
@@ -1126,7 +1151,7 @@ describe( 'DialogView', () => {
 				bottom: 50
 			} );
 
-			expect( visibleDomRootRect ).to.deep.equal( {
+			expect( visibleDomRootRect ).toEqual( {
 				width: 200,
 				height: 200,
 				left: 10,
@@ -1135,7 +1160,7 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			expect( domRootRect ).to.deep.equal( {
+			expect( domRootRect ).toEqual( {
 				width: 200,
 				height: 200,
 				left: 10,
@@ -1144,12 +1169,13 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			sinon.assert.calledOnceWithExactly( moveToSpy, -9999, -9999 );
+			expect( moveToSpy ).toHaveBeenCalledOnce();
+			expect( moveToSpy ).toHaveBeenCalledWith( -9999, -9999 );
 		} );
 
 		it( 'should pass the DOM root Rect to the position function even when the root is off the screen', () => {
 			// The DOM root is entirely off the screen, so it has no visible Rect, but its general Rect is still available.
-			fakeDomRootElement.getBoundingClientRect.returns( {
+			fakeDomRootElement.getBoundingClientRect.mockReturnValue( {
 				width: 200,
 				height: 200,
 				left: -1000,
@@ -1158,17 +1184,17 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			const positionFunctionSpy = testUtils.sinon.stub().returns( { left: 5, top: 6 } );
-			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+			const positionFunctionSpy = vi.fn().mockReturnValue( { left: 5, top: 6 } );
+			const moveToSpy = vi.spyOn( view, '_moveTo' );
 
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
-			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.mock.calls[ 0 ];
 
-			expect( visibleDomRootRect, 'visibleDomRootRect' ).to.be.null;
-			expect( domRootRect, 'domRootRect' ).to.deep.equal( {
+			expect( visibleDomRootRect, 'visibleDomRootRect' ).toBeNull();
+			expect( domRootRect, 'domRootRect' ).toEqual( {
 				width: 200,
 				height: 200,
 				left: -1000,
@@ -1178,7 +1204,8 @@ describe( 'DialogView', () => {
 			} );
 
 			// The dialog can still be positioned despite the root not being visible.
-			sinon.assert.calledOnceWithExactly( moveToSpy, 5, 6 );
+			expect( moveToSpy ).toHaveBeenCalledOnce();
+			expect( moveToSpy ).toHaveBeenCalledWith( 5, 6 );
 		} );
 
 		it( 'should pass the DOM root Rect to the position function even when the root is cropped and invisible', () => {
@@ -1186,7 +1213,7 @@ describe( 'DialogView', () => {
 
 			ancestorElement.style.overflow = 'hidden';
 
-			fakeDomRootElement.getBoundingClientRect.returns( {
+			fakeDomRootElement.getBoundingClientRect.mockReturnValue( {
 				width: 200,
 				height: 200,
 				left: -1000,
@@ -1198,17 +1225,17 @@ describe( 'DialogView', () => {
 			document.body.appendChild( ancestorElement );
 			ancestorElement.appendChild( fakeDomRootElement );
 
-			const positionFunctionSpy = testUtils.sinon.stub().returns( { left: 7, top: 8 } );
-			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+			const positionFunctionSpy = vi.fn().mockReturnValue( { left: 7, top: 8 } );
+			const moveToSpy = vi.spyOn( view, '_moveTo' );
 
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
-			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.mock.calls[ 0 ];
 
-			expect( visibleDomRootRect, 'visibleDomRootRect' ).to.be.null;
-			expect( domRootRect, 'domRootRect' ).to.deep.equal( {
+			expect( visibleDomRootRect, 'visibleDomRootRect' ).toBeNull();
+			expect( domRootRect, 'domRootRect' ).toEqual( {
 				width: 200,
 				height: 200,
 				left: -1000,
@@ -1217,7 +1244,8 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			sinon.assert.calledOnceWithExactly( moveToSpy, 7, 8 );
+			expect( moveToSpy ).toHaveBeenCalledOnce();
+			expect( moveToSpy ).toHaveBeenCalledWith( 7, 8 );
 
 			ancestorElement.remove();
 		} );
@@ -1225,7 +1253,7 @@ describe( 'DialogView', () => {
 		it( 'should pass the visible (clipped) and the general DOM root Rects to the position function separately', () => {
 			// The DOM root sticks out of the viewport on the left, so its visible Rect is clipped to the viewport
 			// while its general Rect still spans the full geometry.
-			fakeDomRootElement.getBoundingClientRect.returns( {
+			fakeDomRootElement.getBoundingClientRect.mockReturnValue( {
 				width: 200,
 				height: 200,
 				left: -50,
@@ -1234,15 +1262,15 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			const positionFunctionSpy = testUtils.sinon.stub().returns( { left: 1, top: 2 } );
+			const positionFunctionSpy = vi.fn().mockReturnValue( { left: 1, top: 2 } );
 
 			view.position = positionFunctionSpy;
 
 			view.updatePosition();
 
-			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+			const [ , visibleDomRootRect, domRootRect ] = positionFunctionSpy.mock.calls[ 0 ];
 
-			expect( visibleDomRootRect, 'visibleDomRootRect' ).to.deep.equal( {
+			expect( visibleDomRootRect, 'visibleDomRootRect' ).toEqual( {
 				width: 150,
 				height: 200,
 				left: 0,
@@ -1251,7 +1279,7 @@ describe( 'DialogView', () => {
 				bottom: 210
 			} );
 
-			expect( domRootRect, 'domRootRect' ).to.deep.equal( {
+			expect( domRootRect, 'domRootRect' ).toEqual( {
 				width: 200,
 				height: 200,
 				left: -50,
@@ -1267,19 +1295,19 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '95px' );
-				expect( view.element.firstChild.style.top ).to.equal( '25px' );
+				expect( view.element.firstChild.style.left ).toBe( '95px' );
+				expect( view.element.firstChild.style.top ).toBe( '25px' );
 			} );
 
 			it( 'should support EDITOR_TOP_SIDE position (RTL editor)', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 
-				testUtils.sinon.stub( locale, 'contentLanguageDirection' ).get( () => 'rtl' );
+				vi.spyOn( locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '25px' );
-				expect( view.element.firstChild.style.top ).to.equal( '25px' );
+				expect( view.element.firstChild.style.left ).toBe( '25px' );
+				expect( view.element.firstChild.style.top ).toBe( '25px' );
 			} );
 
 			it( 'should support EDITOR_CENTER position', () => {
@@ -1287,8 +1315,8 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '60px' );
-				expect( view.element.firstChild.style.top ).to.equal( '85px' );
+				expect( view.element.firstChild.style.left ).toBe( '60px' );
+				expect( view.element.firstChild.style.top ).toBe( '85px' );
 			} );
 
 			it( 'should support SCREEN_CENTER position', () => {
@@ -1296,8 +1324,8 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '200px' );
-				expect( view.element.firstChild.style.top ).to.equal( '225px' );
+				expect( view.element.firstChild.style.left ).toBe( '200px' );
+				expect( view.element.firstChild.style.top ).toBe( '225px' );
 			} );
 
 			it( 'should support EDITOR_TOP_CENTER position', () => {
@@ -1305,8 +1333,8 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '60px' );
-				expect( view.element.firstChild.style.top ).to.equal( '25px' );
+				expect( view.element.firstChild.style.left ).toBe( '60px' );
+				expect( view.element.firstChild.style.top ).toBe( '25px' );
 			} );
 
 			it( 'should support EDITOR_BOTTOM_CENTER position', () => {
@@ -1314,14 +1342,14 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '60px' );
-				expect( view.element.firstChild.style.top ).to.equal( '145px' );
+				expect( view.element.firstChild.style.left ).toBe( '60px' );
+				expect( view.element.firstChild.style.top ).toBe( '145px' );
 			} );
 
 			it( 'should support EDITOR_ABOVE_CENTER position', () => {
 				view.position = DialogViewPosition.EDITOR_ABOVE_CENTER;
 
-				fakeDomRootElement.getBoundingClientRect.returns( {
+				fakeDomRootElement.getBoundingClientRect.mockReturnValue( {
 					width: 200,
 					height: 200,
 					left: 10,
@@ -1332,8 +1360,8 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '60px' );
-				expect( view.element.firstChild.style.top ).to.equal( '35px' );
+				expect( view.element.firstChild.style.left ).toBe( '60px' );
+				expect( view.element.firstChild.style.top ).toBe( '35px' );
 			} );
 
 			it( 'should support EDITOR_BELOW_CENTER position', () => {
@@ -1341,14 +1369,14 @@ describe( 'DialogView', () => {
 
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '60px' );
-				expect( view.element.firstChild.style.top ).to.equal( '225px' );
+				expect( view.element.firstChild.style.left ).toBe( '60px' );
+				expect( view.element.firstChild.style.top ).toBe( '225px' );
 			} );
 		} );
 
 		describe( 'when the DOM root is invisible in the viewport', () => {
 			beforeEach( () => {
-				fakeDomRootElement.getBoundingClientRect.returns( {
+				fakeDomRootElement.getBoundingClientRect.mockReturnValue( {
 					width: 200,
 					height: 200,
 					left: -1000,
@@ -1362,56 +1390,56 @@ describe( 'DialogView', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should work regardless of the DOM root geometry (SCREEN_CENTER)', () => {
 				view.position = DialogViewPosition.SCREEN_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '200px' );
-				expect( view.element.firstChild.style.top ).to.equal( '225px' );
+				expect( view.element.firstChild.style.left ).toBe( '200px' );
+				expect( view.element.firstChild.style.top ).toBe( '225px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_TOP_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_BOTTOM_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_BOTTOM_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_ABOVE_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_ABOVE_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_BELOW_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_BELOW_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 		} );
 
@@ -1422,7 +1450,7 @@ describe( 'DialogView', () => {
 				ancestorElement = document.createElement( 'div' );
 				ancestorElement.style.overflow = 'hidden';
 
-				fakeDomRootElement.getBoundingClientRect.returns( {
+				fakeDomRootElement.getBoundingClientRect.mockReturnValue( {
 					width: 200,
 					height: 200,
 					left: -1000,
@@ -1443,61 +1471,61 @@ describe( 'DialogView', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should work regardless of the DOM root geometry (SCREEN_CENTER)', () => {
 				view.position = DialogViewPosition.SCREEN_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '200px' );
-				expect( view.element.firstChild.style.top ).to.equal( '225px' );
+				expect( view.element.firstChild.style.left ).toBe( '200px' );
+				expect( view.element.firstChild.style.top ).toBe( '225px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_TOP_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_BOTTOM_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_BOTTOM_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_ABOVE_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_ABOVE_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 
 			it( 'should move the dialog off the screen (EDITOR_BELOW_CENTER)', () => {
 				view.position = DialogViewPosition.EDITOR_BELOW_CENTER;
 				view.updatePosition();
 
-				expect( view.element.firstChild.style.left ).to.equal( '-9999px' );
-				expect( view.element.firstChild.style.top ).to.equal( '-9999px' );
+				expect( view.element.firstChild.style.left ).toBe( '-9999px' );
+				expect( view.element.firstChild.style.top ).toBe( '-9999px' );
 			} );
 		} );
 
 		it( 'should consider viewport offsets (dialog mode)', () => {
-			getViewportOffsetStub.returns( {
+			getViewportOffsetStub.mockReturnValue( {
 				top: 100,
 				right: 0,
 				bottom: 0,
@@ -1506,18 +1534,18 @@ describe( 'DialogView', () => {
 
 			view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 
-			testUtils.sinon.stub( locale, 'contentLanguageDirection' ).get( () => 'rtl' );
+			vi.spyOn( locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
 
 			view.updatePosition();
 
-			expect( view.element.firstChild.style.left ).to.equal( '115px' );
-			expect( view.element.firstChild.style.top ).to.equal( '115px' );
+			expect( view.element.firstChild.style.left ).toBe( '115px' );
+			expect( view.element.firstChild.style.top ).toBe( '115px' );
 		} );
 
 		it( 'should ignore viewport offsets (modal mode)', () => {
 			view.isModal = true;
 
-			getViewportOffsetStub.returns( {
+			getViewportOffsetStub.mockReturnValue( {
 				top: 100,
 				right: 0,
 				bottom: 0,
@@ -1526,28 +1554,28 @@ describe( 'DialogView', () => {
 
 			view.position = DialogViewPosition.EDITOR_TOP_SIDE;
 
-			testUtils.sinon.stub( locale, 'contentLanguageDirection' ).get( () => 'rtl' );
+			vi.spyOn( locale, 'contentLanguageDirection', 'get' ).mockReturnValue( 'rtl' );
 
 			view.updatePosition();
 
-			expect( view.element.firstChild.style.left ).to.equal( '25px' );
-			expect( view.element.firstChild.style.top ).to.equal( '25px' );
+			expect( view.element.firstChild.style.left ).toBe( '25px' );
+			expect( view.element.firstChild.style.top ).toBe( '25px' );
 		} );
 
 		it( 'should not warn or throw if the view has not been rendered yet', () => {
-			const warnStub = testUtils.sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			view.element.remove();
 
 			expect( () => {
 				view.updatePosition();
-			} ).not.to.throw();
+			} ).not.toThrow();
 
-			sinon.assert.notCalled( warnStub );
+			expect( warnStub ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not warn or throw if the view is detached from DOM', () => {
-			const warnStub = testUtils.sinon.stub( console, 'warn' );
+			const warnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			const view = new DialogView( locale, {
 				getDomRootElement: getDomRootElementStub,
@@ -1556,9 +1584,9 @@ describe( 'DialogView', () => {
 
 			expect( () => {
 				view.updatePosition();
-			} ).not.to.throw();
+			} ).not.toThrow();
 
-			sinon.assert.notCalled( warnStub );
+			expect( warnStub ).not.toHaveBeenCalled();
 
 			view.destroy();
 		} );

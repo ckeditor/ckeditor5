@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconFindReplace } from '@ckeditor/ckeditor5-icons';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -33,72 +34,75 @@ describe( 'Dialog', () => {
 		await editor.destroy();
 		editorElement.remove();
 		Dialog._visibleDialogPlugin = undefined;
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have a name', () => {
-		expect( Dialog.pluginName ).to.equal( 'Dialog' );
+		expect( Dialog.pluginName ).toBe( 'Dialog' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Dialog.isOfficialPlugin ).to.be.true;
+		expect( Dialog.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Dialog.isPremiumPlugin ).to.be.false;
+		expect( Dialog.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should initialize with isOpen=false', () => {
-		expect( dialogPlugin.isOpen ).to.be.false;
+		expect( dialogPlugin.isOpen ).toBe( false );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'navigation' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
-			label: 'Move focus in and out of an active dialog window',
-			keystroke: 'Ctrl+F6',
-			mayRequireFn: true
-		} );
+		expect( editor.accessibility.keystrokeInfos.get( 'navigation' ).groups.get( 'common' ).keystrokes ).toEqual(
+			expect.arrayContaining( [ {
+				label: 'Move focus in and out of an active dialog window',
+				keystroke: 'Ctrl+F6',
+				mayRequireFn: true
+			} ] )
+		);
 	} );
 
 	it( 'should initialise without #_visibleDialogPlugin set', () => {
-		expect( Dialog._visibleDialogPlugin ).to.be.undefined;
+		expect( Dialog._visibleDialogPlugin ).toBeUndefined();
 	} );
 
 	describe( 'constructor()', () => {
 		describe( 'should initialise', () => {
 			describe( '`show` event listeners', () => {
 				it( 'executing `_show()` method', () => {
-					const spy = sinon.spy( dialogPlugin, '_show' );
+					const spy = vi.spyOn( dialogPlugin, '_show' );
 
 					dialogPlugin.fire( 'show', {} );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'executing `onShow` callback', () => {
-					const spy = sinon.spy( () => {} );
+					const spy = vi.fn();
 
 					dialogPlugin.fire( 'show', { onShow: spy } );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should execute `_show()` before `onShow`', () => {
-					const _showSpy = sinon.spy( dialogPlugin, '_show' );
-					const onShowSpy = sinon.spy( () => {} );
+					const _showSpy = vi.spyOn( dialogPlugin, '_show' );
+					const onShowSpy = vi.fn();
 
 					dialogPlugin.on( 'show', () => {
-						sinon.assert.notCalled( _showSpy );
-						sinon.assert.notCalled( onShowSpy );
+						expect( _showSpy ).not.toHaveBeenCalled();
+						expect( onShowSpy ).not.toHaveBeenCalled();
 					}, { priority: 'high' } );
 
 					dialogPlugin.on( 'show', () => {
-						sinon.assert.calledOnce( _showSpy );
-						sinon.assert.notCalled( onShowSpy );
+						expect( _showSpy ).toHaveBeenCalledOnce();
+						expect( onShowSpy ).not.toHaveBeenCalled();
 					}, { priority: -1 } );
 
 					dialogPlugin.on( 'show', () => {
-						sinon.assert.calledOnce( _showSpy );
-						sinon.assert.calledOnce( onShowSpy );
+						expect( _showSpy ).toHaveBeenCalledOnce();
+						expect( onShowSpy ).toHaveBeenCalledOnce();
 					}, { priority: 'lowest' } );
 
 					dialogPlugin.fire( 'show', { onShow: onShowSpy } );
@@ -109,25 +113,25 @@ describe( 'Dialog', () => {
 				it( 'executing `_hide()` method ', () => {
 					dialogPlugin.show( {} );
 
-					const spy = sinon.spy( dialogPlugin, '_hide' );
+					const spy = vi.spyOn( dialogPlugin, '_hide' );
 
 					dialogPlugin.fire( 'hide' );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'executing `_onHide` callback', () => {
-					const spy = sinon.spy( () => {} );
+					const spy = vi.fn();
 
 					dialogPlugin._onHide = spy;
 
 					dialogPlugin.fire( 'hide' );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'clearing the `_onHide` callback after execution', () => {
-					const spy = sinon.spy( () => {} );
+					const spy = vi.fn();
 
 					dialogPlugin._onHide = spy;
 
@@ -137,28 +141,28 @@ describe( 'Dialog', () => {
 
 					dialogPlugin.fire( 'hide' );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should execute `_hide()` before `_onHide`', () => {
-					const _hideSpy = sinon.spy( dialogPlugin, '_hide' );
-					const onHideSpy = sinon.spy( () => {} );
+					const _hideSpy = vi.spyOn( dialogPlugin, '_hide' );
+					const onHideSpy = vi.fn();
 
 					dialogPlugin._onHide = onHideSpy;
 
 					dialogPlugin.on( 'hide', () => {
-						sinon.assert.notCalled( _hideSpy );
-						sinon.assert.notCalled( onHideSpy );
+						expect( _hideSpy ).not.toHaveBeenCalled();
+						expect( onHideSpy ).not.toHaveBeenCalled();
 					}, { priority: 'high' } );
 
 					dialogPlugin.on( 'hide', () => {
-						sinon.assert.calledOnce( _hideSpy );
-						sinon.assert.notCalled( onHideSpy );
+						expect( _hideSpy ).toHaveBeenCalledOnce();
+						expect( onHideSpy ).not.toHaveBeenCalled();
 					}, { priority: -1 } );
 
 					dialogPlugin.on( 'hide', () => {
-						sinon.assert.calledOnce( _hideSpy );
-						sinon.assert.calledOnce( onHideSpy );
+						expect( _hideSpy ).toHaveBeenCalledOnce();
+						expect( onHideSpy ).toHaveBeenCalledOnce();
 					}, { priority: 'lowest' } );
 
 					dialogPlugin.show( {} );
@@ -173,15 +177,15 @@ describe( 'Dialog', () => {
 						keyCode: keyCodes.f6,
 						ctrlKey: !env.isMac,
 						metaKey: env.isMac,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					it( 'should do nothing if dialog view is not open', () => {
 						editor.keystrokes.press( keyEvtData );
 
-						sinon.assert.notCalled( keyEvtData.preventDefault );
-						sinon.assert.notCalled( keyEvtData.stopPropagation );
+						expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
+						expect( keyEvtData.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should do nothing if dialog view is a modal', () => {
@@ -190,32 +194,32 @@ describe( 'Dialog', () => {
 
 						editor.keystrokes.press( keyEvtData );
 
-						sinon.assert.notCalled( keyEvtData.preventDefault );
-						sinon.assert.notCalled( keyEvtData.stopPropagation );
+						expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
+						expect( keyEvtData.stopPropagation ).not.toHaveBeenCalled();
 					} );
 
 					it( 'should focus the editing view if dialog view is focused', () => {
-						const spy = sinon.spy( editor.editing.view, 'focus' );
+						const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 						dialogPlugin.show( {} );
 						dialogPlugin.view.focusTracker.isFocused = true;
 
 						editor.keystrokes.press( keyEvtData );
 
-						sinon.assert.calledOnce( keyEvtData.preventDefault );
-						sinon.assert.calledOnce( keyEvtData.stopPropagation );
-						sinon.assert.calledOnce( spy );
+						expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+						expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					it( 'should focus the dialog if editing view is focused', () => {
 						dialogPlugin.show( {} );
 						editor.editing.view.focus();
 
-						const spy = sinon.spy( dialogPlugin.view, 'focus' );
+						const spy = vi.spyOn( dialogPlugin.view, 'focus' );
 
 						editor.keystrokes.press( keyEvtData );
 
-						sinon.assert.calledOnce( spy );
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 				} );
 			} );
@@ -224,33 +228,33 @@ describe( 'Dialog', () => {
 				it( 'should update the dialog view position whenever a root state is changed', () => {
 					dialogPlugin.show( {} );
 
-					const spy = sinon.spy( dialogPlugin.view, 'updatePosition' );
+					const spy = vi.spyOn( dialogPlugin.view, 'updatePosition' );
 
 					editor.model.change( writer => {
 						writer.detachRoot( 'main' );
 
 						const rootChanges = editor.model.document.differ.getChangedRoots();
 
-						expect( rootChanges.length ).to.equal( 1 );
+						expect( rootChanges.length ).toBe( 1 );
 					} );
 
-					sinon.assert.calledOnce( spy );
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should do nothing if a root attribute is changed', () => {
 					dialogPlugin.show( {} );
 
-					const spy = sinon.spy( dialogPlugin.view, 'updatePosition' );
+					const spy = vi.spyOn( dialogPlugin.view, 'updatePosition' );
 
 					editor.model.change( writer => {
 						writer.setAttribute( 'foo', 'bar', editor.model.document.getRoot() );
 
 						const rootChanges = editor.model.document.differ.getChangedRoots();
 
-						expect( rootChanges.length ).to.equal( 1 );
+						expect( rootChanges.length ).toBe( 1 );
 					} );
 
-					sinon.assert.notCalled( spy );
+					expect( spy ).not.toHaveBeenCalled();
 				} );
 			} );
 		} );
@@ -264,11 +268,11 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( true );
 
 			dialogPlugin.destroy();
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( false );
 		} );
 
 		it( 'should not unlock scrolling on the document if modal was displayed by another plugin instance', () => {
@@ -280,11 +284,11 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( true );
 
 			dialogPlugin.destroy();
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( true );
 
 			tempDialogPlugin.destroy();
 		} );
@@ -292,27 +296,27 @@ describe( 'Dialog', () => {
 
 	describe( 'show()', () => {
 		it( 'should fire the `show` event with id in namespace', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			dialogPlugin.on( 'show:first', spy );
 
 			dialogPlugin.show( { id: 'first' } );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		describe( 'should hide the previously visible dialog', () => {
 			it( 'in the same editor instance', () => {
-				const methodSpy = sinon.spy( dialogPlugin, 'hide' );
-				const eventSpy = sinon.spy();
+				const methodSpy = vi.spyOn( dialogPlugin, 'hide' );
+				const eventSpy = vi.fn();
 
 				dialogPlugin.on( 'hide', eventSpy );
 
 				dialogPlugin.show( { id: 'first' } );
 				dialogPlugin.show( { id: 'second' } );
 
-				sinon.assert.calledTwice( methodSpy );
-				sinon.assert.calledOnce( eventSpy );
+				expect( methodSpy ).toHaveBeenCalledTimes( 2 );
+				expect( eventSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'in another editor instance', async () => {
@@ -332,11 +336,11 @@ describe( 'Dialog', () => {
 						secondDialogPlugin = secondEditor.plugins.get( Dialog );
 					} );
 
-				const firstMethodSpy = sinon.spy( dialogPlugin, 'hide' );
-				const secondMethodSpy = sinon.spy( secondDialogPlugin, 'hide' );
+				const firstMethodSpy = vi.spyOn( dialogPlugin, 'hide' );
+				const secondMethodSpy = vi.spyOn( secondDialogPlugin, 'hide' );
 
-				const firstEventSpy = sinon.spy();
-				const secondEventSpy = sinon.spy();
+				const firstEventSpy = vi.fn();
+				const secondEventSpy = vi.fn();
 
 				dialogPlugin.on( 'hide:first', firstEventSpy );
 				secondDialogPlugin.on( 'hide:second', secondEventSpy );
@@ -348,10 +352,10 @@ describe( 'Dialog', () => {
 				// 2. The second dialog is shown after the spies start, so its hide() method is called.
 				// 3. In the second dialog's hide() method, the first dialog fires its `hide` event.
 				// 4. The second dialog doesn't fire the `hide` event, because its dialog was not hidden.
-				sinon.assert.notCalled( firstMethodSpy );
-				sinon.assert.calledOnce( firstEventSpy );
-				sinon.assert.calledOnce( secondMethodSpy );
-				sinon.assert.notCalled( secondEventSpy );
+				expect( firstMethodSpy ).not.toHaveBeenCalled();
+				expect( firstEventSpy ).toHaveBeenCalledOnce();
+				expect( secondMethodSpy ).toHaveBeenCalledOnce();
+				expect( secondEventSpy ).not.toHaveBeenCalled();
 
 				secondEditor.destroy();
 				secondEditorElement.remove();
@@ -363,17 +367,17 @@ describe( 'Dialog', () => {
 		it( 'should create the dialog view', () => {
 			dialogPlugin._show( {} );
 
-			expect( dialogPlugin.view ).to.be.instanceOf( DialogView );
+			expect( dialogPlugin.view ).toBeInstanceOf( DialogView );
 		} );
 
 		describe( 'DOM root element resolution (DialogView#getDomRootElement)', () => {
 			it( 'should resolve the DOM root using the name returned by the #getRootName callback', () => {
-				const getRootName = sinon.stub().returns( 'main' );
+				const getRootName = vi.fn().mockReturnValue( 'main' );
 
 				dialogPlugin._show( { getRootName } );
 
-				expect( dialogPlugin.view._getDomRootElement() ).to.equal( editor.editing.view.getDomRoot( 'main' ) );
-				sinon.assert.called( getRootName );
+				expect( dialogPlugin.view._getDomRootElement() ).toBe( editor.editing.view.getDomRoot( 'main' ) );
+				expect( getRootName ).toHaveBeenCalled();
 			} );
 
 			it( 'should resolve the DOM root using the selection anchor root when #getRootName is not provided', () => {
@@ -402,26 +406,26 @@ describe( 'Dialog', () => {
 
 			it( 'should return null when there is no DOM root for the resolved root name', () => {
 				// Defensive: the root is registered but its DOM root is unavailable (e.g. detached).
-				sinon.stub( editor.editing.view, 'getDomRoot' ).returns( undefined );
+				vi.spyOn( editor.editing.view, 'getDomRoot' ).mockReturnValue( undefined );
 
 				dialogPlugin._show( { getRootName: () => 'main' } );
 
-				expect( dialogPlugin.view._getDomRootElement() ).to.be.null;
+				expect( dialogPlugin.view._getDomRootElement() ).toBeNull();
 			} );
 		} );
 
 		it( 'should attach the `close` event listener to the dialog view by default', () => {
-			const spy = sinon.spy( dialogPlugin, 'hide' );
+			const spy = vi.spyOn( dialogPlugin, 'hide' );
 
 			dialogPlugin._show( {} );
 
 			dialogPlugin.view.fire( 'close' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'the `close` event listener should be overridable', () => {
-			const spy = sinon.spy( dialogPlugin, 'hide' );
+			const spy = vi.spyOn( dialogPlugin, 'hide' );
 
 			dialogPlugin._show( {} );
 
@@ -431,19 +435,19 @@ describe( 'Dialog', () => {
 
 			dialogPlugin.view.fire( 'close' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should add the dialog view to the body collection', () => {
 			dialogPlugin._show( {} );
 
-			expect( editor.ui.view.body.has( dialogPlugin.view ) ).to.be.true;
+			expect( editor.ui.view.body.has( dialogPlugin.view ) ).toBe( true );
 		} );
 
 		it( 'should add the dialog view to the editor focus tracker', () => {
 			dialogPlugin._show( {} );
 
-			expect( editor.ui.focusTracker._elements.has( dialogPlugin.view.element ) ).to.be.true;
+			expect( editor.ui.focusTracker._elements.has( dialogPlugin.view.element ) ).toBe( true );
 		} );
 
 		it( 'should set the dialog view properties based on passed args', () => {
@@ -453,9 +457,9 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_CENTER );
-			expect( dialogPlugin.view.isModal ).to.be.true;
-			expect( dialogPlugin.view.className ).to.equal( 'foo' );
+			expect( dialogPlugin.view.position ).toBe( DialogViewPosition.EDITOR_CENTER );
+			expect( dialogPlugin.view.isModal ).toBe( true );
+			expect( dialogPlugin.view.className ).toBe( 'foo' );
 		} );
 
 		it( 'should set the DialogViewPosition.SCREEN_CENTER position for modal if not defined otherwise', () => {
@@ -463,13 +467,13 @@ describe( 'Dialog', () => {
 				isModal: true
 			} );
 
-			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.SCREEN_CENTER );
+			expect( dialogPlugin.view.position ).toBe( DialogViewPosition.SCREEN_CENTER );
 		} );
 
 		it( 'should set the dialog view `_isVisible` property to `true`', () => {
 			dialogPlugin._show( {} );
 
-			expect( dialogPlugin.view._isVisible ).to.be.true;
+			expect( dialogPlugin.view._isVisible ).toBe( true );
 		} );
 
 		it( 'should setup the view parts with the passed arguments', () => {
@@ -479,9 +483,9 @@ describe( 'Dialog', () => {
 				actionButtons: []
 			} );
 
-			expect( dialogPlugin.view.headerView, 'headerView should be created' ).to.not.be.undefined;
-			expect( dialogPlugin.view.contentView, 'contentView should be created' ).to.not.be.undefined;
-			expect( dialogPlugin.view.actionsView, 'actionsView should be created' ).to.not.be.undefined;
+			expect( dialogPlugin.view.headerView, 'headerView should be created' ).not.toBeUndefined();
+			expect( dialogPlugin.view.contentView, 'contentView should be created' ).not.toBeUndefined();
+			expect( dialogPlugin.view.actionsView, 'actionsView should be created' ).not.toBeUndefined();
 		} );
 
 		it( 'should properly setup the header view with the passed arguments', () => {
@@ -491,9 +495,9 @@ describe( 'Dialog', () => {
 				hasCloseButton: false
 			} );
 
-			expect( dialogPlugin.view.headerView, 'headerView should be created' ).to.not.be.undefined;
-			expect( dialogPlugin.view.headerView.children.get( 0 ), 'iconView should be created' ).to.be.instanceOf( IconView );
-			expect( dialogPlugin.view.headerView.children.length ).to.equal( 2 );
+			expect( dialogPlugin.view.headerView, 'headerView should be created' ).not.toBeUndefined();
+			expect( dialogPlugin.view.headerView.children.get( 0 ), 'iconView should be created' ).toBeInstanceOf( IconView );
+			expect( dialogPlugin.view.headerView.children.length ).toBe( 2 );
 		} );
 
 		it( 'should set the plugin properties', () => {
@@ -502,13 +506,13 @@ describe( 'Dialog', () => {
 				onHide: () => {}
 			} );
 
-			expect( dialogPlugin.id, 'id should be set' ).to.equal( 'foo' );
-			expect( dialogPlugin._onHide, '`_onHide` should be set' ).to.be.a( 'function' );
-			expect( Dialog._visibleDialogPlugin, '`_visibleDialogPlugin` instance should be set' ).to.equal( dialogPlugin );
+			expect( dialogPlugin.id, 'id should be set' ).toBe( 'foo' );
+			expect( typeof dialogPlugin._onHide, '`_onHide` should be set' ).toBe( 'function' );
+			expect( Dialog._visibleDialogPlugin, '`_visibleDialogPlugin` instance should be set' ).toBe( dialogPlugin );
 		} );
 
 		it( 'should lock document scroll if the dialog is a modal', () => {
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( false );
 
 			dialogPlugin._show( {
 				position: DialogViewPosition.EDITOR_CENTER,
@@ -516,18 +520,18 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( true );
 		} );
 
 		it( 'should not lock document scroll if the dialog is not a modal', () => {
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( false );
 
 			dialogPlugin._show( {
 				position: DialogViewPosition.EDITOR_CENTER,
 				className: 'foo'
 			} );
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( false );
 		} );
 
 		it( 'should pass keystrokeHandlerOptions to its view', () => {
@@ -539,7 +543,7 @@ describe( 'Dialog', () => {
 			// FocusCycler.constructor -> keystrokeHandler.set( { ..., keystrokeHandlerOptions } )
 			//
 			// And so we spy on the `set` method of the KeystrokeHandler to check if options is passed there.
-			const spy = sinon.spy( KeystrokeHandler.prototype, 'set' );
+			const spy = vi.spyOn( KeystrokeHandler.prototype, 'set' );
 
 			const keystrokeHandlerOptions = {
 				filter: () => {}
@@ -549,40 +553,40 @@ describe( 'Dialog', () => {
 				keystrokeHandlerOptions
 			} );
 
-			expect( spy.args[ 0 ][ 2 ] ).to.equal( keystrokeHandlerOptions );
-			expect( spy.args[ 1 ][ 2 ] ).to.equal( keystrokeHandlerOptions );
+			expect( spy.mock.calls[ 0 ][ 2 ] ).toBe( keystrokeHandlerOptions );
+			expect( spy.mock.calls[ 1 ][ 2 ] ).toBe( keystrokeHandlerOptions );
 		} );
 	} );
 
 	describe( 'hide()', () => {
 		it( 'should do nothing if dialog is not visible', () => {
-			expect( dialogPlugin._visibleDialogPlugin ).to.be.undefined;
+			expect( dialogPlugin._visibleDialogPlugin ).toBeUndefined();
 
-			const spy = sinon.spy( dialogPlugin, '_hide' );
+			const spy = vi.spyOn( dialogPlugin, '_hide' );
 
 			dialogPlugin.fire( 'hide' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should fire the `hide` event with id in namespace', () => {
-			const spy = sinon.spy();
-			const stub = sinon.stub( dialogPlugin, '_hide' );
+			const spy = vi.fn();
+			const stub = vi.spyOn( dialogPlugin, '_hide' ).mockImplementation( () => {} );
 
 			dialogPlugin.show( { id: 'first' } );
 			dialogPlugin.on( 'hide:first', spy );
 
 			dialogPlugin.hide();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			stub.restore();
+			stub.mockRestore();
 		} );
 	} );
 
 	describe( '_hide()', () => {
 		it( 'should not throw if there is no dialog view stored', () => {
-			expect( () => dialogPlugin._hide() ).to.not.throw();
+			expect( () => dialogPlugin._hide() ).not.toThrow();
 		} );
 
 		it( 'should reset the dialog view content part', () => {
@@ -590,11 +594,11 @@ describe( 'Dialog', () => {
 				content: []
 			} );
 
-			const spy = sinon.spy( dialogPlugin.view.contentView, 'reset' );
+			const spy = vi.spyOn( dialogPlugin.view.contentView, 'reset' );
 
 			dialogPlugin._hide();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should remove the dialog view from body collection', () => {
@@ -602,7 +606,7 @@ describe( 'Dialog', () => {
 
 			dialogPlugin._hide();
 
-			expect( editor.ui.view.body.has( dialogPlugin.view ) ).to.be.false;
+			expect( editor.ui.view.body.has( dialogPlugin.view ) ).toBe( false );
 		} );
 
 		it( 'should remove the dialog view from the editor focus tracker', () => {
@@ -610,7 +614,7 @@ describe( 'Dialog', () => {
 
 			dialogPlugin._hide();
 
-			expect( editor.ui.focusTracker._elements.has( dialogPlugin.view.element ) ).to.be.false;
+			expect( editor.ui.focusTracker._elements.has( dialogPlugin.view.element ) ).toBe( false );
 		} );
 
 		it( 'should reset the plugin properties', () => {
@@ -618,13 +622,13 @@ describe( 'Dialog', () => {
 
 			dialogPlugin._hide();
 
-			expect( dialogPlugin.id, 'id should be reset' ).to.be.null;
-			expect( dialogPlugin._onHide, '`_onHide` should be reset' ).to.be.undefined;
-			expect( Dialog._visibleDialogPlugin, '`_visibleDialogPlugin` instance should be reset' ).to.be.null;
+			expect( dialogPlugin.id, 'id should be reset' ).toBeNull();
+			expect( dialogPlugin._onHide, '`_onHide` should be reset' ).toBeUndefined();
+			expect( Dialog._visibleDialogPlugin, '`_visibleDialogPlugin` instance should be reset' ).toBeNull();
 		} );
 
 		it( 'should unlock document scroll if the dialog is a modal', () => {
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( false );
 
 			dialogPlugin._show( {
 				position: DialogViewPosition.EDITOR_CENTER,
@@ -632,11 +636,11 @@ describe( 'Dialog', () => {
 				className: 'foo'
 			} );
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.true;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( true );
 
 			dialogPlugin._hide();
 
-			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).toBe( false );
 		} );
 	} );
 } );

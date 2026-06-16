@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { BalloonPanelView } from '../../src/index.js';
 import { View } from '../../src/view.js';
@@ -47,7 +47,9 @@ class EvaluationBadgeView extends View {
 describe( 'Badge', () => {
 	let editor, element, badge;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -57,7 +59,7 @@ describe( 'Badge', () => {
 		badge = new BadgeExtended( editor );
 		editor.fire( 'ready' );
 
-		testUtils.sinon.stub( editor.editing.view.getDomRoot(), 'getBoundingClientRect' ).returns( {
+		vi.spyOn( editor.editing.view.getDomRoot(), 'getBoundingClientRect' ).mockReturnValue( {
 			top: 0,
 			left: 0,
 			right: 400,
@@ -66,7 +68,7 @@ describe( 'Badge', () => {
 			height: 100
 		} );
 
-		testUtils.sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
+		vi.spyOn( document.body, 'getBoundingClientRect' ).mockReturnValue( {
 			top: 0,
 			right: 1000,
 			bottom: 1000,
@@ -75,8 +77,8 @@ describe( 'Badge', () => {
 			height: 1000
 		} );
 
-		sinon.stub( global.window, 'innerWidth' ).value( 1000 );
-		sinon.stub( global.window, 'innerHeight' ).value( 1000 );
+		vi.spyOn( global.window, 'innerWidth', 'get' ).mockReturnValue( 1000 );
+		vi.spyOn( global.window, 'innerHeight', 'get' ).mockReturnValue( 1000 );
 	} );
 
 	afterEach( async () => {
@@ -87,11 +89,11 @@ describe( 'Badge', () => {
 	describe( 'constructor()', () => {
 		describe( 'balloon creation', () => {
 			it( 'should create the balloon on demand', () => {
-				expect( badge._balloonView ).to.be.null;
+				expect( badge._balloonView ).toBeNull();
 
 				focusEditor( editor );
 
-				expect( badge._balloonView ).to.be.instanceOf( BalloonPanelView );
+				expect( badge._balloonView ).toBeInstanceOf( BalloonPanelView );
 			} );
 		} );
 
@@ -101,7 +103,7 @@ describe( 'Badge', () => {
 			it( 'should show the balloon when the editor gets focused', () => {
 				focusEditor( editor );
 
-				expect( badge._balloonView.isVisible ).to.be.true;
+				expect( badge._balloonView.isVisible ).toBe( true );
 			} );
 
 			it( 'should show the balloon if the focus is not in the editing root but in other editor UI', async () => {
@@ -116,12 +118,12 @@ describe( 'Badge', () => {
 				blurEditor( editor );
 
 				await wait( 10 );
-				const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+				const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 				focusEditor( editor, focusableEditorUIElement );
 
-				sinon.assert.calledOnce( pinSpy );
-				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+				expect( pinSpy ).toHaveBeenCalledOnce();
+				expect( pinSpy ).toHaveBeenCalledWith( expect.objectContaining( { target: editor.editing.view.getDomRoot() } ) );
 
 				focusableEditorUIElement.remove();
 			} );
@@ -129,14 +131,14 @@ describe( 'Badge', () => {
 			it( 'should hide the balloon on blur', async () => {
 				focusEditor( editor );
 
-				expect( badge._balloonView.isVisible ).to.be.true;
+				expect( badge._balloonView.isVisible ).toBe( true );
 
 				blurEditor( editor );
 
 				// FocusTracker's blur handler is asynchronous.
 				await wait( 200 );
 
-				expect( badge._balloonView.isVisible ).to.be.false;
+				expect( badge._balloonView.isVisible ).toBe( false );
 			} );
 
 			// This is a weak test because it does not check the geometry but it will do.
@@ -151,7 +153,7 @@ describe( 'Badge', () => {
 				}
 
 				// Rect#getVisible() passthrough to ignore ancestors. Makes testing a lot easier.
-				testUtils.sinon.stub( Rect.prototype, 'getVisible' ).callsFake( function() {
+				vi.spyOn( Rect.prototype, 'getVisible' ).mockImplementation( function() {
 					if ( isEditableElement( this._source ) ) {
 						return new Rect( this._source );
 					} else {
@@ -160,7 +162,7 @@ describe( 'Badge', () => {
 				} );
 
 				// Stub textarea's client rect.
-				testUtils.sinon.stub( HTMLElement.prototype, 'getBoundingClientRect' ).callsFake( function() {
+				vi.spyOn( HTMLElement.prototype, 'getBoundingClientRect' ).mockImplementation( function() {
 					if ( this.parentNode.classList.contains( 'ck-source-editing-area' ) ) {
 						return {
 							top: 0,
@@ -177,7 +179,7 @@ describe( 'Badge', () => {
 
 				focusEditor( editor );
 
-				domRoot.getBoundingClientRect.returns( {
+				domRoot.getBoundingClientRect.mockReturnValue( {
 					top: 0,
 					left: 0,
 					right: 350,
@@ -186,61 +188,60 @@ describe( 'Badge', () => {
 					height: 100
 				} );
 
-				const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+				const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 				editor.ui.fire( 'update' );
 
 				await wait( 75 );
 
-				expect( badge._balloonView.isVisible ).to.be.true;
-				expect( badge._balloonView.position ).to.equal( 'position_border-side_right' );
-				sinon.assert.calledWith( pinSpy.lastCall, sinon.match.has( 'target', domRoot ) );
+				expect( badge._balloonView.isVisible ).toBe( true );
+				expect( badge._balloonView.position ).toBe( 'position_border-side_right' );
+				expect( pinSpy ).toHaveBeenLastCalledWith( expect.objectContaining( { target: domRoot } ) );
 
 				editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
 
 				const sourceAreaElement = editor.ui.getEditableElement( 'sourceEditing:main' );
 
 				focusEditor( editor, sourceAreaElement );
-				sinon.assert.calledWith(
-					pinSpy.lastCall,
-					sinon.match.has( 'target', sourceAreaElement )
+				expect( pinSpy ).toHaveBeenLastCalledWith(
+					expect.objectContaining( { target: sourceAreaElement } )
 				);
 
-				expect( badge._balloonView.isVisible ).to.be.true;
-				expect( badge._balloonView.position ).to.equal( 'position_border-side_right' );
+				expect( badge._balloonView.isVisible ).toBe( true );
+				expect( badge._balloonView.position ).toBe( 'position_border-side_right' );
 
 				editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
 				focusEditor( editor );
 
-				expect( badge._balloonView.isVisible ).to.be.true;
-				expect( badge._balloonView.position ).to.equal( 'position_border-side_right' );
-				sinon.assert.calledWith( pinSpy.lastCall, sinon.match.has( 'target', domRoot ) );
+				expect( badge._balloonView.isVisible ).toBe( true );
+				expect( badge._balloonView.position ).toBe( 'position_border-side_right' );
+				expect( pinSpy ).toHaveBeenLastCalledWith( expect.objectContaining( { target: domRoot } ) );
 			} );
 		} );
 
 		describe( 'balloon management on EditorUI#update', () => {
 			it( 'should not trigger if the editor is not focused', () => {
-				expect( badge._balloonView ).to.be.null;
+				expect( badge._balloonView ).toBeNull();
 
 				editor.ui.fire( 'update' );
 
-				expect( badge._balloonView ).to.be.null;
+				expect( badge._balloonView ).toBeNull();
 			} );
 
 			it( 'should (re-)show the balloon but throttled', async () => {
 				focusEditor( editor );
 
-				const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+				const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 				editor.ui.fire( 'update' );
 				editor.ui.fire( 'update' );
 
-				sinon.assert.notCalled( pinSpy );
+				expect( pinSpy ).not.toHaveBeenCalled();
 
 				await wait( 75 );
 
-				sinon.assert.calledOnce( pinSpy );
-				sinon.assert.calledWith( pinSpy.firstCall, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+				expect( pinSpy ).toHaveBeenCalledOnce();
+				expect( pinSpy ).toHaveBeenCalledWith( expect.objectContaining( { target: editor.editing.view.getDomRoot() } ) );
 			} );
 
 			it( 'should (re-)show the balloon if the focus is not in the editing root but in other editor UI', async () => {
@@ -251,19 +252,19 @@ describe( 'Badge', () => {
 
 				focusEditor( editor, focusableEditorUIElement );
 
-				const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+				const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
-				sinon.assert.notCalled( pinSpy );
+				expect( pinSpy ).not.toHaveBeenCalled();
 
 				editor.ui.fire( 'update' );
 				editor.ui.fire( 'update' );
 
-				sinon.assert.calledOnce( pinSpy );
+				expect( pinSpy ).toHaveBeenCalledOnce();
 
 				await wait( 75 );
 
-				sinon.assert.calledTwice( pinSpy );
-				sinon.assert.calledWith( pinSpy, sinon.match.has( 'target', editor.editing.view.getDomRoot() ) );
+				expect( pinSpy ).toHaveBeenCalledTimes( 2 );
+				expect( pinSpy ).toHaveBeenCalledWith( expect.objectContaining( { target: editor.editing.view.getDomRoot() } ) );
 				focusableEditorUIElement.remove();
 			} );
 		} );
@@ -272,7 +273,7 @@ describe( 'Badge', () => {
 			let balloon, focusTrackerAddSpy;
 
 			beforeEach( () => {
-				focusTrackerAddSpy = testUtils.sinon.spy( editor.ui.focusTracker, 'add' );
+				focusTrackerAddSpy = vi.spyOn( editor.ui.focusTracker, 'add' );
 
 				focusEditor( editor );
 
@@ -280,27 +281,27 @@ describe( 'Badge', () => {
 			} );
 
 			it( 'should be an instance of BalloonPanelView', () => {
-				expect( balloon ).to.be.instanceOf( BalloonPanelView );
+				expect( balloon ).toBeInstanceOf( BalloonPanelView );
 			} );
 
 			it( 'should host a badge view', () => {
-				expect( balloon.content.first ).to.be.instanceOf( View );
+				expect( balloon.content.first ).toBeInstanceOf( View );
 			} );
 
 			it( 'should have no arrow', () => {
-				expect( balloon.withArrow ).to.be.false;
+				expect( balloon.withArrow ).toBe( false );
 			} );
 
 			it( 'should not have a specific CSS class if not provided', () => {
-				expect( balloon.class ).to.be.undefined;
+				expect( balloon.class ).toBeUndefined();
 			} );
 
 			it( 'should be added to editor\'s body view collection', () => {
-				expect( editor.ui.view.body.has( balloon ) ).to.be.true;
+				expect( editor.ui.view.body.has( balloon ) ).toBe( true );
 			} );
 
 			it( 'should be registered in the focus tracker to avoid focus loss on click', () => {
-				sinon.assert.calledWith( focusTrackerAddSpy, balloon.element );
+				expect( focusTrackerAddSpy ).toHaveBeenCalledWith( balloon.element );
 			} );
 		} );
 
@@ -314,17 +315,17 @@ describe( 'Badge', () => {
 			} );
 
 			it( 'should have specific CSS classes', () => {
-				expect( view.element.classList.contains( 'ck-badge-extended' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-badge-extended' ) ).toBe( true );
 			} );
 
 			it( 'should have a label', () => {
-				expect( view.element.firstChild.tagName ).to.equal( 'SPAN' );
-				expect( view.element.firstChild.classList.contains( 'ck-badge-extended__label' ) ).to.be.true;
-				expect( view.element.firstChild.textContent ).to.equal( 'Badge extended label' );
+				expect( view.element.firstChild.tagName ).toBe( 'SPAN' );
+				expect( view.element.firstChild.classList.contains( 'ck-badge-extended__label' ) ).toBe( true );
+				expect( view.element.firstChild.textContent ).toBe( 'Badge extended label' );
 			} );
 
 			it( 'should not be accessible via tab key navigation', () => {
-				expect( view.element.firstChild.tabIndex ).to.equal( -1 );
+				expect( view.element.firstChild.tabIndex ).toBe( -1 );
 			} );
 		} );
 	} );
@@ -351,8 +352,8 @@ describe( 'Badge', () => {
 
 			focusEditor( editor );
 
-			expect( badge._balloonView.isVisible ).to.be.true;
-			expect( badge._balloonView.position ).to.equal( 'arrowless' );
+			expect( badge._balloonView.isVisible ).toBe( true );
+			expect( badge._balloonView.position ).toBe( 'arrowless' );
 
 			parentWithOverflow.remove();
 		} );
@@ -370,8 +371,8 @@ describe( 'Badge', () => {
 
 			focusEditor( editor );
 
-			expect( badge._balloonView.isVisible ).to.be.true;
-			expect( badge._balloonView.position ).to.equal( 'arrowless' );
+			expect( badge._balloonView.isVisible ).toBe( true );
+			expect( badge._balloonView.position ).toBe( 'arrowless' );
 
 			parentWithOverflow.remove();
 		} );
@@ -384,7 +385,7 @@ describe( 'Badge', () => {
 			badge = new BadgeExtended( editor );
 			editor.fire( 'ready' );
 
-			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+			vi.spyOn( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).mockReturnValue( {
 				top: 0,
 				left: 0,
 				right: 400,
@@ -395,20 +396,20 @@ describe( 'Badge', () => {
 
 			focusEditor( editor );
 
-			const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+			const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
 			await wait( 75 );
 
-			sinon.assert.calledOnce( pinSpy );
+			expect( pinSpy ).toHaveBeenCalledOnce();
 
-			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const pinArgs = pinSpy.mock.calls[ 0 ][ 0 ];
 			const positioningFunction = pinArgs.positions[ 0 ];
 
-			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+			expect( pinArgs.target ).toBe( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).toEqual( {
 				top: 95,
 				left: 5,
 				name: 'position_border-side_left',
@@ -423,20 +424,20 @@ describe( 'Badge', () => {
 		it( 'should position the balloon in the lower right corner by default', async () => {
 			focusEditor( editor );
 
-			const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+			const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
 			await wait( 75 );
 
-			sinon.assert.calledOnce( pinSpy );
+			expect( pinSpy ).toHaveBeenCalledOnce();
 
-			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const pinArgs = pinSpy.mock.calls[ 0 ][ 0 ];
 			const positioningFunction = pinArgs.positions[ 0 ];
 
-			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+			expect( pinArgs.target ).toBe( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).toEqual( {
 				top: 95,
 				left: 375,
 				name: 'position_border-side_right',
@@ -456,24 +457,24 @@ describe( 'Badge', () => {
 
 			rootRect = new Rect( { top: 0, left: 0, width: 100, right: 100, bottom: 10, height: 10 } );
 
-			testUtils.sinon.stub( rootRect, 'getVisible' ).returns( null );
+			vi.spyOn( rootRect, 'getVisible' ).mockReturnValue( null );
 
 			focusEditor( editor );
 
-			const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+			const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
 			await wait( 75 );
 
-			sinon.assert.calledOnce( pinSpy );
+			expect( pinSpy ).toHaveBeenCalledOnce();
 
-			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const pinArgs = pinSpy.mock.calls[ 0 ][ 0 ];
 			const positioningFunction = pinArgs.positions[ 0 ];
 
-			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
+			expect( pinArgs.target ).toBe( domRoot );
+			expect( positioningFunction( rootRect, balloonRect ) ).toBeNull();
 
 			await editor.destroy();
 		} );
@@ -490,20 +491,20 @@ describe( 'Badge', () => {
 
 			focusEditor( editor );
 
-			const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+			const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
 			editor.ui.fire( 'update' );
 
 			// Throttled #update listener.
 			await wait( 75 );
 
-			sinon.assert.calledOnce( pinSpy );
+			expect( pinSpy ).toHaveBeenCalledOnce();
 
-			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const pinArgs = pinSpy.mock.calls[ 0 ][ 0 ];
 			const positioningFunction = pinArgs.positions[ 0 ];
 
-			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
+			expect( pinArgs.target ).toBe( domRoot );
+			expect( positioningFunction( rootRect, balloonRect ) ).toBeNull();
 
 			await editor.destroy();
 		} );
@@ -511,7 +512,7 @@ describe( 'Badge', () => {
 		it( 'should not display the balloon if the root is narrower than 350px', async () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
-			testUtils.sinon.stub( Rect.prototype, 'getVisible' ).callsFake( function() {
+			vi.spyOn( Rect.prototype, 'getVisible' ).mockImplementation( function() {
 				if ( this._source === domRoot ) {
 					return new Rect( domRoot );
 				} else {
@@ -519,7 +520,7 @@ describe( 'Badge', () => {
 				}
 			} );
 
-			domRoot.getBoundingClientRect.returns( {
+			domRoot.getBoundingClientRect.mockReturnValue( {
 				top: 0,
 				left: 0,
 				right: 349,
@@ -535,12 +536,12 @@ describe( 'Badge', () => {
 			// Throttled #update listener.
 			await wait( 75 );
 
-			const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+			const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
-			expect( badge._balloonView.isVisible ).to.be.true;
-			expect( badge._balloonView.position ).to.equal( 'arrowless' );
+			expect( badge._balloonView.isVisible ).toBe( true );
+			expect( badge._balloonView.position ).toBe( 'arrowless' );
 
-			domRoot.getBoundingClientRect.returns( {
+			domRoot.getBoundingClientRect.mockReturnValue( {
 				top: 0,
 				left: 0,
 				right: 350,
@@ -554,14 +555,14 @@ describe( 'Badge', () => {
 			// Throttled #update listener.
 			await wait( 75 );
 
-			expect( badge._balloonView.isVisible ).to.be.true;
-			expect( badge._balloonView.position ).to.equal( 'position_border-side_right' );
+			expect( badge._balloonView.isVisible ).toBe( true );
+			expect( badge._balloonView.position ).toBe( 'position_border-side_right' );
 
-			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const pinArgs = pinSpy.mock.calls[ 0 ][ 0 ];
 			const positioningFunction = pinArgs.positions[ 0 ];
 
-			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+			expect( pinArgs.target ).toBe( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).toEqual( {
 				top: 95,
 				left: 325,
 				name: 'position_border-side_right',
@@ -574,7 +575,7 @@ describe( 'Badge', () => {
 		it( 'should not display the balloon if the root is shorter than 50px', async () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
-			testUtils.sinon.stub( Rect.prototype, 'getVisible' ).callsFake( function() {
+			vi.spyOn( Rect.prototype, 'getVisible' ).mockImplementation( function() {
 				if ( this._source === domRoot ) {
 					return new Rect( domRoot );
 				} else {
@@ -582,7 +583,7 @@ describe( 'Badge', () => {
 				}
 			} );
 
-			domRoot.getBoundingClientRect.returns( {
+			domRoot.getBoundingClientRect.mockReturnValue( {
 				top: 0,
 				left: 0,
 				right: 1000,
@@ -598,12 +599,12 @@ describe( 'Badge', () => {
 			// Throttled #update listener.
 			await wait( 75 );
 
-			const pinSpy = testUtils.sinon.spy( badge._balloonView, 'pin' );
+			const pinSpy = vi.spyOn( badge._balloonView, 'pin' );
 
-			expect( badge._balloonView.isVisible ).to.be.true;
-			expect( badge._balloonView.position ).to.equal( 'arrowless' );
+			expect( badge._balloonView.isVisible ).toBe( true );
+			expect( badge._balloonView.position ).toBe( 'arrowless' );
 
-			domRoot.getBoundingClientRect.returns( {
+			domRoot.getBoundingClientRect.mockReturnValue( {
 				top: 0,
 				left: 0,
 				right: 1000,
@@ -617,14 +618,14 @@ describe( 'Badge', () => {
 			// Throttled #update listener.
 			await wait( 75 );
 
-			expect( badge._balloonView.isVisible ).to.be.true;
-			expect( badge._balloonView.position ).to.equal( 'position_border-side_right' );
+			expect( badge._balloonView.isVisible ).toBe( true );
+			expect( badge._balloonView.position ).toBe( 'position_border-side_right' );
 
-			const pinArgs = pinSpy.firstCall.args[ 0 ];
+			const pinArgs = pinSpy.mock.calls[ 0 ][ 0 ];
 			const positioningFunction = pinArgs.positions[ 0 ];
 
-			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
+			expect( pinArgs.target ).toBe( editor.editing.view.getDomRoot() );
+			expect( positioningFunction( rootRect, balloonRect ) ).toEqual( {
 				top: 45,
 				left: 975,
 				name: 'position_border-side_right',

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { ComponentFactory } from '../src/componentfactory.js';
 
@@ -23,7 +24,7 @@ describe( 'ComponentFactory', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets all the properties', () => {
-			expect( factory ).to.have.property( 'editor', editor );
+			expect( factory ).toHaveProperty( 'editor', editor );
 		} );
 	} );
 
@@ -31,7 +32,7 @@ describe( 'ComponentFactory', () => {
 		it( 'returns iterator', () => {
 			const names = factory.names();
 
-			expect( names.next ).to.be.a( 'function' );
+			expect( typeof names.next ).toBe( 'function' );
 		} );
 
 		it( 'returns iterator of command names', () => {
@@ -39,7 +40,8 @@ describe( 'ComponentFactory', () => {
 			factory.add( 'bar', () => {} );
 			factory.add( 'Baz', () => {} );
 
-			expect( Array.from( factory.names() ) ).to.have.members( [ 'foo', 'bar', 'Baz' ] );
+			expect( Array.from( factory.names() ) ).toEqual( expect.arrayContaining( [ 'foo', 'bar', 'Baz' ] ) );
+			expect( Array.from( factory.names() ) ).toHaveLength( 3 );
 		} );
 	} );
 
@@ -47,21 +49,22 @@ describe( 'ComponentFactory', () => {
 		it( 'does not normalize component names', () => {
 			factory.add( 'FoO', () => {} );
 
-			expect( Array.from( factory.names() ) ).to.have.members( [ 'FoO' ] );
+			expect( Array.from( factory.names() ) ).toEqual( expect.arrayContaining( [ 'FoO' ] ) );
+			expect( Array.from( factory.names() ) ).toHaveLength( 1 );
 		} );
 
 		it( 'should allow overriding already registered components', () => {
 			factory.add( 'foo', () => 'old' );
 			factory.add( 'foo', () => 'new' );
 
-			expect( factory.create( 'foo' ) ).to.equal( 'new' );
+			expect( factory.create( 'foo' ) ).toBe( 'new' );
 		} );
 
 		it( 'should allow overriding already registered components (same name, different case)', () => {
 			factory.add( 'foo', () => 'old' );
 			factory.add( 'Foo', () => 'new' );
 
-			expect( factory.create( 'foo' ) ).to.equal( 'new' );
+			expect( factory.create( 'foo' ) ).toBe( 'new' );
 		} );
 	} );
 
@@ -85,8 +88,8 @@ describe( 'ComponentFactory', () => {
 
 			const instance = factory.create( 'foo' );
 
-			expect( instance ).to.be.instanceof( View );
-			expect( instance.locale ).to.equal( locale );
+			expect( instance ).toBeInstanceOf( View );
+			expect( instance.locale ).toBe( locale );
 		} );
 
 		it( 'creates an instance even with different case', () => {
@@ -102,8 +105,8 @@ describe( 'ComponentFactory', () => {
 
 			const instance = factory.create( 'foo' );
 
-			expect( instance ).to.be.instanceof( View );
-			expect( instance.locale ).to.equal( locale );
+			expect( instance ).toBeInstanceOf( View );
+			expect( instance.locale ).toBe( locale );
 		} );
 	} );
 
@@ -112,11 +115,11 @@ describe( 'ComponentFactory', () => {
 			factory.add( 'foo', () => {} );
 			factory.add( 'bar', () => {} );
 
-			expect( factory.has( 'foo' ) ).to.be.true;
-			expect( factory.has( 'bar' ) ).to.be.true;
-			expect( factory.has( 'baz' ) ).to.be.false;
-			expect( factory.has( 'Foo' ) ).to.be.true;
-			expect( factory.has( 'fOO' ) ).to.be.true;
+			expect( factory.has( 'foo' ) ).toBe( true );
+			expect( factory.has( 'bar' ) ).toBe( true );
+			expect( factory.has( 'baz' ) ).toBe( false );
+			expect( factory.has( 'Foo' ) ).toBe( true );
+			expect( factory.has( 'fOO' ) ).toBe( true );
 		} );
 	} );
 } );

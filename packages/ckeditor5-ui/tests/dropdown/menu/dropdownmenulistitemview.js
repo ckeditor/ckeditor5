@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	ListItemView,
@@ -31,33 +32,33 @@ describe( 'DropdownMenuListItemView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should inherit from ListItemView', () => {
-			expect( listItemView ).to.be.instanceOf( ListItemView );
+			expect( listItemView ).toBeInstanceOf( ListItemView );
 		} );
 
 		describe( 'template and DOM element', () => {
 			it( 'should have a specific CSS class', () => {
-				expect( listItemView.template.attributes.class ).to.include.members( [ 'ck-dropdown-menu-list__nested-menu__item' ] );
+				expect( listItemView.template.attributes.class ).toContain( 'ck-dropdown-menu-list__nested-menu__item' );
 			} );
 
 			it( 'should fire #mousenter upon DOM mousenter', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				listItemView.on( 'mouseenter', spy );
 				listItemView.render();
 				listItemView.element.dispatchEvent( new Event( 'mouseenter' ) );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
 		it( 'should delegate events to a parent menu view', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			parentMenuView.on( 'mouseenter', spy );
 			listItemView.render();
 			listItemView.element.dispatchEvent( new Event( 'mouseenter' ) );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 } );

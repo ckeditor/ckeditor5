@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { CollapsibleView } from '../../src/collapsible/collapsibleview.js';
 import { ButtonView } from '../../src/button/buttonview.js';
@@ -36,107 +37,107 @@ describe( 'CollapsibleView', () => {
 			view = new CollapsibleView( locale, [ buttonA, buttonB ] );
 			view.render();
 
-			expect( view.element.lastChild.firstChild.classList.contains( 'foo' ) ).to.be.true;
-			expect( view.element.lastChild.lastChild.classList.contains( 'bar' ) ).to.be.true;
+			expect( view.element.lastChild.firstChild.classList.contains( 'foo' ) ).toBe( true );
+			expect( view.element.lastChild.lastChild.classList.contains( 'bar' ) ).toBe( true );
 		} );
 
 		describe( 'template', () => {
 			it( 'should create an #element from the template', () => {
-				expect( view.element.tagName ).to.equal( 'DIV' );
-				expect( view.element.classList.contains( 'ck-collapsible' ) ).to.be.true;
+				expect( view.element.tagName ).toBe( 'DIV' );
+				expect( view.element.classList.contains( 'ck-collapsible' ) ).toBe( true );
 
-				expect( view.element.firstChild.classList.contains( 'ck-button' ) ).to.be.true;
-				expect( view.element.lastChild.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.lastChild.classList.contains( 'ck-collapsible__children' ) ).to.be.true;
-				expect( view.element.lastChild.getAttribute( 'role' ) ).to.equal( 'region' );
+				expect( view.element.firstChild.classList.contains( 'ck-button' ) ).toBe( true );
+				expect( view.element.lastChild.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.lastChild.classList.contains( 'ck-collapsible__children' ) ).toBe( true );
+				expect( view.element.lastChild.getAttribute( 'role' ) ).toBe( 'region' );
 			} );
 
 			describe( 'main button', () => {
 				it( 'should have an icon', () => {
-					expect( view.buttonView.icon ).to.equal( IconDropdownArrow );
+					expect( view.buttonView.icon ).toBe( IconDropdownArrow );
 				} );
 
 				it( 'should display its text', () => {
-					expect( view.buttonView.withText ).to.be.true;
+					expect( view.buttonView.withText ).toBe( true );
 				} );
 			} );
 
 			it( 'should set the proper ARIA label on the collapsible container', () => {
 				const buttonLabelId = view.buttonView.labelView.element.id;
 
-				expect( view.element.lastChild.getAttribute( 'aria-labelledby' ) ).to.match( /^ck-editor__aria/ );
-				expect( view.element.lastChild.getAttribute( 'aria-labelledby' ) ).to.equal( buttonLabelId );
+				expect( view.element.lastChild.getAttribute( 'aria-labelledby' ) ).toMatch( /^ck-editor__aria/ );
+				expect( view.element.lastChild.getAttribute( 'aria-labelledby' ) ).toBe( buttonLabelId );
 			} );
 		} );
 
 		it( 'should have a #children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should have #isCollapsed', () => {
-			expect( view.isCollapsed ).to.be.false;
+			expect( view.isCollapsed ).toBe( false );
 		} );
 
 		it( 'should have #label with default value', () => {
-			expect( view.label ).to.equal( '' );
+			expect( view.label ).toBe( '' );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'focuses the button', () => {
-			const spy = sinon.spy( view.buttonView, 'focus' );
+			const spy = vi.spyOn( view.buttonView, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'DOM bindings', () => {
 		describe( 'button label', () => {
 			it( 'should react on view#label', () => {
-				expect( view.buttonView.element.innerText ).to.equal( '' );
+				expect( view.buttonView.element.innerText ).toBe( '' );
 
 				view.label = 'Foo';
 
-				expect( view.buttonView.element.innerText ).to.equal( 'Foo' );
+				expect( view.buttonView.element.innerText ).toBe( 'Foo' );
 			} );
 		} );
 
 		describe( 'button aria-expanded', () => {
 			it( 'should react on button#isOn', () => {
-				expect( view.buttonView.isOn ).to.be.true;
-				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'true' );
+				expect( view.buttonView.isOn ).toBe( true );
+				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).toBe( 'true' );
 
 				view.buttonView.isOn = false;
-				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
+				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).toBe( 'false' );
 			} );
 
 			it( 'should react on view#isCollapsed', () => {
-				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'true' );
+				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).toBe( 'true' );
 
 				view.isCollapsed = true;
-				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
+				expect( view.buttonView.element.getAttribute( 'aria-expanded' ) ).toBe( 'false' );
 			} );
 		} );
 
 		describe( 'collapsed state', () => {
 			it( 'should react on view#isCollapsed', () => {
-				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).to.be.false;
-				expect( view.element.lastChild.getAttribute( 'hidden' ) ).to.be.null;
+				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).toBe( false );
+				expect( view.element.lastChild.getAttribute( 'hidden' ) ).toBeNull();
 
 				view.isCollapsed = true;
 
-				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).to.be.true;
-				expect( view.element.lastChild.getAttribute( 'hidden' ) ).to.equal( 'hidden' );
+				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).toBe( true );
+				expect( view.element.lastChild.getAttribute( 'hidden' ) ).toBe( 'hidden' );
 			} );
 
 			it( 'should react on view.buttonView#execute', () => {
-				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).toBe( false );
 
 				view.buttonView.fire( 'execute' );
 
-				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-collapsible_collapsed' ) ).toBe( true );
 			} );
 		} );
 
@@ -145,13 +146,13 @@ describe( 'CollapsibleView', () => {
 				const buttonA = new ButtonView( locale );
 				const buttonB = new ButtonView( locale );
 
-				expect( view.element.lastChild.children.length ).to.equal( 0 );
+				expect( view.element.lastChild.children.length ).toBe( 0 );
 
 				view.children.add( buttonA );
-				expect( view.element.lastChild.children.length ).to.equal( 1 );
+				expect( view.element.lastChild.children.length ).toBe( 1 );
 
 				view.children.add( buttonB );
-				expect( view.element.lastChild.children.length ).to.equal( 2 );
+				expect( view.element.lastChild.children.length ).toBe( 2 );
 			} );
 		} );
 	} );

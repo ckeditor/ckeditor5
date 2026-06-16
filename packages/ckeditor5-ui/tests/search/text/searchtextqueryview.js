@@ -3,17 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, createLabeledInputText, IconView } from '@ckeditor/ckeditor5-ui';
 import { SearchTextQueryView } from '../../../src/search/text/searchtextqueryview.js';
 import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'SearchTextQueryView', () => {
 	let locale, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -32,40 +33,40 @@ describe( 'SearchTextQueryView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets view#locale', () => {
-			expect( view.locale ).to.equal( locale );
+			expect( view.locale ).toBe( locale );
 		} );
 
 		it( 'should have a label', () => {
-			expect( view.label ).to.equal( 'Test' );
+			expect( view.label ).toBe( 'Test' );
 		} );
 
 		describe( 'reset value button', () => {
 			it( 'should be created by default', () => {
 				const resetButtonView = view.fieldWrapperChildren.last;
 
-				expect( resetButtonView ).to.equal( view.resetButtonView );
-				expect( resetButtonView ).to.be.instanceOf( ButtonView );
-				expect( resetButtonView.isVisible ).to.be.false;
-				expect( resetButtonView.tooltip ).to.be.true;
-				expect( resetButtonView.class ).to.equal( 'ck-search__reset' );
-				expect( resetButtonView.label ).to.equal( 'Clear' );
-				expect( resetButtonView.icon ).to.equal( IconCancel );
+				expect( resetButtonView ).toBe( view.resetButtonView );
+				expect( resetButtonView ).toBeInstanceOf( ButtonView );
+				expect( resetButtonView.isVisible ).toBe( false );
+				expect( resetButtonView.tooltip ).toBe( true );
+				expect( resetButtonView.class ).toBe( 'ck-search__reset' );
+				expect( resetButtonView.label ).toBe( 'Clear' );
+				expect( resetButtonView.icon ).toBe( IconCancel );
 			} );
 
 			it( 'should reset the search field value upon #execute', () => {
-				const resetSpy = testUtils.sinon.spy( view, 'reset' );
+				const resetSpy = vi.spyOn( view, 'reset' );
 
 				view.resetButtonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( resetSpy );
+				expect( resetSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should focus the field view upon #execute', () => {
-				const focusSpy = testUtils.sinon.spy( view, 'focus' );
+				const focusSpy = vi.spyOn( view, 'focus' );
 
 				view.resetButtonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should get hidden upon #execute', () => {
@@ -73,17 +74,17 @@ describe( 'SearchTextQueryView', () => {
 
 				view.resetButtonView.fire( 'execute' );
 
-				expect( view.resetButtonView.isVisible ).to.be.false;
+				expect( view.resetButtonView.isVisible ).toBe( false );
 			} );
 
 			it( 'should fire the #reset event upon #execute', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'reset', spy );
 
 				view.resetButtonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should be possible to hide using view\'s configuration', () => {
@@ -93,8 +94,8 @@ describe( 'SearchTextQueryView', () => {
 					showResetButton: false
 				} );
 
-				expect( view.resetButtonView ).to.be.undefined;
-				expect( view.fieldWrapperChildren.last ).to.equal( view.labelView );
+				expect( view.resetButtonView ).toBeUndefined();
+				expect( view.fieldWrapperChildren.last ).toBe( view.labelView );
 
 				view.destroy();
 			} );
@@ -104,10 +105,10 @@ describe( 'SearchTextQueryView', () => {
 			it( 'should be added to the view by default', () => {
 				const iconView = view.fieldWrapperChildren.first;
 
-				expect( view.iconView ).to.equal( iconView );
-				expect( iconView ).to.equal( view.iconView );
-				expect( iconView ).to.be.instanceOf( IconView );
-				expect( iconView.content ).to.equal( IconLoupe );
+				expect( view.iconView ).toBe( iconView );
+				expect( iconView ).toBe( view.iconView );
+				expect( iconView ).toBeInstanceOf( IconView );
+				expect( iconView.content ).toBe( IconLoupe );
 			} );
 
 			it( 'should be possible to hide using view\'s configuration', () => {
@@ -117,8 +118,8 @@ describe( 'SearchTextQueryView', () => {
 					showIcon: false
 				} );
 
-				expect( view.iconView ).to.be.undefined;
-				expect( view.fieldWrapperChildren.first ).to.equal( view.fieldView );
+				expect( view.iconView ).toBeUndefined();
+				expect( view.fieldWrapperChildren.first ).toBe( view.fieldView );
 
 				view.destroy();
 			} );
@@ -129,25 +130,39 @@ describe( 'SearchTextQueryView', () => {
 				view.fieldView.value = 'foo';
 				view.fieldView.fire( 'input' );
 
-				expect( view.resetButtonView.isVisible ).to.be.true;
+				expect( view.resetButtonView.isVisible ).toBe( true );
 
 				view.fieldView.value = '';
 				view.fieldView.fire( 'input' );
 
-				expect( view.resetButtonView.isVisible ).to.be.false;
+				expect( view.resetButtonView.isVisible ).toBe( false );
 			} );
 		} );
 	} );
 
 	describe( 'reset()', () => {
+		it( 'should not update resetButtonView visibility if showResetButton is false', () => {
+			const viewWithoutReset = new SearchTextQueryView( locale, {
+				creator: createLabeledInputText,
+				label: 'Test',
+				showResetButton: false
+			} );
+
+			viewWithoutReset.render();
+
+			expect( () => viewWithoutReset.reset() ).not.toThrow();
+
+			viewWithoutReset.destroy();
+		} );
+
 		it( 'should not fire the #reset event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'reset', spy );
 
 			view.reset();
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should clear the field view value in DOM', () => {
@@ -155,7 +170,7 @@ describe( 'SearchTextQueryView', () => {
 
 			view.reset();
 
-			expect( view.fieldView.element.value ).to.equal( '' );
+			expect( view.fieldView.element.value ).toBe( '' );
 		} );
 
 		it( 'should clear the field view value in InputView', () => {
@@ -163,7 +178,7 @@ describe( 'SearchTextQueryView', () => {
 
 			view.reset();
 
-			expect( view.fieldView.value ).to.equal( '' );
+			expect( view.fieldView.value ).toBe( '' );
 		} );
 	} );
 } );
