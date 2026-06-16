@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 import { HeadingCommand } from '../src/headingcommand.js';
@@ -48,7 +49,7 @@ describe( 'HeadingCommand', () => {
 
 	describe( 'modelElements', () => {
 		it( 'is set', () => {
-			expect( command.modelElements ).to.deep.equal( [ 'heading1', 'heading2', 'heading3' ] );
+			expect( command.modelElements ).toEqual( [ 'heading1', 'heading2', 'heading3' ] );
 		} );
 	} );
 
@@ -68,13 +69,13 @@ describe( 'HeadingCommand', () => {
 					];
 					writer.setSelection( ranges );
 				} );
-				expect( command.value ).to.equal( modelElement );
+				expect( command.value ).toEqual( modelElement );
 			} );
 
 			it( 'equals false if inside to non-block element', () => {
 				_setModelData( model, '<notBlock>[foo]</notBlock>' );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( `equals false if moved from ${ modelElement } to non-block element`, () => {
@@ -85,7 +86,7 @@ describe( 'HeadingCommand', () => {
 					writer.setSelection( writer.createRangeIn( element ) );
 				} );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be refreshed after calling refresh()', () => {
@@ -95,9 +96,9 @@ describe( 'HeadingCommand', () => {
 				model.change( writer => {
 					writer.setSelection( writer.createRangeIn( element ) );
 
-					expect( command.value ).to.equal( modelElement );
+					expect( command.value ).toEqual( modelElement );
 					command.refresh();
-					expect( command.value ).to.be.false;
+					expect( command.value ).toBe( false );
 				} );
 			} );
 		}
@@ -108,8 +109,8 @@ describe( 'HeadingCommand', () => {
 			_setModelData( model, '<paragraph>[]</paragraph>' );
 			command.execute( { value: 'heading1' } );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
-			expect( command.value ).to.equal( 'heading1' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1>' );
+			expect( command.value ).toEqual( 'heading1' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-heading/issues/73
@@ -131,7 +132,7 @@ describe( 'HeadingCommand', () => {
 
 			command.execute( { value: 'heading1' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<heading1>a[bc</heading1>' +
 				'<restricted><fooBlock></fooBlock></restricted>' +
 				'<heading1>de]f</heading1>'
@@ -154,7 +155,7 @@ describe( 'HeadingCommand', () => {
 
 			command.execute( { value: 'heading1' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<heading1>a[bc</heading1>' +
 				'<imageBlock></imageBlock>' +
 				'<heading1>de]f</heading1>'
@@ -165,11 +166,11 @@ describe( 'HeadingCommand', () => {
 			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.change( writer => {
-				expect( writer.batch.operations.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).toEqual( 0 );
 
 				command.execute( { value: 'heading1' } );
 
-				expect( writer.batch.operations.length ).to.be.above( 0 );
+				expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 			} );
 		} );
 
@@ -177,8 +178,8 @@ describe( 'HeadingCommand', () => {
 			_setModelData( model, '<heading1>[]</heading1>' );
 			command.execute( { value: 'heading5' } );
 
-			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
-			expect( command.value ).to.equal( 'heading1' );
+			expect( _getModelData( model ) ).toEqual( '<heading1>[]</heading1>' );
+			expect( command.value ).toEqual( 'heading1' );
 		} );
 
 		describe( 'collapsed selection', () => {
@@ -193,7 +194,7 @@ describe( 'HeadingCommand', () => {
 				_setModelData( model, '<heading1>foo[]bar</heading1>' );
 
 				command.execute( { value: 'heading1' } );
-				expect( _getModelData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+				expect( _getModelData( model ) ).toEqual( '<heading1>foo[]bar</heading1>' );
 			} );
 
 			it( 'converts topmost blocks', () => {
@@ -203,7 +204,7 @@ describe( 'HeadingCommand', () => {
 				_setModelData( model, '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 				command.execute( { value: 'heading1' } );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
+				expect( _getModelData( model ) ).toEqual( '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 			} );
 
 			function test( from, to ) {
@@ -211,7 +212,7 @@ describe( 'HeadingCommand', () => {
 					_setModelData( model, `<${ from.model }>foo[]bar</${ from.model }>` );
 					command.execute( { value: to.model } );
 
-					expect( _getModelData( model ) ).to.equal( `<${ to.model }>foo[]bar</${ to.model }>` );
+					expect( _getModelData( model ) ).toEqual( `<${ to.model }>foo[]bar</${ to.model }>` );
 				} );
 			}
 		} );
@@ -229,7 +230,7 @@ describe( 'HeadingCommand', () => {
 
 				command.execute( { value: 'heading3' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<heading3>fo[o</heading3><heading3>bar</heading3><heading3>baz]</heading3>'
 				);
 			} );
@@ -238,7 +239,7 @@ describe( 'HeadingCommand', () => {
 				_setModelData( model, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
 				command.execute( { value: 'heading1' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<heading1>[foo</heading1><heading1>bar]</heading1>'
 				);
 			} );
@@ -247,7 +248,7 @@ describe( 'HeadingCommand', () => {
 				_setModelData( model, '<heading1>[foo</heading1><heading1>bar</heading1><heading2>baz]</heading2>' );
 				command.execute( { value: 'heading1' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<heading1>[foo</heading1><heading1>bar</heading1><heading1>baz]</heading1>'
 				);
 			} );
@@ -261,7 +262,7 @@ describe( 'HeadingCommand', () => {
 
 					command.execute( { value: toElement } );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toEqual(
 						`<${ toElement }>foo[bar</${ toElement }><${ toElement }>baz]qux</${ toElement }>`
 					);
 				} );
@@ -279,19 +280,19 @@ describe( 'HeadingCommand', () => {
 				it( 'should be enabled when inside another block', () => {
 					_setModelData( model, '<paragraph>f{}oo</paragraph>' );
 
-					expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).toBe( true );
 				} );
 
 				it( 'should be disabled if inside non-block', () => {
 					_setModelData( model, '<notBlock>f{}oo</notBlock>' );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 
 				it( 'should be disabled if selection is placed on non-block', () => {
 					_setModelData( model, '[<notBlock>foo</notBlock>]' );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).toBe( false );
 				} );
 			} );
 		}

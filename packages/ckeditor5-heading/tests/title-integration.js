@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { Title } from '../src/title.js';
 import { Heading } from '../src/heading.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -49,11 +51,11 @@ describe( 'Title integration with feature', () => {
 
 			editor.execute( 'bold' );
 
-			expect( editor.plugins.get( Title ).getBody() ).to.equal(
+			expect( editor.plugins.get( Title ).getBody() ).toEqual(
 				'<p><strong>Foo</strong></p>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toEqual(
 				'<title><title-content>Title</title-content></title><paragraph>[<$text bold="true">Foo</$text>]</paragraph>'
 			);
 		} );
@@ -80,13 +82,13 @@ describe( 'Title integration with multi root editor', () => {
 	} );
 
 	it( 'should return title value from given root', () => {
-		expect( titlePlugin.getTitle( { rootName: 'foo' } ) ).to.equal( 'FooTitle' );
-		expect( titlePlugin.getTitle( { rootName: 'bar' } ) ).to.equal( 'BarTitle' );
+		expect( titlePlugin.getTitle( { rootName: 'foo' } ) ).toEqual( 'FooTitle' );
+		expect( titlePlugin.getTitle( { rootName: 'bar' } ) ).toEqual( 'BarTitle' );
 	} );
 
 	it( 'should return body value from given root', () => {
-		expect( titlePlugin.getBody( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p><p>Body</p>' );
-		expect( titlePlugin.getBody( { rootName: 'bar' } ) ).to.equal( '<p>Bar</p><p>Body</p>' );
+		expect( titlePlugin.getBody( { rootName: 'foo' } ) ).toEqual( '<p>Foo</p><p>Body</p>' );
+		expect( titlePlugin.getBody( { rootName: 'bar' } ) ).toEqual( '<p>Bar</p><p>Body</p>' );
 	} );
 
 	it( 'should not fix detached roots', () => {
@@ -95,13 +97,13 @@ describe( 'Title integration with multi root editor', () => {
 		const barModelRoot = multiRoot.model.document.getRoot( 'bar' );
 
 		// Does not include title and body.
-		expect( barModelRoot.isEmpty ).to.be.true;
+		expect( barModelRoot.isEmpty ).toBe( true );
 	} );
 
 	it( 'should return an empty string from getTitle() for a detached root', () => {
 		multiRoot.detachRoot( 'bar' );
 
-		expect( multiRoot.plugins.get( Title ).getTitle( { rootName: 'bar' } ) ).to.equal( '' );
+		expect( multiRoot.plugins.get( Title ).getTitle( { rootName: 'bar' } ) ).toEqual( '' );
 	} );
 
 	it( 'should return an empty string from getBody() for a detached root (first-child guard)', () => {
@@ -111,10 +113,10 @@ describe( 'Title integration with multi root editor', () => {
 
 		// Detached root is empty but schema still reports `title` as allowed, so the
 		// first-child check is what prevents the NPE here.
-		expect( barRoot.isEmpty ).to.equal( true );
-		expect( multiRoot.model.schema.checkChild( barRoot, 'title' ) ).to.equal( true );
+		expect( barRoot.isEmpty ).toEqual( true );
+		expect( multiRoot.model.schema.checkChild( barRoot, 'title' ) ).toEqual( true );
 
-		expect( multiRoot.plugins.get( Title ).getBody( { rootName: 'bar' } ) ).to.equal( '' );
+		expect( multiRoot.plugins.get( Title ).getBody( { rootName: 'bar' } ) ).toEqual( '' );
 	} );
 } );
 
@@ -147,42 +149,42 @@ describe( 'Title integration with a mixed $root / $inlineRoot multi root editor'
 	it( 'should allow title only in the $root root, not in the $inlineRoot root', () => {
 		const schema = multiRoot.model.schema;
 
-		expect( schema.checkChild( mainRoot, 'title' ) ).to.equal( true );
-		expect( schema.checkChild( inlineRoot, 'title' ) ).to.equal( false );
+		expect( schema.checkChild( mainRoot, 'title' ) ).toEqual( true );
+		expect( schema.checkChild( inlineRoot, 'title' ) ).toEqual( false );
 	} );
 
 	it( 'should create the title + body structure in the $root root', () => {
-		expect( mainRoot.getChild( 0 ).is( 'element', 'title' ) ).to.equal( true );
-		expect( mainRoot.getChild( 1 ).is( 'element', 'paragraph' ) ).to.equal( true );
+		expect( mainRoot.getChild( 0 ).is( 'element', 'title' ) ).toEqual( true );
+		expect( mainRoot.getChild( 1 ).is( 'element', 'paragraph' ) ).toEqual( true );
 	} );
 
 	it( 'should not insert a title element into the $inlineRoot root', () => {
 		const hasTitle = Array.from( inlineRoot.getChildren() )
 			.some( child => child.is( 'element' ) && child.name === 'title' );
 
-		expect( hasTitle ).to.equal( false );
+		expect( hasTitle ).toEqual( false );
 	} );
 
 	it( 'should not insert a paragraph body placeholder into the $inlineRoot root', () => {
 		const hasParagraph = Array.from( inlineRoot.getChildren() )
 			.some( child => child.is( 'element' ) && child.name === 'paragraph' );
 
-		expect( hasParagraph ).to.equal( false );
+		expect( hasParagraph ).toEqual( false );
 	} );
 
 	it( 'should return title value for the $root root and an empty string for the $inlineRoot root', () => {
-		expect( titlePlugin.getTitle( { rootName: 'main' } ) ).to.equal( 'MainTitle' );
-		expect( titlePlugin.getTitle( { rootName: 'inline' } ) ).to.equal( '' );
+		expect( titlePlugin.getTitle( { rootName: 'main' } ) ).toEqual( 'MainTitle' );
+		expect( titlePlugin.getTitle( { rootName: 'inline' } ) ).toEqual( '' );
 	} );
 
 	it( 'should return body value for the $root root and fall back to full data for the $inlineRoot root', () => {
-		expect( titlePlugin.getBody( { rootName: 'main' } ) ).to.equal( '<p>Main body</p>' );
+		expect( titlePlugin.getBody( { rootName: 'main' } ) ).toEqual( '<p>Main body</p>' );
 		// No title structure on the inline root — the whole root is the body.
-		expect( titlePlugin.getBody( { rootName: 'inline' } ) ).to.equal( 'Inline content' );
+		expect( titlePlugin.getBody( { rootName: 'inline' } ) ).toEqual( 'Inline content' );
 	} );
 
 	it( 'should round-trip data on the $inlineRoot root without being touched by Title', () => {
-		expect( multiRoot.getData( { rootName: 'inline' } ) ).to.equal( 'Inline content' );
+		expect( multiRoot.getData( { rootName: 'inline' } ) ).toEqual( 'Inline content' );
 	} );
 
 	it( 'should not throw when the view post-fixer runs after a change in the $inlineRoot root', () => {
@@ -190,9 +192,9 @@ describe( 'Title integration with a mixed $root / $inlineRoot multi root editor'
 			multiRoot.model.change( writer => {
 				writer.insertText( '!', writer.createPositionAt( inlineRoot, 'end' ) );
 			} );
-		} ).not.to.throw();
+		} ).not.toThrow();
 
-		expect( multiRoot.getData( { rootName: 'inline' } ) ).to.equal( 'Inline content!' );
+		expect( multiRoot.getData( { rootName: 'inline' } ) ).toEqual( 'Inline content!' );
 	} );
 
 	it( 'should not throw when the view post-fixer runs after a change in the $root root', () => {
@@ -200,8 +202,8 @@ describe( 'Title integration with a mixed $root / $inlineRoot multi root editor'
 			multiRoot.model.change( writer => {
 				writer.insertText( '!', writer.createPositionAt( mainRoot.getChild( 1 ), 'end' ) );
 			} );
-		} ).not.to.throw();
+		} ).not.toThrow();
 
-		expect( titlePlugin.getBody( { rootName: 'main' } ) ).to.equal( '<p>Main body!</p>' );
+		expect( titlePlugin.getBody( { rootName: 'main' } ) ).toEqual( '<p>Main body!</p>' );
 	} );
 } );

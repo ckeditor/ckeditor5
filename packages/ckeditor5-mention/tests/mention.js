@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { ViewElement, ViewText } from '@ckeditor/ckeditor5-engine';
@@ -35,27 +36,27 @@ describe( 'Mention', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( Mention ) ).to.instanceOf( Mention );
+		expect( editor.plugins.get( Mention ) ).toBeInstanceOf( Mention );
 	} );
 
 	it( 'has proper name', () => {
-		expect( Mention.pluginName ).to.equal( 'Mention' );
+		expect( Mention.pluginName ).toBe( 'Mention' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Mention.isOfficialPlugin ).to.be.true;
+		expect( Mention.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Mention.isPremiumPlugin ).to.be.false;
+		expect( Mention.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should load MentionEditing plugin', () => {
-		expect( editor.plugins.get( MentionEditing ) ).to.instanceOf( MentionEditing );
+		expect( editor.plugins.get( MentionEditing ) ).toBeInstanceOf( MentionEditing );
 	} );
 
 	it( 'should load MentionUI plugin', () => {
-		expect( editor.plugins.get( MentionUI ) ).to.instanceOf( MentionUI );
+		expect( editor.plugins.get( MentionUI ) ).toBeInstanceOf( MentionUI );
 	} );
 
 	describe( 'toMentionAttribute()', () => {
@@ -68,9 +69,9 @@ describe( 'Mention', () => {
 
 			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
 
-			expect( mentionAttribute ).to.have.property( 'id', '@John' );
-			expect( mentionAttribute ).to.have.property( 'uid' );
-			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
+			expect( mentionAttribute ).toHaveProperty( 'id', '@John' );
+			expect( mentionAttribute ).toHaveProperty( 'uid' );
+			expect( mentionAttribute ).toHaveProperty( '_text', 'John Doe' );
 		} );
 
 		it( 'should create mention attribute with provided attributes', () => {
@@ -82,10 +83,10 @@ describe( 'Mention', () => {
 
 			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { foo: 'bar' } );
 
-			expect( mentionAttribute ).to.have.property( 'id', '@John' );
-			expect( mentionAttribute ).to.have.property( 'foo', 'bar' );
-			expect( mentionAttribute ).to.have.property( 'uid' );
-			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
+			expect( mentionAttribute ).toHaveProperty( 'id', '@John' );
+			expect( mentionAttribute ).toHaveProperty( 'foo', 'bar' );
+			expect( mentionAttribute ).toHaveProperty( 'uid' );
+			expect( mentionAttribute ).toHaveProperty( '_text', 'John Doe' );
 		} );
 
 		it( 'should return undefined if Element has no text node', () => {
@@ -95,7 +96,7 @@ describe( 'Mention', () => {
 
 			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
 
-			expect( mentionAttribute ).to.be.undefined;
+			expect( mentionAttribute ).toBeUndefined();
 		} );
 	} );
 } );

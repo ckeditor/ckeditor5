@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, afterEach } from 'vitest';
 import { HeadingEditing } from '../../src/headingediting.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
@@ -27,7 +28,7 @@ describe( 'Bug ckeditor5-heading#40', () => {
 
 				editor.execute( 'enter' );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
 			} );
 	} );
 
@@ -43,7 +44,7 @@ describe( 'Bug ckeditor5-heading#40', () => {
 
 				editor.execute( 'enter' );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
 			} );
 	} );
 } );

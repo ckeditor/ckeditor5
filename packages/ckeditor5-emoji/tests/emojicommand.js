@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { EmojiCommand } from '../src/emojicommand.js';
@@ -40,6 +41,7 @@ describe( 'EmojiCommand', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		command.destroy();
 
 		return editor.destroy();
@@ -49,24 +51,24 @@ describe( 'EmojiCommand', () => {
 		describe( 'when selection is collapsed', () => {
 			it( 'should return true if characters with the attribute can be placed at caret position', () => {
 				_setModelData( model, '<p>f[]oo</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
 				_setModelData( model, '<x>[]</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
 		describe( 'when selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 				_setModelData( model, '<p>[foo]</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 				_setModelData( model, '[<x></x>]' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -77,24 +79,24 @@ describe( 'EmojiCommand', () => {
 
 			it( 'should be false when isRepositoryReady is not true', () => {
 				repository.isRepositoryReady = null;
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 
 				repository.isRepositoryReady = false;
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be true when isRepositoryReady is true and selection allows text', () => {
 				repository.isRepositoryReady = true;
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should refresh automatically when isRepositoryReady changes', () => {
 				repository.isRepositoryReady = true;
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 
 				repository.isRepositoryReady = false;
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -103,7 +105,7 @@ describe( 'EmojiCommand', () => {
 		let showUIStub;
 
 		beforeEach( () => {
-			showUIStub = sinon.stub( editor.plugins.get( 'EmojiPicker' ), 'showUI' );
+			showUIStub = vi.spyOn( editor.plugins.get( 'EmojiPicker' ), 'showUI' );
 
 			_setModelData( model, '<p>[]</p>' );
 		} );
@@ -111,15 +113,15 @@ describe( 'EmojiCommand', () => {
 		it( 'should open the emoji picker UI when executing a command without a search query', () => {
 			command.execute();
 
-			expect( showUIStub.callCount ).to.equal( 1 );
-			expect( showUIStub.firstCall.firstArg ).to.equal( '' );
+			expect( showUIStub ).toHaveBeenCalledTimes( 1 );
+			expect( showUIStub ).toHaveBeenCalledWith( '' );
 		} );
 
 		it( 'should pass the specified query when executing the command', () => {
 			command.execute( 'test query' );
 
-			expect( showUIStub.callCount ).to.equal( 1 );
-			expect( showUIStub.firstCall.firstArg ).to.equal( 'test query' );
+			expect( showUIStub ).toHaveBeenCalledTimes( 1 );
+			expect( showUIStub ).toHaveBeenCalledWith( 'test query' );
 		} );
 	} );
 } );

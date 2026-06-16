@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingCommand } from '../src/headingcommand.js';
 import { Paragraph, ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'HeadingEditing', () => {
@@ -29,39 +29,39 @@ describe( 'HeadingEditing', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( HeadingEditing.isOfficialPlugin ).to.be.true;
+		expect( HeadingEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( HeadingEditing.isPremiumPlugin ).to.be.false;
+		expect( HeadingEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HeadingEditing ) ).to.be.instanceOf( HeadingEditing );
+		expect( editor.plugins.get( HeadingEditing ) ).toBeInstanceOf( HeadingEditing );
 	} );
 
 	it( 'should load paragraph feature', () => {
-		expect( editor.plugins.get( Paragraph ) ).to.be.instanceOf( Paragraph );
+		expect( editor.plugins.get( Paragraph ) ).toBeInstanceOf( Paragraph );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.isRegistered( 'heading1' ) ).to.be.true;
-		expect( model.schema.isRegistered( 'heading2' ) ).to.be.true;
-		expect( model.schema.isRegistered( 'heading3' ) ).to.be.true;
+		expect( model.schema.isRegistered( 'heading1' ) ).toBe( true );
+		expect( model.schema.isRegistered( 'heading2' ) ).toBe( true );
+		expect( model.schema.isRegistered( 'heading3' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root' ], 'heading1' ) ).to.be.true;
-		expect( model.schema.checkChild( [ 'heading1' ], '$text' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading1' ) ).toBe( true );
+		expect( model.schema.checkChild( [ 'heading1' ], '$text' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root' ], 'heading2' ) ).to.be.true;
-		expect( model.schema.checkChild( [ 'heading2' ], '$text' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading2' ) ).toBe( true );
+		expect( model.schema.checkChild( [ 'heading2' ], '$text' ) ).toBe( true );
 
-		expect( model.schema.checkChild( [ '$root' ], 'heading3' ) ).to.be.true;
-		expect( model.schema.checkChild( [ 'heading3' ], '$text' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root' ], 'heading3' ) ).toBe( true );
+		expect( model.schema.checkChild( [ 'heading3' ], '$text' ) ).toBe( true );
 	} );
 
 	it( 'should register #commands', () => {
-		expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
-		expect( editor.commands.get( 'heading' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'paragraph' ) ).toBeInstanceOf( ParagraphCommand );
+		expect( editor.commands.get( 'heading' ) ).toBeInstanceOf( HeadingCommand );
 	} );
 
 	it( 'should convert heading1', () => {
@@ -138,10 +138,12 @@ describe( 'HeadingEditing', () => {
 	describe( 'default h1 conversion', () => {
 		let addDefaultConversionSpy;
 
-		testUtils.createSinonSandbox();
+		afterEach( () => {
+			vi.restoreAllMocks();
+		} );
 
 		beforeEach( () => {
-			addDefaultConversionSpy = testUtils.sinon.spy( HeadingEditing.prototype, '_addDefaultH1Conversion' );
+			addDefaultConversionSpy = vi.spyOn( HeadingEditing.prototype, '_addDefaultH1Conversion' );
 		} );
 
 		it( 'should define the default h1 to heading1 converter' +
@@ -151,7 +153,7 @@ describe( 'HeadingEditing', () => {
 					plugins: [ HeadingEditing ]
 				} )
 				.then( editor => {
-					expect( addDefaultConversionSpy.callCount ).to.equal( 1 );
+					expect( addDefaultConversionSpy ).toHaveBeenCalledTimes( 1 );
 
 					editor.setData( '<h1>Foo</h1><h2>Bar</h2><p>Baz</p>' );
 
@@ -175,7 +177,7 @@ describe( 'HeadingEditing', () => {
 					heading: { options }
 				} )
 				.then( editor => {
-					expect( addDefaultConversionSpy.callCount ).to.equal( 1 );
+					expect( addDefaultConversionSpy ).toHaveBeenCalledTimes( 1 );
 
 					editor.setData( '<h1>Foo</h1><h3>Bar</h3><h4>Baz</h4><h2>Bax</h2>' );
 
@@ -200,7 +202,7 @@ describe( 'HeadingEditing', () => {
 					heading: { options }
 				} )
 				.then( editor => {
-					expect( addDefaultConversionSpy.callCount ).to.equal( 1 );
+					expect( addDefaultConversionSpy ).toHaveBeenCalledTimes( 1 );
 
 					editor.setData( '<h1>Foo</h1><h2>Bar</h2><h3>Baz</h3><h4>Bax</h4>' );
 
@@ -223,7 +225,7 @@ describe( 'HeadingEditing', () => {
 		describe( 'options', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
-					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
+					expect( editor.config.get( 'heading.options' ) ).toEqual( [
 						{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
 						{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
 						{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
@@ -248,12 +250,12 @@ describe( 'HeadingEditing', () => {
 					.then( editor => {
 						model = editor.model;
 
-						expect( model.schema.isRegistered( 'paragraph' ) ).to.be.true;
-						expect( model.schema.isRegistered( 'h4' ) ).to.be.true;
+						expect( model.schema.isRegistered( 'paragraph' ) ).toBe( true );
+						expect( model.schema.isRegistered( 'h4' ) ).toBe( true );
 
-						expect( model.schema.isRegistered( 'heading1' ) ).to.be.false;
-						expect( model.schema.isRegistered( 'heading2' ) ).to.be.false;
-						expect( model.schema.isRegistered( 'heading3' ) ).to.be.false;
+						expect( model.schema.isRegistered( 'heading1' ) ).toBe( false );
+						expect( model.schema.isRegistered( 'heading2' ) ).toBe( false );
+						expect( model.schema.isRegistered( 'heading3' ) ).toBe( false );
 					} );
 			} );
 		} );
