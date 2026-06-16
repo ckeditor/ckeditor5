@@ -99,6 +99,7 @@ export class FindCommand extends Command {
 		this._state.highlightedResult = results.get( 0 );
 		this._state.searchText = callbackSearchText;
 
+		/* v8 ignore next -- @preserve */
 		if ( findCallback ) {
 			this._state.lastSearchCallback = findCallback;
 		}

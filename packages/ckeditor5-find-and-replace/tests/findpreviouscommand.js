@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
@@ -28,32 +30,32 @@ describe( 'FindPreviousCommand', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets public properties', () => {
-			expect( command ).to.have.property( 'isEnabled', false );
-			expect( command ).to.have.property( 'affectsData', false );
+			expect( command ).toHaveProperty( 'isEnabled', false );
+			expect( command ).toHaveProperty( 'affectsData', false );
 		} );
 
 		it( 'sets state property', () => {
-			expect( command ).to.have.property( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
+			expect( command ).toHaveProperty( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
 			_setModelData( model, '[]' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'is disabled when there are no results', () => {
 			command._state.results.clear();
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'is disabled when there is just one result', () => {
 			command._state.results.clear();
 			command._state.results.add( {} );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).toBe( false );
 		} );
 
 		it( 'is enabled when there are more than one result', () => {
@@ -61,7 +63,7 @@ describe( 'FindPreviousCommand', () => {
 			command._state.results.add( {} );
 			command._state.results.add( {} );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled in readonly mode editor', () => {
@@ -73,7 +75,7 @@ describe( 'FindPreviousCommand', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled after disabling readonly mode', () => {
@@ -86,7 +88,7 @@ describe( 'FindPreviousCommand', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 			editor.disableReadOnlyMode( 'unit-test' );
 
-			expect( command.isEnabled ).to.be.true;
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be enabled if the next previous is not in the main root', async () => {
@@ -94,7 +96,7 @@ describe( 'FindPreviousCommand', () => {
 
 			multiRootEditor.execute( 'find', 'bar' );
 
-			expect( multiRootEditor.commands.get( 'findPrevious' ).isEnabled ).to.be.true;
+			expect( multiRootEditor.commands.get( 'findPrevious' ).isEnabled ).toBe( true );
 
 			multiRootEditor.destroy();
 		} );
@@ -110,7 +112,7 @@ describe( 'FindPreviousCommand', () => {
 
 			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
-			expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
+			expect( _stringifyModel( model.document.getRoot(), null, markers ) ).toBe(
 				'<paragraph>' +
 					'Foo bar baz. Bam ' +
 					'<highlightedResult:start></highlightedResult:start>' +
@@ -131,7 +133,7 @@ describe( 'FindPreviousCommand', () => {
 
 			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
-			expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
+			expect( _stringifyModel( model.document.getRoot(), null, markers ) ).toBe(
 				'<paragraph>' +
 					'Foo ' +
 					'<highlightedResult:start></highlightedResult:start>' +
@@ -150,7 +152,7 @@ describe( 'FindPreviousCommand', () => {
 
 			const markers = getSimplifiedHighlightedMarkers( multiRootEditor.model.markers );
 
-			expect( _stringifyModel( multiRootEditor.model.document.getRoot( 'second' ), null, markers ) ).to.equal(
+			expect( _stringifyModel( multiRootEditor.model.document.getRoot( 'second' ), null, markers ) ).toBe(
 				'<paragraph>' +
 					'Foo ' +
 					'<highlightedResult:start></highlightedResult:start>' +

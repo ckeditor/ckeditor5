@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -33,11 +35,11 @@ describe( 'FindAndReplace', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FindAndReplaceUtils.isOfficialPlugin ).to.be.true;
+		expect( FindAndReplaceUtils.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FindAndReplaceUtils.isPremiumPlugin ).to.be.false;
+		expect( FindAndReplaceUtils.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should not append duplicated search result in updateFindResultFromRange if already present in startResults', () => {
@@ -53,7 +55,7 @@ describe( 'FindAndReplace', () => {
 			results
 		);
 
-		expect( results.length ).to.equal( 3 );
+		expect( results.length ).toBe( 3 );
 
 		findAndReplaceUtils.updateFindResultFromRange(
 			model.createRangeIn( root ),
@@ -62,7 +64,7 @@ describe( 'FindAndReplace', () => {
 			results
 		);
 
-		expect( results.length ).to.equal( 3 );
+		expect( results.length ).toBe( 3 );
 	} );
 
 	afterEach( async () => {
