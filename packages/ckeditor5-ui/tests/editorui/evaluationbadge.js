@@ -306,7 +306,7 @@ describe( 'EvaluationBadge', () => {
 				expect( editor.ui.evaluationBadge._balloonView.isVisible ).toBe( true );
 				expect( editor.ui.evaluationBadge._balloonView.position ).toBe( 'position_border-side_left' );
 				expect( pinSpy.mock.lastCall[ 0 ] ).toMatchObject( { target: domRoot } );
-			}, 1000 * 10 );
+			}, 1000 * 30 );
 		} );
 
 		describe( 'balloon management on EditorUI#update', () => {

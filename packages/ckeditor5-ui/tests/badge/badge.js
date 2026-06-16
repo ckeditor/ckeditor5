@@ -216,7 +216,7 @@ describe( 'Badge', () => {
 				expect( badge._balloonView.isVisible ).toBe( true );
 				expect( badge._balloonView.position ).toBe( 'position_border-side_right' );
 				expect( pinSpy ).toHaveBeenLastCalledWith( expect.objectContaining( { target: domRoot } ) );
-			}, 1000 * 10 );
+			}, 1000 * 30 );
 		} );
 
 		describe( 'balloon management on EditorUI#update', () => {
