@@ -143,6 +143,7 @@ export class AutoLink extends Plugin {
 		const selEnd = selection.getLastPosition()!;
 
 		let updatedSelection = selectedRange.getJoined( this._expandLinkRange( model, selStart ) || selectedRange );
+
 		if ( updatedSelection ) {
 			updatedSelection = updatedSelection.getJoined( this._expandLinkRange( model, selEnd ) || selectedRange );
 		}

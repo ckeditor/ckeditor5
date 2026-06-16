@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { LinkEditing } from '../src/linkediting.js';
 import { LinkCommand } from '../src/linkcommand.js';
 import { UnlinkCommand } from '../src/unlinkcommand.js';
@@ -64,26 +65,26 @@ describe( 'LinkEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( LinkEditing.pluginName ).to.equal( 'LinkEditing' );
+		expect( LinkEditing.pluginName ).toBe( 'LinkEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( LinkEditing.isOfficialPlugin ).to.be.true;
+		expect( LinkEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( LinkEditing.isPremiumPlugin ).to.be.false;
+		expect( LinkEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( LinkEditing ) ).to.be.instanceOf( LinkEditing );
+		expect( editor.plugins.get( LinkEditing ) ).toBeInstanceOf( LinkEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'linkHref' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'linkHref' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'linkHref' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'linkHref' ) ).toBe( true );
 
-		expect( model.schema.checkAttribute( [ '$block' ], 'linkHref' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$block' ], 'linkHref' ) ).toBe( false );
 	} );
 
 	// Let's check only the minimum to not duplicate `TwoStepCaretMovement` tests.
@@ -96,7 +97,7 @@ describe( 'LinkEditing', () => {
 			_setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
 			// The selection's gravity should read attributes from the left.
-			expect( selection ).not.to.have.attribute( 'linkHref' );
+			expect( selection.hasAttribute( 'linkHref' ) ).toBe( false );
 
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
@@ -105,10 +106,10 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
 			// Selection should get the attributes from the right.
-			expect( selection ).to.have.attribute( 'linkHref' );
-			expect( selection ).to.have.attribute( 'linkHref', 'url' );
+			expect( selection.hasAttribute( 'linkHref' ) ).toBe( true );
+			expect( selection.getAttribute( 'linkHref' ) ).toBe( 'url' );
 		} );
 
 		it( 'should be bound to the `linkHref` attribute (RTL)', async () => {
@@ -127,7 +128,7 @@ describe( 'LinkEditing', () => {
 			_setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
 			// The selection's gravity should read attributes from the left.
-			expect( selection ).not.to.have.attribute( 'linkHref' );
+			expect( selection.hasAttribute( 'linkHref' ) ).toBe( false );
 
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
@@ -136,10 +137,10 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
 			// Selection should get the attributes from the right.
-			expect( selection ).to.have.attribute( 'linkHref' );
-			expect( selection ).to.have.attribute( 'linkHref', 'url' );
+			expect( selection.hasAttribute( 'linkHref' ) ).toBe( true );
+			expect( selection.getAttribute( 'linkHref' ) ).toBe( 'url' );
 
 			await editor.destroy();
 		} );
@@ -154,9 +155,9 @@ describe( 'LinkEditing', () => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com' } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="ckeditor.com">INSERTED</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>foo<$text linkHref="ckeditor.com">INSERTED</$text>[]</paragraph>' );
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).toHaveLength( 0 );
 		} );
 
 		it( 'should remove all attributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
@@ -166,13 +167,13 @@ describe( 'LinkEditing', () => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com', linkIsExternal: true } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'foo<$text linkHref="ckeditor.com" linkIsExternal="true">INSERTED</$text>[]' +
 				'</paragraph>'
 			);
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).toHaveLength( 0 );
 		} );
 
 		it( 'should not remove link attributes when pasting a non-link content', () => {
@@ -182,14 +183,14 @@ describe( 'LinkEditing', () => {
 				model.insertContent( writer.createText( 'INSERTED', { bold: 'true' } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text linkHref="ckeditor.com">foo</$text>' +
 					'<$text bold="true">INSERTED[]</$text>' +
 				'</paragraph>'
 			);
 
-			expect( model.document.selection ).to.have.attribute( 'bold' );
+			expect( model.document.selection.hasAttribute( 'bold' ) ).toBe( true );
 		} );
 
 		it( 'should not remove link attributes when pasting in the middle of a link with the same URL', () => {
@@ -199,8 +200,8 @@ describe( 'LinkEditing', () => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com' } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text linkHref="ckeditor.com">foINSERTED[]o</$text></paragraph>' );
-			expect( model.document.selection ).to.have.attribute( 'linkHref' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text linkHref="ckeditor.com">foINSERTED[]o</$text></paragraph>' );
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).toBe( true );
 		} );
 
 		it( 'should not remove link attributes from the selection when pasting before a link when the gravity is overridden', () => {
@@ -212,13 +213,13 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
+			expect( model.document.selection.isGravityOverridden ).toBe( true );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { bold: true } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'foo' +
 					'<$text bold="true">INSERTED</$text>[]' +
@@ -226,8 +227,8 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+			expect( model.document.selection.isGravityOverridden ).toBe( true );
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).toHaveLength( 0 );
 		} );
 
 		it( 'should remove link attributes when pasting a link into another link (different URLs, no merge)', () => {
@@ -237,7 +238,7 @@ describe( 'LinkEditing', () => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'http://INSERTED' } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text linkHref="ckeditor.com">f</$text>' +
 					'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
@@ -245,26 +246,26 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).toHaveLength( 0 );
 		} );
 
 		it( 'should not remove link attributes when pasting before another link (different URLs, no merge)', () => {
 			_setModelData( model, '<paragraph>[]<$text linkHref="ckeditor.com">foo</$text></paragraph>' );
 
-			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
+			expect( model.document.selection.isGravityOverridden ).toBe( false );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'http://INSERTED' } ) );
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text linkHref="http://INSERTED">INSERTED</$text>[]' +
 					'<$text linkHref="ckeditor.com">foo</$text>' +
 				'</paragraph>'
 			);
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).toHaveLength( 0 );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/8158
@@ -276,11 +277,11 @@ describe( 'LinkEditing', () => {
 					'text/html': '<p>bar</p>',
 					'text/plain': 'bar'
 				} ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
 				'</paragraph>'
@@ -295,11 +296,11 @@ describe( 'LinkEditing', () => {
 					'text/html': '<p>bar</p>',
 					'text/plain': 'bar'
 				} ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text bold="true">bar[]</$text></paragraph>'
 			);
 		} );
@@ -309,13 +310,13 @@ describe( 'LinkEditing', () => {
 		it( 'should register link command', () => {
 			const command = editor.commands.get( 'link' );
 
-			expect( command ).to.be.instanceOf( LinkCommand );
+			expect( command ).toBeInstanceOf( LinkCommand );
 		} );
 
 		it( 'should register unlink command', () => {
 			const command = editor.commands.get( 'unlink' );
 
-			expect( command ).to.be.instanceOf( UnlinkCommand );
+			expect( command ).toBeInstanceOf( UnlinkCommand );
 		} );
 	} );
 
@@ -324,18 +325,18 @@ describe( 'LinkEditing', () => {
 			editor.setData( '<p><a href="url">foo</a>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
+				.toBe( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><a href="url">foo</a>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<a href="url">foo</a>bar' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
+				.toBe( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><a href="url">foo</a>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/500
@@ -343,7 +344,7 @@ describe( 'LinkEditing', () => {
 			editor.setData( '<p><a name="foo">foo</a>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>foobar</paragraph>' );
+				.toBe( '<paragraph>foobar</paragraph>' );
 		} );
 
 		// CKEditor 4 does. And CKEditor 5's balloon allows creating such links.
@@ -351,17 +352,17 @@ describe( 'LinkEditing', () => {
 			editor.setData( '<p><a href="">foo</a>bar</p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text linkHref="">foo</$text>bar</paragraph>' );
+				.toBe( '<paragraph><$text linkHref="">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><a href="">foo</a>bar</p>' );
+			expect( editor.getData() ).toBe( '<p><a href="">foo</a>bar</p>' );
 		} );
 
 		it( 'should not assign `linkHref` attribute if missing href', () => {
 			editor.setData( '<p><a>foo</a>bar</p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>foobar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			expect( editor.getData() ).toBe( '<p>foobar</p>' );
 		} );
 
 		// The editor's role is not to filter out potentially malicious data.
@@ -373,14 +374,14 @@ describe( 'LinkEditing', () => {
 				writer.insertText( 'foo', { linkHref: 'javascript:alert(1)' }, model.document.selection.getFirstPosition() );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p><a href="javascript:alert(1)">foo</a></p>' );
+			expect( editor.getData() ).toBe( '<p><a href="javascript:alert(1)">foo</a></p>' );
 		} );
 
 		it( 'should load a link with a potential XSS code', () => {
 			editor.setData( '<p><a href="javascript:alert(1)">foo</a></p>' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text linkHref="javascript:alert(1)">foo</$text></paragraph>' );
+				.toBe( '<paragraph><$text linkHref="javascript:alert(1)">foo</$text></paragraph>' );
 		} );
 	} );
 
@@ -388,14 +389,14 @@ describe( 'LinkEditing', () => {
 		it( 'should convert attribute', () => {
 			_setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><a href="url">foo</a>bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
 		it( 'should convert to link element instance', () => {
 			_setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
 			const element = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 );
-			expect( isLinkElement( element ) ).to.be.true;
+			expect( isLinkElement( element ) ).toBe( true );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/121
@@ -409,14 +410,14 @@ describe( 'LinkEditing', () => {
 					'<$text linkHref="url">a</$text><$text foo="true" linkHref="url">b</$text><$text linkHref="url">c</$text>' +
 				'</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p><a href="url">a<f>b</f>c</a></p>' );
+			expect( editor.getData() ).toBe( '<p><a href="url">a<f>b</f>c</a></p>' );
 		} );
 
 		it( 'must not render a link with a potential XSS code', () => {
 			_setModelData( model, '<paragraph><$text linkHref="javascript:alert(1)">[]foo</$text>bar[]</paragraph>' );
 
 			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<p><a href="#">foo</a>bar</p>' );
+				.toBe( '<p><a href="#">foo</a>bar</p>' );
 		} );
 
 		describe( 'links with custom protocols', () => {
@@ -447,7 +448,7 @@ describe( 'LinkEditing', () => {
 				_setModelData( model, '<paragraph><$text linkHref="custom:address.in.app">[]foo</$text>bar[]</paragraph>' );
 
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<p><a href="custom:address.in.app">foo</a>bar</p>' );
+					.toBe( '<p><a href="custom:address.in.app">foo</a>bar</p>' );
 			} );
 		} );
 	} );
@@ -458,10 +459,8 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection ).to.have.attribute( 'linkHref' );
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck-link_selected" href="url">b{}ar</a> baz</p>'
-			);
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).toBe( true );
+			expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">b{}ar</a> baz</p>' );
 		} );
 
 		it( 'should work whenever selection has linkHref attribute - link start', () => {
@@ -469,16 +468,14 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo {}<$text linkHref="url">bar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection ).to.not.have.attribute( 'linkHref' );
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).toBe( false );
 
 			model.change( writer => {
 				writer.setSelectionAttribute( 'linkHref', 'url' );
 			} );
 
-			expect( model.document.selection ).to.have.attribute( 'linkHref' );
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck-link_selected" href="url">{}bar</a> baz</p>'
-			);
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).toBe( true );
+			expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">{}bar</a> baz</p>' );
 		} );
 
 		it( 'should work whenever selection has linkHref attribute - link end', () => {
@@ -486,10 +483,8 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">bar</$text>{} baz</paragraph>'
 			);
 
-			expect( model.document.selection ).to.have.attribute( 'linkHref' );
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck-link_selected" href="url">bar{}</a> baz</p>'
-			);
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).toBe( true );
+			expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">bar{}</a> baz</p>' );
 		} );
 
 		it( 'should render highlight correctly after splitting the link', () => {
@@ -499,13 +494,13 @@ describe( 'LinkEditing', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>foo <$text linkHref="url">li</$text></paragraph>' +
 				'<paragraph><$text linkHref="url">[]nk</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection ).to.have.attribute( 'linkHref' );
-			expect( _getViewData( view ) ).to.equal(
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).toBe( true );
+			expect( _getViewData( view ) ).toBe(
 				'<p>foo <a href="url">li</a></p>' +
 				'<p><a class="ck-link_selected" href="url">{}nk</a> baz</p>'
 			);
@@ -516,15 +511,11 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
 			);
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
-			);
+			expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>' );
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 0 ) );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>{}foo <a href="url">link</a> baz</p>'
-			);
+			expect( _getViewData( view ) ).toBe( '<p>{}foo <a href="url">link</a> baz</p>' );
 		} );
 
 		it( 'should work correctly when selection is moved inside link', () => {
@@ -532,15 +523,11 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
 			);
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
-			);
+			expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>' );
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 5 ) );
 
-			expect( _getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck-link_selected" href="url">l{}ink</a> baz</p>'
-			);
+			expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">l{}ink</a> baz</p>' );
 		} );
 
 		describe( 'downcast conversion integration', () => {
@@ -553,9 +540,7 @@ describe( 'LinkEditing', () => {
 					writer.insertText( 'FOO', { linkHref: 'url' }, model.document.selection.getFirstPosition() );
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
-					'<p>foo <a class="ck-link_selected" href="url">liFOO{}nk</a> baz</p>'
-				);
+				expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">liFOO{}nk</a> baz</p>' );
 			} );
 
 			it( 'works for the #remove event', () => {
@@ -570,9 +555,7 @@ describe( 'LinkEditing', () => {
 					) );
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
-					'<p><a class="ck-link_selected" href="url">i{}nk</a> baz</p>'
-				);
+				expect( _getViewData( view ) ).toBe( '<p><a class="ck-link_selected" href="url">i{}nk</a> baz</p>' );
 			} );
 
 			it( 'works for the #attribute event', () => {
@@ -587,7 +570,7 @@ describe( 'LinkEditing', () => {
 					);
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toBe(
 					'<p>foo <a href="url">l</a><a class="ck-link_selected" href="new-url">i{}n</a><a href="url">k</a> baz</p>'
 				);
 			} );
@@ -604,9 +587,7 @@ describe( 'LinkEditing', () => {
 					);
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
-					'<p>foo <a class="ck-link_selected" href="url">l{in}k</a> baz</p>'
-				);
+				expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">l{in}k</a> baz</p>' );
 			} );
 
 			it( 'works for the addMarker and removeMarker events', () => {
@@ -625,15 +606,13 @@ describe( 'LinkEditing', () => {
 					writer.addMarker( 'fooMarker', { range, usingOperation: true } );
 				} );
 
-				expect( _getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).toBe(
 					'<p><span>foo </span><a class="ck-link_selected" href="url"><span>l</span>i{}nk</a> baz</p>'
 				);
 
 				model.change( writer => writer.removeMarker( 'fooMarker' ) );
 
-				expect( _getViewData( view ) ).to.equal(
-					'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
-				);
+				expect( _getViewData( view ) ).toBe( '<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>' );
 			} );
 		} );
 	} );
@@ -675,11 +654,11 @@ describe( 'LinkEditing', () => {
 			];
 
 			it( 'link.addTargetToExternalLinks has a default value of `false`', () => {
-				expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.false;
+				expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).toBe( false );
 			} );
 
 			it( 'link.allowCreatingEmptyLinks has a default value of `false`', () => {
-				expect( editor.config.get( 'link.allowCreatingEmptyLinks' ) ).to.be.false;
+				expect( editor.config.get( 'link.allowCreatingEmptyLinks' ) ).toBe( false );
 			} );
 
 			describe( 'for link.addTargetToExternalLinks = false', () => {
@@ -702,7 +681,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				it( 'link.addTargetToExternalLinks is set as true value', () => {
-					expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.true;
+					expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).toBe( true );
 				} );
 
 				testLinks.forEach( link => {
@@ -710,13 +689,13 @@ describe( 'LinkEditing', () => {
 						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
 
 						expect( _getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+							.toBe( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
 
 						if ( link.external ) {
 							expect( editor.getData() )
-								.to.equal( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
+								.toBe( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
 						} else {
-							expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+							expect( editor.getData() ).toBe( `<p><a href="${ link.url }">foo</a>bar</p>` );
 						}
 					} );
 				} );
@@ -726,9 +705,9 @@ describe( 'LinkEditing', () => {
 					editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
-						.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+						.toBe( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
 
-					expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+					expect( editor.getData() ).toBe( `<p><a href="${ link.url }">foo</a>bar</p>` );
 				} );
 			} );
 		} );
@@ -821,15 +800,15 @@ describe( 'LinkEditing', () => {
 						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
 
 						expect( _getModelData( model, { withoutSelection: true } ) )
-							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+							.toBe( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
 
 						// Order of attributes is important, that's why this is assert is construct in such way.
-						expect( editor.getData() ).to.equal( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
+						expect( editor.getData() ).toBe( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
 					} );
 				} );
 
 				it( 'stores decorators in LinkCommand#automaticDecorators collection', () => {
-					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 4 );
+					expect( editor.commands.get( 'link' ).automaticDecorators.length ).toBe( 4 );
 				} );
 			} );
 		} );
@@ -878,9 +857,9 @@ describe( 'LinkEditing', () => {
 				editor.setData( '<p><a href="http://example.com">foo</a>bar</p>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><$text linkHref="http://example.com">foo</$text>bar</paragraph>' );
+					.toBe( '<paragraph><$text linkHref="http://example.com">foo</$text>bar</paragraph>' );
 
-				expect( editor.getData() ).to.equal( '<p><a href="http://example.com">foo</a>bar</p>' );
+				expect( editor.getData() ).toBe( '<p><a href="http://example.com">foo</a>bar</p>' );
 			} );
 		} );
 
@@ -933,7 +912,7 @@ describe( 'LinkEditing', () => {
 
 				model = editor.model;
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph>' +
 						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
 						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
@@ -972,7 +951,7 @@ describe( 'LinkEditing', () => {
 
 				model = editor.model;
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph>' +
 						'<$text linkHref="url">Foo</$text>' +
 						'<$text linkHref="example.com">Bar</$text>' +
@@ -986,7 +965,7 @@ describe( 'LinkEditing', () => {
 		it( 'should downcast manual decorator on document selection', () => {
 			_setModelData( model, '<paragraph><$text linkHref="url" linkIsExternal="true">foo[]bar</$text></paragraph>' );
 
-			expect( _getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).toBe(
 				'<p><a class="ck-link_selected" href="url" rel="noopener noreferrer" target="_blank">foo{}bar</a></p>'
 			);
 		} );
@@ -996,13 +975,11 @@ describe( 'LinkEditing', () => {
 		let stub, eventPreventDefault;
 
 		beforeEach( () => {
-			stub = sinon.stub( window, 'open' );
-
-			stub.returns( undefined );
+			stub = vi.spyOn( window, 'open' ).mockReturnValue( undefined );
 		} );
 
 		afterEach( () => {
-			stub.restore();
+			vi.restoreAllMocks();
 		} );
 
 		describe( 'using mouse', () => {
@@ -1022,10 +999,10 @@ describe( 'LinkEditing', () => {
 
 					fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
 
-					expect( stub.calledOnce ).to.be.true;
-					expect( stub.calledOn( window ) ).to.be.true;
-					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
-					expect( eventPreventDefault.calledOnce ).to.be.true;
+					expect( stub ).toHaveBeenCalledOnce();
+					expect( stub.mock.instances[ 0 ] ).toBe( window );
+					expect( stub ).toHaveBeenCalledWith( 'http://www.ckeditor.com', '_blank', 'noopener' );
+					expect( eventPreventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should not follow the link after CTRL+click', () => {
@@ -1033,8 +1010,8 @@ describe( 'LinkEditing', () => {
 
 					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-					expect( stub.notCalled ).to.be.true;
-					expect( eventPreventDefault.calledOnce ).to.be.false;
+					expect( stub ).not.toHaveBeenCalled();
+					expect( eventPreventDefault ).not.toHaveBeenCalledOnce();
 				} );
 
 				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
@@ -1042,8 +1019,8 @@ describe( 'LinkEditing', () => {
 
 					fireClickEvent( { metaKey: false, ctrlKey: false }, editor, view );
 
-					expect( stub.notCalled ).to.be.true;
-					expect( eventPreventDefault.calledOnce ).to.be.false;
+					expect( stub ).not.toHaveBeenCalled();
+					expect( eventPreventDefault ).not.toHaveBeenCalledOnce();
 				} );
 
 				describe( 'when href starts with `#`', () => {
@@ -1074,10 +1051,10 @@ describe( 'LinkEditing', () => {
 
 						fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
 
-						expect( stub.notCalled ).to.be.false;
-						expect( stub.calledOn( window ) ).to.be.true;
-						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-						expect( eventPreventDefault.calledOnce ).to.be.true;
+						expect( stub ).toHaveBeenCalled();
+						expect( stub.mock.instances[ 0 ] ).toBe( window );
+						expect( stub ).toHaveBeenCalledWith( '#foo', '_blank', 'noopener' );
+						expect( eventPreventDefault ).toHaveBeenCalledOnce();
 					} );
 				} );
 			} );
@@ -1092,9 +1069,9 @@ describe( 'LinkEditing', () => {
 
 					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-					expect( stub.calledOnce ).to.be.true;
-					expect( stub.calledOn( window ) ).to.be.true;
-					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( stub ).toHaveBeenCalledOnce();
+					expect( stub.mock.instances[ 0 ] ).toBe( window );
+					expect( stub ).toHaveBeenCalledWith( 'http://www.ckeditor.com', '_blank', 'noopener' );
 				} );
 
 				it( 'should not follow the link after CMD+click', () => {
@@ -1102,7 +1079,7 @@ describe( 'LinkEditing', () => {
 
 					fireClickEvent( { metaKey: true, ctrlKey: false }, editor, view );
 
-					expect( stub.notCalled ).to.be.true;
+					expect( stub ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
@@ -1110,7 +1087,7 @@ describe( 'LinkEditing', () => {
 
 					fireClickEvent( { metaKey: false, ctrlKey: false }, editor, view );
 
-					expect( stub.notCalled ).to.be.true;
+					expect( stub ).not.toHaveBeenCalled();
 				} );
 
 				describe( 'href starts with `#`', () => {
@@ -1141,10 +1118,10 @@ describe( 'LinkEditing', () => {
 
 						fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-						expect( stub.notCalled ).to.be.false;
-						expect( stub.calledOn( window ) ).to.be.true;
-						expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-						expect( eventPreventDefault.calledOnce ).to.be.true;
+						expect( stub ).toHaveBeenCalled();
+						expect( stub.mock.instances[ 0 ] ).toBe( window );
+						expect( stub ).toHaveBeenCalledWith( '#foo', '_blank', 'noopener' );
+						expect( eventPreventDefault ).toHaveBeenCalledOnce();
 					} );
 				} );
 			} );
@@ -1154,10 +1131,10 @@ describe( 'LinkEditing', () => {
 
 				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, editor, view, 'img' );
 
-				expect( stub.calledOnce ).to.be.true;
-				expect( stub.calledOn( window ) ).to.be.true;
-				expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
-				expect( eventPreventDefault.calledOnce ).to.be.true;
+				expect( stub ).toHaveBeenCalledOnce();
+				expect( stub.mock.instances[ 0 ] ).toBe( window );
+				expect( stub ).toHaveBeenCalledWith( 'http://www.ckeditor.com', '_blank', 'noopener' );
+				expect( eventPreventDefault ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not follow the link if "a" element doesn\'t have "href" attribute', () => {
@@ -1170,8 +1147,8 @@ describe( 'LinkEditing', () => {
 
 				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, editor, view );
 
-				expect( stub.notCalled ).to.be.true;
-				expect( eventPreventDefault.calledOnce ).to.be.false;
+				expect( stub ).not.toHaveBeenCalled();
+				expect( eventPreventDefault ).not.toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not follow the link if no link is clicked', () => {
@@ -1184,8 +1161,8 @@ describe( 'LinkEditing', () => {
 
 				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, editor, view, 'span' );
 
-				expect( stub.notCalled ).to.be.true;
-				expect( eventPreventDefault.calledOnce ).to.be.false;
+				expect( stub ).not.toHaveBeenCalled();
+				expect( eventPreventDefault ).not.toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -1223,9 +1200,9 @@ describe( 'LinkEditing', () => {
 
 					fireEnterPressedEvent( { altKey: true }, view );
 
-					expect( stub.calledOnce ).to.be.true;
-					expect( stub.calledOn( window ) ).to.be.true;
-					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( stub ).toHaveBeenCalledOnce();
+					expect( stub.mock.instances[ 0 ] ).toBe( window );
+					expect( stub ).toHaveBeenCalledWith( 'http://www.ckeditor.com', '_blank', 'noopener' );
 				} );
 			}
 
@@ -1234,7 +1211,7 @@ describe( 'LinkEditing', () => {
 
 				fireEnterPressedEvent( { altKey: false }, view );
 
-				expect( stub.notCalled ).to.be.true;
+				expect( stub ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not open link after pressing ALT+ENTER if not inside a link', () => {
@@ -1242,7 +1219,7 @@ describe( 'LinkEditing', () => {
 
 				fireEnterPressedEvent( { altKey: true }, view );
 
-				expect( stub.notCalled ).to.be.true;
+				expect( stub ).not.toHaveBeenCalled();
 			} );
 
 			describe( 'when href starts with `#`', () => {
@@ -1273,10 +1250,9 @@ describe( 'LinkEditing', () => {
 
 					fireEnterPressedEvent( { altKey: true }, view );
 
-					expect( stub.notCalled ).to.be.false;
-					expect( stub.calledOn( window ) ).to.be.true;
-					expect( stub.calledWith( '#foo', '_blank', 'noopener' ) ).to.be.true;
-					expect( eventPreventDefault.calledOnce ).to.be.true;
+					expect( stub ).toHaveBeenCalled();
+					expect( stub.mock.instances[ 0 ] ).toBe( window );
+					expect( stub ).toHaveBeenCalledWith( '#foo', '_blank', 'noopener' );
 				} );
 			} );
 		} );
@@ -1294,41 +1270,41 @@ describe( 'LinkEditing', () => {
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-					expect( stub.calledOnce ).to.be.true;
-					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( stub ).toHaveBeenCalledOnce();
+					expect( stub ).toHaveBeenCalledWith( 'http://www.ckeditor.com', '_blank', 'noopener' );
 				} );
 
 				it( 'should not open link with custom opener that returns false', () => {
-					const opener = sinon.stub().returns( false );
+					const opener = vi.fn().mockReturnValue( false );
 
 					editing._registerLinkOpener( opener );
 
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-					expect( opener.calledOnce ).to.be.true;
-					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
-					expect( stub ).to.be.called;
+					expect( opener ).toHaveBeenCalledOnce();
+					expect( opener ).toHaveBeenCalledWith( 'http://www.ckeditor.com' );
+					expect( stub ).toHaveBeenCalled();
 				} );
 
 				it( 'should open link with custom opener that returns true', () => {
-					const opener = sinon.stub().returns( true );
+					const opener = vi.fn().mockReturnValue( true );
 
 					editing._registerLinkOpener( opener );
 
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-					expect( opener.calledOnce ).to.be.true;
-					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
-					expect( stub ).not.to.be.called;
+					expect( opener ).toHaveBeenCalledOnce();
+					expect( opener ).toHaveBeenCalledWith( 'http://www.ckeditor.com' );
+					expect( stub ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should pick the first opener that returns true', () => {
 					const openers = [
-						sinon.stub().returns( false ),
-						sinon.stub().returns( true ),
-						sinon.stub().returns( true )
+						vi.fn().mockReturnValue( false ),
+						vi.fn().mockReturnValue( true ),
+						vi.fn().mockReturnValue( true )
 					];
 
 					for ( const opener of openers ) {
@@ -1338,12 +1314,12 @@ describe( 'LinkEditing', () => {
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireClickEvent( { metaKey: false, ctrlKey: true }, editor, view );
 
-					expect( openers[ 0 ] ).to.be.calledOnce;
-					expect( openers[ 1 ] ).to.be.calledOnce;
-					expect( openers[ 2 ] ).not.to.be.called;
+					expect( openers[ 0 ] ).toHaveBeenCalledOnce();
+					expect( openers[ 1 ] ).toHaveBeenCalledOnce();
+					expect( openers[ 2 ] ).not.toHaveBeenCalled();
 
-					expect( openers[ 0 ].calledBefore( openers[ 1 ] ) ).to.be.true;
-					expect( stub ).not.to.be.called;
+					expect( openers[ 0 ].mock.invocationCallOrder[ 0 ] ).toBeLessThan( openers[ 1 ].mock.invocationCallOrder[ 0 ] );
+					expect( stub ).not.toHaveBeenCalled();
 				} );
 			} );
 
@@ -1352,41 +1328,41 @@ describe( 'LinkEditing', () => {
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireEnterPressedEvent( { altKey: true }, view );
 
-					expect( stub.calledOnce ).to.be.true;
-					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( stub ).toHaveBeenCalledOnce();
+					expect( stub ).toHaveBeenCalledWith( 'http://www.ckeditor.com', '_blank', 'noopener' );
 				} );
 
 				it( 'should not open link with custom opener that returns false', () => {
-					const opener = sinon.stub().returns( false );
+					const opener = vi.fn().mockReturnValue( false );
 
 					editing._registerLinkOpener( opener );
 
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireEnterPressedEvent( { altKey: true }, view );
 
-					expect( opener.calledOnce ).to.be.true;
-					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
-					expect( stub ).to.be.called;
+					expect( opener ).toHaveBeenCalledOnce();
+					expect( opener ).toHaveBeenCalledWith( 'http://www.ckeditor.com' );
+					expect( stub ).toHaveBeenCalled();
 				} );
 
 				it( 'should open link with custom opener that returns true', () => {
-					const opener = sinon.stub().returns( true );
+					const opener = vi.fn().mockReturnValue( true );
 
 					editing._registerLinkOpener( opener );
 
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireEnterPressedEvent( { altKey: true }, view );
 
-					expect( opener.calledOnce ).to.be.true;
-					expect( opener.calledWith( 'http://www.ckeditor.com' ) ).to.be.true;
-					expect( stub ).not.to.be.called;
+					expect( opener ).toHaveBeenCalledOnce();
+					expect( opener ).toHaveBeenCalledWith( 'http://www.ckeditor.com' );
+					expect( stub ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should pick the first opener that returns true', () => {
 					const openers = [
-						sinon.stub().returns( false ),
-						sinon.stub().returns( true ),
-						sinon.stub().returns( true )
+						vi.fn().mockReturnValue( false ),
+						vi.fn().mockReturnValue( true ),
+						vi.fn().mockReturnValue( true )
 					];
 
 					for ( const opener of openers ) {
@@ -1396,12 +1372,12 @@ describe( 'LinkEditing', () => {
 					_setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 					fireEnterPressedEvent( { altKey: true }, view );
 
-					expect( openers[ 0 ] ).to.be.calledOnce;
-					expect( openers[ 1 ] ).to.be.calledOnce;
-					expect( openers[ 2 ] ).not.to.be.called;
+					expect( openers[ 0 ] ).toHaveBeenCalledOnce();
+					expect( openers[ 1 ] ).toHaveBeenCalledOnce();
+					expect( openers[ 2 ] ).not.toHaveBeenCalled();
 
-					expect( openers[ 0 ].calledBefore( openers[ 1 ] ) ).to.be.true;
-					expect( stub ).not.to.be.called;
+					expect( openers[ 0 ].mock.invocationCallOrder[ 0 ] ).toBeLessThan( openers[ 1 ].mock.invocationCallOrder[ 0 ] );
+					expect( stub ).not.toHaveBeenCalled();
 				} );
 			} );
 		} );
@@ -1409,7 +1385,7 @@ describe( 'LinkEditing', () => {
 		function fireClickEvent( options, editor, view, tagName = 'a' ) {
 			const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
 
-			eventPreventDefault = sinon.spy();
+			eventPreventDefault = vi.fn();
 
 			view.document.fire( 'click', {
 				domTarget: linkElement,
@@ -1480,11 +1456,11 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text linkHref="url">Bar</$text>[]</paragraph>' );
 
 			editor.execute( 'insertText', { text: 'Foo' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar</$text>Foo[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text linkHref="url">Bar</$text>Foo[]</paragraph>' );
 		} );
 
 		it( 'should insert content before the link', () => {
@@ -1495,11 +1471,11 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[]<$text linkHref="url">Bar</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[]<$text linkHref="url">Bar</$text></paragraph>' );
 
 			editor.execute( 'insertText', { text: 'Foo' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo[]<$text linkHref="url">Bar</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foo[]<$text linkHref="url">Bar</$text></paragraph>' );
 		} );
 
 		it( 'should insert content to the link if clicked inside it', () => {
@@ -1510,11 +1486,11 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">B[]ar</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text linkHref="url">B[]ar</$text></paragraph>' );
 
 			editor.execute( 'insertText', { text: 'ar. B' } );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar. B[]ar</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text linkHref="url">Bar. B[]ar</$text></paragraph>' );
 		} );
 
 		it( 'should insert content between two links (selection at the end of the first link)', () => {
@@ -1525,13 +1501,13 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="foo">Foo</$text>[]<$text linkHref="bar">Bar</$text></paragraph>'
 			);
 
 			editor.execute( 'insertText', { text: 'Foo' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="foo">Foo</$text>Foo[]<$text linkHref="bar">Bar</$text></paragraph>'
 			);
 		} );
@@ -1544,13 +1520,13 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="foo">Foo</$text>[]<$text linkHref="bar">Bar</$text></paragraph>'
 			);
 
 			editor.execute( 'insertText', { text: 'Foo' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="foo">Foo</$text>Foo[]<$text linkHref="bar">Bar</$text></paragraph>'
 			);
 		} );
@@ -1562,7 +1538,7 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text linkHref="url">Bar[]</$text></paragraph>' );
 		} );
 
 		it( 'should do nothing if the selection is not collapsed after the click', () => {
@@ -1573,7 +1549,7 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>[<$text linkHref="url">Bar</$text>]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>[<$text linkHref="url">Bar</$text>]</paragraph>' );
 		} );
 
 		it( 'should do nothing if the text is not a link', () => {
@@ -1584,7 +1560,7 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bar[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph><$text bold="true">Bar[]</$text></paragraph>' );
 		} );
 
 		it( 'should remove all `link*` attributes', () => {
@@ -1600,13 +1576,13 @@ describe( 'LinkEditing', () => {
 				newSelection: view.document.selection
 			} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>[]</paragraph>'
 			);
 
 			editor.execute( 'insertText', { text: 'Foo' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>Foo[]</paragraph>'
 			);
 		} );
@@ -1667,11 +1643,11 @@ describe( 'LinkEditing', () => {
 		} );
 
 		it( 'should require ClipboardPipeline plugin', () => {
-			expect( LinkEditing.requires.includes( ClipboardPipeline ) ).to.equal( true );
+			expect( LinkEditing.requires.includes( ClipboardPipeline ) ).toBe( true );
 		} );
 
 		it( 'should require Input plugin', () => {
-			expect( LinkEditing.requires.includes( Input ) ).to.equal( true );
+			expect( LinkEditing.requires.includes( Input ) ).toBe( true );
 		} );
 
 		describe( 'insertText with specific selection (not ModelDocumentSelection, beforeinput)', () => {
@@ -1685,7 +1661,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>This is <$text linkHref="foo">Abcde[]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 			} );
@@ -1711,7 +1687,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					'This is ' +
 					'<$text italic="true" linkHref="foo">Abcde[]</$text>' +
@@ -1732,7 +1708,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>This is <$text linkHref="foo">Abcde[]o</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 			} );
@@ -1758,7 +1734,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					'This is ' +
 					'<$text italic="true" linkHref="foo">Abcde[]</$text>' +
@@ -1786,7 +1762,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					'This is ' +
 					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Abcde[]</$text>' +
@@ -1807,9 +1783,7 @@ describe( 'LinkEditing', () => {
 					model.insertContent( writer.createText( 'Abcde' ) );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when the changes are not caused by typing (pasting check)', () => {
@@ -1822,13 +1796,11 @@ describe( 'LinkEditing', () => {
 						'text/html': '<p>Abcde</p>',
 						'text/plain': 'Abcde'
 					} ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when typed after cutting the content', () => {
@@ -1838,8 +1810,8 @@ describe( 'LinkEditing', () => {
 
 				view.document.fire( 'cut', {
 					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
 				editor.execute( 'insertText', {
@@ -1847,14 +1819,12 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve anything if selected an element instead of text', () => {
 				_setModelData( model,
-					'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+					'[<imageBlock src="/sample.png"></imageBlock>]'
 				);
 
 				editor.execute( 'insertText', {
@@ -1862,9 +1832,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'Abcde[]'
-				);
+				expect( _getModelData( model ) ).toBe( 'Abcde[]' );
 			} );
 
 			it( 'should not preserve selection attributes when the entire link is selected and pressed "Backspace"', () => {
@@ -1885,9 +1853,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when the entire link is selected and pressed "Delete"', () => {
@@ -1908,9 +1874,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should preserve selection attributes (from first link) when selected different links', () => {
@@ -1923,7 +1887,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>This is <$text linkHref="foo">Abcde[]</$text>.</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is <$text linkHref="foo">Abcde[]</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when selected more than single link (start of the selection)', () => {
@@ -1936,9 +1900,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This isAbcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This isAbcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should preserve selection attributes when selected more than single link (end of the selection)', () => {
@@ -1951,7 +1913,7 @@ describe( 'LinkEditing', () => {
 					selection: model.createSelection( model.document.selection )
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>This is <$text linkHref="foo">Abcde[]</$text>from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 			} );
@@ -1967,7 +1929,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>This is <$text linkHref="foo">Abcde</$text>[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 			} );
@@ -1992,7 +1954,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					'This is ' +
 					'<$text italic="true" linkHref="foo">Abcde</$text>' +
@@ -2013,7 +1975,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>This is <$text linkHref="foo">Abcde[]o</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 			} );
@@ -2038,7 +2000,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					'This is ' +
 					'<$text italic="true" linkHref="foo">Abcde[]</$text>' +
@@ -2065,7 +2027,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 					'This is ' +
 					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Abcde</$text>[]' +
@@ -2086,9 +2048,7 @@ describe( 'LinkEditing', () => {
 					model.insertContent( writer.createText( 'Abcde' ) );
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when the changes are not caused by typing (pasting check)', () => {
@@ -2101,13 +2061,11 @@ describe( 'LinkEditing', () => {
 						'text/html': '<p>Abcde</p>',
 						'text/plain': 'Abcde'
 					} ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when typed after cutting the content', () => {
@@ -2117,31 +2075,27 @@ describe( 'LinkEditing', () => {
 
 				view.document.fire( 'cut', {
 					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
 				editor.execute( 'insertText', {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve anything if selected an element instead of text', () => {
 				_setModelData( model,
-					'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+					'[<imageBlock src="/sample.png"></imageBlock>]'
 				);
 
 				editor.execute( 'insertText', {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'Abcde[]'
-				);
+				expect( _getModelData( model ) ).toBe( 'Abcde[]' );
 			} );
 
 			it( 'should not preserve selection attributes when the entire link is selected and pressed "Backspace"', () => {
@@ -2161,9 +2115,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when the entire link is selected and pressed "Delete"', () => {
@@ -2183,9 +2135,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should preserve selection attributes (from first link) when selected different links', () => {
@@ -2197,7 +2147,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>This is <$text linkHref="foo">Abcde</$text>[].</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>This is <$text linkHref="foo">Abcde</$text>[].</paragraph>' );
 			} );
 
 			it( 'should not preserve selection attributes when selected more than single link (start of the selection)', () => {
@@ -2209,9 +2159,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>This isAbcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
-				);
+				expect( _getModelData( model ) ).toBe( '<paragraph>This isAbcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>' );
 			} );
 
 			it( 'should preserve selection attributes when selected more than single link (end of the selection)', () => {
@@ -2223,7 +2171,7 @@ describe( 'LinkEditing', () => {
 					text: 'Abcde'
 				} );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>This is <$text linkHref="foo">Abcde</$text>[]from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 			} );
@@ -2273,7 +2221,7 @@ describe( 'LinkEditing', () => {
 		it( 'should not preserve the `linkHref` attribute when deleting content after the link', () => {
 			_setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar</$text> []</paragraph>' );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).toBe( false );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2282,7 +2230,7 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).toBe( false );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2291,8 +2239,8 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( false );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Ba</$text>[]</paragraph>' );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).toBe( false );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foo <$text linkHref="url">Ba</$text>[]</paragraph>' );
 		} );
 
 		it( 'should not preserve the `linkHref` attribute when deleting content after the link (decorators check)', () => {
@@ -2306,9 +2254,9 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
-			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'initial "linkIsFoo" state' ).to.equal( false );
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).toBe( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'initial "linkIsFoo" state' ).toBe( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).toBe( false );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2317,9 +2265,9 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
-			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing space after the link ("linkIsFoo")' ).to.equal( false );
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).toBe( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing space after the link ("linkIsFoo")' ).toBe( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).toBe( false );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2328,11 +2276,11 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
-			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing a character the link ("linkIsFoo")' ).to.equal( false );
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).toBe( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing a character the link ("linkIsFoo")' ).toBe( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).toBe( false );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 					'This is ' +
 					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
@@ -2346,7 +2294,7 @@ describe( 'LinkEditing', () => {
 		it( 'should preserve the `linkHref` attribute when deleting content while the selection is at the end of the link', () => {
 			_setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar []</$text></paragraph>' );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).toBe( true );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2355,7 +2303,7 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).toBe( true );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2364,14 +2312,14 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
-			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Ba[]</$text></paragraph>' );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).toBe( true );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foo <$text linkHref="url">Ba[]</$text></paragraph>' );
 		} );
 
 		it( 'should preserve the `linkHref` attribute when deleting content while the selection is inside the link', () => {
 			_setModelData( model, '<paragraph>Foo <$text linkHref="url">A long URLLs[] description</$text></paragraph>' );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).toBe( true );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2380,7 +2328,7 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).toBe( true );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2389,10 +2337,8 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
-			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>Foo <$text linkHref="url">A long URL[] description</$text></paragraph>'
-			);
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).toBe( true );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foo <$text linkHref="url">A long URL[] description</$text></paragraph>' );
 		} );
 
 		it( 'should do nothing if there is no `linkHref` attribute', () => {
@@ -2412,13 +2358,13 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
 		} );
 
 		it( 'should preserve the `linkHref` attribute when deleting content using "Delete" key', () => {
 			_setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar</$text>[ ]</paragraph>' );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).toBe( false );
 
 			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
@@ -2427,9 +2373,9 @@ describe( 'LinkEditing', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Bar[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>Foo <$text linkHref="url">Bar[]</$text></paragraph>' );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).toBe( true );
 		} );
 	} );
 
@@ -2478,7 +2424,7 @@ describe( 'LinkEditing', () => {
 		it( 'should upcast multiple manual decorators', () => {
 			editor.setData( '<p><a href="#" rel="foo bar baz abc">link</a></p>' );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text linkHref="#" linkIsBar="true" linkIsBaz="true" linkIsFoo="true">link</$text></paragraph>'
 			);
 		} );
@@ -2488,9 +2434,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="#" linkIsBar="true" linkIsBaz="true" linkIsFoo="true">link</$text></paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
-				'<p><a href="#" rel="bar baz abc foo">link</a></p>'
-			);
+			expect( editor.getData() ).toBe( '<p><a href="#" rel="bar baz abc foo">link</a></p>' );
 		} );
 
 		it( 'should editing view downcast multiple manual decorators', () => {
@@ -2498,9 +2442,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="#" linkIsBar="true" linkIsBaz="true" linkIsFoo="true">link</$text></paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="bar baz abc foo">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="bar baz abc foo">link</a></p>' );
 		} );
 
 		it( 'should add manual decorator on rel attribute', () => {
@@ -2512,25 +2454,19 @@ describe( 'LinkEditing', () => {
 				writer.setAttribute( 'linkIsFoo', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="foo">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="foo">link</a></p>' );
 
 			model.change( writer => {
 				writer.setAttribute( 'linkIsBar', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="foo bar">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="foo bar">link</a></p>' );
 
 			model.change( writer => {
 				writer.setAttribute( 'linkIsBaz', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="foo bar baz abc">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="foo bar baz abc">link</a></p>' );
 		} );
 
 		it( 'should remove manual decorator on rel attribute', () => {
@@ -2538,33 +2474,25 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="#" linkIsFoo="true" linkIsBar="true" linkIsBaz="true">link</$text></paragraph>'
 			);
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="foo bar baz abc">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="foo bar baz abc">link</a></p>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'linkIsBar', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="foo baz abc">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="foo baz abc">link</a></p>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'linkIsBaz', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#" rel="foo">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#" rel="foo">link</a></p>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'linkIsFoo', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 			} );
 
-			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<p><a href="#">link</a></p>'
-			);
+			expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="#">link</a></p>' );
 		} );
 	} );
 
@@ -2664,9 +2592,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://example.com" linkManualTarget="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><a href="http://example.com">link</a></p>'
-				);
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe( '<p><a href="http://example.com">link</a></p>' );
 			} );
 
 			it( 'should not remove manual decorator wrapping if consumable test fails (when remove)', async () => {
@@ -2682,7 +2608,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://example.com" linkManualTarget="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://example.com" target="_self">link</a></p>'
 				);
 
@@ -2690,9 +2616,9 @@ describe( 'LinkEditing', () => {
 					model.change( writer => {
 						writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 					} );
-				} ).to.not.throw();
+				} ).not.toThrow();
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://example.com" target="_self">link</a></p>'
 				);
 			} );
@@ -2704,7 +2630,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://target-test.com">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
 				);
 
@@ -2712,7 +2638,7 @@ describe( 'LinkEditing', () => {
 					writer.setAttribute( 'linkManualTarget', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://target-test.com" target="_self">link</a></p>'
 				);
 			} );
@@ -2722,7 +2648,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://target-test.com" linkManualTarget="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://target-test.com" target="_self">link</a></p>'
 				);
 
@@ -2730,7 +2656,7 @@ describe( 'LinkEditing', () => {
 					writer.removeAttribute( 'linkManualTarget', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
 				);
 			} );
@@ -2743,7 +2669,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// Attributes should be merged.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://rel-test.com" rel="auto-value manual-value">link</a></p>'
 				);
 			} );
@@ -2754,7 +2680,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// Automatic decorator should be applied.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://rel-test.com" rel="auto-value">link</a></p>'
 				);
 			} );
@@ -2763,7 +2689,7 @@ describe( 'LinkEditing', () => {
 				editor.setData( '<p><a href="ftp://example.com" rel="manual-value">link</a></p>' );
 
 				// FTP link doesn't trigger automatic decorator (starts with http).
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph><$text linkHref="ftp://example.com" linkManualRel="true">link</$text></paragraph>'
 				);
 			} );
@@ -2775,7 +2701,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://class-test.com" linkManualClass="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a class="auto-class manual-class" href="http://class-test.com">link</a></p>'
 				);
 			} );
@@ -2785,7 +2711,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://class-test.com">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a class="auto-class" href="http://class-test.com">link</a></p>'
 				);
 			} );
@@ -2798,7 +2724,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// Manual decorator should win, automatic decorator should be blocked.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://style-test.com" style="color:red">link</a></p>'
 				);
 			} );
@@ -2809,7 +2735,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// Automatic decorator should be applied.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://style-test.com" style="color:blue">link</a></p>'
 				);
 			} );
@@ -2822,7 +2748,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// Manual decorator should win, automatic decorator should be blocked.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://target-test.com" target="_self">link</a></p>'
 				);
 			} );
@@ -2833,7 +2759,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// Automatic decorator should be applied.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://target-test.com" target="_blank">link</a></p>'
 				);
 			} );
@@ -2850,7 +2776,7 @@ describe( 'LinkEditing', () => {
 					'</paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p>' +
 						'<a class="auto-class manual-class" href="http://rel-test.com/class-test/style-test/target-test" ' +
 						'rel="manual-value auto-value" style="color:red" target="_self">' +
@@ -2865,7 +2791,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://class-test.com" linkManualRel="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a class="auto-class" href="http://class-test.com" rel="manual-value">link</a></p>'
 				);
 			} );
@@ -2875,7 +2801,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://rel-test.com/class-test/style-test" linkManualStyle="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p>' +
 						'<a ' +
 							'class="auto-class" ' +
@@ -2894,7 +2820,7 @@ describe( 'LinkEditing', () => {
 			it( 'should upcast manual decorator when both automatic and manual values are present', () => {
 				editor.setData( '<p><a href="http://rel-test.com" rel="manual-value auto-value">link</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph><$text linkHref="http://rel-test.com" linkManualRel="true">link</$text></paragraph>'
 				);
 			} );
@@ -2902,7 +2828,7 @@ describe( 'LinkEditing', () => {
 			it( 'should not upcast automatic decorator values', () => {
 				editor.setData( '<p><a href="http://rel-test.com" rel="auto-value">link</a></p>' );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph><$text linkHref="http://rel-test.com">link</$text></paragraph>'
 				);
 			} );
@@ -2914,7 +2840,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://rel-test.com" linkManualRel="true">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://rel-test.com" rel="auto-value manual-value">link</a></p>'
 				);
 
@@ -2922,7 +2848,7 @@ describe( 'LinkEditing', () => {
 					writer.removeAttribute( 'linkManualRel', model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://rel-test.com" rel="auto-value">link</a></p>'
 				);
 			} );
@@ -2932,7 +2858,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph><$text linkHref="http://rel-test.com">link</$text></paragraph>'
 				);
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://rel-test.com" rel="auto-value">link</a></p>'
 				);
 
@@ -2940,7 +2866,7 @@ describe( 'LinkEditing', () => {
 					writer.setAttribute( 'linkManualRel', true, model.document.getRoot().getChild( 0 ).getChild( 0 ) );
 				} );
 
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://rel-test.com" rel="auto-value manual-value">link</a></p>'
 				);
 			} );
@@ -2953,7 +2879,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// URL doesn't match automatic decorator callback, only manual should be applied.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="http://no-match.com" rel="manual-value">link</a></p>'
 				);
 			} );
@@ -2964,7 +2890,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				// FTP link doesn't match any automatic decorator, only manual should be applied.
-				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 					'<p><a href="ftp://example.com" rel="manual-value">link</a></p>'
 				);
 			} );
@@ -3030,7 +2956,7 @@ describe( 'LinkEditing', () => {
 				writer.setAttribute( 'linkDecorator2', true, text );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text linkDecorator2="true" linkHref="http://example.com">link</$text></paragraph>'
 			);
 		} );
@@ -3050,7 +2976,7 @@ describe( 'LinkEditing', () => {
 				}, position );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>' +
 					'<$text linkDecorator1="true" linkHref="http://example.com">link</$text>' +
 					'<$text linkDecorator2="true" linkHref="http://example.com">foo</$text>' +
@@ -3069,7 +2995,7 @@ describe( 'LinkEditing', () => {
 				writer.setAttribute( 'linkDecorator3', true, text );
 			} );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text linkDecorator1="true" linkDecorator3="true" linkHref="http://example.com">link</$text></paragraph>'
 			);
 		} );

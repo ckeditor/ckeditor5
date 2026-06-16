@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { Input } from '@ckeditor/ckeditor5-typing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-import { ViewDocumentDomEventData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { ModelRange, ViewDocumentDomEventData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { LinkEditing } from '../src/linkediting.js';
 import { AutoLink } from '../src/autolink.js';
 
@@ -20,15 +20,15 @@ describe( 'AutoLink', () => {
 	let editor;
 
 	it( 'should be named', () => {
-		expect( AutoLink.pluginName ).to.equal( 'AutoLink' );
+		expect( AutoLink.pluginName ).toBe( 'AutoLink' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( AutoLink.isOfficialPlugin ).to.be.true;
+		expect( AutoLink.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( AutoLink.isPremiumPlugin ).to.be.false;
+		expect( AutoLink.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded without Enter & ShiftEnter features', async () => {
@@ -40,8 +40,11 @@ describe( 'AutoLink', () => {
 	} );
 
 	describe( 'autolink on paste behavior', () => {
-		testUtils.createSinonSandbox();
 		let model, viewDocument;
+
+		afterEach( () => {
+			vi.restoreAllMocks();
+		} );
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
@@ -50,7 +53,7 @@ describe( 'AutoLink', () => {
 
 			// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
 			// Otherwise it will throw as it accesses the DOM to do its job.
-			sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+			vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 			model = editor.model;
 			viewDocument = editor.editing.view.document;
@@ -61,21 +64,21 @@ describe( 'AutoLink', () => {
 
 			it( 'paste link', () => {
 				pasteText( 'http://hello.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
 				);
 			} );
 
 			it( 'paste text including a link', () => {
 				pasteText( ' http://hello.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some  http://hello.com[] text</paragraph>'
 				);
 			} );
 
 			it( 'paste not a link', () => {
 				pasteText( 'hello' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some hello[] text</paragraph>'
 				);
 			} );
@@ -85,7 +88,7 @@ describe( 'AutoLink', () => {
 					'text/plain': 'http://hello.com',
 					'text/html': '<a href="http://hello.com">http://hello.com</a>'
 				} );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
 				);
 			} );
@@ -95,7 +98,7 @@ describe( 'AutoLink', () => {
 					'text/plain': 'hello.com',
 					'text/html': '<a href="http://hello.com">hello.com</a>'
 				} );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some <$text linkHref="http://hello.com">hello.com</$text>[] text</paragraph>'
 				);
 			} );
@@ -104,14 +107,14 @@ describe( 'AutoLink', () => {
 				pasteData( {
 					'text/html': '<span style="font-color: blue">http://hello.com</span>'
 				} );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
 
 			it( 'should omit the `drop` clipboard method', () => {
 				pasteText( 'http://hello.com', 'drop' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
@@ -122,7 +125,7 @@ describe( 'AutoLink', () => {
 
 			it( 'paste link', () => {
 				pasteText( 'http://hello.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
@@ -149,7 +152,7 @@ describe( 'AutoLink', () => {
 			it( 'paste link', () => {
 				pasteText( 'http://hello.com' );
 				// Default behaviour: overwrites the first selection
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>http://hello.com[] text</paragraph>'
 				);
 			} );
@@ -159,7 +162,7 @@ describe( 'AutoLink', () => {
 			it( 'paste with entire link selected', () => {
 				_setModelData( model, '<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>some [<$text linkHref="http://world.com">selected</$text>] text</paragraph>'
 				);
 			} );
@@ -167,7 +170,7 @@ describe( 'AutoLink', () => {
 			it( 'paste with partially selected link updates and selects the entire link', () => {
 				_setModelData( model, '<paragraph><$text linkHref="http://hello.com">some [selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
@@ -175,7 +178,7 @@ describe( 'AutoLink', () => {
 			it( 'paste with selection overlapping the start of the link extends the link', () => {
 				_setModelData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
@@ -183,7 +186,7 @@ describe( 'AutoLink', () => {
 			it( 'paste with selection overlapping the end of the link extends the link', () => {
 				_setModelData( model, '<paragraph><$text linkHref="http://hello.com">some [selected</$text> text]</paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
@@ -196,8 +199,20 @@ describe( 'AutoLink', () => {
 					</paragraph>`
 				);
 				pasteText( 'http://world.com' );
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>[<$text linkHref="http://world.com">here are two links</$text>]</paragraph>'
+				);
+			} );
+
+			it( 'does not modify the selection when the initial range join produces no result', () => {
+				_setModelData( model, '<paragraph>some [selected] text</paragraph>' );
+
+				vi.spyOn( ModelRange.prototype, 'getJoined' ).mockReturnValueOnce( null );
+
+				pasteText( 'http://world.com' );
+
+				expect( _getModelData( model ) ).toBe(
+					'<paragraph>some [<$text linkHref="http://world.com">selected</$text>] text</paragraph>'
 				);
 			} );
 		} );
@@ -242,7 +257,7 @@ describe( 'AutoLink', () => {
 		it( 'does nothing on typing normal text', () => {
 			simulateTyping( 'Cupcake ipsum dolor. Sit amet caramels. Pie jelly-o lemon drops fruitcake.' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Cupcake ipsum dolor. Sit amet caramels. Pie jelly-o lemon drops fruitcake.[]</paragraph>'
 			);
 		} );
@@ -250,7 +265,7 @@ describe( 'AutoLink', () => {
 		it( 'does not add linkHref attribute to a text link while typing', () => {
 			simulateTyping( 'https://www.cksource.com' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com[]</paragraph>'
 			);
 		} );
@@ -258,7 +273,7 @@ describe( 'AutoLink', () => {
 		it( 'adds linkHref attribute to a text link after space', () => {
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> []</paragraph>'
 			);
 		} );
@@ -268,7 +283,7 @@ describe( 'AutoLink', () => {
 
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -278,7 +293,7 @@ describe( 'AutoLink', () => {
 
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -289,7 +304,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
@@ -301,7 +316,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'shiftEnter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
 			);
 		} );
@@ -311,7 +326,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[]</paragraph>'
 			);
 		} );
@@ -321,7 +336,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[]</paragraph>'
 			);
 		} );
@@ -332,7 +347,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="https://www.foo.ba">https://www.foo.ba</$text></paragraph><paragraph>[]</paragraph>'
 			);
 		} );
@@ -343,7 +358,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
@@ -353,7 +368,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
@@ -363,7 +378,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph></paragraph><paragraph>[]urce.com</paragraph>'
 			);
 		} );
@@ -373,7 +388,7 @@ describe( 'AutoLink', () => {
 
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo Bar <$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> [] Baz</paragraph>'
 			);
 		} );
@@ -384,7 +399,7 @@ describe( 'AutoLink', () => {
 			editor.execute( 'shiftEnter' );
 
 			// TODO: should test with selection but master has a bug. See: https://github.com/ckeditor/ckeditor5/issues/7459.
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>' +
 				'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
 				'<softBreak></softBreak>' +
@@ -397,7 +412,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'shiftEnter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com<softBreak></softBreak><softBreak></softBreak>[]</paragraph>'
 			);
 		} );
@@ -407,7 +422,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 				'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
 				'</paragraph>' +
@@ -438,7 +453,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>outer text' +
 				'<limit>inner text <$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text> inner text</limit>' +
 				'outer text</paragraph>'
@@ -455,7 +470,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>' +
 				'<$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text>' +
 				'</paragraph>'
@@ -465,7 +480,7 @@ describe( 'AutoLink', () => {
 		it( 'adds "mailto:" to link of detected email addresses', () => {
 			simulateTyping( 'newsletter@cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="mailto:newsletter@cksource.com">newsletter@cksource.com</$text> []</paragraph>'
 			);
 		} );
@@ -474,7 +489,7 @@ describe( 'AutoLink', () => {
 			editor.config.set( 'link.defaultProtocol', 'http://' );
 			simulateTyping( 'www.cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="http://www.cksource.com">www.cksource.com</$text> []</paragraph>'
 			);
 		} );
@@ -483,7 +498,7 @@ describe( 'AutoLink', () => {
 			editor.config.set( 'link.defaultProtocol', '' );
 			simulateTyping( 'www.cksource.com ' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>www.cksource.com []</paragraph>'
 			);
 		} );
@@ -492,18 +507,18 @@ describe( 'AutoLink', () => {
 			_setModelData( model, '<paragraph><$text linkHref="http://www.cksource.com">http://www.cksource.com</$text>[]</paragraph>' );
 
 			const plugin = editor.plugins.get( 'AutoLink' );
-			const spy = sinon.spy( plugin, '_persistAutoLink' );
+			const spy = vi.spyOn( plugin, '_persistAutoLink' );
 
 			editor.execute( 'enter' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		for ( const punctuation of '!.:,;?' ) {
 			it( `does not include "${ punctuation }" at the end of the link after space`, () => {
 				simulateTyping( `https://www.cksource.com${ punctuation } ` );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					`<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>${ punctuation } []</paragraph>`
 				);
 			} );
@@ -570,7 +585,7 @@ describe( 'AutoLink', () => {
 				it( `should detect "${ supportedURL }" as a valid URL`, () => {
 					simulateTyping( supportedURL + ' ' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						`<paragraph><$text linkHref="${ supportedURL }">${ supportedURL }</$text> []</paragraph>` );
 				} );
 			}
@@ -611,7 +626,7 @@ describe( 'AutoLink', () => {
 				it( `should not detect "${ unsupportedURL }" as a valid URL`, () => {
 					simulateTyping( unsupportedURL + ' ' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						`<paragraph>${ unsupportedURL } []</paragraph>` );
 				} );
 			}
@@ -636,7 +651,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -646,7 +661,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
 			);
 		} );
@@ -656,7 +671,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
@@ -666,7 +681,7 @@ describe( 'AutoLink', () => {
 			const viewDocument = editor.editing.view.document;
 			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
-				{ preventDefault: sinon.spy() },
+				{ preventDefault: vi.fn() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 
@@ -674,7 +689,7 @@ describe( 'AutoLink', () => {
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -684,7 +699,7 @@ describe( 'AutoLink', () => {
 			const viewDocument = editor.editing.view.document;
 			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
-				{ preventDefault: sinon.spy() },
+				{ preventDefault: vi.fn() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 
@@ -696,7 +711,7 @@ describe( 'AutoLink', () => {
 			viewDocument.fire( 'delete', deleteEvent );
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.co</$text>[]</paragraph>'
 			);
 		} );
@@ -720,9 +735,9 @@ describe( 'AutoLink', () => {
 
 			simulateTyping( 'www.cksource.com' );
 
-			expect( plugin.isEnabled ).to.be.false;
+			expect( plugin.isEnabled ).toBe( false );
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<codeBlock language="plaintext">some www.cksource.com code</codeBlock>' );
+				.toBe( '<codeBlock language="plaintext">some www.cksource.com code</codeBlock>' );
 		} );
 
 		it( 'should be disabled inside code blocks (on enter)', () => {
@@ -732,8 +747,8 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( plugin.isEnabled ).to.be.false;
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( plugin.isEnabled ).toBe( false );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<codeBlock language="plaintext">some www.cksource.com</codeBlock>' +
 				'<codeBlock language="plaintext"> code</codeBlock>'
 			);
@@ -746,8 +761,8 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'shiftEnter' );
 
-			expect( plugin.isEnabled ).to.be.false;
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( plugin.isEnabled ).toBe( false );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 				'<codeBlock language="plaintext">some www.cksource.com<softBreak></softBreak> code</codeBlock>'
 			);
 		} );
