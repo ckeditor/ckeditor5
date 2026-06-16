@@ -587,6 +587,30 @@ describe( 'Widget', () => {
 		env.isiOS = false;
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/20103
+	it( 'should do nothing on pointerdown on a widget type around button (Android)', () => {
+		env.isAndroid = true;
+
+		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
+		const domWidget = view.domConverter.mapViewToDom( viewDiv );
+		const domButton = domWidget.querySelector( '.ck-widget__type-around__button' );
+
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
+			target: domButton,
+			isPrimary: true,
+			preventDefault: sinon.spy()
+		} );
+
+		viewDocument.fire( 'pointerdown', domEventDataMock );
+
+		// Canceling the event would suppress the compatibility mousedown that activates the button.
+		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
+		expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget></widget>' );
+
+		env.isAndroid = false;
+	} );
+
 	it( 'should create selection when clicked in nested element', () => {
 		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 1 );
