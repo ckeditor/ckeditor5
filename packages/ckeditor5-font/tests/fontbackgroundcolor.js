@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { FontBackgroundColor } from './../src/fontbackgroundcolor.js';
 import { FontBackgroundColorEditing } from './../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
 import { FontBackgroundColorUI } from '../src/fontbackgroundcolor/fontbackgroundcolorui.js';

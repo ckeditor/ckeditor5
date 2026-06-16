@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { FontFamilyCommand } from '../../src/fontfamily/fontfamilycommand.js';
 import { FontCommand } from '../../src/fontcommand.js';
 
@@ -25,11 +26,11 @@ describe( 'FontFamilyCommand', () => {
 	} );
 
 	it( 'is a FontCommand', () => {
-		expect( FontFamilyCommand.prototype ).to.be.instanceOf( FontCommand );
-		expect( command ).to.be.instanceOf( FontCommand );
+		expect( FontFamilyCommand.prototype ).toBeInstanceOf( FontCommand );
+		expect( command ).toBeInstanceOf( FontCommand );
 	} );
 
 	it( 'operates on fontFamily attribute', () => {
-		expect( command ).to.have.property( 'attributeKey', 'fontFamily' );
+		expect( command ).toHaveProperty( 'attributeKey', 'fontFamily' );
 	} );
 } );

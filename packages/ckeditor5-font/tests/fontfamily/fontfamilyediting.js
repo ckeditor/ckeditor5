@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { FontFamilyEditing } from './../../src/fontfamily/fontfamilyediting.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -30,40 +32,40 @@ describe( 'FontFamilyEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( FontFamilyEditing.pluginName ).to.equal( 'FontFamilyEditing' );
+		expect( FontFamilyEditing.pluginName ).toEqual( 'FontFamilyEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FontFamilyEditing.isOfficialPlugin ).to.be.true;
+		expect( FontFamilyEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FontFamilyEditing.isPremiumPlugin ).to.be.false;
+		expect( FontFamilyEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontFamily' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontFamily' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontFamily' ) ).toBe( true );
+		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontFamily' ) ).toBe( true );
 
-		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontFamily' ) ).to.be.false;
+		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontFamily' ) ).toBe( false );
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( editor.model.schema.getAttributeProperties( 'fontFamily' ) ).to.include( {
+		expect( editor.model.schema.getAttributeProperties( 'fontFamily' ) ).toEqual( expect.objectContaining( {
 			isFormatting: true
-		} );
+		} ) );
 	} );
 
 	it( 'its attribute is marked with a copOnEnter property', () => {
-		expect( editor.model.schema.getAttributeProperties( 'fontFamily' ) ).to.include( {
+		expect( editor.model.schema.getAttributeProperties( 'fontFamily' ) ).toEqual( expect.objectContaining( {
 			copyOnEnter: true
-		} );
+		} ) );
 	} );
 
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
-				expect( editor.config.get( 'fontFamily.options' ) ).to.deep.equal( [
+				expect( editor.config.get( 'fontFamily.options' ) ).toEqual( [
 					'default',
 					'Arial, Helvetica, sans-serif',
 					'Courier New, Courier, monospace',
@@ -75,7 +77,7 @@ describe( 'FontFamilyEditing', () => {
 					'Verdana, Geneva, sans-serif'
 				] );
 
-				expect( editor.config.get( 'fontFamily.supportAllValues' ) ).to.equal( false );
+				expect( editor.config.get( 'fontFamily.supportAllValues' ) ).toEqual( false );
 			} );
 		} );
 
@@ -108,13 +110,13 @@ describe( 'FontFamilyEditing', () => {
 				it( 'should convert unknown fontFamily attribute values', () => {
 					_setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
 
-					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:foo-bar;">o</span>o</p>' );
+					expect( editor.getData() ).toEqual( '<p>f<span style="font-family:foo-bar;">o</span>o</p>' );
 				} );
 
 				it( 'should convert defined fontFamily attribute values', () => {
 					_setModelData( doc, '<paragraph>f<$text fontFamily="Arial, Helvetica, sans-serif">o</$text>o</paragraph>' );
 
-					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">o</span>o</p>' );
+					expect( editor.getData() ).toEqual( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">o</span>o</p>' );
 				} );
 			} );
 
@@ -124,9 +126,9 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Other">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontFamily="Other">o</$text>o</paragraph>' );
 
-					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Other;">o</span>o</p>' );
+					expect( editor.getData() ).toEqual( '<p>f<span style="font-family:Other;">o</span>o</p>' );
 				} );
 
 				it( 'should convert from a complex definition', () => {
@@ -134,9 +136,9 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial,sans-serif">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontFamily="Arial,sans-serif">o</$text>o</paragraph>' );
 
-					expect( editor.getData() ).to.equal( data );
+					expect( editor.getData() ).toEqual( data );
 				} );
 
 				it( 'should convert from a nested element', () => {
@@ -144,9 +146,9 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
 
-					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
+					expect( editor.getData() ).toEqual( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
 				} );
 
 				it( 'should support <font face=".."> styling', () => {
@@ -154,13 +156,13 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( _getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).toEqual(
 						'<paragraph>' +
 							'<$text fontFamily="Arial,Verdana">[]foo</$text><$text fontFamily="Arial, sans-serif">bar</$text>' +
 						'</paragraph>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toEqual(
 						'<p><span style="font-family:Arial,Verdana;">foo</span><span style="font-family:Arial, sans-serif;">bar</span></p>'
 					);
 				} );
@@ -198,13 +200,13 @@ describe( 'FontFamilyEditing', () => {
 		it( 'should discard unknown fontFamily attribute values', () => {
 			_setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			expect( editor.getData() ).toEqual( '<p>foo</p>' );
 		} );
 
 		it( 'should convert fontFamily attribute to configured simple preset', () => {
 			_setModelData( doc, '<paragraph>f<$text fontFamily="Arial">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial;">o</span>o</p>' );
+			expect( editor.getData() ).toEqual( '<p>f<span style="font-family:Arial;">o</span>o</p>' );
 		} );
 
 		it( 'should convert fontFamily attribute to configured complex preset', () => {
@@ -213,13 +215,13 @@ describe( 'FontFamilyEditing', () => {
 			_setModelData( doc, `<paragraph>f<$text fontFamily="${ fontFamily }">o</$text>o</paragraph>` );
 
 			expect( editor.getData() )
-				.to.equal( `<p>f<span style="font-family:${ fontFamily };">o</span>o</p>` );
+				.toEqual( `<p>f<span style="font-family:${ fontFamily };">o</span>o</p>` );
 		} );
 
 		it( 'should convert fontFamily attribute from user defined settings', () => {
 			_setModelData( doc, '<paragraph>f<$text fontFamily="my">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<mark class="my-style">o</mark>o</p>' );
+			expect( editor.getData() ).toEqual( '<p>f<mark class="my-style">o</mark>o</p>' );
 		} );
 	} );
 
@@ -276,9 +278,9 @@ describe( 'FontFamilyEditing', () => {
 
 			editor.setData( data );
 
-			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="my-other">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontFamily="my-other">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Other;">o</span>o</p>' );
+			expect( editor.getData() ).toEqual( '<p>f<span style="font-family:Other;">o</span>o</p>' );
 		} );
 
 		it( 'should convert from user defined element', () => {
@@ -286,9 +288,9 @@ describe( 'FontFamilyEditing', () => {
 
 			editor.setData( data );
 
-			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="my">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontFamily="my">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( data );
+			expect( editor.getData() ).toEqual( data );
 		} );
 
 		it( 'should convert from complex definitions', () => {
@@ -299,14 +301,14 @@ describe( 'FontFamilyEditing', () => {
 				'<p>b<span class="text-complex">a</span>z</p>'
 			);
 
-			expect( _getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).toEqual(
 				'<paragraph>[]f<$text fontFamily="complex">o</$text>o</paragraph>' +
 				'<paragraph>f<$text fontFamily="complex">o</$text>o</paragraph>' +
 				'<paragraph>b<$text fontFamily="complex">a</$text>r</paragraph>' +
 				'<paragraph>b<$text fontFamily="complex">a</$text>z</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>f<span class="text-complex">o</span>o</p>' +
 				'<p>f<span class="text-complex">o</span>o</p>' +
 				'<p>b<span class="text-complex">a</span>r</p>' +
@@ -319,11 +321,11 @@ describe( 'FontFamilyEditing', () => {
 
 			editor.setData( data );
 
-			expect( _getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).toEqual(
 				'<paragraph>[]foo<$text fontFamily="complex">bar</$text></paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData() ).toEqual(
 				'<p>foo<span class="text-complex">bar</span></p>'
 			);
 		} );

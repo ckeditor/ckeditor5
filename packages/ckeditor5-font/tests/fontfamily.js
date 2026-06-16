@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { FontFamily } from './../src/fontfamily.js';
 import { FontFamilyEditing } from './../src/fontfamily/fontfamilyediting.js';
 import { FontFamilyUI } from '../src/fontfamily/fontfamilyui.js';

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll, afterAll, beforeEach, afterEach, describe, it, expect, vi } from 'vitest';
 import { TestColorPlugin } from '../_utils/testcolorplugin.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ColorGridView } from '@ckeditor/ckeditor5-ui';
 import { global, add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -37,9 +37,11 @@ describe( 'FontColorUIBase', () => {
 		columns: 3
 	};
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'pl', {
 			'Test Color': 'Testowy plugin',
 			'Remove color': 'Usuń kolor',
@@ -58,7 +60,7 @@ describe( 'FontColorUIBase', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -88,24 +90,24 @@ describe( 'FontColorUIBase', () => {
 
 	describe( 'constructor()', () => {
 		it( 'has assigned proper commandName', () => {
-			expect( testColorPlugin.commandName ).to.equal( 'testColorCommand' );
+			expect( testColorPlugin.commandName ).toEqual( 'testColorCommand' );
 		} );
 
 		it( 'has assigned proper componentName', () => {
-			expect( testColorPlugin.componentName ).to.equal( 'testColor' );
+			expect( testColorPlugin.componentName ).toEqual( 'testColor' );
 		} );
 
 		it( 'has assigned proper icon', () => {
-			expect( testColorPlugin.icon ).to.equal( '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
+			expect( testColorPlugin.icon ).toEqual( '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
 
 		it( 'has assigned proper dropdownLabel', () => {
-			expect( testColorPlugin.dropdownLabel ).to.equal( 'Test Color' );
+			expect( testColorPlugin.dropdownLabel ).toEqual( 'Test Color' );
 		} );
 
 		it( 'has assigned proper amount of columns', () => {
 			// Value taken from editor's config above.
-			expect( testColorPlugin.columns ).to.equal( 3 );
+			expect( testColorPlugin.columns ).toEqual( 3 );
 		} );
 	} );
 
@@ -133,23 +135,23 @@ describe( 'FontColorUIBase', () => {
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			expect( dropdown.element.classList.contains( 'ck-color-ui-dropdown' ) ).to.be.true;
+			expect( dropdown.element.classList.contains( 'ck-color-ui-dropdown' ) ).toBe( true );
 		} );
 
 		it( 'should focus view after command execution from dropdown', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 			const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 			dropdown.commandName = 'testColorCommand';
 			dropdown.colorSelectorView.fire( 'execute', { value: null } );
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'colorSelectorView has set proper default attributes', () => {
 			const colorSelectorView = dropdown.colorSelectorView.colorGridsFragmentView;
 
-			expect( colorSelectorView.documentColorsCount ).to.equal( 3 );
+			expect( colorSelectorView.documentColorsCount ).toEqual( 3 );
 		} );
 
 		it( 'does not initialize grids when not open', () => {
@@ -157,7 +159,7 @@ describe( 'FontColorUIBase', () => {
 			localDropdown.render();
 
 			for ( const item of localDropdown.colorSelectorView.colorGridsFragmentView.items ) {
-				expect( item ).not.to.be.instanceOf( ColorGridView );
+				expect( item ).not.toBeInstanceOf( ColorGridView );
 			}
 		} );
 
@@ -165,12 +167,12 @@ describe( 'FontColorUIBase', () => {
 			global.document.body.appendChild( dropdown.element );
 
 			const secondButton = dropdown.colorSelectorView.colorGridsFragmentView.staticColorsGrid.items.get( 1 );
-			const spy = sinon.spy( secondButton, 'focus' );
+			const spy = vi.spyOn( secondButton, 'focus' );
 
 			secondButton.isOn = true;
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			dropdown.element.remove();
 		} );
@@ -178,15 +180,15 @@ describe( 'FontColorUIBase', () => {
 		it( 'should show the color grids fragment of the color selector when opened', () => {
 			global.document.body.appendChild( dropdown.element );
 
-			const showGridsSpy = sinon.spy( dropdown.colorSelectorView, 'showColorGridsFragment' );
+			const showGridsSpy = vi.spyOn( dropdown.colorSelectorView, 'showColorGridsFragment' );
 
 			dropdown.isOpen = false;
 
-			sinon.assert.notCalled( showGridsSpy );
+			expect( showGridsSpy ).not.toHaveBeenCalled();
 
 			dropdown.isOpen = true;
 
-			sinon.assert.calledOnce( showGridsSpy );
+			expect( showGridsSpy ).toHaveBeenCalledOnce();
 
 			dropdown.element.remove();
 		} );
@@ -194,39 +196,39 @@ describe( 'FontColorUIBase', () => {
 		it( 'should update selected colors of the color selector when opened', () => {
 			global.document.body.appendChild( dropdown.element );
 
-			const updateColorSpy = sinon.spy( dropdown.colorSelectorView, 'updateSelectedColors' );
+			const updateColorSpy = vi.spyOn( dropdown.colorSelectorView, 'updateSelectedColors' );
 
 			dropdown.isOpen = false;
 
-			sinon.assert.notCalled( updateColorSpy );
+			expect( updateColorSpy ).not.toHaveBeenCalled();
 
 			dropdown.isOpen = true;
 
-			sinon.assert.calledOnce( updateColorSpy );
+			expect( updateColorSpy ).toHaveBeenCalledOnce();
 
 			dropdown.element.remove();
 		} );
 
 		describe( 'color picker', () => {
 			it( 'should execute command if the color gets changed when dropdown is open', () => {
-				const spy = sinon.spy( editor, 'execute' );
+				const spy = vi.spyOn( editor, 'execute' );
 
 				dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#a37474' } );
 
-				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+				expect( spy ).toHaveBeenCalledWith( 'testColorCommand', expect.objectContaining( { value: '#a37474' } ) );
 			} );
 
 			it( 'should not execute command if the color gets changed when dropdown is closed', () => {
-				const spy = sinon.spy( editor, 'execute' );
+				const spy = vi.spyOn( editor, 'execute' );
 
 				dropdown.isOpen = false;
 				dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.color = '#a37474';
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should undo changes', () => {
-				const spyUndo = sinon.spy( editor.commands.get( 'undo' ), 'execute' );
+				const spyUndo = vi.spyOn( editor.commands.get( 'undo' ), 'execute' );
 
 				dropdown.isOpen = true;
 				dropdown.colorSelectorView.fire( 'colorPicker:show' );
@@ -242,7 +244,7 @@ describe( 'FontColorUIBase', () => {
 
 				dropdown.colorSelectorView.colorPickerFragmentView.cancelButtonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( spyUndo );
+				expect( spyUndo ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should create new batch when color picker is showed', () => {
@@ -274,11 +276,11 @@ describe( 'FontColorUIBase', () => {
 			} );
 
 			it( 'should avoid call the command multiple times', () => {
-				const spy = sinon.spy( editor, 'execute' );
+				const spy = vi.spyOn( editor, 'execute' );
 				// Color format normalization could result with command being called multiple times.
 				dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#a37474' } );
 
-				expect( spy.callCount ).to.equal( 1 );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should close dropdown when "save button" is pressed', () => {
@@ -288,7 +290,7 @@ describe( 'FontColorUIBase', () => {
 					source: 'colorPickerSaveButton'
 				} );
 
-				expect( dropdown.isOpen ).to.be.false;
+				expect( dropdown.isOpen ).toBe( false );
 			} );
 
 			it( 'should call _appendColorPickerFragment() when dropdown is opened', async () => {
@@ -310,17 +312,17 @@ describe( 'FontColorUIBase', () => {
 					} );
 
 				const dropdown = editor.ui.componentFactory.create( 'testColor' );
-				const spy = sinon.spy( dropdown.colorSelectorView, '_appendColorPickerFragment' );
+				const spy = vi.spyOn( dropdown.colorSelectorView, '_appendColorPickerFragment' );
 
 				dropdown.isOpen = true;
 
-				spy.restore();
+				expect( spy ).toHaveBeenCalledOnce();
+
+				spy.mockRestore();
 
 				element.remove();
 				dropdown.destroy();
 				await editor.destroy();
-
-				sinon.assert.calledOnce( spy );
 			} );
 		} );
 
@@ -328,10 +330,10 @@ describe( 'FontColorUIBase', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
 
-				expect( dropdown.buttonView.isEnabled ).to.be.false;
+				expect( dropdown.buttonView.isEnabled ).toBe( false );
 
 				command.isEnabled = true;
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
+				expect( dropdown.buttonView.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -532,11 +534,11 @@ describe( 'FontColorUIBase', () => {
 		} );
 
 		it( 'should focus view after command execution from sub menu', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 			colorSelectorView.fire( 'execute', { value: null } );
 
-			sinon.assert.calledOnce( focusSpy );
+			expect( focusSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'colorSelectorView has set proper default attributes', () => {
@@ -823,19 +825,19 @@ describe( 'FontColorUIBase', () => {
 			} );
 
 			it( 'should execute command if in toolbar there are more than one dropdowns', () => {
-				const spy = sinon.spy( editor, 'execute' );
+				const spy = vi.spyOn( editor, 'execute' );
 
 				dropdown.isOpen = true;
 
 				dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#a37474' } );
 
-				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#a37474' } ) );
+				expect( spy ).toHaveBeenCalledWith( 'testColorCommand', expect.objectContaining( { value: '#a37474' } ) );
 
 				dropdown2.isOpen = true;
 
 				dropdown2.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#ffffff' } );
 
-				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: '#ffffff' } ) );
+				expect( spy ).toHaveBeenCalledWith( 'testColorCommand', expect.objectContaining( { value: '#ffffff' } ) );
 			} );
 		} );
 	} );

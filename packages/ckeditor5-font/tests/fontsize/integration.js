@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { FontSize } from '../../src/fontsize.js';
@@ -39,13 +40,13 @@ describe( 'FontSize - integration', () => {
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
-			expect( _getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).toEqual(
 				'<p>Foo {<mark class="marker-yellow">Bar</mark>} Baz.</p>'
 			);
 
 			editor.execute( 'fontSize', { value: 'huge' } );
 
-			expect( _getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).toEqual(
 				'<p>Foo {<span class="text-huge"><mark class="marker-yellow">Bar</mark></span>} Baz.</p>'
 			);
 		} );
