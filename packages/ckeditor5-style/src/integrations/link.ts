@@ -93,6 +93,7 @@ export class LinkStyleSupport extends Plugin {
 
 				const selectable = this._getAffectedSelectable( definition, selection );
 
+				/* v8 ignore else -- @preserve */
 				if ( selectable ) {
 					evt.return = selectable;
 					evt.stop();

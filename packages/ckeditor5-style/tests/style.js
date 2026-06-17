@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
@@ -31,22 +33,22 @@ describe( 'Style', () => {
 	it( 'should be a plugin', () => {
 		const style = editor.plugins.get( 'Style' );
 
-		expect( style ).to.instanceOf( Style );
+		expect( style ).toBeInstanceOf( Style );
 	} );
 
 	it( 'should be named', () => {
-		expect( Style.pluginName ).to.equal( 'Style' );
+		expect( Style.pluginName ).toBe( 'Style' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Style.isOfficialPlugin ).to.be.true;
+		expect( Style.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Style.isPremiumPlugin ).to.be.false;
+		expect( Style.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should require StyleEditing and StyleUI', () => {
-		expect( Style.requires ).to.deep.equal( [ StyleEditing, StyleUI ] );
+		expect( Style.requires ).toEqual( [ StyleEditing, StyleUI ] );
 	} );
 } );

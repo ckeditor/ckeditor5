@@ -132,6 +132,7 @@ export class TableStyleSupport extends Plugin {
 			}
 		}
 
+		/* v8 ignore else -- @preserve */
 		if ( [ 'thead', 'tbody', 'tfoot' ].includes( definition.element ) ) {
 			const headingRows = block.getAttribute( 'headingRows' ) as number || 0;
 			const footerRows = block.getAttribute( 'footerRows' ) as number || 0;
@@ -145,7 +146,7 @@ export class TableStyleSupport extends Plugin {
 			}
 		}
 
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		return false;
 	}
 

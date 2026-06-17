@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -92,7 +94,7 @@ describe( 'Integration with RemoveFormat', () => {
 
 		editor.execute( 'removeFormat' );
 
-		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 			'<paragraph>aaabbbccc</paragraph>'
 		);
 	} );

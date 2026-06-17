@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -11,7 +12,6 @@ import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { LinkStyleSupport } from '../../src/integrations/link.js';
 
@@ -19,8 +19,6 @@ import { Style } from '../../src/style.js';
 
 describe( 'LinkStyleSupport', () => {
 	let editor, editorElement, command, model;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		await createEditor( [
@@ -40,14 +38,15 @@ describe( 'LinkStyleSupport', () => {
 	afterEach( async () => {
 		editorElement.remove();
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( LinkStyleSupport.isOfficialPlugin ).to.be.true;
+		expect( LinkStyleSupport.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( LinkStyleSupport.isPremiumPlugin ).to.be.false;
+		expect( LinkStyleSupport.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'enabled styles', () => {
@@ -63,8 +62,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should not be enabled for the selection outside the link', () => {
@@ -78,8 +78,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection at the beginning of a link (selection gravity override)', () => {
@@ -93,8 +94,9 @@ describe( 'LinkStyleSupport', () => {
 
 				model.change( writer => writer.overrideSelectionGravity() );
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should not be enabled for the selection at the beginning of a link (default selection gravity)', () => {
@@ -108,8 +110,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection at the end of a link (default selection gravity override)', () => {
@@ -123,8 +126,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should not be enabled for the selection at the end of a link (selection gravity override)', () => {
@@ -138,8 +142,9 @@ describe( 'LinkStyleSupport', () => {
 
 				model.change( writer => writer.overrideSelectionGravity() );
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection in bolded link', () => {
@@ -153,8 +158,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should not be enabled for the selection in bolded text', () => {
@@ -168,8 +174,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 		} );
 
@@ -185,8 +192,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection on the link', () => {
@@ -200,8 +208,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection on na inline widget', () => {
@@ -215,8 +224,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection including a link', () => {
@@ -230,8 +240,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection including a link partly from start', () => {
@@ -245,8 +256,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection including a link partly from end', () => {
@@ -260,8 +272,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection covering multiple links', () => {
@@ -277,8 +290,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection covering multiple links (from outside)', () => {
@@ -294,8 +308,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection covering multiple links (outside on the start)', () => {
@@ -311,8 +326,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be enabled for the selection covering multiple links (outside on the end)', () => {
@@ -328,8 +344,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should not be enabled for the selection outside link', () => {
@@ -345,8 +362,9 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 			} );
 		} );
 	} );
@@ -364,8 +382,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should not be active for the selection outside the link', () => {
 				_setModelData( model,
@@ -378,7 +396,7 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be active for the selection at the beginning of a link (selection gravity override)', () => {
@@ -392,8 +410,8 @@ describe( 'LinkStyleSupport', () => {
 
 				model.change( writer => writer.overrideSelectionGravity() );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should not be active for the selection at the beginning of a link (default selection gravity)', () => {
 				_setModelData( model,
@@ -406,7 +424,7 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be active for the selection at the end of a link (default selection gravity override)', () => {
@@ -420,8 +438,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should not be active for the selection at the end of a link (selection gravity override)', () => {
 				_setModelData( model,
@@ -434,7 +452,7 @@ describe( 'LinkStyleSupport', () => {
 
 				model.change( writer => writer.overrideSelectionGravity() );
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should be active for the selection in bolded link', () => {
@@ -448,8 +466,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should not be active for the selection in bolded text', () => {
 				_setModelData( model,
@@ -462,7 +480,7 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 			} );
 		} );
 
@@ -478,8 +496,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection on the link', () => {
 				_setModelData( model,
@@ -492,8 +510,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection on na inline widget', () => {
 				_setModelData( model,
@@ -506,8 +524,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection including a link', () => {
 				_setModelData( model,
@@ -520,8 +538,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection including a link partly from start', () => {
 				_setModelData( model,
@@ -534,8 +552,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection including a link partly from end', () => {
 				_setModelData( model,
@@ -548,8 +566,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection covering multiple links', () => {
 				_setModelData( model,
@@ -564,8 +582,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection covering multiple links (from outside)', () => {
 				_setModelData( model,
@@ -580,8 +598,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection covering multiple links (outside on the start)', () => {
 				_setModelData( model,
@@ -596,8 +614,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection covering multiple links (outside on the end)', () => {
 				_setModelData( model,
@@ -612,8 +630,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should be active for the selection covering multiple links (first has style)', () => {
 				_setModelData( model,
@@ -628,8 +646,8 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-			} );
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) ); } );
 
 			it( 'Link style should not be active for the selection covering multiple links (second has style)', () => {
 				_setModelData( model,
@@ -644,7 +662,7 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 			} );
 
 			it( 'Link style should not be active for the selection outside link', () => {
@@ -660,14 +678,14 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 			} );
 		} );
 	} );
 
 	describe( 'apply style', () => {
 		beforeEach( () => {
-			sinon.stub( console, 'warn' );
+			vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 		} );
 
 		describe( 'collapsed selection', () => {
@@ -682,13 +700,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foo[]bar</$text>' +
@@ -708,13 +728,14 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.be.empty;
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 0 );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'bef[]ore ' +
 						'<$text linkHref="123">foobar</$text>' +
@@ -734,13 +755,15 @@ describe( 'LinkStyleSupport', () => {
 
 				model.change( writer => writer.overrideSelectionGravity() );
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">[]foobar</$text>' +
@@ -760,13 +783,14 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.be.empty;
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 0 );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'[]<$text linkHref="123">foobar</$text>' +
@@ -786,13 +810,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foobar[]</$text>' +
@@ -812,13 +838,14 @@ describe( 'LinkStyleSupport', () => {
 
 				model.change( writer => writer.overrideSelectionGravity() );
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.be.empty;
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 0 );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text linkHref="123">foobar</$text>[]' +
@@ -838,13 +865,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text bold="true" htmlA="{"classes":["a-styled"]}" linkHref="123">foo[]bar</$text>' +
@@ -864,13 +893,14 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.be.empty;
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 0 );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text bold="true">foo[]bar</$text>' +
@@ -892,13 +922,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">fo[ob]ar</$text>' +
@@ -918,13 +950,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'[<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foobar</$text>]' +
@@ -944,13 +978,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'[<imageInline htmlA="{"classes":["a-styled"]}" linkHref="123"></imageInline>]' +
@@ -970,13 +1006,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'bef[ore ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foobar</$text>' +
@@ -996,13 +1034,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'bef[ore ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foo]bar</$text>' +
@@ -1022,13 +1062,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foo[bar</$text>' +
@@ -1050,13 +1092,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foo[bar</$text>' +
@@ -1080,13 +1124,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'bef[ore ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foobar</$text>' +
@@ -1110,13 +1156,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'bef[ore ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foobar</$text>' +
@@ -1140,13 +1188,15 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'A style', 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 2 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'A style', 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foo[bar</$text>' +
@@ -1170,12 +1220,12 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.be.empty;
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 0 );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text linkHref="123">foo[bar</$text>' +
@@ -1199,12 +1249,13 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.value ).to.be.empty;
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.have.members( [ 'A style' ] );
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 1 );
+				expect( command.value ).toEqual( expect.arrayContaining( [ 'A style' ] ) );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">foo[bar</$text>' +
@@ -1228,13 +1279,14 @@ describe( 'LinkStyleSupport', () => {
 
 				command.refresh();
 
-				expect( command.enabledStyles ).to.have.members( [ 'B style' ] );
-				expect( command.value ).to.be.empty;
+				expect( command.enabledStyles ).toHaveLength( 1 );
+				expect( command.enabledStyles ).toEqual( expect.arrayContaining( [ 'B style' ] ) );
+				expect( command.value ).toHaveLength( 0 );
 
 				command.execute( { styleName: 'A style' } );
 
-				expect( command.value ).to.be.empty;
-				expect( _getModelData( model ) ).to.equal(
+				expect( command.value ).toHaveLength( 0 );
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text linkHref="123">foobar</$text>' +
@@ -1257,7 +1309,7 @@ describe( 'LinkStyleSupport', () => {
 				command.refresh();
 				command.execute( { styleName: 'B style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text bold="true">foo</$text>' +
@@ -1280,7 +1332,7 @@ describe( 'LinkStyleSupport', () => {
 				command.refresh();
 				command.execute( { styleName: 'A style' } );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>' +
 						'before ' +
 						'<$text htmlA="{"classes":["a-styled"]}" linkHref="123">f[o]o</$text>' +
