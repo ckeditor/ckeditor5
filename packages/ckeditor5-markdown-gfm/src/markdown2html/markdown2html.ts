@@ -100,7 +100,7 @@ function deleteClassesFromToDoLists(): ReturnType<Plugin> {
 function rehypeDomRaw(): ReturnType<Plugin> {
 	return ( tree: Node ): void => {
 		visit( tree, [ 'root', 'element' ], ( node: Node | Element ) => {
-			/* istanbul ignore next -- @preserve */
+			/* v8 ignore next -- @preserve */
 			if ( !isNodeRootOrElement( node ) ) {
 				return;
 			}

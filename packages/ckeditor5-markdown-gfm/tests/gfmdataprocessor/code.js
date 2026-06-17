@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { testDataProcessor } from '../_utils/utils.js';
 
 describe( 'MarkdownGfmDataProcessor', () => {
@@ -320,7 +321,7 @@ describe( 'MarkdownGfmDataProcessor', () => {
 				}
 			);
 
-			expect( viewFragment.getChild( 0 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).to.equal(
+			expect( viewFragment.getChild( 0 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).toEqual(
 				[
 					'var a = \'hello\';',
 					'console.log(a + \' world\');'

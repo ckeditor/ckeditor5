@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { testDataProcessor } from '../_utils/utils.js';
 import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
 import { HtmlDataProcessor, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
@@ -442,7 +443,7 @@ describe( 'MarkdownGfmDataProcessor', () => {
 				'</ul>'
 			);
 
-			expect( mdDataProcessor.toData( viewFragment ) ).to.equal(
+			expect( mdDataProcessor.toData( viewFragment ) ).toEqual(
 				'* [ ] Item 1\n' +
 				'* [x] Item 2'
 			);

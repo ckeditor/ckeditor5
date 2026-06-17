@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
 import { ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 
@@ -18,7 +19,7 @@ describe( 'MarkdownGfmDataProcessor', () => {
 		it( 'should have this method to be compatible with `DataProcessor` interface', () => {
 			expect( () => {
 				dataProcessor.useFillerType( 'default' );
-			} ).not.to.throw();
+			} ).not.toThrow();
 		} );
 	} );
 } );

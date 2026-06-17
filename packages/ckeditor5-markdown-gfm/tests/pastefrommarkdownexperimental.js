@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -35,11 +36,11 @@ describe( 'PasteFromMarkdownExperimental', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( PasteFromMarkdownExperimental.isOfficialPlugin ).to.be.true;
+		expect( PasteFromMarkdownExperimental.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PasteFromMarkdownExperimental.isPremiumPlugin ).to.be.false;
+		expect( PasteFromMarkdownExperimental.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'text/plain', () => {
@@ -47,7 +48,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteText( editor, 'foo **bar** [baz](https://ckeditor.com).' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
 		} );
 
 		it( 'should paste as plain text when pasting with the Shift key pressed', () => {
@@ -55,7 +56,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			pressShiftKey( editor );
 			pasteText( editor, 'foo **bar** [baz](https://ckeditor.com).' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo **bar** [baz](https://ckeditor.com).[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo **bar** [baz](https://ckeditor.com).[]</paragraph>' );
 		} );
 	} );
 	describe( 'text/html', () => {
@@ -63,14 +64,14 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<span>foo **bar** [baz](https://ckeditor.com).</span>' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
 		} );
 
 		it( 'should not paste two level nested HTML as markdown if type is text/html', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<span><span>foo **bar** [baz](https://ckeditor.com).</span></span>' );
 
-			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo **bar** [baz](https://ckeditor.com).[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo **bar** [baz](https://ckeditor.com).[]</paragraph>' );
 		} );
 
 		it( 'should paste single level HTML list as markdown if type is text/html', () => {
@@ -80,7 +81,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 				'<span>foo **bar** [baz](https://ckeditor.com).</span><span>foo **bar** [baz](https://ckeditor.com).</span>'
 			);
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>foo <$text bold="true">bar</$text> baz.foo <$text bold="true">bar</$text> baz.[]</paragraph>'
 			);
 		} );
@@ -89,7 +90,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<span>foo **bar**</span><br><span>foo **bar**</span>' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph>foo <$text bold="true">bar</$text>foo <$text bold="true">bar[]</$text></paragraph>'
 			);
 		} );
@@ -98,7 +99,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<b>foo **bar**</b><br><span>foo **bar**</span>' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toEqual(
 				'<paragraph><$text bold="true">foo **bar**</$text>foo **bar**[]</paragraph>'
 			);
 		} );
@@ -109,7 +110,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 				pasteHtml( editor, '<meta charset="utf8"><span>foo **bar** [baz](https://ckeditor.com).</span>' );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
 			} );
 		} );
 
@@ -128,7 +129,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 					'</html>'
 				);
 
-				expect( _getModelData( editor.model ).trim() ).to.equal(
+				expect( _getModelData( editor.model ).trim() ).toEqual(
 					'<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>'
 				);
 			} );
@@ -139,7 +140,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 				pasteHtml( editor, '<span class="notranslate">foo **bar** [baz](https://ckeditor.com).</span>' );
 
-				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).toEqual( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
 			} );
 		} );
 	} );
