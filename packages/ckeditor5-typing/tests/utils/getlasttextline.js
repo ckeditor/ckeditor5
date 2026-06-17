@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { getLastTextLine } from '../../src/utils/getlasttextline.js';
 
@@ -90,8 +91,8 @@ describe( 'utils', () => {
 	function testOutput( range1, expectedText, startPath, endPath ) {
 		const { text, range } = getLastTextLine( range1, model );
 
-		expect( text ).to.equal( expectedText );
-		expect( range.start.path ).to.deep.equal( startPath );
-		expect( range.end.path ).to.deep.equal( endPath );
+		expect( text ).toEqual( expectedText );
+		expect( range.start.path ).toEqual( startPath );
+		expect( range.end.path ).toEqual( endPath );
 	}
 } );

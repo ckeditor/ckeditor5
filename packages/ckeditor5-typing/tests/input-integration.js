@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Typing } from '../src/typing.js';
@@ -43,8 +45,8 @@ describe( 'Typing – Input integration', () => {
 	} );
 
 	function expectOutput( modelOutput, viewOutput ) {
-		expect( _getModelData( model ) ).to.equal( modelOutput );
-		expect( _getViewData( viewDocument ) ).to.equal( viewOutput );
+		expect( _getModelData( model ) ).toEqual( modelOutput );
+		expect( _getViewData( viewDocument ) ).toEqual( viewOutput );
 	}
 
 	function simulateTyping( text ) {

@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { ViewDocumentDomEventData, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -17,7 +18,10 @@ import { Input } from '../src/input.js';
 import { InsertTextCommand } from '../src/inserttextcommand.js';
 
 describe( 'Input', () => {
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+		vi.useRealTimers();
+	} );
 
 	describe( 'common', () => {
 		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy,
@@ -34,13 +38,13 @@ describe( 'Input', () => {
 
 			view = editor.editing.view;
 			viewDocument = view.document;
-			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
-			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
+			scrollToTheSelectionSpy = vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
+			rendererUpdateTextNodeSpy = vi.spyOn( view._renderer, '_updateTextNodeInternal' );
 
 			const inputPlugin = editor.plugins.get( 'Input' );
 
-			typingQueuePushSpy = sinon.spy( inputPlugin._typingQueue, 'push' );
-			typingQueueFlushSpy = sinon.spy( inputPlugin._typingQueue, 'flush' );
+			typingQueuePushSpy = vi.spyOn( inputPlugin._typingQueue, 'push' );
+			typingQueueFlushSpy = vi.spyOn( inputPlugin._typingQueue, 'flush' );
 
 			editor.model.schema.register( 'widget', { inheritAllFrom: '$blockObject' } );
 			editor.conversion.for( 'downcast' ).elementToElement( {
@@ -73,7 +77,7 @@ describe( 'Input', () => {
 
 		describe( 'basic typing', () => {
 			beforeEach( () => {
-				insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
+				insertTextCommandSpy = vi.spyOn( editor.commands.get( 'insertText' ), 'execute' ).mockImplementation( () => {} );
 			} );
 
 			it( 'should register the insert text command', async () => {
@@ -99,7 +103,7 @@ describe( 'Input', () => {
 			} );
 
 			it( 'should not preventDefault() the original beforeinput event if not composing', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				viewDocument.fire( 'insertText', {
 					preventDefault: spy,
@@ -108,11 +112,11 @@ describe( 'Input', () => {
 					domEvent: {}
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not preventDefault() the original beforeinput event if composing', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				viewDocument.isComposing = true;
 
@@ -123,11 +127,11 @@ describe( 'Input', () => {
 					domEvent: {}
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should preventDefault() the original beforeinput event if insertText command is disabled', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				editor.commands.get( 'insertText' ).forceDisabled();
 
@@ -138,29 +142,29 @@ describe( 'Input', () => {
 					domEvent: {}
 				} );
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should preventDefault() the original beforeinput event if target ranges match fake selection', () => {
 				_setModelData( editor.model, '[<widget></widget>]' );
 
 				const eventData = {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					selection: viewDocument.selection,
 					text: 'bar'
 				};
 
 				eventData.domEvent = {
 					get defaultPrevented() {
-						return eventData.preventDefault.called;
+						return eventData.preventDefault.mock.calls.length > 0;
 					}
 				};
 
 				viewDocument.fire( 'insertText', eventData );
 
-				sinon.assert.called( eventData.preventDefault );
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( eventData.preventDefault ).toHaveBeenCalled();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should preventDefault() the original beforeinput event if target ranges span across different blocks', () => {
@@ -170,7 +174,7 @@ describe( 'Input', () => {
 				);
 
 				const eventData = {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					selection: viewDocument.selection,
 					text: 'abc',
 					domEvent: {}
@@ -178,16 +182,16 @@ describe( 'Input', () => {
 
 				eventData.domEvent = {
 					get defaultPrevented() {
-						return eventData.preventDefault.called;
+						return eventData.preventDefault.mock.calls.length > 0;
 					}
 				};
 
 				viewDocument.fire( 'insertText', eventData );
 
-				sinon.assert.calledOnce( eventData.preventDefault );
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( eventData.preventDefault ).toHaveBeenCalledOnce();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( executeOptions.text ).to.equal( 'abc' );
 				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
@@ -215,7 +219,7 @@ describe( 'Input', () => {
 
 				// Emulate browser generated target range: <p>[foo</p><pre>]<code>bar</code></pre>
 				const eventData = {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					selection: view.createSelection( view.createRange(
 						view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 ),
 						view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 )
@@ -226,16 +230,16 @@ describe( 'Input', () => {
 
 				eventData.domEvent = {
 					get defaultPrevented() {
-						return eventData.preventDefault.called;
+						return eventData.preventDefault.mock.calls.length > 0;
 					}
 				};
 
 				viewDocument.fire( 'insertText', eventData );
 
-				sinon.assert.calledOnce( eventData.preventDefault );
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( eventData.preventDefault ).toHaveBeenCalledOnce();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( executeOptions.text ).to.equal( 'abc' );
 				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
@@ -265,7 +269,7 @@ describe( 'Input', () => {
 
 				// Emulate browser generated target range: <p>[foo</p><blockquote><p>]bar</p></blockquote>
 				const eventData = {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					selection: view.createSelection( view.createRange(
 						view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 ),
 						view.createPositionAt( viewDocument.getRoot().getChild( 1 ).getChild( 0 ), 0 )
@@ -276,16 +280,16 @@ describe( 'Input', () => {
 
 				eventData.domEvent = {
 					get defaultPrevented() {
-						return eventData.preventDefault.called;
+						return eventData.preventDefault.mock.calls.length > 0;
 					}
 				};
 
 				viewDocument.fire( 'insertText', eventData );
 
-				sinon.assert.calledOnce( eventData.preventDefault );
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( eventData.preventDefault ).toHaveBeenCalledOnce();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( executeOptions.text ).to.equal( 'abc' );
 				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
@@ -312,7 +316,7 @@ describe( 'Input', () => {
 				);
 
 				// Emulate browser generated target range: <p>[</p><pre>]<code>bar</code></pre>
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				const eventData = {
 					inputType: 'insertText',
@@ -328,7 +332,7 @@ describe( 'Input', () => {
 
 				eventData.domEvent = {
 					get defaultPrevented() {
-						return preventDefaultSpy.called;
+						return preventDefaultSpy.mock.calls.length > 0;
 					},
 					preventDefault: preventDefaultSpy
 				};
@@ -336,10 +340,10 @@ describe( 'Input', () => {
 				// Note this test is using beforeinput event as only on that event target ranges are fixed by EditingController.
 				viewDocument.fire( 'beforeinput', eventData );
 
-				sinon.assert.calledOnce( preventDefaultSpy );
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( preventDefaultSpy ).toHaveBeenCalledOnce();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+				const executeOptions = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( executeOptions.text ).to.equal( 'abc' );
 				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
@@ -353,7 +357,7 @@ describe( 'Input', () => {
 				_setModelData( editor.model, '<paragraph>fo[]o</paragraph>' );
 
 				const eventData = {
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					selection: viewDocument.selection,
 					text: 'abc',
 					domEvent: {}
@@ -361,14 +365,14 @@ describe( 'Input', () => {
 
 				eventData.domEvent = {
 					get defaultPrevented() {
-						return eventData.preventDefault.called;
+						return eventData.preventDefault.mock.calls.length > 0;
 					}
 				};
 
 				viewDocument.fire( 'insertText', eventData );
 
-				sinon.assert.notCalled( eventData.preventDefault );
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should have the text property passed correctly to the insert text command', async () => {
@@ -381,14 +385,14 @@ describe( 'Input', () => {
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.resultRange ).to.be.undefined;
-				expect( typingQueuePushSpy.calledOnce ).to.be.true;
-				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should have the selection property passed correctly to the insert text command', async () => {
@@ -401,20 +405,20 @@ describe( 'Input', () => {
 					selection: view.createSelection(
 						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
 					),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
-				expect( typingQueuePushSpy.calledOnce ).to.be.true;
-				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should use model document selection if the selection property is not passed', async () => {
@@ -428,20 +432,20 @@ describe( 'Input', () => {
 
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
-				expect( typingQueuePushSpy.calledOnce ).to.be.true;
-				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should use model selection if view selection is in a detached root', () => {
@@ -471,9 +475,9 @@ describe( 'Input', () => {
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				// It should use the current model selection (which is in the live paragraph).
 				expect( firstCallArgs.text ).to.equal( 'bar' );
@@ -481,15 +485,15 @@ describe( 'Input', () => {
 			} );
 
 			it( 'should delete selected content on composition start', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
 
 				viewDocument.fire( 'compositionstart' );
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, editor.model.document.selection );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( editor.model.document.selection );
 			} );
 
 			it( 'should update model selection to the DOM selection on composition start and use it on compositionend', () => {
@@ -519,26 +523,26 @@ describe( 'Input', () => {
 					data: 'bar'
 				} ) );
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
 			} );
 
 			it( 'should not call model.deleteContent() on composition start for collapsed model selection', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				viewDocument.fire( 'compositionstart' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not call model.deleteContent() on composition start if insertText command is disabled', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.commands.get( 'insertText' ).forceDisabled( 'commentsOnly' );
@@ -547,7 +551,7 @@ describe( 'Input', () => {
 
 				viewDocument.fire( 'compositionstart' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should scroll to the selection after inserting text', async () => {
@@ -560,10 +564,10 @@ describe( 'Input', () => {
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				sinon.assert.calledOnce( scrollToTheSelectionSpy );
-				expect( typingQueuePushSpy.calledOnce ).to.be.true;
-				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				expect( scrollToTheSelectionSpy ).toHaveBeenCalledOnce();
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			describe( 'Typing queue', () => {
@@ -577,9 +581,9 @@ describe( 'Input', () => {
 						}
 					} );
 
-					sinon.assert.notCalled( insertTextCommandSpy );
-					sinon.assert.calledOnce( typingQueuePushSpy );
-					sinon.assert.notCalled( typingQueueFlushSpy );
+					expect( insertTextCommandSpy ).not.toHaveBeenCalled();
+					expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should push the event to the typing queue and flush it if dom event is prevented', () => {
@@ -592,9 +596,10 @@ describe( 'Input', () => {
 						}
 					} );
 
-					sinon.assert.calledOnce( insertTextCommandSpy );
-					sinon.assert.calledOnce( typingQueuePushSpy );
-					sinon.assert.calledOnceWithExactly( typingQueueFlushSpy, 'beforeinput default prevented' );
+					expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+					expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).toHaveBeenCalledWith( 'beforeinput default prevented' );
 				} );
 
 				it( 'should not push the event to the typing queue if command is disabled', () => {
@@ -609,9 +614,9 @@ describe( 'Input', () => {
 						}
 					} );
 
-					sinon.assert.notCalled( insertTextCommandSpy );
-					sinon.assert.notCalled( typingQueuePushSpy );
-					sinon.assert.notCalled( typingQueueFlushSpy );
+					expect( insertTextCommandSpy ).not.toHaveBeenCalled();
+					expect( typingQueuePushSpy ).not.toHaveBeenCalled();
+					expect( typingQueueFlushSpy ).not.toHaveBeenCalled();
 				} );
 
 				it( 'should flush the typing queue on next beforeinput', () => {
@@ -624,9 +629,9 @@ describe( 'Input', () => {
 						}
 					} );
 
-					sinon.assert.notCalled( insertTextCommandSpy );
-					sinon.assert.calledOnce( typingQueuePushSpy );
-					sinon.assert.notCalled( typingQueueFlushSpy );
+					expect( insertTextCommandSpy ).not.toHaveBeenCalled();
+					expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).not.toHaveBeenCalled();
 
 					viewDocument.fire( 'beforeinput', new ViewDocumentDomEventData( view, {
 						target: view.getDomRoot(),
@@ -636,14 +641,15 @@ describe( 'Input', () => {
 						targetRanges: []
 					} ) );
 
-					sinon.assert.calledOnce( insertTextCommandSpy );
-					sinon.assert.calledOnce( typingQueuePushSpy );
-					sinon.assert.calledOnceWithExactly( typingQueueFlushSpy, 'next beforeinput' );
+					expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+					expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).toHaveBeenCalledWith( 'next beforeinput' );
 				} );
 
 				it( 'should flush the typing queue on DOM mutations', () => {
-					insertTextCommandSpy.restore();
-					insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+					insertTextCommandSpy.mockRestore();
+					insertTextCommandSpy = vi.spyOn( editor.commands.get( 'insertText' ), 'execute' );
 
 					const root = editor.model.document.getRoot();
 					const viewParagraph = viewDocument.getRoot().getChild( 0 );
@@ -661,21 +667,34 @@ describe( 'Input', () => {
 						view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) )
 					);
 
-					sinon.assert.calledOnce( insertTextCommandSpy );
-					sinon.assert.calledOnce( typingQueuePushSpy );
-					sinon.assert.calledTwice( typingQueueFlushSpy );
+					expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+					expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+					expect( typingQueueFlushSpy ).toHaveBeenCalledTimes( 2 );
 
-					expect( typingQueueFlushSpy.firstCall.args[ 0 ] ).to.equal( 'next beforeinput' );
-					expect( typingQueueFlushSpy.secondCall.args[ 0 ] ).to.equal( 'mutations' );
+					expect( typingQueueFlushSpy.mock.calls[ 0 ][ 0 ] ).to.equal( 'next beforeinput' );
+					expect( typingQueueFlushSpy.mock.calls[ 1 ][ 0 ] ).to.equal( 'mutations' );
 
 					expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				} );
+
+				it( 'should queue command data without a selection (no selection ranges are tracked)', () => {
+					const queue = editor.plugins.get( 'Input' )._typingQueue;
+
+					// The queue may receive command data that has no selection. No selection ranges are
+					// tracked then, and the data shifted back from the queue also has no selection.
+					queue.push( { text: 'bar' }, false );
+
+					const commandData = queue.shift();
+
+					expect( commandData.text ).toBe( 'bar' );
+					expect( commandData.selection ).toBeUndefined();
 				} );
 			} );
 		} );
 
 		describe( 'composition', () => {
 			beforeEach( () => {
-				insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+				insertTextCommandSpy = vi.spyOn( editor.commands.get( 'insertText' ), 'execute' );
 			} );
 
 			it( 'should render the DOM on composition end only when needed', () => {
@@ -698,15 +717,15 @@ describe( 'Input', () => {
 				// Make sure that model is not modified by DOM changes.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
@@ -727,20 +746,20 @@ describe( 'Input', () => {
 
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
 				// Note that NBSP is in different order than expected by the ViewDomConverter and Renderer.
-				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+				composition.update( '  abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// Commit composition.
 				composition.end( '  abc' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
 				// DOM text node requires NBSP vs space fixing.
-				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
+				expect( rendererUpdateTextNodeSpy ).toHaveBeenCalledOnce();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
@@ -753,7 +772,7 @@ describe( 'Input', () => {
 			typingQueuePushSpy, typingQueueFlushSpy;
 
 		beforeEach( async () => {
-			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+			vi.spyOn( env, 'isAndroid', 'get' ).mockReturnValue( true );
 
 			domElement = document.createElement( 'div' );
 			document.body.appendChild( domElement );
@@ -765,13 +784,13 @@ describe( 'Input', () => {
 
 			view = editor.editing.view;
 			viewDocument = view.document;
-			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
-			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
+			scrollToTheSelectionSpy = vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
+			rendererUpdateTextNodeSpy = vi.spyOn( view._renderer, '_updateTextNodeInternal' );
 
 			const inputPlugin = editor.plugins.get( 'Input' );
 
-			typingQueuePushSpy = sinon.spy( inputPlugin._typingQueue, 'push' );
-			typingQueueFlushSpy = sinon.spy( inputPlugin._typingQueue, 'flush' );
+			typingQueuePushSpy = vi.spyOn( inputPlugin._typingQueue, 'push' );
+			typingQueueFlushSpy = vi.spyOn( inputPlugin._typingQueue, 'flush' );
 		} );
 
 		afterEach( async () => {
@@ -782,7 +801,7 @@ describe( 'Input', () => {
 
 		describe( 'basic typing', () => {
 			beforeEach( () => {
-				insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
+				insertTextCommandSpy = vi.spyOn( editor.commands.get( 'insertText' ), 'execute' ).mockImplementation( () => {} );
 			} );
 
 			it( 'should adjust text and range to minimize model change (adding text)', () => {
@@ -795,22 +814,22 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should adjust text and range to minimize model change (adding text, text and inline object selected)', () => {
@@ -830,15 +849,15 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 2 ), 'end' )
 					) ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
@@ -847,8 +866,8 @@ describe( 'Input', () => {
 				) ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should adjust text and range to minimize model change (removing text)', () => {
@@ -861,15 +880,15 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( firstCallArgs.text ).to.equal( '' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
@@ -878,8 +897,8 @@ describe( 'Input', () => {
 				) ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not adjust text and range if the whole selected text is replaced', () => {
@@ -892,22 +911,22 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
 				expect( firstCallArgs.text ).to.equal( 'barfoo' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not adjust text and range if the whole selected text is replaced with shorter text', () => {
@@ -920,21 +939,21 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				expect( firstCallArgs.text ).to.equal( 'ba' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not adjust text and range if the selection is collapsed', () => {
@@ -944,21 +963,21 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
 					selection: view.createSelection( viewParagraph.getChild( 0 ), 'end' ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {
 						defaultPrevented: true // Just to trigger immediate queue flush.
 					}
 				} );
 
-				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				const firstCallArgs = insertTextCommandSpy.mock.calls[ 0 ][ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
 
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should ignore insertText event if requires no model changes', () => {
@@ -967,15 +986,15 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					text: 'foo',
 					selection: view.createSelection( viewParagraph.getChild( 0 ), 'on' ),
-					preventDefault: sinon.spy(),
+					preventDefault: vi.fn(),
 					domEvent: {}
 				} );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should delete selected content on 229 keydown while composing', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
@@ -983,46 +1002,46 @@ describe( 'Input', () => {
 				viewDocument.isComposing = true;
 				viewDocument.fire( 'keydown', {
 					keyCode: 229,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, editor.model.document.selection );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( editor.model.document.selection );
 			} );
 
 			it( 'should not call model.deleteContent() on 229 keydown for collapsed model selection', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				viewDocument.fire( 'keydown', {
 					keyCode: 229,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not call model.deleteContent() on 229 keydown if not composing', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
 
 				viewDocument.fire( 'keydown', {
 					keyCode: 229,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not call model.deleteContent() on 229 keydown if insertText command is disabled', () => {
-				const spy = sinon.spy( editor.model, 'deleteContent' );
+				const spy = vi.spyOn( editor.model, 'deleteContent' );
 				const root = editor.model.document.getRoot();
 
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'in' ) );
@@ -1032,11 +1051,11 @@ describe( 'Input', () => {
 				viewDocument.isComposing = true;
 				viewDocument.fire( 'keydown', {
 					keyCode: 229,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
 				} );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should scroll to the selection after inserting text', async () => {
@@ -1049,16 +1068,16 @@ describe( 'Input', () => {
 					}
 				} );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				sinon.assert.calledOnce( scrollToTheSelectionSpy );
-				sinon.assert.calledOnce( typingQueuePushSpy );
-				sinon.assert.calledOnce( typingQueueFlushSpy );
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				expect( scrollToTheSelectionSpy ).toHaveBeenCalledOnce();
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueueFlushSpy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
 		describe( 'composition', () => {
 			beforeEach( () => {
-				insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+				insertTextCommandSpy = vi.spyOn( editor.commands.get( 'insertText' ), 'execute' );
 			} );
 
 			it( 'should not modify DOM when not needed', () => {
@@ -1082,8 +1101,8 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooa[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Type 'b'.
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
@@ -1092,8 +1111,8 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooab[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Type 'c'.
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
@@ -1102,17 +1121,17 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
@@ -1137,17 +1156,17 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
@@ -1168,25 +1187,25 @@ describe( 'Input', () => {
 
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
 				// Note that NBSP is in different order than expected by the ViewDomConverter and Renderer.
-				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+				composition.update( '  abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( '  abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node requires NBSP vs space fixing.
-				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).toHaveBeenCalledOnce();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
@@ -1212,8 +1231,8 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				const reportedMutations = [];
 
@@ -1228,11 +1247,11 @@ describe( 'Input', () => {
 				expect( reportedMutations[ 0 ].type ).to.equal( 'children' );
 				expect( reportedMutations[ 0 ].node ).to.equal( viewParagraph );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
@@ -1257,8 +1276,8 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				editor.model.change( writer => {
 					writer.remove( root.getChild( 0 ) );
@@ -1276,11 +1295,11 @@ describe( 'Input', () => {
 
 				expect( reportedMutations.length ).to.equal( 0 );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
@@ -1307,7 +1326,7 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// Simulate DOM changes triggered by IME.
 				composition.modifyDom( 'abc', viewRange );
@@ -1315,17 +1334,17 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
@@ -1355,7 +1374,7 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// Simulate DOM changes triggered by IME.
 				composition.modifyDom( 'abc', viewRange );
@@ -1363,17 +1382,17 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 			} );
@@ -1403,7 +1422,7 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// Modify DOM element.
 				const domText = view.domConverter.viewPositionToDom( viewRange.start ).parent;
@@ -1417,23 +1436,23 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 			} );
 
 			it( 'should apply changes to model after a timeout before DOM mutations', async () => {
-				const clock = sinon.useFakeTimers();
+				vi.useFakeTimers();
 				const root = editor.model.document.getRoot();
 				const viewParagraph = viewDocument.getRoot().getChild( 0 );
 
@@ -1455,27 +1474,27 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
-				await clock.tickAsync( 100 );
+				await vi.advanceTimersByTimeAsync( 100 );
 
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
-				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).toHaveBeenCalledOnce();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
@@ -1502,7 +1521,7 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				editor.model.change( writer => {
 					writer.insertElement( 'paragraph', root, 0 );
@@ -1514,17 +1533,17 @@ describe( 'Input', () => {
 				// Changes are immediately applied to the model.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				// DOM text node is already the proper one so no changes are required.
-				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
-				rendererUpdateTextNodeSpy.resetHistory();
+				expect( rendererUpdateTextNodeSpy ).not.toHaveBeenCalled();
+				rendererUpdateTextNodeSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
 			} );
@@ -1551,7 +1570,7 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				editor.model.change( writer => {
 					writer.remove( root.getChild( 0 ) );
@@ -1561,8 +1580,8 @@ describe( 'Input', () => {
 				// Commit composition.
 				composition.end( 'abc' );
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
-				insertTextCommandSpy.resetHistory();
+				expect( insertTextCommandSpy ).toHaveBeenCalledOnce();
+				insertTextCommandSpy.mockClear();
 
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>abc[]</paragraph>' );
 			} );
@@ -1589,7 +1608,7 @@ describe( 'Input', () => {
 				// Changes are not applied to the model before the DOM got modified by IME.
 				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
-				sinon.assert.notCalled( insertTextCommandSpy );
+				expect( insertTextCommandSpy ).not.toHaveBeenCalled();
 
 				const queue = editor.plugins.get( 'Input' )._typingQueue;
 
@@ -1598,6 +1617,86 @@ describe( 'Input', () => {
 				await editor.destroy();
 
 				expect( queue.length ).to.equal( 0 );
+			} );
+
+			it( 'should not flush the typing queue on mutations unrelated to the composed element', () => {
+				const root = editor.model.document.getRoot();
+				const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+				// Add a second paragraph that will NOT be affected by the composition.
+				editor.model.change( writer => {
+					writer.insertElement( 'paragraph', root, 1 );
+					writer.insertText( 'bar', root.getChild( 1 ), 0 );
+					writer.setSelection( root.getChild( 0 ), 'end' );
+				} );
+
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				// Start composition and type into the first paragraph. This marks the first paragraph as affected.
+				composition.start();
+				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
+
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph><paragraph>bar</paragraph>' );
+
+				const queue = editor.plugins.get( 'Input' )._typingQueue;
+
+				// The affected elements set still holds the first (composed) paragraph.
+				expect( queue.hasAffectedElements() ).to.be.true;
+				expect( queue.isElementAffected( root.getChild( 0 ) ) ).to.be.true;
+				expect( queue.isElementAffected( root.getChild( 1 ) ) ).to.be.false;
+
+				// The queue itself is empty after the immediate composing flush.
+				expect( queue.length ).to.equal( 0 );
+
+				typingQueueFlushSpy.mockClear();
+
+				// Fire a mutations event for the second (unaffected) paragraph while still composing.
+				const otherViewParagraph = viewDocument.getRoot().getChild( 1 );
+
+				viewDocument.fire( 'mutations', {
+					mutations: [ { type: 'children', node: otherViewParagraph } ]
+				} );
+
+				// As the mutated element is not affected, no flush should be triggered.
+				expect( typingQueueFlushSpy ).not.toHaveBeenCalled();
+
+				// The affected element set is untouched and the model is unchanged.
+				expect( queue.isElementAffected( root.getChild( 0 ) ) ).to.be.true;
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph><paragraph>bar</paragraph>' );
+
+				composition.end( 'abc' );
+			} );
+
+			it( 'should not collect mutations on composition end when there are no affected elements', () => {
+				const root = editor.model.document.getRoot();
+
+				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+				const composition = compositionHelper( editor );
+
+				const queue = editor.plugins.get( 'Input' )._typingQueue;
+
+				// Start composition without any beforeinput, so nothing is queued and nothing is affected.
+				composition.start();
+
+				expect( queue.hasAffectedElements() ).to.be.false;
+
+				const reportedMutations = [];
+
+				viewDocument.on( 'mutations', ( evt, { mutations } ) => {
+					reportedMutations.push( ...mutations );
+				} );
+
+				// End the composition. With no affected elements, no composition mutations are collected/fired.
+				composition.end( '' );
+
+				expect( reportedMutations.length ).to.equal( 0 );
+				expect( queue.hasAffectedElements() ).to.be.false;
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 			} );
 		} );
 	} );
@@ -1618,7 +1717,7 @@ describe( 'Input', () => {
 
 				const preventDefaultSpy = this.fireBeforeInputEvent( data, range );
 
-				if ( !preventDefaultSpy.called ) {
+				if ( !preventDefaultSpy.mock.calls.length ) {
 					this.modifyDom( data, range );
 				}
 			},
@@ -1626,13 +1725,13 @@ describe( 'Input', () => {
 			updateNonComposition( data, range ) {
 				const preventDefaultSpy = this.fireBeforeInputEvent( data, range, 'insertText', false );
 
-				if ( !preventDefaultSpy.called ) {
+				if ( !preventDefaultSpy.mock.calls.length ) {
 					this.modifyDom( data, range );
 				}
 			},
 
 			fireBeforeInputEvent( data, range, inputType = 'insertCompositionText', isComposing = true ) {
-				const preventDefaultSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
 
 				viewDocument.fire( 'beforeinput', new ViewDocumentDomEventData( view, {
 					target: view.getDomRoot()
@@ -1676,7 +1775,7 @@ describe( 'Input', () => {
 				viewDocument.fire(
 					'compositionend',
 					new ViewDocumentDomEventData( view, {
-						preventDefault: sinon.spy()
+						preventDefault: vi.fn()
 					}, {
 						data
 					} )
