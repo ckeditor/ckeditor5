@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Enter } from '../src/enter.js';
 import { EnterCommand } from '../src/entercommand.js';
@@ -28,71 +29,77 @@ describe( 'Enter feature', () => {
 
 	afterEach( () => {
 		element.remove();
-		sinon.restore();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( Enter.pluginName ).to.equal( 'Enter' );
+		expect( Enter.pluginName ).toBe( 'Enter' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Enter.isOfficialPlugin ).to.be.true;
+		expect( Enter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Enter.isPremiumPlugin ).to.be.false;
+		expect( Enter.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 			label: 'Insert a hard break (a new paragraph)',
 			keystroke: 'Enter'
 		} );
 	} );
 
 	it( 'creates the commands', () => {
-		expect( editor.commands.get( 'enter' ) ).to.be.instanceof( EnterCommand );
+		expect( editor.commands.get( 'enter' ) ).toBeInstanceOf( EnterCommand );
 	} );
 
 	it( 'registers the EnterObserver', () => {
 		const observer = editor.editing.view.getObserver( EnterObserver );
 
-		expect( observer ).to.be.an.instanceOf( EnterObserver );
+		expect( observer ).toBeInstanceOf( EnterObserver );
 	} );
 
 	it( 'listens to the editing view enter event', () => {
-		const spy = editor.execute = sinon.spy();
+		const spy = editor.execute = vi.fn();
 		const domEvt = getDomEvent();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'enter' ) ).to.be.true;
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( spy ).toHaveBeenCalledWith( 'enter' );
 
-		expect( domEvt.preventDefault.calledOnce ).to.be.true;
+		expect( domEvt.preventDefault ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
 		const domEvt = getDomEvent();
-		const executeSpy = editor.execute = sinon.spy();
-		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		const executeSpy = editor.execute = vi.fn();
+		const scrollSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt ) );
 
-		sinon.assert.calledOnce( scrollSpy );
-		sinon.assert.callOrder( domEvt.preventDefault, executeSpy, scrollSpy );
+		expect( scrollSpy ).toHaveBeenCalledOnce();
+
+		const preventDefaultOrder = domEvt.preventDefault.mock.invocationCallOrder[ 0 ];
+		const executeOrder = executeSpy.mock.invocationCallOrder[ 0 ];
+		const scrollOrder = scrollSpy.mock.invocationCallOrder[ 0 ];
+
+		expect( preventDefaultOrder ).toBeLessThan( executeOrder );
+		expect( executeOrder ).toBeLessThan( scrollOrder );
 	} );
 
 	it( 'does not execute the command if soft enter should be used', () => {
 		const domEvt = getDomEvent();
-		const commandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
+		const commandExecuteSpy = vi.spyOn( editor.commands.get( 'enter' ), 'execute' ).mockImplementation( () => {} );
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
-		sinon.assert.notCalled( commandExecuteSpy );
+		expect( commandExecuteSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'prevents default event action even if the command should not be executed', () => {
@@ -100,7 +107,7 @@ describe( 'Enter feature', () => {
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
-		sinon.assert.calledOnce( domEvt.preventDefault );
+		expect( domEvt.preventDefault ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'does not prevent default event action in composing mode', () => {
@@ -110,12 +117,12 @@ describe( 'Enter feature', () => {
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
-		sinon.assert.notCalled( domEvt.preventDefault );
+		expect( domEvt.preventDefault ).not.toHaveBeenCalled();
 	} );
 
 	function getDomEvent() {
 		return {
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		};
 	}
 } );

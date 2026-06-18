@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ShiftEnter } from '../src/shiftenter.js';
 import { ShiftEnterCommand } from '../src/shiftentercommand.js';
@@ -28,79 +29,81 @@ describe( 'ShiftEnter feature', () => {
 
 	afterEach( () => {
 		element.remove();
-		sinon.restore();
+		vi.restoreAllMocks();
 
 		return editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ShiftEnter.pluginName ).to.equal( 'ShiftEnter' );
+		expect( ShiftEnter.pluginName ).toBe( 'ShiftEnter' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ShiftEnter.isOfficialPlugin ).to.be.true;
+		expect( ShiftEnter.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ShiftEnter.isPremiumPlugin ).to.be.false;
+		expect( ShiftEnter.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).to.deep.include( {
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'common' ).keystrokes ).toContainEqual( {
 			label: 'Insert a soft break (a <code>&lt;br&gt;</code> element)',
 			keystroke: 'Shift+Enter'
 		} );
 	} );
 
 	it( 'creates the commands', () => {
-		expect( editor.commands.get( 'shiftEnter' ) ).to.be.instanceof( ShiftEnterCommand );
+		expect( editor.commands.get( 'shiftEnter' ) ).toBeInstanceOf( ShiftEnterCommand );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( editor.model.schema.isRegistered( 'softBreak' ) ).to.be.true;
+		expect( editor.model.schema.isRegistered( 'softBreak' ) ).toBe( true );
 
-		expect( editor.model.schema.checkChild( [ '$block' ], 'softBreak' ) ).to.be.true;
+		expect( editor.model.schema.checkChild( [ '$block' ], 'softBreak' ) ).toBe( true );
 
-		expect( editor.model.schema.isInline( 'softBreak' ) ).to.be.true;
+		expect( editor.model.schema.isInline( 'softBreak' ) ).toBe( true );
 	} );
 
 	it( 'registers the EnterObserver', () => {
 		const observer = editor.editing.view.getObserver( EnterObserver );
 
-		expect( observer ).to.be.an.instanceOf( EnterObserver );
+		expect( observer ).toBeInstanceOf( EnterObserver );
 	} );
 
 	it( 'listens to the editing view enter event', () => {
-		const spy = editor.execute = sinon.spy();
+		const spy = editor.execute = vi.fn();
 		const domEvt = getDomEvent();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'shiftEnter' ) ).to.be.true;
+		expect( spy ).toHaveBeenCalledOnce();
+		expect( spy ).toHaveBeenCalledWith( 'shiftEnter' );
 
-		expect( domEvt.preventDefault.calledOnce ).to.be.true;
+		expect( domEvt.preventDefault ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
 		const domEvt = getDomEvent();
-		const executeSpy = editor.execute = sinon.spy();
-		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		const executeSpy = editor.execute = vi.fn();
+		const scrollSpy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
-		sinon.assert.calledOnce( scrollSpy );
-		sinon.assert.callOrder( domEvt.preventDefault, executeSpy, scrollSpy );
+		expect( scrollSpy ).toHaveBeenCalledOnce();
+
+		expect( domEvt.preventDefault.mock.invocationCallOrder[ 0 ] ).toBeLessThan( executeSpy.mock.invocationCallOrder[ 0 ] );
+		expect( executeSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( scrollSpy.mock.invocationCallOrder[ 0 ] );
 	} );
 
 	it( 'does not execute the command if hard enter should be used', () => {
 		const domEvt = getDomEvent();
-		const commandExecuteSpy = sinon.stub( editor.commands.get( 'shiftEnter' ), 'execute' );
+		const commandExecuteSpy = vi.spyOn( editor.commands.get( 'shiftEnter' ), 'execute' ).mockImplementation( () => {} );
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
-		sinon.assert.notCalled( commandExecuteSpy );
+		expect( commandExecuteSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'prevents default event action even if the command should not be executed', () => {
@@ -108,7 +111,7 @@ describe( 'ShiftEnter feature', () => {
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
-		sinon.assert.calledOnce( domEvt.preventDefault );
+		expect( domEvt.preventDefault ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'does not prevent default event action in composing mode', () => {
@@ -118,12 +121,12 @@ describe( 'ShiftEnter feature', () => {
 
 		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
-		sinon.assert.notCalled( domEvt.preventDefault );
+		expect( domEvt.preventDefault ).not.toHaveBeenCalled();
 	} );
 
 	function getDomEvent() {
 		return {
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		};
 	}
 } );
