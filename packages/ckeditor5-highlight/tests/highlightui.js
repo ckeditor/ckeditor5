@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll, afterAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { IconMarker, IconPen, IconEraser } from '@ckeditor/ckeditor5-icons';
-
 import { HighlightEditing } from '../src/highlightediting.js';
 import { HighlightUI } from '../src/highlightui.js';
-
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 import { ListSeparatorView, MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HighlightUI', () => {
 	let editor, command, element;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
-	before( () => {
+	beforeAll( () => {
 		addTranslations( 'en', {
 			'Highlight': 'Highlight',
 			'Yellow marker': 'Yellow marker',
@@ -41,7 +41,7 @@ describe( 'HighlightUI', () => {
 		} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		_clearTranslations();
 	} );
 
@@ -66,11 +66,11 @@ describe( 'HighlightUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( HighlightUI.isOfficialPlugin ).to.be.true;
+		expect( HighlightUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( HighlightUI.isPremiumPlugin ).to.be.false;
+		expect( HighlightUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'highlight toolbar dropdown', () => {
@@ -83,27 +83,27 @@ describe( 'HighlightUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Highlight' );
-			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'icon', IconMarker );
-			expect( button ).to.have.property( 'isToggleable', true );
+			expect( button ).toHaveProperty( 'label', 'Highlight' );
+			expect( button ).toHaveProperty( 'tooltip', true );
+			expect( button ).toHaveProperty( 'icon', IconMarker );
+			expect( button ).toHaveProperty( 'isToggleable', true );
 		} );
 
 		it( 'toolbar nas the basic properties', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+			expect( dropdown.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdown.isOpen = true;
 
 			const toolbarView = dropdown.toolbarView;
 
-			expect( toolbarView ).to.have.property( 'ariaLabel', 'Text highlight toolbar' );
+			expect( toolbarView ).toHaveProperty( 'ariaLabel', 'Text highlight toolbar' );
 		} );
 
 		it( 'should have proper icons in dropdown', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+			expect( dropdown.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdown.isOpen = true;
@@ -114,19 +114,19 @@ describe( 'HighlightUI', () => {
 			command.value = undefined;
 
 			expect( toolbar.items.map( item => item.icon ) )
-				.to.deep.equal( [ IconMarker, IconMarker, IconMarker, IconMarker, IconPen, IconPen, undefined, IconEraser ] );
+				.toEqual( [ IconMarker, IconMarker, IconMarker, IconMarker, IconPen, IconPen, undefined, IconEraser ] );
 		} );
 
 		it( 'should have proper colors in dropdown', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+			expect( dropdown.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdown.isOpen = true;
 
 			const toolbar = dropdown.toolbarView;
 
-			expect( toolbar.items.map( item => item.iconView && item.iconView.fillColor ) ).to.deep.equal( [
+			expect( toolbar.items.map( item => item.iconView && item.iconView.fillColor ) ).toEqual( [
 				'var(--ck-content-highlight-marker-yellow)',
 				'var(--ck-content-highlight-marker-green)',
 				'var(--ck-content-highlight-marker-pink)',
@@ -140,7 +140,7 @@ describe( 'HighlightUI', () => {
 
 		it( 'should activate current option in dropdown', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+			expect( dropdown.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdown.isOpen = true;
@@ -151,14 +151,14 @@ describe( 'HighlightUI', () => {
 			command.value = undefined;
 
 			expect( toolbar.items.map( item => item.isOn ) )
-				.to.deep.equal( [ false, false, false, false, false, false, undefined, false ] );
+				.toEqual( [ false, false, false, false, false, false, undefined, false ] );
 
 			// Inside a selection with highlight.
 			command.value = 'greenMarker';
 
 			// The second item is 'greenMarker' highlighter.
 			expect( toolbar.items.map( item => item.isOn ) )
-				.to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
+				.toEqual( [ false, true, false, false, false, false, undefined, false ] );
 		} );
 
 		it( 'should focus the first active button when dropdown is opened', () => {
@@ -166,25 +166,25 @@ describe( 'HighlightUI', () => {
 			document.body.appendChild( dropdown.element );
 
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+			expect( dropdown.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdown.isOpen = true;
 			dropdown.isOpen = false;
 
 			const greenMarker = dropdown.toolbarView.items.get( 1 );
-			const spy = sinon.spy( greenMarker, 'focus' );
+			const spy = vi.spyOn( greenMarker, 'focus' );
 
 			greenMarker.isOn = true;
 			dropdown.isOpen = true;
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			dropdown.element.remove();
 		} );
 
 		it( 'should mark as toggleable all markers and pens', () => {
 			// Make sure that toolbar view is not created before first dropdown open.
-			expect( dropdown.toolbarView ).to.be.undefined;
+			expect( dropdown.toolbarView ).toBeUndefined();
 
 			// Trigger toolbar view creation (lazy init).
 			dropdown.isOpen = true;
@@ -192,7 +192,7 @@ describe( 'HighlightUI', () => {
 			const toolbar = dropdown.toolbarView;
 
 			expect( toolbar.items.map( item => item.isToggleable ) )
-				.to.deep.equal( [ true, true, true, true, true, true, undefined, false ] );
+				.toEqual( [ true, true, true, true, true, true, undefined, false ] );
 		} );
 
 		describe( 'toolbar button behavior', () => {
@@ -203,7 +203,7 @@ describe( 'HighlightUI', () => {
 				document.body.appendChild( dropdown.element );
 
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( dropdown.toolbarView ).to.be.undefined;
+				expect( dropdown.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
 				dropdown.isOpen = true;
@@ -218,8 +218,8 @@ describe( 'HighlightUI', () => {
 			} );
 
 			function validateButton( which ) {
-				expect( button.icon ).to.equal( buttons[ which ].icon );
-				expect( button.actionView.iconView.fillColor ).to.equal( options[ which ].color );
+				expect( button.icon ).toBe( buttons[ which ].icon );
+				expect( button.actionView.iconView.fillColor ).toBe( options[ which ].color );
 			}
 
 			it( 'should have properties of first defined highlighter', () => {
@@ -250,21 +250,21 @@ describe( 'HighlightUI', () => {
 			} );
 
 			it( 'should execute the command only once', () => {
-				const executeSpy = sinon.spy( command, 'execute' );
+				const executeSpy = vi.spyOn( command, 'execute' );
 
 				buttons[ 5 ].fire( 'execute' );
 
-				sinon.assert.calledOnce( executeSpy );
-				sinon.assert.calledWith( executeSpy, { value: 'greenPen' } );
+				expect( executeSpy ).toHaveBeenCalledOnce();
+				expect( executeSpy ).toHaveBeenCalledWith( { value: 'greenPen' } );
 			} );
 
 			it( 'should focus view after command execution', () => {
-				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 				dropdown.buttonView.commandName = 'highlight';
 				dropdown.buttonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( focusSpy );
+				expect( focusSpy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -272,10 +272,10 @@ describe( 'HighlightUI', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
 
-				expect( dropdown.buttonView.isEnabled ).to.be.false;
+				expect( dropdown.buttonView.isEnabled ).toBe( false );
 
 				command.isEnabled = true;
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
+				expect( dropdown.buttonView.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -287,19 +287,19 @@ describe( 'HighlightUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.label ).to.equal( 'Zakreślacz' );
+				expect( buttonView.label ).toBe( 'Zakreślacz' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
 				// Make sure that toolbar view is not created before first dropdown open.
-				expect( dropdown.toolbarView ).to.be.undefined;
+				expect( dropdown.toolbarView ).toBeUndefined();
 
 				// Trigger toolbar view creation (lazy init).
 				dropdown.isOpen = true;
 
 				const listView = dropdown.toolbarView;
 
-				expect( listView.items.map( item => item.label ).filter( label => !!label ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.label ).filter( label => !!label ) ).toEqual( [
 					'Żółty marker',
 					'Zielony marker',
 					'Różowy marker',
@@ -340,21 +340,21 @@ describe( 'HighlightUI', () => {
 		} );
 
 		it( 'should be created', () => {
-			expect( menuView ).to.be.instanceof( MenuBarMenuView );
+			expect( menuView ).toBeInstanceOf( MenuBarMenuView );
 		} );
 
 		it( 'should have correct attribute values', () => {
-			expect( menuView.buttonView.label ).to.equal( 'Highlight' );
-			expect( menuView.buttonView.icon ).to.equal( IconMarker );
-			expect( menuView.buttonView.iconView.fillColor ).to.equal( 'transparent' );
+			expect( menuView.buttonView.label ).toBe( 'Highlight' );
+			expect( menuView.buttonView.icon ).toBe( IconMarker );
+			expect( menuView.buttonView.iconView.fillColor ).toBe( 'transparent' );
 		} );
 
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
 			command.isEnabled = true;
-			expect( menuView ).to.have.property( 'isEnabled', true );
+			expect( menuView ).toHaveProperty( 'isEnabled', true );
 
 			command.isEnabled = false;
-			expect( menuView ).to.have.property( 'isEnabled', false );
+			expect( menuView ).toHaveProperty( 'isEnabled', false );
 		} );
 
 		describe( 'list of options', () => {
@@ -362,11 +362,11 @@ describe( 'HighlightUI', () => {
 				expect(
 					Array.from( menuView.panelView.children.first.items )
 						.every( item => item instanceof MenuBarMenuListItemView || item instanceof ListSeparatorView )
-				).to.be.true;
+				).toBe( true );
 			} );
 
 			it( 'should set #label and #icon of an option', () => {
-				expect( dumpItems( 'icon' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'icon' ) ).toEqual( [
 					[ 'Yellow marker', IconMarker ],
 					[ 'Green marker', IconMarker ],
 					[ 'Pink marker', IconMarker ],
@@ -380,7 +380,7 @@ describe( 'HighlightUI', () => {
 			it( 'should bind #isOn to the command', () => {
 				command.value = 'pinkMarker';
 
-				expect( dumpItems( 'isOn' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'isOn' ) ).toEqual( [
 					[ 'Yellow marker', false ],
 					[ 'Green marker', false ],
 					[ 'Pink marker', true ],
@@ -392,7 +392,7 @@ describe( 'HighlightUI', () => {
 
 				command.value = 'redPen';
 
-				expect( dumpItems( 'isOn' ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( 'isOn' ) ).toEqual( [
 					[ 'Yellow marker', false ],
 					[ 'Green marker', false ],
 					[ 'Pink marker', false ],
@@ -406,7 +406,7 @@ describe( 'HighlightUI', () => {
 			it( 'should bind `aria-checked` attribute to the command', () => {
 				command.value = 'pinkMarker';
 
-				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).toEqual( [
 					[ 'Yellow marker', 'false' ],
 					[ 'Green marker', 'false' ],
 					[ 'Pink marker', 'true' ],
@@ -418,7 +418,7 @@ describe( 'HighlightUI', () => {
 
 				command.value = 'redPen';
 
-				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).to.have.deep.ordered.members( [
+				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).toEqual( [
 					[ 'Yellow marker', 'false' ],
 					[ 'Green marker', 'false' ],
 					[ 'Pink marker', 'false' ],
@@ -430,37 +430,37 @@ describe( 'HighlightUI', () => {
 			} );
 
 			it( 'should delegate #execute from an item to the menu', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				menuView.on( 'execute', spy );
 
 				menuView.panelView.children.first.items.last.children.first.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should execute the command upon #execute and focus the editing view', () => {
-				const execSpy = sinon.spy( editor, 'execute' );
-				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+				const execSpy = vi.spyOn( editor, 'execute' );
+				const focusSpy = vi.spyOn( editor.editing.view, 'focus' );
 
 				// Add highlight.
 				menuView.panelView.children.first.items.first.children.first.fire( 'execute' );
 
-				sinon.assert.calledOnceWithExactly( execSpy, 'highlight', { value: 'yellowMarker' } );
-				sinon.assert.calledOnce( focusSpy );
-				sinon.assert.callOrder( execSpy, focusSpy );
+				expect( execSpy ).toHaveBeenCalledExactlyOnceWith( 'highlight', { value: 'yellowMarker' } );
+				expect( focusSpy ).toHaveBeenCalledOnce();
+				expect( execSpy.mock.invocationCallOrder[ 0 ] ).toBeLessThan( focusSpy.mock.invocationCallOrder[ 0 ] );
 
 				// Remove highlight.
 				menuView.panelView.children.first.items.last.children.first.fire( 'execute' );
 
-				sinon.assert.calledWithExactly( execSpy.secondCall, 'highlight', { value: null } );
-				sinon.assert.calledTwice( focusSpy );
+				expect( execSpy ).toHaveBeenNthCalledWith( 2, 'highlight', { value: null } );
+				expect( focusSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 		} );
 
 		it( 'should diplay the remove highlight button at the end', () => {
-			expect( menuView.panelView.children.first.items.get( 6 ) ).to.be.instanceOf( ListSeparatorView );
-			expect( menuView.panelView.children.first.items.last.children.first.icon ).to.equal( IconEraser );
+			expect( menuView.panelView.children.first.items.get( 6 ) ).toBeInstanceOf( ListSeparatorView );
+			expect( menuView.panelView.children.first.items.last.children.first.icon ).toBe( IconEraser );
 		} );
 
 		function dumpItems( propertyName ) {
@@ -481,28 +481,28 @@ describe( 'HighlightUI', () => {
 		} );
 
 		it( 'removeButton has the base properties', () => {
-			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).to.be.true;
-			expect( removeHighlightButton ).to.have.property( 'tooltip', true );
-			expect( removeHighlightButton ).to.have.property( 'label', 'Remove highlight' );
-			expect( removeHighlightButton ).to.have.property( 'icon', IconEraser );
+			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).toBe( true );
+			expect( removeHighlightButton ).toHaveProperty( 'tooltip', true );
+			expect( removeHighlightButton ).toHaveProperty( 'label', 'Remove highlight' );
+			expect( removeHighlightButton ).toHaveProperty( 'icon', IconEraser );
 		} );
 
 		it( 'should execute the command only once', () => {
-			const executeSpy = sinon.spy( command, 'execute' );
+			const executeSpy = vi.spyOn( command, 'execute' );
 
 			removeHighlightButton.fire( 'execute' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWith( executeSpy, { value: null } );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( { value: null } );
 		} );
 
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
-				expect( removeHighlightButton.isEnabled ).to.be.false;
+				expect( removeHighlightButton.isEnabled ).toBe( false );
 
 				command.isEnabled = true;
-				expect( removeHighlightButton.isEnabled ).to.be.true;
+				expect( removeHighlightButton.isEnabled ).toBe( true );
 			} );
 		} );
 	} );
