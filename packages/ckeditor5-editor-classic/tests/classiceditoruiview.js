@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
 import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { StickyPanelView, ToolbarView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ClassicEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -32,34 +29,34 @@ describe( 'ClassicEditorUIView', () => {
 	describe( 'constructor()', () => {
 		describe( '#stickyPanel', () => {
 			it( 'is created', () => {
-				expect( view.stickyPanel ).to.be.instanceof( StickyPanelView );
+				expect( view.stickyPanel ).toBeInstanceOf( StickyPanelView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.stickyPanel.locale ).to.equal( locale );
+				expect( view.stickyPanel.locale ).toBe( locale );
 			} );
 
 			it( 'is put into the "top" collection', () => {
-				expect( view.top.get( 0 ) ).to.equal( view.stickyPanel );
+				expect( view.top.get( 0 ) ).toBe( view.stickyPanel );
 			} );
 		} );
 
 		describe( '#toolbar', () => {
 			it( 'is created', () => {
-				expect( view.toolbar ).to.be.instanceof( ToolbarView );
+				expect( view.toolbar ).toBeInstanceOf( ToolbarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.toolbar.locale ).to.equal( locale );
+				expect( view.toolbar.locale ).toBe( locale );
 			} );
 
 			it( 'is put into the "stickyPanel.content" collection', () => {
-				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.toolbar );
+				expect( view.stickyPanel.content.get( 0 ) ).toBe( view.toolbar );
 			} );
 
 			describe( 'automatic items grouping', () => {
 				it( 'should be disabled by default', () => {
-					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.undefined;
+					expect( view.toolbar.options.shouldGroupWhenFull ).toBeUndefined();
 				} );
 
 				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
@@ -73,7 +70,7 @@ describe( 'ClassicEditorUIView', () => {
 					view.editable.name = editingViewRoot.rootName;
 					view.render();
 
-					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+					expect( view.toolbar.options.shouldGroupWhenFull ).toBe( true );
 
 					return view.destroy();
 				} );
@@ -82,7 +79,7 @@ describe( 'ClassicEditorUIView', () => {
 
 		describe( '#editable', () => {
 			it( 'creates an editing root with the default aria-label', () => {
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: main' );
 			} );
 
 			it( 'creates an editing root with the configured aria-label (string format)', () => {
@@ -94,7 +91,7 @@ describe( 'ClassicEditorUIView', () => {
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -110,7 +107,7 @@ describe( 'ClassicEditorUIView', () => {
 				view.editable.name = editingViewRoot.rootName;
 				view.render();
 
-				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -118,15 +115,13 @@ describe( 'ClassicEditorUIView', () => {
 
 		describe( '#menuBarView', () => {
 			it( 'is not created', () => {
-				expect( view.menuBarView ).to.be.undefined;
+				expect( view.menuBarView ).toBeUndefined();
 			} );
 		} );
 	} );
 
 	describe( 'with menu bar', () => {
 		let locale, view, editingView, editingViewRoot;
-
-		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
 			locale = new Locale();
@@ -143,16 +138,16 @@ describe( 'ClassicEditorUIView', () => {
 
 		describe( '#menuBarView', () => {
 			it( 'is created', () => {
-				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+				expect( view.menuBarView ).toBeInstanceOf( MenuBarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.menuBarView.locale ).to.equal( locale );
+				expect( view.menuBarView.locale ).toBe( locale );
 			} );
 
 			it( 'is put into the "stickyPanel.content" collection', () => {
-				expect( view.stickyPanel.content.get( 0 ) ).to.equal( view.menuBarView );
-				expect( view.stickyPanel.content.get( 1 ) ).to.equal( view.toolbar );
+				expect( view.stickyPanel.content.get( 0 ) ).toBe( view.menuBarView );
+				expect( view.stickyPanel.content.get( 1 ) ).toBe( view.toolbar );
 			} );
 		} );
 	} );
