@@ -141,11 +141,13 @@ export class FullscreenAbstractEditorHandler {
 	 * A callback that hides the document outline header when the source editing mode is enabled.
 	 * Document outline element itself is hidden by source editing plugin.
 	 */
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore start -- @preserve */
 	private _sourceEditingCallback = ( _evt: EventInfo, _name: string, value: boolean ) => {
 		( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display =
 			value ? 'none' : '';
 	};
+
+	/* v8 ignore stop -- @preserve */
 
 	/**
 	 * A map of elements that were hidden when entering the fullscreen mode.
@@ -287,13 +289,13 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'PresenceListUI' ) ) {
 			this._generatePresenceListContainer();
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			this._generateDocumentOutlineContainer();
 		}
@@ -303,7 +305,7 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as any;
 
@@ -322,14 +324,14 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
 			this._overrideAnnotationsUIs();
 		}
 
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			// Code coverage is provided in the commercial package repository as integration unit tests.
-			/* istanbul ignore if -- @preserve */
+			/* v8 ignore if -- @preserve */
 			if ( ( this._editor.plugins.get( 'RevisionHistory' ) as any ).isRevisionViewerOpen ) {
 				// Keep in mind that closing the revision history viewer is an asynchronous operation.
 				( this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' ) as any )();
@@ -339,7 +341,7 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AITabs' ) ) {
 			this._handleAITabsTransfer();
 		}
@@ -396,13 +398,13 @@ export class FullscreenAbstractEditorHandler {
 		this._document.body.parentElement!.classList.remove( 'ck-fullscreen' );
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			this._restoreDocumentOutlineDefaultContainer();
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._annotationsUIsData ) {
 			this._restoreAnnotationsUIs();
 		}
@@ -412,7 +414,7 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
+		/* v8 ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AITabs' ) ) {
 			this._restoreAITabs();
 		}
@@ -450,7 +452,7 @@ export class FullscreenAbstractEditorHandler {
 
 		// Pagination has to be restored after leaving fullscreen mode to ensure proper rendering.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as any;
 
@@ -520,7 +522,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Checks if the PresenceListUI plugin is available and moves its elements to fullscreen mode.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _generatePresenceListContainer(): void {
 		const t = this._editor.t;
 		const presenceListElement = createElement( document, 'div', {
@@ -555,7 +557,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Checks if the DocumentOutlineUI plugin is available and moves its elements to fullscreen mode.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _generateDocumentOutlineContainer(): void {
 		const t = this._editor.t;
 		const documentOutlineHeaderElement = createElement( document, 'div', {
@@ -599,14 +601,14 @@ export class FullscreenAbstractEditorHandler {
 	 * Restores the default value of documentOutlineContainer, which is modified in fullscreen mode.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _restoreDocumentOutlineDefaultContainer(): void {
 		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as any;
 		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _generateCollapseButton(): void {
 		const button = new ButtonView( this._editor.locale );
 		const leftSidebarContainer = document.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
@@ -651,7 +653,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode and switches the UI to the wide sidebar.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _overrideAnnotationsUIs() {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
@@ -694,7 +696,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Restores the saved state of the annotations UIs.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _restoreAnnotationsUIs() {
 		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as any;
 		const sidebarContainer = sidebarPlugin.context.config.get( 'sidebar.container' );
@@ -723,7 +725,7 @@ export class FullscreenAbstractEditorHandler {
 		// * Disable menu bar;
 		// * Show revision viewer editable, toolbar and sidebar.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			const revisionViewerEditor = await this._showRevisionViewerCallback!();
 
@@ -754,7 +756,7 @@ export class FullscreenAbstractEditorHandler {
 		// * Enable menu bar;
 		// * Show editor's editable, toolbar and sidebar.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			this.restoreMovedElementLocation( 'toolbar' );
 			this.restoreMovedElementLocation( 'editable' );
@@ -784,13 +786,13 @@ export class FullscreenAbstractEditorHandler {
 	 */
 	private _restoreRevisionHistoryCallbacks(): void {
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			return this._showRevisionViewerCallback!();
 		} );
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			return this._closeRevisionViewerCallback!();
 		} );
@@ -920,7 +922,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Stores the current state of the AI Tabs and moves it to the fullscreen mode.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _handleAITabsTransfer(): void {
 		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
 
@@ -956,7 +958,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Restores the state of the AI Tabs to the original values.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _restoreAITabs(): void {
 		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
 
@@ -1019,7 +1021,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Switches the annotations UI to the requested one.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _switchAnnotationsUI( uiName: string ) {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 		annotationsUIs.deactivateAll();
@@ -1068,7 +1070,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Hides the left sidebar. Works only if there is anything to hide.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _hideLeftSidebar() {
 		const t = this._editor.t;
 
@@ -1085,7 +1087,7 @@ export class FullscreenAbstractEditorHandler {
 	 * Shows the left sidebar. Works only if there is anything to show.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
+	/* v8 ignore next -- @preserve */
 	private _showLeftSidebar() {
 		const t = this._editor.t;
 

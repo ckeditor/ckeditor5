@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -29,25 +30,26 @@ describe( 'FullscreenUI', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		domElement.remove();
 		return editor.destroy();
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( FullscreenUI.requires ).to.deep.equal( [ FullscreenEditing ] );
+		expect( FullscreenUI.requires ).toEqual( [ FullscreenEditing ] );
 	} );
 
 	it( 'should have proper name', () => {
-		expect( FullscreenUI.pluginName ).to.equal( 'FullscreenUI' );
+		expect( FullscreenUI.pluginName ).toBe( 'FullscreenUI' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( FullscreenUI.isOfficialPlugin ).to.be.true;
+		expect( FullscreenUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should register UI components', () => {
-		expect( editor.ui.componentFactory.has( 'fullscreen' ) ).to.be.true;
-		expect( editor.ui.componentFactory.has( 'menuBar:fullscreen' ) ).to.be.true;
+		expect( editor.ui.componentFactory.has( 'fullscreen' ) ).toBe( true );
+		expect( editor.ui.componentFactory.has( 'menuBar:fullscreen' ) ).toBe( true );
 	} );
 
 	describe( 'Fullscreen mode toolbar button', () => {
@@ -58,8 +60,8 @@ describe( 'FullscreenUI', () => {
 		} );
 
 		it( 'should have the base properties', () => {
-			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'isToggleable', true );
+			expect( button ).toHaveProperty( 'tooltip', true );
+			expect( button ).toHaveProperty( 'isToggleable', true );
 		} );
 
 		it( '#isEnabled, #icon and #label should be bound to the `toggleFullscreen` command', () => {
@@ -67,34 +69,34 @@ describe( 'FullscreenUI', () => {
 
 			fullscreenCommand.isEnabled = false;
 
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 
 			fullscreenCommand.isEnabled = true;
 
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 
 			fullscreenCommand.value = true;
 
-			expect( button.icon ).to.equal( IconFullscreenLeave );
-			expect( button.label ).to.equal( 'Leave fullscreen mode' );
+			expect( button.icon ).toBe( IconFullscreenLeave );
+			expect( button.label ).toBe( 'Leave fullscreen mode' );
 
 			fullscreenCommand.value = false;
 
-			expect( button.icon ).to.equal( IconFullscreenEnter );
-			expect( button.label ).to.equal( 'Enter fullscreen mode' );
+			expect( button.icon ).toBe( IconFullscreenEnter );
+			expect( button.label ).toBe( 'Enter fullscreen mode' );
 		} );
 
 		describe( 'on #execute', () => {
 			it( 'should call the `fullscreen` command', () => {
-				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+				const spy = vi.spyOn( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
 				button.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should force toolbar blur on non-Chromium browsers', () => {
-				sinon.stub( env, 'isBlink' ).value( false );
+				vi.spyOn( env, 'isBlink', 'get' ).mockReturnValue( false );
 
 				editor.ui.view.toolbar.items.add( button );
 
@@ -103,30 +105,30 @@ describe( 'FullscreenUI', () => {
 
 				button.fire( 'execute' );
 
-				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).toBeNull();
 
 				// Focus the toolbar button when leaving fullscreen mode.
 				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
 
 				button.fire( 'execute' );
 
-				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).toBeNull();
 			} );
 
 			it( 'should focus the editable element', () => {
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 				button.fire( 'execute' );
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should scroll to the selection', () => {
-				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+				const spy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 				button.fire( 'execute' );
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
@@ -139,10 +141,10 @@ describe( 'FullscreenUI', () => {
 		} );
 
 		it( 'should have the base properties', () => {
-			expect( button ).to.have.property( 'tooltip', false );
-			expect( button ).to.have.property( 'isToggleable', true );
-			expect( button ).to.have.property( 'role', 'menuitemcheckbox' );
-			expect( button ).to.have.property( 'label', 'Fullscreen mode' );
+			expect( button ).toHaveProperty( 'tooltip', false );
+			expect( button ).toHaveProperty( 'isToggleable', true );
+			expect( button ).toHaveProperty( 'role', 'menuitemcheckbox' );
+			expect( button ).toHaveProperty( 'label', 'Fullscreen mode' );
 		} );
 
 		it( '#isEnabled and #isOn should be bound to the `toggleFullscreen` command', () => {
@@ -150,34 +152,34 @@ describe( 'FullscreenUI', () => {
 
 			fullscreenCommand.isEnabled = false;
 
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 
 			fullscreenCommand.isEnabled = true;
 
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).toBe( true );
 
 			fullscreenCommand.value = true;
 
-			expect( button.isOn ).to.be.true;
+			expect( button.isOn ).toBe( true );
 
 			fullscreenCommand.value = false;
 
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 		} );
 
 		describe( 'on #execute', () => {
 			it( 'should call the `fullscreen` command', () => {
-				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+				const spy = vi.spyOn( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
 				button.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			// This test is purely technical. It's currently impossible to reproduce such a situation
 			// in the browser.
 			it( 'should force toolbar blur on non-Chromium browsers', () => {
-				sinon.stub( env, 'isBlink' ).value( false );
+				vi.spyOn( env, 'isBlink', 'get' ).mockReturnValue( false );
 
 				editor.ui.view.toolbar.items.add( button );
 
@@ -186,30 +188,30 @@ describe( 'FullscreenUI', () => {
 
 				button.fire( 'execute' );
 
-				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).toBeNull();
 
 				// Focus the toolbar button when leaving fullscreen mode.
 				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
 
 				button.fire( 'execute' );
 
-				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).toBeNull();
 			} );
 
 			it( 'should focus the editable element', () => {
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 				button.fire( 'execute' );
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 
 			it( 'should scroll to the selection', () => {
-				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+				const spy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 				button.fire( 'execute' );
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
