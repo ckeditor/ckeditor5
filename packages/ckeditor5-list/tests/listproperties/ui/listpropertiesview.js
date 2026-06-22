@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListPropertiesView } from '../../../src/listproperties/ui/listpropertiesview.js';
 
 import {
@@ -49,47 +51,48 @@ describe( 'ListPropertiesView', () => {
 	afterEach( () => {
 		view.element.remove();
 		view.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'constructor()', () => {
 		describe( 'template', () => {
 			it( 'should create an #element from the template', () => {
-				expect( view.element.tagName ).to.equal( 'DIV' );
-				expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-list-properties' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).to.be.true;
+				expect( view.element.tagName ).toBe( 'DIV' );
+				expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-list-properties' ) ).toBe( true );
+				expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).toBe( true );
 			} );
 
 			describe( 'when styles, start index, and reversed properties are enabled', () => {
 				it( 'should use collapsible to host property fields', () => {
-					expect( view.children.first ).to.equal( view.stylesView );
-					expect( view.children.last ).to.be.instanceOf( CollapsibleView );
-					expect( view.children.last.label ).to.equal( 'List properties' );
-					expect( view.children.last.isCollapsed ).to.be.true;
-					expect( view.children.last.children.first ).to.equal( view.startIndexFieldView );
-					expect( view.children.last.children.last ).to.equal( view.reversedSwitchButtonView );
+					expect( view.children.first ).toBe( view.stylesView );
+					expect( view.children.last ).toBeInstanceOf( CollapsibleView );
+					expect( view.children.last.label ).toBe( 'List properties' );
+					expect( view.children.last.isCollapsed ).toBe( true );
+					expect( view.children.last.children.first ).toBe( view.startIndexFieldView );
+					expect( view.children.last.children.last ).toBe( view.reversedSwitchButtonView );
 				} );
 
 				it( 'should keep the collapsible button enabled as longs as either start index or reversed field is enabled', () => {
 					const collapsibleView = view.children.last;
 
-					expect( collapsibleView.buttonView.isEnabled, 'A' ).to.be.true;
+					expect( collapsibleView.buttonView.isEnabled, 'A' ).toBe( true );
 
 					view.startIndexFieldView.isEnabled = false;
 					view.reversedSwitchButtonView.isEnabled = true;
-					expect( collapsibleView.buttonView.isEnabled, 'B' ).to.be.true;
+					expect( collapsibleView.buttonView.isEnabled, 'B' ).toBe( true );
 
 					view.startIndexFieldView.isEnabled = true;
 					view.reversedSwitchButtonView.isEnabled = false;
-					expect( collapsibleView.buttonView.isEnabled, 'C' ).to.be.true;
+					expect( collapsibleView.buttonView.isEnabled, 'C' ).toBe( true );
 
 					view.startIndexFieldView.isEnabled = true;
 					view.reversedSwitchButtonView.isEnabled = true;
-					expect( collapsibleView.buttonView.isEnabled, 'D' ).to.be.true;
+					expect( collapsibleView.buttonView.isEnabled, 'D' ).toBe( true );
 
 					view.startIndexFieldView.isEnabled = false;
 					view.reversedSwitchButtonView.isEnabled = false;
-					expect( collapsibleView.buttonView.isEnabled, 'E' ).to.be.false;
+					expect( collapsibleView.buttonView.isEnabled, 'E' ).toBe( false );
 				} );
 
 				it( 'should automatically collapse the collapsible when its button gets gets disabled', () => {
@@ -99,20 +102,20 @@ describe( 'ListPropertiesView', () => {
 
 					view.startIndexFieldView.isEnabled = false;
 					view.reversedSwitchButtonView.isEnabled = true;
-					expect( collapsibleView.isCollapsed, 'A' ).to.be.false;
+					expect( collapsibleView.isCollapsed, 'A' ).toBe( false );
 
 					view.startIndexFieldView.isEnabled = true;
 					view.reversedSwitchButtonView.isEnabled = false;
-					expect( collapsibleView.isCollapsed, 'B' ).to.be.false;
+					expect( collapsibleView.isCollapsed, 'B' ).toBe( false );
 
 					view.startIndexFieldView.isEnabled = false;
 					view.reversedSwitchButtonView.isEnabled = false;
-					expect( collapsibleView.isCollapsed, 'C' ).to.be.true;
+					expect( collapsibleView.isCollapsed, 'C' ).toBe( true );
 
 					// It should work only one way. It should not uncollapse when property fields get enabled.
 					view.startIndexFieldView.isEnabled = true;
 					view.reversedSwitchButtonView.isEnabled = true;
-					expect( collapsibleView.isCollapsed, 'D' ).to.be.true;
+					expect( collapsibleView.isCollapsed, 'D' ).toBe( true );
 				} );
 			} );
 
@@ -129,8 +132,8 @@ describe( 'ListPropertiesView', () => {
 
 					view.render();
 
-					expect( view.stylesView ).to.be.null;
-					expect( view.element.classList.contains( 'ck-list-properties_without-styles' ) ).to.be.true;
+					expect( view.stylesView ).toBeNull();
+					expect( view.element.classList.contains( 'ck-list-properties_without-styles' ) ).toBe( true );
 
 					view.destroy();
 				} );
@@ -147,8 +150,8 @@ describe( 'ListPropertiesView', () => {
 
 					view.render();
 
-					expect( view.children.first ).to.equal( view.startIndexFieldView );
-					expect( view.children.last ).to.equal( view.reversedSwitchButtonView );
+					expect( view.children.first ).toBe( view.startIndexFieldView );
+					expect( view.children.last ).toBe( view.reversedSwitchButtonView );
 
 					view.destroy();
 				} );
@@ -168,11 +171,11 @@ describe( 'ListPropertiesView', () => {
 
 					view.render();
 
-					expect( view.startIndexFieldView ).to.be.null;
-					expect( view.reversedSwitchButtonView ).to.be.null;
-					expect( view.children.first ).to.equal( view.stylesView );
-					expect( view.children.last ).to.equal( view.stylesView );
-					expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).to.be.false;
+					expect( view.startIndexFieldView ).toBeNull();
+					expect( view.reversedSwitchButtonView ).toBeNull();
+					expect( view.children.first ).toBe( view.stylesView );
+					expect( view.children.last ).toBe( view.stylesView );
+					expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).toBe( false );
 
 					view.destroy();
 				} );
@@ -190,12 +193,12 @@ describe( 'ListPropertiesView', () => {
 
 					view.render();
 
-					expect( view.stylesView ).to.be.null;
-					expect( view.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-					expect( view.reversedSwitchButtonView ).to.be.null;
-					expect( view.children.first ).to.equal( view.startIndexFieldView );
-					expect( view.children.last ).to.equal( view.startIndexFieldView );
-					expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).to.be.true;
+					expect( view.stylesView ).toBeNull();
+					expect( view.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
+					expect( view.reversedSwitchButtonView ).toBeNull();
+					expect( view.children.first ).toBe( view.startIndexFieldView );
+					expect( view.children.last ).toBe( view.startIndexFieldView );
+					expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).toBe( true );
 
 					view.destroy();
 				} );
@@ -213,12 +216,12 @@ describe( 'ListPropertiesView', () => {
 
 					view.render();
 
-					expect( view.stylesView ).to.be.null;
-					expect( view.startIndexFieldView ).to.be.null;
-					expect( view.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
-					expect( view.children.first ).to.equal( view.reversedSwitchButtonView );
-					expect( view.children.last ).to.equal( view.reversedSwitchButtonView );
-					expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).to.be.true;
+					expect( view.stylesView ).toBeNull();
+					expect( view.startIndexFieldView ).toBeNull();
+					expect( view.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
+					expect( view.children.first ).toBe( view.reversedSwitchButtonView );
+					expect( view.children.last ).toBe( view.reversedSwitchButtonView );
+					expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).toBe( true );
 
 					view.destroy();
 				} );
@@ -226,72 +229,72 @@ describe( 'ListPropertiesView', () => {
 		} );
 
 		it( 'should have a #children collection', () => {
-			expect( view.children ).to.be.instanceOf( ViewCollection );
+			expect( view.children ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should have #stylesView', () => {
-			expect( view.stylesView ).to.be.instanceOf( View );
+			expect( view.stylesView ).toBeInstanceOf( View );
 		} );
 
 		it( 'should have #startIndexFieldView', () => {
-			expect( view.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+			expect( view.startIndexFieldView ).toBeInstanceOf( LabeledFieldView );
 		} );
 
 		it( 'should have #reversedSwitchButtonView', () => {
-			expect( view.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+			expect( view.reversedSwitchButtonView ).toBeInstanceOf( SwitchButtonView );
 		} );
 
 		it( 'should have #focusTracker', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).toBeInstanceOf( FocusTracker );
 		} );
 
 		it( 'should have #keystrokes', () => {
-			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).toBeInstanceOf( KeystrokeHandler );
 		} );
 
 		it( 'should have #focusables', () => {
-			expect( view.focusables ).to.be.instanceOf( ViewCollection );
+			expect( view.focusables ).toBeInstanceOf( ViewCollection );
 		} );
 
 		it( 'should have #focusCycler', () => {
-			expect( view.focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( view.focusCycler ).toBeInstanceOf( FocusCycler );
 		} );
 
 		describe( '#stylesView', () => {
 			describe( 'template', () => {
 				it( 'should create an element from the template', () => {
-					expect( view.stylesView.element.tagName ).to.equal( 'DIV' );
-					expect( view.stylesView.element.classList.contains( 'ck' ) ).to.be.true;
-					expect( view.stylesView.element.classList.contains( 'ck-list-styles-list' ) ).to.be.true;
-					expect( view.stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+					expect( view.stylesView.element.tagName ).toBe( 'DIV' );
+					expect( view.stylesView.element.classList.contains( 'ck' ) ).toBe( true );
+					expect( view.stylesView.element.classList.contains( 'ck-list-styles-list' ) ).toBe( true );
+					expect( view.stylesView.element.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 				} );
 
 				it( 'should popupate the view with style buttons', () => {
-					expect( view.stylesView.children.length ).to.equal( 5 );
-					expect( view.stylesView.children.get( 0 ) ).to.be.instanceOf( ButtonView );
-					expect( view.stylesView.children.get( 1 ) ).to.be.instanceOf( ButtonView );
-					expect( view.stylesView.element.firstChild.classList.contains( 'ck-button' ) ).to.be.true;
-					expect( view.stylesView.element.lastChild.classList.contains( 'ck-button' ) ).to.be.true;
+					expect( view.stylesView.children.length ).toBe( 5 );
+					expect( view.stylesView.children.get( 0 ) ).toBeInstanceOf( ButtonView );
+					expect( view.stylesView.children.get( 1 ) ).toBeInstanceOf( ButtonView );
+					expect( view.stylesView.element.firstChild.classList.contains( 'ck-button' ) ).toBe( true );
+					expect( view.stylesView.element.lastChild.classList.contains( 'ck-button' ) ).toBe( true );
 				} );
 			} );
 		} );
 
 		describe( '#startIndexFieldView', () => {
 			it( 'should have basic properties', () => {
-				expect( view.startIndexFieldView.label ).to.equal( 'Start at' );
-				expect( view.startIndexFieldView.class ).to.equal( 'ck-numbered-list-properties__start-index' );
-				expect( view.startIndexFieldView.fieldView.min ).to.equal( 0 );
-				expect( view.startIndexFieldView.fieldView.step ).to.equal( 1 );
-				expect( view.startIndexFieldView.fieldView.value ).to.equal( 1 );
-				expect( view.startIndexFieldView.fieldView.inputMode ).to.equal( 'numeric' );
+				expect( view.startIndexFieldView.label ).toBe( 'Start at' );
+				expect( view.startIndexFieldView.class ).toBe( 'ck-numbered-list-properties__start-index' );
+				expect( view.startIndexFieldView.fieldView.min ).toBe( 0 );
+				expect( view.startIndexFieldView.fieldView.step ).toBe( 1 );
+				expect( view.startIndexFieldView.fieldView.value ).toBe( 1 );
+				expect( view.startIndexFieldView.fieldView.inputMode ).toBe( 'numeric' );
 			} );
 		} );
 
 		describe( '#reversedSwitchButtonView', () => {
 			it( 'should have basic properties', () => {
-				expect( view.reversedSwitchButtonView.withText ).to.be.true;
-				expect( view.reversedSwitchButtonView.label ).to.equal( 'Reversed order' );
-				expect( view.reversedSwitchButtonView.class ).to.equal( 'ck-numbered-list-properties__reversed-order' );
+				expect( view.reversedSwitchButtonView.withText ).toBe( true );
+				expect( view.reversedSwitchButtonView.label ).toBe( 'Reversed order' );
+				expect( view.reversedSwitchButtonView.class ).toBe( 'ck-numbered-list-properties__reversed-order' );
 			} );
 		} );
 	} );
@@ -300,12 +303,12 @@ describe( 'ListPropertiesView', () => {
 		describe( 'focus cycling, tracking and keyboard support', () => {
 			describe( 'when styles and all numbered list properties are enabled', () => {
 				it( 'should register child views in #focusables', () => {
-					expect( view.focusables.map( f => f ) ).to.have.members( [
+					expect( view.focusables.map( f => f ) ).toEqual( expect.arrayContaining( [
 						view.children.first,
 						view.children.last.buttonView,
 						view.startIndexFieldView,
 						view.reversedSwitchButtonView
-					] );
+					] ) );
 				} );
 
 				it( 'should register child views\' #element in #focusTracker', () => {
@@ -322,14 +325,14 @@ describe( 'ListPropertiesView', () => {
 						styleGridAriaLabel: 'Foo'
 					} );
 
-					const spyView = sinon.spy( view.focusTracker, 'add' );
+					const spyView = vi.spyOn( view.focusTracker, 'add' );
 
 					view.render();
 
-					sinon.assert.calledWithExactly( spyView.getCall( 0 ), view.children.first.element );
-					sinon.assert.calledWithExactly( spyView.getCall( 1 ), view.children.last.buttonView.element );
-					sinon.assert.calledWithExactly( spyView.getCall( 2 ), view.startIndexFieldView.element );
-					sinon.assert.calledWithExactly( spyView.getCall( 3 ), view.reversedSwitchButtonView.element );
+					expect( spyView.mock.calls[ 0 ][ 0 ] ).toBe( view.children.first.element );
+					expect( spyView.mock.calls[ 1 ][ 0 ] ).toBe( view.children.last.buttonView.element );
+					expect( spyView.mock.calls[ 2 ][ 0 ] ).toBe( view.startIndexFieldView.element );
+					expect( spyView.mock.calls[ 3 ][ 0 ] ).toBe( view.reversedSwitchButtonView.element );
 
 					view.destroy();
 				} );
@@ -348,12 +351,12 @@ describe( 'ListPropertiesView', () => {
 						styleGridAriaLabel: 'Foo'
 					} );
 
-					const spyStylesView = sinon.spy( view.stylesView.focusTracker, 'add' );
+					const spyStylesView = vi.spyOn( view.stylesView.focusTracker, 'add' );
 
 					view.render();
 
-					sinon.assert.calledWithExactly( spyStylesView.getCall( 0 ), view.stylesView.children.first.element );
-					sinon.assert.calledWithExactly( spyStylesView.getCall( 1 ), view.stylesView.children.last.element );
+					expect( spyStylesView.mock.calls[ 0 ][ 0 ] ).toBe( view.stylesView.children.first.element );
+					expect( spyStylesView.mock.calls[ 1 ][ 0 ] ).toBe( view.stylesView.children.last.element );
 
 					view.destroy();
 				} );
@@ -372,10 +375,10 @@ describe( 'ListPropertiesView', () => {
 
 					view.render();
 
-					expect( view.focusables.map( f => f ) ).to.have.members( [
+					expect( view.focusables.map( f => f ) ).toEqual( expect.arrayContaining( [
 						view.startIndexFieldView,
 						view.reversedSwitchButtonView
-					] );
+					] ) );
 
 					view.destroy();
 				} );
@@ -390,12 +393,12 @@ describe( 'ListPropertiesView', () => {
 						styleGridAriaLabel: 'Foo'
 					} );
 
-					const spy = sinon.spy( view.focusTracker, 'add' );
+					const spy = vi.spyOn( view.focusTracker, 'add' );
 
 					view.render();
 
-					sinon.assert.calledWithExactly( spy.getCall( 0 ), view.startIndexFieldView.element );
-					sinon.assert.calledWithExactly( spy.getCall( 1 ), view.reversedSwitchButtonView.element );
+					expect( spy.mock.calls[ 0 ][ 0 ] ).toBe( view.startIndexFieldView.element );
+					expect( spy.mock.calls[ 1 ][ 0 ] ).toBe( view.reversedSwitchButtonView.element );
 
 					view.destroy();
 				} );
@@ -415,11 +418,11 @@ describe( 'ListPropertiesView', () => {
 					styleGridAriaLabel: 'Foo'
 				} );
 
-				const spy = sinon.spy( view.keystrokes, 'listenTo' );
+				const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 				view.render();
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, view.element );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledWith( view.element );
 
 				view.destroy();
 			} );
@@ -428,8 +431,8 @@ describe( 'ListPropertiesView', () => {
 				it( 'so "tab" focuses the next focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the styles view is focused.
@@ -437,20 +440,20 @@ describe( 'ListPropertiesView', () => {
 					view.focusTracker.focusedElement = view.children.first.element;
 
 					// Spy the next view which in this case is the ListProperties button
-					const spy = sinon.spy( view.children.last.buttonView, 'focus' );
+					const spy = vi.spyOn( view.children.last.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'so "shift + tab" focuses the previous focusable item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.tab,
 						shiftKey: true,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					// Mock the styles view is focused.
@@ -459,51 +462,56 @@ describe( 'ListPropertiesView', () => {
 					view.children.last.isCollapsed = false;
 
 					// Spy the previous view which in this case is the Reversed order switch button
-					const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
+					const spy = vi.spyOn( view.reversedSwitchButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+					expect( spy ).toHaveBeenCalledOnce();
 				} );
 
 				describe( 'keyboard navigation in the styles grid', () => {
 					it( '"arrow right" should focus the next focusable style button', () => {
 						const keyEvtData = {
 							keyCode: keyCodes.arrowright,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						};
 
 						// Mock the first style button is focused.
 						view.stylesView.focusTracker.isFocused = true;
 						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
 
-						const spy = sinon.spy( view.stylesView.children.get( 1 ), 'focus' );
+						const spy = vi.spyOn( view.stylesView.children.get( 1 ), 'focus' );
 
 						view.stylesView.keystrokes.press( keyEvtData );
-						sinon.assert.calledOnce( keyEvtData.preventDefault );
-						sinon.assert.calledOnce( keyEvtData.stopPropagation );
-						sinon.assert.calledOnce( spy );
+						expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+						expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					it( '"arrow down" should focus the focusable style button in the second row', () => {
 						const keyEvtData = {
 							keyCode: keyCodes.arrowdown,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						};
+
+						// Set explicit grid layout so the headless browser can compute geometry.
+						// Use explicit pixel values — repeat() notation resolves to 2 tokens when split by space,
+						// making numberOfColumns always 2 regardless of the actual column count.
+						view.stylesView.element.style.gridTemplateColumns = '1px 1px 1px 1px';
 
 						// Mock the first style button is focused.
 						view.stylesView.focusTracker.isFocused = true;
 						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
 
-						const spy = sinon.spy( view.stylesView.children.get( 4 ), 'focus' );
+						const spy = vi.spyOn( view.stylesView.children.get( 4 ), 'focus' );
 
 						view.stylesView.keystrokes.press( keyEvtData );
-						sinon.assert.calledOnce( keyEvtData.preventDefault );
-						sinon.assert.calledOnce( keyEvtData.stopPropagation );
-						sinon.assert.calledOnce( spy );
+						expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+						expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 
 					// https://github.com/ckeditor/ckeditor5/issues/12340
@@ -512,55 +520,55 @@ describe( 'ListPropertiesView', () => {
 
 						const keyEvtData = {
 							keyCode: keyCodes.arrowdown,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
+							preventDefault: vi.fn(),
+							stopPropagation: vi.fn()
 						};
 
 						// Mock the first style button is focused.
 						view.stylesView.focusTracker.isFocused = true;
 						view.stylesView.focusTracker.focusedElement = view.stylesView.children.first.element;
 
-						const spy = sinon.spy( view.stylesView.children.get( 2 ), 'focus' );
+						const spy = vi.spyOn( view.stylesView.children.get( 2 ), 'focus' );
 
 						view.stylesView.keystrokes.press( keyEvtData );
-						sinon.assert.calledOnce( keyEvtData.preventDefault );
-						sinon.assert.calledOnce( keyEvtData.stopPropagation );
-						sinon.assert.calledOnce( spy );
+						expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+						expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+						expect( spy ).toHaveBeenCalledOnce();
 					} );
 				} );
 			} );
 
 			it( 'intercepts the arrow* events and overrides the default (parent) toolbar behavior', () => {
 				const keyEvtData = {
-					stopPropagation: sinon.spy()
+					stopPropagation: vi.fn()
 				};
 
 				keyEvtData.keyCode = keyCodes.arrowdown;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
 
 				keyEvtData.keyCode = keyCodes.arrowup;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledTwice( keyEvtData.stopPropagation );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 2 );
 
 				keyEvtData.keyCode = keyCodes.arrowleft;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.calledThrice( keyEvtData.stopPropagation );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 3 );
 
 				keyEvtData.keyCode = keyCodes.arrowright;
 				view.keystrokes.press( keyEvtData );
-				sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 4 );
 			} );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus the first button in #stylesView (when present)', () => {
-			const spy = sinon.spy( view.stylesView.children.first, 'focus' );
+			const spy = vi.spyOn( view.stylesView.children.first, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should focus the #startIndexFieldView when there are no style buttons', () => {
@@ -576,10 +584,10 @@ describe( 'ListPropertiesView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			const spy = sinon.spy( view.startIndexFieldView, 'focus' );
+			const spy = vi.spyOn( view.startIndexFieldView, 'focus' );
 
 			view.focus();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			view.element.remove();
 			view.destroy();
@@ -597,10 +605,10 @@ describe( 'ListPropertiesView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
+			const spy = vi.spyOn( view.reversedSwitchButtonView, 'focus' );
 
 			view.focus();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			view.element.remove();
 			view.destroy();
@@ -626,10 +634,10 @@ describe( 'ListPropertiesView', () => {
 
 			view.stylesView.children.get( 1 ).isOn = true;
 
-			const spy = sinon.spy( view.stylesView.children.get( 1 ), 'focus' );
+			const spy = vi.spyOn( view.stylesView.children.get( 1 ), 'focus' );
 
 			view.focus();
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			view.element.remove();
 			view.destroy();
@@ -638,125 +646,125 @@ describe( 'ListPropertiesView', () => {
 
 	describe( 'focusLast()', () => {
 		it( 'should focus the #reversedSwitchButtonView when present and visible', () => {
-			const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
+			const spy = vi.spyOn( view.reversedSwitchButtonView, 'focus' );
 
 			view.children.last.isCollapsed = false;
 			view.focusLast();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should focus the collapse button when numbered list properies are collapsed', () => {
-			const spy = sinon.spy( view.children.last.buttonView, 'focus' );
+			const spy = vi.spyOn( view.children.last.buttonView, 'focus' );
 
 			view.children.last.isCollapsed = true;
 			view.focusLast();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy the FocusTracker instance', () => {
-			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+			const destroySpy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should destroy the KeystrokeHandler instance', () => {
-			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+			const destroySpy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( destroySpy );
+			expect( destroySpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'DOM bindings', () => {
 		describe( 'styles view', () => {
 			it( 'should delegate #execute to the properties view', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				view.on( 'execute', spy );
 				view.stylesView.children.get( 0 ).fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
 		describe( '#startIndexFieldView', () => {
 			it( 'should fire #listStart upon #input', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'listStart', spy );
 
 				view.startIndexFieldView.fieldView.value = '123';
 				view.startIndexFieldView.fieldView.fire( 'input' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not fire #listStart upon #input if the field is empty', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'listStart', spy );
 
 				view.startIndexFieldView.fieldView.value = '';
 				view.startIndexFieldView.fieldView.fire( 'input' );
 
-				sinon.assert.notCalled( spy );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not fire #listStart upon #input but display an error if the field is invalid', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'listStart', spy );
 
 				view.startIndexFieldView.fieldView.value = '-5';
 				view.startIndexFieldView.fieldView.fire( 'input' );
 
-				sinon.assert.notCalled( spy );
-				expect( view.startIndexFieldView.errorText ).to.equal( 'Start index must be greater than 0.' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( view.startIndexFieldView.errorText ).toBe( 'Start index must be greater than 0.' );
 			} );
 
 			it( 'should not fire #listStart upon #input but display an error if the numeric value is NaN', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'listStart', spy );
 
 				view.startIndexFieldView.fieldView.value = '3e';
 				view.startIndexFieldView.fieldView.fire( 'input' );
 
-				sinon.assert.notCalled( spy );
-				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( view.startIndexFieldView.errorText ).toBe( 'Invalid start index value.' );
 			} );
 
 			it( 'should hide an error and proceed to fire #listStart when previously invalid value gets corrected', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'listStart', spy );
 
 				// Check for error.
 				view.startIndexFieldView.fieldView.value = '3e';
 				view.startIndexFieldView.fieldView.fire( 'input' );
 
-				sinon.assert.notCalled( spy );
-				expect( view.startIndexFieldView.errorText ).to.equal( 'Invalid start index value.' );
+				expect( spy ).not.toHaveBeenCalled();
+				expect( view.startIndexFieldView.errorText ).toBe( 'Invalid start index value.' );
 
 				// And revert to valid state (clear error).
 				view.startIndexFieldView.fieldView.value = '32';
 				view.startIndexFieldView.fieldView.fire( 'input' );
 
-				sinon.assert.calledOnce( spy );
-				expect( view.startIndexFieldView.errorText ).to.be.null;
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( view.startIndexFieldView.errorText ).toBeNull();
 			} );
 		} );
 
 		describe( '#reversedSwitchButtonView', () => {
 			it( 'should fire #listReversed when executed', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 				view.on( 'listReversed', spy );
 
 				view.reversedSwitchButtonView.fire( 'execute' );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );

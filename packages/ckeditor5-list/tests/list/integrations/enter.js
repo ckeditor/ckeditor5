@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListEditing } from '../../../src/list/listediting.js';
 
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
@@ -12,7 +14,6 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 
@@ -33,8 +34,6 @@ describe( 'ListEditing integrations: enter key', () => {
 	let splitBeforeCommand, splitAfterCommand, indentCommand,
 		splitBeforeCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [
@@ -54,21 +53,21 @@ describe( 'ListEditing integrations: enter key', () => {
 		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => { } );
 		stubUid();
 
 		eventInfo = new EventInfo( view.document, 'enter' );
 		domEventData = new ViewDocumentDomEventData( view.document, {
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		splitBeforeCommand = editor.commands.get( 'splitListItemBefore' );
 		splitAfterCommand = editor.commands.get( 'splitListItemAfter' );
 		indentCommand = editor.commands.get( 'outdentList' );
 
-		splitBeforeCommandExecuteSpy = sinon.spy( splitBeforeCommand, 'execute' );
-		splitAfterCommandExecuteSpy = sinon.spy( splitAfterCommand, 'execute' );
-		outdentCommandExecuteSpy = sinon.spy( indentCommand, 'execute' );
+		splitBeforeCommandExecuteSpy = vi.spyOn( splitBeforeCommand, 'execute' );
+		splitAfterCommandExecuteSpy = vi.spyOn( splitAfterCommand, 'execute' );
+		outdentCommandExecuteSpy = vi.spyOn( indentCommand, 'execute' );
 
 		changedBlocks.length = 0;
 
@@ -87,6 +86,7 @@ describe( 'ListEditing integrations: enter key', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'collapsed selection', () => {
@@ -106,11 +106,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 0 )
 				] );
 
-				sinon.assert.calledOnce( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -131,11 +131,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.calledOnce( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -155,11 +155,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -184,11 +184,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 3 )
 				] );
 
-				sinon.assert.calledOnce( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -210,11 +210,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -233,11 +233,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -256,11 +256,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );
@@ -286,11 +286,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 2 )
 				] );
 
-				sinon.assert.calledOnce( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -315,11 +315,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 2 )
 				] );
 
-				sinon.assert.calledOnce( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -341,11 +341,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -367,11 +367,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -393,11 +393,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -419,11 +419,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -445,11 +445,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -470,11 +470,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -497,11 +497,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 2 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -526,11 +526,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 2 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -551,11 +551,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.calledOnce( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).toHaveBeenCalledOnce();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -579,11 +579,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 2 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.calledOnce( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).toHaveBeenCalledOnce();
 
-				sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				expect( eventInfo.stop.called ).to.be.true;
 			} );
 
@@ -610,11 +610,11 @@ describe( 'ListEditing integrations: enter key', () => {
 						modelRoot.getChild( 2 )
 					] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.calledOnce( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).toHaveBeenCalledOnce();
 
-					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledOnce();
 					expect( eventInfo.stop.called ).to.be.true;
 				} );
 
@@ -638,11 +638,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -663,11 +663,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );
@@ -692,11 +692,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -716,11 +716,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -738,11 +738,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -761,11 +761,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -787,11 +787,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -813,11 +813,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -836,11 +836,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );
@@ -860,11 +860,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -884,11 +884,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -909,11 +909,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -934,11 +934,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -960,11 +960,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -986,11 +986,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1011,11 +1011,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1038,11 +1038,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1063,11 +1063,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1089,11 +1089,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1115,11 +1115,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1142,11 +1142,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1171,11 +1171,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );
@@ -1199,11 +1199,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1223,11 +1223,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1248,11 +1248,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1282,11 +1282,11 @@ describe( 'ListEditing integrations: enter key', () => {
 					modelRoot.getChild( 1 )
 				] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).toHaveBeenCalledOnce();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1307,11 +1307,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1332,11 +1332,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1358,11 +1358,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1383,11 +1383,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1410,11 +1410,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 				expect( changedBlocks ).to.deep.equal( [] );
 
-				sinon.assert.notCalled( outdentCommandExecuteSpy );
-				sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-				sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+				expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+				expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-				sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+				expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 				expect( eventInfo.stop.called ).to.be.undefined;
 			} );
 
@@ -1440,11 +1440,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [ ] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );
@@ -1470,11 +1470,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1498,11 +1498,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 
@@ -1526,11 +1526,11 @@ describe( 'ListEditing integrations: enter key', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
-					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+					expect( outdentCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitBeforeCommandExecuteSpy ).not.toHaveBeenCalled();
+					expect( splitAfterCommandExecuteSpy ).not.toHaveBeenCalled();
 
-					sinon.assert.calledTwice( domEventData.domEvent.preventDefault );
+					expect( domEventData.domEvent.preventDefault ).toHaveBeenCalledTimes( 2 );
 					expect( eventInfo.stop.called ).to.be.undefined;
 				} );
 			} );

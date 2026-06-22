@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
@@ -12,7 +13,6 @@ import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelElement, _setModelData, _getModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 import { stubUid } from '../list/_utils/uid.js';
@@ -22,7 +22,9 @@ import { ListItemItalicIntegration } from '../../src/listformatting/listitemital
 describe( 'ListItemItalicIntegration', () => {
 	let editor, model, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -42,7 +44,7 @@ describe( 'ListItemItalicIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( async () => {
@@ -50,23 +52,23 @@ describe( 'ListItemItalicIntegration', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListItemItalicIntegration.pluginName ).to.equal( 'ListItemItalicIntegration' );
+		expect( ListItemItalicIntegration.pluginName ).toBe( 'ListItemItalicIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListItemItalicIntegration.isOfficialPlugin ).to.be.true;
+		expect( ListItemItalicIntegration.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListItemItalicIntegration.isPremiumPlugin ).to.be.false;
+		expect( ListItemItalicIntegration.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListItemItalicIntegration ) ).to.be.instanceOf( ListItemItalicIntegration );
+		expect( editor.plugins.get( ListItemItalicIntegration ) ).toBeInstanceOf( ListItemItalicIntegration );
 	} );
 
 	it( 'should require ListEditing plugin', () => {
-		expect( ListItemItalicIntegration.requires ).to.deep.equal( [
+		expect( ListItemItalicIntegration.requires ).toEqual( [
 			ListEditing
 		] );
 	} );
@@ -80,11 +82,11 @@ describe( 'ListItemItalicIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemItalic' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemItalic' ) ).toBe( true );
 		} );
 
 		it( 'listItemItalic attribute should have isFormatting set to true', () => {
-			expect( model.schema.getAttributeProperties( 'listItemItalic' ) ).to.include( {
+			expect( model.schema.getAttributeProperties( 'listItemItalic' ) ).toMatchObject( {
 				isFormatting: true
 			} );
 		} );
@@ -100,15 +102,15 @@ describe( 'ListItemItalicIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemItalic' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemItalic' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemItalic' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemItalic' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemItalic' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemItalic' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemItalic' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemItalic' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemItalic' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemItalic' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemItalic' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemItalic' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemItalic' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemItalic' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemItalic' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemItalic' ) ).toBe( false );
 		} );
 	} );
 
@@ -281,6 +283,26 @@ describe( 'ListItemItalicIntegration', () => {
 			);
 		} );
 
+		it( 'should not downcast listItemItalic attribute if value is false', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="false" listType="bulleted">' +
+					'foo' +
+				'</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li>foo</li>' +
+				'</ul>'
+			);
+		} );
+
 		// Post-fixer currently removes `listItemItalic` attribute from table list items.
 		it.skip( 'should downcast listItemItalic attribute as class in <li> in table list item', () => {
 			_setModelData( model,
@@ -338,7 +360,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/18790.
 		it( 'should add dummy style for a Safari glitch (in editing pipeline only)', () => {
-			sinon.stub( env, 'isSafari' ).value( true );
+			vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 
 			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
@@ -539,7 +561,7 @@ describe( 'ListItemItalicIntegration', () => {
 		} );
 
 		it( 'should upcast and consume class', () => {
-			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
 				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-italic' } ) ).to.be.false;
 			} );
 
@@ -559,7 +581,7 @@ describe( 'ListItemItalicIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( upcastCheck.calledOnce ).to.be.true;
+			expect( upcastCheck.mock.calls.length === 1 ).to.be.true;
 		} );
 	} );
 
@@ -569,16 +591,16 @@ describe( 'ListItemItalicIntegration', () => {
 				'text/html': '<ol><li class="ck-list-marker-italic">foo</li></ol>'
 			} );
 
-			const spy = sinon.stub( editor.model, 'insertContent' );
+			const spy = vi.spyOn( editor.model, 'insertContent' ).mockImplementation( () => {} );
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				content: dataTransferMock.getData( 'text/html' )
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const content = spy.firstCall.args[ 0 ];
+			const content = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( _stringifyModel( content ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="numbered">' +

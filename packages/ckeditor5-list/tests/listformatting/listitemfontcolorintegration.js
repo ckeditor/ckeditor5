@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
@@ -12,7 +13,6 @@ import { FontColorEditing } from '@ckeditor/ckeditor5-font';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelElement, _setModelData, _getModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -20,8 +20,6 @@ import { ListItemFontColorIntegration } from '../../src/listformatting/listitemf
 
 describe( 'ListItemFontColorIntegration', () => {
 	let editor, model, view;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -41,31 +39,32 @@ describe( 'ListItemFontColorIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
 		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListItemFontColorIntegration.pluginName ).to.equal( 'ListItemFontColorIntegration' );
+		expect( ListItemFontColorIntegration.pluginName ).toBe( 'ListItemFontColorIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListItemFontColorIntegration.isOfficialPlugin ).to.be.true;
+		expect( ListItemFontColorIntegration.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListItemFontColorIntegration.isPremiumPlugin ).to.be.false;
+		expect( ListItemFontColorIntegration.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListItemFontColorIntegration ) ).to.be.instanceOf( ListItemFontColorIntegration );
+		expect( editor.plugins.get( ListItemFontColorIntegration ) ).toBeInstanceOf( ListItemFontColorIntegration );
 	} );
 
 	it( 'should require ListEditing plugin', () => {
-		expect( ListItemFontColorIntegration.requires ).to.deep.equal( [
+		expect( ListItemFontColorIntegration.requires ).toEqual( [
 			ListEditing
 		] );
 	} );
@@ -79,11 +78,11 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontColor' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontColor' ) ).toBe( true );
 		} );
 
 		it( 'listItemFontColor attribute should have isFormatting set to true', () => {
-			expect( model.schema.getAttributeProperties( 'listItemFontColor' ) ).to.include( {
+			expect( model.schema.getAttributeProperties( 'listItemFontColor' ) ).toMatchObject( {
 				isFormatting: true
 			} );
 		} );
@@ -99,15 +98,15 @@ describe( 'ListItemFontColorIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontColor' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontColor' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontColor' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontColor' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontColor' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontColor' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontColor' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontColor' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontColor' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontColor' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontColor' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontColor' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontColor' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontColor' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontColor' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontColor' ) ).toBe( false );
 		} );
 	} );
 
@@ -274,6 +273,26 @@ describe( 'ListItemFontColorIntegration', () => {
 							'<span style="color:red;">foo</span>' +
 						'</h2>' +
 					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not downcast listItemFontColor attribute if value is empty', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="" listType="bulleted">' +
+					'foo' +
+				'</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li>foo</li>' +
 				'</ul>'
 			);
 		} );
@@ -507,7 +526,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should upcast and consume class', () => {
-			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
 				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-color' } ) ).to.be.false;
 				expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-color' } ) ).to.be.false;
 			} );
@@ -528,7 +547,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( upcastCheck.calledOnce ).to.be.true;
+			expect( upcastCheck.mock.calls.length === 1 ).to.be.true;
 		} );
 	} );
 
@@ -538,16 +557,16 @@ describe( 'ListItemFontColorIntegration', () => {
 				'text/html': '<ol><li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">foo</li></ol>'
 			} );
 
-			const spy = sinon.stub( editor.model, 'insertContent' );
+			const spy = vi.spyOn( editor.model, 'insertContent' ).mockImplementation( () => {} );
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				content: dataTransferMock.getData( 'text/html' )
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const content = spy.firstCall.args[ 0 ];
+			const content = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( _stringifyModel( content ) ).to.equal(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +

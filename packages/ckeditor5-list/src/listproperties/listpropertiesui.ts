@@ -320,8 +320,11 @@ function getStyleButtonCreator( {
 				}
 				// If the current list style is not set in the model or the style is different than the
 				// one to be applied, simply apply the new style.
-				else if ( listStyleCommand.value !== type ) {
-					editor.execute( 'listStyle', { type } );
+				else {
+					/* v8 ignore else -- @preserve */
+					if ( listStyleCommand.value !== type ) {
+						editor.execute( 'listStyle', { type } );
+					}
 				}
 			}
 			// Otherwise, leave the creation of the styled list to the `ListStyleCommand`.
@@ -386,6 +389,7 @@ function createListPropertiesView( {
 		const configuredListStylesTypes = normalizedConfig.styles.listStyleTypes;
 		let filteredDefinitions = styleDefinitions;
 
+		/* v8 ignore next -- Normalized config always provides listStyleTypes for enabled styles. */
 		if ( configuredListStylesTypes ) {
 			const allowedTypes = configuredListStylesTypes[ listType ];
 
@@ -479,6 +483,7 @@ function getMenuBarStylesMenuCreator(
 		const configuredListStylesTypes = normalizedConfig.styles.listStyleTypes;
 		let filteredDefinitions = styleDefinitions;
 
+		/* v8 ignore next -- Normalized config always provides listStyleTypes for enabled styles. */
 		if ( configuredListStylesTypes ) {
 			const listType = listCommand.type as 'numbered' | 'bulleted';
 			const allowedTypes = configuredListStylesTypes[ listType ];

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EditingView, DomEventObserver, _setViewData } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
@@ -25,15 +26,15 @@ describe( 'TodoCheckboxChangeObserver', () => {
 	} );
 
 	it( 'should extend DomEventObserver', () => {
-		expect( observer ).instanceof( DomEventObserver );
+		expect( observer ).toBeInstanceOf( DomEventObserver );
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'change' ] );
+		expect( observer.domEventType ).toEqual( [ 'change' ] );
 	} );
 
 	it( 'should fire `todoCheckboxChange` for a checkbox in a span with "todo-list__label" class', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
@@ -45,15 +46,15 @@ describe( 'TodoCheckboxChangeObserver', () => {
 			'</span>'
 		);
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 
 		observer.onDomEvent( { type: 'change', target: domRoot.querySelector( 'input' ) } );
 
-		sinon.assert.calledOnce( spy );
+		expect( spy ).toHaveBeenCalledOnce();
 	} );
 
 	it( 'should not fire `todoCheckboxChange` for an input without type checkbox', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
@@ -67,11 +68,11 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		observer.onDomEvent( { type: 'change', target: domRoot.querySelector( 'input' ) } );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire `todoCheckboxChange` for a checkbox in a span without a class', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
@@ -85,11 +86,11 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		observer.onDomEvent( { type: 'change', target: domRoot.querySelector( 'input' ) } );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire `todoCheckboxChange` for a span in a span with "todo-list__label" class', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
@@ -103,6 +104,16 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		observer.onDomEvent( { type: 'change', target: domRoot.querySelector( 'span[contenteditable=false]' ) } );
 
-		sinon.assert.notCalled( spy );
+		expect( spy ).not.toHaveBeenCalled();
+	} );
+
+	it( 'should not fire `todoCheckboxChange` when event target is null', () => {
+		const spy = vi.fn();
+
+		viewDocument.on( 'todoCheckboxChange', spy );
+
+		observer.onDomEvent( { type: 'change', target: null } );
+
+		expect( spy ).not.toHaveBeenCalled();
 	} );
 } );

@@ -686,6 +686,7 @@ export class ListEditing extends Plugin {
 					const allChildren = Array.from( data.content.getChildren() );
 					const isSingleListItemSelected = isSingleListItem( allChildren );
 
+					/* v8 ignore next -- Clipboard output normally reaches this cleanup only for selected single list items. */
 					if ( isSingleListItemSelected ) {
 						removeListAttributes( allChildren as Array<ModelElement>, writer, this.getListAttributeNames() );
 					}

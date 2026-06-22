@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
@@ -59,11 +60,11 @@ describe( 'LegacyListCommand', () => {
 	describe( 'ListCommand', () => {
 		describe( 'constructor()', () => {
 			it( 'should create list command with given type and value set to false', () => {
-				expect( command.type ).to.equal( 'bulleted' );
-				expect( command.value ).to.be.false;
+				expect( command.type ).toBe( 'bulleted' );
+				expect( command.value ).toBe( false );
 
 				const numberedList = new LegacyListCommand( editor, 'numbered' );
-				expect( numberedList.type ).to.equal( 'numbered' );
+				expect( numberedList.type ).toBe( 'numbered' );
 			} );
 		} );
 
@@ -73,7 +74,7 @@ describe( 'LegacyListCommand', () => {
 					writer.setSelection( doc.getRoot().getChild( 3 ), 0 );
 				} );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
@@ -81,7 +82,7 @@ describe( 'LegacyListCommand', () => {
 					writer.setSelection( doc.getRoot().getChild( 2 ), 0 );
 				} );
 
-				expect( command.value ).to.be.false;
+				expect( command.value ).toBe( false );
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
@@ -89,46 +90,46 @@ describe( 'LegacyListCommand', () => {
 					writer.setSelection( doc.getRoot().getChild( 1 ), 0 );
 				} );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 			} );
 		} );
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
 				_setModelData( model, '<listItem listType="bulleted" listIndent="0">[a]</listItem>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
 				_setModelData( model, '<paragraph>[a]</paragraph>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection first position is in a block which can be turned into a list', () => {
 				_setModelData( model, '<paragraph>[a</paragraph><widget>b]</widget>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection first position is in an element which cannot be converted to a list item', () => {
 				_setModelData( model, '<widget><paragraph>[a</paragraph></widget><paragraph>b]</paragraph>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false in a root which does not allow blocks at all', () => {
 				doc.createRoot( 'paragraph', 'inlineOnlyRoot' );
 				_setModelData( model, 'a[]b', { rootName: 'inlineOnlyRoot' } );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
 				model.change( writer => {
-					expect( writer.batch.operations.length ).to.equal( 0 );
+					expect( writer.batch.operations.length ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length ).to.be.above( 0 );
+					expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -138,11 +139,11 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
 					command.execute( { forceValue: true } );
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should force converting into the paragraph if the `options.forceValue` is set to `false`', () => {
@@ -151,11 +152,11 @@ describe( 'LegacyListCommand', () => {
 					command.execute( { forceValue: false } );
 
 					// Attributes will be removed by post fixer.
-					expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 
 					command.execute( { forceValue: false } );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 				} );
 			} );
 
@@ -165,7 +166,7 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
@@ -174,7 +175,7 @@ describe( 'LegacyListCommand', () => {
 					command.execute();
 
 					// Attributes will be removed by post fixer.
-					expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 				} );
 
 				it( 'should change closest listItem\' type', () => {
@@ -182,7 +183,7 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
@@ -260,7 +261,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( _getModelData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).toBe( expectedData );
 				} );
 			} );
 
@@ -296,7 +297,7 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
 						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
@@ -319,7 +320,7 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute();
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
 						'<imageBlock></imageBlock>' +
 						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
@@ -348,7 +349,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( _getModelData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).toBe( expectedData );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
@@ -374,7 +375,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( _getModelData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).toBe( expectedData );
 				} );
 
 				it( 'should change closest listItem\'s type', () => {
@@ -399,7 +400,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">]---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( _getModelData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).toBe( expectedData );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
@@ -424,7 +425,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">---</listItem>';
 
-					expect( _getModelData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).toBe( expectedData );
 				} );
 
 				// Example from docs.
@@ -477,11 +478,11 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="2" listType="numbered">---</listItem>' +
 						'<listItem listIndent="0" listType="numbered">---</listItem>';
 
-					expect( _getModelData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).toBe( expectedData );
 				} );
 			} );
 
-			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
+			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', () => {
 				_setModelData( model,
 					'<paragraph>Foo 1.</paragraph>' +
 					'<paragraph>[Foo 2.</paragraph>' +
@@ -491,23 +492,25 @@ describe( 'LegacyListCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>Foo 1.</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">[Foo 2.</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">Foo 3.]</listItem>' +
 					'<paragraph>Foo 4.</paragraph>'
 				);
 
-				command.on( '_executeCleanup', ( evt, data ) => {
-					expect( data ).to.deep.equal( [
-						root.getChild( 2 ),
-						root.getChild( 1 )
-					] );
+				return new Promise( resolve => {
+					command.on( '_executeCleanup', ( evt, data ) => {
+						expect( data ).toEqual( [
+							root.getChild( 2 ),
+							root.getChild( 1 )
+						] );
 
-					done();
+						resolve();
+					} );
+
+					command.execute();
 				} );
-
-				command.execute();
 			} );
 		} );
 	} );

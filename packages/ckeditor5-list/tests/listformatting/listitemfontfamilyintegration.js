@@ -11,8 +11,8 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { FontFamilyEditing } from '@ckeditor/ckeditor5-font';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelElement, _setModelData, _getModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -21,7 +21,9 @@ import { ListItemFontFamilyIntegration } from '../../src/listformatting/listitem
 describe( 'ListItemFontFamilyIntegration', () => {
 	let editor, model, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -44,7 +46,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( async () => {
@@ -52,23 +54,23 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListItemFontFamilyIntegration.pluginName ).to.equal( 'ListItemFontFamilyIntegration' );
+		expect( ListItemFontFamilyIntegration.pluginName ).toBe( 'ListItemFontFamilyIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListItemFontFamilyIntegration.isOfficialPlugin ).to.be.true;
+		expect( ListItemFontFamilyIntegration.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListItemFontFamilyIntegration.isPremiumPlugin ).to.be.false;
+		expect( ListItemFontFamilyIntegration.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListItemFontFamilyIntegration ) ).to.be.instanceOf( ListItemFontFamilyIntegration );
+		expect( editor.plugins.get( ListItemFontFamilyIntegration ) ).toBeInstanceOf( ListItemFontFamilyIntegration );
 	} );
 
 	it( 'should require ListEditing plugin', () => {
-		expect( ListItemFontFamilyIntegration.requires ).to.deep.equal( [
+		expect( ListItemFontFamilyIntegration.requires ).toEqual( [
 			ListEditing
 		] );
 	} );
@@ -82,11 +84,11 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontFamily' ) ).toBe( true );
 		} );
 
 		it( 'listItemFontFamily attribute should have isFormatting set to true', () => {
-			expect( model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
+			expect( model.schema.getAttributeProperties( 'listItemFontFamily' ) ).toMatchObject( {
 				isFormatting: true
 			} );
 		} );
@@ -102,15 +104,15 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontFamily' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontFamily' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontFamily' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontFamily' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontFamily' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontFamily' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontFamily' ) ).toBe( true );
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontFamily' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontFamily' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontFamily' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontFamily' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontFamily' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontFamily' ) ).toBe( false );
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontFamily' ) ).toBe( false );
 		} );
 	} );
 
@@ -277,6 +279,26 @@ describe( 'ListItemFontFamilyIntegration', () => {
 							'<span style="font-family:Arial;">foo</span>' +
 						'</h2>' +
 					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not downcast listItemFontFamily attribute if value is empty', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="" listType="bulleted">' +
+					'foo' +
+				'</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li>foo</li>' +
 				'</ul>'
 			);
 		} );
@@ -510,9 +532,9 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		} );
 
 		it( 'should upcast and consume class', () => {
-			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-family' } ) ).to.be.false;
-				expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-font-family' } ) ).to.be.false;
+			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-family' } ) ).toBe( false );
+				expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-font-family' } ) ).toBe( false );
 			} );
 
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
@@ -531,7 +553,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( upcastCheck.calledOnce ).to.be.true;
+			expect( upcastCheck ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -541,16 +563,16 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'text/html': '<ol><li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">foo</li></ol>'
 			} );
 
-			const spy = sinon.stub( editor.model, 'insertContent' );
+			const spy = vi.spyOn( editor.model, 'insertContent' ).mockImplementation( () => {} );
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				content: dataTransferMock.getData( 'text/html' )
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const content = spy.firstCall.args[ 0 ];
+			const content = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( _stringifyModel( content ) ).to.equal(
 				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="numbered">' +

@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach, afterEach, vi } from 'vitest';
+
 import { ListEditing } from '../../../src/list/listediting.js';
 
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
@@ -30,7 +31,9 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 		commandSpies,
 		mergeBackwardCommandExecuteSpy, mergeForwardCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		element = document.createElement( 'div' );
@@ -87,10 +90,10 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 		mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' );
 		mergeForwardCommand = editor.commands.get( 'mergeListItemForward' );
 
-		splitAfterCommandExecuteSpy = sinon.spy();
-		outdentCommandExecuteSpy = sinon.spy();
-		mergeBackwardCommandExecuteSpy = sinon.spy();
-		mergeForwardCommandExecuteSpy = sinon.spy();
+		splitAfterCommandExecuteSpy = vi.fn();
+		outdentCommandExecuteSpy = vi.fn();
+		mergeBackwardCommandExecuteSpy = vi.fn();
+		mergeForwardCommandExecuteSpy = vi.fn();
 
 		splitAfterCommand.on( 'execute', splitAfterCommandExecuteSpy );
 		outdentCommand.on( 'execute', outdentCommandExecuteSpy );
@@ -132,7 +135,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 	describe( 'backspace (backward)', () => {
 		beforeEach( () => {
 			domEventData = new ViewDocumentDomEventData( view, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'codePoint',
@@ -3553,7 +3556,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 	describe( 'delete (forward)', () => {
 		beforeEach( () => {
 			domEventData = new ViewDocumentDomEventData( view, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'forward',
 				unit: 'codePoint',
@@ -6665,7 +6668,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			skipEventInfo = new BubblingEventInfo( skipView.document, 'delete' );
 			skipDomEventData = new ViewDocumentDomEventData( skipView, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'codePoint',
@@ -6745,7 +6748,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 			eventInfo = new BubblingEventInfo( view.document, 'delete' );
 			domEventData = new ViewDocumentDomEventData( view, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'codePoint',
@@ -6792,15 +6795,18 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
-			expect( domEventData.domEvent.preventDefault.called ).to.equal( eventStopped.preventDefault, 'preventDefault() call' );
+			expect( domEventData.domEvent.preventDefault.mock.calls.length > 0 ).to.equal(
+				eventStopped.preventDefault,
+				'preventDefault() call'
+			);
 			expect( !!eventInfo.stop.called ).to.equal( eventStopped.stop, 'eventInfo.stop() call' );
 		} else {
-			expect( domEventData.domEvent.preventDefault.callCount ).to.equal( eventStopped ? 1 : 0, 'preventDefault() call' );
+			expect( domEventData.domEvent.preventDefault.mock.calls.length ).to.equal( eventStopped ? 1 : 0, 'preventDefault() call' );
 			expect( eventInfo.stop.called ).to.equal( eventStopped ? true : undefined, 'eventInfo.stop() call' );
 		}
 
 		for ( const name in executedCommands ) {
-			expect( commandSpies[ name ].callCount ).to.equal( executedCommands[ name ], `${ name } command call count` );
+			expect( commandSpies[ name ].mock.calls.length ).to.equal( executedCommands[ name ], `${ name } command call count` );
 		}
 
 		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );

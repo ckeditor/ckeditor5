@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model, _parseModel } from '@ckeditor/ckeditor5-engine';
 import { modelList, stringifyList } from '../_utils/utils.js';
 
@@ -10,7 +11,7 @@ describe( 'mockList()', () => {
 	it( 'Single bulleted list item', () => {
 		expect( modelList( [
 			'* foo'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>'
 		);
 	} );
@@ -19,7 +20,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* foo',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -29,7 +30,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'foo',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph>foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -40,7 +41,7 @@ describe( 'mockList()', () => {
 			'*  foo',
 			'   bar',
 			'*   baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted"> foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted"> bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">  baz</paragraph>'
@@ -51,7 +52,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* foo',
 			'bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph>bar</paragraph>'
 		);
@@ -62,7 +63,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'  bar',
 			'  baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">baz</paragraph>'
@@ -74,7 +75,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'  bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -86,7 +87,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'* bar',
 			'  baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">baz</paragraph>'
@@ -98,7 +99,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'# bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="numbered">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -110,7 +111,7 @@ describe( 'mockList()', () => {
 			'# foo',
 			'# bar',
 			'  baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="numbered">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="numbered">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="numbered">baz</paragraph>'
@@ -122,7 +123,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'  * bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -134,7 +135,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'  * bar',
 			'  baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">baz</paragraph>'
@@ -146,7 +147,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'  * bar',
 			'    * baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="2" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -160,7 +161,7 @@ describe( 'mockList()', () => {
 			'    * baz',
 			'  * abc',
 			'* 123'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="2" listItemId="002" listType="bulleted">baz</paragraph>' +
@@ -176,7 +177,7 @@ describe( 'mockList()', () => {
 			'    * baz',
 			'* abc',
 			'  * 123'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="2" listItemId="002" listType="bulleted">baz</paragraph>' +
@@ -192,7 +193,7 @@ describe( 'mockList()', () => {
 			'baz',
 			'* abc',
 			'  * 123'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph>baz</paragraph>' +
@@ -206,7 +207,7 @@ describe( 'mockList()', () => {
 			'* fo[o',
 			'  * bar',
 			'    * b]az'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">fo[o</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="2" listItemId="002" listType="bulleted">b]az</paragraph>'
@@ -218,7 +219,7 @@ describe( 'mockList()', () => {
 			'* <heading1>foo</heading1>',
 			'* <heading2 alignment="right">bar</heading2>',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<heading1 listIndent="0" listItemId="000" listType="bulleted">foo</heading1>' +
 			'<heading2 alignment="right" listIndent="0" listItemId="001" listType="bulleted">bar</heading2>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -228,7 +229,7 @@ describe( 'mockList()', () => {
 	it( 'should allow passing custom element (no selection)', () => {
 		expect( modelList( [
 			'* <objectElement></objectElement>'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
 		);
 	} );
@@ -236,7 +237,7 @@ describe( 'mockList()', () => {
 	it( 'should allow passing custom element (self closing, no attributes)', () => {
 		expect( modelList( [
 			'* <objectElement/>'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
 		);
 	} );
@@ -244,7 +245,7 @@ describe( 'mockList()', () => {
 	it( 'should allow passing custom element (self closing, with attributes)', () => {
 		expect( modelList( [
 			'* <objectElement foo="bar"/>'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<objectElement foo="bar" listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
 		);
 	} );
@@ -253,7 +254,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [<objectElement></objectElement>]',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'[<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>]' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -263,7 +264,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [<paragraph><nested></nested></paragraph>]',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'[<paragraph listIndent="0" listItemId="000" listType="bulleted"><nested></nested></paragraph>]' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -273,7 +274,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [<objectElement>a<nested></nested>b</objectElement>]',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">a<nested></nested>b</objectElement>]' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -283,7 +284,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [<objectElement>foo</objectElement>]',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>]' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -293,7 +294,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [<objectElement>foo</objectElement>',
 			'* bar]'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar]</paragraph>'
 		);
@@ -303,7 +304,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [bar',
 			'* ]<objectElement>foo</objectElement>'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[bar</paragraph>]' +
 			'<objectElement listIndent="0" listItemId="001" listType="bulleted">foo</objectElement>'
 		);
@@ -313,7 +314,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* <objectElement>foo</objectElement>[',
 			'* bar]'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>' +
 			'[<paragraph listIndent="0" listItemId="001" listType="bulleted">bar]</paragraph>'
 		);
@@ -323,7 +324,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* [bar',
 			'* <objectElement>foo</objectElement>]'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[bar</paragraph>' +
 			'<objectElement listIndent="0" listItemId="001" listType="bulleted">foo</objectElement>]'
 		);
@@ -334,7 +335,7 @@ describe( 'mockList()', () => {
 			'* foo{id:abc}',
 			'  bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -346,7 +347,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'* {id:abc}bar',
 			'  baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">baz</paragraph>'
@@ -358,7 +359,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'* bar{id:abc}',
 			'  baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">baz</paragraph>'
@@ -370,7 +371,7 @@ describe( 'mockList()', () => {
 			'* foo',
 			'  {id:abc}bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">{id:abc}bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
@@ -382,7 +383,7 @@ describe( 'mockList()', () => {
 			'* foo {style:abc}',
 			'  bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listStyle="abc" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listStyle="abc" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listStyle="abc" listType="bulleted">baz</paragraph>'
@@ -394,7 +395,7 @@ describe( 'mockList()', () => {
 			'* foo {start:7}',
 			'  bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listStart="7" listType="bulleted">baz</paragraph>'
@@ -406,7 +407,7 @@ describe( 'mockList()', () => {
 			'* foo {reversed:true}',
 			'  bar',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listReversed="true" listType="bulleted">baz</paragraph>'
@@ -418,7 +419,7 @@ describe( 'mockList()', () => {
 			'* foo {style:123}',
 			'  bar {style:abc}',
 			'* baz'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">bar {style:abc}</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listStyle="123" listType="bulleted">baz</paragraph>'
@@ -431,7 +432,7 @@ describe( 'mockList()', () => {
 			'* bar',
 			'# abc {style:789}',
 			'# def'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listStyle="123" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listStyle="789" listType="numbered">abc</paragraph>' +
@@ -443,7 +444,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'* foo {style:xyz}',
 			'# bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listStyle="xyz" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="numbered">bar</paragraph>'
 		);
@@ -453,7 +454,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'# foo {start:7}',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="numbered">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -463,7 +464,7 @@ describe( 'mockList()', () => {
 		expect( modelList( [
 			'# foo {reversed:true}',
 			'* bar'
-		] ) ).to.equalMarkup(
+		] ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="numbered">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
@@ -478,7 +479,7 @@ describe( 'mockList()', () => {
 			  # aaa
 			  abc
 			* end
-		` ) ).to.equalMarkup(
+		` ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph listIndent="1" listItemId="002" listType="numbered">num</paragraph>' +
@@ -498,7 +499,7 @@ describe( 'mockList()', () => {
 			\x20\x20\tc
 			\x20\x20\x20\td
 			\x20\x20\x20\x20e
-		` ) ).to.equalMarkup(
+		` ) ).toBe(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="numbered">num</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="numbered">a</paragraph>' +
@@ -514,14 +515,14 @@ describe( 'mockList()', () => {
 			'* foo',
 			'    bar',
 			'    baz'
-		] ) ).to.throw( Error, 'Invalid indent:     bar' );
+		] ) ).toThrow( 'Invalid indent:     bar' );
 	} );
 
 	it( 'should throw when ID is reused', () => {
 		expect( () => modelList( [
 			'* foo',
 			'* bar {id:000}'
-		] ) ).to.throw( Error, 'ID conflict: 000' );
+		] ) ).toThrow( 'ID conflict: 000' );
 	} );
 
 	it( 'should allow using different default block', () => {
@@ -532,7 +533,7 @@ describe( 'mockList()', () => {
 			* foo
 			# bar
 			# <paragraph>baz</paragraph>
-		` ) ).to.equalMarkup(
+		` ) ).toBe(
 			'<paragraph>text</paragraph>' +
 			'<listItem listIndent="0" listItemId="001" listType="bulleted">foo</listItem>' +
 			'<listItem listIndent="0" listItemId="002" listType="numbered">bar</listItem>' +
@@ -561,7 +562,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'* bbb'
 			].join( '\n' ) );
@@ -575,7 +576,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  bbb',
 				'* ccc'
@@ -590,7 +591,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  * bbb',
 				'  ccc'
@@ -606,7 +607,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  * bbb',
 				'  * ccc',
@@ -623,7 +624,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  * bbb',
 				'    * ccc',
@@ -644,7 +645,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  aaa',
 				'  * bbb',
@@ -664,7 +665,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  * bbb',
 				'    ccc'
@@ -680,7 +681,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* aaa',
 				'  * bbb',
 				'    ccc',
@@ -694,7 +695,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* a'
 			].join( '\n' ) );
 		} );
@@ -705,7 +706,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* '
 			].join( '\n' ) );
 		} );
@@ -719,7 +720,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'# bbb'
 			].join( '\n' ) );
@@ -733,7 +734,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  bbb',
 				'# ccc'
@@ -748,7 +749,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  # bbb',
 				'  ccc'
@@ -764,7 +765,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  # bbb',
 				'  # ccc',
@@ -781,7 +782,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  # bbb',
 				'    # ccc',
@@ -802,7 +803,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  aaa',
 				'  # bbb',
@@ -822,7 +823,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  # bbb',
 				'    ccc'
@@ -838,7 +839,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# aaa',
 				'  # bbb',
 				'    ccc',
@@ -852,7 +853,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# a'
 			].join( '\n' ) );
 		} );
@@ -863,7 +864,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equal( [
+			expect( stringifyList( input ) ).toBe( [
 				'# '
 			].join( '\n' ) );
 		} );
@@ -877,7 +878,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* a',
 				'# 0'
 			].join( '\n' ) );
@@ -890,7 +891,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'# 0',
 				'  * a'
 			].join( '\n' ) );
@@ -903,7 +904,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* a',
 				'  # 0'
 			].join( '\n' ) );
@@ -917,7 +918,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'# 0',
 				'  1',
 				'  * a'
@@ -932,7 +933,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* a',
 				'  b',
 				'  # 0'
@@ -950,7 +951,7 @@ describe( 'stringifyList()', () => {
 				model.schema
 			);
 
-			expect( stringifyList( input ) ).to.equalMarkup( [
+			expect( stringifyList( input ) ).toBe( [
 				'* a',
 				'# b',
 				'# <paragraph>c</paragraph>'

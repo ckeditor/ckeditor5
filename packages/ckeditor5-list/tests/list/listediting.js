@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListEditing } from '../../src/list/listediting.js';
 
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
@@ -15,7 +17,6 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getModelData, _parseModel, _setModelData, _getViewData, ModelElement } from '@ckeditor/ckeditor5-engine';
@@ -32,7 +33,9 @@ import { modelList, prepareTest } from './_utils/utils.js';
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -60,7 +63,7 @@ describe( 'ListEditing', () => {
 		editor.conversion.elementToElement( { model: 'nonListable', view: 'div' } );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 	} );
 
@@ -69,39 +72,43 @@ describe( 'ListEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
+		expect( ListEditing.pluginName ).toBe( 'ListEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListEditing.isOfficialPlugin ).to.be.true;
+		expect( ListEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListEditing.isPremiumPlugin ).to.be.false;
+		expect( ListEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should add keystroke accessibility info', () => {
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).label ).to.equal(
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).label ).toBe(
 			'Keystrokes that can be used in a list'
 		);
 
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).to.deep.include( {
-			label: 'Increase list item indent',
-			keystroke: 'Tab'
-		} );
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).toEqual(
+			expect.arrayContaining( [ {
+				label: 'Increase list item indent',
+				keystroke: 'Tab'
+			} ] )
+		);
 
-		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).to.deep.include( {
-			label: 'Decrease list item indent',
-			keystroke: 'Shift+Tab'
-		} );
+		expect( editor.accessibility.keystrokeInfos.get( 'contentEditing' ).groups.get( 'list' ).keystrokes ).toEqual(
+			expect.arrayContaining( [ {
+				label: 'Decrease list item indent',
+				keystroke: 'Shift+Tab'
+			} ] )
+		);
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
+		expect( editor.plugins.get( ListEditing ) ).toBeInstanceOf( ListEditing );
 	} );
 
 	it( 'should define config', () => {
-		expect( editor.config.get( 'list' ) ).to.deep.equal( {
+		expect( editor.config.get( 'list' ) ).toEqual( {
 			multiBlock: true,
 			enableListItemMarkerFormatting: true
 		} );
@@ -116,30 +123,30 @@ describe( 'ListEditing', () => {
 			caughtError = error;
 		}
 
-		expect( caughtError ).to.instanceof( CKEditorError );
+		expect( caughtError ).toBeInstanceOf( CKEditorError );
 		expect( caughtError.message )
-			.match( /^list-feature-conflict/ );
+			.toMatch( /^list-feature-conflict/ );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listItemId' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listItemId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listIndent' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listType' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'listItemId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'listIndent' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'listType' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'blockQuote' ], 'listItemId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'blockQuote' ], 'listIndent' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'blockQuote' ], 'listType' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'listItemId' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'listIndent' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'listType' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listItemId' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listIndent' ) ).to.be.false;
-		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listItemId' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listItemId' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listIndent' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listType' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'listItemId' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'listIndent' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'heading1' ], 'listType' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'blockQuote' ], 'listItemId' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'blockQuote' ], 'listIndent' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'blockQuote' ], 'listType' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'listItemId' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'listIndent' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'listType' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listItemId' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listIndent' ) ).toBe( false );
+		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).toBe( false );
 	} );
 
 	describe( 'commands', () => {
@@ -149,34 +156,34 @@ describe( 'ListEditing', () => {
 			const customNumbered = editor.commands.get( 'customNumberedList' );
 			const customBulleted = editor.commands.get( 'customBulletedList' );
 
-			expect( numbered ).to.be.instanceOf( ListCommand );
-			expect( bulleted ).to.be.instanceOf( ListCommand );
-			expect( customNumbered ).to.be.instanceOf( ListCommand );
-			expect( customBulleted ).to.be.instanceOf( ListCommand );
+			expect( numbered ).toBeInstanceOf( ListCommand );
+			expect( bulleted ).toBeInstanceOf( ListCommand );
+			expect( customNumbered ).toBeInstanceOf( ListCommand );
+			expect( customBulleted ).toBeInstanceOf( ListCommand );
 		} );
 
 		it( 'should register indent list command', () => {
 			const command = editor.commands.get( 'indentList' );
 
-			expect( command ).to.be.instanceOf( ListIndentCommand );
+			expect( command ).toBeInstanceOf( ListIndentCommand );
 		} );
 
 		it( 'should register outdent list command', () => {
 			const command = editor.commands.get( 'outdentList' );
 
-			expect( command ).to.be.instanceOf( ListIndentCommand );
+			expect( command ).toBeInstanceOf( ListIndentCommand );
 		} );
 
 		it( 'should register the splitListItemBefore command', () => {
 			const command = editor.commands.get( 'splitListItemBefore' );
 
-			expect( command ).to.be.instanceOf( ListSplitCommand );
+			expect( command ).toBeInstanceOf( ListSplitCommand );
 		} );
 
 		it( 'should register the splitListItemAfter command', () => {
 			const command = editor.commands.get( 'splitListItemAfter' );
 
-			expect( command ).to.be.instanceOf( ListSplitCommand );
+			expect( command ).toBeInstanceOf( ListSplitCommand );
 		} );
 
 		it( 'should add indent list command to indent command', async () => {
@@ -187,12 +194,12 @@ describe( 'ListEditing', () => {
 			const indentListCommand = editor.commands.get( 'indentList' );
 			const indentCommand = editor.commands.get( 'indent' );
 
-			const spy = sinon.stub( indentListCommand, 'execute' );
+			const spy = vi.spyOn( indentListCommand, 'execute' ).mockImplementation( () => {} );
 
 			indentListCommand.isEnabled = true;
 			indentCommand.execute();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			await editor.destroy();
 		} );
@@ -205,12 +212,12 @@ describe( 'ListEditing', () => {
 			const outdentListCommand = editor.commands.get( 'outdentList' );
 			const outdentCommand = editor.commands.get( 'outdent' );
 
-			const spy = sinon.stub( outdentListCommand, 'execute' );
+			const spy = vi.spyOn( outdentListCommand, 'execute' ).mockImplementation( () => {} );
 
 			outdentListCommand.isEnabled = true;
 			outdentCommand.execute();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			await editor.destroy();
 		} );
@@ -227,7 +234,7 @@ describe( 'ListEditing', () => {
 					} );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 			}
 
 			it( 'element before nested list', () => {
@@ -361,7 +368,7 @@ describe( 'ListEditing', () => {
 					writer.append( _parseModel( item2, model.schema ), modelRoot );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 			} );
 
 			it( 'paragraph between list item blocks', () => {
@@ -399,7 +406,7 @@ describe( 'ListEditing', () => {
 					writer.remove( selection.getFirstRange() );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 			}
 
 			it( 'first list item', () => {
@@ -456,7 +463,7 @@ describe( 'ListEditing', () => {
 					writer.move( selection.getFirstRange(), targetPosition );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( output );
 			}
 
 			it( 'nested list item out of list structure', () => {
@@ -627,7 +634,7 @@ describe( 'ListEditing', () => {
 					writer.rename( selection.getFirstPosition().nodeAfter, 'nonListable' );
 				} );
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( expectedModel );
 			} );
 		} );
 
@@ -903,8 +910,8 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 	} );
 
 	it( 'should pass model element to setAttributeOnDowncast as the last argument', async () => {
-		const setAttributeOnDowncast = sinon.spy( ( writer, attributeValue, viewElement, options, modelElement ) => {
-			expect( modelElement ).to.be.instanceOf( ModelElement );
+		const setAttributeOnDowncast = vi.fn( ( writer, attributeValue, viewElement, options, modelElement ) => {
+			expect( modelElement ).toBeInstanceOf( ModelElement );
 
 			writer.setAttribute( 'data-foo', attributeValue + '-' + modelElement.name, viewElement );
 		} );
@@ -924,7 +931,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			* <paragraph someFoo="321">bar</paragraph>
 		` ) );
 
-		expect( setAttributeOnDowncast ).to.be.calledTwice;
+		expect( setAttributeOnDowncast ).toHaveBeenCalledTimes( 2 );
 		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 			'<ul>' +
 				'<li data-foo="123-paragraph"><span class="ck-list-bogus-paragraph">foo</span></li>' +

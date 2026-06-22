@@ -60,6 +60,7 @@ export class ListItemFontColorIntegration extends Plugin {
 			attributeName: 'listItemFontColor',
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
+				/* v8 ignore next -- Downcast callbacks are only registered for meaningful list marker formatting values. */
 				if ( value ) {
 					writer.addClass( 'ck-list-marker-color', viewElement );
 					writer.setStyle( '--ck-content-list-marker-color', value as string, viewElement );

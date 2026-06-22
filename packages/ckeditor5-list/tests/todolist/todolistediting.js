@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { ModelElement, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -14,7 +16,6 @@ import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getCode, env } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TodoListEditing } from '../../src/todolist/todolistediting.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -28,7 +29,9 @@ import { stubUid } from '../list/_utils/uid.js';
 describe( 'TodoListEditing', () => {
 	let editor, model, view, editorElement, modelRoot;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -54,38 +57,38 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TodoListEditing.pluginName ).to.equal( 'TodoListEditing' );
+		expect( TodoListEditing.pluginName ).toBe( 'TodoListEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TodoListEditing.isOfficialPlugin ).to.be.true;
+		expect( TodoListEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TodoListEditing.isPremiumPlugin ).to.be.false;
+		expect( TodoListEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should load ListEditing', () => {
-		expect( TodoListEditing.requires ).to.have.members( [ ListEditing ] );
+		expect( TodoListEditing.requires ).toEqual( [ ListEditing ] );
 	} );
 
 	describe( 'commands', () => {
 		it( 'should register todoList command', () => {
 			const command = editor.commands.get( 'todoList' );
 
-			expect( command ).to.be.instanceOf( ListCommand );
-			expect( command ).to.have.property( 'type', 'todo' );
+			expect( command ).toBeInstanceOf( ListCommand );
+			expect( command ).toHaveProperty( 'type', 'todo' );
 		} );
 
 		it( 'should register checkTodoList command', () => {
 			const command = editor.commands.get( 'checkTodoList' );
 
-			expect( command ).to.be.instanceOf( CheckTodoListCommand );
+			expect( command ).toBeInstanceOf( CheckTodoListCommand );
 		} );
 	} );
 
 	it( 'should register TodoCheckboxChangeObserver', () => {
-		expect( view.getObserver( TodoCheckboxChangeObserver ) ).to.be.instanceOf( TodoCheckboxChangeObserver );
+		expect( view.getObserver( TodoCheckboxChangeObserver ) ).toBeInstanceOf( TodoCheckboxChangeObserver );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -94,10 +97,10 @@ describe( 'TodoListEditing', () => {
 		const blockQuote = new ModelElement( 'blockQuote', { listItemId: 'foo', listType: 'todo' } );
 		const table = new ModelElement( 'table', { listItemId: 'foo', listType: 'todo' }, [ ] );
 
-		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', heading ], 'todoListChecked' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'todoListChecked' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', table ], 'todoListChecked' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', paragraph ], 'todoListChecked' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', heading ], 'todoListChecked' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'todoListChecked' ) ).toBe( true );
+		expect( model.schema.checkAttribute( [ '$root', table ], 'todoListChecked' ) ).toBe( true );
 	} );
 
 	describe( 'upcast', () => {
@@ -254,7 +257,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph></paragraph>' );
 		} );
 
 		it( 'should convert li with a checkbox and two paragraphs', () => {
@@ -1009,7 +1012,7 @@ describe( 'TodoListEditing', () => {
 		let announcerSpy;
 
 		beforeEach( () => {
-			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+			announcerSpy = vi.spyOn( editor.ui.ariaLiveAnnouncer, 'announce' );
 		} );
 
 		it( 'should announce entering and leaving list (multiBlock = false)', async () => {
@@ -1023,7 +1026,7 @@ describe( 'TodoListEditing', () => {
 
 			model = editor.model;
 			modelRoot = model.document.getRoot();
-			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
+			announcerSpy = vi.spyOn( editor.ui.ariaLiveAnnouncer, 'announce' );
 
 			_setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
@@ -1074,11 +1077,11 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		function expectNotToAnnounce( message ) {
-			expect( announcerSpy ).not.to.be.calledWithExactly( message );
+			expect( announcerSpy ).not.toHaveBeenCalledWith( message );
 		}
 
 		function expectAnnounce( message ) {
-			expect( announcerSpy ).to.be.calledWithExactly( message );
+			expect( announcerSpy ).toHaveBeenCalledWith( message );
 		}
 
 		function moveSelection( startPath, endPath ) {
@@ -1099,12 +1102,12 @@ describe( 'TodoListEditing', () => {
 		it( 'should toggle check state of selected to-do list item on keystroke', () => {
 			const command = editor.commands.get( 'checkTodoList' );
 
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			const domEvtDataStub = {
 				keyCode: getCode( 'enter' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 
 			if ( env.isMac ) {
@@ -1115,11 +1118,11 @@ describe( 'TodoListEditing', () => {
 
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledOnce( command.execute );
+			expect( command.execute ).toHaveBeenCalledOnce();
 
 			view.document.fire( 'keydown', domEvtDataStub );
 
-			sinon.assert.calledTwice( command.execute );
+			expect( command.execute ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should toggle check state of a to-do list item on clicking the checkbox', () => {
@@ -1129,11 +1132,11 @@ describe( 'TodoListEditing', () => {
 
 			const command = editor.commands.get( 'checkTodoList' );
 
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			view.getDomRoot().querySelector( 'input' ).dispatchEvent( new Event( 'change', { 'bubbles': true } ) );
 
-			sinon.assert.calledOnce( command.execute );
+			expect( command.execute ).toHaveBeenCalledOnce();
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
@@ -1147,13 +1150,13 @@ describe( 'TodoListEditing', () => {
 
 			const command = editor.commands.get( 'checkTodoList' );
 
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			view.document.fire( 'todoCheckboxChange', {
 				target: view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 )
 			} );
 
-			sinon.assert.calledOnce( command.execute );
+			expect( command.execute ).toHaveBeenCalledOnce();
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
@@ -1167,11 +1170,11 @@ describe( 'TodoListEditing', () => {
 
 			const command = editor.commands.get( 'checkTodoList' );
 
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			view.document.fire( 'todoCheckboxChange', {} );
 
-			sinon.assert.notCalled( command.execute );
+			expect( command.execute ).not.toHaveBeenCalled();
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
@@ -1185,13 +1188,13 @@ describe( 'TodoListEditing', () => {
 
 			const command = editor.commands.get( 'checkTodoList' );
 
-			sinon.spy( command, 'execute' );
+			vi.spyOn( command, 'execute' );
 
 			view.document.fire( 'todoCheckboxChange', {
 				target: view.document.getRoot()
 			} );
 
-			sinon.assert.notCalled( command.execute );
+			expect( command.execute ).not.toHaveBeenCalled();
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
@@ -1239,6 +1242,30 @@ describe( 'TodoListEditing', () => {
 				);
 			} );
 
+			it( 'should do nothing if selection is at end of a todo list item and the next element is not a todo list item', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( eventData.stopPropagation ).not.toHaveBeenCalled();
+
+				expect( _getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
 			it( 'should do nothing if selection is at end of the last todo list item and right arrow is pressed', () => {
 				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
@@ -1246,15 +1273,15 @@ describe( 'TodoListEditing', () => {
 
 				const eventData = {
 					keyCode: getCode( 'arrowRight' ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domTarget: view.getDomRoot()
 				};
 
 				view.document.fire( 'keydown', eventData );
 
-				sinon.assert.notCalled( eventData.preventDefault );
-				sinon.assert.notCalled( eventData.stopPropagation );
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
@@ -1269,15 +1296,15 @@ describe( 'TodoListEditing', () => {
 
 				const eventData = {
 					keyCode: getCode( 'arrowRight' ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domTarget: view.getDomRoot()
 				};
 
 				view.document.fire( 'keydown', eventData );
 
-				sinon.assert.notCalled( eventData.preventDefault );
-				sinon.assert.notCalled( eventData.stopPropagation );
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
@@ -1293,15 +1320,15 @@ describe( 'TodoListEditing', () => {
 
 				const eventData = {
 					keyCode: getCode( 'arrowRight' ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domTarget: view.getDomRoot()
 				};
 
 				view.document.fire( 'keydown', eventData );
 
-				sinon.assert.notCalled( eventData.preventDefault );
-				sinon.assert.notCalled( eventData.stopPropagation );
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>fo[o]</paragraph>' +
@@ -1330,6 +1357,28 @@ describe( 'TodoListEditing', () => {
 				);
 			} );
 
+			it( 'should do nothing if selection is not at the start of a todo list item and left arrow is pressed', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[]o</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowLeft' ),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( eventData.stopPropagation ).not.toHaveBeenCalled();
+
+				expect( _getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[]o</paragraph>'
+				);
+			} );
+
 			it( 'should do nothing if selection is at start of first element which is a todo list item and left arrow is pressed', () => {
 				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
@@ -1337,15 +1386,15 @@ describe( 'TodoListEditing', () => {
 
 				const eventData = {
 					keyCode: getCode( 'arrowLeft' ),
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn(),
 					domTarget: view.getDomRoot()
 				};
 
 				view.document.fire( 'keydown', eventData );
 
-				sinon.assert.notCalled( eventData.preventDefault );
-				sinon.assert.notCalled( eventData.stopPropagation );
+				expect( eventData.preventDefault ).not.toHaveBeenCalled();
+				expect( eventData.stopPropagation ).not.toHaveBeenCalled();
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'

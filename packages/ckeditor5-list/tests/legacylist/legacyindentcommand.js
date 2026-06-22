@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { LegacyIndentCommand } from '../../src/legacylist/legacyindentcommand.js';
@@ -53,7 +54,7 @@ describe( 'LegacyIndentCommand', () => {
 					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be false if selection starts in first list item', () => {
@@ -61,7 +62,7 @@ describe( 'LegacyIndentCommand', () => {
 					writer.setSelection( root.getChild( 0 ), 0 );
 				} );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			// Reported in PR #53.
@@ -75,7 +76,7 @@ describe( 'LegacyIndentCommand', () => {
 					'<listItem listIndent="2" listType="bulleted">e</listItem>'
 				);
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			// Reported in PR #53.
@@ -89,7 +90,7 @@ describe( 'LegacyIndentCommand', () => {
 					'<listItem listIndent="0" listType="bulleted">[]e</listItem>'
 				);
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection starts in first list item of top level list with different type than previous list', () => {
@@ -99,7 +100,7 @@ describe( 'LegacyIndentCommand', () => {
 					'<listItem listIndent="0" listType="numbered">[]b</listItem>'
 				);
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
@@ -107,7 +108,7 @@ describe( 'LegacyIndentCommand', () => {
 					writer.setSelection( root.getChild( 2 ), 0 );
 				} );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 
 			// Edge case but may happen that some other blocks will also use the indent attribute
@@ -117,7 +118,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				_setModelData( model, '<listItem listIndent="0">a</listItem><paragraph listIndent="0">b[]</paragraph>' );
 
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
@@ -128,11 +129,11 @@ describe( 'LegacyIndentCommand', () => {
 				} );
 
 				model.change( writer => {
-					expect( writer.batch.operations.length ).to.equal( 0 );
+					expect( writer.batch.operations.length ).toBe( 0 );
 
 					command.execute();
 
-					expect( writer.batch.operations.length ).to.be.above( 0 );
+					expect( writer.batch.operations.length ).toBeGreaterThan( 0 );
 				} );
 			} );
 
@@ -143,7 +144,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -161,7 +162,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -182,7 +183,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -193,24 +194,26 @@ describe( 'LegacyIndentCommand', () => {
 				);
 			} );
 
-			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
-				model.change( writer => {
-					writer.setSelection( root.getChild( 1 ), 0 );
+			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', () => {
+				return new Promise( resolve => {
+					model.change( writer => {
+						writer.setSelection( root.getChild( 1 ), 0 );
+					} );
+
+					command.on( '_executeCleanup', ( evt, data ) => {
+						expect( data ).toEqual( [
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 ),
+							root.getChild( 5 )
+						] );
+
+						resolve();
+					} );
+
+					command.execute();
 				} );
-
-				command.on( '_executeCleanup', ( evt, data ) => {
-					expect( data ).to.deep.equal( [
-						root.getChild( 1 ),
-						root.getChild( 2 ),
-						root.getChild( 3 ),
-						root.getChild( 4 ),
-						root.getChild( 5 )
-					] );
-
-					done();
-				} );
-
-				command.execute();
 			} );
 		} );
 	} );
@@ -232,7 +235,7 @@ describe( 'LegacyIndentCommand', () => {
 					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in first list item', () => {
@@ -241,7 +244,7 @@ describe( 'LegacyIndentCommand', () => {
 					writer.setSelection( root.getChild( 0 ), 0 );
 				} );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
@@ -250,7 +253,7 @@ describe( 'LegacyIndentCommand', () => {
 					writer.setSelection( root.getChild( 2 ), 0 );
 				} );
 
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 		} );
 
@@ -262,7 +265,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -280,7 +283,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<paragraph listIndent="0" listType="bulleted">a</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -298,7 +301,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<paragraph listIndent="0" listType="bulleted">b</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
@@ -319,7 +322,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqual(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<paragraph listIndent="0" listType="bulleted">b</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">c</listItem>' +

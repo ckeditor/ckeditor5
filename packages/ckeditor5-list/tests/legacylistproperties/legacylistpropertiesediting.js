@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -21,15 +23,15 @@ describe( 'LegacyListPropertiesEditing', () => {
 	let editor, model, view;
 
 	it( 'should have pluginName', () => {
-		expect( LegacyListPropertiesEditing.pluginName ).to.equal( 'LegacyListPropertiesEditing' );
+		expect( LegacyListPropertiesEditing.pluginName ).toBe( 'LegacyListPropertiesEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( LegacyListPropertiesEditing.isOfficialPlugin ).to.be.true;
+		expect( LegacyListPropertiesEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( LegacyListPropertiesEditing.isPremiumPlugin ).to.be.false;
+		expect( LegacyListPropertiesEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'config', () => {
@@ -48,7 +50,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		} );
 
 		it( 'should have default values', () => {
-			expect( editor.config.get( 'list' ) ).to.deep.equal( {
+			expect( editor.config.get( 'list' ) ).toEqual( {
 				properties: {
 					styles: true,
 					startIndex: false,
@@ -58,7 +60,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( LegacyListPropertiesEditing ) ).to.be.instanceOf( LegacyListPropertiesEditing );
+			expect( editor.plugins.get( LegacyListPropertiesEditing ) ).toBeInstanceOf( LegacyListPropertiesEditing );
 		} );
 	} );
 
@@ -84,15 +86,15 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 		describe( 'schema rules', () => {
 			it( 'should allow set `listStyle` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).toBe( true );
 			} );
 
 			it( 'should not allow set `listReversed` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).toBe( false );
 			} );
 
 			it( 'should not allow set `listStart` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).toBe( false );
 			} );
 		} );
 
@@ -100,19 +102,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 			it( 'should register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.instanceOf( LegacyListStyleCommand );
+				expect( command ).toBeInstanceOf( LegacyListStyleCommand );
 			} );
 
 			it( 'should not register `listReversed` command', () => {
 				const command = editor.commands.get( 'listReversed' );
 
-				expect( command ).to.be.undefined;
+				expect( command ).toBeUndefined();
 			} );
 
 			it( 'should not register `listStart` command', () => {
 				const command = editor.commands.get( 'listStart' );
 
-				expect( command ).to.be.undefined;
+				expect( command ).toBeUndefined();
 			} );
 		} );
 
@@ -124,7 +126,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ul><li>Foo</li><li>Bar</li></ul>' );
+					expect( editor.getData() ).toBe( '<ul><li>Foo</li><li>Bar</li></ul>' );
 				} );
 
 				it( 'should convert single list (type: numbered)', () => {
@@ -133,7 +135,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert single list (type: bulleted, style: default)', () => {
@@ -142,7 +144,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ul><li>Foo</li><li>Bar</li></ul>' );
+					expect( editor.getData() ).toBe( '<ul><li>Foo</li><li>Bar</li></ul>' );
 				} );
 
 				it( 'should convert single list (type: numbered, style: default)', () => {
@@ -151,7 +153,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStyle="default">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
@@ -160,7 +162,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
+					expect( editor.getData() ).toBe( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
 				} );
 
 				it( 'should convert single list (type: numbered, style: upper-latin)', () => {
@@ -169,7 +171,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStyle="upper-latin">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol style="list-style-type:upper-latin;"><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol style="list-style-type:upper-latin;"><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
@@ -181,7 +183,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ul style="list-style-type:circle;">' +
 						'<li>Foo 1' +
 							'<ul style="list-style-type:disc;">' +
@@ -204,7 +206,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol style="list-style-type:decimal-leading-zero;">' +
 						'<li>Foo 1' +
 							'<ol style="list-style-type:lower-latin;">' +
@@ -227,7 +229,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ul style="list-style-type:square;">' +
 						'<li>Foo 1' +
 							'<ol style="list-style-type:lower-roman;">' +
@@ -249,7 +251,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol style="list-style-type:decimal;">' +
 						'<li>Foo 1</li>' +
 						'<li>Foo 2' +
@@ -270,7 +272,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol style="list-style-type:decimal;">' +
 							'<li>Foo 1</li>' +
 							'<li>Foo 2</li>' +
@@ -290,7 +292,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ul style="list-style-type:disc;">' +
 							'<li>Foo 1</li>' +
 							'<li>Foo 2</li>' +
@@ -307,7 +309,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Bar</listItem>'
 					);
@@ -316,7 +318,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Bar</listItem>'
 					);
@@ -325,7 +327,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
 					editor.setData( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
@@ -334,7 +336,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, style: upper-latin)', () => {
 					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Bar</listItem>'
 					);
@@ -354,7 +356,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 1</listItem>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 1</listItem>' +
@@ -373,7 +375,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<p>Paragraph.</p>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<paragraph>Paragraph.</paragraph>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Bar</listItem>' +
@@ -405,19 +407,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 					it( 'should convert a list if raw text is before the list', () => {
 						editor.setData( 'Foo<ul><li>Foo</li></ul>' );
 
-						expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul>' );
+						expect( editor.getData() ).toBe( '<p>Foo</p><ul><li>Foo</li></ul>' );
 					} );
 
 					it( 'should convert a list if raw text is after the list', () => {
 						editor.setData( '<ul><li>Foo</li></ul>Foo' );
 
-						expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul><p>Foo</p>' );
+						expect( editor.getData() ).toBe( '<ul><li>Foo</li></ul><p>Foo</p>' );
 					} );
 
 					it( 'should convert a list if it is surrender by two text nodes', () => {
 						editor.setData( 'Foo<ul><li>Foo</li></ul>Foo' );
 
-						expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul><p>Foo</p>' );
+						expect( editor.getData() ).toBe( '<p>Foo</p><ul><li>Foo</li></ul><p>Foo</p>' );
 					} );
 				} );
 			} );
@@ -433,7 +435,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ul><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
@@ -444,7 +446,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ul style="list-style-type:circle"><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
@@ -458,7 +460,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ul style="list-style-type:circle">' +
 							'<li>Foo 1' +
 								'<ul style="list-style-type:disc">' +
@@ -487,7 +489,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.2.1</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ul>' +
 							'<li>Level 0' +
 								'<ul>' +
@@ -520,7 +522,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -537,7 +539,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo Bar 1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar 2.]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
@@ -553,7 +555,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
@@ -566,7 +568,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar 1.[]</listItem>'
 					);
 				} );
@@ -582,7 +584,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
@@ -600,7 +602,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
@@ -619,7 +621,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
@@ -638,7 +640,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
@@ -658,7 +660,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -676,7 +678,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
@@ -694,7 +696,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'listStyle', { type: 'disc' } );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -712,7 +714,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'listStyle', { type: 'disc' } );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
@@ -733,7 +735,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
@@ -751,7 +753,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">3.]</listItem>'
@@ -770,7 +772,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>' +
@@ -791,7 +793,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">3.[]</listItem>' +
@@ -810,7 +812,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -831,7 +833,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -849,7 +851,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">3.[]</listItem>'
@@ -865,7 +867,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">[]</listItem>'
 					);
@@ -882,7 +884,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -898,7 +900,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
@@ -914,7 +916,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>'
@@ -933,7 +935,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>[1.</paragraph>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>' +
@@ -955,7 +957,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -974,7 +976,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>'
@@ -991,7 +993,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -1010,7 +1012,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -1024,7 +1026,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -1043,7 +1045,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'indentList' );
 					editor.execute( 'undo' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
@@ -1062,7 +1064,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 					editor.execute( 'undo' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -1109,7 +1111,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).toBe(
 						'<ul style="list-style-type:circle">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -1130,7 +1132,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ○ 2.
 					editor.execute( 'delete' );
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).toBe(
 						'<ul style="list-style-type:circle">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -1149,7 +1151,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ■ 2.
 					editor.execute( 'undo' );
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).toBe(
 						'<ul style="list-style-type:circle">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -1219,7 +1221,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -1231,13 +1233,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					const listItem = model.document.getRoot().getChild( 0 );
 
-					expect( listItem.hasAttribute( 'listStyle' ) ).to.be.false;
+					expect( listItem.hasAttribute( 'listStyle' ) ).toBe( false );
 
 					model.change( writer => {
 						writer.setAttribute( 'listStyle', 'foo', listItem );
 					} );
 
-					expect( listItem.hasAttribute( 'listStyle' ) ).to.be.false;
+					expect( listItem.hasAttribute( 'listStyle' ) ).toBe( false );
 				} );
 			} );
 
@@ -1273,7 +1275,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -1292,7 +1294,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>Foo[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
@@ -1309,7 +1311,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
 						'<paragraph>Foo</paragraph>'
@@ -1325,7 +1327,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>'
 					);
@@ -1344,7 +1346,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
@@ -1366,7 +1368,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
@@ -1390,7 +1392,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
@@ -1413,7 +1415,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">[]</listItem>' +
@@ -1436,7 +1438,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'insertText', { text: 'Foo' } );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">Foo[]</listItem>' +
@@ -1459,7 +1461,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">[]11.</listItem>' +
@@ -1478,14 +1480,14 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 
-					const modelChangeStub = sinon.stub( model, 'change' ).callThrough();
+					const modelChangeStub = vi.spyOn( model, 'change' );
 
 					simulateTyping( ' Foo' );
 
 					// Each character calls `editor.model.change()`.
-					expect( modelChangeStub.callCount ).to.equal( 4 );
+					expect( modelChangeStub ).toHaveBeenCalledTimes( 4 );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2. Foo[]</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -1506,7 +1508,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listStyle="default" listType="bulleted">dddd</listItem>'
@@ -1526,7 +1528,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
@@ -1545,7 +1547,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">[]</listItem>' +
 						'<paragraph>foo</paragraph>' +
@@ -1606,7 +1608,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
@@ -1630,7 +1632,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
@@ -1656,7 +1658,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
@@ -1679,7 +1681,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo[]</listItem>' +
@@ -1700,7 +1702,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">Foo[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -1738,7 +1740,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
@@ -1772,15 +1774,15 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 		describe( 'schema rules', () => {
 			it( 'should not allow set `listStyle` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).toBe( false );
 			} );
 
 			it( 'should allow set `listReversed` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).toBe( true );
 			} );
 
 			it( 'should not allow set `listStart` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).toBe( false );
 			} );
 		} );
 
@@ -1788,19 +1790,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 			it( 'should register `listReversed` command', () => {
 				const command = editor.commands.get( 'listReversed' );
 
-				expect( command ).to.be.instanceOf( LegacyListReversedCommand );
+				expect( command ).toBeInstanceOf( LegacyListReversedCommand );
 			} );
 
 			it( 'should not register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.undefined;
+				expect( command ).toBeUndefined();
 			} );
 
 			it( 'should not register `listStart` command', () => {
 				const command = editor.commands.get( 'listStart' );
 
-				expect( command ).to.be.undefined;
+				expect( command ).toBeUndefined();
 			} );
 		} );
 
@@ -1812,7 +1814,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert single list (type: numbered, reversed: false)', () => {
@@ -1821,7 +1823,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
@@ -1833,7 +1835,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol>' +
 							'<li>Foo 1' +
 								'<ol reversed="reversed">' +
@@ -1856,7 +1858,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol reversed="reversed">' +
 							'<li>Foo 1' +
 								'<ol>' +
@@ -1879,7 +1881,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ul>' +
 							'<li>Foo 1' +
 								'<ol reversed="reversed">' +
@@ -1901,7 +1903,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol reversed="reversed">' +
 							'<li>Foo 1</li>' +
 							'<li>Foo 2' +
@@ -1922,7 +1924,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol reversed="reversed">' +
 							'<li>Foo 1</li>' +
 							'<li>Foo 2</li>' +
@@ -1939,7 +1941,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
@@ -1948,7 +1950,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, reversed: false)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
 					);
@@ -1957,7 +1959,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, reversed: true)', () => {
 					editor.setData( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
 					);
@@ -1966,7 +1968,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, reversed: true) (attribute without value)', () => {
 					editor.setData( '<ol reversed><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
 					);
@@ -1986,7 +1988,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 1</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">UL 1</listItem>' +
@@ -2005,7 +2007,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<p>Paragraph.</p>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<paragraph>Paragraph.</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
@@ -2037,19 +2039,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 					it( 'should convert a list if raw text is before the list', () => {
 						editor.setData( 'Foo<ol><li>Foo</li></ol>' );
 
-						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol>' );
+						expect( editor.getData() ).toBe( '<p>Foo</p><ol><li>Foo</li></ol>' );
 					} );
 
 					it( 'should convert a list if raw text is after the list', () => {
 						editor.setData( '<ol><li>Foo</li></ol>Foo' );
 
-						expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol><p>Foo</p>' );
+						expect( editor.getData() ).toBe( '<ol><li>Foo</li></ol><p>Foo</p>' );
 					} );
 
 					it( 'should convert a list if it is surrender by two text nodes', () => {
 						editor.setData( 'Foo<ol><li>Foo</li></ol>Foo' );
 
-						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol><p>Foo</p>' );
+						expect( editor.getData() ).toBe( '<p>Foo</p><ol><li>Foo</li></ol><p>Foo</p>' );
 					} );
 				} );
 			} );
@@ -2063,7 +2065,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ul><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
@@ -2074,7 +2076,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
@@ -2085,7 +2087,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
@@ -2099,7 +2101,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 3</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol>' +
 							'<li>Foo 1' +
 								'<ol reversed="reversed">' +
@@ -2122,7 +2124,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 3</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol reversed="reversed">' +
 							'<li>Foo 1' +
 								'<ol>' +
@@ -2152,7 +2154,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
@@ -2172,7 +2174,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
@@ -2192,7 +2194,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -2210,7 +2212,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">[Foo Bar 1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar 2.]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
@@ -2226,7 +2228,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
@@ -2240,7 +2242,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
@@ -2253,7 +2255,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar 1.[]</listItem>'
 					);
 				} );
@@ -2269,7 +2271,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -2287,7 +2289,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
@@ -2306,7 +2308,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
@@ -2325,7 +2327,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">Foo Bar</listItem>' +
@@ -2345,7 +2347,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
@@ -2363,7 +2365,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
@@ -2378,7 +2380,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 				} );
@@ -2390,7 +2392,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
 					);
 				} );
@@ -2408,7 +2410,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
@@ -2426,7 +2428,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">3.]</listItem>'
@@ -2445,7 +2447,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">3.[]</listItem>' +
@@ -2466,7 +2468,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">3.[]</listItem>' +
@@ -2485,7 +2487,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="2" listReversed="true" listType="numbered">3.</listItem>' +
@@ -2506,7 +2508,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2524,7 +2526,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">3.[]</listItem>'
@@ -2542,7 +2544,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -2558,7 +2560,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.[]</listItem>'
@@ -2574,7 +2576,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">3.]</listItem>'
@@ -2593,7 +2595,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>[1.</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">3.]</listItem>' +
@@ -2615,7 +2617,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">3.</listItem>' +
@@ -2634,7 +2636,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>'
@@ -2653,7 +2655,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2671,7 +2673,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
@@ -2689,7 +2691,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
@@ -2703,7 +2705,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -2722,7 +2724,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'indentList' );
 					editor.execute( 'undo' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
@@ -2741,7 +2743,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 					editor.execute( 'undo' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -2788,7 +2790,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).toBe(
 						'<ol>' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -2809,7 +2811,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ○ 2.
 					editor.execute( 'delete' );
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).toBe(
 						'<ol>' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -2828,7 +2830,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ■ 2.
 					editor.execute( 'undo' );
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).toBe(
 						'<ol>' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -2897,7 +2899,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
@@ -2909,13 +2911,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					const listItem = model.document.getRoot().getChild( 0 );
 
-					expect( listItem.hasAttribute( 'listReversed' ) ).to.be.false;
+					expect( listItem.hasAttribute( 'listReversed' ) ).toBe( false );
 
 					model.change( writer => {
 						writer.setAttribute( 'listReversed', true, listItem );
 					} );
 
-					expect( listItem.hasAttribute( 'listReversed' ) ).to.be.false;
+					expect( listItem.hasAttribute( 'listReversed' ) ).toBe( false );
 				} );
 			} );
 
@@ -2951,7 +2953,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -2970,7 +2972,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>Foo[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
@@ -2987,7 +2989,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<paragraph>Foo</paragraph>'
@@ -3003,7 +3005,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>'
 					);
@@ -3022,7 +3024,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
@@ -3044,7 +3046,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -3068,7 +3070,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
@@ -3091,7 +3093,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">[]</listItem>' +
@@ -3114,7 +3116,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'insertText', { text: 'Foo' } );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo[]</listItem>' +
@@ -3137,7 +3139,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">111.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">222.</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">[]11.</listItem>' +
@@ -3156,14 +3158,14 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
 					);
 
-					const modelChangeStub = sinon.stub( model, 'change' ).callThrough();
+					const modelChangeStub = vi.spyOn( model, 'change' );
 
 					simulateTyping( ' Foo' );
 
 					// Each character calls `editor.model.change()`.
-					expect( modelChangeStub.callCount ).to.equal( 4 );
+					expect( modelChangeStub ).toHaveBeenCalledTimes( 4 );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2. Foo[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>' +
@@ -3184,7 +3186,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listReversed="false" listType="numbered">dddd</listItem>'
@@ -3202,7 +3204,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">[]</listItem>' +
 						'<paragraph>foo</paragraph>' +
@@ -3225,7 +3227,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -3287,7 +3289,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
@@ -3311,7 +3313,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
@@ -3337,7 +3339,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
@@ -3360,7 +3362,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo[]</listItem>' +
@@ -3381,7 +3383,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">Foo[]</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3419,7 +3421,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
@@ -3453,15 +3455,15 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 		describe( 'schema rules', () => {
 			it( 'should not allow set `listStyle` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).toBe( false );
 			} );
 
 			it( 'should not allow set `listReversed` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.false;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).toBe( false );
 			} );
 
 			it( 'should allow set `listStart` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).toBe( true );
 			} );
 		} );
 
@@ -3469,19 +3471,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 			it( 'should not register `listReversed` command', () => {
 				const command = editor.commands.get( 'listReversed' );
 
-				expect( command ).to.be.undefined;
+				expect( command ).toBeUndefined();
 			} );
 
 			it( 'should not register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.undefined;
+				expect( command ).toBeUndefined();
 			} );
 
 			it( 'should register `listStart` command', () => {
 				const command = editor.commands.get( 'listStart' );
 
-				expect( command ).to.be.instanceOf( LegacyListStartCommand );
+				expect( command ).toBeInstanceOf( LegacyListStartCommand );
 			} );
 		} );
 
@@ -3493,7 +3495,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="2">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol start="2"><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol start="2"><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert single list (type: numbered, start: 1)', () => {
@@ -3502,7 +3504,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="1">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert nested numbered lists (main: 2, nested: 3)', () => {
@@ -3514,7 +3516,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="2">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol start="2">' +
 							'<li>Foo 1' +
 								'<ol start="3">' +
@@ -3537,7 +3539,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="2">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol start="2">' +
 							'<li>Foo 1' +
 								'<ol>' +
@@ -3560,7 +3562,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">Foo 3</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ul>' +
 							'<li>Foo 1' +
 								'<ol start="2">' +
@@ -3582,7 +3584,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="1" listType="numbered" listStart="3">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol start="3">' +
 							'<li>Foo 1</li>' +
 							'<li>Foo 2' +
@@ -3603,7 +3605,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="4">Bar 2</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol start="3">' +
 							'<li>Foo 1</li>' +
 							'<li>Foo 2</li>' +
@@ -3621,7 +3623,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="0">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should not allow a negative start index', () => {
@@ -3630,7 +3632,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="-3">Bar</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 			} );
 
@@ -3638,7 +3640,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
@@ -3647,7 +3649,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, start: 1)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
 					);
@@ -3656,7 +3658,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, start: 2)', () => {
 					editor.setData( '<ol start="2"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>'
 					);
@@ -3665,7 +3667,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, start: 0)', () => {
 					editor.setData( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStart="0" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="0" listType="numbered">Bar</listItem>'
 					);
@@ -3674,7 +3676,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list and change negative start index (type: numbered, start: -3)', () => {
 					editor.setData( '<ol start="-3"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
 					);
@@ -3694,7 +3696,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listStart="3" listType="numbered">OL 1</listItem>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">UL 1</listItem>' +
@@ -3713,7 +3715,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<p>Paragraph.</p>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<paragraph>Paragraph.</paragraph>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>' +
@@ -3745,19 +3747,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 					it( 'should convert a list if raw text is before the list', () => {
 						editor.setData( 'Foo<ol><li>Foo</li></ol>' );
 
-						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol>' );
+						expect( editor.getData() ).toBe( '<p>Foo</p><ol><li>Foo</li></ol>' );
 					} );
 
 					it( 'should convert a list if raw text is after the list', () => {
 						editor.setData( '<ol><li>Foo</li></ol>Foo' );
 
-						expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol><p>Foo</p>' );
+						expect( editor.getData() ).toBe( '<ol><li>Foo</li></ol><p>Foo</p>' );
 					} );
 
 					it( 'should convert a list if it is surrender by two text nodes', () => {
 						editor.setData( 'Foo<ol><li>Foo</li></ol>Foo' );
 
-						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol><p>Foo</p>' );
+						expect( editor.getData() ).toBe( '<p>Foo</p><ol><li>Foo</li></ol><p>Foo</p>' );
 					} );
 				} );
 			} );
@@ -3771,7 +3773,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ul><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
@@ -3782,7 +3784,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="2">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol start="2"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
@@ -3793,7 +3795,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="1">Bar</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
@@ -3807,7 +3809,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="1">Foo 3</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol>' +
 							'<li>Foo 1' +
 								'<ol start="2">' +
@@ -3830,7 +3832,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 3</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).toBe(
 						'<ol start="3">' +
 							'<li>Foo 1' +
 								'<ol>' +
@@ -3860,7 +3862,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Bar</listItem>'
@@ -3880,7 +3882,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
@@ -3900,7 +3902,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3918,7 +3920,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="5" listType="numbered">[Foo Bar 1.</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo Bar 2.]</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo</listItem>' +
@@ -3934,7 +3936,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
@@ -3948,7 +3950,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
@@ -3961,7 +3963,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar 1.[]</listItem>'
 					);
 				} );
@@ -3977,7 +3979,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3995,7 +3997,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>'
@@ -4014,7 +4016,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo Bar.[]</listItem>'
@@ -4033,7 +4035,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="4" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="1" listStart="5" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="2" listStart="5" listType="numbered">Foo Bar</listItem>' +
@@ -4053,7 +4055,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="4" listType="numbered">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">Bar</listItem>'
@@ -4071,7 +4073,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo Bar.[]</listItem>'
@@ -4086,7 +4088,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 				} );
@@ -4098,7 +4100,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>'
 					);
 				} );
@@ -4116,7 +4118,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">2B.</listItem>' +
@@ -4134,7 +4136,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">3.]</listItem>'
@@ -4153,7 +4155,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="1" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="1" listType="numbered">3.[]</listItem>' +
@@ -4174,7 +4176,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="4" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">3.[]</listItem>' +
@@ -4193,7 +4195,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="2" listStart="2" listType="numbered">3.</listItem>' +
@@ -4214,7 +4216,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listStart="4" listType="numbered">3.</listItem>' +
@@ -4232,7 +4234,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">3.[]</listItem>'
@@ -4250,7 +4252,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
@@ -4266,7 +4268,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.[]</listItem>'
@@ -4282,7 +4284,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">3.]</listItem>'
@@ -4301,7 +4303,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>[1.</paragraph>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="4" listType="numbered">3.]</listItem>' +
@@ -4323,7 +4325,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="4" listType="numbered">3.</listItem>' +
@@ -4342,7 +4344,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="4" listType="numbered">3.</listItem>'
@@ -4361,7 +4363,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="4" listType="numbered">3.</listItem>' +
@@ -4379,7 +4381,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
@@ -4397,7 +4399,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
@@ -4411,7 +4413,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -4430,7 +4432,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'indentList' );
 					editor.execute( 'undo' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2B.</listItem>' +
@@ -4449,7 +4451,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 					editor.execute( 'undo' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
@@ -4496,7 +4498,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>'
 					);
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).toBe(
 						'<ol start="2">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -4517,7 +4519,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ○ 2.
 					editor.execute( 'delete' );
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).toBe(
 						'<ol start="2">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -4536,7 +4538,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ■ 2.
 					editor.execute( 'undo' );
 
-					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).toBe(
 						'<ol start="2">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -4605,7 +4607,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Bar</listItem>'
@@ -4617,13 +4619,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					const listItem = model.document.getRoot().getChild( 0 );
 
-					expect( listItem.hasAttribute( 'listStart' ) ).to.be.false;
+					expect( listItem.hasAttribute( 'listStart' ) ).toBe( false );
 
 					model.change( writer => {
 						writer.setAttribute( 'listStart', 5, listItem );
 					} );
 
-					expect( listItem.hasAttribute( 'listStart' ) ).to.be.false;
+					expect( listItem.hasAttribute( 'listStart' ) ).toBe( false );
 				} );
 			} );
 
@@ -4659,7 +4661,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -4678,7 +4680,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>Foo[]</paragraph>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>'
@@ -4695,7 +4697,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<paragraph>Foo</paragraph>'
@@ -4711,7 +4713,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="4" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">2.[]</listItem>'
 					);
@@ -4730,7 +4732,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
@@ -4752,7 +4754,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.1.</listItem>' +
@@ -4776,7 +4778,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
@@ -4799,7 +4801,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">[]</listItem>' +
@@ -4822,7 +4824,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'insertText', { text: 'Foo' } );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo[]</listItem>' +
@@ -4845,7 +4847,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">111.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">222.</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">[]11.</listItem>' +
@@ -4864,14 +4866,14 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>'
 					);
 
-					const modelChangeStub = sinon.stub( model, 'change' ).callThrough();
+					const modelChangeStub = vi.spyOn( model, 'change' );
 
 					simulateTyping( ' Foo' );
 
 					// Each character calls `editor.model.change()`.
-					expect( modelChangeStub.callCount ).to.equal( 4 );
+					expect( modelChangeStub ).toHaveBeenCalledTimes( 4 );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2. Foo[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>' +
@@ -4892,7 +4894,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listStart="1" listType="numbered">dddd</listItem>'
@@ -4910,7 +4912,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">[]</listItem>' +
 						'<paragraph>foo</paragraph>' +
@@ -4933,7 +4935,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.1.</listItem>' +
@@ -4995,7 +4997,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">Foo 1</listItem>' +
@@ -5019,7 +5021,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo 1</listItem>' +
@@ -5045,7 +5047,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo 1</listItem>' +
@@ -5068,7 +5070,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="5" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="5" listType="numbered">Foo[]</listItem>' +
@@ -5089,7 +5091,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">Foo[]</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -5127,7 +5129,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
@@ -5161,15 +5163,15 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 		describe( 'schema rules', () => {
 			it( 'should allow set `listStyle` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).toBe( true );
 			} );
 
 			it( 'should allow set `listReversed` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).toBe( true );
 			} );
 
 			it( 'should allow set `listStart` on the `listItem`', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).toBe( true );
 			} );
 		} );
 
@@ -5177,19 +5179,19 @@ describe( 'LegacyListPropertiesEditing', () => {
 			it( 'should register `listReversed` command', () => {
 				const command = editor.commands.get( 'listReversed' );
 
-				expect( command ).to.be.instanceOf( LegacyListReversedCommand );
+				expect( command ).toBeInstanceOf( LegacyListReversedCommand );
 			} );
 
 			it( 'should register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.instanceOf( LegacyListStyleCommand );
+				expect( command ).toBeInstanceOf( LegacyListStyleCommand );
 			} );
 
 			it( 'should register `listStart` command', () => {
 				const command = editor.commands.get( 'listStart' );
 
-				expect( command ).to.be.instanceOf( LegacyListStartCommand );
+				expect( command ).toBeInstanceOf( LegacyListStartCommand );
 			} );
 		} );
 
@@ -5205,7 +5207,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+					expect( editor.getData() ).toBe( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
 				it( 'should convert single list (non-default values)', () => {
@@ -5218,7 +5220,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol style="list-style-type:circle;" start="5" reversed="reversed"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
@@ -5251,7 +5253,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol start="2">' +
 							'<li>1' +
 								'<ol>' +
@@ -5311,7 +5313,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</listItem>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData() ).toBe(
 						'<ol>' +
 							'<li>A1</li>' +
 							'<li>A2</li>' +
@@ -5342,7 +5344,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<ol reversed="reversed" start="5" style="list-style-type:lower-latin;"><li>Foo</li><li>Bar</li></ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listStart="5" listStyle="lower-latin" listType="numbered">' +
 							'Foo' +
 						'</listItem>' +
@@ -5377,7 +5379,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listStart="2" listStyle="default" listType="numbered">' +
 							'1' +
 						'</listItem>' +
@@ -5427,7 +5429,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.setData( '<div class="disallowed-context"><ul><li>foo</li></ul></div>' );
 
-					expect( _getModelData( editor.model ) ).to.equal( '[<disallowedContext></disallowedContext>]' );
+					expect( _getModelData( editor.model ) ).toBe( '[<disallowedContext></disallowedContext>]' );
 				} );
 			} );
 		} );
@@ -5447,7 +5449,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Foo Bar.[]' +
 						'</listItem>' +
@@ -5468,7 +5470,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
 							'Foo Bar 1.[]' +
 						'</listItem>' +
@@ -5493,7 +5495,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 								'Foo' +
 							'</listItem>' +
@@ -5514,7 +5516,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
 							'Foo Bar.[]' +
 						'</listItem>'
@@ -5544,7 +5546,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
@@ -5583,7 +5585,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
 								'1.' +
 							'</listItem>' +
@@ -5617,7 +5619,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
@@ -5645,7 +5647,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'2.' +
@@ -5665,7 +5667,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );

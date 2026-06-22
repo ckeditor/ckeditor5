@@ -12,7 +12,7 @@ import { FontSizeEditing } from '@ckeditor/ckeditor5-font';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelElement, _setModelData, _getModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 import { stubUid } from '../list/_utils/uid.js';
@@ -22,7 +22,9 @@ import { ListItemFontSizeIntegration } from '../../src/listformatting/listitemfo
 describe( 'ListItemFontSizeIntegration', () => {
 	let editor, model, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -53,7 +55,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( async () => {
@@ -374,7 +376,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			// See: https://github.com/ckeditor/ckeditor5/issues/18790.
 			it( 'should add dummy style for a Safari glitch (in editing pipeline only)', () => {
-				sinon.stub( env, 'isSafari' ).value( true );
+				vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 
 				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
@@ -591,7 +593,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			} );
 
 			it( 'should upcast and consume class', () => {
-				const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+				const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
 					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-size-tiny' } ) ).to.be.false;
 				} );
 
@@ -611,7 +613,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( upcastCheck.calledOnce ).to.be.true;
+				expect( upcastCheck ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -621,16 +623,16 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'text/html': '<ol><li class="ck-list-marker-font-size-tiny">foo</li></ol>'
 				} );
 
-				const spy = sinon.stub( editor.model, 'insertContent' );
+				const spy = vi.spyOn( editor.model, 'insertContent' ).mockImplementation( () => {} );
 
 				editor.editing.view.document.fire( 'clipboardInput', {
 					dataTransfer: dataTransferMock,
 					content: dataTransferMock.getData( 'text/html' )
 				} );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 
-				const content = spy.firstCall.args[ 0 ];
+				const content = spy.mock.calls[ 0 ][ 0 ];
 
 				expect( _stringifyModel( content ) ).to.equal(
 					'<paragraph listIndent="0" listItemFontSize="tiny" listItemId="a00" listType="numbered">' +
@@ -1077,7 +1079,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			} );
 
 			it( 'should upcast and consume class', () => {
-				const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+				const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
 					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-font-size' } ) ).to.be.false;
 					expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-font-size' } ) ).to.be.false;
 				} );
@@ -1098,7 +1100,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</paragraph>'
 				);
 
-				expect( upcastCheck.calledOnce ).to.be.true;
+				expect( upcastCheck ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -1108,16 +1110,16 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'text/html': '<ol><li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">foo</li></ol>'
 				} );
 
-				const spy = sinon.stub( editor.model, 'insertContent' );
+				const spy = vi.spyOn( editor.model, 'insertContent' ).mockImplementation( () => {} );
 
 				editor.editing.view.document.fire( 'clipboardInput', {
 					dataTransfer: dataTransferMock,
 					content: dataTransferMock.getData( 'text/html' )
 				} );
 
-				sinon.assert.calledOnce( spy );
+				expect( spy ).toHaveBeenCalledOnce();
 
-				const content = spy.firstCall.args[ 0 ];
+				const content = spy.mock.calls[ 0 ][ 0 ];
 
 				expect( _stringifyModel( content ) ).to.equal(
 					'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="numbered">' +

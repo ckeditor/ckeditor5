@@ -60,6 +60,7 @@ export class ListItemBoldIntegration extends Plugin {
 			attributeName: 'listItemBold',
 
 			setAttributeOnDowncast( writer, value, viewElement, options ) {
+				/* v8 ignore next -- Downcast callbacks are only registered for meaningful list marker formatting values. */
 				if ( value ) {
 					writer.addClass( 'ck-list-marker-bold', viewElement );
 

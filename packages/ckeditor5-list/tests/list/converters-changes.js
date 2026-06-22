@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { ListEditing } from '../../src/list/listediting.js';
 
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
@@ -14,7 +16,6 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _parseModel } from '@ckeditor/ckeditor5-engine';
@@ -24,7 +25,9 @@ import { stubUid } from './_utils/uid.js';
 describe( 'ListEditing - converters - changes', () => {
 	let editor, model, modelDoc, modelRoot, view, test;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -46,7 +49,7 @@ describe( 'ListEditing - converters - changes', () => {
 		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 
 		test = setupTestHelpers( editor );
@@ -71,7 +74,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item in the middle of same list type', () => {
@@ -89,7 +92,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item at the end of same list type', () => {
@@ -105,7 +108,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item at the beginning of different list type', () => {
@@ -123,7 +126,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item in the middle of different list type', () => {
@@ -145,7 +148,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item at the end of different list type', () => {
@@ -163,7 +166,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'element between list items', () => {
@@ -181,7 +184,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item that is not a paragraph', () => {
@@ -199,7 +202,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'new block at the start of list item', () => {
@@ -219,8 +222,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'new block at the end of list item', () => {
@@ -240,8 +243,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'new block at the middle of list item', () => {
@@ -265,7 +268,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'new list item in the middle of list item', () => {
@@ -287,9 +290,9 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 4 ) );
 			} );
 		} );
 
@@ -308,7 +311,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove list item from the middle', () => {
@@ -325,7 +328,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the last list item', () => {
@@ -342,7 +345,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the only list item', () => {
@@ -355,7 +358,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove element from between lists of same type', () => {
@@ -374,7 +377,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove element from between lists of different type', () => {
@@ -395,7 +398,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'remove the first block of a list item', () => {
@@ -412,8 +415,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'remove the last block of a list item', () => {
@@ -430,8 +433,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'remove the middke block of a list item', () => {
@@ -450,7 +453,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 		} );
 
@@ -472,7 +475,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change middle list item', () => {
@@ -494,7 +497,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change last list item', () => {
@@ -514,7 +517,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change only list item', () => {
@@ -530,7 +533,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change element at the edge of two different lists #1', () => {
@@ -550,7 +553,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change element at the edge of two different lists #2', () => {
@@ -570,7 +573,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change multiple elements - to other type', () => {
@@ -592,7 +595,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change multiple elements - to same type', () => {
@@ -610,7 +613,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'change of the first block of a list item', () => {
@@ -632,9 +635,9 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the last block of a list item', () => {
@@ -656,9 +659,9 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 
 			it( 'change of the middle block of a list item', () => {
@@ -682,10 +685,10 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 3 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
-				expect( test.reconvertSpy.thirdCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 3 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls[ 2 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 			} );
 
 			it( 'change outer list type with nested blockquote', () => {
@@ -717,8 +720,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'change outer list type with nested code block', () => {
@@ -742,8 +745,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
@@ -759,7 +762,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename middle list item', () => {
@@ -775,7 +778,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename last list item', () => {
@@ -789,7 +792,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename first list item to paragraph', () => {
@@ -803,7 +806,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename middle list item to paragraph', () => {
@@ -819,7 +822,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename last list item to paragraph', () => {
@@ -833,7 +836,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename first block of list item', () => {
@@ -853,7 +856,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename last block of list item', () => {
@@ -873,7 +876,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename first block of list item to paragraph', () => {
@@ -893,7 +896,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'rename last block of list item to paragraph', () => {
@@ -913,7 +916,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 		} );
 
@@ -929,8 +932,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'middle list item', () => {
@@ -948,8 +951,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'last list item', () => {
@@ -963,8 +966,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>b</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'only list item', () => {
@@ -978,8 +981,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>p</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on non paragraph', () => {
@@ -993,7 +996,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'first block of list item', () => {
@@ -1007,8 +1010,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'last block of list item', () => {
@@ -1022,8 +1025,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>a2</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'middle block of list item', () => {
@@ -1041,9 +1044,9 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 2 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 2 ) );
 			} );
 		} );
 
@@ -1057,8 +1060,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'on paragraph between paragraphs', () => {
@@ -1074,8 +1077,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'<p>x</p>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on element before list of same type', () => {
@@ -1089,8 +1092,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'on element after list of same type', () => {
@@ -1104,8 +1107,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on element before list of different type', () => {
@@ -1121,8 +1124,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'on element after list of different type', () => {
@@ -1138,8 +1141,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'on element between lists of same type', () => {
@@ -1155,8 +1158,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'before list item with the same id', () => {
@@ -1174,8 +1177,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'after list item with the same id', () => {
@@ -1193,8 +1196,8 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+				expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 0 ) );
 			} );
 		} );
 
@@ -1216,7 +1219,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'out list item from list', () => {
@@ -1238,7 +1241,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'the only list item', () => {
@@ -1256,7 +1259,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item between two lists of same type', () => {
@@ -1280,7 +1283,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'list item between two lists of different type', () => {
@@ -1308,7 +1311,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 
 			it( 'element between list items', () => {
@@ -1328,7 +1331,7 @@ describe( 'ListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -1353,7 +1356,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after lower indent (multi block)', () => {
@@ -1379,7 +1382,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after lower indent, before same indent', () => {
@@ -1401,7 +1404,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after lower indent, before same indent (multi block)', () => {
@@ -1433,7 +1436,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after lower indent, before lower indent', () => {
@@ -1455,7 +1458,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after lower indent, before lower indent (multi block)', () => {
@@ -1487,7 +1490,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after same indent', () => {
@@ -1509,7 +1512,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after same indent (multi block)', () => {
@@ -1541,7 +1544,7 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'after same indent, before higher indent', () => {
@@ -1563,8 +1566,8 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 1 );
-					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+					expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 3 ) );
 				} );
 
 				it( 'after same indent, before higher indent (multi block)', () => {
@@ -1596,9 +1599,9 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 2 );
-					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 5 ) );
-					expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 6 ) );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+					expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 5 ) );
+					expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 6 ) );
 				} );
 
 				it( 'after higher indent, before higher indent', () => {
@@ -1626,8 +1629,8 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 1 );
-					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+					expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 4 ) );
 				} );
 
 				it( 'after higher indent, before higher indent( multi block)', () => {
@@ -1665,9 +1668,9 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 2 );
-					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 6 ) );
-					expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 7 ) );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 2 );
+					expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 6 ) );
+					expect( test.reconvertSpy.mock.calls[ 1 ][ 0 ] ).toBe( modelRoot.getChild( 7 ) );
 				} );
 
 				it( 'list items with too big indent', () => {
@@ -1721,8 +1724,8 @@ describe( 'ListEditing - converters - changes', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 1 );
-					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 1 );
+					expect( test.reconvertSpy.mock.calls[ 0 ][ 0 ] ).toBe( modelRoot.getChild( 1 ) );
 				} );
 			} );
 

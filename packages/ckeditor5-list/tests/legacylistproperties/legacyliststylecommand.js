@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -27,6 +28,7 @@ describe( 'LegacyListStyleCommand', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		return editor.destroy();
 	} );
 
@@ -36,13 +38,13 @@ describe( 'LegacyListStyleCommand', () => {
 			numberedListCommand.isEnabled = false;
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.equal( true );
+			expect( listStyleCommand.isEnabled ).toBe( true );
 
 			bulletedListCommand.isEnabled = false;
 			numberedListCommand.isEnabled = true;
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.equal( true );
+			expect( listStyleCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if bulletedList and numberedList are disabled', () => {
@@ -51,7 +53,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.equal( false );
+			expect( listStyleCommand.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -59,7 +61,7 @@ describe( 'LegacyListStyleCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listStyleCommand.value ).to.equal( null );
+			expect( listStyleCommand.value ).toBe( null );
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -68,19 +70,19 @@ describe( 'LegacyListStyleCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo]</listItem>'
 			);
 
-			expect( listStyleCommand.value ).to.equal( null );
+			expect( listStyleCommand.value ).toBe( null );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a listItem (collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">Foo[]</listItem>' );
 
-			expect( listStyleCommand.value ).to.equal( 'default' );
+			expect( listStyleCommand.value ).toBe( 'default' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a listItem (non-collapsed selection)', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">[Foo]</listItem>' );
 
-			expect( listStyleCommand.value ).to.equal( 'default' );
+			expect( listStyleCommand.value ).toBe( 'default' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selected more elements in the same list', () => {
@@ -90,7 +92,7 @@ describe( 'LegacyListStyleCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">3.</listItem>'
 			);
 
-			expect( listStyleCommand.value ).to.equal( 'square' );
+			expect( listStyleCommand.value ).toBe( 'square' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute for the selection inside a nested list', () => {
@@ -100,7 +102,7 @@ describe( 'LegacyListStyleCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.</listItem>'
 			);
 
-			expect( listStyleCommand.value ).to.equal( 'disc' );
+			expect( listStyleCommand.value ).toBe( 'disc' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute from a list where the selection starts (selection over nested list)', () => {
@@ -110,7 +112,7 @@ describe( 'LegacyListStyleCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.]</listItem>'
 			);
 
-			expect( listStyleCommand.value ).to.equal( 'disc' );
+			expect( listStyleCommand.value ).toBe( 'disc' );
 		} );
 	} );
 
@@ -122,7 +124,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 		} );
@@ -134,7 +136,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[1.]</listItem>'
 			);
 		} );
@@ -148,7 +150,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -167,7 +169,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.1.</listItem>' +
@@ -189,7 +191,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'disc' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.1.[]</listItem>' +
@@ -209,7 +211,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -227,7 +229,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -245,7 +247,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -263,7 +265,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[3.</listItem>' +
@@ -281,7 +283,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -296,7 +298,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 		} );
@@ -308,7 +310,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( {} );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 		} );
@@ -320,7 +322,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: null } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 		} );
@@ -331,16 +333,16 @@ describe( 'LegacyListStyleCommand', () => {
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>'
 			);
 
-			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
+			const modelChangeStub = vi.spyOn( model, 'change' );
 
 			listStyleCommand.execute();
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>[Foo.]</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>'
 			);
 
-			expect( modelChangeStub.called ).to.equal( false );
+			expect( modelChangeStub ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (circle, non-collapsed selection)', () => {
@@ -350,18 +352,16 @@ describe( 'LegacyListStyleCommand', () => {
 			);
 
 			const listCommand = editor.commands.get( 'bulletedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar.]</listItem>'
 			);
 
-			expect( spy.called ).to.be.true;
-
-			spy.restore();
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (square, collapsed selection)', () => {
@@ -371,18 +371,16 @@ describe( 'LegacyListStyleCommand', () => {
 			);
 
 			const listCommand = editor.commands.get( 'bulletedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">Fo[]o.</listItem>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
-			expect( spy.called ).to.be.true;
-
-			spy.restore();
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
@@ -392,18 +390,16 @@ describe( 'LegacyListStyleCommand', () => {
 			);
 
 			const listCommand = editor.commands.get( 'numberedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 
 			listStyleCommand.execute( { type: 'decimal' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="decimal" listType="numbered">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="decimal" listType="numbered">Bar.]</listItem>'
 			);
 
-			expect( spy.called ).to.be.true;
-
-			spy.restore();
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
@@ -413,18 +409,16 @@ describe( 'LegacyListStyleCommand', () => {
 			);
 
 			const listCommand = editor.commands.get( 'numberedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 
 			listStyleCommand.execute( { type: 'upper-roman' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="upper-roman" listType="numbered">Fo[]o.</listItem>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
-			expect( spy.called ).to.be.true;
-
-			spy.restore();
+			expect( spy ).toHaveBeenCalled();
 		} );
 
 		it( 'should update all items that belong to selected elements', () => {
@@ -459,7 +453,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'disc' } );
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<listItem listIndent="0" listStyle="disc" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="disc" listType="bulleted">[2.</listItem>' +
 				'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.1.</listItem>' +

@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ListCommand } from '../../src/list/listcommand.js';
 import { ListStyleCommand } from '../../src/listproperties/liststylecommand.js';
@@ -15,7 +16,9 @@ import { modelList } from '../list/_utils/utils.js';
 describe( 'ListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = new Editor();
@@ -57,13 +60,13 @@ describe( 'ListStyleCommand', () => {
 			numberedListCommand.isEnabled = false;
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.equal( true );
+			expect( listStyleCommand.isEnabled ).toBe( true );
 
 			bulletedListCommand.isEnabled = false;
 			numberedListCommand.isEnabled = true;
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.equal( true );
+			expect( listStyleCommand.isEnabled ).toBe( true );
 		} );
 
 		it( 'should be false if bulletedList and numberedList are disabled', () => {
@@ -72,7 +75,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.equal( false );
+			expect( listStyleCommand.isEnabled ).toBe( false );
 		} );
 
 		it( 'should be true if selection is inside a to-do list item', () => {
@@ -80,7 +83,7 @@ describe( 'ListStyleCommand', () => {
 
 			listStyleCommand.refresh();
 
-			expect( listStyleCommand.isEnabled ).to.be.true;
+			expect( listStyleCommand.isEnabled ).toBe( true );
 		} );
 	} );
 
@@ -88,7 +91,7 @@ describe( 'ListStyleCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listStyleCommand.value ).to.equal( null );
+			expect( listStyleCommand.value ).toBeNull();
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -97,19 +100,19 @@ describe( 'ListStyleCommand', () => {
 				* Bar]
 			` ) );
 
-			expect( listStyleCommand.value ).to.equal( null );
+			expect( listStyleCommand.value ).toBeNull();
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a list item (collapsed selection)', () => {
 			_setModelData( model, modelList( [ '* Foo[] {style:circle}' ] ) );
 
-			expect( listStyleCommand.value ).to.equal( 'circle' );
+			expect( listStyleCommand.value ).toBe( 'circle' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a list item (non-collapsed selection)', () => {
 			_setModelData( model, modelList( [ '* [Foo] {style:square}' ] ) );
 
-			expect( listStyleCommand.value ).to.equal( 'square' );
+			expect( listStyleCommand.value ).toBe( 'square' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selected more elements in the same list', () => {
@@ -119,7 +122,7 @@ describe( 'ListStyleCommand', () => {
 				* 3.
 			` ) );
 
-			expect( listStyleCommand.value ).to.equal( 'square' );
+			expect( listStyleCommand.value ).toBe( 'square' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute for the selection inside a nested list', () => {
@@ -129,7 +132,7 @@ describe( 'ListStyleCommand', () => {
 				* 2.
 			` ) );
 
-			expect( listStyleCommand.value ).to.equal( 'disc' );
+			expect( listStyleCommand.value ).toBe( 'disc' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute from a list where the selection starts (selection over nested list)', () => {
@@ -139,7 +142,7 @@ describe( 'ListStyleCommand', () => {
 				* 2. Third]
 			` ) );
 
-			expect( listStyleCommand.value ).to.equal( 'disc' );
+			expect( listStyleCommand.value ).toBe( 'disc' );
 		} );
 	} );
 
@@ -390,7 +393,7 @@ describe( 'ListStyleCommand', () => {
 			` ) );
 
 			const listCommand = editor.commands.get( 'bulletedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 			const createdBatches = new Set();
 
 			model.on( 'applyOperation', ( evt, args ) => {
@@ -406,10 +409,8 @@ describe( 'ListStyleCommand', () => {
 				* Bar.] {id:a01}
 			` ) );
 
-			expect( spy.called ).to.be.true;
-			expect( createdBatches.size ).to.equal( 1 );
-
-			spy.restore();
+			expect( spy.mock.calls.length > 0 ).toBe( true );
+			expect( createdBatches.size ).toBe( 1 );
 		} );
 
 		it( 'should create a list if no listItem found in the selection (square, collapsed selection)', () => {
@@ -419,7 +420,7 @@ describe( 'ListStyleCommand', () => {
 			` ) );
 
 			const listCommand = editor.commands.get( 'bulletedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 			const createdBatches = new Set();
 
 			model.on( 'applyOperation', ( evt, args ) => {
@@ -435,10 +436,8 @@ describe( 'ListStyleCommand', () => {
 				Bar.
 			` ) );
 
-			expect( spy.called ).to.be.true;
-			expect( createdBatches.size ).to.equal( 1 );
-
-			spy.restore();
+			expect( spy.mock.calls.length > 0 ).toBe( true );
+			expect( createdBatches.size ).toBe( 1 );
 		} );
 
 		it( 'should create a list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
@@ -448,7 +447,7 @@ describe( 'ListStyleCommand', () => {
 			` ) );
 
 			const listCommand = editor.commands.get( 'numberedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 			const createdBatches = new Set();
 
 			model.on( 'applyOperation', ( evt, args ) => {
@@ -464,10 +463,8 @@ describe( 'ListStyleCommand', () => {
 				# Bar.] {id:a01}
 			` ) );
 
-			expect( spy.called ).to.be.true;
-			expect( createdBatches.size ).to.equal( 1 );
-
-			spy.restore();
+			expect( spy.mock.calls.length > 0 ).toBe( true );
+			expect( createdBatches.size ).toBe( 1 );
 		} );
 
 		it( 'should create a list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
@@ -477,7 +474,7 @@ describe( 'ListStyleCommand', () => {
 			` ) );
 
 			const listCommand = editor.commands.get( 'numberedList' );
-			const spy = sinon.spy( listCommand, 'execute' );
+			const spy = vi.spyOn( listCommand, 'execute' );
 			const createdBatches = new Set();
 
 			model.on( 'applyOperation', ( evt, args ) => {
@@ -493,10 +490,8 @@ describe( 'ListStyleCommand', () => {
 				Bar.
 			` ) );
 
-			expect( spy.called ).to.be.true;
-			expect( createdBatches.size ).to.equal( 1 );
-
-			spy.restore();
+			expect( spy.mock.calls.length > 0 ).toBe( true );
+			expect( createdBatches.size ).toBe( 1 );
 		} );
 
 		it( 'should not update anything if no listItem found in the selection (default style)', () => {
@@ -533,9 +528,9 @@ describe( 'ListStyleCommand', () => {
 				'upper-roman'
 			] );
 
-			expect( listStyleCommand.isStyleTypeSupported( 'circle' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'decimal' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
+			expect( listStyleCommand.isStyleTypeSupported( 'circle' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'decimal' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'upper-roman' ) ).toBe( true );
 		} );
 
 		it( 'should return `false` for styles not provided in constructor', () => {
@@ -546,31 +541,31 @@ describe( 'ListStyleCommand', () => {
 				'upper-roman'
 			] );
 
-			expect( listStyleCommand.isStyleTypeSupported( 'disc' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'square' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'lower-roman' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'lower-alpha' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'upper-alpha' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'lower-latin' ) ).to.be.false;
-			expect( listStyleCommand.isStyleTypeSupported( 'upper-latin' ) ).to.be.false;
+			expect( listStyleCommand.isStyleTypeSupported( 'disc' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'square' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'decimal-leading-zero' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'lower-roman' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'lower-alpha' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'upper-alpha' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'lower-latin' ) ).toBe( false );
+			expect( listStyleCommand.isStyleTypeSupported( 'upper-latin' ) ).toBe( false );
 		} );
 
 		it( 'should return `true` for all the styles by default', () => {
 			const editor = new Editor();
 			const listStyleCommand = new ListStyleCommand( editor, 'default' );
 
-			expect( listStyleCommand.isStyleTypeSupported( 'disc' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'circle' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'square' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'decimal' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'decimal-leading-zero' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'lower-roman' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'upper-roman' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'lower-alpha' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'upper-alpha' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'lower-latin' ) ).to.be.true;
-			expect( listStyleCommand.isStyleTypeSupported( 'upper-latin' ) ).to.be.true;
+			expect( listStyleCommand.isStyleTypeSupported( 'disc' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'circle' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'square' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'decimal' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'decimal-leading-zero' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'lower-roman' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'upper-roman' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'lower-alpha' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'upper-alpha' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'lower-latin' ) ).toBe( true );
+			expect( listStyleCommand.isStyleTypeSupported( 'upper-latin' ) ).toBe( true );
 		} );
 	} );
 } );

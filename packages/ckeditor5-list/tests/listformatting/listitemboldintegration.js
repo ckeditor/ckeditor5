@@ -12,8 +12,8 @@ import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ModelElement, _setModelData, _getModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -22,7 +22,9 @@ import { ListItemBoldIntegration } from '../../src/listformatting/listitemboldin
 describe( 'ListItemBoldIntegration', () => {
 	let editor, model, view;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -42,7 +44,7 @@ describe( 'ListItemBoldIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
-		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+		vi.spyOn( editor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 	} );
 
 	afterEach( async () => {
@@ -281,6 +283,26 @@ describe( 'ListItemBoldIntegration', () => {
 			);
 		} );
 
+		it( 'should not downcast listItemBold attribute if value is false', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemBold="false" listType="bulleted">' +
+					'foo' +
+				'</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li>foo</li>' +
+				'</ul>'
+			);
+		} );
+
 		// Post-fixer currently removes `listItemBold` attribute from table list items.
 		it.skip( 'should downcast listItemBold attribute as class in <li> in table list item', () => {
 			_setModelData( model,
@@ -338,7 +360,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/18790.
 		it( 'should add dummy style for a Safari glitch (in editing pipeline only)', () => {
-			sinon.stub( env, 'isSafari' ).value( true );
+			vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 
 			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
@@ -555,7 +577,7 @@ describe( 'ListItemBoldIntegration', () => {
 		} );
 
 		it( 'should upcast and consume class', () => {
-			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+			const upcastCheck = vi.fn( ( evt, data, conversionApi ) => {
 				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-bold' } ) ).to.be.false;
 			} );
 
@@ -575,7 +597,7 @@ describe( 'ListItemBoldIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( upcastCheck.calledOnce ).to.be.true;
+			expect( upcastCheck ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -585,16 +607,16 @@ describe( 'ListItemBoldIntegration', () => {
 				'text/html': '<ol><li class="ck-list-marker-bold">foo</li></ol>'
 			} );
 
-			const spy = sinon.stub( editor.model, 'insertContent' );
+			const spy = vi.spyOn( editor.model, 'insertContent' ).mockImplementation( () => {} );
 
 			editor.editing.view.document.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				content: dataTransferMock.getData( 'text/html' )
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const content = spy.firstCall.args[ 0 ];
+			const content = spy.mock.calls[ 0 ][ 0 ];
 
 			expect( _stringifyModel( content ) ).to.equal(
 				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="numbered">' +

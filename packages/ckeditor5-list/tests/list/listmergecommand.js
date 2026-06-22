@@ -3,19 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { modelList } from './_utils/utils.js';
 import { ListMergeCommand } from '../../src/list/listmergecommand.js';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'ListMergeCommand', () => {
 	let editor, model, doc, command, attributeNames;
 	let blocksChangedByCommands = [];
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		editor = new Editor();
@@ -46,8 +47,10 @@ describe( 'ListMergeCommand', () => {
 			allowAttributesOf: '$text'
 		} );
 
-		sinon.stub( editor.plugins, 'get' ).withArgs( 'ListEditing' ).returns( {
-			getListAttributeNames: () => attributeNames
+		vi.spyOn( editor.plugins, 'get' ).mockImplementation( arg => {
+			if ( arg === 'ListEditing' ) {
+				return { getListAttributeNames: () => attributeNames };
+			}
 		} );
 	} );
 

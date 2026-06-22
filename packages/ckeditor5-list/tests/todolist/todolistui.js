@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 // TODO use new list
 import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
 import { TodoListUI } from '../../src/todolist/todolistui.js';
@@ -33,11 +35,11 @@ describe( 'TodoListUI', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( TodoListUI.isOfficialPlugin ).to.be.true;
+		expect( TodoListUI.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TodoListUI.isPremiumPlugin ).to.be.false;
+		expect( TodoListUI.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'toolbar button', () => {
@@ -48,14 +50,14 @@ describe( 'TodoListUI', () => {
 		} );
 
 		it( 'should be a button', () => {
-			expect( button ).to.be.instanceOf( ButtonView );
+			expect( button ).toBeInstanceOf( ButtonView );
 		} );
 
 		it( 'should execute proper commands when buttons are used', () => {
-			sinon.spy( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' );
 
 			button.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'todoList' );
+			expect( spy ).toHaveBeenCalledExactlyOnceWith( 'todoList' );
 		} );
 
 		it( 'should bind button to command', () => {
@@ -63,14 +65,14 @@ describe( 'TodoListUI', () => {
 
 			const command = editor.commands.get( 'todoList' );
 
-			expect( button.isOn ).to.be.true;
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isOn ).toBe( true );
+			expect( button.isEnabled ).toBe( true );
 
 			command.value = false;
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 		} );
 	} );
 
@@ -82,14 +84,14 @@ describe( 'TodoListUI', () => {
 		} );
 
 		it( 'should be a button', () => {
-			expect( button ).to.be.instanceOf( MenuBarMenuListItemButtonView );
+			expect( button ).toBeInstanceOf( MenuBarMenuListItemButtonView );
 		} );
 
 		it( 'should execute proper commands when buttons are used', () => {
-			sinon.spy( editor, 'execute' );
+			const spy = vi.spyOn( editor, 'execute' );
 
 			button.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'todoList' );
+			expect( spy ).toHaveBeenCalledExactlyOnceWith( 'todoList' );
 		} );
 
 		it( 'should bind button to command', () => {
@@ -97,14 +99,14 @@ describe( 'TodoListUI', () => {
 
 			const command = editor.commands.get( 'todoList' );
 
-			expect( button.isOn ).to.be.true;
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isOn ).toBe( true );
+			expect( button.isEnabled ).toBe( true );
 
 			command.value = false;
-			expect( button.isOn ).to.be.false;
+			expect( button.isOn ).toBe( false );
 
 			command.isEnabled = false;
-			expect( button.isEnabled ).to.be.false;
+			expect( button.isEnabled ).toBe( false );
 		} );
 	} );
 } );

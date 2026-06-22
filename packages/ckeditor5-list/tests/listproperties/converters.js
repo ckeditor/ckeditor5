@@ -12,7 +12,7 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
@@ -23,7 +23,9 @@ import { modelList, setupTestHelpers } from '../list/_utils/utils.js';
 describe( 'ListPropertiesEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, test;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'list style', () => {
 		beforeEach( () => setupEditor( {
@@ -358,12 +360,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 			} );
 
 			it( 'should not consume attribute while upcasting if not applied', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => attributeName != 'listStyle' );
 				editor.conversion.for( 'upcast' ).add(
 					dispatcher => dispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { styles: 'list-style-type' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'list-style-type' } ) ).toBe( true );
 						spy();
 					}, { priority: 'lowest' } )
 				);
@@ -385,7 +387,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'</ol>'
 				);
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			describe( 'list conversion with surrounding text nodes', () => {
@@ -452,7 +454,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const viewFragment = editor.data.toView( modelFragment );
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
-					expect( data ).to.equal(
+					expect( data ).toBe(
 						'<ul style="list-style-type:circle;">' +
 							'<li>' +
 								'<p>B1</p>' +
@@ -478,7 +480,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const viewFragment = editor.data.toView( modelFragment );
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
-					expect( data ).to.equal(
+					expect( data ).toBe(
 						'<ul style="list-style-type:square;">' +
 							'<li>C1</li>' +
 							'<li>C2</li>' +
@@ -505,7 +507,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
@@ -523,7 +525,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert nested bulleted list (main: circle, nested: disc)', () => {
@@ -551,7 +553,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert properly nested list styles', () => {
@@ -589,7 +591,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'insert with attributes in a specific order', () => {
@@ -626,7 +628,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ul>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 			} );
 
@@ -896,7 +898,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						writer.setAttribute( 'listStyle', 'circle', modelRoot.getChild( 0 ) );
 					} );
 
-					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ul>'
@@ -1123,12 +1125,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 			} );
 
 			it( 'should not consume attribute while upcasting if not applied', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => attributeName != 'listReversed' );
 				editor.conversion.for( 'upcast' ).add(
 					dispatcher => dispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'reversed' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'reversed' } ) ).toBe( true );
 						spy();
 					}, { priority: 'lowest' } )
 				);
@@ -1150,7 +1152,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'</ol>'
 				);
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			describe( 'copy and getSelectedContent()', () => {
@@ -1167,7 +1169,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const viewFragment = editor.data.toView( modelFragment );
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
-					expect( data ).to.equal(
+					expect( data ).toBe(
 						'<ol reversed="reversed">' +
 							'<li>' +
 								'<p>B1</p>' +
@@ -1193,7 +1195,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const viewFragment = editor.data.toView( modelFragment );
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
-					expect( data ).to.equal(
+					expect( data ).toBe(
 						'<ol reversed="reversed">' +
 							'<li>C1</li>' +
 							'<li>C2</li>' +
@@ -1220,7 +1222,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert single list (type: numbered, reversed:true)', () => {
@@ -1238,7 +1240,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert nested numbered list', () => {
@@ -1266,7 +1268,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert properly nested list', () => {
@@ -1304,7 +1306,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should unwrap list item only if it was really wrapped (there was no wrapper for the reversed:false)', () => {
@@ -1345,7 +1347,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 			} );
 
@@ -1545,7 +1547,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						writer.setAttribute( 'listReversed', true, modelRoot.getChild( 0 ) );
 					} );
 
-					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 						'<ol>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ol>'
@@ -1798,12 +1800,12 @@ describe( 'ListPropertiesEditing - converters', () => {
 			} );
 
 			it( 'should not consume attribute while upcasting if not applied', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => attributeName != 'listStart' );
 				editor.conversion.for( 'upcast' ).add(
 					dispatcher => dispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
-						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'start' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'start' } ) ).toBe( true );
 						spy();
 					}, { priority: 'lowest' } )
 				);
@@ -1825,7 +1827,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					'</ol>'
 				);
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			describe( 'copy and getSelectedContent()', () => {
@@ -1842,7 +1844,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const viewFragment = editor.data.toView( modelFragment );
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
-					expect( data ).to.equal(
+					expect( data ).toBe(
 						'<ol start="4">' +
 							'<li>' +
 								'<p>B1</p>' +
@@ -1868,7 +1870,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 					const viewFragment = editor.data.toView( modelFragment );
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
-					expect( data ).to.equal(
+					expect( data ).toBe(
 						'<ol start="7">' +
 							'<li>C1</li>' +
 							'<li>C2</li>' +
@@ -1895,7 +1897,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert single list (type: numbered, start:5)', () => {
@@ -1913,7 +1915,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert nested numbered list', () => {
@@ -1941,7 +1943,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert properly nested list', () => {
@@ -1979,7 +1981,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should unwrap list item only if it was really wrapped (there was no wrapper for the start:1)', () => {
@@ -2020,7 +2022,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 			} );
 
@@ -2133,7 +2135,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						}
 					} );
 
-					sinon.stub( skipEditor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+					vi.spyOn( skipEditor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 					_setModelData( skipEditor.model,
 						'<paragraph listIndent="1" listItemId="a" listType="numbered">aaa</paragraph>' +
@@ -2144,7 +2146,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						writer.setAttribute( 'listStart', 5, skipEditor.model.document.getRoot().getChild( 1 ) );
 					} );
 
-					expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( skipEditor.editing.view, { withoutSelection: true } ) ).toBe(
 						'<ol start="5">' +
 							'<li style="list-style-type:none">' +
 								'<ol>' +
@@ -2256,7 +2258,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						writer.setAttribute( 'listStart', 4, modelRoot.getChild( 0 ) );
 					} );
 
-					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).toBe(
 						'<ol>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ol>'
@@ -2438,7 +2440,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert single list (type: numbered, start:5, reversed:true, style:lower-alpha)', () => {
@@ -2456,7 +2458,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 
 				it( 'should convert nested numbered list', () => {
@@ -2484,7 +2486,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 			} );
 
@@ -2505,7 +2507,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 						'</ol>'
 					);
 
-					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+					expect( test.reconvertSpy.mock.calls.length ).toBe( 0 );
 				} );
 			} );
 
@@ -2727,7 +2729,7 @@ describe( 'ListPropertiesEditing - converters', () => {
 		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 
 		test = setupTestHelpers( editor );
 	}

@@ -16,7 +16,7 @@ import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { vi, afterEach } from 'vitest';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -26,7 +26,9 @@ import { stubUid } from './_utils/uid.js';
 describe( 'ListEditing - converters - data pipeline', () => {
 	let editor, model, view, test;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -45,7 +47,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
+		vi.spyOn( view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		stubUid();
 
 		test = setupTestHelpers( editor );
@@ -2631,7 +2633,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 
 			skipModel = skipEditor.model;
 
-			sinon.stub( skipEditor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
+			vi.spyOn( skipEditor.editing.view, 'scrollToTheSelection' ).mockImplementation( () => {} );
 		} );
 
 		afterEach( async () => {
@@ -2863,7 +2865,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">A</paragraph>'
 				);
 			} );
@@ -2883,7 +2885,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
 				);
@@ -2908,7 +2910,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="3" listItemId="a00" listType="bulleted">B</paragraph>'
 				);
@@ -2930,7 +2932,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">B</paragraph>'
 				);
@@ -2948,7 +2950,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">B</paragraph>'
 				);
@@ -2969,7 +2971,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a01" listType="numbered">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
 				);
@@ -2991,7 +2993,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>' +
 					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">C</paragraph>'
@@ -3014,7 +3016,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a02" listType="numbered">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="a00" listType="numbered">B</paragraph>' +
 					'<paragraph listIndent="1" listItemId="a01" listType="numbered">C</paragraph>'
@@ -3028,7 +3030,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered"></paragraph>'
 				);
 			} );
@@ -3040,7 +3042,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">foobar</paragraph>'
 				);
 			} );
@@ -3052,7 +3054,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a00" listType="numbered">foobar</paragraph>'
 				);
 			} );
@@ -3068,7 +3070,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">leading text</paragraph>' +
 					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">B</paragraph>'
 				);
@@ -3084,7 +3086,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 
 				skipEditor.setData( data );
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>'
 				);
@@ -3100,7 +3102,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 
 				skipEditor.setData( data );
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="3" listItemId="b" listType="bulleted">B</paragraph>'
 				);
@@ -3116,7 +3118,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 
 				skipEditor.setData( data );
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="2" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">B</paragraph>'
 				);
@@ -3133,7 +3135,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 
 				skipEditor.setData( data );
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
@@ -3151,7 +3153,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 
 				skipEditor.setData( data );
 
-				expect( _getModelData( skipModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( skipModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B1</paragraph>' +
 					'<paragraph listIndent="2" listItemId="b" listType="bulleted">B2</paragraph>'
@@ -3178,7 +3180,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ul>'
 				);
 
-				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
 					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="a01" listType="bulleted"></paragraph>' +
 					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">B</paragraph>'
@@ -3230,7 +3232,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph htmlLiAttributes="{"styles":{"list-style-type":"none"}}" ' +
 					'listIndent="1" listItemId="a00" listType="numbered">foobar</paragraph>'
 				);
@@ -3243,7 +3245,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph ' +
 						'htmlLiAttributes="{' +
 							'"attributes":{"data-foo":"foo"},' +
@@ -3262,7 +3264,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph ' +
 						'htmlLiAttributes="{' +
 							'"attributes":{"data-foo":"foo"},' +
@@ -3312,7 +3314,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph ' +
 						'htmlLiAttributes="{' +
 							'"attributes":{"data-foo":"foo"},' +
@@ -3331,7 +3333,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 					'</ol>'
 				);
 
-				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).toBe(
 					'<paragraph ' +
 						'htmlLiAttributes="{' +
 							'"attributes":{"data-foo":"foo"},' +

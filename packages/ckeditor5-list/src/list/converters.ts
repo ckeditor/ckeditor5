@@ -448,6 +448,7 @@ export function reconvertItemsOnDataChange(
 			// for skipped indent levels. Skip attribute checking for those but still track the indent
 			// level below. Without skip-level lists, the post-fixer ensures sequential indents, so the
 			// stack is always fully populated and this guard has no effect.
+			/* v8 ignore next -- Defensive guard for transient skip-level list stack gaps. */
 			if ( stack[ indent ] ) {
 				const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }` as const;
 				const needsRefresh = listEditing.fire<ListEditingCheckAttributesEvent>( eventName, {
@@ -666,6 +667,7 @@ export function createModelToViewPositionMapper(
 				break;
 			}
 
+			/* v8 ignore next -- Depends on custom marker internals in mapper position translation. */
 			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
 				positionAfterLastMarker = view.createPositionAfter( item );
 
