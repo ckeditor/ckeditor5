@@ -3,17 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 import { MultiRootEditor } from '../src/multirooteditor.js';
 
 describe( 'MultiRootEditor - license check', () => {
-	testUtils.createSinonSandbox();
-
 	let showErrorStub;
 
 	beforeEach( () => {
-		showErrorStub = testUtils.sinon.stub( MultiRootEditor.prototype, '_showLicenseError' );
+		showErrorStub = vi.spyOn( MultiRootEditor.prototype, '_showLicenseError' ).mockImplementation( () => {} );
+	} );
+
+	afterEach( () => {
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should not throw if license key is invalid', () => {
@@ -22,7 +24,7 @@ describe( 'MultiRootEditor - license check', () => {
 		expect( () => {
 			// eslint-disable-next-line no-new
 			new MultiRootEditor( {}, { licenseKey } );
-		} ).to.not.throw();
+		} ).not.toThrow();
 	} );
 
 	it( 'should not block if license key is GPL', () => {
@@ -30,8 +32,8 @@ describe( 'MultiRootEditor - license check', () => {
 
 		const editor = new MultiRootEditor( {}, { licenseKey } );
 
-		sinon.assert.notCalled( showErrorStub );
-		expect( editor.isReadOnly ).to.be.false;
+		expect( showErrorStub ).not.toHaveBeenCalled();
+		expect( editor.isReadOnly ).toBe( false );
 	} );
 
 	it( 'should not block if multi-root editor is allowed by license key', () => {
@@ -39,8 +41,8 @@ describe( 'MultiRootEditor - license check', () => {
 
 		const editor = new MultiRootEditor( {}, { licenseKey } );
 
-		sinon.assert.notCalled( showErrorStub );
-		expect( editor.isReadOnly ).to.be.false;
+		expect( showErrorStub ).not.toHaveBeenCalled();
+		expect( editor.isReadOnly ).toBe( false );
 	} );
 
 	it( 'should block if multi-root editor is not allowed by license key', () => {
@@ -50,7 +52,7 @@ describe( 'MultiRootEditor - license check', () => {
 
 		const editor = new MultiRootEditor( {}, { licenseKey } );
 
-		sinon.assert.calledWithMatch( showErrorStub, 'featureNotAllowed', 'Multi-root editor' );
-		expect( editor.isReadOnly ).to.be.true;
+		expect( showErrorStub ).toHaveBeenCalledWith( 'featureNotAllowed', 'Multi-root editor' );
+		expect( editor.isReadOnly ).toBe( true );
 	} );
 } );

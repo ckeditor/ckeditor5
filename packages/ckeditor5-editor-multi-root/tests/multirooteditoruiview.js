@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MultiRootEditorUIView } from '../src/multirooteditoruiview.js';
 import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { ToolbarView, MenuBarView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'MultiRootEditorUIView', () => {
 	let locale, view, editingView, fooViewRoot, barViewRoot;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale();
@@ -28,28 +25,32 @@ describe( 'MultiRootEditorUIView', () => {
 		view.editables.bar.name = 'bar';
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'is virtual', () => {
-			expect( view.template ).to.be.undefined;
-			expect( view.element ).to.be.null;
+			expect( view.template ).toBeUndefined();
+			expect( view.element ).toBeNull();
 		} );
 
 		describe( '#toolbar', () => {
 			it( 'is created', () => {
-				expect( view.toolbar ).to.be.instanceof( ToolbarView );
+				expect( view.toolbar ).toBeInstanceOf( ToolbarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.toolbar.locale ).to.equal( locale );
+				expect( view.toolbar.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.toolbar.isRendered ).to.be.false;
+				expect( view.toolbar.isRendered ).toBe( false );
 			} );
 
 			describe( 'automatic items grouping', () => {
 				it( 'should be disabled by default', () => {
-					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.undefined;
+					expect( view.toolbar.options.shouldGroupWhenFull ).toBeUndefined();
 				} );
 
 				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
@@ -62,7 +63,7 @@ describe( 'MultiRootEditorUIView', () => {
 					view.editable.name = editingViewRoot.rootName;
 					view.render();
 
-					expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+					expect( view.toolbar.options.shouldGroupWhenFull ).toBe( true );
 
 					return view.destroy();
 				} );
@@ -71,32 +72,32 @@ describe( 'MultiRootEditorUIView', () => {
 
 		describe( '#menuBarView', () => {
 			it( 'is created', () => {
-				expect( view.menuBarView ).to.be.instanceof( MenuBarView );
+				expect( view.menuBarView ).toBeInstanceOf( MenuBarView );
 			} );
 
 			it( 'is given a locale object', () => {
-				expect( view.menuBarView.locale ).to.equal( locale );
+				expect( view.menuBarView.locale ).toBe( locale );
 			} );
 
 			it( 'is not rendered', () => {
-				expect( view.menuBarView.isRendered ).to.be.false;
+				expect( view.menuBarView.isRendered ).toBe( false );
 			} );
 		} );
 
 		describe( '#editables', () => {
 			it( 'are created', () => {
-				expect( view.editables.foo ).to.be.instanceof( InlineEditableUIView );
-				expect( view.editables.bar ).to.be.instanceof( InlineEditableUIView );
+				expect( view.editables.foo ).toBeInstanceOf( InlineEditableUIView );
+				expect( view.editables.bar ).toBeInstanceOf( InlineEditableUIView );
 			} );
 
 			it( 'are given a locale object', () => {
-				expect( view.editables.foo.locale ).to.equal( locale );
-				expect( view.editables.bar.locale ).to.equal( locale );
+				expect( view.editables.foo.locale ).toBe( locale );
+				expect( view.editables.bar.locale ).toBe( locale );
 			} );
 
 			it( 'are not rendered', () => {
-				expect( view.editables.foo.isRendered ).to.be.false;
-				expect( view.editables.bar.isRendered ).to.be.false;
+				expect( view.editables.foo.isRendered ).toBe( false );
+				expect( view.editables.bar.isRendered ).toBe( false );
 			} );
 
 			it( 'can be created out of existing DOM elements', () => {
@@ -109,8 +110,8 @@ describe( 'MultiRootEditorUIView', () => {
 
 				testView.render();
 
-				expect( testView.editables.foo.element ).to.equal( fooEl );
-				expect( testView.editables.bar.element ).to.equal( barEl );
+				expect( testView.editables.foo.element ).toBe( fooEl );
+				expect( testView.editables.bar.element ).toBe( barEl );
 
 				testView.destroy();
 			} );
@@ -118,8 +119,8 @@ describe( 'MultiRootEditorUIView', () => {
 			it( 'creates an editing root with the default aria-label', () => {
 				view.render();
 
-				expect( fooViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: foo' );
-				expect( barViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: bar' );
+				expect( fooViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: foo' );
+				expect( barViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: bar' );
 
 				view.destroy();
 			} );
@@ -136,8 +137,8 @@ describe( 'MultiRootEditorUIView', () => {
 				view.editables.bar.name = 'bar';
 				view.render();
 
-				expect( fooViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
-				expect( barViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+				expect( fooViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
+				expect( barViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
 
 				view.destroy();
 			} );
@@ -157,8 +158,8 @@ describe( 'MultiRootEditorUIView', () => {
 				view.editables.bar.name = 'bar';
 				view.render();
 
-				expect( fooViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
-				expect( barViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Bar' );
+				expect( fooViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Foo' );
+				expect( barViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Bar' );
 
 				view.destroy();
 			} );
@@ -169,7 +170,7 @@ describe( 'MultiRootEditorUIView', () => {
 		it( 'adds editable', () => {
 			const editable = view.createEditable( 'new' );
 
-			expect( view.editables.new ).to.equal( editable );
+			expect( view.editables.new ).toBe( editable );
 		} );
 
 		it( 'uses given HTML element inside editable', () => {
@@ -181,8 +182,8 @@ describe( 'MultiRootEditorUIView', () => {
 
 			view.render();
 
-			expect( view.editables.new ).to.equal( editable );
-			expect( editable.element ).to.equal( domElement );
+			expect( view.editables.new ).toBe( editable );
+			expect( editable.element ).toBe( domElement );
 
 			view.destroy();
 		} );
@@ -190,13 +191,13 @@ describe( 'MultiRootEditorUIView', () => {
 		it( 'passed locale object to editable', () => {
 			view.createEditable( 'new' );
 
-			expect( view.editables.new.locale ).to.equal( locale );
+			expect( view.editables.new.locale ).toBe( locale );
 		} );
 
 		it( 'new editable is not rendered', () => {
 			view.createEditable( 'new' );
 
-			expect( view.editables.new.isRendered ).to.be.false;
+			expect( view.editables.new.isRendered ).toBe( false );
 		} );
 
 		it( 'new editable is given an accessible aria label', () => {
@@ -207,7 +208,7 @@ describe( 'MultiRootEditorUIView', () => {
 
 			view.render();
 
-			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: new' );
+			expect( newViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Rich Text Editor. Editing area: new' );
 
 			view.destroy();
 		} );
@@ -220,7 +221,7 @@ describe( 'MultiRootEditorUIView', () => {
 
 			view.render();
 
-			expect( newViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
+			expect( newViewRoot.getAttribute( 'aria-label' ) ).toBe( 'Custom label' );
 
 			view.destroy();
 		} );
@@ -230,7 +231,7 @@ describe( 'MultiRootEditorUIView', () => {
 		it( 'removes the editable from the editables list (before view was rendered)', () => {
 			view.removeEditable( 'foo' );
 
-			expect( view.editables.foo ).to.be.undefined;
+			expect( view.editables.foo ).toBeUndefined();
 		} );
 
 		it( 'removes the editable from the editables list (after view was rendered)', () => {
@@ -238,7 +239,7 @@ describe( 'MultiRootEditorUIView', () => {
 
 			view.removeEditable( 'foo' );
 
-			expect( view.editables.foo ).to.be.undefined;
+			expect( view.editables.foo ).toBeUndefined();
 
 			view.destroy();
 		} );
@@ -255,42 +256,42 @@ describe( 'MultiRootEditorUIView', () => {
 
 		describe( '#toolbar', () => {
 			it( 'is rendered but gets no parent', () => {
-				expect( view.toolbar.isRendered ).to.be.true;
-				expect( view.toolbar.element.parentElement ).to.be.null;
+				expect( view.toolbar.isRendered ).toBe( true );
+				expect( view.toolbar.element.parentElement ).toBeNull();
 			} );
 
 			it( 'gets the CSS classes', () => {
-				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
-				expect( view.toolbar.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).toBe( true );
+				expect( view.toolbar.element.classList.contains( 'ck-rounded-corners' ) ).toBe( true );
 			} );
 
 			it( 'gets the "dir" attribute corresponding to Locale#uiLanguageDirection', () => {
-				expect( view.toolbar.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				expect( view.toolbar.element.getAttribute( 'dir' ) ).toBe( 'ltr' );
 			} );
 		} );
 
 		describe( '#menuBarView', () => {
 			it( 'is rendered but gets no parent', () => {
-				expect( view.menuBarView.isRendered ).to.be.true;
-				expect( view.menuBarView.element.parentElement ).to.be.null;
+				expect( view.menuBarView.isRendered ).toBe( true );
+				expect( view.menuBarView.element.parentElement ).toBeNull();
 			} );
 
 			it( 'gets the CSS classes', () => {
-				expect( view.menuBarView.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
-				expect( view.menuBarView.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+				expect( view.menuBarView.element.classList.contains( 'ck-reset_all' ) ).toBe( true );
+				expect( view.menuBarView.element.classList.contains( 'ck-rounded-corners' ) ).toBe( true );
 			} );
 
 			it( 'gets the "dir" attribute corresponding to Locale#uiLanguageDirection', () => {
-				expect( view.menuBarView.element.getAttribute( 'dir' ) ).to.equal( 'ltr' );
+				expect( view.menuBarView.element.getAttribute( 'dir' ) ).toBe( 'ltr' );
 			} );
 		} );
 
 		describe( '#editables', () => {
 			it( 'are rendered but gets no parent', () => {
-				expect( view.editables.foo.isRendered ).to.be.true;
-				expect( view.editables.bar.isRendered ).to.be.true;
-				expect( view.editables.foo.element.parentElement ).to.be.null;
-				expect( view.editables.bar.element.parentElement ).to.be.null;
+				expect( view.editables.foo.isRendered ).toBe( true );
+				expect( view.editables.bar.isRendered ).toBe( true );
+				expect( view.editables.foo.element.parentElement ).toBeNull();
+				expect( view.editables.bar.element.parentElement ).toBeNull();
 			} );
 		} );
 	} );
@@ -301,17 +302,17 @@ describe( 'MultiRootEditorUIView', () => {
 		} );
 
 		it( 'destroys #toolbar, #menuBarView and #editables', () => {
-			const toolbarSpy = sinon.spy( view.toolbar, 'destroy' );
-			const menuBarViewSpy = sinon.spy( view.menuBarView, 'destroy' );
-			const editableFooSpy = sinon.spy( view.editables.foo, 'destroy' );
-			const editableBarSpy = sinon.spy( view.editables.bar, 'destroy' );
+			const toolbarSpy = vi.spyOn( view.toolbar, 'destroy' );
+			const menuBarViewSpy = vi.spyOn( view.menuBarView, 'destroy' );
+			const editableFooSpy = vi.spyOn( view.editables.foo, 'destroy' );
+			const editableBarSpy = vi.spyOn( view.editables.bar, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( toolbarSpy );
-			sinon.assert.calledOnce( menuBarViewSpy );
-			sinon.assert.calledOnce( editableFooSpy );
-			sinon.assert.calledOnce( editableBarSpy );
+			expect( toolbarSpy ).toHaveBeenCalledTimes( 1 );
+			expect( menuBarViewSpy ).toHaveBeenCalledTimes( 1 );
+			expect( editableFooSpy ).toHaveBeenCalledTimes( 1 );
+			expect( editableBarSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'does not affect toolbar#element, menuBarView#element and editables #element', () => {
@@ -322,10 +323,10 @@ describe( 'MultiRootEditorUIView', () => {
 
 			view.destroy();
 
-			expect( view.toolbar.element.parentElement ).to.equal( document.body );
-			expect( view.menuBarView.element.parentElement ).to.equal( document.body );
-			expect( view.editables.foo.element.parentElement ).to.equal( document.body );
-			expect( view.editables.bar.element.parentElement ).to.equal( document.body );
+			expect( view.toolbar.element.parentElement ).toBe( document.body );
+			expect( view.menuBarView.element.parentElement ).toBe( document.body );
+			expect( view.editables.foo.element.parentElement ).toBe( document.body );
+			expect( view.editables.bar.element.parentElement ).toBe( document.body );
 
 			view.toolbar.element.remove();
 			view.menuBarView.element.remove();
