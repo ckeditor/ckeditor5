@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -43,7 +44,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				writer.setSelectionAttribute( 'restrictedEditingException', true );
 			} );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'is false when collapsed selection does not have the attribute', () => {
@@ -55,19 +56,19 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 				writer.removeSelectionAttribute( 'restrictedEditingException' );
 			} );
 
-			expect( command.value ).to.be.false;
+			expect( command.value ).toBe( false );
 		} );
 
 		it( 'is true when the selection is inside a text with the attribute', () => {
 			_setModelData( model, '<p><$text restrictedEditingException="true">fo[]o</$text></p><h1>bar</h1>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 
 		it( 'is true when the selection is on a text with the attribute', () => {
 			_setModelData( model, '<p>foo[<$text restrictedEditingException="true">bar</$text>]baz</p>' );
 
-			expect( command.value ).to.be.true;
+			expect( command.value ).toBe( true );
 		} );
 	} );
 
@@ -85,24 +86,24 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 		describe( 'when the selection is collapsed', () => {
 			it( 'should return true if the attribute is allowed at the caret position', () => {
 				_setModelData( model, '<p>f[]oo</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return true if the attribute is not allowed at the caret position', () => {
 				_setModelData( model, '<x>fo[]o</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 
 		describe( 'when the selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in the selection that can have the attribute', () => {
 				_setModelData( model, '<p>[foo]</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).toBe( true );
 			} );
 
 			it( 'should return false if there are no nodes in the selection that can have the attribute', () => {
 				_setModelData( model, '<x>[foo]</x>' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -114,7 +115,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( true );
 			} );
 
 			it( 'should not set the selection attribute if there is a text without the attribute (forceValue="false")', () => {
@@ -122,7 +123,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute( { forceValue: false } );
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( false );
 			} );
 
 			it( 'should not change the selection attribute if selection has the attribute already (forceValue="true")', () => {
@@ -133,7 +134,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute( { forceValue: true } );
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( true );
 			} );
 
 			it( 'should remove an attribute from text node if a text has the non-restricted attribute', () => {
@@ -141,8 +142,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
-				expect( _getModelData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( false );
+				expect( _getModelData( model ) ).toEqual( '<p>abcfoo[]barbaz</p>' );
 			} );
 
 			it( 'should remove attribute from text node if a text has the non-restricted attribute (forceValue="false")', () => {
@@ -150,8 +151,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute( { forceValue: false } );
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
-				expect( _getModelData( model ) ).to.equal( '<p>abcfoo[]barbaz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( false );
+				expect( _getModelData( model ) ).toEqual( '<p>abcfoo[]barbaz</p>' );
 			} );
 
 			it( 'should not remove attribute from text node if a text has the non-restricted attribute (forceValue="true")', () => {
@@ -159,8 +160,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute( { forceValue: true } );
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
-				expect( _getModelData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( true );
+				expect( _getModelData( model ) ).toEqual( '<p>abc<$text restrictedEditingException="true">foo[]bar</$text>baz</p>' );
 			} );
 
 			it( 'should not remove exception when selection is at the beginning of restricted text', () => {
@@ -168,8 +169,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
-				expect( _getModelData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( true );
+				expect( _getModelData( model ) ).toEqual( '<p>abc<$text restrictedEditingException="true">[]foobar</$text>baz</p>' );
 			} );
 
 			it( 'should remove attribute from text nodes when other attributes are present', () => {
@@ -184,8 +185,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
-				expect( _getModelData( model ) ).to.equal( '<p><$text bold="true">abcfoo[]</$text>barbaz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( false );
+				expect( _getModelData( model ) ).toEqual( '<p><$text bold="true">abcfoo[]</$text>barbaz</p>' );
 			} );
 
 			it( 'should remove selection attribute if selection does not have it (selection at the beginning)', () => {
@@ -197,8 +198,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
-				expect( _getModelData( model ) ).to.equal( '<p>abc[]<$text restrictedEditingException="true">foobar</$text>baz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( false );
+				expect( _getModelData( model ) ).toEqual( '<p>abc[]<$text restrictedEditingException="true">foobar</$text>baz</p>' );
 			} );
 
 			it( 'should not remove exception when selection is at the end of restricted text', () => {
@@ -206,8 +207,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.false;
-				expect( _getModelData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foobar</$text>[]baz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( false );
+				expect( _getModelData( model ) ).toEqual( '<p>abc<$text restrictedEditingException="true">foobar</$text>[]baz</p>' );
 			} );
 
 			it( 'should set selection attribute if selection does not have it (selection at the end)', () => {
@@ -219,8 +220,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).to.be.true;
-				expect( _getModelData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
+				expect( model.document.selection.hasAttribute( 'restrictedEditingException' ) ).toBe( true );
+				expect( _getModelData( model ) ).toEqual( '<p>abc<$text restrictedEditingException="true">foobar[]</$text>baz</p>' );
 			} );
 		} );
 
@@ -232,7 +233,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
+				expect( _getModelData( model ) ).toEqual( '<p>fo[ob]ar</p>' );
 			} );
 
 			it( 'should add the attribute on a text without the attribute', () => {
@@ -240,7 +241,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<p>foo[<$text restrictedEditingException="true">bar</$text>]baz</p>' );
+				expect( _getModelData( model ) ).toEqual( '<p>foo[<$text restrictedEditingException="true">bar</$text>]baz</p>' );
 			} );
 
 			it( 'should add the attribute on a selected text if a selected part already has the attribute', () => {
@@ -248,7 +249,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<p>[<$text restrictedEditingException="true">foobar</$text>]baz</p>' );
+				expect( _getModelData( model ) ).toEqual( '<p>[<$text restrictedEditingException="true">foobar</$text>]baz</p>' );
 			} );
 
 			it( 'should remove the attribute only from the selected part of a non-restricted text', () => {
@@ -256,7 +257,7 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toEqual(
 					'<p><$text restrictedEditingException="true">foo</$text>[bar]<$text restrictedEditingException="true">baz</$text></p>'
 				);
 			} );
@@ -266,18 +267,18 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute();
 
-				expect( _getModelData( model ) ).to.equal( '<p>abc[foo]<$text restrictedEditingException="true">bar</$text>baz</p>' );
+				expect( _getModelData( model ) ).toEqual( '<p>abc[foo]<$text restrictedEditingException="true">bar</$text>baz</p>' );
 			} );
 
 			it( 'should add the attribute on a selected text if the "forceValue" parameter was true', () => {
 				_setModelData( model, '<p>abc<$text restrictedEditingException="true">foob[ar</$text>x]yz</p>' );
 
-				expect( command.value ).to.be.true;
+				expect( command.value ).toBe( true );
 
 				command.execute( { forceValue: true } );
 
-				expect( command.value ).to.be.true;
-				expect( _getModelData( model ) ).to.equal( '<p>abc<$text restrictedEditingException="true">foob[arx</$text>]yz</p>' );
+				expect( command.value ).toBe( true );
+				expect( _getModelData( model ) ).toEqual( '<p>abc<$text restrictedEditingException="true">foob[arx</$text>]yz</p>' );
 			} );
 
 			it( 'should remove the attribute on selected nodes if the "forceValue" parameter was set false', () => {
@@ -285,8 +286,8 @@ describe( 'RestrictedEditingExceptionCommand', () => {
 
 				command.execute( { forceValue: false } );
 
-				expect( command.value ).to.be.false;
-				expect( _getModelData( model ) ).to.equal( '<p>a[bcfo]<$text restrictedEditingException="true">obar</$text>xyz</p>' );
+				expect( command.value ).toBe( false );
+				expect( _getModelData( model ) ).toEqual( '<p>a[bcfo]<$text restrictedEditingException="true">obar</$text>xyz</p>' );
 			} );
 		} );
 	} );

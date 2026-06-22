@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getViewData, _getModelData, _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -19,14 +19,14 @@ import {
 describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, StandardEditingModeEditing, TableEditing ] } );
 		model = editor.model;
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+
 		return editor.destroy();
 	} );
 
@@ -229,8 +229,8 @@ describe( 'StandardEditingModeEditing', () => {
 					'</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup( expectedView );
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
+				expect( editor.getData() ).to.equal( expectedView );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
 
 			it( 'should downcast block exception', () => {
@@ -249,8 +249,8 @@ describe( 'StandardEditingModeEditing', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup( expectedView );
-				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
+				expect( editor.getData() ).to.equal( expectedView );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
 		} );
 	} );
