@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { transformBlockBrsToParagraphs } from '../../src/filters/br.js';
 
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
@@ -13,7 +14,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'transformBlockBrsToParagraphs', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -24,7 +25,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p></p><p>foo</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p></p><p>foo</p>' );
 		} );
 
 		it( 'should replace multiple br elements before a paragraph', () => {
@@ -33,7 +34,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p></p><p></p><p>foo</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p></p><p></p><p>foo</p>' );
 		} );
 
 		it( 'should replace a single br element after a paragraph', () => {
@@ -42,7 +43,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><p></p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>foo</p><p></p>' );
 		} );
 
 		it( 'should replace multiple br elements after a paragraph', () => {
@@ -51,7 +52,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><p></p><p></p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>foo</p><p></p><p></p>' );
 		} );
 
 		it( 'should replace a single br element between paragraphs', () => {
@@ -60,7 +61,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><p></p><p>bar</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>foo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should replace a single br element between mixed block elements', () => {
@@ -69,7 +70,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<h2>foo</h2><p></p><p>bar</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<h2>foo</h2><p></p><p>bar</p>' );
 		} );
 
 		it( 'should replace a single br element between paragraphs wrapped with block quote', () => {
@@ -78,7 +79,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<blockquote><p>foo</p><p></p><p>bar</p></blockquote>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<blockquote><p>foo</p><p></p><p>bar</p></blockquote>' );
 		} );
 
 		it( 'should replace multiple br elements between paragraphs', () => {
@@ -87,7 +88,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><p></p><p></p><p>bar</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>foo</p><p></p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should replace a single wrapped br element between paragraphs', () => {
@@ -96,7 +97,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p><strong><p></p></strong><p>bar</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>foo</p><strong><p></p></strong><p>bar</p>' );
 		} );
 
 		it( 'should remove a "Apple-interchange-newline" br element after a paragraph', () => {
@@ -105,7 +106,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<p>foo</p>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<p>foo</p>' );
 		} );
 
 		it( 'should not replace a br element at the end of a paragraph', () => {
@@ -114,7 +115,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element at the beginning of a paragraph', () => {
@@ -123,7 +124,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element in the middle of a paragraph', () => {
@@ -132,7 +133,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element if there is a text before it', () => {
@@ -141,7 +142,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element if there is a text after it', () => {
@@ -150,7 +151,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element if there is an inline object before it', () => {
@@ -159,7 +160,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element if there is an inline object after it', () => {
@@ -168,7 +169,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a br element if there is no other content', () => {
@@ -177,7 +178,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 
 		it( 'should not replace a multiple br elements if there is no other content', () => {
@@ -186,7 +187,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			transformBlockBrsToParagraphs( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( inputData );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( inputData );
 		} );
 	} );
 } );

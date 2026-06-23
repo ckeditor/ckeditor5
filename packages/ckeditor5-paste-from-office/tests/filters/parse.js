@@ -14,89 +14,89 @@ describe( 'PasteFromOffice - filters', () => {
 				const html = '<head><style>p { color: red; } a { font-size: 12px; }</style></head><body><p>Foo Bar</p></body>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount, 'body.childCount' ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 1, 'styles.length' );
-				expect( styles[ 0 ] ).to.instanceof( CSSStyleSheet );
-				expect( styles[ 0 ].cssRules.length ).to.equal( 2 );
-				expect( styles[ 0 ].cssRules[ 0 ].style.color ).to.equal( 'red' );
-				expect( styles[ 0 ].cssRules[ 1 ].style[ 'font-size' ] ).to.equal( '12px' );
+				expect( styles.length, 'styles.length' ).toBe( 1 );
+				expect( styles[ 0 ] ).toBeInstanceOf( CSSStyleSheet );
+				expect( styles[ 0 ].cssRules.length ).toBe( 2 );
+				expect( styles[ 0 ].cssRules[ 0 ].style.color ).toBe( 'red' );
+				expect( styles[ 0 ].cssRules[ 1 ].style[ 'font-size' ] ).toBe( '12px' );
 
-				expect( stylesString ).to.equal( 'p { color: red; } a { font-size: 12px; }' );
+				expect( stylesString ).toBe( 'p { color: red; } a { font-size: 12px; }' );
 			} );
 
 			it( 'correctly parses HTML with body contents only', () => {
 				const html = '<p>Foo Bar</p>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1 );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'correctly parses HTML with no body and multiple style tags', () => {
 				const html = '<html><head><style>p { color: blue; }</style><style>a { color: green; }</style></head></html>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 0 );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount ).toBe( 0 );
 
-				expect( bodyString ).to.equal( '' );
+				expect( bodyString ).toBe( '' );
 
-				expect( styles.length ).to.equal( 2 );
-				expect( styles[ 0 ] ).to.instanceof( CSSStyleSheet );
-				expect( styles[ 1 ] ).to.instanceof( CSSStyleSheet );
-				expect( styles[ 0 ].cssRules.length ).to.equal( 1 );
-				expect( styles[ 1 ].cssRules.length ).to.equal( 1 );
-				expect( styles[ 0 ].cssRules[ 0 ].style.color ).to.equal( 'blue' );
-				expect( styles[ 1 ].cssRules[ 0 ].style.color ).to.equal( 'green' );
+				expect( styles.length ).toBe( 2 );
+				expect( styles[ 0 ] ).toBeInstanceOf( CSSStyleSheet );
+				expect( styles[ 1 ] ).toBeInstanceOf( CSSStyleSheet );
+				expect( styles[ 0 ].cssRules.length ).toBe( 1 );
+				expect( styles[ 1 ].cssRules.length ).toBe( 1 );
+				expect( styles[ 0 ].cssRules[ 0 ].style.color ).toBe( 'blue' );
+				expect( styles[ 1 ].cssRules[ 0 ].style.color ).toBe( 'green' );
 
-				expect( stylesString ).to.equal( 'p { color: blue; } a { color: green; }' );
+				expect( stylesString ).toBe( 'p { color: blue; } a { color: green; }' );
 			} );
 
 			it( 'correctly parses HTML with no body and no style tags', () => {
 				const html = '<html><head><meta name="Foo" content="Bar"></head></html>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 0 );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount ).toBe( 0 );
 
-				expect( bodyString ).to.equal( '' );
+				expect( bodyString ).toBe( '' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'correctly parses HTML with body contents and empty style tag', () => {
 				const html = '<head><style></style></head><body><p>Foo Bar</p></body>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1 );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'should remove a `<style>` block located in the body', () => {
 				const html = '<body><style>p { color: red; }</style><p>Foo Bar</p></body>';
 				const { body, bodyString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1 );
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount ).toBe( 1 );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 			} );
 
 			it( 'should remove a `<style>` block nested in the body (e.g. Excel Online)', () => {
@@ -113,100 +113,100 @@ describe( 'PasteFromOffice - filters', () => {
 
 				const { body, bodyString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( bodyString ).to.not.contain( '<style>' );
-				expect( bodyString ).to.not.contain( 'font-size:48.0pt' );
-				expect( bodyString ).to.contain( 'Hello' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( bodyString ).not.toContain( '<style>' );
+				expect( bodyString ).not.toContain( 'font-size:48.0pt' );
+				expect( bodyString ).toContain( 'Hello' );
 			} );
 
 			it( 'should not remove `<style>` blocks located in the head', () => {
 				const html = '<head><style>p { color: red; }</style></head><body><p>Foo Bar</p></body>';
 				const { bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
-				expect( styles.length ).to.equal( 1 );
-				expect( stylesString ).to.equal( 'p { color: red; }' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
+				expect( styles.length ).toBe( 1 );
+				expect( stylesString ).toBe( 'p { color: red; }' );
 			} );
 
 			it( 'should remove any content after body closing tag - plain', () => {
 				const html = '<html><head></head><body><p>Foo Bar</p></body>Ba</html>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount, 'body.childCount' ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'should remove any content after body closing tag - inline', () => {
 				const html = '<html><head></head><body><p>Foo Bar</p></body><span>Fo</span></html>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount, 'body.childCount' ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'should remove any content after body closing tag - block', () => {
 				const html = '<html><head></head><body><p>Foo Bar</p></body><p>ar</p></html>';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount, 'body.childCount' ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'should remove any content after body closing tag - no html tag', () => {
 				const html = '<head></head><body><p>Foo Bar</p></body>oo';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount, 'body.childCount' ).toBe( 1 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'should not remove any content if no body tag', () => {
 				const html = '<p>Foo Bar</p>Baz';
 				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
-				expect( body.childCount ).to.equal( 2, 'body.childCount' );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
+				expect( body.childCount, 'body.childCount' ).toBe( 2 );
 
-				expect( bodyString ).to.equal( '<p>Foo Bar</p>Baz' );
+				expect( bodyString ).toBe( '<p>Foo Bar</p>Baz' );
 
-				expect( styles.length ).to.equal( 0 );
+				expect( styles.length ).toBe( 0 );
 
-				expect( stylesString ).to.equal( '' );
+				expect( stylesString ).toBe( '' );
 			} );
 
 			it( 'should remove all comments', () => {
 				const html = '<body><!--c1--><p>Foo Bar</p><!--c2--></body>';
 				const { body } = parsePasteOfficeHtml( html );
 
-				expect( body ).to.instanceof( ViewDocumentFragment );
+				expect( body ).toBeInstanceOf( ViewDocumentFragment );
 
-				expect( body.childCount ).to.equal( 1 );
+				expect( body.childCount ).toBe( 1 );
 
-				expect( body.getChild( 0 ).name ).to.equal( 'p' );
+				expect( body.getChild( 0 ).name ).toBe( 'p' );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5/issues/15333.
@@ -224,9 +224,9 @@ describe( 'PasteFromOffice - filters', () => {
 						'</html>';
 					const { body, bodyString } = parsePasteOfficeHtml( html );
 
-					expect( body ).to.instanceof( ViewDocumentFragment );
-					expect( body.childCount ).to.equal( 1 );
-					expect( bodyString ).to.equal( '<p>foo</p>' );
+					expect( body ).toBeInstanceOf( ViewDocumentFragment );
+					expect( body.childCount ).toBe( 1 );
+					expect( bodyString ).toBe( '<p>foo</p>' );
 				} );
 
 				it( 'should remove <o:SmartTagType> empty tag with white space before the ending', () => {
@@ -242,9 +242,9 @@ describe( 'PasteFromOffice - filters', () => {
 						'</html>';
 					const { body, bodyString } = parsePasteOfficeHtml( html );
 
-					expect( body ).to.instanceof( ViewDocumentFragment );
-					expect( body.childCount ).to.equal( 1 );
-					expect( bodyString ).to.equal( '<p>foo</p>' );
+					expect( body ).toBeInstanceOf( ViewDocumentFragment );
+					expect( body.childCount ).toBe( 1 );
+					expect( bodyString ).toBe( '<p>foo</p>' );
 				} );
 
 				it( 'should remove <o:SmartTagType> tag with attributes (with and without values)', () => {
@@ -259,9 +259,9 @@ describe( 'PasteFromOffice - filters', () => {
 						'</html>';
 					const { body, bodyString } = parsePasteOfficeHtml( html );
 
-					expect( body ).to.instanceof( ViewDocumentFragment );
-					expect( body.childCount ).to.equal( 1 );
-					expect( bodyString ).to.equal( '<p>foo</p>' );
+					expect( body ).toBeInstanceOf( ViewDocumentFragment );
+					expect( body.childCount ).toBe( 1 );
+					expect( bodyString ).toBe( '<p>foo</p>' );
 				} );
 
 				it( 'should remove <o:SmartTagType> tag with attributes containing `>`', () => {
@@ -276,9 +276,9 @@ describe( 'PasteFromOffice - filters', () => {
 						'</html>';
 					const { body, bodyString } = parsePasteOfficeHtml( html );
 
-					expect( body ).to.instanceof( ViewDocumentFragment );
-					expect( body.childCount ).to.equal( 1 );
-					expect( bodyString ).to.equal( '<p>foo</p>' );
+					expect( body ).toBeInstanceOf( ViewDocumentFragment );
+					expect( body.childCount ).toBe( 1 );
+					expect( bodyString ).toBe( '<p>foo</p>' );
 				} );
 			} );
 		} );

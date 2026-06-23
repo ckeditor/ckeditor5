@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { removeStyleBlock } from '../../src/filters/removestyleblock.js';
 
@@ -12,7 +13,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'removeStyleBlock', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -32,7 +33,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeStyleBlock( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 
 		it( 'works with multiple consecutive <style> tags', () => {
@@ -52,7 +53,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeStyleBlock( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 
 		it( 'works with multiple non-consecutive <style> tags', () => {
@@ -71,7 +72,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeStyleBlock( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 	} );
 } );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { removeMSAttributes } from '../../src/filters/removemsattributes.js';
 
@@ -12,7 +13,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'removeMSAttributes', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -31,7 +32,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeMSAttributes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 
 		it( 'should remove styles which starts with "mso"', () => {
@@ -48,7 +49,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeMSAttributes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 
 		it( 'should remove "w:sdt" element (and empty "o:p", and empty "w:sdtpr")', () => {
@@ -65,7 +66,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeMSAttributes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<div>' +
 					'<h1>' +
 						'<span lang="EN-US">Microsoft Office User</span>' +

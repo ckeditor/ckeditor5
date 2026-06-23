@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { replaceMSFootnotes } from '../../src/filters/replacemsfootnotes.js';
 
@@ -12,7 +13,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'replaceMSFootnotes', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -60,7 +61,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<sup class="footnote">' +
@@ -149,7 +150,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<sup class="footnote">' +
@@ -203,7 +204,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<a style="mso-footnote-id:ftn1;" href="#_ftn1" name="_ftnref1" title="">' +
@@ -270,7 +271,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World ' +
 					'<sup class="footnote">' +
@@ -341,7 +342,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World&nbsp;' +
 					'<sup class="footnote">' +
@@ -403,7 +404,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World&nbsp;' +
 					'<sup class="footnote">' +
@@ -472,7 +473,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			replaceMSFootnotes( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe(
 				'<p class="MsoNormal">' +
 					'Hello World&nbsp;' +
 					'<sup class="footnote">' +

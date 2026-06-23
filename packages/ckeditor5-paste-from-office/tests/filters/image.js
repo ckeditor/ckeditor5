@@ -37,7 +37,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
 
-					expect( _stringifyView( body ) ).to.equal( normalizeHtml( input ) );
+					expect( _stringifyView( body ) ).toBe( normalizeHtml( input ) );
 				} );
 
 				it( 'should not change image with "http://" source', () => {
@@ -47,7 +47,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
 
-					expect( _stringifyView( body ) ).to.equal( normalizeHtml( input ) );
+					expect( _stringifyView( body ) ).toBe( normalizeHtml( input ) );
 				} );
 
 				it( 'should not change image with "file://" source if not images in RTF data', () => {
@@ -57,7 +57,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
 
-					expect( _stringifyView( body ) ).to.equal( normalizeHtml( input ) );
+					expect( _stringifyView( body ) ).toBe( normalizeHtml( input ) );
 				} );
 			} );
 		} );
@@ -67,28 +67,28 @@ describe( 'PasteFromOffice - filters', () => {
 				const hex = '48656c6c6f20576f726c6421';
 				const base64 = 'SGVsbG8gV29ybGQh';
 
-				expect( _convertHexToBase64( hex ) ).to.equal( base64 );
+				expect( _convertHexToBase64( hex ) ).toBe( base64 );
 			} );
 
 			it( '#2', () => {
 				const hex = '466f6f204261722042617a';
 				const base64 = 'Rm9vIEJhciBCYXo=';
 
-				expect( _convertHexToBase64( hex ) ).to.equal( base64 );
+				expect( _convertHexToBase64( hex ) ).toBe( base64 );
 			} );
 
 			it( '#3', () => {
 				const hex = '687474703a2f2f636b656469746f722e636f6d';
 				const base64 = 'aHR0cDovL2NrZWRpdG9yLmNvbQ==';
 
-				expect( _convertHexToBase64( hex ) ).to.equal( base64 );
+				expect( _convertHexToBase64( hex ) ).toBe( base64 );
 			} );
 
 			it( '#4', () => {
 				const hex = '434B456469746F72203520697320746865206265737421';
 				const base64 = 'Q0tFZGl0b3IgNSBpcyB0aGUgYmVzdCE=';
 
-				expect( _convertHexToBase64( hex ) ).to.equal( base64 );
+				expect( _convertHexToBase64( hex ) ).toBe( base64 );
 			} );
 
 			it( '#5', () => {
@@ -101,7 +101,7 @@ describe( 'PasteFromOffice - filters', () => {
 					'B3aXRoIEFuZ3VsYXIgMisgYW5kIFJlYWN0LiBGaW5kIG91dCBtb3JlIGluIHRoZSBDS0VkaXRvciA1IHYxMS4xLjAgcmVsZWF' +
 					'zZWQgYmxvZyBwb3N0Lg==';
 
-				expect( _convertHexToBase64( hex ) ).to.equal( base64 );
+				expect( _convertHexToBase64( hex ) ).toBe( base64 );
 			} );
 		} );
 	} );

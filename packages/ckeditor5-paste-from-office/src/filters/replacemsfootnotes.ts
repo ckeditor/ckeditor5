@@ -128,6 +128,7 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 		for ( const child of msFootnoteDef.getChildren() ) {
 			let clonedChild = child;
 
+			/* v8 ignore else -- @preserve */
 			if ( child.is( 'element' ) ) {
 				clonedChild = writer.clone( child, true );
 			}

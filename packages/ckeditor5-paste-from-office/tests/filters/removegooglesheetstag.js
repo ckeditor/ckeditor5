@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { beforeAll } from 'vitest';
 import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { removeGoogleSheetsTag } from '../../src/filters/removegooglesheetstag.js';
 
@@ -12,7 +13,7 @@ describe( 'PasteFromOffice - filters', () => {
 	describe( 'removeGoogleSheetsTag', () => {
 		let writer, viewDocument;
 
-		before( () => {
+		beforeAll( () => {
 			viewDocument = new ViewDocument();
 			writer = new ViewUpcastWriter( viewDocument );
 		} );
@@ -33,7 +34,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			removeGoogleSheetsTag( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).toBe( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
 		} );
 	} );
 } );
