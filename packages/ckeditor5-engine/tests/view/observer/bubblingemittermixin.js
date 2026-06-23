@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BubblingEventInfo } from '../../../src/view/observer/bubblingeventinfo.js';
 import { _setModelData } from '../../../src/dev-utils/model.js';
 
@@ -13,12 +14,9 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { EventInfo, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BubblingEmitterMixin', () => {
 	let editor, model, view, viewDocument;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing, BoldEditing ] } );
@@ -29,28 +27,29 @@ describe( 'BubblingEmitterMixin', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
 		await editor.destroy();
 	} );
 
 	it( 'should allow providing multiple contexts in one listener binding', () => {
 		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = {};
 
 		viewDocument.on( 'fakeEvent', spy, { context: [ '$text', 'p' ] } );
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spy.calledTwice ).to.be.true;
-		expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
-		expect( spy.args[ 1 ][ 1 ] ).to.equal( data );
+		expect( spy ).toHaveBeenCalledTimes( 2 );
+		expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( data );
+		expect( spy.mock.calls[ 1 ][ 1 ] ).toBe( data );
 	} );
 
 	it( 'should reuse existing context', () => {
 		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		const spy1 = sinon.spy();
-		const spy2 = sinon.spy();
+		const spy1 = vi.fn();
+		const spy2 = vi.fn();
 		const data = {};
 
 		viewDocument.on( 'fakeEvent', spy1, { context: 'p' } );
@@ -58,90 +57,91 @@ describe( 'BubblingEmitterMixin', () => {
 
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spy1.calledOnce ).to.be.true;
-		expect( spy1.args[ 0 ][ 1 ] ).to.equal( data );
-		expect( spy2.calledOnce ).to.be.true;
-		expect( spy2.args[ 0 ][ 1 ] ).to.equal( data );
+		expect( spy1 ).toHaveBeenCalledOnce();
+		expect( spy1.mock.calls[ 0 ][ 1 ] ).toBe( data );
+		expect( spy2 ).toHaveBeenCalledOnce();
+		expect( spy2.mock.calls[ 0 ][ 1 ] ).toBe( data );
 	} );
 
 	it( 'should unbind from contexts', () => {
 		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		const spyContext = sinon.spy();
-		const spyGlobal = sinon.spy();
+		const spyContext = vi.fn();
+		const spyGlobal = vi.fn();
 		const data = {};
 
 		viewDocument.on( 'fakeEvent', spyContext, { context: 'p' } );
 		viewDocument.on( 'fakeEvent', spyGlobal );
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spyContext.callCount ).to.equal( 1 );
-		expect( spyGlobal.callCount ).to.equal( 1 );
+		expect( spyContext ).toHaveBeenCalledTimes( 1 );
+		expect( spyGlobal ).toHaveBeenCalledTimes( 1 );
 
 		viewDocument.off( 'fakeEvent', spyContext );
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spyContext.callCount ).to.equal( 1 );
-		expect( spyGlobal.callCount ).to.equal( 2 );
+		expect( spyContext ).toHaveBeenCalledTimes( 1 );
+		expect( spyGlobal ).toHaveBeenCalledTimes( 2 );
 
 		viewDocument.off( 'fakeEvent', spyGlobal );
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spyContext.callCount ).to.equal( 1 );
-		expect( spyGlobal.callCount ).to.equal( 2 );
+		expect( spyContext ).toHaveBeenCalledTimes( 1 );
+		expect( spyGlobal ).toHaveBeenCalledTimes( 2 );
 	} );
 
 	it( 'should not unbind from contexts if other event is off', () => {
 		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		const data = {};
 
 		viewDocument.on( 'fakeEvent', spy, { context: 'p' } );
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spy.callCount ).to.equal( 1 );
+		expect( spy ).toHaveBeenCalledTimes( 1 );
 
 		viewDocument.off( 'otherEvent', spy );
 		fireBubblingEvent( 'fakeEvent', data );
 
-		expect( spy.callCount ).to.equal( 2 );
+		expect( spy ).toHaveBeenCalledTimes( 2 );
 	} );
 
 	describe( '#fire()', () => {
 		it( 'should fire bubbling event with the same data as original event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			const data = {};
 
 			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
 			fireBubblingEvent( 'fakeEvent', data );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 1 ] ).to.equal( data );
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toBe( data );
 		} );
 
 		it( 'should not fire fakeEvent event on other event fired', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'fakeEvent', spy, { context: '$root' } );
 			fireBubblingEvent( 'otherEvent', {} );
 
-			expect( spy.notCalled ).to.be.true;
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should accept EventInfo instance as an argument', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'fakeEvent', spy );
 			viewDocument.fire( new EventInfo( viewDocument, 'fakeEvent' ) );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should execute callbacks in the right order without priority', () => {
-			const spy1 = sinon.spy().named( 1 );
-			const spy2 = sinon.spy().named( 2 );
-			const spy3 = sinon.spy().named( 3 );
+			const callOrder = [];
+			const spy1 = vi.fn( () => callOrder.push( 1 ) );
+			const spy2 = vi.fn( () => callOrder.push( 2 ) );
+			const spy3 = vi.fn( () => callOrder.push( 3 ) );
 
 			viewDocument.on( 'test', spy1 );
 			viewDocument.on( 'test', spy2 );
@@ -149,15 +149,16 @@ describe( 'BubblingEmitterMixin', () => {
 
 			fireBubblingEvent( 'test' );
 
-			sinon.assert.callOrder( spy1, spy2, spy3 );
+			expect( callOrder ).toEqual( [ 1, 2, 3 ] );
 		} );
 
 		it( 'should execute callbacks in the right order with priority defined', () => {
-			const spy1 = sinon.spy().named( 1 );
-			const spy2 = sinon.spy().named( 2 );
-			const spy3 = sinon.spy().named( 3 );
-			const spy4 = sinon.spy().named( 4 );
-			const spy5 = sinon.spy().named( 5 );
+			const callOrder = [];
+			const spy1 = vi.fn( () => callOrder.push( 1 ) );
+			const spy2 = vi.fn( () => callOrder.push( 2 ) );
+			const spy3 = vi.fn( () => callOrder.push( 3 ) );
+			const spy4 = vi.fn( () => callOrder.push( 4 ) );
+			const spy5 = vi.fn( () => callOrder.push( 5 ) );
 
 			viewDocument.on( 'test', spy2, { priority: 'high' } );
 			viewDocument.on( 'test', spy3 ); // Defaults to 'normal'.
@@ -167,37 +168,43 @@ describe( 'BubblingEmitterMixin', () => {
 
 			fireBubblingEvent( 'test' );
 
-			sinon.assert.callOrder( spy1, spy2, spy3, spy4, spy5 );
+			expect( callOrder ).toEqual( [ 1, 2, 3, 4, 5 ] );
 		} );
 
 		it( 'should pass arguments to callbacks', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
+			const spy1 = vi.fn();
+			const spy2 = vi.fn();
 
 			viewDocument.on( 'test', spy1 );
 			viewDocument.on( 'test', spy2 );
 
 			fireBubblingEvent( 'test', 1, 'b', true );
 
-			sinon.assert.calledWithExactly( spy1, sinon.match.instanceOf( BubblingEventInfo ), 1, 'b', true );
-			sinon.assert.calledWithExactly( spy2, sinon.match.instanceOf( BubblingEventInfo ), 1, 'b', true );
+			expect( spy1.mock.calls[ 0 ][ 0 ] ).toBeInstanceOf( BubblingEventInfo );
+			expect( spy1.mock.calls[ 0 ][ 1 ] ).toBe( 1 );
+			expect( spy1.mock.calls[ 0 ][ 2 ] ).toBe( 'b' );
+			expect( spy1.mock.calls[ 0 ][ 3 ] ).toBe( true );
+			expect( spy2.mock.calls[ 0 ][ 0 ] ).toBeInstanceOf( BubblingEventInfo );
+			expect( spy2.mock.calls[ 0 ][ 1 ] ).toBe( 1 );
+			expect( spy2.mock.calls[ 0 ][ 2 ] ).toBe( 'b' );
+			expect( spy2.mock.calls[ 0 ][ 3 ] ).toBe( true );
 		} );
 
 		it( 'should fire the right event', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
+			const spy1 = vi.fn();
+			const spy2 = vi.fn();
 
 			viewDocument.on( '1', spy1 );
 			viewDocument.on( '2', spy2 );
 
 			fireBubblingEvent( '2' );
 
-			sinon.assert.notCalled( spy1 );
-			sinon.assert.called( spy2 );
+			expect( spy1 ).not.toHaveBeenCalled();
+			expect( spy2 ).toHaveBeenCalled();
 		} );
 
 		it( 'should execute callbacks many times', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'test', spy );
 
@@ -205,7 +212,7 @@ describe( 'BubblingEmitterMixin', () => {
 			fireBubblingEvent( 'test' );
 			fireBubblingEvent( 'test' );
 
-			sinon.assert.calledThrice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 3 );
 		} );
 
 		it( 'should do nothing for a non listened event', () => {
@@ -213,7 +220,7 @@ describe( 'BubblingEmitterMixin', () => {
 		} );
 
 		it( 'should accept the same callback many times', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'test', spy );
 			viewDocument.on( 'test', spy );
@@ -221,11 +228,11 @@ describe( 'BubblingEmitterMixin', () => {
 
 			fireBubblingEvent( 'test' );
 
-			sinon.assert.calledThrice( spy );
+			expect( spy ).toHaveBeenCalledTimes( 3 );
 		} );
 
 		it( 'should not fire callbacks for an event that were added while firing that event', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'test', () => {
 				viewDocument.on( 'test', spy );
@@ -233,14 +240,15 @@ describe( 'BubblingEmitterMixin', () => {
 
 			fireBubblingEvent( 'test' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should correctly fire callbacks for namespaced events', () => {
-			const spyFoo = sinon.spy();
-			const spyBar = sinon.spy();
-			const spyAbc = sinon.spy();
-			const spyFoo2 = sinon.spy();
+			const callOrder = [];
+			const spyFoo = vi.fn( () => callOrder.push( 'foo' ) );
+			const spyBar = vi.fn( () => callOrder.push( 'bar' ) );
+			const spyAbc = vi.fn( () => callOrder.push( 'abc' ) );
+			const spyFoo2 = vi.fn( () => callOrder.push( 'foo2' ) );
 
 			// Mess up with callbacks order to check whether they are called in adding order.
 			viewDocument.on( 'foo', spyFoo );
@@ -253,28 +261,28 @@ describe( 'BubblingEmitterMixin', () => {
 			// All four callbacks should be fired.
 			fireBubblingEvent( 'foo:bar:abc' );
 
-			sinon.assert.callOrder( spyFoo, spyAbc, spyBar, spyFoo2 );
-			sinon.assert.calledOnce( spyFoo );
-			sinon.assert.calledOnce( spyAbc );
-			sinon.assert.calledOnce( spyBar );
-			sinon.assert.calledOnce( spyFoo2 );
+			expect( callOrder ).toEqual( [ 'foo', 'abc', 'bar', 'foo2' ] );
+			expect( spyFoo ).toHaveBeenCalledOnce();
+			expect( spyAbc ).toHaveBeenCalledOnce();
+			expect( spyBar ).toHaveBeenCalledOnce();
+			expect( spyFoo2 ).toHaveBeenCalledOnce();
 
 			// Only callbacks for foo and foo:bar event should be called.
 			fireBubblingEvent( 'foo:bar' );
 
-			sinon.assert.calledOnce( spyAbc );
-			sinon.assert.calledTwice( spyFoo );
-			sinon.assert.calledTwice( spyBar );
-			sinon.assert.calledTwice( spyFoo2 );
+			expect( spyAbc ).toHaveBeenCalledOnce();
+			expect( spyFoo ).toHaveBeenCalledTimes( 2 );
+			expect( spyBar ).toHaveBeenCalledTimes( 2 );
+			expect( spyFoo2 ).toHaveBeenCalledTimes( 2 );
 
 			// Only callback for foo should be called as foo:abc has not been registered.
 			// Still, foo is a valid, existing namespace.
 			fireBubblingEvent( 'foo:abc' );
 
-			sinon.assert.calledOnce( spyAbc );
-			sinon.assert.calledTwice( spyBar );
-			sinon.assert.calledThrice( spyFoo );
-			sinon.assert.calledThrice( spyFoo2 );
+			expect( spyAbc ).toHaveBeenCalledOnce();
+			expect( spyBar ).toHaveBeenCalledTimes( 2 );
+			expect( spyFoo ).toHaveBeenCalledTimes( 3 );
+			expect( spyFoo2 ).toHaveBeenCalledTimes( 3 );
 		} );
 
 		it( 'should rethrow the CKEditorError error', () => {
@@ -296,18 +304,30 @@ describe( 'BubblingEmitterMixin', () => {
 
 			expect( () => {
 				fireBubblingEvent( 'test' );
-			} ).to.throw( TypeError, /foo/ );
+			} ).toThrow( TypeError );
+		} );
+
+		it( 'should rethrow unexpected errors thrown in event listener', () => {
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			viewDocument.on( 'test', () => {
+				throw new Error( 'Test error' );
+			} );
+
+			expect( () => {
+				fireBubblingEvent( 'test' );
+			} ).toThrow( 'Test error' );
 		} );
 
 		describe( 'return value', () => {
 			it( 'is undefined by default', () => {
-				expect( fireBubblingEvent( 'foo' ) ).to.be.undefined;
+				expect( fireBubblingEvent( 'foo' ) ).toBeUndefined();
 			} );
 
 			it( 'is undefined if none of the listeners modified EventInfo#return', () => {
 				viewDocument.on( 'foo', () => {} );
 
-				expect( fireBubblingEvent( 'foo' ) ).to.be.undefined;
+				expect( fireBubblingEvent( 'foo' ) ).toBeUndefined();
 			} );
 
 			it( 'equals EventInfo#return\'s value', () => {
@@ -315,7 +335,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( fireBubblingEvent( 'foo' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo' ) ).toBe( 1 );
 			} );
 
 			it( 'equals EventInfo#return\'s value even if the event was stopped', () => {
@@ -326,7 +346,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.stop();
 				} );
 
-				expect( fireBubblingEvent( 'foo' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo' ) ).toBe( 1 );
 			} );
 
 			it( 'equals EventInfo#return\'s value when it was set in a namespaced event', () => {
@@ -334,7 +354,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.return = 1;
 				} );
 
-				expect( fireBubblingEvent( 'foo:bar' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo:bar' ) ).toBe( 1 );
 			} );
 
 			it( 'equals the value set by the last callback', () => {
@@ -345,7 +365,7 @@ describe( 'BubblingEmitterMixin', () => {
 					evt.return = 2;
 				}, { priority: 'high' } );
 
-				expect( fireBubblingEvent( 'foo' ) ).to.equal( 1 );
+				expect( fireBubblingEvent( 'foo' ) ).toBe( 1 );
 			} );
 		} );
 	} );
@@ -363,7 +383,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -414,7 +434,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -463,7 +483,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest (capturing @ $document)',
 					'$capture @ high (capturing @ $document)',
 					'$capture @ normal (capturing @ $document)',
@@ -511,7 +531,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop() );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -557,7 +577,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -597,7 +617,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -631,7 +651,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -659,7 +679,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$text' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -681,7 +701,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$capture' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal'
@@ -696,7 +716,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest (capturing @ $document)',
 					'$capture @ high (capturing @ $document)',
 					'$capture @ normal (capturing @ $document)',
@@ -738,7 +758,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: node => node.is( 'rootElement' ) } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest (capturing @ $document)',
 					'$capture @ high (capturing @ $document)',
 					'$capture @ normal (capturing @ $document)',
@@ -769,12 +789,12 @@ describe( 'BubblingEmitterMixin', () => {
 				const data = {};
 				const events = setListeners( true );
 
-				const spyCapture = sinon.spy();
-				const spyText = sinon.spy();
-				const spyP = sinon.spy();
-				const spyBlockQuote = sinon.spy();
-				const spyRoot = sinon.spy();
-				const spyDocument = sinon.spy();
+				const spyCapture = vi.fn();
+				const spyText = vi.fn();
+				const spyP = vi.fn();
+				const spyBlockQuote = vi.fn();
+				const spyRoot = vi.fn();
+				const spyDocument = vi.fn();
 
 				viewDocument.on( 'fakeEvent', spyCapture, { context: '$capture' } );
 				viewDocument.on( 'fakeEvent', spyText, { context: '$text' } );
@@ -785,7 +805,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest (capturing @ $document)',
 					'$capture @ high (capturing @ $document)',
 					'$capture @ normal (capturing @ $document)',
@@ -823,12 +843,13 @@ describe( 'BubblingEmitterMixin', () => {
 					'$document @ lowest (bubbling @ $document)'
 				] );
 
-				sinon.assert.calledOn( spyCapture, viewDocument );
-				sinon.assert.calledOn( spyText, viewDocument );
-				sinon.assert.calledOn( spyP, viewDocument );
-				sinon.assert.calledOn( spyBlockQuote, viewDocument );
-				sinon.assert.calledOn( spyRoot, viewDocument );
-				sinon.assert.calledOn( spyDocument, viewDocument );
+				// Verify callbacks are called on viewDocument context
+				expect( spyCapture.mock.instances[ 0 ] ).toBe( viewDocument );
+				expect( spyText.mock.instances[ 0 ] ).toBe( viewDocument );
+				expect( spyP.mock.instances[ 0 ] ).toBe( viewDocument );
+				expect( spyBlockQuote.mock.instances[ 0 ] ).toBe( viewDocument );
+				expect( spyRoot.mock.instances[ 0 ] ).toBe( viewDocument );
+				expect( spyDocument.mock.instances[ 0 ] ).toBe( viewDocument );
 			} );
 		} );
 
@@ -850,7 +871,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest (capturing @ $document)',
 					'$capture @ high (capturing @ $document)',
 					'$capture @ normal (capturing @ $document)',
@@ -898,7 +919,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop() );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -944,7 +965,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$root' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -984,7 +1005,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'blockquote' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -1018,7 +1039,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: 'p' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -1046,7 +1067,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isCustomObject } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -1075,7 +1096,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -1111,7 +1132,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal',
@@ -1138,7 +1159,7 @@ describe( 'BubblingEmitterMixin', () => {
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: '$capture' } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				expect( events ).to.deep.equal( [
+				expect( events ).toEqual( [
 					'$capture @ highest',
 					'$capture @ high',
 					'$capture @ normal'
@@ -1149,12 +1170,12 @@ describe( 'BubblingEmitterMixin', () => {
 				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				viewDocument.on( 'fakeEvent', spy, { context: isCustomObject } );
 				fireBubblingEvent( 'fakeEvent', data );
 
-				sinon.assert.calledOn( spy, viewDocument );
+				expect( spy.mock.instances[ 0 ] ).toBe( viewDocument );
 			} );
 		} );
 
@@ -1166,7 +1187,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 			viewDocument.fire( 'fakeEvent', data );
 
-			expect( events ).to.deep.equal( [
+			expect( events ).toEqual( [
 				'$capture @ highest (undefined @ undefined)',
 				'$capture @ high (undefined @ undefined)',
 				'$capture @ normal (undefined @ undefined)',
@@ -1215,7 +1236,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 			viewDocument.fire( new BubblingEventInfo( viewDocument, 'fakeEvent', range ), data );
 
-			expect( events ).to.deep.equal( [
+			expect( events ).toEqual( [
 				'$capture @ highest (capturing @ $document)',
 				'$capture @ high (capturing @ $document)',
 				'$capture @ normal (capturing @ $document)',

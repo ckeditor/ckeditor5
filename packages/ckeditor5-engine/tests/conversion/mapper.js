@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { Mapper, MapperCache } from '../../src/conversion/mapper.js';
 
 import { ModelElement } from '../../src/model/element.js';
@@ -20,7 +21,6 @@ import { ViewRange } from '../../src/view/range.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { ViewAttributeElement } from '../../src/index.js';
 
 describe( 'Mapper', () => {
@@ -53,29 +53,29 @@ describe( 'Mapper', () => {
 			mapper.bindElementToMarker( viewD, 'foo' );
 			mapper.bindElementToMarker( viewD, 'bar' );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toModelElement( viewB ) ).to.equal( modelB );
-			expect( mapper.toModelElement( viewC ) ).to.equal( modelC );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toModelElement( viewB ) ).toBe( modelB );
+			expect( mapper.toModelElement( viewC ) ).toBe( modelC );
 
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
-			expect( mapper.toViewElement( modelB ) ).to.equal( viewB );
-			expect( mapper.toViewElement( modelC ) ).to.equal( viewC );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
+			expect( mapper.toViewElement( modelB ) ).toBe( viewB );
+			expect( mapper.toViewElement( modelC ) ).toBe( viewC );
 
-			expect( Array.from( mapper.markerNameToElements( 'foo' ) ) ).to.deep.equal( [ viewA, viewD ] );
+			expect( Array.from( mapper.markerNameToElements( 'foo' ) ) ).toEqual( [ viewA, viewD ] );
 
 			mapper.unbindViewElement( viewD );
 			mapper.clearBindings();
 
-			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
-			expect( mapper.toModelElement( viewB ) ).to.be.undefined;
-			expect( mapper.toModelElement( viewC ) ).to.be.undefined;
+			expect( mapper.toModelElement( viewA ) ).toBeUndefined();
+			expect( mapper.toModelElement( viewB ) ).toBeUndefined();
+			expect( mapper.toModelElement( viewC ) ).toBeUndefined();
 
-			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelB ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelC ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelA ) ).toBeUndefined();
+			expect( mapper.toViewElement( modelB ) ).toBeUndefined();
+			expect( mapper.toViewElement( modelC ) ).toBeUndefined();
 
-			expect( mapper.markerNameToElements( 'foo' ) ).to.be.null;
-			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
+			expect( mapper.markerNameToElements( 'foo' ) ).toBeNull();
+			expect( mapper.flushUnboundMarkerNames() ).toEqual( [] );
 		} );
 	} );
 
@@ -87,13 +87,13 @@ describe( 'Mapper', () => {
 			const mapper = new Mapper();
 			mapper.bindElements( modelA, viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
 
 			mapper.unbindModelElement( modelA );
 
-			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+			expect( mapper.toModelElement( viewA ) ).toBeUndefined();
+			expect( mapper.toViewElement( modelA ) ).toBeUndefined();
 		} );
 
 		it( 'should not remove binding between view and model element if view element got rebound', () => {
@@ -106,12 +106,12 @@ describe( 'Mapper', () => {
 			mapper.bindElements( modelB, viewA );
 
 			// `modelA` is still bound to `viewA` even though `viewA` got rebound.
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
 
 			mapper.unbindModelElement( modelA );
 
-			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelB );
+			expect( mapper.toViewElement( modelA ) ).toBeUndefined();
+			expect( mapper.toModelElement( viewA ) ).toBe( modelB );
 		} );
 	} );
 
@@ -123,13 +123,13 @@ describe( 'Mapper', () => {
 			const mapper = new Mapper();
 			mapper.bindElements( modelA, viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
 
 			mapper.unbindViewElement( viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+			expect( mapper.toModelElement( viewA ) ).toBeUndefined();
+			expect( mapper.toViewElement( modelA ) ).toBeUndefined();
 		} );
 
 		it( 'should not remove binding between model and view element if model element got rebound', () => {
@@ -142,12 +142,12 @@ describe( 'Mapper', () => {
 			mapper.bindElements( modelA, viewB );
 
 			// `viewA` is still bound to `modelA`, even though `modelA` got rebound.
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
 
 			mapper.unbindViewElement( viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewB );
+			expect( mapper.toModelElement( viewA ) ).toBeUndefined();
+			expect( mapper.toViewElement( modelA ) ).toBe( viewB );
 		} );
 
 		it( 'should allow deferred unbinding', () => {
@@ -157,18 +157,18 @@ describe( 'Mapper', () => {
 			const mapper = new Mapper();
 			mapper.bindElements( modelA, viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
 
 			mapper.unbindViewElement( viewA, { defer: true } );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
 
 			mapper.flushDeferredBindings();
 
-			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
-			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+			expect( mapper.toModelElement( viewA ) ).toBeUndefined();
+			expect( mapper.toViewElement( modelA ) ).toBeUndefined();
 		} );
 
 		it( 'should not unbind if element was reused after deferred unbinding', () => {
@@ -181,27 +181,27 @@ describe( 'Mapper', () => {
 			const mapper = new Mapper();
 			mapper.bindElements( modelA, viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
-			expect( viewA.root ).to.equal( viewFragmentA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
+			expect( viewA.root ).toBe( viewFragmentA );
 
 			mapper.unbindViewElement( viewA, { defer: true } );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
-			expect( viewA.root ).to.equal( viewFragmentA );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
+			expect( viewA.root ).toBe( viewFragmentA );
 
 			viewFragmentB._appendChild( viewA );
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
-			expect( viewA.root ).to.equal( viewFragmentB );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
+			expect( viewA.root ).toBe( viewFragmentB );
 
 			mapper.flushDeferredBindings();
 
-			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
-			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
-			expect( viewA.root ).to.equal( viewFragmentB );
+			expect( mapper.toModelElement( viewA ) ).toBe( modelA );
+			expect( mapper.toViewElement( modelA ) ).toBe( viewA );
+			expect( viewA.root ).toBe( viewFragmentB );
 		} );
 	} );
 
@@ -291,17 +291,17 @@ describe( 'Mapper', () => {
 
 		describe( 'toModelElement', () => {
 			it( 'should return corresponding model element', () => {
-				expect( mapper.toModelElement( viewP ) ).to.equal( modelP );
-				expect( mapper.toModelElement( viewDiv ) ).to.equal( modelDiv );
-				expect( mapper.toModelElement( viewImg ) ).to.equal( modelImg );
+				expect( mapper.toModelElement( viewP ) ).toBe( modelP );
+				expect( mapper.toModelElement( viewDiv ) ).toBe( modelDiv );
+				expect( mapper.toModelElement( viewImg ) ).toBe( modelImg );
 			} );
 		} );
 
 		describe( 'toViewElement', () => {
 			it( 'should return corresponding view element', () => {
-				expect( mapper.toViewElement( modelP ) ).to.equal( viewP );
-				expect( mapper.toViewElement( modelDiv ) ).to.equal( viewDiv );
-				expect( mapper.toViewElement( modelImg ) ).to.equal( viewImg );
+				expect( mapper.toViewElement( modelP ) ).toBe( viewP );
+				expect( mapper.toViewElement( modelDiv ) ).toBe( viewDiv );
+				expect( mapper.toViewElement( modelImg ) ).toBe( viewImg );
 			} );
 		} );
 
@@ -311,7 +311,7 @@ describe( 'Mapper', () => {
 				const stub = {};
 
 				mapper.on( 'viewToModelPosition', ( evt, data ) => {
-					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
+					expect( data.viewPosition.isEqual( viewPosition ) ).toBe( true );
 
 					data.modelPosition = stub;
 					// Do not stop the event. Test whether default algorithm was not called if data.modelPosition is already set.
@@ -319,7 +319,7 @@ describe( 'Mapper', () => {
 
 				const result = mapper.toModelPosition( viewPosition );
 
-				expect( result ).to.equal( stub );
+				expect( result ).toBe( stub );
 			} );
 
 			it( 'should be possible to add custom position mapping callback after default callback', () => {
@@ -331,15 +331,15 @@ describe( 'Mapper', () => {
 				const stub = {};
 
 				mapper.on( 'viewToModelPosition', ( evt, data ) => {
-					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
-					expect( data.modelPosition.isEqual( modelPosition ) ).to.be.true;
+					expect( data.viewPosition.isEqual( viewPosition ) ).toBe( true );
+					expect( data.modelPosition.isEqual( modelPosition ) ).toBe( true );
 
 					data.modelPosition = stub;
 				}, { priority: 'low' } );
 
 				const result = mapper.toModelPosition( viewPosition );
 
-				expect( result ).to.equal( stub );
+				expect( result ).toBe( stub );
 			} );
 
 			// Default algorithm tests.
@@ -405,7 +405,7 @@ describe( 'Mapper', () => {
 				const stub = {};
 
 				mapper.on( 'modelToViewPosition', ( evt, data ) => {
-					expect( data.modelPosition.isEqual( modelPosition ) ).to.be.true;
+					expect( data.modelPosition.isEqual( modelPosition ) ).toBe( true );
 
 					data.viewPosition = stub;
 					// Do not stop the event. Test whether default algorithm was not called if data.viewPosition is already set.
@@ -413,7 +413,7 @@ describe( 'Mapper', () => {
 
 				const result = mapper.toViewPosition( modelPosition );
 
-				expect( result ).to.equal( stub );
+				expect( result ).toBe( stub );
 			} );
 
 			it( 'should be possible to add custom position mapping callback after default callback', () => {
@@ -425,15 +425,15 @@ describe( 'Mapper', () => {
 				const stub = {};
 
 				mapper.on( 'modelToViewPosition', ( evt, data ) => {
-					expect( data.modelPosition.isEqual( modelPosition ) ).to.be.true;
-					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
+					expect( data.modelPosition.isEqual( modelPosition ) ).toBe( true );
+					expect( data.viewPosition.isEqual( viewPosition ) ).toBe( true );
 
 					data.viewPosition = stub;
 				}, { priority: 'low' } );
 
 				const result = mapper.toViewPosition( modelPosition );
 
-				expect( result ).to.equal( stub );
+				expect( result ).toBe( stub );
 			} );
 
 			it( 'should throw an error on missing position parent view element', () => {
@@ -446,7 +446,7 @@ describe( 'Mapper', () => {
 
 				expect( () => {
 					mapper.toViewPosition( modelPosition );
-				} ).to.throw( CKEditorError, 'mapping-model-position-view-parent-not-found' );
+				} ).toThrow( /mapping-model-position-view-parent-not-found/ );
 			} );
 
 			// Default algorithm tests.
@@ -614,13 +614,13 @@ describe( 'Mapper', () => {
 				//
 				// Correct mapping for model offset `6` is of course `x{}xx`:
 				//
-				expect( viewPosition.parent ).to.equal( viewTextX );
-				expect( viewPosition.offset ).to.equal( 1 );
+				expect( viewPosition.parent ).toBe( viewTextX );
+				expect( viewPosition.offset ).toBe( 1 );
 				//
 				// Incorrect before fix `xxx{}` (note it is moved to text node from `(p, 3)`:
 				//
-				// expect( viewPosition.parent ).to.equal( viewTextX );
-				// expect( viewPosition.offset ).to.equal( 3 );
+				// expect( viewPosition.parent ).toBe( viewTextX );
+				// expect( viewPosition.offset ).toBe( 3 );
 			} );
 		} );
 
@@ -628,10 +628,10 @@ describe( 'Mapper', () => {
 			it( 'should transform range', () => {
 				const viewRange = ViewRange._createFromParentsAndOffsets( viewDiv, 0, viewTextFOO, 2 );
 				const modelRange = mapper.toModelRange( viewRange );
-				expect( modelRange.start.parent ).to.equal( modelDiv );
-				expect( modelRange.start.offset ).to.equal( 0 );
-				expect( modelRange.end.parent ).to.equal( modelP );
-				expect( modelRange.end.offset ).to.equal( 3 );
+				expect( modelRange.start.parent ).toBe( modelDiv );
+				expect( modelRange.start.offset ).toBe( 0 );
+				expect( modelRange.end.parent ).toBe( modelP );
+				expect( modelRange.end.offset ).toBe( 3 );
 			} );
 		} );
 
@@ -639,31 +639,31 @@ describe( 'Mapper', () => {
 			it( 'should transform range', () => {
 				const modelRange = new ModelRange( ModelPosition._createAt( modelDiv, 0 ), ModelPosition._createAt( modelP, 3 ) );
 				const viewRange = mapper.toViewRange( modelRange );
-				expect( viewRange.start.parent ).to.equal( viewTextX );
-				expect( viewRange.start.offset ).to.equal( 0 );
-				expect( viewRange.end.parent ).to.equal( viewTextFOO );
-				expect( viewRange.end.offset ).to.equal( 2 );
+				expect( viewRange.start.parent ).toBe( viewTextX );
+				expect( viewRange.start.offset ).toBe( 0 );
+				expect( viewRange.end.parent ).toBe( viewTextFOO );
+				expect( viewRange.end.offset ).toBe( 2 );
 			} );
 		} );
 
 		it( 'should throw if model offset is to big and cannot be found in mapped view element', () => {
 			expect( () => {
 				mapper.findPositionIn( viewDiv, 5 );
-			} ).to.throw( CKEditorError, 'mapping-model-offset-not-found' );
+			} ).toThrow( /mapping-model-offset-not-found/ );
 		} );
 
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
-			expect( viewPosition.parent ).to.equal( viewElement );
-			expect( viewPosition.offset ).to.equal( viewOffset );
+			expect( viewPosition.parent ).toBe( viewElement );
+			expect( viewPosition.offset ).toBe( viewOffset );
 		}
 
 		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
-			expect( modelPosition.parent ).to.equal( modelElement );
-			expect( modelPosition.offset ).to.equal( modelOffset );
+			expect( modelPosition.parent ).toBe( modelElement );
+			expect( modelPosition.offset ).toBe( modelOffset );
 		}
 	} );
 
@@ -727,19 +727,19 @@ describe( 'Mapper', () => {
 
 		describe( 'toModelElement', () => {
 			it( 'should return corresponding model element', () => {
-				expect( mapper.toModelElement( viewDiv ) ).to.equal( modelDiv );
-				expect( mapper.toModelElement( viewWidget ) ).to.equal( modelWidget );
-				expect( mapper.toModelElement( viewImg ) ).to.equal( modelImg );
-				expect( mapper.toModelElement( viewCaption ) ).to.equal( modelCaption );
+				expect( mapper.toModelElement( viewDiv ) ).toBe( modelDiv );
+				expect( mapper.toModelElement( viewWidget ) ).toBe( modelWidget );
+				expect( mapper.toModelElement( viewImg ) ).toBe( modelImg );
+				expect( mapper.toModelElement( viewCaption ) ).toBe( modelCaption );
 			} );
 		} );
 
 		describe( 'toViewElement', () => {
 			it( 'should return corresponding view element', () => {
-				expect( mapper.toViewElement( modelDiv ) ).to.equal( viewDiv );
-				expect( mapper.toViewElement( modelWidget ) ).to.equal( viewWidget );
-				expect( mapper.toViewElement( modelImg ) ).to.equal( viewImg );
-				expect( mapper.toViewElement( modelCaption ) ).to.equal( viewCaption );
+				expect( mapper.toViewElement( modelDiv ) ).toBe( viewDiv );
+				expect( mapper.toViewElement( modelWidget ) ).toBe( viewWidget );
+				expect( mapper.toViewElement( modelImg ) ).toBe( viewImg );
+				expect( mapper.toViewElement( modelCaption ) ).toBe( viewCaption );
 			} );
 		} );
 
@@ -785,19 +785,19 @@ describe( 'Mapper', () => {
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			let viewPosition = mapper.toViewPosition( modelPosition );
-			expect( viewPosition.parent ).to.equal( viewElement );
-			expect( viewPosition.offset ).to.equal( viewOffset );
+			expect( viewPosition.parent ).toBe( viewElement );
+			expect( viewPosition.offset ).toBe( viewOffset );
 
 			viewPosition = mapper.findPositionIn( mapper.toViewElement( modelElement ), modelOffset );
-			expect( viewPosition.parent ).to.equal( viewElement );
-			expect( viewPosition.offset ).to.equal( viewOffset );
+			expect( viewPosition.parent ).toBe( viewElement );
+			expect( viewPosition.offset ).toBe( viewOffset );
 		}
 
 		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
-			expect( modelPosition.parent ).to.equal( modelElement );
-			expect( modelPosition.offset ).to.equal( modelOffset );
+			expect( modelPosition.parent ).toBe( modelElement );
+			expect( modelPosition.offset ).toBe( modelOffset );
 		}
 	} );
 
@@ -809,7 +809,7 @@ describe( 'Mapper', () => {
 			viewListItem1, viewListItem2,
 			viewListItem11, viewListItem12;
 
-		before( () => {
+		beforeAll( () => {
 			modelListItem1 = new ModelElement( 'listItem', null, new ModelText( 'aaa' ) );
 			modelListItem11 = new ModelElement( 'listItem', null, new ModelText( 'bbb' ) );
 			modelListItem12 = new ModelElement( 'listItem', null, new ModelText( 'ccc' ) );
@@ -862,8 +862,8 @@ describe( 'Mapper', () => {
 		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
-			expect( modelPosition.parent ).to.equal( modelElement );
-			expect( modelPosition.offset ).to.equal( modelOffset );
+			expect( modelPosition.parent ).toBe( modelElement );
+			expect( modelPosition.offset ).toBe( modelOffset );
 		}
 	} );
 
@@ -881,9 +881,9 @@ describe( 'Mapper', () => {
 
 			const elements = mapper.markerNameToElements( 'marker' );
 
-			expect( elements ).to.be.instanceof( Set );
-			expect( elements.size ).to.equal( 1 );
-			expect( elements.has( view ) ).to.be.true;
+			expect( elements ).toBeInstanceOf( Set );
+			expect( elements.size ).toBe( 1 );
+			expect( elements.has( view ) ).toBe( true );
 		} );
 
 		it( 'should bind multiple elements to a marker name', () => {
@@ -897,7 +897,7 @@ describe( 'Mapper', () => {
 
 			const elements = Array.from( mapper.markerNameToElements( 'marker' ) );
 
-			expect( elements ).to.deep.equal( [ viewA, viewB, viewC ] );
+			expect( elements ).toEqual( [ viewA, viewB, viewC ] );
 		} );
 
 		it( 'should unbind element from a marker name', () => {
@@ -910,17 +910,17 @@ describe( 'Mapper', () => {
 
 			mapper.unbindElementFromMarkerName( viewA, 'marker' );
 
-			expect( Array.from( mapper.markerNameToElements( 'marker' ) ) ).to.deep.equal( [ viewB ] );
-			expect( Array.from( mapper.markerNameToElements( 'markerB' ) ) ).to.deep.equal( [ viewA ] );
+			expect( Array.from( mapper.markerNameToElements( 'marker' ) ) ).toEqual( [ viewB ] );
+			expect( Array.from( mapper.markerNameToElements( 'markerB' ) ) ).toEqual( [ viewA ] );
 
 			mapper.unbindElementFromMarkerName( viewB, 'marker' );
 
-			expect( mapper.markerNameToElements( 'marker' ) ).to.be.null;
+			expect( mapper.markerNameToElements( 'marker' ) ).toBeNull();
 
 			// Removing an element from non-existing group or non-bound element should not cause a crash.
 			mapper.unbindElementFromMarkerName( viewB, 'marker' );
 
-			expect( mapper.markerNameToElements( 'marker' ) ).to.be.null;
+			expect( mapper.markerNameToElements( 'marker' ) ).toBeNull();
 		} );
 	} );
 
@@ -928,7 +928,7 @@ describe( 'Mapper', () => {
 		const mapper = new Mapper();
 
 		mapper.on( 'modelToViewPosition', ( evt, data ) => {
-			expect( data.isPhantom ).to.be.true;
+			expect( data.isPhantom ).toBe( true );
 
 			evt.stop();
 		} );
@@ -948,7 +948,7 @@ describe( 'Mapper', () => {
 
 			mapper.registerViewToModelLength( 'span', () => 4 );
 
-			expect( mapper.getModelLength( viewElement ) ).to.equal( 4 );
+			expect( mapper.getModelLength( viewElement ) ).toBe( 4 );
 		} );
 
 		it( 'should return 1 for mapped elements', () => {
@@ -956,19 +956,19 @@ describe( 'Mapper', () => {
 			const modelElement = new ModelElement( 'span' );
 			mapper.bindElements( modelElement, viewElement );
 
-			expect( mapper.getModelLength( viewElement ) ).to.equal( 1 );
+			expect( mapper.getModelLength( viewElement ) ).toBe( 1 );
 		} );
 
 		it( 'should return 0 for ui elements', () => {
 			const viewUiElement = new ViewUIElement( viewDocument, 'span' );
 
-			expect( mapper.getModelLength( viewUiElement ) ).to.equal( 0 );
+			expect( mapper.getModelLength( viewUiElement ) ).toBe( 0 );
 		} );
 
 		it( 'should return length of data for text nodes', () => {
 			const viewText = new ViewText( viewDocument, 'foo' );
 
-			expect( mapper.getModelLength( viewText ) ).to.equal( 3 );
+			expect( mapper.getModelLength( viewText ) ).toBe( 3 );
 		} );
 
 		it( 'should return sum of length of children for unmapped element', () => {
@@ -982,7 +982,7 @@ describe( 'Mapper', () => {
 			mapper.bindElements( modelP, viewP );
 			mapper.registerViewToModelLength( 'xxx', () => 2 );
 
-			expect( mapper.getModelLength( viewDiv ) ).to.equal( 6 );
+			expect( mapper.getModelLength( viewDiv ) ).toBe( 6 );
 		} );
 	} );
 
@@ -1007,7 +1007,7 @@ describe( 'Mapper', () => {
 
 			const viewMappedAncestor = mapper.findMappedViewAncestor( viewPosition );
 
-			expect( viewMappedAncestor ).to.equal( viewP );
+			expect( viewMappedAncestor ).toBe( viewP );
 		} );
 	} );
 
@@ -1024,13 +1024,13 @@ describe( 'Mapper', () => {
 
 			mapper.unbindViewElement( viewA );
 
-			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [ 'foo', 'bar' ] );
-			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
+			expect( mapper.flushUnboundMarkerNames() ).toEqual( [ 'foo', 'bar' ] );
+			expect( mapper.flushUnboundMarkerNames() ).toEqual( [] );
 
 			mapper.unbindViewElement( viewB );
 
-			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [ 'bar' ] );
-			expect( mapper.flushUnboundMarkerNames() ).to.deep.equal( [] );
+			expect( mapper.flushUnboundMarkerNames() ).toEqual( [ 'bar' ] );
+			expect( mapper.flushUnboundMarkerNames() ).toEqual( [] );
 		} );
 	} );
 } );
@@ -1059,9 +1059,9 @@ describe( 'MapperCache', () => {
 		it( 'should start tracking and return position at the start of element if element was not tracked before', () => {
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 6 );
 
-			expect( viewPosition.parent ).to.equal( viewContainer );
-			expect( viewPosition.offset ).to.equal( 0 );
-			expect( modelOffset ).to.equal( 0 );
+			expect( viewPosition.parent ).toBe( viewContainer );
+			expect( viewPosition.offset ).toBe( 0 );
+			expect( modelOffset ).toBe( 0 );
 		} );
 
 		it( 'should return previously saved position', () => {
@@ -1070,9 +1070,9 @@ describe( 'MapperCache', () => {
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 6 );
 
-			expect( viewPosition.parent ).to.equal( viewContainer );
-			expect( viewPosition.offset ).to.equal( 2 );
-			expect( modelOffset ).to.equal( 6 );
+			expect( viewPosition.parent ).toBe( viewContainer );
+			expect( viewPosition.offset ).toBe( 2 );
+			expect( modelOffset ).toBe( 6 );
 		} );
 
 		it( 'should return previously saved position (deep)', () => {
@@ -1081,9 +1081,9 @@ describe( 'MapperCache', () => {
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 5 );
 
-			expect( viewPosition.parent ).to.equal( viewEm );
-			expect( viewPosition.offset ).to.equal( 1 );
-			expect( modelOffset ).to.equal( 5 );
+			expect( viewPosition.parent ).toBe( viewEm );
+			expect( viewPosition.offset ).toBe( 1 );
+			expect( modelOffset ).toBe( 5 );
 		} );
 
 		it( 'should return closest saved position if exact position was not saved', () => {
@@ -1092,9 +1092,9 @@ describe( 'MapperCache', () => {
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 8 );
 
-			expect( viewPosition.parent ).to.equal( viewContainer );
-			expect( viewPosition.offset ).to.equal( 2 );
-			expect( modelOffset ).to.equal( 6 );
+			expect( viewPosition.parent ).toBe( viewContainer );
+			expect( viewPosition.offset ).toBe( 2 );
+			expect( modelOffset ).toBe( 6 );
 		} );
 
 		it( 'should return closest saved position if exact position was not saved (deep)', () => {
@@ -1103,9 +1103,9 @@ describe( 'MapperCache', () => {
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 8 );
 
-			expect( viewPosition.parent ).to.equal( viewEm );
-			expect( viewPosition.offset ).to.equal( 1 );
-			expect( modelOffset ).to.equal( 5 );
+			expect( viewPosition.parent ).toBe( viewEm );
+			expect( viewPosition.offset ).toBe( 1 );
+			expect( modelOffset ).toBe( 5 );
 		} );
 
 		it( 'should return closest saved position if exact position was not saved (multiple saved positions)', () => {
@@ -1133,9 +1133,32 @@ describe( 'MapperCache', () => {
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 6 );
 
-			expect( viewPosition.parent ).to.equal( viewContainer );
-			expect( viewPosition.offset ).to.equal( 2 );
-			expect( modelOffset ).to.equal( 6 );
+			expect( viewPosition.parent ).toBe( viewContainer );
+			expect( viewPosition.offset ).toBe( 2 );
+			expect( modelOffset ).toBe( 6 );
+		} );
+
+		it( 'should store index in _nodeToCacheListIndex for the node before the saved view position (viewOffset > 0)', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewContainer, 2, viewContainer, 6 );
+
+			viewTextAb._data = 'abcd';
+
+			check( 2, viewContainer, 0, 0 );
+			check( 6, viewContainer, 0, 0 );
+		} );
+
+		it( 'should not store index in _nodeToCacheListIndex when viewOffset is 0', () => {
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 0, viewContainer, 99 );
+			cache.save( viewContainer, 1, viewContainer, 2 );
+
+			viewTextAb._data = 'xyz';
+
+			check( 99, viewContainer, 0, 0 );
 		} );
 	} );
 
@@ -1147,9 +1170,9 @@ describe( 'MapperCache', () => {
 
 			const { viewPosition, modelOffset } = cache.getClosest( viewContainer, 2 );
 
-			expect( viewPosition.parent ).to.equal( viewContainer );
-			expect( viewPosition.offset ).to.equal( 0 );
-			expect( modelOffset ).to.equal( 0 );
+			expect( viewPosition.parent ).toBe( viewContainer );
+			expect( viewPosition.offset ).toBe( 0 );
+			expect( modelOffset ).toBe( 0 );
 		} );
 	} );
 
@@ -1451,8 +1474,8 @@ describe( 'MapperCache', () => {
 	) {
 		const { viewPosition, modelOffset } = cache.getClosest( viewContainerToCheck, modelOffsetToCheck );
 
-		expect( viewPosition.parent ).to.equal( expectedViewParent );
-		expect( viewPosition.offset ).to.equal( expectedViewOffset );
-		expect( modelOffset ).to.equal( expectedModelOffset );
+		expect( viewPosition.parent ).toBe( expectedViewParent );
+		expect( viewPosition.offset ).toBe( expectedViewOffset );
+		expect( modelOffset ).toBe( expectedModelOffset );
 	}
 } );

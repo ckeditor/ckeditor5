@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelText } from '../../src/model/text.js';
 import { compareMarkersForDowncast } from '../../src/conversion/comparemarkers.js';
@@ -36,7 +37,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'a', range( 0, 2 ) ],
 				[ 'b', range( 4, 6 ) ],
 				[ 'c', range( 7, 9 ) ]
-			] ) ).to.deep.equal( [ 'c', 'b', 'a' ] );
+			] ) ).toEqual( [ 'c', 'b', 'a' ] );
 		} );
 
 		it( 'should sort in reverse DOM order regardless of initial order', () => {
@@ -44,7 +45,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'c', range( 7, 9 ) ],
 				[ 'a', range( 0, 2 ) ],
 				[ 'b', range( 4, 6 ) ]
-			] ) ).to.deep.equal( [ 'c', 'b', 'a' ] );
+			] ) ).toEqual( [ 'c', 'b', 'a' ] );
 		} );
 
 		it( 'should treat adjacent ranges (end == start) as non-overlapping', () => {
@@ -52,7 +53,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'first', range( 0, 3 ) ],
 				[ 'second', range( 3, 6 ) ],
 				[ 'third', range( 6, 9 ) ]
-			] ) ).to.deep.equal( [ 'third', 'second', 'first' ] );
+			] ) ).toEqual( [ 'third', 'second', 'first' ] );
 		} );
 	} );
 
@@ -61,14 +62,14 @@ describe( 'compareMarkersForDowncast()', () => {
 			expect( sortedNames( [
 				[ 'inner', range( 3, 5 ) ],
 				[ 'outer', range( 1, 7 ) ]
-			] ) ).to.deep.equal( [ 'inner', 'outer' ] );
+			] ) ).toEqual( [ 'inner', 'outer' ] );
 		} );
 
 		it( 'should sort by start position first for partially overlapping ranges', () => {
 			expect( sortedNames( [
 				[ 'earlier', range( 1, 5 ) ],
 				[ 'later', range( 3, 7 ) ]
-			] ) ).to.deep.equal( [ 'later', 'earlier' ] );
+			] ) ).toEqual( [ 'later', 'earlier' ] );
 		} );
 
 		it( 'should use end position as secondary key when starts are equal', () => {
@@ -77,7 +78,7 @@ describe( 'compareMarkersForDowncast()', () => {
 			expect( sortedNames( [
 				[ 'shorter', range( 2, 4 ) ],
 				[ 'longer', range( 2, 6 ) ]
-			] ) ).to.deep.equal( [ 'shorter', 'longer' ] );
+			] ) ).toEqual( [ 'shorter', 'longer' ] );
 		} );
 
 		it( 'should sort three nested markers from innermost to outermost', () => {
@@ -85,7 +86,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'outer', range( 0, 9 ) ],
 				[ 'mid', range( 2, 7 ) ],
 				[ 'inner', range( 4, 5 ) ]
-			] ) ).to.deep.equal( [ 'inner', 'mid', 'outer' ] );
+			] ) ).toEqual( [ 'inner', 'mid', 'outer' ] );
 		} );
 
 		it( 'should sort three nested markers from innermost to outermost regardless of initial order', () => {
@@ -93,7 +94,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'inner', range( 4, 5 ) ],
 				[ 'outer', range( 0, 9 ) ],
 				[ 'mid', range( 2, 7 ) ]
-			] ) ).to.deep.equal( [ 'inner', 'mid', 'outer' ] );
+			] ) ).toEqual( [ 'inner', 'mid', 'outer' ] );
 		} );
 	} );
 
@@ -103,7 +104,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'alpha', range( 2, 5 ) ],
 				[ 'charlie', range( 2, 5 ) ],
 				[ 'bravo', range( 2, 5 ) ]
-			] ) ).to.deep.equal( [ 'charlie', 'bravo', 'alpha' ] );
+			] ) ).toEqual( [ 'charlie', 'bravo', 'alpha' ] );
 		} );
 
 		it( 'should preserve order for markers with identical ranges and names', () => {
@@ -114,7 +115,7 @@ describe( 'compareMarkersForDowncast()', () => {
 
 			const result = compareMarkersForDowncast( markers[ 0 ], markers[ 1 ] );
 
-			expect( result ).to.equal( 0 );
+			expect( result ).toBe( 0 );
 		} );
 	} );
 
@@ -124,7 +125,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'solo', range( 8, 9 ) ],
 				[ 'outer', range( 0, 6 ) ],
 				[ 'inner', range( 2, 4 ) ]
-			] ) ).to.deep.equal( [ 'solo', 'inner', 'outer' ] );
+			] ) ).toEqual( [ 'solo', 'inner', 'outer' ] );
 		} );
 
 		it( 'should correctly sort overlapping ranges sharing the same start with a non-overlapping range', () => {
@@ -132,7 +133,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'short', range( 0, 3 ) ],
 				[ 'long', range( 0, 7 ) ],
 				[ 'separate', range( 8, 9 ) ]
-			] ) ).to.deep.equal( [ 'separate', 'short', 'long' ] );
+			] ) ).toEqual( [ 'separate', 'short', 'long' ] );
 		} );
 
 		it( 'should sort many markers consistently regardless of initial order', () => {
@@ -145,7 +146,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'c', range( 4, 6 ) ],
 				[ 'd', range( 6, 8 ) ],
 				[ 'e', range( 8, 10 ) ]
-			] ) ).to.deep.equal( expected );
+			] ) ).toEqual( expected );
 
 			// Random initial order.
 			expect( sortedNames( [
@@ -154,7 +155,7 @@ describe( 'compareMarkersForDowncast()', () => {
 				[ 'a', range( 0, 2 ) ],
 				[ 'd', range( 6, 8 ) ],
 				[ 'b', range( 2, 4 ) ]
-			] ) ).to.deep.equal( expected );
+			] ) ).toEqual( expected );
 		} );
 	} );
 } );

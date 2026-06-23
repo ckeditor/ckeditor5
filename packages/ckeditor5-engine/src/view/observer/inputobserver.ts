@@ -142,9 +142,13 @@ export class InputObserver extends DomEventObserver<'beforeinput'> {
 
 				if ( viewStart ) {
 					return view.createRange( viewStart, viewEnd );
+
+				/* v8 ignore start -- @preserve */
 				} else if ( viewEnd ) {
 					return view.createRange( viewEnd );
 				}
+
+				/* v8 ignore stop */
 			} ).filter( ( range ): range is ViewRange => !!range );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {

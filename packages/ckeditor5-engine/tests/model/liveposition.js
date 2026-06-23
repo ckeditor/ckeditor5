@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
@@ -38,7 +39,7 @@ describe( 'LivePosition', () =>
 		const live = new ModelLivePosition( root, [ 0 ] );
 		live.detach();
 
-		expect( live ).to.be.instanceof( ModelPosition );
+		expect( live ).toBeInstanceOf( ModelPosition );
 	} );
 
 	describe( 'is()', () => {
@@ -50,17 +51,17 @@ describe( 'LivePosition', () =>
 		} );
 
 		it( 'should return true for "livePosition" and "position"', () => {
-			expect( live.is( 'livePosition' ) ).to.be.true;
-			expect( live.is( 'model:livePosition' ) ).to.be.true;
-			expect( live.is( 'position' ) ).to.be.true;
-			expect( live.is( 'model:position' ) ).to.be.true;
+			expect( live.is( 'livePosition' ) ).toBe( true );
+			expect( live.is( 'model:livePosition' ) ).toBe( true );
+			expect( live.is( 'position' ) ).toBe( true );
+			expect( live.is( 'model:position' ) ).toBe( true );
 		} );
 
 		it( 'should return false for incorrect values', () => {
-			expect( live.is( 'model' ) ).to.be.false;
-			expect( live.is( 'model:node' ) ).to.be.false;
-			expect( live.is( '$text' ) ).to.be.false;
-			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( live.is( 'model' ) ).toBe( false );
+			expect( live.is( 'model:node' ) ).toBe( false );
+			expect( live.is( '$text' ) ).toBe( false );
+			expect( live.is( 'element', 'paragraph' ) ).toBe( false );
 		} );
 	} );
 
@@ -73,53 +74,53 @@ describe( 'LivePosition', () =>
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {
-		sinon.spy( ModelLivePosition.prototype, 'listenTo' );
+		const listenToSpy = vi.spyOn( ModelLivePosition.prototype, 'listenTo' );
 
 		const live = new ModelLivePosition( root, [ 0 ] );
 		live.detach();
 
-		expect( live.listenTo.calledWith( model, 'applyOperation' ) ).to.be.true;
+		expect( listenToSpy ).toHaveBeenCalledWith( model, 'applyOperation', expect.any( Function ), expect.any( Object ) );
 
-		ModelLivePosition.prototype.listenTo.restore();
+		vi.restoreAllMocks();
 	} );
 
 	it( 'should stop listening when detached', () => {
-		sinon.spy( ModelLivePosition.prototype, 'stopListening' );
+		const stopListeningSpy = vi.spyOn( ModelLivePosition.prototype, 'stopListening' );
 
 		const live = new ModelLivePosition( root, [ 0 ] );
 		live.detach();
 
-		expect( live.stopListening.called ).to.be.true;
+		expect( stopListeningSpy ).toHaveBeenCalled();
 
-		ModelLivePosition.prototype.stopListening.restore();
+		vi.restoreAllMocks();
 	} );
 
 	describe( 'fromPosition()', () => {
 		it( 'should return LivePosition', () => {
 			const position = ModelLivePosition.fromPosition( new ModelPosition( root, [ 0 ] ) );
-			expect( position ).to.be.instanceof( ModelLivePosition );
+			expect( position ).toBeInstanceOf( ModelLivePosition );
 			position.detach();
 		} );
 	} );
 
 	it( '_createBefore should return LivePosition', () => {
 		const position = ModelLivePosition._createBefore( ul, 'toPrevious' );
-		expect( position ).to.be.instanceof( ModelLivePosition );
-		expect( position.stickiness ).to.equal( 'toPrevious' );
+		expect( position ).toBeInstanceOf( ModelLivePosition );
+		expect( position.stickiness ).toBe( 'toPrevious' );
 		position.detach();
 	} );
 
 	it( '_createAfter should return LivePosition', () => {
 		const position = ModelLivePosition._createAfter( ul, 'toPrevious' );
-		expect( position ).to.be.instanceof( ModelLivePosition );
-		expect( position.stickiness ).to.equal( 'toPrevious' );
+		expect( position ).toBeInstanceOf( ModelLivePosition );
+		expect( position.stickiness ).toBe( 'toPrevious' );
 		position.detach();
 	} );
 
 	it( '_createAt should return LivePosition', () => {
 		const position = ModelLivePosition._createAt( ul, 'end', 'toPrevious' );
-		expect( position ).to.be.instanceof( ModelLivePosition );
-		expect( position.stickiness ).to.equal( 'toPrevious' );
+		expect( position ).toBeInstanceOf( ModelLivePosition );
+		expect( position.stickiness ).toBe( 'toPrevious' );
 		position.detach();
 	} );
 
@@ -129,7 +130,7 @@ describe( 'LivePosition', () =>
 		beforeEach( () => {
 			live = new ModelLivePosition( root, [ 1, 1, 3 ] );
 
-			spy = sinon.spy();
+			spy = vi.fn();
 			live.on( 'change', spy );
 		} );
 
@@ -143,8 +144,8 @@ describe( 'LivePosition', () =>
 					writer.insertText( 'foo', new ModelPosition( root, [ 1, 1, 0 ] ) );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 1, 6 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 1, 6 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is at the same position and live position is sticking to the next node', () => {
@@ -153,8 +154,8 @@ describe( 'LivePosition', () =>
 					writer.insertText( 'foo', new ModelPosition( root, [ 1, 1, 3 ] ) );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 1, 6 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 1, 6 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is before a node from the live position path', () => {
@@ -162,8 +163,8 @@ describe( 'LivePosition', () =>
 					writer.insert( new ModelElement( 'paragraph' ), new ModelPosition( root, [ 1, 0 ] ) );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 2, 3 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 2, 3 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -177,8 +178,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 1, 6 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 1, 6 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is at the same position and live position is sticking to right side', () => {
@@ -191,8 +192,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 1, 6 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 1, 6 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is at a position before a node from the live position path', () => {
@@ -204,8 +205,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 3, 3 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 3, 3 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is from the same parent and closer offset', () => {
@@ -217,8 +218,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 1, 1 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 1, 1 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is from a position before a node from the live position path', () => {
@@ -230,8 +231,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 0, 3 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 0, 3 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'contains live position (same level)', () => {
@@ -243,8 +244,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 0, 1 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 0, 1 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'contains live position (deep)', () => {
@@ -256,8 +257,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( [ 1, 0, 3 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.path ).toEqual( [ 1, 0, 3 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -270,7 +271,7 @@ describe( 'LivePosition', () =>
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 			live = new ModelLivePosition( root, path );
 
-			spy = sinon.spy();
+			spy = vi.fn();
 			live.on( 'change', spy );
 		} );
 
@@ -284,21 +285,21 @@ describe( 'LivePosition', () =>
 					writer.insertText( 'foo', new ModelPosition( root, [ 1, 1, 6 ] ) );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
 				const newLive = new ModelLivePosition( root, path, 'toPrevious' );
-				spy = sinon.spy();
+				spy = vi.fn();
 				newLive.on( 'change', spy );
 
 				model.change( writer => {
 					writer.insertText( 'foo', new ModelPosition( root, [ 1, 1, 3 ] ) );
 				} );
 
-				expect( newLive.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( newLive.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 
 				newLive.detach();
 			} );
@@ -308,8 +309,8 @@ describe( 'LivePosition', () =>
 					writer.insertElement( 'paragraph', new ModelPosition( root, [ 2 ] ) );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is in different root', () => {
@@ -317,8 +318,8 @@ describe( 'LivePosition', () =>
 					writer.insertText( 'foo', new ModelPosition( otherRoot, [ 0 ] ) );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -332,13 +333,13 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
 				const newLive = new ModelLivePosition( root, path, 'toPrevious' );
-				spy = sinon.spy();
+				spy = vi.fn();
 				newLive.on( 'change', spy );
 
 				model.change( writer => {
@@ -349,8 +350,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( newLive.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( newLive.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 
 				newLive.detach();
 			} );
@@ -364,8 +365,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is from the same parent and further offset', () => {
@@ -377,13 +378,13 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is from a position after a node from the live position path', () => {
 				const newLive = new ModelLivePosition( root, [ 1, 0, 3 ] );
-				spy = sinon.spy();
+				spy = vi.fn();
 				newLive.on( 'change', spy );
 
 				model.change( writer => {
@@ -394,8 +395,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( newLive.path ).to.deep.equal( [ 1, 0, 3 ] );
-				expect( spy.called ).to.be.false;
+				expect( newLive.path ).toEqual( [ 1, 0, 3 ] );
+				expect( spy ).not.toHaveBeenCalled();
 
 				newLive.detach();
 			} );
@@ -411,8 +412,8 @@ describe( 'LivePosition', () =>
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.path ).to.deep.equal( path );
-				expect( spy.called ).to.be.false;
+				expect( live.path ).toEqual( path );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -422,8 +423,8 @@ describe( 'LivePosition', () =>
 					new ModelRange( new ModelPosition( root, [ 1, 1, 0 ] ), new ModelPosition( root, [ 1, 1, 6 ] ) ) );
 			} );
 
-			expect( live.path ).to.deep.equal( path );
-			expect( spy.called ).to.be.false;
+			expect( live.path ).toEqual( path );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 } );

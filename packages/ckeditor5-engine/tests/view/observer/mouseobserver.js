@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MouseObserver } from '../../../src/view/observer/mouseobserver.js';
 import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -21,60 +22,60 @@ describe( 'MouseObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'mousedown', 'mouseup', 'mouseover', 'mouseout' ] );
+		expect( observer.domEventType ).toEqual( [ 'mousedown', 'mouseup', 'mouseover', 'mouseout' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
 		it( 'should fire mousedown with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'mousedown', spy );
 
 			observer.onDomEvent( { type: 'mousedown', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire mouseup with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'mouseup', spy );
 
 			observer.onDomEvent( { type: 'mouseup', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire mouseover with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'mouseover', spy );
 
 			observer.onDomEvent( { type: 'mouseover', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire mouseout with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'mouseout', spy );
 
 			observer.onDomEvent( { type: 'mouseout', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 	} );
 } );

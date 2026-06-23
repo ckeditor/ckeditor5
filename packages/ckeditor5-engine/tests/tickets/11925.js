@@ -8,6 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import { _getModelData, _setModelData } from '../../src/dev-utils/model.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'Bug ckeditor5#11925', () => {
 	let editor;
@@ -43,9 +44,9 @@ describe( 'Bug ckeditor5#11925', () => {
 			editor.model.change( writer => {
 				writer.insertText( 'abc', editor.model.document.selection.getFirstPosition() );
 			} );
-		} ).to.not.throw();
+		} ).not.toThrow();
 
-		expect( _getModelData( editor.model ) ).to.equal(
+		expect( _getModelData( editor.model ) ).toBe(
 			'<paragraph>Xabc[]</paragraph><paragraph>Y</paragraph>'
 		);
 	} );

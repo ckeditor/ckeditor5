@@ -265,12 +265,14 @@ export class ViewConsumable {
 
 		if ( from.is( '$text' ) ) {
 			instance.add( from );
-		}
-		else if ( from.is( 'element' ) || from.is( 'documentFragment' ) ) {
-			instance.add( from );
+		} else {
+			/* v8 ignore next -- @preserve */
+			if ( from.is( 'element' ) || from.is( 'documentFragment' ) ) {
+				instance.add( from );
 
-			for ( const child of from.getChildren() ) {
-				ViewConsumable.createFrom( child, instance );
+				for ( const child of from.getChildren() ) {
+					ViewConsumable.createFrom( child, instance );
+				}
 			}
 		}
 

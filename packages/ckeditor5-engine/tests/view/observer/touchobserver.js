@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TouchObserver } from '../../../src/view/observer/touchobserver.js';
 import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -21,47 +22,47 @@ describe( 'TouchObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'touchstart', 'touchend', 'touchmove' ] );
+		expect( observer.domEventType ).toEqual( [ 'touchstart', 'touchend', 'touchmove' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
 		it( 'should fire touchstart with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'touchstart', spy );
 
 			observer.onDomEvent( { type: 'touchstart', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire touchend with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'touchend', spy );
 
 			observer.onDomEvent( { type: 'touchend', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire touchmove with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'touchmove', spy );
 
 			observer.onDomEvent( { type: 'touchmove', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 	} );
 } );

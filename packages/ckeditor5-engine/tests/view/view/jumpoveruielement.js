@@ -14,6 +14,7 @@ import { createViewRoot } from '../_utils/createroot.js';
 import { _setViewData } from '../../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'View', () => {
 	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
@@ -69,16 +70,16 @@ describe( 'View', () => {
 	function check( anchorNode, anchorOffset, focusNode, focusOffset ) {
 		const anchor = domSelection.anchorNode.data ? domSelection.anchorNode.data : domSelection.anchorNode.nodeName.toUpperCase();
 
-		expect( anchor, 'anchorNode' ).to.equal( anchorNode );
-		expect( domSelection.anchorOffset, 'anchorOffset' ).to.equal( anchorOffset );
+		expect( anchor, 'anchorNode' ).toBe( anchorNode );
+		expect( domSelection.anchorOffset, 'anchorOffset' ).toBe( anchorOffset );
 
 		if ( focusNode ) {
 			const focus = domSelection.focusNode.data ? domSelection.focusNode.data : domSelection.focusNode.nodeName.toUpperCase();
 
-			expect( focus, 'focusNode' ).to.equal( focusNode );
-			expect( domSelection.focusOffset, 'focusOffset' ).to.equal( focusOffset );
+			expect( focus, 'focusNode' ).toBe( focusNode );
+			expect( domSelection.focusOffset, 'focusOffset' ).toBe( focusOffset );
 		} else {
-			expect( domSelection.isCollapsed, 'isCollapsed' ).to.be.true;
+			expect( domSelection.isCollapsed, 'isCollapsed' ).toBe( true );
 		}
 	}
 

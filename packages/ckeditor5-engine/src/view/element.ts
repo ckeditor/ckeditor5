@@ -931,8 +931,7 @@ export class ViewElement extends ViewNode {
 						for ( const tokenMatchItem of tokenMatch ) {
 							match.push( [ key, tokenMatchItem ] );
 						}
-					}
-					else if ( !( keyPattern instanceof RegExp ) ) {
+					} else if ( !( keyPattern instanceof RegExp ) ) {
 						return false;
 					}
 				}

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
@@ -894,8 +895,8 @@ describe( 'Differ', () => {
 				const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
 				const markersToAdd = differ.getMarkersToAdd().map( entry => entry.name );
 
-				expect( markersToRefresh ).to.deep.equal( markersToRemove );
-				expect( markersToRefresh ).to.deep.equal( markersToAdd );
+				expect( markersToRefresh ).toEqual( markersToRemove );
+				expect( markersToRefresh ).toEqual( markersToAdd );
 			} );
 		} );
 
@@ -1726,59 +1727,45 @@ describe( 'Differ', () => {
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/16819
-		it( 'on element with very long text should have batched instructions together during generating diff from changes', () => {
-			const MAX_PUSH_CALL_STACK_ARGS = 1500;
-
+		it( 'should generate diff instructions for text shorter than max push call stack args count', () => {
 			const p = root.getChild( 0 );
 			const veryLongString = 'a'.repeat( 300 );
 
 			model.change( () => {
-				insert( veryLongString, ModelPosition._createAt( p, 0 ) );
+				insert( new ModelText( veryLongString ), ModelPosition._createAt( p, 0 ) );
 			} );
-
-			const pushSpy = sinon.spy( Array.prototype, 'push' );
 
 			model.change( writer => {
-				writer.setAttribute( attributeKey, true, writer.createRangeIn( p ) );
+				const range = writer.createRangeIn( p );
+
+				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+				expectChanges( [
+					{ type: 'attribute', range, attributeKey, attributeOldValue, attributeNewValue }
+				] );
 			} );
-
-			// Let's check if appended instructions has been batched together in single `.push()` call.
-			const instructionsDiff = pushSpy.args.find( args => (
-				args.length >= 300 &&
-					args.length < MAX_PUSH_CALL_STACK_ARGS &&
-					args.every( ch => ch === 'a' )
-			) );
-
-			expect( instructionsDiff ).not.to.be.undefined;
-			pushSpy.restore();
 		} );
 
 		// See: https://github.com/ckeditor/ckeditor5/issues/16819
-		it( 'on element with very long text should not have batched instructions together during generating diff from changes ' +
-				'that are larger than max push call stack args count', () => {
+		it( 'should generate diff instructions for text longer than max push call stack args count', () => {
 			const MAX_PUSH_CALL_STACK_ARGS = 1500;
 
 			const p = root.getChild( 0 );
 			const veryLongString = 'a'.repeat( MAX_PUSH_CALL_STACK_ARGS + 10 );
 
 			model.change( () => {
-				insert( veryLongString, ModelPosition._createAt( p, 0 ) );
+				insert( new ModelText( veryLongString ), ModelPosition._createAt( p, 0 ) );
 			} );
-
-			const pushSpy = sinon.spy( Array.prototype, 'push' );
 
 			model.change( writer => {
-				writer.setAttribute( attributeKey, true, writer.createRangeIn( p ) );
+				const range = writer.createRangeIn( p );
+
+				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+				expectChanges( [
+					{ type: 'attribute', range, attributeKey, attributeOldValue, attributeNewValue }
+				] );
 			} );
-
-			// Let's check if appended instructions has been NOT batched together in single `.push()` call.
-			const instructionsDiff = pushSpy.args.find( args => (
-				args.length > MAX_PUSH_CALL_STACK_ARGS &&
-				args.every( ch => ch === 'a' )
-			) );
-
-			expect( instructionsDiff ).to.be.undefined;
-			pushSpy.restore();
 		} );
 	} );
 
@@ -2036,13 +2023,13 @@ describe( 'Differ', () => {
 		it( 'add marker', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2056,13 +2043,13 @@ describe( 'Differ', () => {
 		it( 'add marker not affecting data', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: false }, { range, affectsData: false } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2076,13 +2063,13 @@ describe( 'Differ', () => {
 		it( 'remove marker', () => {
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [
+			expect( differ.getMarkersToRemove() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+			expect( differ.getMarkersToAdd() ).toEqual( [] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2096,15 +2083,15 @@ describe( 'Differ', () => {
 		it( 'change marker\'s range', () => {
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [
+			expect( differ.getMarkersToRemove() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range: rangeB }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2119,22 +2106,22 @@ describe( 'Differ', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
-			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
+			expect( differ.getMarkersToAdd() ).toEqual( [] );
+			expect( differ.getChangedMarkers() ).toEqual( [] );
 		} );
 
 		it( 'add marker and change range', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range: rangeB }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2149,13 +2136,13 @@ describe( 'Differ', () => {
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: false }, { range, affectsData: false } );
 			differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2170,39 +2157,39 @@ describe( 'Differ', () => {
 			it( 'should return `true` when the range changes and the marker affects data', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
-				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.hasDataChanges() ).toBe( true );
 			} );
 
 			it( 'should return `false` when the range does not change', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
 
-				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.hasDataChanges() ).toBe( false );
 			} );
 
 			it( 'should return `false` when multiple changes result in not changed range', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range, affectsData: true } );
 
-				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.hasDataChanges() ).toBe( false );
 			} );
 
 			it( 'should return `true` when marker stops affecting data', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: false } );
 
-				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.hasDataChanges() ).toBe( true );
 			} );
 
 			it( 'should return `true` when marker starts affecting data', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range, affectsData: true } );
 
-				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.hasDataChanges() ).toBe( true );
 			} );
 
 			it( 'should return `false` when multiple marker changes do not change affecting data (which is false)', () => {
 				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: true } );
 				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range: rangeB, affectsData: false } );
 
-				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.hasDataChanges() ).toBe( false );
 			} );
 
 			it( 'should return `true` if at least one marker changed', () => {
@@ -2210,7 +2197,7 @@ describe( 'Differ', () => {
 				differ.bufferMarkerChange( 'nameB', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 				differ.bufferMarkerChange( 'nameC', { range, affectsData: true }, { range, affectsData: true } );
 
-				expect( differ.hasDataChanges() ).to.be.true;
+				expect( differ.hasDataChanges() ).toBe( true );
 			} );
 		} );
 
@@ -2218,13 +2205,13 @@ describe( 'Differ', () => {
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 			differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range: null, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [
+			expect( differ.getMarkersToRemove() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+			expect( differ.getMarkersToAdd() ).toEqual( [] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2234,22 +2221,22 @@ describe( 'Differ', () => {
 				}
 			] );
 
-			expect( differ.hasDataChanges() ).to.be.true;
+			expect( differ.hasDataChanges() ).toBe( true );
 		} );
 
 		it( 'remove marker and add it at same range', () => {
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [
+			expect( differ.getMarkersToRemove() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2263,15 +2250,15 @@ describe( 'Differ', () => {
 		it( 'change marker to the same range', () => {
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [
+			expect( differ.getMarkersToRemove() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2287,9 +2274,9 @@ describe( 'Differ', () => {
 
 			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
-			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
+			expect( differ.getMarkersToAdd() ).toEqual( [] );
+			expect( differ.getChangedMarkers() ).toEqual( [] );
 		} );
 
 		it( 'remove marker inside a non-loaded root - not buffered', () => {
@@ -2297,9 +2284,9 @@ describe( 'Differ', () => {
 
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
-			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
+			expect( differ.getMarkersToAdd() ).toEqual( [] );
+			expect( differ.getChangedMarkers() ).toEqual( [] );
 		} );
 
 		it( 'move marker from a loaded to a non-loaded root - partially not buffered', () => {
@@ -2310,13 +2297,13 @@ describe( 'Differ', () => {
 
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: newRange, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [
+			expect( differ.getMarkersToRemove() ).toEqual( [
 				{ name: 'name', range }
 			] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+			expect( differ.getMarkersToAdd() ).toEqual( [] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2335,13 +2322,13 @@ describe( 'Differ', () => {
 
 			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: newRange, affectsData: true } );
 
-			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+			expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-			expect( differ.getMarkersToAdd() ).to.deep.equal( [
+			expect( differ.getMarkersToAdd() ).toEqual( [
 				{ name: 'name', range: newRange }
 			] );
 
-			expect( differ.getChangedMarkers() ).to.deep.equal( [
+			expect( differ.getChangedMarkers() ).toEqual( [
 				{
 					name: 'name',
 					data: {
@@ -2360,10 +2347,10 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'new', state: 'attached' } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2377,9 +2364,9 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
-				expect( differ.isEmpty ).to.be.true;
+				expect( rootChanges.length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
+				expect( differ.isEmpty ).toBe( true );
 			} );
 		} );
 
@@ -2389,10 +2376,10 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', state: 'detached' } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'main', state: 'detached' } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2406,9 +2393,9 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
-				expect( differ.isEmpty ).to.be.true;
+				expect( rootChanges.length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
+				expect( differ.isEmpty ).toBe( true );
 			} );
 		} );
 
@@ -2418,18 +2405,18 @@ describe( 'Differ', () => {
 				writer.detachRoot( 'new' );
 
 				let rootChanges = differ.getChangedRoots();
-				expect( rootChanges.length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
-				expect( differ.isEmpty ).to.be.true;
+				expect( rootChanges.length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
+				expect( differ.isEmpty ).toBe( true );
 
 				writer.addRoot( 'new' );
 
 				rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'new', state: 'attached' } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2438,9 +2425,9 @@ describe( 'Differ', () => {
 				writer.addRoot( 'new' );
 			} );
 
-			expect( differ.getChangedRoots().length ).to.equal( 0 );
-			expect( differ.hasDataChanges() ).to.be.false;
-			expect( differ.isEmpty ).to.be.true;
+			expect( differ.getChangedRoots().length ).toBe( 0 );
+			expect( differ.hasDataChanges() ).toBe( false );
+			expect( differ.isEmpty ).toBe( true );
 		} );
 
 		it( 'detach root, then add root, then detach root', () => {
@@ -2455,18 +2442,18 @@ describe( 'Differ', () => {
 				writer.addRoot( 'main2' );
 
 				let rootChanges = differ.getChangedRoots();
-				expect( rootChanges.length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
-				expect( differ.isEmpty ).to.be.true;
+				expect( rootChanges.length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
+				expect( differ.isEmpty ).toBe( true );
 
 				writer.detachRoot( 'main2' );
 
 				rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main2', state: 'detached' } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'main2', state: 'detached' } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2484,13 +2471,13 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 4 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
-				expect( rootChanges[ 1 ] ).to.deep.equal( { name: 'main', state: 'detached' } );
-				expect( rootChanges[ 2 ] ).to.deep.equal( { name: 'main2', state: 'detached' } );
-				expect( rootChanges[ 3 ] ).to.deep.equal( { name: 'new2', state: 'attached' } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 4 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'new', state: 'attached' } );
+				expect( rootChanges[ 1 ] ).toEqual( { name: 'main', state: 'detached' } );
+				expect( rootChanges[ 2 ] ).toEqual( { name: 'main2', state: 'detached' } );
+				expect( rootChanges[ 3 ] ).toEqual( { name: 'new2', state: 'attached' } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2502,10 +2489,10 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: null, newValue: 'foo' } } } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'main', attributes: { key: { oldValue: null, newValue: 'foo' } } } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2521,10 +2508,10 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: 'foo', newValue: null } } } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'main', attributes: { key: { oldValue: 'foo', newValue: null } } } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2540,10 +2527,10 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: 'foo', newValue: 'bar' } } } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'main', attributes: { key: { oldValue: 'foo', newValue: 'bar' } } } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2556,9 +2543,9 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
-				expect( differ.isEmpty ).to.be.true;
+				expect( rootChanges.length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
+				expect( differ.isEmpty ).toBe( true );
 			} );
 		} );
 
@@ -2570,9 +2557,9 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2586,10 +2573,10 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', attributes: { key: { oldValue: null, newValue: 'baz' } } } );
-				expect( differ.hasDataChanges() ).to.be.true;
-				expect( differ.isEmpty ).to.be.false;
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'main', attributes: { key: { oldValue: null, newValue: 'baz' } } } );
+				expect( differ.hasDataChanges() ).toBe( true );
+				expect( differ.isEmpty ).toBe( false );
 			} );
 		} );
 
@@ -2606,9 +2593,9 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
-				expect( differ.isEmpty ).to.be.true;
+				expect( rootChanges.length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
+				expect( differ.isEmpty ).toBe( true );
 			} );
 		} );
 
@@ -2625,8 +2612,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'main',
 					attributes: {
 						abc: { oldValue: null, newValue: 'xyz' },
@@ -2645,8 +2632,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'root',
 					state: 'attached'
 				} );
@@ -2668,8 +2655,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'main',
 					state: 'detached'
 				} );
@@ -2689,8 +2676,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'main',
 					state: 'attached'
 				} );
@@ -2706,8 +2693,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'main',
 					state: 'detached'
 				} );
@@ -2734,8 +2721,8 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'main',
 					attributes: {
 						abc: { oldValue: null, newValue: 'abc' },
@@ -2761,14 +2748,14 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 2 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( {
+				expect( rootChanges.length ).toBe( 2 );
+				expect( rootChanges[ 0 ] ).toEqual( {
 					name: 'main',
 					attributes: {
 						key: { oldValue: 'foo', newValue: null }
 					}
 				} );
-				expect( rootChanges[ 1 ] ).to.deep.equal( {
+				expect( rootChanges[ 1 ] ).toEqual( {
 					name: 'root',
 					attributes: {
 						abc: { oldValue: null, newValue: 'xyz' }
@@ -2787,7 +2774,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [] );
 
-				expect( rootChanges.length ).to.equal( 0 );
+				expect( rootChanges.length ).toBe( 0 );
 			} );
 		} );
 
@@ -2803,7 +2790,7 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 0 );
+				expect( rootChanges.length ).toBe( 0 );
 			} );
 
 			model.change( writer => {
@@ -2812,7 +2799,7 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 0 );
+				expect( rootChanges.length ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -2966,8 +2953,8 @@ describe( 'Differ', () => {
 
 				const changes = differ.getChangedRoots();
 
-				expect( changes.length ).to.equal( 1 );
-				expect( changes[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
+				expect( changes.length ).toBe( 1 );
+				expect( changes[ 0 ] ).toEqual( { name: 'new', state: 'attached' } );
 			} );
 		} );
 
@@ -2988,14 +2975,14 @@ describe( 'Differ', () => {
 				newRoot._isLoaded = true;
 				differ._bufferRootLoad( newRoot );
 
-				expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+				expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-				expect( differ.getMarkersToAdd() ).to.deep.equal( [
+				expect( differ.getMarkersToAdd() ).toEqual( [
 					{ name: 'markerA', range: rangeA },
 					{ name: 'markerB', range: rangeB }
 				] );
 
-				expect( differ.getChangedMarkers() ).to.deep.equal( [
+				expect( differ.getChangedMarkers() ).toEqual( [
 					{
 						name: 'markerA',
 						data: {
@@ -3024,9 +3011,9 @@ describe( 'Differ', () => {
 				differ._bufferRootLoad( newRoot );
 
 				expectChanges( [] );
-				expect( differ.getChangedMarkers() ).to.deep.equal( [] );
-				expect( differ.getChangedRoots().length ).to.equal( 0 );
-				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.getChangedMarkers() ).toEqual( [] );
+				expect( differ.getChangedRoots().length ).toBe( 0 );
+				expect( differ.hasDataChanges() ).toBe( false );
 			} );
 		} );
 
@@ -3037,11 +3024,11 @@ describe( 'Differ', () => {
 				writer.detachRoot( newRoot );
 
 				expectChanges( [] );
-				expect( differ.getChangedMarkers() ).to.deep.equal( [] );
-				expect( differ.getChangedRoots().length ).to.equal( 0 );
+				expect( differ.getChangedMarkers() ).toEqual( [] );
+				expect( differ.getChangedRoots().length ).toBe( 0 );
 
 				// It has changes in graveyard!
-				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.hasDataChanges() ).toBe( false );
 			} );
 		} );
 
@@ -3076,17 +3063,17 @@ describe( 'Differ', () => {
 
 				const rootChanges = differ.getChangedRoots();
 
-				expect( rootChanges.length ).to.equal( 1 );
-				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'new', state: 'attached' } );
+				expect( rootChanges.length ).toBe( 1 );
+				expect( rootChanges[ 0 ] ).toEqual( { name: 'new', state: 'attached' } );
 
-				expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
+				expect( differ.getMarkersToRemove() ).toEqual( [] );
 
-				expect( differ.getMarkersToAdd() ).to.deep.equal( [
+				expect( differ.getMarkersToAdd() ).toEqual( [
 					{ name: 'markerA', range: newRangeA },
 					{ name: 'markerC', range: rangeC }
 				] );
 
-				expect( differ.getChangedMarkers() ).to.deep.equal( [
+				expect( differ.getChangedMarkers() ).toEqual( [
 					{
 						name: 'markerA',
 						data: {
@@ -3119,7 +3106,7 @@ describe( 'Differ', () => {
 			], true );
 
 			const refreshedItems = Array.from( differ.getRefreshedItems() );
-			expect( refreshedItems ).to.deep.equal( [ p ] );
+			expect( refreshedItems ).toEqual( [ p ] );
 		} );
 
 		it( 'should mark given text proxy to be removed and added again', () => {
@@ -3136,7 +3123,7 @@ describe( 'Differ', () => {
 			], true );
 
 			const refreshedItems = Array.from( differ.getRefreshedItems() );
-			expect( refreshedItems ).to.deep.equal( [ textProxy ] );
+			expect( refreshedItems ).toEqual( [ textProxy ] );
 		} );
 
 		it( 'inside a new element', () => {
@@ -3153,7 +3140,7 @@ describe( 'Differ', () => {
 				] );
 
 				const refreshedItems = Array.from( differ.getRefreshedItems() );
-				expect( refreshedItems ).to.deep.equal( [] );
+				expect( refreshedItems ).toEqual( [] );
 			} );
 		} );
 
@@ -3186,8 +3173,8 @@ describe( 'Differ', () => {
 			const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
 			const markersToAdd = differ.getMarkersToAdd().map( entry => entry.name );
 
-			expect( markersToRefresh ).to.deep.equal( markersToRemove );
-			expect( markersToRefresh ).to.deep.equal( markersToAdd );
+			expect( markersToRefresh ).toEqual( markersToRemove );
+			expect( markersToRefresh ).toEqual( markersToAdd );
 		} );
 
 		it( 'inserted element is refreshed', () => {
@@ -3279,7 +3266,7 @@ describe( 'Differ', () => {
 				const changesA = differ.getChanges();
 				const changesB = differ.getChanges();
 
-				expect( changesA ).to.deep.equal( changesB );
+				expect( changesA ).toEqual( changesB );
 			} );
 		} );
 
@@ -3294,7 +3281,7 @@ describe( 'Differ', () => {
 				const changesA = differ.getChanges( { includeChangesInGraveyard: true } );
 				const changesB = differ.getChanges( { includeChangesInGraveyard: true } );
 
-				expect( changesA ).to.deep.equal( changesB );
+				expect( changesA ).toEqual( changesB );
 			} );
 		} );
 
@@ -3408,17 +3395,17 @@ describe( 'Differ', () => {
 	function expectChanges( expected, includeChangesInGraveyard = false ) {
 		const changes = differ.getChanges( { includeChangesInGraveyard } );
 
-		expect( changes.length, 'changes length' ).to.equal( expected.length );
+		expect( changes.length, 'changes length' ).toBe( expected.length );
 
 		for ( let i = 0; i < expected.length; i++ ) {
 			for ( const key in expected[ i ] ) {
 				if ( Object.prototype.hasOwnProperty.call( expected[ i ], key ) ) {
 					if ( key == 'position' || key == 'range' ) {
-						expect( changes[ i ][ key ].isEqual( expected[ i ][ key ] ), `item ${ i }, key "${ key }"` ).to.be.true;
+						expect( changes[ i ][ key ].isEqual( expected[ i ][ key ] ), `item ${ i }, key "${ key }"` ).toBe( true );
 					} else if ( key == 'attributes' || key == 'before' || key == 'action' ) {
-						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).to.deep.equal( expected[ i ][ key ] );
+						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).toEqual( expected[ i ][ key ] );
 					} else {
-						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).to.equal( expected[ i ][ key ] );
+						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).toBe( expected[ i ][ key ] );
 					}
 				}
 			}

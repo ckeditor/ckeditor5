@@ -23,14 +23,16 @@ import { RenameOperation } from '../../src/model/operation/renameoperation.js';
 import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ModelLivePosition } from '../../src/model/liveposition.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Position', () => {
 	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]
@@ -77,29 +79,29 @@ describe( 'Position', () => {
 		it( 'should create a position with path and document', () => {
 			const position = new ModelPosition( root, [ 0 ] );
 
-			expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
-			expect( position ).to.have.property( 'root' ).that.equals( root );
+			expect( position ).toHaveProperty( 'path' );
+			expect( position ).toHaveProperty( 'root', root );
 		} );
 
 		it( 'should accept ModelDocumentFragment as a root', () => {
 			const frag = new ModelDocumentFragment();
 			const pos = new ModelPosition( frag, [ 0 ] );
 
-			expect( pos ).to.have.property( 'root', frag );
+			expect( pos ).toHaveProperty( 'root', frag );
 		} );
 
 		it( 'should accept detached Element as a root', () => {
 			const el = new ModelElement( 'p' );
 			const pos = new ModelPosition( el, [ 0 ] );
 
-			expect( pos ).to.have.property( 'root', el );
-			expect( pos.path ).to.deep.equal( [ 0 ] );
+			expect( pos ).toHaveProperty( 'root', el );
+			expect( pos.path ).toEqual( [ 0 ] );
 		} );
 
 		it( 'should normalize attached Element as a root', () => {
 			const pos = new ModelPosition( li1, [ 0, 2 ] );
 
-			expect( pos ).to.have.property( 'root', root );
+			expect( pos ).toHaveProperty( 'root', root );
 			expect( pos.isEqual( ModelPosition._createAt( li1, 0, 2 ) ) );
 		} );
 
@@ -108,7 +110,7 @@ describe( 'Position', () => {
 			const elA = rootEl.getChild( 0 );
 			const pos = new ModelPosition( elA, [ 0 ] );
 
-			expect( pos ).to.have.property( 'root', rootEl );
+			expect( pos ).toHaveProperty( 'root', rootEl );
 			expect( pos.isEqual( ModelPosition._createAt( elA, 0 ) ) );
 		} );
 
@@ -129,7 +131,7 @@ describe( 'Position', () => {
 
 			expect( () => {
 				new ModelPosition(); // eslint-disable-line no-new
-			} ).to.throw();
+			} ).toThrow();
 		} );
 	} );
 
@@ -141,15 +143,15 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return true for "position"', () => {
-			expect( position.is( 'position' ) ).to.be.true;
-			expect( position.is( 'model:position' ) ).to.be.true;
+			expect( position.is( 'position' ) ).toBe( true );
+			expect( position.is( 'model:position' ) ).toBe( true );
 		} );
 
 		it( 'should return false for incorrect values', () => {
-			expect( position.is( 'model' ) ).to.be.false;
-			expect( position.is( 'model:node' ) ).to.be.false;
-			expect( position.is( '$text' ) ).to.be.false;
-			expect( position.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( position.is( 'model' ) ).toBe( false );
+			expect( position.is( 'model:node' ) ).toBe( false );
+			expect( position.is( '$text' ) ).toBe( false );
+			expect( position.is( 'element', 'paragraph' ) ).toBe( false );
 		} );
 	} );
 
@@ -166,52 +168,52 @@ describe( 'Position', () => {
 
 				const positionCopy = ModelPosition._createAt( position );
 
-				expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-				expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
-				expect( positionCopy ).to.not.equal( position );
+				expect( positionCopy ).toHaveProperty( 'path' );
+				expect( positionCopy ).toHaveProperty( 'root', position.root );
+				expect( positionCopy ).not.toBe( position );
 			} );
 
 			it( 'should create positions from LivePosition', () => {
 				const position = new ModelLivePosition( root, [ 0, 0 ] );
 				const created = ModelPosition._createAt( position );
 
-				expect( created.isEqual( position ) ).to.be.true;
-				expect( created ).to.not.be.equal( position );
-				expect( created ).to.be.instanceof( ModelPosition );
-				expect( created ).to.not.be.instanceof( ModelLivePosition );
+				expect( created.isEqual( position ) ).toBe( true );
+				expect( created ).not.toBe( position );
+				expect( created ).toBeInstanceOf( ModelPosition );
+				expect( created ).not.toBeInstanceOf( ModelLivePosition );
 			} );
 
 			it( 'should create positions from node and offset', () => {
-				expect( ModelPosition._createAt( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
-				expect( ModelPosition._createAt( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
-				expect( ModelPosition._createAt( root, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+				expect( ModelPosition._createAt( root, 0 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( root, 1 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( root, 2 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAt( p, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0, 0 ] );
+				expect( ModelPosition._createAt( p, 0 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAt( ul, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-				expect( ModelPosition._createAt( ul, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
-				expect( ModelPosition._createAt( ul, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+				expect( ModelPosition._createAt( ul, 0 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( ul, 1 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( ul, 2 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAt( li1, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
-				expect( ModelPosition._createAt( li1, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
-				expect( ModelPosition._createAt( li1, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
-				expect( ModelPosition._createAt( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
+				expect( ModelPosition._createAt( li1, 0 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( li1, 1 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( li1, 2 ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( li1, 3 ) ).toHaveProperty( 'path' );
 			} );
 
 			it( 'should create positions from node and flag', () => {
-				expect( ModelPosition._createAt( root, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+				expect( ModelPosition._createAt( root, 'end' ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAt( p, 'before' ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
-				expect( ModelPosition._createAt( a, 'before' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
+				expect( ModelPosition._createAt( p, 'before' ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( a, 'before' ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAt( p, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
-				expect( ModelPosition._createAt( a, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
+				expect( ModelPosition._createAt( p, 'after' ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAt( a, 'after' ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAt( ul, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+				expect( ModelPosition._createAt( ul, 'end' ) ).toHaveProperty( 'path' );
 			} );
 
 			it( 'should set stickiness (if not cloning other position)', () => {
-				expect( ModelPosition._createAt( root, 'end', 'toPrevious' ) ).to.have.property( 'stickiness' ).that.equals( 'toPrevious' );
+				expect( ModelPosition._createAt( root, 'end', 'toPrevious' ) ).toHaveProperty( 'stickiness', 'toPrevious' );
 			} );
 
 			it( 'throws when parent is not an element', () => {
@@ -223,31 +225,31 @@ describe( 'Position', () => {
 			it( 'works with a doc frag', () => {
 				const frag = new ModelDocumentFragment();
 
-				expect( ModelPosition._createAt( frag, 0 ) ).to.have.property( 'root', frag );
+				expect( ModelPosition._createAt( frag, 0 ) ).toHaveProperty( 'root', frag );
 			} );
 		} );
 
 		describe( '_createBefore()', () => {
 			it( 'should create positions before elements', () => {
-				expect( ModelPosition._createBefore( p ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
+				expect( ModelPosition._createBefore( p ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createBefore( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+				expect( ModelPosition._createBefore( ul ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createBefore( li1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+				expect( ModelPosition._createBefore( li1 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createBefore( f ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
-				expect( ModelPosition._createBefore( o ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
-				expect( ModelPosition._createBefore( z ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
+				expect( ModelPosition._createBefore( f ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createBefore( o ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createBefore( z ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createBefore( li2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
+				expect( ModelPosition._createBefore( li2 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createBefore( b ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 0 ] );
-				expect( ModelPosition._createBefore( a ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
-				expect( ModelPosition._createBefore( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
+				expect( ModelPosition._createBefore( b ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createBefore( a ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createBefore( r ) ).toHaveProperty( 'path' );
 			} );
 
 			it( 'should set stickiness', () => {
-				expect( ModelPosition._createBefore( p, 'toPrevious' ) ).to.have.property( 'stickiness' ).that.equals( 'toPrevious' );
+				expect( ModelPosition._createBefore( p, 'toPrevious' ) ).toHaveProperty( 'stickiness', 'toPrevious' );
 			} );
 
 			it( 'should throw error if one try to create positions before root', () => {
@@ -259,25 +261,25 @@ describe( 'Position', () => {
 
 		describe( '_createAfter()', () => {
 			it( 'should create positions after elements', () => {
-				expect( ModelPosition._createAfter( p ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+				expect( ModelPosition._createAfter( p ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAfter( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+				expect( ModelPosition._createAfter( ul ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAfter( li1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
+				expect( ModelPosition._createAfter( li1 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAfter( f ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
-				expect( ModelPosition._createAfter( o ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
-				expect( ModelPosition._createAfter( z ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
+				expect( ModelPosition._createAfter( f ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAfter( o ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAfter( z ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAfter( li2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+				expect( ModelPosition._createAfter( li2 ) ).toHaveProperty( 'path' );
 
-				expect( ModelPosition._createAfter( b ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
-				expect( ModelPosition._createAfter( a ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
-				expect( ModelPosition._createAfter( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
+				expect( ModelPosition._createAfter( b ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAfter( a ) ).toHaveProperty( 'path' );
+				expect( ModelPosition._createAfter( r ) ).toHaveProperty( 'path' );
 			} );
 
 			it( 'should set stickiness', () => {
-				expect( ModelPosition._createAfter( p, 'toPrevious' ) ).to.have.property( 'stickiness' ).that.equals( 'toPrevious' );
+				expect( ModelPosition._createAfter( p, 'toPrevious' ) ).toHaveProperty( 'stickiness', 'toPrevious' );
 			} );
 
 			it( 'should throw error if one try to make positions after root', () => {
@@ -290,32 +292,32 @@ describe( 'Position', () => {
 
 	describe( '#parent', () => {
 		it( 'should have parent', () => {
-			expect( new ModelPosition( root, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( root );
-			expect( new ModelPosition( root, [ 1 ] ) ).to.have.property( 'parent' ).that.equals( root );
-			expect( new ModelPosition( root, [ 2 ] ) ).to.have.property( 'parent' ).that.equals( root );
+			expect( new ModelPosition( root, [ 0 ] ) ).toHaveProperty( 'parent', root );
+			expect( new ModelPosition( root, [ 1 ] ) ).toHaveProperty( 'parent', root );
+			expect( new ModelPosition( root, [ 2 ] ) ).toHaveProperty( 'parent', root );
 
-			expect( new ModelPosition( root, [ 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( p );
+			expect( new ModelPosition( root, [ 0, 0 ] ) ).toHaveProperty( 'parent', p );
 
-			expect( new ModelPosition( root, [ 1, 0 ] ) ).to.have.property( 'parent' ).that.equals( ul );
-			expect( new ModelPosition( root, [ 1, 1 ] ) ).to.have.property( 'parent' ).that.equals( ul );
-			expect( new ModelPosition( root, [ 1, 2 ] ) ).to.have.property( 'parent' ).that.equals( ul );
+			expect( new ModelPosition( root, [ 1, 0 ] ) ).toHaveProperty( 'parent', ul );
+			expect( new ModelPosition( root, [ 1, 1 ] ) ).toHaveProperty( 'parent', ul );
+			expect( new ModelPosition( root, [ 1, 2 ] ) ).toHaveProperty( 'parent', ul );
 
-			expect( new ModelPosition( root, [ 1, 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
-			expect( new ModelPosition( root, [ 1, 0, 1 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
-			expect( new ModelPosition( root, [ 1, 0, 2 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
-			expect( new ModelPosition( root, [ 1, 0, 3 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+			expect( new ModelPosition( root, [ 1, 0, 0 ] ) ).toHaveProperty( 'parent', li1 );
+			expect( new ModelPosition( root, [ 1, 0, 1 ] ) ).toHaveProperty( 'parent', li1 );
+			expect( new ModelPosition( root, [ 1, 0, 2 ] ) ).toHaveProperty( 'parent', li1 );
+			expect( new ModelPosition( root, [ 1, 0, 3 ] ) ).toHaveProperty( 'parent', li1 );
 		} );
 
 		it( 'should work with positions rooted in document fragment', () => {
 			const docFrag = new ModelDocumentFragment();
 
-			expect( new ModelPosition( docFrag, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( docFrag );
+			expect( new ModelPosition( docFrag, [ 0 ] ) ).toHaveProperty( 'parent', docFrag );
 		} );
 
 		it( 'should throw when path out of bounds', () => {
 			const position = new ModelPosition( root, [ 0, 0 ] );
 
-			expect( position ).to.have.property( 'parent' ).that.equals( p );
+			expect( position ).toHaveProperty( 'parent', p );
 
 			root._removeChildren( 0, 2 );
 
@@ -336,53 +338,53 @@ describe( 'Position', () => {
 
 	describe( '#offset', () => {
 		it( 'should have offset', () => {
-			expect( new ModelPosition( root, [ 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
-			expect( new ModelPosition( root, [ 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
+			expect( new ModelPosition( root, [ 0 ] ) ).toHaveProperty( 'offset', 0 );
+			expect( new ModelPosition( root, [ 1 ] ) ).toHaveProperty( 'offset', 1 );
+			expect( new ModelPosition( root, [ 2 ] ) ).toHaveProperty( 'offset', 2 );
 
-			expect( new ModelPosition( root, [ 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+			expect( new ModelPosition( root, [ 0, 0 ] ) ).toHaveProperty( 'offset', 0 );
 
-			expect( new ModelPosition( root, [ 1, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
-			expect( new ModelPosition( root, [ 1, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
+			expect( new ModelPosition( root, [ 1, 0 ] ) ).toHaveProperty( 'offset', 0 );
+			expect( new ModelPosition( root, [ 1, 1 ] ) ).toHaveProperty( 'offset', 1 );
+			expect( new ModelPosition( root, [ 1, 2 ] ) ).toHaveProperty( 'offset', 2 );
 
-			expect( new ModelPosition( root, [ 1, 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1, 0, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
-			expect( new ModelPosition( root, [ 1, 0, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
-			expect( new ModelPosition( root, [ 1, 0, 3 ] ) ).to.have.property( 'offset' ).that.equals( 3 );
+			expect( new ModelPosition( root, [ 1, 0, 0 ] ) ).toHaveProperty( 'offset', 0 );
+			expect( new ModelPosition( root, [ 1, 0, 1 ] ) ).toHaveProperty( 'offset', 1 );
+			expect( new ModelPosition( root, [ 1, 0, 2 ] ) ).toHaveProperty( 'offset', 2 );
+			expect( new ModelPosition( root, [ 1, 0, 3 ] ) ).toHaveProperty( 'offset', 3 );
 		} );
 	} );
 
 	describe( '#index', () => {
 		it( 'should have index', () => {
-			expect( new ModelPosition( root, [ 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
-			expect( new ModelPosition( root, [ 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+			expect( new ModelPosition( root, [ 0 ] ) ).toHaveProperty( 'index', 0 );
+			expect( new ModelPosition( root, [ 1 ] ) ).toHaveProperty( 'index', 1 );
+			expect( new ModelPosition( root, [ 2 ] ) ).toHaveProperty( 'index', 2 );
 
-			expect( new ModelPosition( root, [ 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+			expect( new ModelPosition( root, [ 0, 0 ] ) ).toHaveProperty( 'index', 0 );
 
-			expect( new ModelPosition( root, [ 1, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1, 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
-			expect( new ModelPosition( root, [ 1, 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+			expect( new ModelPosition( root, [ 1, 0 ] ) ).toHaveProperty( 'index', 0 );
+			expect( new ModelPosition( root, [ 1, 1 ] ) ).toHaveProperty( 'index', 1 );
+			expect( new ModelPosition( root, [ 1, 2 ] ) ).toHaveProperty( 'index', 2 );
 
-			expect( new ModelPosition( root, [ 1, 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1, 0, 1 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1, 0, 2 ] ) ).to.have.property( 'index' ).that.equals( 0 );
-			expect( new ModelPosition( root, [ 1, 0, 3 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+			expect( new ModelPosition( root, [ 1, 0, 0 ] ) ).toHaveProperty( 'index', 0 );
+			expect( new ModelPosition( root, [ 1, 0, 1 ] ) ).toHaveProperty( 'index', 0 );
+			expect( new ModelPosition( root, [ 1, 0, 2 ] ) ).toHaveProperty( 'index', 0 );
+			expect( new ModelPosition( root, [ 1, 0, 3 ] ) ).toHaveProperty( 'index', 1 );
 		} );
 
 		it( 'should be able to set offset', () => {
 			const position = new ModelPosition( root, [ 1, 0, 2 ] );
 			position.offset = 4;
 
-			expect( position.offset ).to.equal( 4 );
-			expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
+			expect( position.offset ).toBe( 4 );
+			expect( position.path ).toEqual( [ 1, 0, 4 ] );
 		} );
 
 		it( 'should throw when path out of bounds', () => {
 			const position = new ModelPosition( root, [ 0, 0 ] );
 
-			expect( position ).to.have.property( 'index' ).that.equals( 0 );
+			expect( position ).toHaveProperty( 'index', 0 );
 
 			root._removeChildren( 0, 2 );
 
@@ -394,26 +396,26 @@ describe( 'Position', () => {
 
 	describe( '#nodeBefore', () => {
 		it( 'should have nodeBefore if it is not inside a text node', () => {
-			expect( new ModelPosition( root, [ 0 ] ).nodeBefore ).to.be.null;
-			expect( new ModelPosition( root, [ 1 ] ).nodeBefore ).to.equal( p );
-			expect( new ModelPosition( root, [ 2 ] ).nodeBefore ).to.equal( ul );
+			expect( new ModelPosition( root, [ 0 ] ).nodeBefore ).toBeNull();
+			expect( new ModelPosition( root, [ 1 ] ).nodeBefore ).toBe( p );
+			expect( new ModelPosition( root, [ 2 ] ).nodeBefore ).toBe( ul );
 
-			expect( new ModelPosition( root, [ 0, 0 ] ).nodeBefore ).to.null;
+			expect( new ModelPosition( root, [ 0, 0 ] ).nodeBefore ).toBeNull();
 
-			expect( new ModelPosition( root, [ 1, 0 ] ).nodeBefore ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 1 ] ).nodeBefore ).to.equal( li1 );
-			expect( new ModelPosition( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
+			expect( new ModelPosition( root, [ 1, 0 ] ).nodeBefore ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 1 ] ).nodeBefore ).toBe( li1 );
+			expect( new ModelPosition( root, [ 1, 2 ] ).nodeBefore ).toBe( li2 );
 
-			expect( new ModelPosition( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 0, 1 ] ).nodeBefore ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 0, 2 ] ).nodeBefore ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 0, 3 ] ).nodeBefore.data ).to.equal( 'foz' );
+			expect( new ModelPosition( root, [ 1, 0, 0 ] ).nodeBefore ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 0, 1 ] ).nodeBefore ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 0, 2 ] ).nodeBefore ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 0, 3 ] ).nodeBefore.data ).toBe( 'foz' );
 		} );
 
 		it( 'should throw when path out of bounds', () => {
 			const position = new ModelPosition( root, [ 1, 1 ] );
 
-			expect( position ).to.have.property( 'nodeBefore' ).that.equals( li1 );
+			expect( position ).toHaveProperty( 'nodeBefore', li1 );
 
 			root._removeChildren( 0, 2 );
 
@@ -425,26 +427,26 @@ describe( 'Position', () => {
 
 	describe( '#nodeAfter', () => {
 		it( 'should have nodeAfter if it is not inside a text node', () => {
-			expect( new ModelPosition( root, [ 0 ] ).nodeAfter ).to.equal( p );
-			expect( new ModelPosition( root, [ 1 ] ).nodeAfter ).to.equal( ul );
-			expect( new ModelPosition( root, [ 2 ] ).nodeAfter ).to.be.null;
+			expect( new ModelPosition( root, [ 0 ] ).nodeAfter ).toBe( p );
+			expect( new ModelPosition( root, [ 1 ] ).nodeAfter ).toBe( ul );
+			expect( new ModelPosition( root, [ 2 ] ).nodeAfter ).toBeNull();
 
-			expect( new ModelPosition( root, [ 0, 0 ] ).nodeAfter ).to.be.null;
+			expect( new ModelPosition( root, [ 0, 0 ] ).nodeAfter ).toBeNull();
 
-			expect( new ModelPosition( root, [ 1, 0 ] ).nodeAfter ).to.equal( li1 );
-			expect( new ModelPosition( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
-			expect( new ModelPosition( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
+			expect( new ModelPosition( root, [ 1, 0 ] ).nodeAfter ).toBe( li1 );
+			expect( new ModelPosition( root, [ 1, 1 ] ).nodeAfter ).toBe( li2 );
+			expect( new ModelPosition( root, [ 1, 2 ] ).nodeAfter ).toBeNull();
 
-			expect( new ModelPosition( root, [ 1, 0, 0 ] ).nodeAfter.data ).to.equal( 'foz' );
-			expect( new ModelPosition( root, [ 1, 0, 1 ] ).nodeAfter ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 0, 2 ] ).nodeAfter ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
+			expect( new ModelPosition( root, [ 1, 0, 0 ] ).nodeAfter.data ).toBe( 'foz' );
+			expect( new ModelPosition( root, [ 1, 0, 1 ] ).nodeAfter ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 0, 2 ] ).nodeAfter ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 0, 3 ] ).nodeAfter ).toBeNull();
 		} );
 
 		it( 'should throw when path out of bounds', () => {
 			const position = new ModelPosition( root, [ 1, 1 ] );
 
-			expect( position ).to.have.property( 'nodeAfter' ).that.equals( li2 );
+			expect( position ).toHaveProperty( 'nodeAfter', li2 );
 
 			root._removeChildren( 0, 2 );
 
@@ -456,31 +458,31 @@ describe( 'Position', () => {
 
 	describe( '#textNode', () => {
 		it( 'should have a text node property if it is in text node', () => {
-			expect( new ModelPosition( root, [ 0 ] ).textNode ).to.be.null;
-			expect( new ModelPosition( root, [ 1 ] ).textNode ).to.be.null;
-			expect( new ModelPosition( root, [ 2 ] ).textNode ).to.be.null;
+			expect( new ModelPosition( root, [ 0 ] ).textNode ).toBeNull();
+			expect( new ModelPosition( root, [ 1 ] ).textNode ).toBeNull();
+			expect( new ModelPosition( root, [ 2 ] ).textNode ).toBeNull();
 
-			expect( new ModelPosition( root, [ 0, 0 ] ).textNode ).to.be.null;
+			expect( new ModelPosition( root, [ 0, 0 ] ).textNode ).toBeNull();
 
-			expect( new ModelPosition( root, [ 1, 0 ] ).textNode ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 1 ] ).textNode ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 2 ] ).textNode ).to.be.null;
+			expect( new ModelPosition( root, [ 1, 0 ] ).textNode ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 1 ] ).textNode ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 2 ] ).textNode ).toBeNull();
 
-			expect( new ModelPosition( root, [ 1, 0, 0 ] ).textNode ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 0, 1 ] ).textNode ).to.equal( foz );
-			expect( new ModelPosition( root, [ 1, 0, 2 ] ).textNode ).to.equal( foz );
-			expect( new ModelPosition( root, [ 1, 0, 3 ] ).textNode ).to.be.null;
+			expect( new ModelPosition( root, [ 1, 0, 0 ] ).textNode ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 0, 1 ] ).textNode ).toBe( foz );
+			expect( new ModelPosition( root, [ 1, 0, 2 ] ).textNode ).toBe( foz );
+			expect( new ModelPosition( root, [ 1, 0, 3 ] ).textNode ).toBeNull();
 
-			expect( new ModelPosition( root, [ 1, 1, 0 ] ).textNode ).to.be.null;
-			expect( new ModelPosition( root, [ 1, 1, 1 ] ).textNode ).to.equal( bar );
-			expect( new ModelPosition( root, [ 1, 1, 2 ] ).textNode ).to.equal( bar );
-			expect( new ModelPosition( root, [ 1, 1, 3 ] ).textNode ).to.be.null;
+			expect( new ModelPosition( root, [ 1, 1, 0 ] ).textNode ).toBeNull();
+			expect( new ModelPosition( root, [ 1, 1, 1 ] ).textNode ).toBe( bar );
+			expect( new ModelPosition( root, [ 1, 1, 2 ] ).textNode ).toBe( bar );
+			expect( new ModelPosition( root, [ 1, 1, 3 ] ).textNode ).toBeNull();
 		} );
 
 		it( 'should throw when path out of bounds', () => {
 			const position = new ModelPosition( root, [ 1, 0, 1 ] );
 
-			expect( position ).to.have.property( 'textNode' ).that.equals( foz );
+			expect( position ).toHaveProperty( 'textNode', foz );
 
 			root._removeChildren( 0, 2 );
 
@@ -496,9 +498,9 @@ describe( 'Position', () => {
 			const p2 = new ModelPosition( root, [ 2 ] );
 			const p3 = new ModelPosition( root, [ 1, 0, 2 ] );
 
-			expect( p1.isValid() ).to.be.true;
-			expect( p2.isValid() ).to.be.true;
-			expect( p3.isValid() ).to.be.true;
+			expect( p1.isValid() ).toBe( true );
+			expect( p2.isValid() ).toBe( true );
+			expect( p3.isValid() ).toBe( true );
 		} );
 
 		it( 'should return false for a position that points to a place that exists in current model tree', () => {
@@ -507,10 +509,10 @@ describe( 'Position', () => {
 			const p3 = new ModelPosition( root, [ 1, 4, 0 ] );
 			const p4 = new ModelPosition( root, [ 1, 0, 0, 0 ] );
 
-			expect( p1.isValid() ).to.be.false;
-			expect( p2.isValid() ).to.be.false;
-			expect( p3.isValid() ).to.be.false;
-			expect( p4.isValid() ).to.be.false;
+			expect( p1.isValid() ).toBe( false );
+			expect( p2.isValid() ).toBe( false );
+			expect( p3.isValid() ).toBe( false );
+			expect( p4.isValid() ).toBe( false );
 		} );
 	} );
 
@@ -518,7 +520,7 @@ describe( 'Position', () => {
 		it( 'should have proper parent path', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 
-			expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
+			expect( position.getParentPath() ).toEqual( [ 1, 2 ] );
 		} );
 	} );
 
@@ -527,21 +529,21 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const beforePosition = new ModelPosition( root, [ 1, 0 ] );
 
-			expect( position.isAfter( beforePosition ) ).to.be.true;
+			expect( position.isAfter( beforePosition ) ).toBe( true );
 		} );
 
 		it( 'should return false if given position has same root and is not before this position', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const afterPosition = new ModelPosition( root, [ 1, 2 ] );
 
-			expect( position.isAfter( afterPosition ) ).to.be.false;
+			expect( position.isAfter( afterPosition ) ).toBe( false );
 		} );
 
 		it( 'should return false if given position has different root', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const differentPosition = new ModelPosition( otherRoot, [ 1, 0 ] );
 
-			expect( position.isAfter( differentPosition ) ).to.be.false;
+			expect( position.isAfter( differentPosition ) ).toBe( false );
 		} );
 	} );
 
@@ -550,21 +552,21 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const samePosition = new ModelPosition( root, [ 1, 1, 2 ] );
 
-			expect( position.isEqual( samePosition ) ).to.be.true;
+			expect( position.isEqual( samePosition ) ).toBe( true );
 		} );
 
 		it( 'should return false if given position has different path', () => {
 			const position = new ModelPosition( root, [ 1, 1, 1 ] );
 			const differentPosition = new ModelPosition( root, [ 1, 2, 2 ] );
 
-			expect( position.isEqual( differentPosition ) ).to.be.false;
+			expect( position.isEqual( differentPosition ) ).toBe( false );
 		} );
 
 		it( 'should return false if given position has different root', () => {
 			const position = new ModelPosition( root, [ 1, 1, 1 ] );
 			const differentPosition = new ModelPosition( otherRoot, [ 1, 1, 1 ] );
 
-			expect( position.isEqual( differentPosition ) ).to.be.false;
+			expect( position.isEqual( differentPosition ) ).toBe( false );
 		} );
 	} );
 
@@ -573,21 +575,21 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const afterPosition = new ModelPosition( root, [ 1, 2 ] );
 
-			expect( position.isBefore( afterPosition ) ).to.be.true;
+			expect( position.isBefore( afterPosition ) ).toBe( true );
 		} );
 
 		it( 'should return false if given position has same root and is not after this position', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const beforePosition = new ModelPosition( root, [ 1, 0 ] );
 
-			expect( position.isBefore( beforePosition ) ).to.be.false;
+			expect( position.isBefore( beforePosition ) ).toBe( false );
 		} );
 
 		it( 'should return false if given position has different root', () => {
 			const position = new ModelPosition( root, [ 1, 1, 2 ] );
 			const differentPosition = new ModelPosition( otherRoot, [ 1, 2 ] );
 
-			expect( position.isBefore( differentPosition ) ).to.be.false;
+			expect( position.isBefore( differentPosition ) ).toBe( false );
 		} );
 	} );
 
@@ -596,71 +598,71 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 1, 1 ] );
 			const result = position.isTouching( new ModelPosition( root, [ 1, 1, 1 ] ) );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 		} );
 
 		it( 'should return true if given position is in next node and there are no whole nodes before it', () => {
 			const positionA = new ModelPosition( root, [ 1 ] );
 			const positionB = new ModelPosition( root, [ 1, 0, 0 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.true;
-			expect( positionB.isTouching( positionA ) ).to.be.true;
+			expect( positionA.isTouching( positionB ) ).toBe( true );
+			expect( positionB.isTouching( positionA ) ).toBe( true );
 		} );
 
 		it( 'should return true if given position is in previous node and there are no whole nodes after it', () => {
 			const positionA = new ModelPosition( root, [ 2 ] );
 			const positionB = new ModelPosition( root, [ 1, 1, 3 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.true;
-			expect( positionB.isTouching( positionA ) ).to.be.true;
+			expect( positionA.isTouching( positionB ) ).toBe( true );
+			expect( positionB.isTouching( positionA ) ).toBe( true );
 		} );
 
 		it( 'should return true if positions are in different sub-trees but there are no whole nodes between them', () => {
 			const positionA = new ModelPosition( root, [ 1, 0, 3 ] );
 			const positionB = new ModelPosition( root, [ 1, 1, 0 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.true;
-			expect( positionB.isTouching( positionA ) ).to.be.true;
+			expect( positionA.isTouching( positionB ) ).toBe( true );
+			expect( positionB.isTouching( positionA ) ).toBe( true );
 		} );
 
 		it( 'should return false if there are whole nodes between positions - same level', () => {
 			const positionA = new ModelPosition( root, [ 0 ] );
 			const positionB = new ModelPosition( root, [ 2 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.false;
-			expect( positionB.isTouching( positionA ) ).to.be.false;
+			expect( positionA.isTouching( positionB ) ).toBe( false );
+			expect( positionB.isTouching( positionA ) ).toBe( false );
 		} );
 
 		it( 'should return false if there are whole nodes between positions - different levels', () => {
 			const positionA = new ModelPosition( root, [ 2 ] );
 			const positionB = new ModelPosition( root, [ 1, 0, 3 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.false;
-			expect( positionB.isTouching( positionA ) ).to.be.false;
+			expect( positionA.isTouching( positionB ) ).toBe( false );
+			expect( positionB.isTouching( positionA ) ).toBe( false );
 		} );
 
 		it( 'should return false if there are whole nodes between positions (same depth)', () => {
 			const positionA = new ModelPosition( root, [ 1, 0 ] );
 			const positionB = new ModelPosition( root, [ 1, 1 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.false;
-			expect( positionB.isTouching( positionA ) ).to.be.false;
+			expect( positionA.isTouching( positionB ) ).toBe( false );
+			expect( positionB.isTouching( positionA ) ).toBe( false );
 		} );
 
 		it( 'should return false if there are whole nodes between positions (same depth, but deeper)', () => {
 			const positionA = new ModelPosition( root, [ 1, 0, 3 ] );
 			const positionB = new ModelPosition( root, [ 1, 1, 1 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.false;
-			expect( positionB.isTouching( positionA ) ).to.be.false;
+			expect( positionA.isTouching( positionB ) ).toBe( false );
+			expect( positionB.isTouching( positionA ) ).toBe( false );
 		} );
 
 		it( 'should return false if positions are in different roots', () => {
 			const positionA = new ModelPosition( root, [ 1, 0, 3 ] );
 			const positionB = new ModelPosition( otherRoot, [ 1, 1, 0 ] );
 
-			expect( positionA.isTouching( positionB ) ).to.be.false;
-			expect( positionB.isTouching( positionA ) ).to.be.false;
+			expect( positionA.isTouching( positionB ) ).toBe( false );
+			expect( positionB.isTouching( positionA ) ).toBe( false );
 		} );
 	} );
 
@@ -669,70 +671,70 @@ describe( 'Position', () => {
 			const posA = new ModelPosition( root, [ 1, 2 ] );
 			const posB = new ModelPosition( doc.graveyard, [ 1, 0 ] );
 
-			expect( posA.hasSameParentAs( posB ) ).to.be.false;
-			expect( posB.hasSameParentAs( posA ) ).to.be.false;
+			expect( posA.hasSameParentAs( posB ) ).toBe( false );
+			expect( posB.hasSameParentAs( posA ) ).toBe( false );
 		} );
 
 		it( 'should return false if positions have different parents', () => {
 			const posA = new ModelPosition( root, [ 0, 1 ] );
 			const posB = new ModelPosition( root, [ 1, 1 ] );
 
-			expect( posA.hasSameParentAs( posB ) ).to.be.false;
-			expect( posB.hasSameParentAs( posA ) ).to.be.false;
+			expect( posA.hasSameParentAs( posB ) ).toBe( false );
+			expect( posB.hasSameParentAs( posA ) ).toBe( false );
 		} );
 
 		it( 'should return true if positions have same parent', () => {
 			const posA = new ModelPosition( root, [ 0, 4, 8 ] );
 			const posB = new ModelPosition( root, [ 0, 4, 2 ] );
 
-			expect( posA.hasSameParentAs( posB ) ).to.be.true;
-			expect( posB.hasSameParentAs( posA ) ).to.be.true;
+			expect( posA.hasSameParentAs( posB ) ).toBe( true );
+			expect( posB.hasSameParentAs( posA ) ).toBe( true );
 		} );
 	} );
 
 	describe( 'isAtStart()', () => {
 		it( 'should return true if position is at the beginning of its parent', () => {
-			expect( new ModelPosition( root, [ 0 ] ).isAtStart ).to.be.true;
-			expect( new ModelPosition( root, [ 1 ] ).isAtStart ).to.be.false;
+			expect( new ModelPosition( root, [ 0 ] ).isAtStart ).toBe( true );
+			expect( new ModelPosition( root, [ 1 ] ).isAtStart ).toBe( false );
 		} );
 	} );
 
 	describe( 'isAtEnd()', () => {
 		it( 'should return true if position is at the end of its parent', () => {
-			expect( new ModelPosition( root, [ root.maxOffset ] ).isAtEnd ).to.be.true;
-			expect( new ModelPosition( root, [ 0 ] ).isAtEnd ).to.be.false;
+			expect( new ModelPosition( root, [ root.maxOffset ] ).isAtEnd ).toBe( true );
+			expect( new ModelPosition( root, [ 0 ] ).isAtEnd ).toBe( false );
 		} );
 	} );
 
 	describe( 'getAncestors()', () => {
 		it( 'should return position parent element and it\'s ancestors', () => {
-			expect( new ModelPosition( root, [ 1, 1, 1 ] ).getAncestors() ).to.deep.equal( [ root, ul, li2 ] );
+			expect( new ModelPosition( root, [ 1, 1, 1 ] ).getAncestors() ).toEqual( [ root, ul, li2 ] );
 		} );
 
 		it( 'should return ModelDocumentFragment if position is directly in document fragment', () => {
 			const docFrag = new ModelDocumentFragment();
 
-			expect( new ModelPosition( docFrag, [ 0 ] ).getAncestors() ).to.deep.equal( [ docFrag ] );
+			expect( new ModelPosition( docFrag, [ 0 ] ).getAncestors() ).toEqual( [ docFrag ] );
 		} );
 	} );
 
 	describe( 'findAncestor()', () => {
 		it( 'should return position parent element', () => {
-			expect( new ModelPosition( root, [ 1, 1, 1 ] ).findAncestor( 'li' ) ).to.equal( li2 );
+			expect( new ModelPosition( root, [ 1, 1, 1 ] ).findAncestor( 'li' ) ).toBe( li2 );
 		} );
 
 		it( 'should return deeper ancestor element', () => {
-			expect( new ModelPosition( root, [ 1, 1, 1 ] ).findAncestor( 'ul' ) ).to.equal( ul );
+			expect( new ModelPosition( root, [ 1, 1, 1 ] ).findAncestor( 'ul' ) ).toBe( ul );
 		} );
 
 		it( 'should return null if ancestor is not found', () => {
-			expect( new ModelPosition( root, [ 1, 1, 1 ] ).findAncestor( 'p' ) ).to.be.null;
+			expect( new ModelPosition( root, [ 1, 1, 1 ] ).findAncestor( 'p' ) ).toBeNull();
 		} );
 
 		it( 'should return null if position is not in an element', () => {
 			const docFrag = new ModelDocumentFragment();
 
-			expect( new ModelPosition( docFrag, [ 0 ] ).findAncestor( 'li' ) ).to.be.null;
+			expect( new ModelPosition( docFrag, [ 0 ] ).findAncestor( 'li' ) ).toBeNull();
 		} );
 	} );
 
@@ -741,7 +743,7 @@ describe( 'Position', () => {
 			const pos1 = new ModelPosition( root, [ 1, 0, 0 ] );
 			const pos2 = new ModelPosition( root, [ 1, 0, 1 ] );
 
-			expect( pos1.getCommonPath( pos2 ) ).to.deep.equal( [ 1, 0 ] );
+			expect( pos1.getCommonPath( pos2 ) ).toEqual( [ 1, 0 ] );
 		} );
 
 		it( 'returns the common part when paths are equal', () => {
@@ -750,24 +752,24 @@ describe( 'Position', () => {
 			const commonPath = pos1.getCommonPath( pos2 );
 
 			// Ensure that we have a clone
-			expect( commonPath ).to.not.equal( pos1.path );
-			expect( commonPath ).to.not.equal( pos2.path );
+			expect( commonPath ).not.toBe( pos1.path );
+			expect( commonPath ).not.toBe( pos2.path );
 
-			expect( commonPath ).to.deep.equal( [ 1, 0, 1 ] );
+			expect( commonPath ).toEqual( [ 1, 0, 1 ] );
 		} );
 
 		it( 'returns empty array when paths totally differ', () => {
 			const pos1 = new ModelPosition( root, [ 1, 1 ] );
 			const pos2 = new ModelPosition( root, [ 0 ] );
 
-			expect( pos1.getCommonPath( pos2 ) ).to.deep.equal( [] );
+			expect( pos1.getCommonPath( pos2 ) ).toEqual( [] );
 		} );
 
 		it( 'returns empty array when roots differ, but paths are the same', () => {
 			const pos1 = new ModelPosition( root, [ 1, 1 ] );
 			const pos2 = new ModelPosition( otherRoot, [ 1, 1 ] );
 
-			expect( pos1.getCommonPath( pos2 ) ).to.deep.equal( [] );
+			expect( pos1.getCommonPath( pos2 ) ).toEqual( [] );
 		} );
 	} );
 
@@ -776,28 +778,28 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const compared = new ModelPosition( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'same' );
+			expect( position.compareWith( compared ) ).toBe( 'same' );
 		} );
 
 		it( 'should return before if the position is before compared one', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const compared = new ModelPosition( root, [ 1, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'before' );
+			expect( position.compareWith( compared ) ).toBe( 'before' );
 		} );
 
 		it( 'should return after if the position is after compared one', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3, 4 ] );
 			const compared = new ModelPosition( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'after' );
+			expect( position.compareWith( compared ) ).toBe( 'after' );
 		} );
 
 		it( 'should return different if positions are in different roots', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const compared = new ModelPosition( otherRoot, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'different' );
+			expect( position.compareWith( compared ) ).toBe( 'different' );
 		} );
 	} );
 
@@ -807,7 +809,7 @@ describe( 'Position', () => {
 
 			position = position.getLastMatchingPosition( value => value.type == 'text' );
 
-			expect( position.path ).to.deep.equal( [ 1, 0, 3 ] );
+			expect( position.path ).toEqual( [ 1, 0, 3 ] );
 		} );
 
 		it( 'should skip backward', () => {
@@ -815,7 +817,7 @@ describe( 'Position', () => {
 
 			position = position.getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
 
-			expect( position.path ).to.deep.equal( [ 1, 0, 0 ] );
+			expect( position.path ).toEqual( [ 1, 0, 0 ] );
 		} );
 	} );
 
@@ -825,9 +827,9 @@ describe( 'Position', () => {
 
 			const positionCopy = position.clone();
 
-			expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-			expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
-			expect( positionCopy ).to.not.equal( position );
+			expect( positionCopy ).toHaveProperty( 'path' );
+			expect( positionCopy ).toHaveProperty( 'root', position.root );
+			expect( positionCopy ).not.toBe( position );
 		} );
 	} );
 
@@ -846,18 +848,18 @@ describe( 'Position', () => {
 				const op = new AttributeOperation( range, 'key', true, false, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 		} );
 
 		describe( 'by InsertOperation', () => {
 			it( 'should use _getTransformedByInsertion', () => {
-				sinon.spy( pos, '_getTransformedByInsertion' );
+				vi.spyOn( pos, '_getTransformedByInsertion' );
 
 				const op = new InsertOperation( new ModelPosition( root, [ 1 ] ), [ new ModelElement( 'paragraph' ) ], 1 );
 				pos.getTransformedByOperation( op );
 
-				expect( pos._getTransformedByInsertion.calledWithExactly( op.position, op.howMany ) ).to.be.true;
+				expect( pos._getTransformedByInsertion ).toHaveBeenCalledWith( op.position, op.howMany );
 			} );
 		} );
 
@@ -869,18 +871,18 @@ describe( 'Position', () => {
 				);
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 		} );
 
 		describe( 'by MoveOperation', () => {
 			it( 'should use _getTransformedByMove', () => {
-				sinon.spy( pos, '_getTransformedByMove' );
+				vi.spyOn( pos, '_getTransformedByMove' );
 
 				const op = new MoveOperation( new ModelPosition( root, [ 1 ] ), 2, new ModelPosition( root, [ 5 ] ), 1 );
 				pos.getTransformedByOperation( op );
 
-				expect( pos._getTransformedByMove.calledWithExactly( op.sourcePosition, op.targetPosition, op.howMany ) ).to.be.true;
+				expect( pos._getTransformedByMove ).toHaveBeenCalledWith( op.sourcePosition, op.targetPosition, op.howMany );
 			} );
 		} );
 
@@ -889,7 +891,7 @@ describe( 'Position', () => {
 				const op = new RenameOperation( new ModelPosition( root, [ 3 ] ), 'old', 'new', 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 		} );
 
@@ -901,7 +903,7 @@ describe( 'Position', () => {
 				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 
 			it( 'transformed position is after the split position', () => {
@@ -911,7 +913,7 @@ describe( 'Position', () => {
 				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 4, 1 ] );
+				expect( transformed.path ).toEqual( [ 4, 1 ] );
 			} );
 
 			it( 'transformed position is before the split position', () => {
@@ -921,7 +923,7 @@ describe( 'Position', () => {
 				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 
 			it( 'transformed position is after the split element', () => {
@@ -931,7 +933,7 @@ describe( 'Position', () => {
 				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 3 ] );
+				expect( transformed.path ).toEqual( [ 3, 3 ] );
 			} );
 
 			it( 'transformed position is before the split element', () => {
@@ -941,7 +943,7 @@ describe( 'Position', () => {
 				const op = new SplitOperation( splitPosition, 3, insertionPosition, null, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 
 			it( 'transformed position is in graveyard and split position uses graveyard element', () => {
@@ -953,7 +955,7 @@ describe( 'Position', () => {
 				const op = new SplitOperation( splitPosition, 3, insertionPosition, new ModelPosition( doc.graveyard, [ 0 ] ), 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 0 ] );
+				expect( transformed.path ).toEqual( [ 0 ] );
 			} );
 		} );
 
@@ -968,7 +970,7 @@ describe( 'Position', () => {
 
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 2, 4 ] );
+				expect( transformed.path ).toEqual( [ 2, 4 ] );
 			} );
 
 			it( 'position is inside merged-to element', () => {
@@ -981,7 +983,7 @@ describe( 'Position', () => {
 
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 
 			it( 'position is before merged element', () => {
@@ -994,7 +996,7 @@ describe( 'Position', () => {
 
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+				expect( transformed.path ).toEqual( [ 3, 2 ] );
 			} );
 
 			it( 'position is after merged element', () => {
@@ -1008,7 +1010,7 @@ describe( 'Position', () => {
 
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 1 ] );
+				expect( transformed.path ).toEqual( [ 3, 1 ] );
 			} );
 
 			it( 'position is inside graveyard', () => {
@@ -1024,7 +1026,7 @@ describe( 'Position', () => {
 
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 1 ] );
+				expect( transformed.path ).toEqual( [ 1 ] );
 			} );
 
 			it( 'merge source position is before merge target position and position is in merged element', () => {
@@ -1038,7 +1040,7 @@ describe( 'Position', () => {
 
 				const transformed = pos.getTransformedByOperation( op );
 
-				expect( transformed.path ).to.deep.equal( [ 3, 7 ] );
+				expect( transformed.path ).toEqual( [ 3, 7 ] );
 			} );
 		} );
 	} );
@@ -1048,29 +1050,29 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 0 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 2 ] ), 4 );
 
-			expect( transformed ).not.to.equal( position );
-			expect( transformed ).to.be.instanceof( ModelPosition );
+			expect( transformed ).not.toBe( position );
+			expect( transformed ).toBeInstanceOf( ModelPosition );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and closer offset', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 1, 2, 2 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 5 );
+			expect( transformed.offset ).toBe( 5 );
 		} );
 
 		it( 'should not increment offset if insertion position is in different root', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( otherRoot, [ 1, 2, 2 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 3 );
+			expect( transformed.offset ).toBe( 3 );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and the same offset', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 1, 2, 3 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 5 );
+			expect( transformed.offset ).toBe( 5 );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and the same offset and it is inserted before', () => {
@@ -1078,21 +1080,21 @@ describe( 'Position', () => {
 			position.stickiness = 'toNext';
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 1, 2, 3 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 5 );
+			expect( transformed.offset ).toBe( 5 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and further offset', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 1, 2, 4 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 3 );
+			expect( transformed.offset ).toBe( 3 );
 		} );
 
 		it( 'should update path if insertion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 1, 2 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
+			expect( transformed.path ).toEqual( [ 1, 4, 3 ] );
 		} );
 
 		it( 'should not update path if insertion position parent is a node from that path and offset is ' +
@@ -1100,14 +1102,14 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 1, 3 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+			expect( transformed.path ).toEqual( [ 1, 2, 3 ] );
 		} );
 
 		it( 'should not update if insertion is in different path', () => {
 			const position = new ModelPosition( root, [ 1, 1 ] );
 			const transformed = position._getTransformedByInsertion( new ModelPosition( root, [ 2, 0 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 1 ] );
+			expect( transformed.path ).toEqual( [ 1, 1 ] );
 		} );
 	} );
 
@@ -1116,50 +1118,50 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 0 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 2 ] ), 4 );
 
-			expect( transformed ).not.to.equal( position );
-			expect( transformed ).to.be.instanceof( ModelPosition );
+			expect( transformed ).not.toBe( position );
+			expect( transformed ).toBeInstanceOf( ModelPosition );
 		} );
 
 		it( 'should return null if original position is inside one of removed nodes', () => {
 			const position = new ModelPosition( root, [ 1, 2 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 0 ] ), 2 );
 
-			expect( transformed ).to.be.null;
+			expect( transformed ).toBeNull();
 		} );
 
 		it( 'should decrement offset if deletion is in the same parent and closer offset', () => {
 			const position = new ModelPosition( root, [ 1, 2, 7 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 1, 2, 2 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 5 );
+			expect( transformed.offset ).toBe( 5 );
 		} );
 
 		it( 'should return null if original position is between removed nodes', () => {
 			const position = new ModelPosition( root, [ 1, 2, 4 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 1, 2, 3 ] ), 5 );
 
-			expect( transformed ).to.be.null;
+			expect( transformed ).toBeNull();
 		} );
 
 		it( 'should not decrement offset if deletion position is in different root', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( otherRoot, [ 1, 2, 1 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 3 );
+			expect( transformed.offset ).toBe( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion is in the same parent and further offset', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 1, 2, 4 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 3 );
+			expect( transformed.offset ).toBe( 3 );
 		} );
 
 		it( 'should update path if deletion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 1, 0 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
+			expect( transformed.path ).toEqual( [ 1, 0, 3 ] );
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and ' +
@@ -1167,7 +1169,7 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const transformed = position._getTransformedByDeletion( new ModelPosition( root, [ 1, 3 ] ), 2 );
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+			expect( transformed.path ).toEqual( [ 1, 2, 3 ] );
 		} );
 	} );
 
@@ -1180,7 +1182,7 @@ describe( 'Position', () => {
 				3, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 6 ] );
+			expect( transformed.path ).toEqual( [ 1, 2, 6 ] );
 		} );
 
 		it( 'should decrement offset if a range was moved from the same parent and closer offset', () => {
@@ -1191,7 +1193,7 @@ describe( 'Position', () => {
 				3, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+			expect( transformed.path ).toEqual( [ 1, 2, 3 ] );
 		} );
 
 		it( 'should decrement offset if position was at the end of a range and move was not sticky', () => {
@@ -1202,7 +1204,7 @@ describe( 'Position', () => {
 				3, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 1, 2, 0 ] );
+			expect( transformed.path ).toEqual( [ 1, 2, 0 ] );
 		} );
 
 		it( 'should update path if position was at the end of a range and move was sticky', () => {
@@ -1214,7 +1216,7 @@ describe( 'Position', () => {
 				3, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 5 ] );
+			expect( transformed.path ).toEqual( [ 5 ] );
 		} );
 
 		it( 'should update path if a range contained this position', () => {
@@ -1225,7 +1227,7 @@ describe( 'Position', () => {
 				3, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 2, 2, 3 ] );
+			expect( transformed.path ).toEqual( [ 2, 2, 3 ] );
 		} );
 
 		it( 'should not update if targetPosition is equal to sourcePosition (because nothing is really moving)', () => {
@@ -1236,7 +1238,7 @@ describe( 'Position', () => {
 				3, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 3 ] );
+			expect( transformed.path ).toEqual( [ 3 ] );
 		} );
 
 		it( 'should update if position is before moved range and sticks to next node', () => {
@@ -1249,7 +1251,7 @@ describe( 'Position', () => {
 				2, false
 			);
 
-			expect( transformed.path ).to.deep.equal( [ 3, 3 ] );
+			expect( transformed.path ).toEqual( [ 3, 3 ] );
 		} );
 	} );
 
@@ -1261,7 +1263,7 @@ describe( 'Position', () => {
 
 			const combined = position._getCombined( sourcePosition, targetPosition );
 
-			expect( combined.path ).to.deep.equal( [ 2, 7, 4, 2 ] );
+			expect( combined.path ).toEqual( [ 2, 7, 4, 2 ] );
 		} );
 	} );
 
@@ -1270,23 +1272,23 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const shifted = position.getShiftedBy( 2 );
 
-			expect( shifted ).to.be.instanceof( ModelPosition );
-			expect( shifted ).to.not.equal( position );
-			expect( shifted.path ).to.deep.equal( [ 1, 2, 5 ] );
+			expect( shifted ).toBeInstanceOf( ModelPosition );
+			expect( shifted ).not.toBe( position );
+			expect( shifted.path ).toEqual( [ 1, 2, 5 ] );
 		} );
 
 		it( 'should accept negative values', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const shifted = position.getShiftedBy( -2 );
 
-			expect( shifted.path ).to.deep.equal( [ 1, 2, 1 ] );
+			expect( shifted.path ).toEqual( [ 1, 2, 1 ] );
 		} );
 
 		it( 'should not let setting offset lower than zero', () => {
 			const position = new ModelPosition( root, [ 1, 2, 3 ] );
 			const shifted = position.getShiftedBy( -7 );
 
-			expect( shifted.path ).to.deep.equal( [ 1, 2, 0 ] );
+			expect( shifted.path ).toEqual( [ 1, 2, 0 ] );
 		} );
 	} );
 
@@ -1296,7 +1298,7 @@ describe( 'Position', () => {
 
 			const serialized = position.toJSON();
 
-			expect( serialized ).to.deep.equal( { root: 'main', path: [ 0 ], stickiness: 'toNone' } );
+			expect( serialized ).toEqual( { root: 'main', path: [ 0 ], stickiness: 'toNone' } );
 		} );
 
 		it( 'should serialize position from graveyard', () => {
@@ -1305,7 +1307,7 @@ describe( 'Position', () => {
 
 			const serialized = position.toJSON();
 
-			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ], stickiness: 'toPrevious' } );
+			expect( serialized ).toEqual( { root: '$graveyard', path: [ 0 ], stickiness: 'toPrevious' } );
 		} );
 	} );
 
@@ -1313,15 +1315,15 @@ describe( 'Position', () => {
 		it( 'should create object with given document', () => {
 			const deserialized = ModelPosition.fromJSON( { root: 'main', path: [ 0, 1, 2 ] }, doc );
 
-			expect( deserialized.root ).to.equal( root );
-			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
+			expect( deserialized.root ).toBe( root );
+			expect( deserialized.path ).toEqual( [ 0, 1, 2 ] );
 		} );
 
 		it( 'should create object from graveyard', () => {
 			const deserialized = ModelPosition.fromJSON( { root: '$graveyard', path: [ 0, 1, 2 ] }, doc );
 
-			expect( deserialized.root ).to.equal( doc.graveyard );
-			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
+			expect( deserialized.root ).toBe( doc.graveyard );
+			expect( deserialized.path ).toEqual( [ 0, 1, 2 ] );
 		} );
 
 		it( 'should throw error when creating object in document that does not have provided root', () => {
@@ -1398,8 +1400,8 @@ describe( 'Position', () => {
 		} );
 
 		function testAncestor( positionA, positionB, lca ) {
-			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
-			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
+			expect( positionA.getCommonAncestor( positionB ) ).toBe( lca );
+			expect( positionB.getCommonAncestor( positionA ) ).toBe( lca );
 		}
 	} );
 
@@ -1408,7 +1410,7 @@ describe( 'Position', () => {
 			const position = new ModelPosition( root, [ 1, 0, 1 ] );
 			const positionParent = position.parent;
 
-			expect( getTextNodeAtPosition( position, positionParent ) ).to.equal( foz );
+			expect( getTextNodeAtPosition( position, positionParent ) ).toBe( foz );
 		} );
 
 		// This util is covered with tests by Position#textNode tests.
@@ -1420,7 +1422,7 @@ describe( 'Position', () => {
 			const positionParent = position.parent;
 			const textNode = getTextNodeAtPosition( position, positionParent );
 
-			expect( getNodeAfterPosition( position, positionParent, textNode ) ).to.equal( li1 );
+			expect( getNodeAfterPosition( position, positionParent, textNode ) ).toBe( li1 );
 		} );
 
 		// This util is covered with tests by Position#nodeAfter tests.
@@ -1432,7 +1434,7 @@ describe( 'Position', () => {
 			const positionParent = position.parent;
 			const textNode = getTextNodeAtPosition( position, positionParent );
 
-			expect( getNodeBeforePosition( position, positionParent, textNode ) ).to.equal( li1 );
+			expect( getNodeBeforePosition( position, positionParent, textNode ) ).toBe( li1 );
 		} );
 
 		// This util is covered with tests by Position#nodeBefore tests.

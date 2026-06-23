@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { getSelectedContent } from '../../../src/model/utils/getselectedcontent.js';
@@ -23,7 +24,7 @@ describe( 'DataController utils', () => {
 			const version = model.document.version;
 			getSelectedContent( model, doc.selection );
 
-			expect( model.document.version ).to.equal( version );
+			expect( model.document.version ).toBe( version );
 		} );
 
 		describe( 'in simple scenarios', () => {
@@ -46,8 +47,8 @@ describe( 'DataController utils', () => {
 
 				const frag = getSelectedContent( model, doc.selection );
 
-				expect( frag ).instanceOf( ModelDocumentFragment );
-				expect( frag.isEmpty ).to.be.true;
+				expect( frag ).toBeInstanceOf( ModelDocumentFragment );
+				expect( frag.isEmpty ).toBe( true );
 			} );
 
 			it( 'returns empty fragment for empty selection', () => {
@@ -55,8 +56,8 @@ describe( 'DataController utils', () => {
 
 				const frag = getSelectedContent( model, doc.selection );
 
-				expect( frag ).instanceOf( ModelDocumentFragment );
-				expect( frag.isEmpty ).to.be.true;
+				expect( frag ).toBeInstanceOf( ModelDocumentFragment );
+				expect( frag.isEmpty ).toBe( true );
 			} );
 
 			it( 'gets one character', () => {
@@ -65,57 +66,57 @@ describe( 'DataController utils', () => {
 				const frag = getSelectedContent( model, doc.selection );
 				const content = _stringifyModel( frag );
 
-				expect( frag ).instanceOf( ModelDocumentFragment );
-				expect( content ).to.equal( 'b' );
+				expect( frag ).toBeInstanceOf( ModelDocumentFragment );
+				expect( content ).toBe( 'b' );
 			} );
 
 			it( 'gets full text', () => {
 				_setModelData( model, '[abc]' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( 'abc' );
+				expect( content ).toBe( 'abc' );
 			} );
 
 			it( 'gets text with an attribute', () => {
 				_setModelData( model, 'xxx<$text bold="true">a[b]c</$text>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<$text bold="true">b</$text>' );
+				expect( content ).toBe( '<$text bold="true">b</$text>' );
 			} );
 
 			it( 'gets text with attributes', () => {
 				_setModelData( model, 'x<$text bold="true">a[b</$text><$text italic="true">c]d</$text>x' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<$text bold="true">b</$text><$text italic="true">c</$text>' );
+				expect( content ).toBe( '<$text bold="true">b</$text><$text italic="true">c</$text>' );
 			} );
 
 			it( 'gets text with and without attribute', () => {
 				_setModelData( model, '<$text bold="true">a[b</$text>c]d' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<$text bold="true">b</$text>c' );
+				expect( content ).toBe( '<$text bold="true">b</$text>c' );
 			} );
 
 			it( 'gets text and element', () => {
 				_setModelData( model, '[ab<imageBlock></imageBlock>c]' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( 'ab<imageBlock></imageBlock>c' );
+				expect( content ).toBe( 'ab<imageBlock></imageBlock>c' );
 			} );
 
 			it( 'gets one element', () => {
 				_setModelData( model, 'a[<imageBlock></imageBlock>]b' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<imageBlock></imageBlock>' );
+				expect( content ).toBe( '<imageBlock></imageBlock>' );
 			} );
 
 			it( 'gets multiple elements', () => {
 				_setModelData( model, '[<imageBlock></imageBlock><imageBlock></imageBlock>]' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<imageBlock></imageBlock><imageBlock></imageBlock>' );
+				expect( content ).toBe( '<imageBlock></imageBlock><imageBlock></imageBlock>' );
 			} );
 		} );
 
@@ -145,35 +146,35 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<paragraph>a[b]c</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( 'b' );
+				expect( content ).toBe( 'b' );
 			} );
 
 			it( 'gets entire paragraph content', () => {
 				_setModelData( model, '<paragraph>[a<imageBlock></imageBlock>b]</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( 'a<imageBlock></imageBlock>b' );
+				expect( content ).toBe( 'a<imageBlock></imageBlock>b' );
 			} );
 
 			it( 'gets two blocks - partial, partial', () => {
 				_setModelData( model, '<heading1>a[bc</heading1><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>bc</heading1><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<heading1>bc</heading1><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial', () => {
 				_setModelData( model, '<heading1>[abc</heading1><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>abc</heading1><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<heading1>abc</heading1><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial 2', () => {
 				_setModelData( model, '<heading1>[abc</heading1><paragraph>de<imageBlock></imageBlock>]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>abc</heading1><paragraph>de<imageBlock></imageBlock></paragraph>' );
+				expect( content ).toBe( '<heading1>abc</heading1><paragraph>de<imageBlock></imageBlock></paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial 3', () => {
@@ -182,28 +183,28 @@ describe( 'DataController utils', () => {
 				);
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>abc</heading1><paragraph><imageBlock></imageBlock>de</paragraph>' );
+				expect( content ).toBe( '<heading1>abc</heading1><paragraph><imageBlock></imageBlock>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial 4', () => {
 				_setModelData( model, '<heading1>[abc</heading1><paragraph>de]f<imageBlock></imageBlock></paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>abc</heading1><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<heading1>abc</heading1><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - partial, full', () => {
 				_setModelData( model, '<heading1>a[bc</heading1><paragraph>def]</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>bc</heading1><paragraph>def</paragraph>' );
+				expect( content ).toBe( '<heading1>bc</heading1><paragraph>def</paragraph>' );
 			} );
 
 			it( 'gets two blocks - partial, full 2', () => {
 				_setModelData( model, '<heading1>a[<imageBlock></imageBlock>bc</heading1><paragraph>def]</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1><imageBlock></imageBlock>bc</heading1><paragraph>def</paragraph>' );
+				expect( content ).toBe( '<heading1><imageBlock></imageBlock>bc</heading1><paragraph>def</paragraph>' );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/652#issuecomment-261358484
@@ -211,7 +212,7 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<heading1>abc[</heading1><paragraph>def]</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<paragraph>def</paragraph>' );
+				expect( content ).toBe( '<paragraph>def</paragraph>' );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/652#issuecomment-261358484
@@ -219,21 +220,21 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<heading1>a[bc</heading1><paragraph>]def</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>bc</heading1>' );
+				expect( content ).toBe( '<heading1>bc</heading1>' );
 			} );
 
 			it( 'gets three blocks', () => {
 				_setModelData( model, '<heading1>a[bc</heading1><paragraph>x</paragraph><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<heading1>bc</heading1><paragraph>x</paragraph><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<heading1>bc</heading1><paragraph>x</paragraph><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets block image', () => {
 				_setModelData( model, '<paragraph>a</paragraph>[<blockImage><caption>Foo</caption></blockImage>]<paragraph>b</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<blockImage><caption>Foo</caption></blockImage>' );
+				expect( content ).toBe( '<blockImage><caption>Foo</caption></blockImage>' );
 			} );
 
 			it( 'gets two blocks', () => {
@@ -242,7 +243,7 @@ describe( 'DataController utils', () => {
 				);
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<blockImage></blockImage><blockImage></blockImage>' );
+				expect( content ).toBe( '<blockImage></blockImage><blockImage></blockImage>' );
 			} );
 
 			// Purely related to the current implementation.
@@ -251,7 +252,7 @@ describe( 'DataController utils', () => {
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
 				expect( content )
-					.to.equal( '<paragraph>b</paragraph><paragraph>c</paragraph>' );
+					.toBe( '<paragraph>b</paragraph><paragraph>c</paragraph>' );
 			} );
 
 			// Purely related to the current implementation.
@@ -260,7 +261,7 @@ describe( 'DataController utils', () => {
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
 				expect( content )
-					.to.equal( '<paragraph>d</paragraph><paragraph>e</paragraph>' );
+					.toBe( '<paragraph>d</paragraph><paragraph>e</paragraph>' );
 			} );
 		} );
 
@@ -284,28 +285,28 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<heading1>x</heading1><quote><paragraph>a[bc</paragraph><paragraph>de]f</paragraph></quote>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when left end nested deeper', () => {
 				_setModelData( model, '<quote><paragraph>a[bc</paragraph></quote><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<quote><paragraph>bc</paragraph></quote><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<quote><paragraph>bc</paragraph></quote><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when left end nested deeper 2', () => {
 				_setModelData( model, '<quote><paragraph>a[bc</paragraph><heading1>x</heading1></quote><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<quote><paragraph>bc</paragraph><heading1>x</heading1></quote><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<quote><paragraph>bc</paragraph><heading1>x</heading1></quote><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when left end nested deeper 3', () => {
 				_setModelData( model, '<quote><heading1>x</heading1><paragraph>a[bc</paragraph></quote><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<quote><paragraph>bc</paragraph></quote><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<quote><paragraph>bc</paragraph></quote><paragraph>de</paragraph>' );
 			} );
 
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/652#issuecomment-261358484
@@ -313,14 +314,14 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<quote><heading1>x[</heading1><paragraph>abc</paragraph></quote><paragraph>de]f</paragraph>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<quote><paragraph>abc</paragraph></quote><paragraph>de</paragraph>' );
+				expect( content ).toBe( '<quote><paragraph>abc</paragraph></quote><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when right end nested deeper', () => {
 				_setModelData( model, '<paragraph>a[bc</paragraph><quote><paragraph>de]f</paragraph></quote>' );
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
-				expect( content ).to.equal( '<paragraph>bc</paragraph><quote><paragraph>de</paragraph></quote>' );
+				expect( content ).toBe( '<paragraph>bc</paragraph><quote><paragraph>de</paragraph></quote>' );
 			} );
 
 			it( 'gets content when both ends nested deeper than the middle element', () => {
@@ -330,7 +331,7 @@ describe( 'DataController utils', () => {
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
 				expect( content )
-					.to.equal( '<quote><heading1>bc</heading1></quote><heading1>x</heading1><quote><heading1>de</heading1></quote>' );
+					.toBe( '<quote><heading1>bc</heading1></quote><heading1>x</heading1><quote><heading1>de</heading1></quote>' );
 			} );
 
 			// See: https://github.com/ckeditor/ckeditor5-engine/pull/1043#issuecomment-318012286
@@ -350,7 +351,7 @@ describe( 'DataController utils', () => {
 
 				const content = _stringifyModel( getSelectedContent( model, doc.selection ) );
 				expect( content )
-					.to.equal( '<paragraph>ar</paragraph>bo' );
+					.toBe( '<paragraph>ar</paragraph>bo' );
 			} );
 		} );
 	} );

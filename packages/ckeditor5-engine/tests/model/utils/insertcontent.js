@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { insertContent } from '../../../src/model/utils/insertcontent.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
@@ -12,13 +13,14 @@ import { ModelPosition } from '../../../src/model/position.js';
 
 import { _setModelData, _getModelData, _parseModel, _stringifyModel } from '../../../src/dev-utils/model.js';
 import { ModelRange } from '../../../src/model/range.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Config } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DataController utils', () => {
 	let model, doc, root, config;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	describe( 'insertContent', () => {
 		beforeEach( () => {
@@ -34,7 +36,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'a' ) );
-				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).toHaveLength( 1 );
 			} );
 		} );
 
@@ -47,8 +49,8 @@ describe( 'DataController utils', () => {
 			model.change( writer => {
 				const affectedRange = insertContent( model, writer.createText( 'x' ), selection );
 
-				expect( _getModelData( model ) ).to.equal( 'a[]bxc' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'ab[x]c' );
+				expect( _getModelData( model ) ).toBe( 'a[]bxc' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'ab[x]c' );
 			} );
 		} );
 
@@ -59,16 +61,16 @@ describe( 'DataController utils', () => {
 			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 			const selectionCopy = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
-			expect( selection.isEqual( selectionCopy ) ).to.be.true;
+			expect( selection.isEqual( selectionCopy ) ).toBe( true );
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'x' ), selection );
 			} );
 
-			expect( selection.isEqual( selectionCopy ) ).to.be.false;
+			expect( selection.isEqual( selectionCopy ) ).toBe( false );
 
 			const insertionSelection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 3 ] ) );
-			expect( selection.isEqual( insertionSelection ) ).to.be.true;
+			expect( selection.isEqual( insertionSelection ) ).toBe( true );
 		} );
 
 		it( 'should be able to insert content at model selection if document selection is passed', () => {
@@ -78,8 +80,8 @@ describe( 'DataController utils', () => {
 			model.change( writer => {
 				const affectedRange = insertContent( model, writer.createText( 'x' ), model.document.selection );
 
-				expect( _getModelData( model ) ).to.equal( 'ax[]bc' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'a[x]bc' );
+				expect( _getModelData( model ) ).toBe( 'ax[]bc' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'a[x]bc' );
 			} );
 		} );
 
@@ -90,8 +92,8 @@ describe( 'DataController utils', () => {
 			model.change( writer => {
 				const affectedRange = insertContent( model, writer.createText( 'x' ) );
 
-				expect( _getModelData( model ) ).to.equal( 'ax[]bc' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'a[x]bc' );
+				expect( _getModelData( model ) ).toBe( 'ax[]bc' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'a[x]bc' );
 			} );
 		} );
 
@@ -102,7 +104,17 @@ describe( 'DataController utils', () => {
 
 			insertContent( model, new ModelDocumentFragment( [ new ModelText( 'a' ) ] ) );
 
-			expect( _getModelData( model ) ).to.equal( 'xa[]x' );
+			expect( _getModelData( model ) ).toBe( 'xa[]x' );
+		} );
+
+		it( 'skips empty text nodes inside a DocumentFragment', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+
+			_setModelData( model, 'x[]x' );
+
+			insertContent( model, new ModelDocumentFragment( [ new ModelText( '' ), new ModelText( 'a' ) ] ) );
+
+			expect( _getModelData( model ) ).toBe( 'xa[]x' );
 		} );
 
 		it( 'accepts Text', () => {
@@ -112,7 +124,7 @@ describe( 'DataController utils', () => {
 
 			insertContent( model, new ModelText( 'a' ) );
 
-			expect( _getModelData( model ) ).to.equal( 'xa[]x' );
+			expect( _getModelData( model ) ).toBe( 'xa[]x' );
 		} );
 
 		it( 'should save the reference to the original object', () => {
@@ -128,7 +140,7 @@ describe( 'DataController utils', () => {
 
 			insertContent( model, content );
 
-			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
+			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).toBe( content );
 		} );
 
 		it( 'should use the selection set by deleteContent()', () => {
@@ -146,7 +158,7 @@ describe( 'DataController utils', () => {
 
 			insertHelper( 'xyz' );
 
-			expect( _getModelData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
+			expect( _getModelData( model ) ).toBe( '<paragraph>fooxyz[]</paragraph>' );
 		} );
 
 		it( 'should group multiple node inserts', () => {
@@ -160,13 +172,13 @@ describe( 'DataController utils', () => {
 				'<paragraph>jkl</paragraph>'
 			);
 
-			expect( _getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).toBe(
 				'<paragraph>fabc</paragraph>' +
 				'<paragraph>def</paragraph>' +
 				'<paragraph>ghi</paragraph>' +
 				'<paragraph>jkl[]oo</paragraph>'
 			);
-			expect( _stringifyModel( root, affectedRange ) ).to.equal(
+			expect( _stringifyModel( root, affectedRange ) ).toBe(
 				'<paragraph>f[abc</paragraph>' +
 				'<paragraph>def</paragraph>' +
 				'<paragraph>ghi</paragraph>' +
@@ -176,26 +188,26 @@ describe( 'DataController utils', () => {
 			const batch = model.document.history.getOperation( model.document.version - 1 ).batch;
 			const operations = batch.operations.filter( operation => operation.isDocumentOperation );
 
-			expect( operations.length ).to.equal( 5 );
+			expect( operations.length ).toBe( 5 );
 
-			expect( operations[ 0 ].type ).to.equal( 'split' );
-			expect( operations[ 0 ].splitPosition.path ).to.deep.equal( [ 0, 1 ] );
+			expect( operations[ 0 ].type ).toBe( 'split' );
+			expect( operations[ 0 ].splitPosition.path ).toEqual( [ 0, 1 ] );
 
 			// First node should always be inserted by a separate operation (to avoid operation transformation
 			// on multiple nodes on undoing (insert + merge).
-			expect( operations[ 1 ].type ).to.equal( 'insert' );
-			expect( operations[ 1 ].position.path ).to.deep.equal( [ 1 ] );
-			expect( operations[ 1 ].nodes.length ).to.equal( 1 );
+			expect( operations[ 1 ].type ).toBe( 'insert' );
+			expect( operations[ 1 ].position.path ).toEqual( [ 1 ] );
+			expect( operations[ 1 ].nodes.length ).toBe( 1 );
 
-			expect( operations[ 2 ].type ).to.equal( 'merge' );
-			expect( operations[ 2 ].targetPosition.path ).to.deep.equal( [ 0, 1 ] );
+			expect( operations[ 2 ].type ).toBe( 'merge' );
+			expect( operations[ 2 ].targetPosition.path ).toEqual( [ 0, 1 ] );
 
-			expect( operations[ 3 ].type ).to.equal( 'insert' );
-			expect( operations[ 3 ].position.path ).to.deep.equal( [ 1 ] );
-			expect( operations[ 3 ].nodes.length ).to.equal( 3 );
+			expect( operations[ 3 ].type ).toBe( 'insert' );
+			expect( operations[ 3 ].position.path ).toEqual( [ 1 ] );
+			expect( operations[ 3 ].nodes.length ).toBe( 3 );
 
-			expect( operations[ 4 ].type ).to.equal( 'merge' );
-			expect( operations[ 4 ].targetPosition.path ).to.deep.equal( [ 3, 3 ] );
+			expect( operations[ 4 ].type ).toBe( 'merge' );
+			expect( operations[ 4 ].targetPosition.path ).toEqual( [ 3, 3 ] );
 		} );
 
 		describe( 'in simple scenarios', () => {
@@ -226,26 +238,26 @@ describe( 'DataController utils', () => {
 				_setModelData( model, 'f[]oo' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( 'fxyz[]oo' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[xyz]oo' );
+				expect( _getModelData( model ) ).toBe( 'fxyz[]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'f[xyz]oo' );
 			} );
 
 			it( 'inserts one text node (at the end)', () => {
 				_setModelData( model, 'foo[]' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( 'fooxyz[]' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'foo[xyz]' );
+				expect( _getModelData( model ) ).toBe( 'fooxyz[]' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'foo[xyz]' );
 			} );
 
 			it( 'inserts one text node with attribute', () => {
 				_setModelData( model, 'f[]oo' );
 				const affectedRange = insertHelper( '<$text bold="true">xyz</$text>' );
 
-				expect( _getModelData( model ) ).to.equal( 'f<$text bold="true">xyz[]</$text>oo' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[<$text bold="true">xyz</$text>]oo' );
+				expect( _getModelData( model ) ).toBe( 'f<$text bold="true">xyz[]</$text>oo' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'f[<$text bold="true">xyz</$text>]oo' );
 
-				expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
+				expect( doc.selection.getAttribute( 'bold' ) ).toBe( true );
 			} );
 
 			it( 'inserts one text node with attribute into text with a different attribute', () => {
@@ -253,67 +265,67 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<$text italic="true">xyz</$text>' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<$text bold="true">f</$text><$text italic="true">xyz[]</$text><$text bold="true">oo</$text>' );
+					.toBe( '<$text bold="true">f</$text><$text italic="true">xyz[]</$text><$text bold="true">oo</$text>' );
 
 				expect( _stringifyModel( root, affectedRange ) )
-					.to.equal( '<$text bold="true">f</$text>[<$text italic="true">xyz</$text>]<$text bold="true">oo</$text>' );
+					.toBe( '<$text bold="true">f</$text>[<$text italic="true">xyz</$text>]<$text bold="true">oo</$text>' );
 
-				expect( doc.selection.getAttribute( 'italic' ) ).to.be.true;
-				expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
+				expect( doc.selection.getAttribute( 'italic' ) ).toBe( true );
+				expect( doc.selection.hasAttribute( 'bold' ) ).toBe( false );
 			} );
 
 			it( 'inserts one text node with attribute into text with the same attribute', () => {
 				_setModelData( model, '<$text bold="true">f[]oo</$text>' );
 				const affectedRange = insertHelper( '<$text bold="true">xyz</$text>' );
 
-				expect( _getModelData( model ) ).to.equal( '<$text bold="true">fxyz[]oo</$text>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<$text bold="true">f[xyz]oo</$text>' );
+				expect( _getModelData( model ) ).toBe( '<$text bold="true">fxyz[]oo</$text>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<$text bold="true">f[xyz]oo</$text>' );
 
-				expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
+				expect( doc.selection.getAttribute( 'bold' ) ).toBe( true );
 			} );
 
 			it( 'inserts a text without attributes into a text with an attribute', () => {
 				_setModelData( model, '<$text bold="true">f[]oo</$text>' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( '<$text bold="true">f</$text>xyz[]<$text bold="true">oo</$text>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _getModelData( model ) ).toBe( '<$text bold="true">f</$text>xyz[]<$text bold="true">oo</$text>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<$text bold="true">f</$text>[xyz]<$text bold="true">oo</$text>'
 				);
 
-				expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
+				expect( doc.selection.hasAttribute( 'bold' ) ).toBe( false );
 			} );
 
 			it( 'inserts an element', () => {
 				_setModelData( model, 'f[]oo' );
 				const affectedRange = insertHelper( '<imageBlock></imageBlock>' );
 
-				expect( _getModelData( model ) ).to.equal( 'f<imageBlock></imageBlock>[]oo' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[<imageBlock></imageBlock>]oo' );
+				expect( _getModelData( model ) ).toBe( 'f<imageBlock></imageBlock>[]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'f[<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'inserts a text and an element', () => {
 				_setModelData( model, 'f[]oo' );
 				const affectedRange = insertHelper( 'xyz<imageBlock></imageBlock>' );
 
-				expect( _getModelData( model ) ).to.equal( 'fxyz<imageBlock></imageBlock>[]oo' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[xyz<imageBlock></imageBlock>]oo' );
+				expect( _getModelData( model ) ).toBe( 'fxyz<imageBlock></imageBlock>[]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'f[xyz<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'strips a disallowed element', () => {
 				_setModelData( model, 'f[]oo' );
 				const affectedRange = insertHelper( '<disallowedElement>xyz</disallowedElement>' );
 
-				expect( _getModelData( model ) ).to.equal( 'fxyz[]oo' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[xyz]oo' );
+				expect( _getModelData( model ) ).toBe( 'fxyz[]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'f[xyz]oo' );
 			} );
 
 			it( 'deletes selection before inserting the content', () => {
 				_setModelData( model, 'f[abc]oo' );
 				const affectedRange = insertHelper( 'x' );
 
-				expect( _getModelData( model ) ).to.equal( 'fx[]oo' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[x]oo' );
+				expect( _getModelData( model ) ).toBe( 'fx[]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( 'f[x]oo' );
 			} );
 
 			describe( 'spaces handling', () => {
@@ -323,31 +335,31 @@ describe( 'DataController utils', () => {
 				it( 'inserts one space', () => {
 					_setModelData( model, 'f[]oo' );
 					insertHelper( new ModelText( ' ' ) );
-					expect( _getModelData( model ) ).to.equal( 'f []oo' );
+					expect( _getModelData( model ) ).toBe( 'f []oo' );
 				} );
 
 				it( 'inserts three spaces', () => {
 					_setModelData( model, 'f[]oo' );
 					insertHelper( new ModelText( '   ' ) );
-					expect( _getModelData( model ) ).to.equal( 'f   []oo' );
+					expect( _getModelData( model ) ).toBe( 'f   []oo' );
 				} );
 
 				it( 'inserts spaces at the end', () => {
 					_setModelData( model, 'foo[]' );
 					insertHelper( new ModelText( '   ' ) );
-					expect( _getModelData( model ) ).to.equal( 'foo   []' );
+					expect( _getModelData( model ) ).toBe( 'foo   []' );
 				} );
 
 				it( 'inserts one nbsp', () => {
 					_setModelData( model, 'f[]oo' );
 					insertHelper( new ModelText( '\u200a' ) );
-					expect( _getModelData( model ) ).to.equal( 'f\u200a[]oo' );
+					expect( _getModelData( model ) ).toBe( 'f\u200a[]oo' );
 				} );
 
 				it( 'inserts word surrounded by spaces', () => {
 					_setModelData( model, 'f[]oo' );
 					insertHelper( new ModelText( ' xyz  ' ) );
-					expect( _getModelData( model ) ).to.equal( 'f xyz  []oo' );
+					expect( _getModelData( model ) ).toBe( 'f xyz  []oo' );
 				} );
 			} );
 		} );
@@ -382,40 +394,40 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fxyz[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xyz]oo</paragraph>' );
 			} );
 
 			it( 'inserts one text node to fully selected paragraph', () => {
 				_setModelData( model, '<paragraph>[foo]</paragraph>' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>[xyz]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>xyz[]</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>[xyz]</paragraph>' );
 			} );
 
 			it( 'inserts one text node to fully selected paragraphs (from outside)', () => {
 				_setModelData( model, '[<paragraph>foo</paragraph><paragraph>bar</paragraph>]' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>[xyz]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>xyz[]</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>[xyz]</paragraph>' );
 			} );
 
 			it( 'merges two blocks before inserting content (p+p)', () => {
 				_setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foxyz[]ar</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>fo[xyz]ar</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foxyz[]ar</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>fo[xyz]ar</paragraph>' );
 			} );
 
 			it( 'inserts inline widget and text', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( 'xyz<inlineWidget></inlineWidget>' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz<inlineWidget></inlineWidget>[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz<inlineWidget></inlineWidget>]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fxyz<inlineWidget></inlineWidget>[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xyz<inlineWidget></inlineWidget>]oo</paragraph>' );
 			} );
 
 			// Note: In CKEditor 4 the blocks are not merged, but to KISS we're merging here
@@ -424,8 +436,8 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<heading1>fo[o</heading1><paragraph>b]ar</paragraph>' );
 				const affectedRange = insertHelper( 'xyz' );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>foxyz[]ar</heading1>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<heading1>fo[xyz]ar</heading1>' );
+				expect( _getModelData( model ) ).toBe( '<heading1>foxyz[]ar</heading1>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<heading1>fo[xyz]ar</heading1>' );
 			} );
 
 			it( 'should split and auto-paragraph if needed', () => {
@@ -440,12 +452,12 @@ describe( 'DataController utils', () => {
 
 				const affectedRange = insertHelper( 'abc', null, [ 0, 1 ] );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<widgetContainer><blockWidget></blockWidget></widgetContainer>' +
 					'<paragraph>abc</paragraph>' +
 					'<widgetContainer>[<blockWidget></blockWidget>]</widgetContainer>'
 				);
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<widgetContainer><blockWidget></blockWidget>[</widgetContainer>' +
 					'<paragraph>abc</paragraph>' +
 					'<widgetContainer>]<blockWidget></blockWidget></widgetContainer>'
@@ -480,7 +492,7 @@ describe( 'DataController utils', () => {
 
 				const affectedRange = insertHelper( 'abc', null, [ 0, 0, 0, 1 ] );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<blockContainer>' +
 						'<outerContainer>' +
 							'<widgetContainer>' +
@@ -495,7 +507,7 @@ describe( 'DataController utils', () => {
 						'</outerContainer>' +
 					'</blockContainer>'
 				);
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<blockContainer>' +
 						'<outerContainer>' +
 							'<widgetContainer>' +
@@ -528,8 +540,8 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '[<heading2>foo</heading2>]' );
 				const affectedRange = insertContent( model, content );
 
-				expect( _getModelData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<heading1>bar</heading1>]' );
+				expect( _getModelData( model ) ).toBe( '<heading1>bar[]</heading1>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '[<heading1>bar</heading1>]' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/9794
@@ -551,8 +563,8 @@ describe( 'DataController utils', () => {
 
 				const affectedRange = insertContent( model, content );
 
-				expect( _getModelData( model ) ).to.equal( '<limit>[]</limit>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
+				expect( _getModelData( model ) ).toBe( '<limit>[]</limit>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<limit>[]</limit>' );
 			} );
 
 			describe( 'block to block handling', () => {
@@ -560,60 +572,60 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>xyz</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fxyz[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xyz]oo</paragraph>' );
 				} );
 
 				it( 'inserts one paragraph (at the end)', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>xyz</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[xyz]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooxyz[]</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo[xyz]</paragraph>' );
 				} );
 
 				it( 'inserts one paragraph into an empty paragraph', () => {
 					_setModelData( model, '<paragraph>[]</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>xyz</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>xyz[]</paragraph>' );
 
 					// The empty paragraph gets removed and the new element is inserted instead.
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<paragraph>xyz</paragraph>]' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '[<paragraph>xyz</paragraph>]' );
 				} );
 
 				it( 'inserts one empty paragraph', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph></paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>f[]oo</paragraph>' );
 
 					// Nothing is inserted so the `affectedRange` is collapsed at insertion position.
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[]oo</paragraph>' );
 				} );
 
 				it( 'inserts one block into a fully selected content', () => {
 					_setModelData( model, '<heading1>[foo</heading1><paragraph>bar]</paragraph>' );
 					const affectedRange = insertHelper( '<heading2>xyz</heading2>' );
 
-					expect( _getModelData( model ) ).to.equal( '<heading2>xyz[]</heading2>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<heading2>xyz</heading2>]' );
+					expect( _getModelData( model ) ).toBe( '<heading2>xyz[]</heading2>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '[<heading2>xyz</heading2>]' );
 				} );
 
 				it( 'inserts one heading', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<heading1>xyz</heading1>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fxyz[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xyz]oo</paragraph>' );
 				} );
 
 				it( 'inserts two headings', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<heading1>xxx</heading1><heading1>yyy</heading1>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
 				} );
 
 				it( 'inserts one object', () => {
@@ -621,42 +633,42 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
 					expect( _getModelData( model ) )
-						.to.equal( '<paragraph>f</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>' );
+						.toBe( '<paragraph>f</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>' );
 
 					expect( _stringifyModel( root, affectedRange ) )
-						.to.equal( '<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>]oo</paragraph>' );
+						.toBe( '<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>]oo</paragraph>' );
 				} );
 
 				it( 'inserts one object (at the end)', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
 				} );
 
 				it( 'inserts one object (at the beginning)', () => {
 					_setModelData( model, '<paragraph>[]bar</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
-					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 				} );
 
 				it( 'inserts one list item', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<listItem listIndent="0" listType="bulleted">xyz</listItem>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fxyz[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xyz]oo</paragraph>' );
 				} );
 
 				it( 'inserts list item to empty element', () => {
 					_setModelData( model, '<paragraph>[]</paragraph>' );
 					const affectedRange = insertHelper( '<listItem listIndent="0" listType="bulleted">xyz</listItem>' );
 
-					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">xyz[]</listItem>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<listItem listIndent="0" listType="bulleted">xyz[]</listItem>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'[<listItem listIndent="0" listType="bulleted">xyz</listItem>]'
 					);
 				} );
@@ -669,13 +681,13 @@ describe( 'DataController utils', () => {
 						'<listItem listIndent="0" listType="bulleted">zzz</listItem>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>fooxxx</paragraph>' +
 						'<listItem listIndent="0" listType="bulleted">yyy</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">zzz[]</listItem>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[xxx</paragraph>' +
 						'<listItem listIndent="0" listType="bulleted">yyy</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">zzz</listItem>]'
@@ -689,14 +701,14 @@ describe( 'DataController utils', () => {
 						'<listItem listIndent="0" listType="bulleted">yyy</listItem>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>a</paragraph>' +
 						'<listItem listIndent="0" listType="bulleted">xxx</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">yyy[]</listItem>' +
 						'<paragraph>b</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>a</paragraph>' +
 						'[<listItem listIndent="0" listType="bulleted">xxx</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">yyy</listItem>]' +
@@ -714,7 +726,7 @@ describe( 'DataController utils', () => {
 
 					const affectedRange = insertHelper( '<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem>fo</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -722,7 +734,7 @@ describe( 'DataController utils', () => {
 						'<heading1>yyy[]o</heading1>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<listItem>fo[</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -741,7 +753,7 @@ describe( 'DataController utils', () => {
 
 					const affectedRange = insertHelper( '<heading1>yyy</heading1><blockQuote><paragraph>xxx</paragraph></blockQuote>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem>foyyy</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -749,7 +761,7 @@ describe( 'DataController utils', () => {
 						'<listItem>[]o</listItem>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<listItem>fo[yyy</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -768,7 +780,7 @@ describe( 'DataController utils', () => {
 
 					const affectedRange = insertHelper( '<blockQuote><paragraph>xxx</paragraph></blockQuote>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<listItem>fo</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -776,7 +788,7 @@ describe( 'DataController utils', () => {
 						'<listItem>[]o</listItem>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<listItem>fo[</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -796,14 +808,14 @@ describe( 'DataController utils', () => {
 
 					const affectedRange = insertHelper( '<blockQuote><paragraph>xxx</paragraph></blockQuote><paragraph>yyy</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
 						'</blockQuote>' +
 						'<paragraph>yyy[]</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'[<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
 						'</blockQuote>' +
@@ -817,8 +829,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<paragraph>yyy</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fxxx</paragraph><paragraph>yyy[]oo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>fxxx</paragraph><paragraph>yyy[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[xxx</paragraph><paragraph>yyy]oo</paragraph>'
 					);
 				} );
@@ -827,11 +839,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<inlineWidget></inlineWidget>yyy<paragraph>zzz</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[xxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz]oo</paragraph>'
 					);
 				} );
@@ -840,8 +852,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>[]foo</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<paragraph>yyy</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>xxx</paragraph><paragraph>yyy[]foo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>xxx</paragraph><paragraph>yyy[]foo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>[xxx</paragraph><paragraph>yyy]foo</paragraph>'
 					);
 				} );
@@ -850,8 +862,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<paragraph>yyy</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx</paragraph><paragraph>yyy[]</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooxxx</paragraph><paragraph>yyy[]</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[xxx</paragraph><paragraph>yyy</paragraph>]'
 					);
 				} );
@@ -860,8 +872,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx[]oo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>fyyy</paragraph><paragraph>xxx[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[yyy</paragraph><paragraph>xxx]oo</paragraph>'
 					);
 				} );
@@ -871,20 +883,20 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
 
 					expect( _getModelData( model ) )
-						.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
+						.toBe( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
 					expect( _stringifyModel( root, affectedRange ) )
-						.to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz]oo</paragraph>' );
+						.toBe( '<paragraph>f[yyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz]oo</paragraph>' );
 				} );
 
 				it( 'inserts paragraph + text + paragraph', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx<paragraph>zzz</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[yyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz]oo</paragraph>'
 					);
 				} );
@@ -893,8 +905,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>[]foo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>yyy</paragraph><paragraph>xxx[]foo</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>yyy</paragraph><paragraph>xxx[]foo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'[<paragraph>yyy</paragraph><paragraph>xxx]foo</paragraph>'
 					);
 				} );
@@ -903,8 +915,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooyyy</paragraph><paragraph>xxx[]</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooyyy</paragraph><paragraph>xxx[]</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[yyy</paragraph><paragraph>xxx</paragraph>]'
 					);
 				} );
@@ -913,19 +925,19 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<heading1>yyy</heading1>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
 				} );
 
 				it( 'inserts paragraph + object', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>xxx</paragraph><blockWidget></blockWidget>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>fxxx</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[xxx</paragraph><blockWidget></blockWidget><paragraph>]oo</paragraph>'
 					);
 				} );
@@ -934,11 +946,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget><paragraph>xxx</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>xxx]oo</paragraph>'
 					);
 				} );
@@ -947,11 +959,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>xxx' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>xxx]oo</paragraph>'
 					);
 				} );
@@ -960,11 +972,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>[]foo</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>xxx' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<blockWidget></blockWidget><paragraph>xxx[]foo</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'[<blockWidget></blockWidget><paragraph>xxx]foo</paragraph>'
 					);
 				} );
@@ -973,11 +985,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>xxx' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>xxx[]</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget><paragraph>xxx</paragraph>]'
 					);
 				} );
@@ -987,11 +999,11 @@ describe( 'DataController utils', () => {
 
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>foo<blockWidget></blockWidget>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>foo</paragraph>[<blockWidget></blockWidget>]'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget><paragraph>foo</paragraph><blockWidget></blockWidget>]'
 					);
 				} );
@@ -1000,11 +1012,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[]</paragraph>' );
 					const affectedRange = insertHelper( 'xxx<blockWidget></blockWidget>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>fooxxx</paragraph>[<blockWidget></blockWidget>]'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[xxx</paragraph><blockWidget></blockWidget>]'
 					);
 				} );
@@ -1015,11 +1027,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					const affectedRange = insertHelper( 'xxx' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<paragraph>xxx</paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1029,21 +1041,21 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>xxx</paragraph>' );
 
 					expect( _getModelData( model ) )
-						.to.equal( '<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
+						.toBe( '<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
 
 					expect( _stringifyModel( root, affectedRange ) )
-						.to.equal( '<paragraph>foo</paragraph>[<paragraph>xxx</paragraph>]<paragraph>bar</paragraph>' );
+						.toBe( '<paragraph>foo</paragraph>[<paragraph>xxx</paragraph>]<paragraph>bar</paragraph>' );
 				} );
 
 				it( 'inserts text + paragraph', () => {
 					_setModelData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					const affectedRange = insertHelper( 'yyy<paragraph>xxx</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph><paragraph>yyy</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<paragraph>yyy</paragraph><paragraph>xxx</paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1052,11 +1064,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					const affectedRange = insertHelper( '<heading1>xxx</heading1><paragraph>yyy</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph><heading1>xxx</heading1><paragraph>yyy[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<heading1>xxx</heading1><paragraph>yyy</paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1066,11 +1078,11 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
 					// It's enough, don't worry.
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1079,11 +1091,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					const affectedRange = insertHelper( '<inlineWidget></inlineWidget>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>[<paragraph><inlineWidget></inlineWidget></paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1092,13 +1104,13 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 					const affectedRange = insertHelper( '<$text foo="a">yyy</$text><$text foo="b">xxx</$text>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx[]</$text></paragraph>' +
 						'<paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo</paragraph>' +
 						'[<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx</$text></paragraph>]' +
 						'<paragraph>bar</paragraph>'
@@ -1111,24 +1123,24 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					const affectedRange = insertHelper( 'xxx' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx[]bar</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx]bar</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooxxx[]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo[xxx]bar</paragraph>' );
 				} );
 
 				it( 'inserts paragraph', () => {
 					_setModelData( model, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					const affectedRange = insertHelper( '<paragraph>xxx</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx[]bar</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx]bar</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooxxx[]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo[xxx]bar</paragraph>' );
 				} );
 
 				it( 'inserts text + paragraph', () => {
 					_setModelData( model, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					const affectedRange = insertHelper( 'yyy<paragraph>xxx</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooyyy</paragraph><paragraph>xxx[]bar</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooyyy</paragraph><paragraph>xxx[]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[yyy</paragraph><paragraph>xxx]bar</paragraph>'
 					);
 				} );
@@ -1137,8 +1149,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					const affectedRange = insertHelper( '<heading1>xxx</heading1><paragraph>yyy</paragraph>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx</paragraph><paragraph>yyy[]bar</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooxxx</paragraph><paragraph>yyy[]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[xxx</paragraph><paragraph>yyy]bar</paragraph>'
 					);
 				} );
@@ -1147,8 +1159,8 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					const affectedRange = insertHelper( '<inlineWidget></inlineWidget>' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo<inlineWidget></inlineWidget>[]bar</paragraph>' );
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo<inlineWidget></inlineWidget>[]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>'
 					);
 				} );
@@ -1157,11 +1169,11 @@ describe( 'DataController utils', () => {
 					_setModelData( model, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
 					);
 
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<paragraph>foo[</paragraph><blockWidget></blockWidget><paragraph>]bar</paragraph>'
 					);
 				} );
@@ -1173,10 +1185,10 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>12[]34</paragraph>' );
 						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>12aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]34</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>12[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]34</paragraph>'
 						);
 					} );
@@ -1185,10 +1197,10 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>1234[]</paragraph>' );
 						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1234aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>1234[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc</paragraph>]'
 						);
 					} );
@@ -1197,10 +1209,10 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>[]1234</paragraph>' );
 						const affectedRange = insertHelper( 'aaa<paragraph>bbb</paragraph>ccc' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]1234</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]1234</paragraph>'
 						);
 					} );
@@ -1213,12 +1225,12 @@ describe( 'DataController utils', () => {
 							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
 						);
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>12<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>[]34</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>12[<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>]34</paragraph>'
@@ -1231,12 +1243,12 @@ describe( 'DataController utils', () => {
 							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
 						);
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1234<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>[]</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>1234[<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget></paragraph>]'
@@ -1249,12 +1261,12 @@ describe( 'DataController utils', () => {
 							'<inlineWidget></inlineWidget><paragraph>bbb</paragraph><inlineWidget></inlineWidget>'
 						);
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph><inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>[]1234</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>[<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>]1234</paragraph>'
@@ -1265,10 +1277,10 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>12[]34</paragraph>' );
 						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>12<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]34</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>12[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]34</paragraph>'
 						);
 					} );
@@ -1277,10 +1289,10 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>1234[]</paragraph>' );
 						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1234<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>1234[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]</paragraph>'
 						);
 					} );
@@ -1289,10 +1301,10 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>[]1234</paragraph>' );
 						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]1234</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]1234</paragraph>'
 						);
 					} );
@@ -1301,12 +1313,12 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>12</paragraph>[]<paragraph>34</paragraph>' );
 						const affectedRange = insertHelper( '<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>', null, [ 1 ] );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>12[]</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>34</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>12</paragraph>' +
 							'[<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>]' +
 							'<paragraph>34</paragraph>'
@@ -1319,14 +1331,14 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>12[]34</paragraph>' );
 						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>12</paragraph>' +
 							'<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
 							'[<blockWidget></blockWidget>]' +
 							'<paragraph>34</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>12[</paragraph>' +
 							'<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
@@ -1339,13 +1351,13 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>1234[]</paragraph>' );
 						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<paragraph>1234</paragraph>' +
 							'<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
 							'[<blockWidget></blockWidget>]'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'<paragraph>1234</paragraph>' +
 							'[<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
@@ -1357,13 +1369,13 @@ describe( 'DataController utils', () => {
 						_setModelData( model, '<paragraph>[]1234</paragraph>' );
 						const affectedRange = insertHelper( '<blockWidget></blockWidget>bbb<blockWidget></blockWidget>' );
 
-						expect( _getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).toBe(
 							'<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
 							'[<blockWidget></blockWidget>]' +
 							'<paragraph>1234</paragraph>'
 						);
-						expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).toBe(
 							'[<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
 							'<blockWidget></blockWidget>]' +
@@ -1433,8 +1445,8 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( '<table><td>xxx</td><td>yyy</td></table>' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fxxxyyy[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xxxyyy]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fxxxyyy[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[xxxyyy]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the paragraphs', () => {
@@ -1444,18 +1456,18 @@ describe( 'DataController utils', () => {
 				);
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz[]oo</paragraph>' );
+					.toBe( '<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz[]oo</paragraph>' );
 
 				expect( _stringifyModel( root, affectedRange ) )
-					.to.equal( '<paragraph>f[xxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz]oo</paragraph>' );
+					.toBe( '<paragraph>f[xxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed objects', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( '<disallowedWidget>xxx</disallowedWidget>' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>f[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed objects at any schema level', () => {
@@ -1481,8 +1493,8 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
 				const affectedRange = insertHelper( '<disabledObject></disabledObject>' );
 
-				expect( _getModelData( model ) ).to.equal( '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _getModelData( model ) ).toBe( '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>'
 				);
 			} );
@@ -1517,10 +1529,10 @@ describe( 'DataController utils', () => {
 
 				const affectedRange = insertHelper( '<allowedBlock><disabledObject>foobar</disabledObject></allowedBlock>' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<restrictedContainer><allowedBlock>[]</allowedBlock></restrictedContainer>'
 				);
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<restrictedContainer>[<allowedBlock></allowedBlock>]</restrictedContainer>'
 				);
 			} );
@@ -1556,10 +1568,10 @@ describe( 'DataController utils', () => {
 					'<allowedBlock><disabledElement>foo</disabledElement>bar<disabledElement>baz</disabledElement></allowedBlock>'
 				);
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<restrictedContainer><allowedBlock>foobarbaz[]</allowedBlock></restrictedContainer>'
 				);
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<restrictedContainer>[<allowedBlock>foobarbaz</allowedBlock>]</restrictedContainer>'
 				);
 			} );
@@ -1595,10 +1607,10 @@ describe( 'DataController utils', () => {
 					'<allowedBlock><disabledElement><paragraph>foobar</paragraph></disabledElement></allowedBlock>'
 				);
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<restrictedContainer><allowedBlock>foobar[]</allowedBlock></restrictedContainer>'
 				);
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<restrictedContainer>[<allowedBlock>foobar</allowedBlock>]</restrictedContainer>'
 				);
 			} );
@@ -1638,10 +1650,10 @@ describe( 'DataController utils', () => {
 
 					const affectedRange = insertHelper( '<allowedBlock><disabledObject>foobar</disabledObject></allowedBlock>' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<restrictedContainer><allowedBlock><disabledObject>foobar</disabledObject>[]</allowedBlock></restrictedContainer>'
 					);
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<restrictedContainer>[<allowedBlock><disabledObject>foobar</disabledObject></allowedBlock>]</restrictedContainer>'
 					);
 				} );
@@ -1677,14 +1689,14 @@ describe( 'DataController utils', () => {
 						'<allowedBlock><disabledElement>foo</disabledElement>bar<disabledElement>baz</disabledElement></allowedBlock>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<restrictedContainer>' +
 							'<allowedBlock>' +
 								'<disabledElement>foo</disabledElement>bar<disabledElement>baz</disabledElement>[]' +
 							'</allowedBlock>' +
 						'</restrictedContainer>'
 					);
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<restrictedContainer>' +
 							'[<allowedBlock>' +
 								'<disabledElement>foo</disabledElement>bar<disabledElement>baz</disabledElement>' +
@@ -1724,12 +1736,12 @@ describe( 'DataController utils', () => {
 						'<allowedBlock><disabledElement><paragraph>foobar</paragraph></disabledElement></allowedBlock>'
 					);
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<restrictedContainer>' +
 							'<allowedBlock><disabledElement><paragraph>foobar</paragraph></disabledElement>[]</allowedBlock>' +
 						'</restrictedContainer>'
 					);
-					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).toBe(
 						'<restrictedContainer>' +
 							'[<allowedBlock><disabledElement><paragraph>foobar</paragraph></disabledElement></allowedBlock>]' +
 						'</restrictedContainer>'
@@ -1762,10 +1774,10 @@ describe( 'DataController utils', () => {
 
 				const affectedRange = insertHelper( '123<disabledObject></disabledObject>456', null, [ 0, 0 ] );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<restrictedContainer><paragraph>[]123456</paragraph><paragraph></paragraph></restrictedContainer>'
 				);
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<restrictedContainer>[<paragraph>123456</paragraph>]<paragraph></paragraph></restrictedContainer>'
 				);
 			} );
@@ -1774,8 +1786,8 @@ describe( 'DataController utils', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( 'x<$text a="1" b="1">x</$text>xy<$text a="1">y</$text>y' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when inserting nested elements', () => {
@@ -1783,10 +1795,10 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<table><td>f<$text a="1" b="1" c="1">o</$text>o</td></table>' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<element><table><td>f<$text b="1">o</$text>o</td></table>[]</element>' );
+					.toBe( '<element><table><td>f<$text b="1">o</$text>o</td></table>[]</element>' );
 
 				expect( _stringifyModel( root, affectedRange ) )
-					.to.equal( '<element>[<table><td>f<$text b="1">o</$text>o</td></table>]</element>' );
+					.toBe( '<element>[<table><td>f<$text b="1">o</$text>o</td></table>]</element>' );
 			} );
 
 			it( 'filters out disallowed attributes when inserting text in disallowed elements', () => {
@@ -1795,32 +1807,32 @@ describe( 'DataController utils', () => {
 					'<table><td>x<$text a="1" b="1">x</$text>x</td><td>y<$text a="1">y</$text>y</td></table>'
 				);
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when merging #1', () => {
 				_setModelData( model, '<paragraph>[]foo</paragraph>' );
 				const affectedRange = insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>x<$text b="1">x</$text>x[]foo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>[x<$text b="1">x</$text>x]foo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>x<$text b="1">x</$text>x[]foo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>[x<$text b="1">x</$text>x]foo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when merging #2', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>x[]oo</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>x]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fx<$text b="1">x</$text>x[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>f[x<$text b="1">x</$text>x]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when merging #3', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 				const affectedRange = insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[x<$text b="1">x</$text>x]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<paragraph>foo[x<$text b="1">x</$text>x]</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes from nested nodes when merging', () => {
@@ -1828,10 +1840,10 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<heading1>x<element>b<$text a="1" b="1">a</$text>r</element>x</heading1>' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>fx<element>b<$text b="1">a</$text>r</element>x[]oo</paragraph>' );
+					.toBe( '<paragraph>fx<element>b<$text b="1">a</$text>r</element>x[]oo</paragraph>' );
 
 				expect( _stringifyModel( root, affectedRange ) )
-					.to.equal( '<paragraph>f[x<element>b<$text b="1">a</$text>r</element>x]oo</paragraph>' );
+					.toBe( '<paragraph>f[x<element>b<$text b="1">a</$text>r</element>x]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when autoparagraphing', () => {
@@ -1839,10 +1851,10 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<paragraph>xxx</paragraph><$text a="1" b="1">yyy</$text>' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>fxxx</paragraph><paragraph><$text b="1">yyy[]</$text>oo</paragraph>' );
+					.toBe( '<paragraph>fxxx</paragraph><paragraph><$text b="1">yyy[]</$text>oo</paragraph>' );
 
 				expect( _stringifyModel( root, affectedRange ) )
-					.to.equal( '<paragraph>f[xxx</paragraph><paragraph><$text b="1">yyy</$text>]oo</paragraph>' );
+					.toBe( '<paragraph>f[xxx</paragraph><paragraph><$text b="1">yyy</$text>]oo</paragraph>' );
 			} );
 		} );
 
@@ -1898,11 +1910,11 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-				expect( expectedMarker ).to.exist;
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker ).toBeDefined();
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
 			} );
 
 			it( 'should create marker after inserting in the middle of existing content', () => {
@@ -1918,11 +1930,11 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foBar[]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foBar[]oo</paragraph>' );
 
-				expect( expectedMarker ).to.exist;
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 2 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+				expect( expectedMarker ).toBeDefined();
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 2 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 5 ] );
 			} );
 
 			it( 'should create marker after inserting at the beginning of existing content', () => {
@@ -1938,11 +1950,11 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Bar[]foo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Bar[]foo</paragraph>' );
 
-				expect( expectedMarker ).to.exist;
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker ).toBeDefined();
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 2 ] );
 			} );
 
 			it( 'should create marker on the whole paragraph after inserting in the middle', () => {
@@ -1958,10 +1970,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fBar[]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fBar[]oo</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 4 ] );
 			} );
 
 			it( 'should create marker on the whole paragraph after inserting next to another paragraph', () => {
@@ -1977,10 +1989,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on the whole paragraph after inserting before another paragraph', () => {
@@ -1996,10 +2008,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 			} );
 
 			it( 'should create marker in paragraph after inserting into block quoted paragraph', () => {
@@ -2015,10 +2027,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>fooBar[]</paragraph></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>fooBar[]</paragraph></blockQuote>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 6 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0, 6 ] );
 			} );
 
 			it( 'should create marker in paragraph after inserting into block quoted next to paragraph', () => {
@@ -2034,10 +2046,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>fooBar[]</paragraph></blockQuote>' );
+				expect( _getModelData( model ) ).toBe( '<blockQuote><paragraph>fooBar[]</paragraph></blockQuote>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 6 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0, 6 ] );
 			} );
 
 			it( 'should create multiple markers after inserting paragraphs', () => {
@@ -2055,12 +2067,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedNestedMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar</paragraph><paragraph>Bar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar</paragraph><paragraph>Bar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
-				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
-				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 1, 3 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 5 ] );
+				expect( expectedNestedMarker.getRange().start.path ).toEqual( [ 1, 1 ] );
+				expect( expectedNestedMarker.getRange().end.path ).toEqual( [ 1, 3 ] );
 			} );
 
 			it( 'should create nested markers after inserting paragraph', () => {
@@ -2078,12 +2090,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedNestedMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
-				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
+				expect( expectedNestedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedNestedMarker.getRange().end.path ).toEqual( [ 0, 5 ] );
 			} );
 
 			it( 'should create nested markers that begin in the same place after inserting paragraph', () => {
@@ -2101,12 +2113,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedNestedMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
-				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 5 ] );
+				expect( expectedNestedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedNestedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
 			} );
 
 			it( 'should create nested markers that end in the same place after inserting paragraph', () => {
@@ -2124,12 +2136,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedNestedMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
-				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
+				expect( expectedNestedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedNestedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
 			} );
 
 			it( 'should create nested markers that have the same range after inserting paragraph', () => {
@@ -2147,12 +2159,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedNestedMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
-				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
+				expect( expectedNestedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedNestedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
 			} );
 
 			it( 'should create intersecting markers after inserting paragraph inside another paragraph', () => {
@@ -2170,12 +2182,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedNestedMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 5 ] );
-				expect( expectedNestedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedNestedMarker.getRange().end.path ).to.deep.equal( [ 0, 6 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 5 ] );
+				expect( expectedNestedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedNestedMarker.getRange().end.path ).toEqual( [ 0, 6 ] );
 			} );
 
 			it( 'should create inline marker after inserting paragraph', () => {
@@ -2192,10 +2204,10 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+					.toBe( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 0 ] );
 			} );
 
 			it( 'should create inline nested marker after inserting paragraph next to another one', () => {
@@ -2213,12 +2225,12 @@ describe( 'DataController utils', () => {
 				const expectedFirstMarker = model.markers.get( 'marker-a' );
 				const expectedSecondMarker = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
 
-				expect( expectedFirstMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedFirstMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
-				expect( expectedSecondMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedSecondMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedFirstMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedFirstMarker.getRange().end.path ).toEqual( [ 1, 0 ] );
+				expect( expectedSecondMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedSecondMarker.getRange().end.path ).toEqual( [ 1, 1 ] );
 			} );
 
 			it( 'should create marker on paragraph after inserting between another paragraphs', () => {
@@ -2234,12 +2246,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>foo[]</paragraph><paragraph>Test</paragraph><paragraph>Bar</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker after inserting imageBlock next to paragraph', () => {
@@ -2255,10 +2267,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on imageInline after inserting inside paragraph', () => {
@@ -2274,10 +2286,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo<imageInline></imageInline>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo<imageInline></imageInline>[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 4 ] );
 			} );
 
 			it( 'should create marker on imageInline when content contains another imageInline', () => {
@@ -2293,12 +2305,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph><imageInline></imageInline><imageInline></imageInline>[]</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 2 ] );
 			} );
 
 			it( 'should create marker which contains text and imageInline', () => {
@@ -2314,10 +2326,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foobar<imageInline></imageInline>bar[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foobar<imageInline></imageInline>bar[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 10 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 10 ] );
 			} );
 
 			it( 'should create marker which starts in paragraph and ends inside another paragraph with imageInline', () => {
@@ -2333,12 +2345,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>[]</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 1 ] );
 			} );
 
 			it( 'should create two markers that have intersection between multiple elements', () => {
@@ -2357,12 +2369,12 @@ describe( 'DataController utils', () => {
 				const expectedSecondMarker = model.markers.get( 'marker-b' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>test[]</paragraph>' );
+					.toBe( '<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>test[]</paragraph>' );
 
-				expect( expectedFirstMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedFirstMarker.getRange().end.path ).to.deep.equal( [ 1, 3 ] );
-				expect( expectedSecondMarker.getRange().start.path ).to.deep.equal( [ 0, 5 ] );
-				expect( expectedSecondMarker.getRange().end.path ).to.deep.equal( [ 1, 4 ] );
+				expect( expectedFirstMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedFirstMarker.getRange().end.path ).toEqual( [ 1, 3 ] );
+				expect( expectedSecondMarker.getRange().start.path ).toEqual( [ 0, 5 ] );
+				expect( expectedSecondMarker.getRange().end.path ).toEqual( [ 1, 4 ] );
 			} );
 
 			it( 'should create marker on imageInline inside paragraph after inserting at the beginning', () => {
@@ -2378,12 +2390,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph><imageInline></imageInline></paragraph><paragraph>bar[]Foo</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 1 ] );
 			} );
 
 			it( 'should create marker after inserting paragraph with imageInline and text inside existing paragraph', () => {
@@ -2399,10 +2411,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>F<imageInline></imageInline>bar[]oo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>F<imageInline></imageInline>bar[]oo</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 4 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 4 ] );
 			} );
 
 			it( 'should create marker after inserting paragraph with imageInline and another paragraph inside existing paragraph', () => {
@@ -2418,12 +2430,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>F<imageInline></imageInline></paragraph><paragraph>bar[]oo</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker after inserting imageInline and paragraph inside existing paragraph', () => {
@@ -2439,12 +2451,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>F<imageInline></imageInline></paragraph><paragraph>bar[]oo</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker which starts in paragraph and ends inside the beginning of next paragraph', () => {
@@ -2460,10 +2472,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foobar</paragraph><paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foobar</paragraph><paragraph>[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 0 ] );
 			} );
 
 			it( 'should create marker from imageInline and part of text from the next paragraph after inserting in the middle', () => {
@@ -2479,12 +2491,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>Foo<imageInline></imageInline></paragraph><paragraph>bar[]</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 2 ] );
 			} );
 
 			it( 'should create marker from imageInline and part of text from the next paragraph after inserting at he beginning',
@@ -2502,10 +2514,10 @@ describe( 'DataController utils', () => {
 					const expectedMarker = model.markers.get( 'marker-a' );
 
 					expect( _getModelData( model ) )
-						.to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar[]Foo</paragraph>' );
+						.toBe( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar[]Foo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 2 ] );
 				} );
 
 			it.skip( 'should create marker on imageInline and part of paragraph text after inserting next to paragraph', () => {
@@ -2522,10 +2534,10 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>Foo[]</paragraph><paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>' );
+					.toBe( '<paragraph>Foo[]</paragraph><paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2, 2 ] );
 			} );
 
 			it.skip( 'should create marker from imageInline  and part of paragraph text after inserting before paragraph', () => {
@@ -2542,10 +2554,10 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph><paragraph>[]Foo</paragraph>' );
+					.toBe( '<paragraph><imageInline></imageInline></paragraph><paragraph>bar</paragraph><paragraph>[]Foo</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 2 ] );
 			} );
 
 			it.skip( 'should create marker which contains the part of paragraph and imageInline', () => {
@@ -2561,12 +2573,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph>Foobar</paragraph><paragraph><imageInline></imageInline>[]</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 4 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 4 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 1 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting at the begining of paragraph', () => {
@@ -2582,10 +2594,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>Foo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]<paragraph>Foo</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 			} );
 
 			it.skip( 'should create marker on imageBlock after inserting in the middle of paragraph', () => {
@@ -2601,10 +2613,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Fo</paragraph>[<imageBlock></imageBlock>]<paragraph>o</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Fo</paragraph>[<imageBlock></imageBlock>]<paragraph>o</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting at the end of paragraph', () => {
@@ -2620,10 +2632,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo</paragraph>[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo</paragraph>[<imageBlock></imageBlock>]' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting before paragraph', () => {
@@ -2639,10 +2651,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph>[]Foo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<imageBlock></imageBlock><paragraph>[]Foo</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting next to another imageBlock', () => {
@@ -2658,10 +2670,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<imageBlock></imageBlock>' );
+				expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]<imageBlock></imageBlock>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting into paragraph next to another imageBlock', () => {
@@ -2677,10 +2689,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<imageBlock></imageBlock>[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '<imageBlock></imageBlock>[<imageBlock></imageBlock>]' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting between another image blocks', () => {
@@ -2696,12 +2708,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'[<imageBlock></imageBlock>]<imageBlock></imageBlock><imageBlock></imageBlock>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting next to imageInline', () => {
@@ -2717,12 +2729,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<paragraph><imageInline></imageInline></paragraph>[<imageBlock></imageBlock>]'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			it.skip( 'should create marker on imageBlock and imageInline after inserting', () => {
@@ -2738,12 +2750,12 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).toBe(
 					'<imageBlock></imageBlock><paragraph><imageInline></imageInline>[]</paragraph>'
 				);
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 1 ] );
 			} );
 
 			it.skip( 'should create marker on imageBlock after inserting in block quoted paragraph', () => {
@@ -2760,10 +2772,10 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<blockQuote><paragraph>f</paragraph>[<imageBlock></imageBlock>]<paragraph>oo</paragraph></blockQuote>' );
+					.toBe( '<blockQuote><paragraph>f</paragraph>[<imageBlock></imageBlock>]<paragraph>oo</paragraph></blockQuote>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 2 ] );
 			} );
 
 			it( 'should create marker in paragraph after inserting when content is empty', () => {
@@ -2779,10 +2791,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 3 ] );
 			} );
 
 			it( 'should create marker on imageInline after inserting when content is empty', () => {
@@ -2798,10 +2810,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph><imageInline></imageInline>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph><imageInline></imageInline>[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 1 ] );
 			} );
 
 			it( 'should create marker on paragraph containing imageInline after inserting when content is empty', () => {
@@ -2817,10 +2829,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<imageInline></imageInline>[]</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Foo<imageInline></imageInline>[]</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 			} );
 
 			it( 'should create marker on imageBlock after inserting when content is empty', () => {
@@ -2836,10 +2848,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 			} );
 
 			it( 'should create multiple markers around imageBlocks after inserting into empty content', () => {
@@ -2857,12 +2869,12 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 				const expectedMarkerB = model.markers.get( 'marker-b' );
 
-				expect( _getModelData( model ) ).to.equal( '<imageBlock></imageBlock>[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).toBe( '<imageBlock></imageBlock>[<imageBlock></imageBlock>]' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarkerB.getRange().start.path ).to.deep.equal( [ 1 ] );
-				expect( expectedMarkerB.getRange().end.path ).to.deep.equal( [ 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
+				expect( expectedMarkerB.getRange().start.path ).toEqual( [ 1 ] );
+				expect( expectedMarkerB.getRange().end.path ).toEqual( [ 2 ] );
 			} );
 
 			describe( 'collapsed', () => {
@@ -2879,11 +2891,11 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Bar[]foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Bar[]foo</paragraph>' );
 
-					expect( expectedMarker ).to.exist;
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker ).toBeDefined();
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting paragraph in the middle', () => {
@@ -2899,11 +2911,11 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fBar[]oo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fBar[]oo</paragraph>' );
 
-					expect( expectedMarker ).to.exist;
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+					expect( expectedMarker ).toBeDefined();
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting paragraph at the end', () => {
@@ -2919,11 +2931,11 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>fooBar[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>fooBar[]</paragraph>' );
 
-					expect( expectedMarker ).to.exist;
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+					expect( expectedMarker ).toBeDefined();
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 3 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting paragraph next to another one', () => {
@@ -2939,11 +2951,11 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><paragraph>Bar</paragraph>' );
 
-					expect( expectedMarker ).to.exist;
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 0 ] );
+					expect( expectedMarker ).toBeDefined();
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1, 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 0 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting paragraph before another one', () => {
@@ -2959,11 +2971,11 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
 
-					expect( expectedMarker ).to.exist;
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker ).toBeDefined();
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0 ] );
 				} );
 
 				it( 'should create collapsed marker between two paragraphs', () => {
@@ -2979,11 +2991,11 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>Bar</paragraph><paragraph>[]foo</paragraph>' );
 
-					expect( expectedMarker ).to.exist;
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker ).toBeDefined();
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageInline at the beginning of paragraph', () => {
@@ -2999,10 +3011,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph><imageInline></imageInline>[]foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph><imageInline></imageInline>[]foo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageInline in the middle of paragraph', () => {
@@ -3018,10 +3030,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>f<imageInline></imageInline>[]oo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>f<imageInline></imageInline>[]oo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageInline at the end of paragraph', () => {
@@ -3037,10 +3049,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo<imageInline></imageInline>[]</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo<imageInline></imageInline>[]</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 3 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 3 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 3 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 3 ] );
 				} );
 
 				it.skip( 'should create collapsed marker after inserting imageInline next to paragraph', () => {
@@ -3056,12 +3068,12 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>foo[]</paragraph><paragraph><imageInline></imageInline></paragraph>'
 					);
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1, 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1, 1 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1, 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1, 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageInline before paragraph', () => {
@@ -3077,12 +3089,12 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph><imageInline></imageInline></paragraph><paragraph>[]foo</paragraph>'
 					);
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageBlock at the beginning of paragraph', () => {
@@ -3098,10 +3110,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0 ] );
 				} );
 
 				it.skip( 'should create collapsed marker after inserting imageBlock in the middle of paragraph', () => {
@@ -3117,12 +3129,12 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph>f</paragraph>[<imageBlock></imageBlock>]<paragraph>oo</paragraph>'
 					);
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageBlock at the end of paragraph', () => {
@@ -3138,10 +3150,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageBlock next to paragraph', () => {
@@ -3157,10 +3169,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><imageBlock></imageBlock>' );
+					expect( _getModelData( model ) ).toBe( '<paragraph>foo[]</paragraph><imageBlock></imageBlock>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 				} );
 
 				it( 'should create collapsed marker after inserting imageBlock before paragraph', () => {
@@ -3176,10 +3188,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph>[]foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<imageBlock></imageBlock><paragraph>[]foo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 0 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 0 ] );
 				} );
 
 				it( 'should create collapsed marker between imageBlock and paragraph', () => {
@@ -3195,10 +3207,10 @@ describe( 'DataController utils', () => {
 
 					const expectedMarker = model.markers.get( 'marker-a' );
 
-					expect( _getModelData( model ) ).to.equal( '<imageBlock></imageBlock><paragraph>[]foo</paragraph>' );
+					expect( _getModelData( model ) ).toBe( '<imageBlock></imageBlock><paragraph>[]foo</paragraph>' );
 
-					expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 1 ] );
-					expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 1 ] );
+					expect( expectedMarker.getRange().start.path ).toEqual( [ 1 ] );
+					expect( expectedMarker.getRange().end.path ).toEqual( [ 1 ] );
 				} );
 
 				it( 'should create multiple collapsed marker after inserting different elements in empty content', () => {
@@ -3216,14 +3228,14 @@ describe( 'DataController utils', () => {
 					const expectedMarkerA = model.markers.get( 'marker-a' );
 					const expectedMarkerB = model.markers.get( 'marker-b' );
 
-					expect( _getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).toBe(
 						'<paragraph><imageInline></imageInline></paragraph>[<imageBlock></imageBlock>]'
 					);
 
-					expect( expectedMarkerA.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarkerA.getRange().end.path ).to.deep.equal( [ 0, 0 ] );
-					expect( expectedMarkerB.getRange().start.path ).to.deep.equal( [ 0, 1 ] );
-					expect( expectedMarkerB.getRange().end.path ).to.deep.equal( [ 0, 1 ] );
+					expect( expectedMarkerA.getRange().start.path ).toEqual( [ 0, 0 ] );
+					expect( expectedMarkerA.getRange().end.path ).toEqual( [ 0, 0 ] );
+					expect( expectedMarkerB.getRange().start.path ).toEqual( [ 0, 1 ] );
+					expect( expectedMarkerB.getRange().end.path ).toEqual( [ 0, 1 ] );
 				} );
 			} );
 
@@ -3240,10 +3252,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>fo[]o</paragraph>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 2 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 2 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 2 ] );
 			} );
 
 			it( 'should not create marker when insertion is forbidden', () => {
@@ -3260,9 +3272,9 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( _getModelData( model ) ).toBe( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
 
-				expect( expectedMarker ).to.be.null;
+				expect( expectedMarker ).toBeNull();
 			} );
 
 			it( 'should not create marker that is partially on forbidden content', () => {
@@ -3278,9 +3290,9 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>Bar[]</paragraph></limit></wrapper>' );
+				expect( _getModelData( model ) ).toBe( '<wrapper><limit><paragraph>Bar[]</paragraph></limit></wrapper>' );
 
-				expect( expectedMarker ).to.be.null;
+				expect( expectedMarker ).toBeNull();
 			} );
 
 			it( 'should create marker that starts before and ends after forbidden content', () => {
@@ -3300,10 +3312,10 @@ describe( 'DataController utils', () => {
 				const expectedMarker = model.markers.get( 'marker-a' );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<wrapper><limit><paragraph>Test</paragraph><paragraph>Bar[]</paragraph></limit></wrapper>' );
+					.toBe( '<wrapper><limit><paragraph>Test</paragraph><paragraph>Bar[]</paragraph></limit></wrapper>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 1, 2 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0, 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0, 1, 2 ] );
 			} );
 
 			it( 'should create marker that is next to forbidden content', () => {
@@ -3319,10 +3331,10 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>Bar[]</paragraph></limit></wrapper>' );
+				expect( _getModelData( model ) ).toBe( '<wrapper><limit><paragraph>Bar[]</paragraph></limit></wrapper>' );
 
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0, 0, 1 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 0, 0, 3 ] );
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0, 0, 1 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 0, 0, 3 ] );
 			} );
 
 			it( 'should create 500 markers', () => {
@@ -3336,7 +3348,7 @@ describe( 'DataController utils', () => {
 				insertHelper( '<paragraph>Bar</paragraph>', mockMarkers );
 
 				for ( let i = 0; i < 500; i++ ) {
-					expect( model.markers.get( `comment-thread-${ i }` ) ).to.exist;
+					expect( model.markers.get( `comment-thread-${ i }` ) ).toBeDefined();
 				}
 			} );
 
@@ -3345,7 +3357,7 @@ describe( 'DataController utils', () => {
 				// <paragraph>{Ba}r</paragraph>
 				//
 				// <paragraph>{Ba}rfoo</paragraph>
-				testUtils.sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				model.schema.getNearestSelectionRange = () => null;
 				_setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -3356,11 +3368,11 @@ describe( 'DataController utils', () => {
 
 				const expectedMarker = model.markers.get( 'marker-a' );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>Bar[]foo</paragraph>' );
+				expect( _getModelData( model ) ).toBe( '<paragraph>Bar[]foo</paragraph>' );
 
-				expect( expectedMarker ).to.exist;
-				expect( expectedMarker.getRange().start.path ).to.deep.equal( [ 0, 0 ] );
-				expect( expectedMarker.getRange().end.path ).to.deep.equal( [ 0, 2 ] );
+				expect( expectedMarker ).toBeDefined();
+				expect( expectedMarker.getRange().start.path ).toEqual( [ 0, 0 ] );
+				expect( expectedMarker.getRange().end.path ).toEqual( [ 0, 2 ] );
 			} );
 
 			describe( 'affected range', () => {
@@ -3371,8 +3383,8 @@ describe( 'DataController utils', () => {
 						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0, 3 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 0, 6 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0, 3 ] );
+					expect( affectedRange.end.path ).toEqual( [ 0, 6 ] );
 				} );
 
 				it( 'should calculate affected range correctly after inserting in the middle of paragraph', () => {
@@ -3382,8 +3394,8 @@ describe( 'DataController utils', () => {
 						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0, 2 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 0, 5 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0, 2 ] );
+					expect( affectedRange.end.path ).toEqual( [ 0, 5 ] );
 				} );
 
 				it( 'should calculate affected range correctly after inserting paragraph before another one', () => {
@@ -3393,8 +3405,8 @@ describe( 'DataController utils', () => {
 						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0, 0 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 0, 3 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0, 0 ] );
+					expect( affectedRange.end.path ).toEqual( [ 0, 3 ] );
 				} );
 
 				it( 'should return affected range correctly after inserting content with multiple markers', () => {
@@ -3405,8 +3417,8 @@ describe( 'DataController utils', () => {
 						'marker-b': { start: [ 0, 1 ], end: [ 0, 2 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0, 3 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 0, 6 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0, 3 ] );
+					expect( affectedRange.end.path ).toEqual( [ 0, 6 ] );
 				} );
 
 				it( 'should calculate affected range correctly after inserting content with nested markers', () => {
@@ -3417,8 +3429,8 @@ describe( 'DataController utils', () => {
 						'marker-b': { start: [ 0, 1 ], end: [ 0, 2 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0, 3 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 0, 6 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0, 3 ] );
+					expect( affectedRange.end.path ).toEqual( [ 0, 6 ] );
 				} );
 
 				it( 'should calculate affected range correctly after inserting imageBlock', () => {
@@ -3428,8 +3440,8 @@ describe( 'DataController utils', () => {
 						'marker-a': { start: [ 0 ], end: [ 1 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 1 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 2 ] );
+					expect( affectedRange.start.path ).toEqual( [ 1 ] );
+					expect( affectedRange.end.path ).toEqual( [ 2 ] );
 				} );
 
 				it( 'should calculate affected range correctly after inserting paragraph in empty content', () => {
@@ -3439,8 +3451,8 @@ describe( 'DataController utils', () => {
 						'marker-a': { start: [ 0, 0 ], end: [ 0, 3 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 1 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0 ] );
+					expect( affectedRange.end.path ).toEqual( [ 1 ] );
 				} );
 
 				it( 'should calculate affected range correctly after inserting imageBlock in empty content', () => {
@@ -3450,8 +3462,8 @@ describe( 'DataController utils', () => {
 						'marker-a': { start: [ 0 ], end: [ 1 ] }
 					} );
 
-					expect( affectedRange.start.path ).to.deep.equal( [ 0 ] );
-					expect( affectedRange.end.path ).to.deep.equal( [ 1 ] );
+					expect( affectedRange.start.path ).toEqual( [ 0 ] );
+					expect( affectedRange.end.path ).toEqual( [ 1 ] );
 				} );
 			} );
 		} );
@@ -3480,16 +3492,16 @@ describe( 'DataController utils', () => {
 		it( 'should insert limit element', () => {
 			const affectedRange = insertHelper( '<limit></limit>' );
 
-			expect( _getModelData( model ) ).to.equal( '<limit>[]</limit>' );
-			expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<limit></limit>]' );
+			expect( _getModelData( model ) ).toBe( '<limit>[]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '[<limit></limit>]' );
 		} );
 
 		it( 'should insert text into limit element', () => {
 			_setModelData( model, '<limit>[]</limit>' );
 			const affectedRange = insertHelper( 'foo bar' );
 
-			expect( _getModelData( model ) ).to.equal( '<limit>foo bar[]</limit>' );
-			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[foo bar]</limit>' );
+			expect( _getModelData( model ) ).toBe( '<limit>foo bar[]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '<limit>[foo bar]</limit>' );
 		} );
 
 		it( 'should insert text into limit element when selection spans over many limit elements', () => {
@@ -3500,32 +3512,32 @@ describe( 'DataController utils', () => {
 				affectedRange = insertHelper( 'baz' );
 			} );
 
-			expect( _getModelData( model ) ).to.equal( '<limit>foobaz[]</limit><limit>bar</limit>' );
-			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>foo[baz]</limit><limit>bar</limit>' );
+			expect( _getModelData( model ) ).toBe( '<limit>foobaz[]</limit><limit>bar</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '<limit>foo[baz]</limit><limit>bar</limit>' );
 		} );
 
 		it( 'should not insert disallowed elements inside limit elements', () => {
 			_setModelData( model, '<limit>[]</limit>' );
 			const affectedRange = insertHelper( '<disallowedElement></disallowedElement>' );
 
-			expect( _getModelData( model ) ).to.equal( '<limit>[]</limit>' );
-			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
+			expect( _getModelData( model ) ).toBe( '<limit>[]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '<limit>[]</limit>' );
 		} );
 
 		it( 'should not leave the limit element when inserting at the end', () => {
 			_setModelData( model, '<limit>foo[]</limit>' );
 			const affectedRange = insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
 
-			expect( _getModelData( model ) ).to.equal( '<limit>fooab[]</limit>' );
-			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>foo[ab]</limit>' );
+			expect( _getModelData( model ) ).toBe( '<limit>fooab[]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '<limit>foo[ab]</limit>' );
 		} );
 
 		it( 'should not leave the limit element when inserting at the beginning', () => {
 			_setModelData( model, '<limit>[]foo</limit>' );
 			const affectedRange = insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
 
-			expect( _getModelData( model ) ).to.equal( '<limit>ab[]foo</limit>' );
-			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[ab]foo</limit>' );
+			expect( _getModelData( model ) ).toBe( '<limit>ab[]foo</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).toBe( '<limit>[ab]foo</limit>' );
 		} );
 
 		describe( 'when allowed element is above limit element in document tree', () => {
@@ -3551,8 +3563,8 @@ describe( 'DataController utils', () => {
 				// Pasted content is forbidden in current selection.
 				const affectedRange = insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>' );
 
-				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( _getModelData( model ) ).toBe( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
 			} );
 
 			it( 'should correctly paste allowed nodes', () => {
@@ -3560,8 +3572,8 @@ describe( 'DataController utils', () => {
 
 				const affectedRange = insertHelper( '<paragraph>foo</paragraph>' );
 
-				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>foo</paragraph>[]</limit></wrapper>' );
-				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+				expect( _getModelData( model ) ).toBe( '<wrapper><limit><paragraph>foo</paragraph>[]</limit></wrapper>' );
+				expect( _stringifyModel( root, affectedRange ) ).toBe(
 					'<wrapper><limit>[<paragraph>foo</paragraph>]</limit></wrapper>'
 				);
 			} );

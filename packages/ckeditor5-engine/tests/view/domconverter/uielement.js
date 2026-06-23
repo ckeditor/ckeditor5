@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewDomConverter } from '../../../src/view/domconverter.js';
@@ -35,15 +36,15 @@ describe( 'DOMConverter UIElement integration', () => {
 			const uiElement = new ViewUIElement( viewDocument, 'div' );
 			const domElement = converter.viewToDom( uiElement );
 
-			expect( domElement ).to.be.instanceOf( HTMLElement );
+			expect( domElement ).toBeInstanceOf( HTMLElement );
 		} );
 
 		it( 'should create DOM structure from UIElement', () => {
 			const myElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement );
 
-			expect( domElement ).to.be.instanceOf( HTMLElement );
-			expect( domElement.innerHTML ).to.equal( '<p><span>foo</span> bar</p>' );
+			expect( domElement ).toBeInstanceOf( HTMLElement );
+			expect( domElement.innerHTML ).toBe( '<p><span>foo</span> bar</p>' );
 		} );
 
 		it( 'should create DOM structure that all is mapped to single UIElement', () => {
@@ -51,9 +52,9 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domElement = converter.viewToDom( myElement, { bind: true } );
 			const domParagraph = domElement.childNodes[ 0 ];
 
-			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
-			expect( converter.mapDomToView( domParagraph ) ).to.equal( myElement );
-			expect( converter.mapDomToView( domParagraph.childNodes[ 0 ] ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domElement ) ).toBe( myElement );
+			expect( converter.mapDomToView( domParagraph ) ).toBe( myElement );
+			expect( converter.mapDomToView( domParagraph.childNodes[ 0 ] ) ).toBe( myElement );
 		} );
 	} );
 
@@ -62,7 +63,7 @@ describe( 'DOMConverter UIElement integration', () => {
 			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, { bind: true } );
 
-			expect( converter.domToView( domElement ) ).to.equal( uiElement );
+			expect( converter.domToView( domElement ) ).toBe( uiElement );
 		} );
 
 		it( 'should return UIElement for nodes inside', () => {
@@ -72,10 +73,10 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domParagraph.childNodes[ 0 ];
 
-			expect( converter.domToView( domParagraph ) ).to.equal( uiElement );
-			expect( converter.domToView( domSpan ) ).to.equal( uiElement );
-			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).equal( uiElement );
-			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).equal( uiElement );
+			expect( converter.domToView( domParagraph ) ).toBe( uiElement );
+			expect( converter.domToView( domSpan ) ).toBe( uiElement );
+			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).toBe( uiElement );
+			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).toBe( uiElement );
 		} );
 	} );
 
@@ -89,8 +90,8 @@ describe( 'DOMConverter UIElement integration', () => {
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ], 0 );
 
-			expect( viewPosition.parent ).to.equal( container );
-			expect( viewPosition.offset ).to.equal( 1 );
+			expect( viewPosition.parent ).toBe( container );
+			expect( viewPosition.offset ).toBe( 1 );
 		} );
 
 		it( 'should convert position inside UIElement children to position before UIElement', () => {
@@ -102,8 +103,8 @@ describe( 'DOMConverter UIElement integration', () => {
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ].childNodes[ 0 ], 1 );
 
-			expect( viewPosition.parent ).to.equal( container );
-			expect( viewPosition.offset ).to.equal( 1 );
+			expect( viewPosition.parent ).toBe( container );
+			expect( viewPosition.offset ).toBe( 1 );
 		} );
 	} );
 
@@ -112,13 +113,13 @@ describe( 'DOMConverter UIElement integration', () => {
 			const myElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, { bind: true } );
 
-			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domElement ) ).toBe( myElement );
 
 			const domParagraph = domElement.childNodes[ 0 ];
-			expect( converter.mapDomToView( domParagraph ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domParagraph ) ).toBe( myElement );
 
 			const domSpan = domParagraph.childNodes[ 0 ];
-			expect( converter.mapDomToView( domSpan ) ).to.equal( myElement );
+			expect( converter.mapDomToView( domSpan ) ).toBe( myElement );
 		} );
 	} );
 
@@ -128,7 +129,7 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domElement = converter.viewToDom( myElement, { bind: true } );
 
 			const domText = domElement.querySelector( 'span' ).childNodes[ 0 ];
-			expect( converter.findCorrespondingViewText( domText ) ).to.equal( myElement );
+			expect( converter.findCorrespondingViewText( domText ) ).toBe( myElement );
 		} );
 	} );
 
@@ -140,15 +141,15 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domParagraph.childNodes[ 0 ];
 
-			expect( converter.getHostViewElement( domParagraph ) ).to.equal( uiElement );
-			expect( converter.getHostViewElement( domSpan ) ).to.equal( uiElement );
+			expect( converter.getHostViewElement( domParagraph ) ).toBe( uiElement );
+			expect( converter.getHostViewElement( domSpan ) ).toBe( uiElement );
 		} );
 
 		it( 'should return null for element itself', () => {
 			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, { bind: true } );
 
-			expect( converter.getHostViewElement( domElement ) ).to.be.null;
+			expect( converter.getHostViewElement( domElement ) ).toBeNull();
 		} );
 	} );
 } );

@@ -5,6 +5,7 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { describe, it, expect, vi } from 'vitest';
 
 describe( 'Bug ckeditor5-engine#1653', () => {
 	it( '`DataController.parse()` should not fire `editing.view#render`', () => {
@@ -18,12 +19,12 @@ describe( 'Bug ckeditor5-engine#1653', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				const editingViewSpy = sinon.spy();
+				const editingViewSpy = vi.fn();
 
 				editor.editing.view.on( 'fire', editingViewSpy );
 				editor.data.parse( '<p></p>' );
 
-				sinon.assert.notCalled( editingViewSpy );
+				expect( editingViewSpy ).not.toHaveBeenCalled();
 			} )
 			.then( () => {
 				element.remove();

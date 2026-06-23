@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
+
 import {
 	getBoxSidesStyleShorthandValue,
 	getBoxSidesStyleValues,
@@ -194,7 +196,7 @@ describe( 'Styles utils', () => {
 
 		// s/ckeditor5/3
 		it( 'should handle invalid values with repeated characters', () => {
-			expect( isLengthStyleValue( '9'.repeat( 1000000 ) ) ).to.be.false;
+			expect( isLengthStyleValue( '9'.repeat( 1000000 ) ) ).toBe( false );
 		} );
 	} );
 
@@ -209,33 +211,33 @@ describe( 'Styles utils', () => {
 
 		// s/ckeditor5/3
 		it( 'should handle invalid values with repeated characters', () => {
-			expect( isPercentageStyleValue( '9'.repeat( 1000000 ) ) ).to.be.false;
+			expect( isPercentageStyleValue( '9'.repeat( 1000000 ) ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'getBoxSidesStyleShorthandValue()', () => {
 		it( 'should output one value for same values', () => {
-			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).toBe( 'foo' );
 		} );
 
 		it( 'should output two value for top == bottom and right == left', () => {
-			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).toBe( 'foo bar' );
 		} );
 
 		it( 'should output three values if bottom is different then top', () => {
 			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
-				.to.equal( 'foo foo bar' );
+				.toBe( 'foo foo bar' );
 		} );
 
 		it( 'should output four values if left is different then right', () => {
 			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
-				.to.equal( 'foo foo foo bar' );
+				.toBe( 'foo foo foo bar' );
 		} );
 	} );
 
 	describe( 'getBoxSidesStyleValues()', () => {
 		it( 'should parse empty string', () => {
-			expect( getBoxSidesStyleValues( '' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( '' ) ).toEqual( {
 				top: undefined,
 				right: undefined,
 				bottom: undefined,
@@ -244,7 +246,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse one value', () => {
-			expect( getBoxSidesStyleValues( 'foo' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo' ) ).toEqual( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -253,7 +255,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse two value', () => {
-			expect( getBoxSidesStyleValues( 'foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo bar' ) ).toEqual( {
 				top: 'foo',
 				right: 'bar',
 				bottom: 'foo',
@@ -262,7 +264,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse three values', () => {
-			expect( getBoxSidesStyleValues( 'foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo foo bar' ) ).toEqual( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'bar',
@@ -271,7 +273,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getBoxSidesStyleValues( 'foo foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo foo foo bar' ) ).toEqual( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -284,7 +286,7 @@ describe( 'Styles utils', () => {
 				'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
 				'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
 			) )
-				.to.deep.equal( {
+				.toEqual( {
 					top: 'rgb(10 , 10,   10 )',
 					right: 'rgba(100,    100,   100, .3   )',
 					bottom: 'rgb(  20%   20%  20% )',
@@ -293,7 +295,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should work with values containing nested declarations', () => {
-			expect( getBoxSidesStyleValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).toEqual( {
 				top: 'calc( 10px  -  3px )',
 				right: 'calc(  var( --foo-var ) + 20px  )',
 				bottom: 'calc( 10px  -  3px )',
@@ -304,7 +306,7 @@ describe( 'Styles utils', () => {
 
 	describe( 'getShorthandStylesValues()', () => {
 		it( 'should split string to separate values', () => {
-			expect( getShorthandStylesValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( getShorthandStylesValues( 'foo bar' ) ).toEqual( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should trim truncate analyzed content to 1500 characters', () => {
@@ -317,25 +319,25 @@ describe( 'Styles utils', () => {
 
 		it( 'should split string to separate values when value contain grouping parens', () => {
 			expect( getShorthandStylesValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
-				.to.deep.equal( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );
+				.toEqual( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );
 		} );
 
 		describe( 'for colors', () => {
 			it( 'should split color declarations: named colors', () => {
-				expect( getShorthandStylesValues( 'red green black' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( 'red green black' ) ).toEqual( [
 					'red', 'green', 'black'
 				] );
 			} );
 
 			it( 'should split color declarations: hex colors', () => {
-				expect( getShorthandStylesValues( '#000 #000000EE' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( '#000 #000000EE' ) ).toEqual( [
 					'#000', '#000000EE'
 				] );
 			} );
 
 			it( 'should split color declarations: rgb colors', () => {
 				expect( getShorthandStylesValues( 'rgb(10, 10, 10) rgba(100, 100, 100, .3) rgb(20% 20% 20%) rgba(255 255 255 / .5)' ) )
-					.to.deep.equal( [
+					.toEqual( [
 						'rgb(10, 10, 10)', 'rgba(100, 100, 100, .3)', 'rgb(20% 20% 20%)', 'rgba(255 255 255 / .5)'
 					] );
 			} );
@@ -344,27 +346,27 @@ describe( 'Styles utils', () => {
 				expect(
 					getShorthandStylesValues( 'hsl(50 80% 40%) hsl(212.4, 89.3%, 89%) hsla(209, 90%, 72%,.3) hsla(0.3turn 60% 45% / .7)' )
 				)
-					.to.deep.equal( [
+					.toEqual( [
 						'hsl(50 80% 40%)', 'hsl(212.4, 89.3%, 89%)', 'hsla(209, 90%, 72%,.3)', 'hsla(0.3turn 60% 45% / .7)'
 					] );
 			} );
 
 			it( 'should split color declarations: other color formats', () => {
 				expect( getShorthandStylesValues( 'hwb(50deg 30% 40%) cmyk(0 81% 81% 30%) color(xyz 22% 26% 53%) lab(30 59.4 -96)' ) )
-					.to.deep.equal( [
+					.toEqual( [
 						'hwb(50deg 30% 40%)', 'cmyk(0 81% 81% 30%)', 'color(xyz 22% 26% 53%)', 'lab(30 59.4 -96)'
 					] );
 			} );
 
 			describe( 'with additional white spaces in declarations', () => {
 				it( 'should split color declarations: named colors', () => {
-					expect( getShorthandStylesValues( ' red   green  black ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' red   green  black ' ) ).toEqual( [
 						'red', 'green', 'black'
 					] );
 				} );
 
 				it( 'should split color declarations: hex colors', () => {
-					expect( getShorthandStylesValues( ' #000    #000000EE ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' #000    #000000EE ' ) ).toEqual( [
 						'#000', '#000000EE'
 					] );
 				} );
@@ -374,7 +376,7 @@ describe( 'Styles utils', () => {
 						'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
 						'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
 					) )
-						.to.deep.equal( [
+						.toEqual( [
 							'rgb(10 , 10,   10 )',
 							'rgba(100,    100,   100, .3   )',
 							'rgb(  20%   20%  20% )',
@@ -387,7 +389,7 @@ describe( 'Styles utils', () => {
 						' hsl( 50  80%  40%)   hsl(  212.4,   89.3%,   89% )' +
 						' hsla(  209,  90%,   72%, .3  ) hsla( 0.3turn  60%   45%  /  .7  )'
 					) )
-						.to.deep.equal( [
+						.toEqual( [
 							'hsl( 50  80%  40%)',
 							'hsl(  212.4,   89.3%,   89% )',
 							'hsla(  209,  90%,   72%, .3  )',
@@ -400,7 +402,7 @@ describe( 'Styles utils', () => {
 						'  hwb(  50deg  30%   40%  )  cmyk( 0   81%  81%    30% )' +
 						'  color( xyz   22%  26%  53%)  lab(  30 59.4  -96 ) '
 					) )
-						.to.deep.equal( [
+						.toEqual( [
 							'hwb(  50deg  30%   40%  )',
 							'cmyk( 0   81%  81%    30% )',
 							'color( xyz   22%  26%  53%)',
@@ -412,26 +414,26 @@ describe( 'Styles utils', () => {
 
 		describe( 'for non-color declarations', () => {
 			it( 'should split size declarations: simple units', () => {
-				expect( getShorthandStylesValues( '3px 2em 10vw 20%' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( '3px 2em 10vw 20%' ) ).toEqual( [
 					'3px', '2em', '10vw', '20%'
 				] );
 			} );
 
 			it( 'should split size declarations: values with calc() expressions', () => {
-				expect( getShorthandStylesValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).toEqual( [
 					'calc(10px - 3px)', 'calc(var(--foo-var) + 20px)'
 				] );
 			} );
 
 			describe( 'with additional white spaces', () => {
 				it( 'should split size declarations: simple units', () => {
-					expect( getShorthandStylesValues( ' 3px   2em  10vw   20%  ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' 3px   2em  10vw   20%  ' ) ).toEqual( [
 						'3px', '2em', '10vw', '20%'
 					] );
 				} );
 
 				it( 'should split size declarations: values with calc() expressions', () => {
-					expect( getShorthandStylesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).toEqual( [
 						'calc( 10px  -  3px )', 'calc(  var( --foo-var ) + 20px  )'
 					] );
 				} );
@@ -440,6 +442,6 @@ describe( 'Styles utils', () => {
 	} );
 
 	function testValues( values, callback ) {
-		values.map( string => expect( callback( string ), string ).to.be.true );
+		values.map( string => expect( callback( string ), string ).toBe( true ) );
 	}
 } );

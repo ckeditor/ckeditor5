@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
@@ -41,7 +42,7 @@ describe( 'DowncastWriter', () => {
 				expect( _stringifyView( view.root, newPosition, {
 					showType: true,
 					showPriority: true
-				} ) ).to.equal( expected );
+				} ) ).toBe( expected );
 			}
 
 			it( 'should not break text nodes if they are not in attribute elements - middle', () => {
@@ -150,7 +151,7 @@ describe( 'DowncastWriter', () => {
 				const { view, selection } = _parseView( input );
 
 				const newRange = writer.breakAttributes( selection.getFirstRange() );
-				expect( _stringifyView( view.root, newRange, { showType: true } ) ).to.equal( expected );
+				expect( _stringifyView( view.root, newRange, { showType: true } ) ).toBe( expected );
 			}
 
 			it( 'should throw when range placed in two containers', () => {

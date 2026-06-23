@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
 	getNodesAndText,
 	itemAt,
@@ -32,7 +33,7 @@ describe( 'getNodesAndText', () => {
 	} );
 
 	it( 'reads two elements with text', () => {
-		expect( getNodesAndText( ModelRange._createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
+		expect( getNodesAndText( ModelRange._createIn( root ) ) ).toBe( 'DIVfoobarDIVPabcxyzP' );
 	} );
 } );
 
@@ -48,23 +49,23 @@ describe( 'itemAt', () => {
 	} );
 
 	it( 'should return element if it starts at given offset', () => {
-		expect( itemAt( element, 3 ) ).to.equal( img );
+		expect( itemAt( element, 3 ) ).toBe( img );
 	} );
 
 	it( 'should return text proxy with one character if text node starts at given offset', () => {
 		const text = itemAt( element, 4 );
 
-		expect( text ).to.be.instanceof( ModelTextProxy );
-		expect( text.data ).to.equal( 'b' );
-		expect( text.textNode ).to.equal( bar );
+		expect( text ).toBeInstanceOf( ModelTextProxy );
+		expect( text.data ).toBe( 'b' );
+		expect( text.textNode ).toBe( bar );
 	} );
 
 	it( 'should return text proxy with one character if text node occupies given offset', () => {
 		const text = itemAt( element, 1 );
 
-		expect( text ).to.be.instanceof( ModelTextProxy );
-		expect( text.data ).to.equal( 'o' );
-		expect( text.textNode ).to.equal( foo );
+		expect( text ).toBeInstanceOf( ModelTextProxy );
+		expect( text.data ).toBe( 'o' );
+		expect( text.textNode ).toBe( foo );
 	} );
 } );
 
@@ -82,7 +83,7 @@ describe( 'getText', () => {
 			] )
 		] );
 
-		expect( getText( div ) ).to.equal( 'aaa bbbcccddd' );
+		expect( getText( div ) ).toBe( 'aaa bbbcccddd' );
 	} );
 } );
 
@@ -94,6 +95,6 @@ describe( 'createRangeOnElementOnly', () => {
 
 		const range = createRangeOnElementOnly( element );
 
-		expect( Array.from( range.getItems() ) ).to.deep.equal( [ element ] );
+		expect( Array.from( range.getItems() ) ).toEqual( [ element ] );
 	} );
 } );

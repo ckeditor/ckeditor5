@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ModelConsumable } from '../../src/conversion/modelconsumable.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelTextProxy } from '../../src/model/textproxy.js';
 import { ModelText } from '../../src/model/text.js';
-
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ModelConsumable', () => {
 	let modelConsumable, modelElement;
@@ -22,7 +21,7 @@ describe( 'ModelConsumable', () => {
 		it( 'should add consumable value from given element of given type', () => {
 			modelConsumable.add( modelElement, 'type' );
 
-			expect( modelConsumable.test( modelElement, 'type' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'type' ) ).toBe( true );
 		} );
 
 		it( 'should store multiple values for one element', () => {
@@ -30,9 +29,9 @@ describe( 'ModelConsumable', () => {
 			modelConsumable.add( modelElement, 'typeB' );
 			modelConsumable.add( modelElement, 'typeC' );
 
-			expect( modelConsumable.test( modelElement, 'typeA' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'typeB' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'typeC' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'typeA' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'typeB' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'typeC' ) ).toBe( true );
 		} );
 
 		it( 'should correctly add text proxy instances', () => {
@@ -40,42 +39,42 @@ describe( 'ModelConsumable', () => {
 
 			modelConsumable.add( modelTextProxy, 'type' );
 
-			expect( modelConsumable.test( modelTextProxy, 'type' ) ).to.be.true;
+			expect( modelConsumable.test( modelTextProxy, 'type' ) ).toBe( true );
 		} );
 
 		it( 'should normalize type name', () => {
 			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
 
-			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'foo:bar:xxx' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'foo:bar:xxx' ) ).toBe( true );
 
-			expect( modelConsumable.test( modelElement, 'foo:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'foo:xxx' ) ).toBeNull();
 		} );
 
 		it( 'should normalize type name for inserts', () => {
 			modelConsumable.add( modelElement, 'insert:foo' );
 
-			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'insert' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'insert' ) ).toBe( true );
 		} );
 
 		it( 'should not normalize type name for markers', () => {
 			modelConsumable.add( modelElement, 'addMarker:foo:bar:baz:abc' );
 			modelConsumable.add( modelElement, 'removeMarker:foo:bar:baz:abc' );
 
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:xxx' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:xxx' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:xxx' ) ).toBeNull();
 
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:xxx' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:xxx' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:xxx' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:xxx' ) ).toBeNull();
 		} );
 	} );
 
@@ -85,14 +84,14 @@ describe( 'ModelConsumable', () => {
 
 			const result = modelConsumable.consume( modelElement, 'type' );
 
-			expect( result ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'type' ) ).to.be.false;
+			expect( result ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'type' ) ).toBe( false );
 		} );
 
 		it( 'should return false if given type of consumable was not added for given element', () => {
 			const result = modelConsumable.consume( modelElement, 'type' );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 		} );
 
 		it( 'should correctly consume text proxy instances', () => {
@@ -102,35 +101,35 @@ describe( 'ModelConsumable', () => {
 
 			modelConsumable.add( proxy1To4, 'type' );
 
-			expect( modelConsumable.consume( proxy1To5, 'type' ) ).to.be.false;
-			expect( modelConsumable.consume( proxyOther1To4, 'type' ) ).to.be.false;
+			expect( modelConsumable.consume( proxy1To5, 'type' ) ).toBe( false );
+			expect( modelConsumable.consume( proxyOther1To4, 'type' ) ).toBe( false );
 
 			const equalProxy1To4 = new ModelTextProxy( modelElement.getChild( 0 ), 1, 3 );
 			const result = modelConsumable.consume( equalProxy1To4, 'type' );
 
-			expect( result ).to.be.true;
-			expect( modelConsumable.test( proxy1To4, 'type' ) ).to.be.false;
+			expect( result ).toBe( true );
+			expect( modelConsumable.test( proxy1To4, 'type' ) ).toBe( false );
 		} );
 
 		it( 'should normalize type name', () => {
 			modelConsumable.add( modelElement, 'foo:bar:baz:abc' );
 			const result = modelConsumable.consume( modelElement, 'foo:bar:baz' );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
-			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.false;
-			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.false;
-			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).toBe( false );
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).toBe( false );
+			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).toBe( false );
 		} );
 
 		it( 'should normalize type name for inserts', () => {
 			modelConsumable.add( modelElement, 'insert' );
 			const result = modelConsumable.consume( modelElement, 'insert:foo' );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
-			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).to.be.false;
-			expect( modelConsumable.test( modelElement, 'insert' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).toBe( false );
+			expect( modelConsumable.test( modelElement, 'insert' ) ).toBe( false );
 		} );
 
 		it( 'should not normalize type names for markers', () => {
@@ -140,18 +139,18 @@ describe( 'ModelConsumable', () => {
 			const addResult = modelConsumable.consume( modelElement, 'addMarker:foo:bar:baz' );
 			const removeResult = modelConsumable.consume( modelElement, 'removeMarker:foo:bar:baz' );
 
-			expect( addResult ).to.be.true;
-			expect( removeResult ).to.be.true;
+			expect( addResult ).toBe( true );
+			expect( removeResult ).toBe( true );
 
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).to.be.false;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'addMarker:foo' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz:abc' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar:baz' ) ).toBe( false );
+			expect( modelConsumable.test( modelElement, 'addMarker:foo:bar' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'addMarker:foo' ) ).toBeNull();
 
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).to.be.false;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).to.be.null;
-			expect( modelConsumable.test( modelElement, 'removeMarker:foo' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz:abc' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar:baz' ) ).toBe( false );
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo:bar' ) ).toBeNull();
+			expect( modelConsumable.test( modelElement, 'removeMarker:foo' ) ).toBeNull();
 		} );
 	} );
 
@@ -162,8 +161,8 @@ describe( 'ModelConsumable', () => {
 
 			const result = modelConsumable.revert( modelElement, 'type' );
 
-			expect( result ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'type' ) ).to.be.true;
+			expect( result ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'type' ) ).toBe( true );
 		} );
 
 		it( 'should return false if consumable value has not been yet consumed', () => {
@@ -171,13 +170,13 @@ describe( 'ModelConsumable', () => {
 
 			const result = modelConsumable.revert( modelElement, 'type' );
 
-			expect( result ).to.be.false;
+			expect( result ).toBe( false );
 		} );
 
 		it( 'should return null if consumable value of given type has never been added for given element', () => {
 			const result = modelConsumable.revert( modelElement, 'type' );
 
-			expect( result ).to.be.null;
+			expect( result ).toBeNull();
 		} );
 
 		it( 'should correctly revert text proxy instances', () => {
@@ -188,8 +187,8 @@ describe( 'ModelConsumable', () => {
 
 			const result = modelConsumable.revert( modelTextProxy, 'type' );
 
-			expect( result ).to.be.true;
-			expect( modelConsumable.test( modelTextProxy, 'type' ) ).to.be.true;
+			expect( result ).toBe( true );
+			expect( modelConsumable.test( modelTextProxy, 'type' ) ).toBe( true );
 		} );
 
 		it( 'should normalize type name', () => {
@@ -198,21 +197,21 @@ describe( 'ModelConsumable', () => {
 
 			const result = modelConsumable.revert( modelElement, 'foo:bar:baz' );
 
-			expect( result ).to.be.true;
+			expect( result ).toBe( true );
 
-			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.true;
-			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).toBe( true );
+			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).toBe( true );
 		} );
 	} );
 
 	describe( 'test()', () => {
 		it( 'should return null if consumable value of given type has never been added for given element', () => {
-			expect( modelConsumable.test( modelElement, 'typeA' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'typeA' ) ).toBeNull();
 
 			modelConsumable.add( modelElement, 'typeA' );
 
-			expect( modelConsumable.test( modelElement, 'typeB' ) ).to.be.null;
+			expect( modelConsumable.test( modelElement, 'typeB' ) ).toBeNull();
 		} );
 
 		it( 'should correctly test for text proxy instances', () => {
@@ -223,11 +222,11 @@ describe( 'ModelConsumable', () => {
 
 			modelConsumable.add( proxy1To4, 'type' );
 
-			expect( modelConsumable.test( proxy1To4, 'type' ) ).to.be.true;
-			expect( modelConsumable.test( proxy1To4, 'otherType' ) ).to.be.null;
-			expect( modelConsumable.test( proxy1To5, 'type' ) ).to.be.null;
-			expect( modelConsumable.test( proxyOther1To4, 'type' ) ).to.be.null;
-			expect( modelConsumable.test( equalProxy1To4, 'type' ) ).to.be.true;
+			expect( modelConsumable.test( proxy1To4, 'type' ) ).toBe( true );
+			expect( modelConsumable.test( proxy1To4, 'otherType' ) ).toBeNull();
+			expect( modelConsumable.test( proxy1To5, 'type' ) ).toBeNull();
+			expect( modelConsumable.test( proxyOther1To4, 'type' ) ).toBeNull();
+			expect( modelConsumable.test( equalProxy1To4, 'type' ) ).toBe( true );
 		} );
 	} );
 
@@ -270,7 +269,7 @@ describe( 'ModelConsumable', () => {
 			modelConsumable.consume( new ModelTextProxy( modelElement.getChild( 0 ), 0, 6 ), 'insert:$text' );
 
 			expect( () => modelConsumable.verifyAllConsumed( 'insert' ) )
-				.to.throw( CKEditorError, 'conversion-model-consumable-not-consumed' );
+				.toThrow( 'conversion-model-consumable-not-consumed' );
 		} );
 
 		it( 'should throw if some text node event was not consumed', () => {
@@ -280,7 +279,7 @@ describe( 'ModelConsumable', () => {
 			modelConsumable.consume( modelElement, 'insert:paragraph' );
 
 			expect( () => modelConsumable.verifyAllConsumed( 'insert' ) )
-				.to.throw( CKEditorError, 'conversion-model-consumable-not-consumed' );
+				.toThrow( 'conversion-model-consumable-not-consumed' );
 		} );
 	} );
 } );

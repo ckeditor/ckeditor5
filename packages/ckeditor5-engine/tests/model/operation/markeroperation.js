@@ -3,13 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { ModelText } from '../../../src/model/text.js';
 import { MarkerOperation } from '../../../src/model/operation/markeroperation.js';
-
-function matchRange( range ) {
-	return sinon.match( rangeToMatch => rangeToMatch.isEqual( range ) );
-}
 
 describe( 'MarkerOperation', () => {
 	let model, doc, root, range;
@@ -22,21 +19,25 @@ describe( 'MarkerOperation', () => {
 		range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	it( 'should have property type equal to "marker"', () => {
 		const op = new MarkerOperation( 'name', null, range, model.markers, true, 0 );
-		expect( op.type ).to.equal( 'marker' );
+		expect( op.type ).toBe( 'marker' );
 	} );
 
 	it( 'should add marker to document marker collection', () => {
-		sinon.spy( model.markers, '_set' );
+		vi.spyOn( model.markers, '_set' );
 
 		model.applyOperation(
 			new MarkerOperation( 'name', null, range, model.markers, true, doc.version )
 		);
 
-		expect( doc.version ).to.equal( 1 );
-		expect( model.markers._set.calledWith( 'name', matchRange( range ) ) );
-		expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
+		expect( doc.version ).toBe( 1 );
+		expect( model.markers._set ).toHaveBeenCalled();
+		expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).toBe( true );
 	} );
 
 	it( 'should update marker in document marker collection', () => {
@@ -46,15 +47,15 @@ describe( 'MarkerOperation', () => {
 
 		const range2 = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 3 ) );
 
-		sinon.spy( model.markers, '_set' );
+		vi.spyOn( model.markers, '_set' );
 
 		model.applyOperation(
 			new MarkerOperation( 'name', range, range2, model.markers, true, doc.version )
 		);
 
-		expect( doc.version ).to.equal( 2 );
-		expect( model.markers._set.calledWith( 'name', matchRange( range2 ) ) );
-		expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
+		expect( doc.version ).toBe( 2 );
+		expect( model.markers._set ).toHaveBeenCalled();
+		expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).toBe( true );
 	} );
 
 	it( 'should remove marker from document marker collection', () => {
@@ -62,25 +63,25 @@ describe( 'MarkerOperation', () => {
 			new MarkerOperation( 'name', null, range, model.markers, true, doc.version )
 		);
 
-		sinon.spy( model.markers, '_remove' );
+		vi.spyOn( model.markers, '_remove' );
 
 		model.applyOperation(
 			new MarkerOperation( 'name', range, null, model.markers, true, doc.version )
 		);
 
-		expect( doc.version ).to.equal( 2 );
-		expect( model.markers._remove.calledWith( 'name' ) );
-		expect( model.markers.get( 'name' ) ).to.be.null;
+		expect( doc.version ).toBe( 2 );
+		expect( model.markers._remove ).toHaveBeenCalledWith( 'name' );
+		expect( model.markers.get( 'name' ) ).toBe( null );
 	} );
 
 	it( 'should not fire document markers remove event if removing non-existing range', () => {
-		sinon.spy( model.markers, 'fire' );
+		vi.spyOn( model.markers, 'fire' );
 
 		model.applyOperation(
 			new MarkerOperation( 'name', null, null, model.markers, true, doc.version )
 		);
 
-		expect( model.markers.fire.notCalled ).to.be.true;
+		expect( model.markers.fire ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not fire document markers set event if newRange is same as current marker range', () => {
@@ -88,13 +89,13 @@ describe( 'MarkerOperation', () => {
 			writer.addMarker( 'name', { range, usingOperation: true } );
 		} );
 
-		sinon.spy( model.markers, 'fire' );
+		vi.spyOn( model.markers, 'fire' );
 
 		model.applyOperation(
 			new MarkerOperation( 'name', range, range, model.markers, false, doc.version )
 		);
 
-		expect( model.markers.fire.notCalled ).to.be.true;
+		expect( model.markers.fire ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should return MarkerOperation with swapped ranges as reverse operation', () => {
@@ -106,28 +107,28 @@ describe( 'MarkerOperation', () => {
 		const op2 = new MarkerOperation( 'name', range, range2, model.markers, true, doc.version );
 		const reversed2 = op2.getReversed();
 
-		expect( reversed1 ).to.be.an.instanceof( MarkerOperation );
-		expect( reversed2 ).to.be.an.instanceof( MarkerOperation );
+		expect( reversed1 ).toBeInstanceOf( MarkerOperation );
+		expect( reversed2 ).toBeInstanceOf( MarkerOperation );
 
-		expect( reversed1.name ).to.equal( 'name' );
-		expect( reversed1.oldRange.isEqual( range ) ).to.be.true;
-		expect( reversed1.newRange ).to.be.null;
-		expect( reversed1.baseVersion ).to.equal( 1 );
-		expect( reversed1.affectsData ).to.be.true;
+		expect( reversed1.name ).toBe( 'name' );
+		expect( reversed1.oldRange.isEqual( range ) ).toBe( true );
+		expect( reversed1.newRange ).toBe( null );
+		expect( reversed1.baseVersion ).toBe( 1 );
+		expect( reversed1.affectsData ).toBe( true );
 
-		expect( reversed2.name ).to.equal( 'name' );
-		expect( reversed2.oldRange.isEqual( range2 ) ).to.be.true;
-		expect( reversed2.newRange.isEqual( range ) ).to.be.true;
-		expect( reversed2.baseVersion ).to.equal( 1 );
-		expect( reversed2.affectsData ).to.be.true;
+		expect( reversed2.name ).toBe( 'name' );
+		expect( reversed2.oldRange.isEqual( range2 ) ).toBe( true );
+		expect( reversed2.newRange.isEqual( range ) ).toBe( true );
+		expect( reversed2.baseVersion ).toBe( 1 );
+		expect( reversed2.affectsData ).toBe( true );
 	} );
 
 	it( 'should create a MarkerOperation with the same parameters when cloned', () => {
 		const op = new MarkerOperation( 'name', null, range, model.markers, true, 0 );
 		const clone = op.clone();
 
-		expect( clone ).to.be.an.instanceof( MarkerOperation );
-		expect( clone ).to.deep.equal( op );
+		expect( clone ).toBeInstanceOf( MarkerOperation );
+		expect( clone ).toEqual( op );
 	} );
 
 	describe( 'toJSON', () => {
@@ -135,7 +136,7 @@ describe( 'MarkerOperation', () => {
 			const op = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );
 			const serialized = op.toJSON();
 
-			expect( serialized ).to.deep.equal( {
+			expect( serialized ).toEqual( {
 				__className: 'MarkerOperation',
 				baseVersion: 0,
 				name: 'name',
@@ -153,7 +154,7 @@ describe( 'MarkerOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 
 		it( 'should create proper MarkerOperation from json object #2', () => {
@@ -163,7 +164,7 @@ describe( 'MarkerOperation', () => {
 			const serialized = op.toJSON();
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );
 
-			expect( deserialized ).to.deep.equal( op );
+			expect( deserialized ).toEqual( op );
 		} );
 	} );
 } );

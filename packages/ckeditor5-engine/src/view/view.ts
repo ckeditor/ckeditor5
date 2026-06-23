@@ -590,7 +590,6 @@ export class EditingView extends EditingViewBase {
 			return callbackResult;
 		} catch ( err: any ) {
 			// @if CK_DEBUG // throw err;
-			/* istanbul ignore next -- @preserve */
 			CKEditorError.rethrowUnexpectedError( err, this );
 		}
 	}

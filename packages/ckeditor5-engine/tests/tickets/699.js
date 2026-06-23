@@ -8,6 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { _getModelData } from '../../src/dev-utils/model.js';
 import { _getViewData } from '../../src/dev-utils/view.js';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe( 'Bug ckeditor5-engine#699', () => {
 	let element;
@@ -28,8 +29,8 @@ describe( 'Bug ckeditor5-engine#699', () => {
 			.then( editor => {
 				editor.setData( '<widget></widget><p>foo</p>' );
 
-				expect( _getModelData( editor.model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				expect( _getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
+				expect( _getModelData( editor.model ) ).toBe( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( _getViewData( editor.editing.view ) ).toBe( '[<widget></widget>]<p>foo</p>' );
 
 				return editor.destroy();
 			} );

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelNode } from '../../src/model/node.js';
@@ -36,59 +37,59 @@ describe( 'Node', () => {
 
 	describe( 'should have a correct property', () => {
 		it( 'root', () => {
-			expect( root ).to.have.property( 'root' ).that.equals( root );
+			expect( root ).toHaveProperty( 'root', root );
 
-			expect( one ).to.have.property( 'root' ).that.equals( root );
-			expect( two ).to.have.property( 'root' ).that.equals( root );
-			expect( three ).to.have.property( 'root' ).that.equals( root );
+			expect( one ).toHaveProperty( 'root', root );
+			expect( two ).toHaveProperty( 'root', root );
+			expect( three ).toHaveProperty( 'root', root );
 
-			expect( textBA ).to.have.property( 'root' ).that.equals( root );
-			expect( img ).to.have.property( 'root' ).that.equals( root );
-			expect( textR ).to.have.property( 'root' ).that.equals( root );
+			expect( textBA ).toHaveProperty( 'root', root );
+			expect( img ).toHaveProperty( 'root', root );
+			expect( textR ).toHaveProperty( 'root', root );
 
-			expect( node ).to.have.property( 'root' ).that.equals( node );
+			expect( node ).toHaveProperty( 'root', node );
 		} );
 
 		it( 'nextSibling', () => {
-			expect( root ).to.have.property( 'nextSibling' ).that.is.null;
+			expect( root.nextSibling ).toBeNull();
 
-			expect( one ).to.have.property( 'nextSibling' ).that.equals( two );
-			expect( two ).to.have.property( 'nextSibling' ).that.equals( three );
-			expect( three ).to.have.property( 'nextSibling' ).that.is.null;
+			expect( one.nextSibling ).toBe( two );
+			expect( two.nextSibling ).toBe( three );
+			expect( three.nextSibling ).toBeNull();
 
-			expect( textBA ).to.have.property( 'nextSibling' ).that.deep.equals( img );
-			expect( img ).to.have.property( 'nextSibling' ).that.deep.equals( textR );
-			expect( textR ).to.have.property( 'nextSibling' ).that.is.null;
+			expect( textBA.nextSibling ).toEqual( img );
+			expect( img.nextSibling ).toEqual( textR );
+			expect( textR.nextSibling ).toBeNull();
 
-			expect( node ).to.have.property( 'nextSibling' ).that.is.null;
+			expect( node.nextSibling ).toBeNull();
 		} );
 
 		it( 'previousSibling', () => {
-			expect( root ).to.have.property( 'previousSibling' ).that.is.null;
+			expect( root.previousSibling ).toBeNull();
 
-			expect( one ).to.have.property( 'previousSibling' ).that.is.null;
-			expect( two ).to.have.property( 'previousSibling' ).that.equals( one );
-			expect( three ).to.have.property( 'previousSibling' ).that.equals( two );
+			expect( one.previousSibling ).toBeNull();
+			expect( two.previousSibling ).toBe( one );
+			expect( three.previousSibling ).toBe( two );
 
-			expect( textBA ).to.have.property( 'previousSibling' ).that.is.null;
-			expect( img ).to.have.property( 'previousSibling' ).that.deep.equals( textBA );
-			expect( textR ).to.have.property( 'previousSibling' ).that.deep.equals( img );
+			expect( textBA.previousSibling ).toBeNull();
+			expect( img.previousSibling ).toEqual( textBA );
+			expect( textR.previousSibling ).toEqual( img );
 
-			expect( node ).to.have.property( 'previousSibling' ).that.is.null;
+			expect( node.previousSibling ).toBeNull();
 		} );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create empty attribute list if no parameters were passed', () => {
-			expect( count( node.getAttributes() ) ).to.equal( 0 );
+			expect( count( node.getAttributes() ) ).toBe( 0 );
 		} );
 
 		it( 'should initialize attribute list with passed attributes', () => {
 			const foo = new ModelNode( { foo: true, bar: false } );
 
-			expect( count( foo.getAttributes() ) ).to.equal( 2 );
-			expect( foo.getAttribute( 'foo' ) ).to.equal( true );
-			expect( foo.getAttribute( 'bar' ) ).to.equal( false );
+			expect( count( foo.getAttributes() ) ).toBe( 2 );
+			expect( foo.getAttribute( 'foo' ) ).toBe( true );
+			expect( foo.getAttribute( 'bar' ) ).toBe( false );
 		} );
 	} );
 
@@ -96,7 +97,7 @@ describe( 'Node', () => {
 		it( 'should return null if not set', () => {
 			const a = new ModelNode();
 
-			expect( a.index ).to.equal( null );
+			expect( a.index ).toBe( null );
 		} );
 
 		it( 'should return _index value', () => {
@@ -104,7 +105,7 @@ describe( 'Node', () => {
 
 			a._index = 2;
 
-			expect( a.index ).to.equal( 2 );
+			expect( a.index ).toBe( 2 );
 		} );
 	} );
 
@@ -113,8 +114,8 @@ describe( 'Node', () => {
 			const node = new ModelNode( { foo: 'bar' } );
 			const copy = node._clone();
 
-			expect( copy ).not.to.equal( node );
-			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( Array.from( node.getAttributes() ) );
+			expect( copy ).not.toBe( node );
+			expect( Array.from( copy.getAttributes() ) ).toEqual( Array.from( node.getAttributes() ) );
 		} );
 	} );
 
@@ -125,28 +126,28 @@ describe( 'Node', () => {
 
 			node._remove();
 
-			expect( element.childCount ).to.equal( 0 );
-			expect( node.parent ).to.be.null;
+			expect( element.childCount ).toBe( 0 );
+			expect( node.parent ).toBeNull();
 		} );
 
 		it( 'should throw if node does not have a parent', () => {
 			expect( () => {
 				node._remove();
-			} ).to.throw();
+			} ).toThrow();
 		} );
 	} );
 
 	describe( 'is()', () => {
 		it( 'should return true for node', () => {
-			expect( node.is( 'node' ) ).to.be.true;
-			expect( node.is( 'model:node' ) ).to.be.true;
+			expect( node.is( 'node' ) ).toBe( true );
+			expect( node.is( 'model:node' ) ).toBe( true );
 		} );
 
 		it( 'should return false for incorrect values', () => {
-			expect( node.is( 'model' ) ).to.be.false;
-			expect( node.is( 'model:$text' ) ).to.be.false;
-			expect( node.is( '$text' ) ).to.be.false;
-			expect( node.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( node.is( 'model' ) ).toBe( false );
+			expect( node.is( 'model:$text' ) ).toBe( false );
+			expect( node.is( '$text' ) ).toBe( false );
+			expect( node.is( 'element', 'paragraph' ) ).toBe( false );
 		} );
 	} );
 
@@ -154,14 +155,14 @@ describe( 'Node', () => {
 		it( 'should return null after node is created', () => {
 			const a = new ModelNode();
 
-			expect( a.startOffset ).to.equal( null );
+			expect( a.startOffset ).toBe( null );
 		} );
 
 		it( 'should return _startOffset value', () => {
 			const a = new ModelNode();
 			a._startOffset = 7;
 
-			expect( a.startOffset ).to.equal( 7 );
+			expect( a.startOffset ).toBe( 7 );
 		} );
 	} );
 
@@ -169,7 +170,7 @@ describe( 'Node', () => {
 		it( 'should return null if start offset is null', () => {
 			const a = new ModelNode();
 
-			expect( a.endOffset ).to.equal( null );
+			expect( a.endOffset ).toBe( null );
 		} );
 
 		it( 'should return offset at which the node ends', () => {
@@ -183,85 +184,85 @@ describe( 'Node', () => {
 
 			a._startOffset = 2;
 
-			expect( a.endOffset ).to.equal( 7 );
+			expect( a.endOffset ).toBe( 7 );
 		} );
 	} );
 
 	describe( 'getPath()', () => {
 		it( 'should return proper path', () => {
-			expect( root.getPath() ).to.deep.equal( [] );
+			expect( root.getPath() ).toEqual( [] );
 
-			expect( one.getPath() ).to.deep.equal( [ 0 ] );
-			expect( two.getPath() ).to.deep.equal( [ 1 ] );
-			expect( three.getPath() ).to.deep.equal( [ 2 ] );
+			expect( one.getPath() ).toEqual( [ 0 ] );
+			expect( two.getPath() ).toEqual( [ 1 ] );
+			expect( three.getPath() ).toEqual( [ 2 ] );
 
-			expect( textBA.getPath() ).to.deep.equal( [ 1, 0 ] );
-			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
-			expect( textR.getPath() ).to.deep.equal( [ 1, 3 ] );
+			expect( textBA.getPath() ).toEqual( [ 1, 0 ] );
+			expect( img.getPath() ).toEqual( [ 1, 2 ] );
+			expect( textR.getPath() ).toEqual( [ 1, 3 ] );
 		} );
 	} );
 
 	describe( 'getAncestors()', () => {
 		it( 'should return proper array of ancestor nodes', () => {
-			expect( root.getAncestors() ).to.deep.equal( [] );
-			expect( two.getAncestors() ).to.deep.equal( [ root ] );
-			expect( textBA.getAncestors() ).to.deep.equal( [ root, two ] );
+			expect( root.getAncestors() ).toEqual( [] );
+			expect( two.getAncestors() ).toEqual( [ root ] );
+			expect( textBA.getAncestors() ).toEqual( [ root, two ] );
 		} );
 
 		it( 'should include itself if includeSelf option is set to true', () => {
-			expect( root.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root ] );
-			expect( two.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two ] );
-			expect( textBA.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two, textBA ] );
-			expect( img.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two, img ] );
-			expect( textR.getAncestors( { includeSelf: true } ) ).to.deep.equal( [ root, two, textR ] );
+			expect( root.getAncestors( { includeSelf: true } ) ).toEqual( [ root ] );
+			expect( two.getAncestors( { includeSelf: true } ) ).toEqual( [ root, two ] );
+			expect( textBA.getAncestors( { includeSelf: true } ) ).toEqual( [ root, two, textBA ] );
+			expect( img.getAncestors( { includeSelf: true } ) ).toEqual( [ root, two, img ] );
+			expect( textR.getAncestors( { includeSelf: true } ) ).toEqual( [ root, two, textR ] );
 		} );
 
 		it( 'should reverse order if parentFirst option is set to true', () => {
-			expect( root.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ root ] );
-			expect( two.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ two, root ] );
-			expect( textBA.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ textBA, two, root ] );
-			expect( img.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ img, two, root ] );
-			expect( textR.getAncestors( { includeSelf: true, parentFirst: true } ) ).to.deep.equal( [ textR, two, root ] );
+			expect( root.getAncestors( { includeSelf: true, parentFirst: true } ) ).toEqual( [ root ] );
+			expect( two.getAncestors( { includeSelf: true, parentFirst: true } ) ).toEqual( [ two, root ] );
+			expect( textBA.getAncestors( { includeSelf: true, parentFirst: true } ) ).toEqual( [ textBA, two, root ] );
+			expect( img.getAncestors( { includeSelf: true, parentFirst: true } ) ).toEqual( [ img, two, root ] );
+			expect( textR.getAncestors( { includeSelf: true, parentFirst: true } ) ).toEqual( [ textR, two, root ] );
 		} );
 	} );
 
 	describe( 'getCommonAncestor()', () => {
 		it( 'should return the parent element for the same node', () => {
-			expect( img.getCommonAncestor( img ) ).to.equal( two );
+			expect( img.getCommonAncestor( img ) ).toBe( two );
 		} );
 
 		it( 'should return the given node for the same node if includeSelf is used', () => {
-			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( img );
+			expect( img.getCommonAncestor( img, { includeSelf: true } ) ).toBe( img );
 		} );
 
 		it( 'should return null for detached subtrees', () => {
 			const detached = new ModelElement( 'foo' );
 
-			expect( img.getCommonAncestor( detached ) ).to.be.null;
-			expect( detached.getCommonAncestor( img ) ).to.be.null;
+			expect( img.getCommonAncestor( detached ) ).toBeNull();
+			expect( detached.getCommonAncestor( img ) ).toBeNull();
 
-			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).to.be.null;
-			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).to.be.null;
+			expect( img.getCommonAncestor( detached, { includeSelf: true } ) ).toBeNull();
+			expect( detached.getCommonAncestor( img, { includeSelf: true } ) ).toBeNull();
 		} );
 
 		it( 'should return null when one of the nodes is a tree root itself', () => {
-			expect( root.getCommonAncestor( img ) ).to.be.null;
-			expect( img.getCommonAncestor( root ) ).to.be.null;
-			expect( root.getCommonAncestor( root ) ).to.be.null;
+			expect( root.getCommonAncestor( img ) ).toBeNull();
+			expect( img.getCommonAncestor( root ) ).toBeNull();
+			expect( root.getCommonAncestor( root ) ).toBeNull();
 		} );
 
 		it( 'should return root when one of the nodes is a tree root itself and includeSelf is used', () => {
-			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).to.equal( root );
-			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
-			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).to.equal( root );
+			expect( root.getCommonAncestor( img, { includeSelf: true } ) ).toBe( root );
+			expect( img.getCommonAncestor( root, { includeSelf: true } ) ).toBe( root );
+			expect( root.getCommonAncestor( root, { includeSelf: true } ) ).toBe( root );
 		} );
 
 		it( 'should return parent of the nodes at the same level', () => {
-			expect( img.getCommonAncestor( textBA ), 1 ).to.equal( two );
-			expect( textR.getCommonAncestor( textBA ), 2 ).to.equal( two );
+			expect( img.getCommonAncestor( textBA ) ).toBe( two );
+			expect( textR.getCommonAncestor( textBA ) ).toBe( two );
 
-			expect( img.getCommonAncestor( textBA, { includeSelf: true } ), 3 ).to.equal( two );
-			expect( textR.getCommonAncestor( textBA, { includeSelf: true } ), 4 ).to.equal( two );
+			expect( img.getCommonAncestor( textBA, { includeSelf: true } ) ).toBe( two );
+			expect( textR.getCommonAncestor( textBA, { includeSelf: true } ) ).toBe( two );
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
@@ -276,19 +277,19 @@ describe( 'Node', () => {
 
 			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
 
-			expect( bar.getCommonAncestor( foo ), 1 ).to.equal( c );
-			expect( foo.getCommonAncestor( d ), 2 ).to.equal( c );
-			expect( c.getCommonAncestor( b ), 3 ).to.equal( a );
-			expect( bom.getCommonAncestor( d ), 4 ).to.equal( a );
-			expect( b.getCommonAncestor( bom ), 5 ).to.equal( a );
-			expect( b.getCommonAncestor( bar ), 6 ).to.equal( a );
+			expect( bar.getCommonAncestor( foo ) ).toBe( c );
+			expect( foo.getCommonAncestor( d ) ).toBe( c );
+			expect( c.getCommonAncestor( b ) ).toBe( a );
+			expect( bom.getCommonAncestor( d ) ).toBe( a );
+			expect( b.getCommonAncestor( bom ) ).toBe( a );
+			expect( b.getCommonAncestor( bar ) ).toBe( a );
 
-			expect( bar.getCommonAncestor( foo, { includeSelf: true } ), 11 ).to.equal( c );
-			expect( foo.getCommonAncestor( d, { includeSelf: true } ), 12 ).to.equal( c );
-			expect( c.getCommonAncestor( b, { includeSelf: true } ), 13 ).to.equal( b );
-			expect( bom.getCommonAncestor( d, { includeSelf: true } ), 14 ).to.equal( a );
-			expect( b.getCommonAncestor( bom, { includeSelf: true } ), 15 ).to.equal( a );
-			expect( b.getCommonAncestor( bar, { includeSelf: true } ), 16 ).to.equal( b );
+			expect( bar.getCommonAncestor( foo, { includeSelf: true } ) ).toBe( c );
+			expect( foo.getCommonAncestor( d, { includeSelf: true } ) ).toBe( c );
+			expect( c.getCommonAncestor( b, { includeSelf: true } ) ).toBe( b );
+			expect( bom.getCommonAncestor( d, { includeSelf: true } ) ).toBe( a );
+			expect( b.getCommonAncestor( bom, { includeSelf: true } ) ).toBe( a );
+			expect( b.getCommonAncestor( bar, { includeSelf: true } ) ).toBe( b );
 		} );
 
 		it( 'should return document fragment', () => {
@@ -296,36 +297,36 @@ describe( 'Node', () => {
 			const bar = new ModelText( 'bar' );
 			const df = new ModelDocumentFragment( [ foo, bar ] );
 
-			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
+			expect( foo.getCommonAncestor( bar ) ).toBe( df );
 		} );
 	} );
 
 	describe( 'isBefore()', () => {
 		// Model is: <root><one></one><two>ba<img></img>r</two><three></three>
 		it( 'should return true if the element is before given element', () => {
-			expect( one.isBefore( two ) ).to.be.true;
-			expect( one.isBefore( img ) ).to.be.true;
+			expect( one.isBefore( two ) ).toBe( true );
+			expect( one.isBefore( img ) ).toBe( true );
 
-			expect( two.isBefore( textBA ) ).to.be.true;
-			expect( two.isBefore( textR ) ).to.be.true;
-			expect( two.isBefore( three ) ).to.be.true;
+			expect( two.isBefore( textBA ) ).toBe( true );
+			expect( two.isBefore( textR ) ).toBe( true );
+			expect( two.isBefore( three ) ).toBe( true );
 
-			expect( root.isBefore( one ) ).to.be.true;
+			expect( root.isBefore( one ) ).toBe( true );
 		} );
 
 		it( 'should return false if the element is after given element', () => {
-			expect( two.isBefore( one ) ).to.be.false;
-			expect( img.isBefore( one ) ).to.be.false;
+			expect( two.isBefore( one ) ).toBe( false );
+			expect( img.isBefore( one ) ).toBe( false );
 
-			expect( textBA.isBefore( two ) ).to.be.false;
-			expect( textR.isBefore( two ) ).to.be.false;
-			expect( three.isBefore( two ) ).to.be.false;
+			expect( textBA.isBefore( two ) ).toBe( false );
+			expect( textR.isBefore( two ) ).toBe( false );
+			expect( three.isBefore( two ) ).toBe( false );
 
-			expect( one.isBefore( root ) ).to.be.false;
+			expect( one.isBefore( root ) ).toBe( false );
 		} );
 
 		it( 'should return false if the same element is given', () => {
-			expect( one.isBefore( one ) ).to.be.false;
+			expect( one.isBefore( one ) ).toBe( false );
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
@@ -334,36 +335,36 @@ describe( 'Node', () => {
 
 			otherRoot._appendChild( otherElement );
 
-			expect( otherElement.isBefore( three ) ).to.be.false;
+			expect( otherElement.isBefore( three ) ).toBe( false );
 		} );
 	} );
 
 	describe( 'isAfter()', () => {
 		// Model is: <root><one></one><two>ba<img></img>r</two><three></three>
 		it( 'should return true if the element is after given element', () => {
-			expect( two.isAfter( one ) ).to.be.true;
-			expect( img.isAfter( one ) ).to.be.true;
+			expect( two.isAfter( one ) ).toBe( true );
+			expect( img.isAfter( one ) ).toBe( true );
 
-			expect( textBA.isAfter( two ) ).to.be.true;
-			expect( textR.isAfter( two ) ).to.be.true;
-			expect( three.isAfter( two ) ).to.be.true;
+			expect( textBA.isAfter( two ) ).toBe( true );
+			expect( textR.isAfter( two ) ).toBe( true );
+			expect( three.isAfter( two ) ).toBe( true );
 
-			expect( one.isAfter( root ) ).to.be.true;
+			expect( one.isAfter( root ) ).toBe( true );
 		} );
 
 		it( 'should return false if the element is before given element', () => {
-			expect( one.isAfter( two ) ).to.be.false;
-			expect( one.isAfter( img ) ).to.be.false;
+			expect( one.isAfter( two ) ).toBe( false );
+			expect( one.isAfter( img ) ).toBe( false );
 
-			expect( two.isAfter( textBA ) ).to.be.false;
-			expect( two.isAfter( textR ) ).to.be.false;
-			expect( two.isAfter( three ) ).to.be.false;
+			expect( two.isAfter( textBA ) ).toBe( false );
+			expect( two.isAfter( textR ) ).toBe( false );
+			expect( two.isAfter( three ) ).toBe( false );
 
-			expect( root.isAfter( one ) ).to.be.false;
+			expect( root.isAfter( one ) ).toBe( false );
 		} );
 
 		it( 'should return false if the same element is given', () => {
-			expect( one.isAfter( one ) ).to.be.false;
+			expect( one.isAfter( one ) ).toBe( false );
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
@@ -372,7 +373,7 @@ describe( 'Node', () => {
 
 			otherRoot._appendChild( otherElement );
 
-			expect( three.isAfter( otherElement ) ).to.be.false;
+			expect( three.isAfter( otherElement ) ).toBe( false );
 		} );
 	} );
 
@@ -381,22 +382,22 @@ describe( 'Node', () => {
 			const char = new ModelText( 'x' );
 			const el = new ModelElement( 'one' );
 
-			expect( char.isAttached() ).to.equal( false );
-			expect( el.isAttached() ).to.equal( false );
+			expect( char.isAttached() ).toBe( false );
+			expect( el.isAttached() ).toBe( false );
 		} );
 
 		it( 'returns true for the root element', () => {
 			const model = new Model();
 			const root = new ModelRootElement( model.document, 'root' );
 
-			expect( root.isAttached() ).to.equal( true );
+			expect( root.isAttached() ).toBe( true );
 		} );
 
 		it( 'returns false for a node attached to a document fragment', () => {
 			const foo = new ModelText( 'foo' );
 			new ModelDocumentFragment( [ foo ] ); // eslint-disable-line no-new
 
-			expect( foo.isAttached() ).to.equal( false );
+			expect( foo.isAttached() ).toBe( false );
 		} );
 
 		it( 'returns true for a node moved to graveyard', () => {
@@ -410,15 +411,15 @@ describe( 'Node', () => {
 
 					const node = model.change( writer => writer.createElement( 'paragraph' ) );
 
-					expect( node.isAttached() ).to.equal( false );
+					expect( node.isAttached() ).toBe( false );
 
 					model.change( writer => writer.append( node, root ) );
 
-					expect( node.isAttached() ).to.equal( true );
+					expect( node.isAttached() ).toBe( true );
 
 					model.change( writer => writer.remove( node ) );
 
-					expect( node.isAttached() ).to.equal( true );
+					expect( node.isAttached() ).toBe( true );
 
 					return editor.destroy();
 				} );
@@ -430,27 +431,27 @@ describe( 'Node', () => {
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element contains attribute with given key', () => {
-				expect( node.hasAttribute( 'foo' ) ).to.be.true;
+				expect( node.hasAttribute( 'foo' ) ).toBe( true );
 			} );
 
 			it( 'should return false if element does not contain attribute with given key', () => {
-				expect( node.hasAttribute( 'bar' ) ).to.be.false;
+				expect( node.hasAttribute( 'bar' ) ).toBe( false );
 			} );
 		} );
 
 		describe( 'getAttribute', () => {
 			it( 'should return attribute value for given key if element contains given attribute', () => {
-				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( node.getAttribute( 'foo' ) ).toBe( 'bar' );
 			} );
 
 			it( 'should return undefined if element does not contain given attribute', () => {
-				expect( node.getAttribute( 'bar' ) ).to.be.undefined;
+				expect( node.getAttribute( 'bar' ) ).toBeUndefined();
 			} );
 		} );
 
 		describe( 'getAttributes', () => {
 			it( 'should return an iterator that iterates over all attributes set on the element', () => {
-				expect( Array.from( node.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
+				expect( Array.from( node.getAttributes() ) ).toEqual( [ [ 'foo', 'bar' ] ] );
 			} );
 		} );
 
@@ -458,7 +459,7 @@ describe( 'Node', () => {
 			it( 'should set given attribute on the element', () => {
 				node._setAttribute( 'foo', 'bar' );
 
-				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( node.getAttribute( 'foo' ) ).toBe( 'bar' );
 			} );
 		} );
 
@@ -467,8 +468,8 @@ describe( 'Node', () => {
 				node._setAttribute( 'abc', 'xyz' );
 				node._setAttributesTo( { foo: 'bar' } );
 
-				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( node.getAttribute( 'abc' ) ).to.be.undefined;
+				expect( node.getAttribute( 'foo' ) ).toBe( 'bar' );
+				expect( node.getAttribute( 'abc' ) ).toBeUndefined();
 			} );
 		} );
 
@@ -477,14 +478,14 @@ describe( 'Node', () => {
 				node._setAttribute( 'foo', 'bar' );
 				const result = node._removeAttribute( 'foo' );
 
-				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( result ).to.be.true;
+				expect( node.getAttribute( 'foo' ) ).toBeUndefined();
+				expect( result ).toBe( true );
 			} );
 
 			it( 'should return false if element does not contain given attribute', () => {
 				const result = node._removeAttribute( 'foo' );
 
-				expect( result ).to.be.false;
+				expect( result ).toBe( false );
 			} );
 		} );
 
@@ -495,8 +496,8 @@ describe( 'Node', () => {
 
 				node._clearAttributes();
 
-				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( node.getAttribute( 'abc' ) ).to.be.undefined;
+				expect( node.getAttribute( 'foo' ) ).toBeUndefined();
+				expect( node.getAttribute( 'abc' ) ).toBeUndefined();
 			} );
 		} );
 	} );

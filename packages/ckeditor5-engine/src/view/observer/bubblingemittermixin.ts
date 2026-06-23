@@ -115,7 +115,6 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 				return eventInfo.return;
 			} catch ( err: any ) {
 				// @if CK_DEBUG // throw err;
-				/* istanbul ignore next -- @preserve */
 				CKEditorError.rethrowUnexpectedError( err, this );
 			}
 		}

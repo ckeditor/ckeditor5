@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, beforeAll, beforeEach } from 'vitest';
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
 import { ViewDocument } from '../../../src/view/document.js';
@@ -12,7 +13,7 @@ describe( 'DowncastWriter', () => {
 	describe( 'rename()', () => {
 		let root, foo, writer;
 
-		before( () => {
+		beforeAll( () => {
 			writer = new ViewDowncastWriter( new ViewDocument( new StylesProcessor() ) );
 		} );
 
@@ -29,16 +30,16 @@ describe( 'DowncastWriter', () => {
 
 			const bar = root.getChild( 0 );
 
-			expect( bar ).not.to.equal( foo );
-			expect( bar.name ).to.equal( 'bar' );
-			expect( bar.getAttribute( 'foo' ) ).to.equal( '1' );
-			expect( bar.getChild( 0 ) ).to.equal( text );
+			expect( bar ).not.toBe( foo );
+			expect( bar.name ).toBe( 'bar' );
+			expect( bar.getAttribute( 'foo' ) ).toBe( '1' );
+			expect( bar.getChild( 0 ) ).toBe( text );
 		} );
 
 		it( 'should return a reference to the inserted element', () => {
 			const bar = writer.rename( 'bar', foo );
 
-			expect( bar ).to.equal( root.getChild( 0 ) );
+			expect( bar ).toBe( root.getChild( 0 ) );
 		} );
 	} );
 } );

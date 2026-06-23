@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelPosition } from '../../src/model/position.js';
@@ -42,40 +43,40 @@ describe( 'LiveRange', () => {
 		const live = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 		live.detach();
 
-		expect( live ).to.be.instanceof( ModelRange );
+		expect( live ).toBeInstanceOf( ModelRange );
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {
-		sinon.spy( ModelLiveRange.prototype, 'listenTo' );
+		const spy = vi.spyOn( ModelLiveRange.prototype, 'listenTo' );
 
 		const live = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 		live.detach();
 
-		expect( live.listenTo.calledWith( model, 'applyOperation' ) ).to.be.true;
+		expect( spy ).toHaveBeenCalledWith( model, 'applyOperation', expect.anything(), expect.anything() );
 
-		ModelLiveRange.prototype.listenTo.restore();
+		spy.mockRestore();
 	} );
 
 	it( 'should stop listening when detached', () => {
-		sinon.spy( ModelLiveRange.prototype, 'stopListening' );
+		const spy = vi.spyOn( ModelLiveRange.prototype, 'stopListening' );
 
 		const live = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 		live.detach();
 
-		expect( live.stopListening.called ).to.be.true;
+		expect( spy ).toHaveBeenCalled();
 
-		ModelLiveRange.prototype.stopListening.restore();
+		spy.mockRestore();
 	} );
 
 	it( '_createIn should return ModelLiveRange', () => {
 		const range = ModelLiveRange._createIn( p );
-		expect( range ).to.be.instanceof( ModelLiveRange );
+		expect( range ).toBeInstanceOf( ModelLiveRange );
 		range.detach();
 	} );
 
 	it( '_createFromPositionAndShift should return ModelLiveRange', () => {
 		const range = ModelLiveRange._createFromPositionAndShift( new ModelPosition( root, [ 0, 1 ] ), 4 );
-		expect( range ).to.be.instanceof( ModelLiveRange );
+		expect( range ).toBeInstanceOf( ModelLiveRange );
 		range.detach();
 	} );
 
@@ -83,7 +84,7 @@ describe( 'LiveRange', () => {
 		const live = new ModelLiveRange( new ModelPosition( root, [ 0, 1, 4 ] ), new ModelPosition( root, [ 0, 2, 2 ] ) );
 		const copy = live.toRange();
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		live.on( 'change:range', spy );
 
 		const sourcePosition = new ModelPosition( root, [ 2 ] );
@@ -95,19 +96,19 @@ describe( 'LiveRange', () => {
 			writer.move( sourceRange, targetPosition );
 		} );
 
-		expect( spy.calledOnce ).to.be.true;
+		expect( spy ).toHaveBeenCalledOnce();
 
 		// First parameter available in event should be a range that is equal to the live range before the live range changed.
-		expect( spy.args[ 0 ][ 1 ].isEqual( copy ) ).to.be.true;
+		expect( spy.mock.calls[ 0 ][ 1 ].isEqual( copy ) ).toBe( true );
 
 		// Second parameter is null for operations that did not move the range into graveyard.
-		expect( spy.args[ 0 ][ 2 ].deletionPosition ).to.be.null;
+		expect( spy.mock.calls[ 0 ][ 2 ].deletionPosition ).toBeNull();
 	} );
 
 	it( 'should fire change:content event when content inside the range has changed', () => {
 		const live = new ModelLiveRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 0, 3 ] ) );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		live.on( 'change:content', spy );
 
 		const sourcePosition = new ModelPosition( root, [ 0, 2, 0 ] );
@@ -119,19 +120,19 @@ describe( 'LiveRange', () => {
 			writer.move( sourceRange, targetPosition );
 		} );
 
-		expect( spy.calledOnce ).to.be.true;
+		expect( spy ).toHaveBeenCalledOnce();
 
 		// First parameter available in event should be a range that is equal to the live range before the live range changed.
-		expect( spy.args[ 0 ][ 1 ].isEqual( live ) ).to.be.true;
+		expect( spy.mock.calls[ 0 ][ 1 ].isEqual( live ) ).toBe( true );
 
 		// Second parameter is null for operations that did not move the range into graveyard.
-		expect( spy.args[ 0 ][ 2 ].deletionPosition ).to.be.null;
+		expect( spy.mock.calls[ 0 ][ 2 ].deletionPosition ).toBeNull();
 	} );
 
 	it( 'should pass deletion position if range was removed (remove)', () => {
 		const live = new ModelLiveRange( new ModelPosition( root, [ 0, 2 ] ), new ModelPosition( root, [ 0, 4 ] ) );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		live.on( 'change:range', spy );
 
 		const sourcePosition = new ModelPosition( root, [ 0, 0 ] );
@@ -141,7 +142,7 @@ describe( 'LiveRange', () => {
 		} );
 
 		// Second parameter is deletion position.
-		expect( spy.args[ 0 ][ 2 ].deletionPosition.isEqual( sourcePosition ) ).to.be.true;
+		expect( spy.mock.calls[ 0 ][ 2 ].deletionPosition.isEqual( sourcePosition ) ).toBe( true );
 	} );
 
 	// This scenario is hypothetically possible during OT if the element to merge-into was removed.
@@ -150,7 +151,7 @@ describe( 'LiveRange', () => {
 	it( 'should pass deletion position if range was removed (merge)', () => {
 		const live = new ModelLiveRange( new ModelPosition( root, [ 1, 0 ] ), new ModelPosition( root, [ 1, 1 ] ) );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 		live.on( 'change:range', spy );
 
 		model.change( writer => {
@@ -180,7 +181,7 @@ describe( 'LiveRange', () => {
 		} );
 
 		// Second parameter is deletion position.
-		expect( spy.args[ 1 ][ 2 ].deletionPosition.isEqual( new ModelPosition( root, [ 0 ] ) ) ).to.be.true;
+		expect( spy.mock.calls[ 1 ][ 2 ].deletionPosition.isEqual( new ModelPosition( root, [ 0 ] ) ) ).toBe( true );
 	} );
 
 	describe( 'is()', () => {
@@ -192,17 +193,17 @@ describe( 'LiveRange', () => {
 		} );
 
 		it( 'should return true for "liveRange" and "range"', () => {
-			expect( live.is( 'liveRange' ) ).to.be.true;
-			expect( live.is( 'model:liveRange' ) ).to.be.true;
-			expect( live.is( 'range' ) ).to.be.true;
-			expect( live.is( 'model:range' ) ).to.be.true;
+			expect( live.is( 'liveRange' ) ).toBe( true );
+			expect( live.is( 'model:liveRange' ) ).toBe( true );
+			expect( live.is( 'range' ) ).toBe( true );
+			expect( live.is( 'model:range' ) ).toBe( true );
 		} );
 
 		it( 'should return false for incorrect values', () => {
-			expect( live.is( 'model' ) ).to.be.false;
-			expect( live.is( 'model:node' ) ).to.be.false;
-			expect( live.is( '$text' ) ).to.be.false;
-			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( live.is( 'model' ) ).toBe( false );
+			expect( live.is( 'model:node' ) ).toBe( false );
+			expect( live.is( '$text' ) ).toBe( false );
+			expect( live.is( 'element', 'paragraph' ) ).toBe( false );
 		} );
 	} );
 
@@ -212,7 +213,7 @@ describe( 'LiveRange', () => {
 		beforeEach( () => {
 			live = new ModelLiveRange( new ModelPosition( root, [ 0, 1, 4 ] ), new ModelPosition( root, [ 0, 2, 2 ] ) );
 
-			spy = sinon.spy();
+			spy = vi.fn();
 			live.on( 'change:range', spy );
 		} );
 
@@ -226,9 +227,9 @@ describe( 'LiveRange', () => {
 					writer.insertText( 'xxx', new ModelPosition( root, [ 0, 1, 0 ] ) );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 7 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 7 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is in the same parent as range end and before it', () => {
@@ -236,9 +237,9 @@ describe( 'LiveRange', () => {
 					writer.insertText( 'xxx', new ModelPosition( root, [ 0, 2, 0 ] ) );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 5 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 5 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is at a position before a node from range start path', () => {
@@ -246,9 +247,9 @@ describe( 'LiveRange', () => {
 					writer.insert( new ModelElement( 'li' ), new ModelPosition( root, [ 0, 0 ] ) );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 2, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 2, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 3, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is at a position before a node from range end path', () => {
@@ -256,9 +257,9 @@ describe( 'LiveRange', () => {
 					writer.insert( new ModelElement( 'li' ), new ModelPosition( root, [ 0, 2 ] ) );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 3, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is at the live range start position and live range is collapsed', () => {
@@ -268,9 +269,9 @@ describe( 'LiveRange', () => {
 					writer.insertText( 'xxx', new ModelPosition( root, [ 0, 1, 4 ] ) );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 7 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 7 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 7 ] );
+				expect( live.end.path ).toEqual( [ 0, 1, 7 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -284,9 +285,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 8 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 8 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is to the same parent as range end and before it', () => {
@@ -298,9 +299,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 6 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 6 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is to a position before a node from range start path', () => {
@@ -312,9 +313,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 3, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 4, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 3, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 4, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is to a position before a node from range end path', () => {
@@ -326,9 +327,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 3, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is from the same parent as range start and before it', () => {
@@ -340,9 +341,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 1 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 1 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is from the same parent as range end and before it - #1', () => {
@@ -354,9 +355,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 1 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is from the same parent as range end and before it - #2', () => {
@@ -368,9 +369,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 0 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 0 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is from a position before a node from range start path', () => {
@@ -382,9 +383,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 0, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 0, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 1, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'intersects on live range left side', () => {
@@ -396,9 +397,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 2 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 2 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 2 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'intersects on live range right side', () => {
@@ -410,9 +411,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 1 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is equal to live range', () => {
@@ -426,9 +427,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 4, 0 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 4, 3 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 4, 0 ] );
+				expect( live.end.path ).toEqual( [ 0, 4, 3 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'contains live range', () => {
@@ -442,9 +443,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 4, 1 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 4, 3 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 4, 1 ] );
+				expect( live.end.path ).toEqual( [ 0, 4, 3 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is intersecting with live range on left and points to live range', () => {
@@ -458,9 +459,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 2 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 2 ] );
+				expect( live.end.path ).toEqual( [ 0, 1, 4 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'is intersecting with live range on right and is moved into live range', () => {
@@ -472,9 +473,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 2, 1 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -505,7 +506,7 @@ describe( 'LiveRange', () => {
 					writer.wrap( new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2 ] ) ), 'w' );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>x</p><w><p>[a]</p></w><p>x</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>x</p><w><p>[a]</p></w><p>x</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapped range', () => {
@@ -519,7 +520,7 @@ describe( 'LiveRange', () => {
 				} );
 
 				// Should be '<w><p>a[b</p></w><p>x</p><p>c]d</p>' but the range is trimmed.
-				expect( _stringifyModel( root, live ) ).to.equal( '<w><p>ab</p></w>[<p>x</p><p>c]d</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<w><p>ab</p></w>[<p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range', () => {
@@ -532,7 +533,7 @@ describe( 'LiveRange', () => {
 					writer.wrap( new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 3 ] ) ), 'w' );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p><p>x</p><w><p>c]d</p></w>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p><p>x</p><w><p>c]d</p></w>' );
 			} );
 
 			it( 'its start is intersecting with the wrapped range (multilpe elements)', () => {
@@ -546,7 +547,7 @@ describe( 'LiveRange', () => {
 				} );
 
 				// Should be '<w><p>a[b</p><p>x</p></w><p>c]d</p>' but the range is trimmed.
-				expect( _stringifyModel( root, live ) ).to.equal( '<w><p>ab</p><p>x</p></w>[<p>c]d</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<w><p>ab</p><p>x</p></w>[<p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range (multiple elements)', () => {
@@ -559,7 +560,7 @@ describe( 'LiveRange', () => {
 					writer.wrap( new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ), 'w' );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
 			} );
 
 			it( 'contains element to wrap', () => {
@@ -572,7 +573,7 @@ describe( 'LiveRange', () => {
 					writer.wrap( new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2 ] ) ), 'w' );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
 			} );
 		} );
 
@@ -602,7 +603,7 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 1 ) );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>x</p><p>[a]</p><p>x</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>x</p><p>[a]</p><p>x</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapper to remove', () => {
@@ -614,7 +615,7 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 0 ) );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p><p>c]d</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapper to remove', () => {
@@ -627,7 +628,7 @@ describe( 'LiveRange', () => {
 				} );
 
 				// Should be '<p>a[b</p><p>c]d</p>' but the range is trimmed.
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p>]<p>cd</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p>]<p>cd</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapper to remove (multiple elements)', () => {
@@ -639,7 +640,7 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 0 ) );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapper to remove (multiple elements)', () => {
@@ -652,7 +653,7 @@ describe( 'LiveRange', () => {
 				} );
 
 				// Should be '<p>a[b</p><p>x</p><p>c]d</p>' but the range is trimmed.
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p>]<p>x</p><p>cd</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p>]<p>x</p><p>cd</p>' );
 			} );
 
 			it( 'contains wrapped element', () => {
@@ -664,7 +665,7 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 1 ) );
 				} );
 
-				expect( _stringifyModel( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
+				expect( _stringifyModel( root, live ) ).toBe( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );
 		} );
 	} );
@@ -676,7 +677,7 @@ describe( 'LiveRange', () => {
 			live = new ModelLiveRange( new ModelPosition( root, [ 0, 1, 4 ] ), new ModelPosition( root, [ 0, 2, 2 ] ) );
 			clone = live.toRange();
 
-			spy = sinon.spy();
+			spy = vi.fn();
 			live.on( 'change:content', spy );
 		} );
 
@@ -690,8 +691,8 @@ describe( 'LiveRange', () => {
 					writer.insertText( 'xxx', new ModelPosition( root, [ 0, 1, 7 ] ) );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 
@@ -705,8 +706,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'from the range', () => {
@@ -718,8 +719,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'from the beginning of range', () => {
@@ -731,8 +732,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'from the range to the range', () => {
@@ -746,9 +747,9 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 8 ] );
-				expect( spy.calledOnce ).to.be.true;
+				expect( live.start.path ).toEqual( [ 0, 1, 4 ] );
+				expect( live.end.path ).toEqual( [ 0, 1, 8 ] );
+				expect( spy ).toHaveBeenCalledOnce();
 			} );
 		} );
 	} );
@@ -761,7 +762,7 @@ describe( 'LiveRange', () => {
 			live = new ModelLiveRange( new ModelPosition( root, [ 0, 1, 4 ] ), new ModelPosition( root, [ 0, 2, 2 ] ) );
 			clone = live.toRange();
 
-			spy = sinon.spy();
+			spy = vi.fn();
 			live.on( 'change', spy );
 		} );
 
@@ -775,8 +776,8 @@ describe( 'LiveRange', () => {
 					writer.insertText( 'foo', new ModelPosition( root, [ 0, 2, 7 ] ) );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is to a position after a node from range end path', () => {
@@ -784,8 +785,8 @@ describe( 'LiveRange', () => {
 					writer.insert( new ModelElement( 'li' ), new ModelPosition( root, [ 3 ] ) );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is in different root', () => {
@@ -793,8 +794,8 @@ describe( 'LiveRange', () => {
 					writer.insert( new ModelElement( 'li' ), new ModelPosition( otherRoot, [ 0 ] ) );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -808,8 +809,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is to a position after a node from range end path', () => {
@@ -821,8 +822,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is from the same parent as range end and after it', () => {
@@ -834,8 +835,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is from a position after a node from range end path', () => {
@@ -847,8 +848,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is to different root', () => {
@@ -860,8 +861,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'is from different root', () => {
@@ -875,8 +876,8 @@ describe( 'LiveRange', () => {
 					writer.move( sourceRange, targetPosition );
 				} );
 
-				expect( live.isEqual( clone ) ).to.be.true;
-				expect( spy.called ).to.be.false;
+				expect( live.isEqual( clone ) ).toBe( true );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );

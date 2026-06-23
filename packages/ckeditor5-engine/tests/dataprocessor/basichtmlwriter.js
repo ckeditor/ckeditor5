@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
 
 describe( 'BasicHtmlWriter', () => {
@@ -10,7 +11,7 @@ describe( 'BasicHtmlWriter', () => {
 
 	it( 'should return empty string when empty DocumentFragment is passed', () => {
 		const data = basicHtmlWriter.getHtml( document.createDocumentFragment() );
-		expect( data ).to.equal( '' );
+		expect( data ).toBe( '' );
 	} );
 
 	it( 'should create text from single text node', () => {
@@ -20,10 +21,10 @@ describe( 'BasicHtmlWriter', () => {
 		fragment.appendChild( textNode );
 
 		const data = basicHtmlWriter.getHtml( fragment );
-		expect( data ).to.equal( text );
+		expect( data ).toBe( text );
 
 		// Verify if node was not adopted to main document.
-		expect( textNode.ownerDocument ).not.equal( document );
+		expect( textNode.ownerDocument ).not.toBe( document );
 	} );
 
 	it( 'should return correct HTML from fragment with paragraph', () => {
@@ -33,11 +34,11 @@ describe( 'BasicHtmlWriter', () => {
 		fragment.appendChild( paragraph );
 
 		const data = basicHtmlWriter.getHtml( fragment );
-		expect( data ).to.equal( '<p>foo bar</p>' );
+		expect( data ).toBe( '<p>foo bar</p>' );
 
 		// Verify if node was not adopted to main document.
-		expect( paragraph.ownerDocument ).not.equal( document );
-		expect( paragraph.firstChild.ownerDocument ).not.equal( document );
+		expect( paragraph.ownerDocument ).not.toBe( document );
+		expect( paragraph.firstChild.ownerDocument ).not.toBe( document );
 	} );
 
 	it( 'should return correct HTML from fragment with multiple child nodes', () => {
@@ -55,13 +56,13 @@ describe( 'BasicHtmlWriter', () => {
 
 		const data = basicHtmlWriter.getHtml( fragment );
 
-		expect( data ).to.equal( 'foo bar<p>foo</p><div>bar</div>' );
+		expect( data ).toBe( 'foo bar<p>foo</p><div>bar</div>' );
 
 		// Verify if node was not adopted to main document.
-		expect( text.ownerDocument ).not.equal( document );
-		expect( paragraph.ownerDocument ).not.equal( document );
-		expect( paragraph.firstChild.ownerDocument ).not.equal( document );
-		expect( div.ownerDocument ).not.equal( document );
-		expect( div.firstChild.ownerDocument ).not.equal( document );
+		expect( text.ownerDocument ).not.toBe( document );
+		expect( paragraph.ownerDocument ).not.toBe( document );
+		expect( paragraph.firstChild.ownerDocument ).not.toBe( document );
+		expect( div.ownerDocument ).not.toBe( document );
+		expect( div.firstChild.ownerDocument ).not.toBe( document );
 	} );
 } );

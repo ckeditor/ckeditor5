@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect } from 'vitest';
 import { OperationReplayer } from '../../src/dev-utils/operationreplayer.js';
 import { Model } from '../../src/model/model.js';
 
@@ -13,7 +14,7 @@ describe( 'OperationReplayer', () => {
 			const stringifiedOperations = '';
 			const operationReplayer = new OperationReplayer( model, '---', stringifiedOperations );
 
-			expect( operationReplayer.getOperationsToReplay() ).to.deep.equal( [] );
+			expect( operationReplayer.getOperationsToReplay() ).toEqual( [] );
 		} );
 
 		it( 'should be able to initialize replayer with operations', () => {
@@ -22,7 +23,7 @@ describe( 'OperationReplayer', () => {
 
 			const operationReplayer = new OperationReplayer( model, '---', JSON.stringify( operation ) );
 
-			expect( operationReplayer.getOperationsToReplay() ).to.deep.equal( [ operation ] );
+			expect( operationReplayer.getOperationsToReplay() ).toEqual( [ operation ] );
 		} );
 	} );
 
@@ -34,8 +35,8 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', JSON.stringify( operation ) );
 
 			return operationReplayer.applyNextOperation().then( isFinished => {
-				expect( operationReplayer.getOperationsToReplay() ).to.deep.equal( [] );
-				expect( isFinished ).to.equal( false );
+				expect( operationReplayer.getOperationsToReplay() ).toEqual( [] );
+				expect( isFinished ).toBe( false );
 			} );
 		} );
 
@@ -46,7 +47,7 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', JSON.stringify( operation ) );
 
 			return operationReplayer.applyNextOperation().then( () => {
-				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 1 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).toBe( 1 );
 			} );
 		} );
 
@@ -55,7 +56,7 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', '' );
 
 			return operationReplayer.applyNextOperation().then( isFinished => {
-				expect( isFinished ).to.equal( true );
+				expect( isFinished ).toBe( true );
 			} );
 		} );
 	} );
@@ -71,8 +72,8 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', stringifiedOperations );
 
 			return operationReplayer.applyAllOperations().then( () => {
-				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 2 );
-				expect( operationReplayer.getOperationsToReplay().length ).to.equal( 0 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).toBe( 2 );
+				expect( operationReplayer.getOperationsToReplay().length ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -88,8 +89,8 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', stringifiedOperations );
 
 			return operationReplayer.applyOperations( 1 ).then( () => {
-				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 1 );
-				expect( operationReplayer.getOperationsToReplay().length ).to.equal( 1 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).toBe( 1 );
+				expect( operationReplayer.getOperationsToReplay().length ).toBe( 1 );
 			} );
 		} );
 
@@ -103,8 +104,8 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', stringifiedOperations );
 
 			return operationReplayer.applyOperations( 3 ).then( () => {
-				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 2 );
-				expect( operationReplayer.getOperationsToReplay().length ).to.equal( 0 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).toBe( 2 );
+				expect( operationReplayer.getOperationsToReplay().length ).toBe( 0 );
 			} );
 		} );
 	} );
@@ -120,7 +121,7 @@ describe( 'OperationReplayer', () => {
 			const operationReplayer = new OperationReplayer( model, '---', stringifiedOperations );
 
 			return operationReplayer.play( 0 ).then( () => {
-				expect( operationReplayer.getOperationsToReplay().length ).to.equal( 0 );
+				expect( operationReplayer.getOperationsToReplay().length ).toBe( 0 );
 			} );
 		} );
 
@@ -148,7 +149,7 @@ describe( 'OperationReplayer', () => {
 				.then( () => {
 					throw new Error( 'It should throw an error' );
 				}, err => {
-					expect( err.message ).to.match( /model-document-history-addoperation-incorrect-version/ );
+					expect( err.message ).toMatch( /model-document-history-addoperation-incorrect-version/ );
 				} );
 		} );
 	} );

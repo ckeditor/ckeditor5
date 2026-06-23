@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
 import { EditingView } from '../../../src/view/view.js';
@@ -14,8 +14,6 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
 describe( 'FocusObserver', () => {
 	let view, viewDocument, observer;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
 		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
@@ -23,75 +21,77 @@ describe( 'FocusObserver', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
+		vi.useRealTimers();
 		view.destroy();
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'focus', 'blur' ] );
+		expect( observer.domEventType ).toEqual( [ 'focus', 'blur' ] );
 	} );
 
 	it( 'should use capturing phase', () => {
-		expect( observer.useCapture ).to.be.true;
+		expect( observer.useCapture ).toBe( true );
 	} );
 
 	describe( 'onDomEvent', () => {
 		it( 'should fire focus with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'focus', spy );
 
 			observer.onDomEvent( { type: 'focus', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should fire blur with the right event data', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			viewDocument.on( 'blur', spy );
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 
-			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			const data = spy.mock.calls[ 0 ][ 1 ];
+			expect( data.domTarget ).toBe( document.body );
 		} );
 
 		it( 'should render document after focus (after the next view change block)', () => {
-			const clock = sinon.useFakeTimers();
-			const renderSpy = sinon.spy();
+			vi.useFakeTimers();
+			const renderSpy = vi.fn();
 			view.on( 'render', renderSpy );
 			viewDocument.isFocused = false;
 
 			observer.onDomEvent( { type: 'focus', target: document.body } );
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
 			view.change( () => {} );
 
-			sinon.assert.calledOnce( renderSpy );
+			expect( renderSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should render document after blurring (after the next view change block)', () => {
-			const renderSpy = sinon.spy();
+			const renderSpy = vi.fn();
 			view.on( 'render', renderSpy );
 			viewDocument.isFocused = true;
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
 			view.change( () => {} );
 
-			sinon.assert.calledOnce( renderSpy );
+			expect( renderSpy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'handle isFocused property of the document', () => {
-		let domMain, domHeader, viewMain, clock;
+		let domMain, domHeader, viewMain;
 
 		beforeEach( () => {
-			clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			domMain = document.createElement( 'div' );
 			domHeader = document.createElement( 'h1' );
@@ -101,27 +101,27 @@ describe( 'FocusObserver', () => {
 		} );
 
 		afterEach( () => {
-			clock.restore();
+			vi.useRealTimers();
 		} );
 
 		it( 'should set isFocused to true on focus after 50ms', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( viewDocument.isFocused ).to.equal( true );
+			expect( viewDocument.isFocused ).toBe( true );
 		} );
 
 		it( 'should set isFocused to false on blur', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( viewDocument.isFocused ).to.equal( true );
+			expect( viewDocument.isFocused ).toBe( true );
 
 			observer.onDomEvent( { type: 'blur', target: domMain } );
 
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 		} );
 
 		it( 'should set isFocused to false on blur when selection in same editable', () => {
@@ -131,13 +131,13 @@ describe( 'FocusObserver', () => {
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( viewDocument.isFocused ).to.equal( true );
+			expect( viewDocument.isFocused ).toBe( true );
 
 			observer.onDomEvent( { type: 'blur', target: domMain } );
 
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 		} );
 
 		it( 'should not set isFocused to false on blur when it is fired on other editable', () => {
@@ -147,87 +147,87 @@ describe( 'FocusObserver', () => {
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( viewDocument.isFocused ).to.equal( true );
+			expect( viewDocument.isFocused ).toBe( true );
 
 			observer.onDomEvent( { type: 'blur', target: domHeader } );
 
-			expect( viewDocument.isFocused ).to.be.true;
+			expect( viewDocument.isFocused ).toBe( true );
 		} );
 
 		it( 'should trigger fallback rendering after 50ms', () => {
-			const renderSpy = sinon.spy();
+			const renderSpy = vi.fn();
 			view.on( 'render', renderSpy );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
-			sinon.assert.notCalled( renderSpy );
-			clock.tick( 50 );
-			sinon.assert.called( renderSpy );
+			expect( renderSpy ).not.toHaveBeenCalled();
+			vi.advanceTimersByTime( 50 );
+			expect( renderSpy ).toHaveBeenCalled();
 		} );
 
 		it( 'should not call render if destroyed', () => {
-			const renderSpy = sinon.spy();
+			const renderSpy = vi.fn();
 			view.on( 'render', renderSpy );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
-			sinon.assert.notCalled( renderSpy );
+			expect( renderSpy ).not.toHaveBeenCalled();
 			observer.destroy();
-			clock.tick( 50 );
-			sinon.assert.notCalled( renderSpy );
+			vi.advanceTimersByTime( 50 );
+			expect( renderSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not update isFocused when focusing has been cancelled', () => {
-			const renderSpy = sinon.spy();
+			const renderSpy = vi.fn();
 			view.on( 'render', renderSpy );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
 			observer._isFocusChanging = false;
 
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 		} );
 
 		it( 'should set isFocused to true on beforeinput after 50ms', () => {
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 
 			observer.onDomEvent( { type: 'beforeinput', target: domMain } );
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 
-			clock.tick( 50 );
-			expect( viewDocument.isFocused ).to.be.true;
+			vi.advanceTimersByTime( 50 );
+			expect( viewDocument.isFocused ).toBe( true );
 		} );
 
 		it( 'should set isFocused to true on beforeinput after flush', () => {
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 
 			observer.onDomEvent( { type: 'beforeinput', target: domMain } );
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 
 			observer.flush();
-			expect( viewDocument.isFocused ).to.be.true;
+			expect( viewDocument.isFocused ).toBe( true );
 		} );
 
 		it( 'should not set isFocused to true on beforeinput on other element after 50ms', () => {
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 
 			observer.onDomEvent( { type: 'beforeinput', target: document } );
-			expect( viewDocument.isFocused ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
 
-			clock.tick( 50 );
-			expect( viewDocument.isFocused ).to.be.true;
+			vi.advanceTimersByTime( 50 );
+			expect( viewDocument.isFocused ).toBe( true );
 		} );
 
 		it( 'should not set isFocused to true on beforeinput on focused document after 50ms', () => {
 			viewDocument.isFocused = true;
 
 			observer.onDomEvent( { type: 'beforeinput', target: document } );
-			expect( viewDocument.isFocused ).to.be.true;
+			expect( viewDocument.isFocused ).toBe( true );
 
-			clock.tick( 50 );
-			expect( viewDocument.isFocused ).to.be.true;
+			vi.advanceTimersByTime( 50 );
+			expect( viewDocument.isFocused ).toBe( true );
 		} );
 	} );
 
@@ -248,25 +248,25 @@ describe( 'FocusObserver', () => {
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( observer._isFocusChanging ).to.equal( true );
+			expect( observer._isFocusChanging ).toBe( true );
 		} );
 
 		it( 'should set _isFocusChanging to false after 50ms', () => {
-			const renderSpy = sinon.spy();
+			const renderSpy = vi.fn();
 			view.on( 'render', renderSpy );
-			const clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			sinon.assert.notCalled( renderSpy );
-			expect( observer._isFocusChanging ).to.equal( true );
+			expect( renderSpy ).not.toHaveBeenCalled();
+			expect( observer._isFocusChanging ).toBe( true );
 
-			clock.tick( 50 );
+			vi.advanceTimersByTime( 50 );
 
-			sinon.assert.called( renderSpy );
-			expect( observer._isFocusChanging ).to.equal( false );
+			expect( renderSpy ).toHaveBeenCalled();
+			expect( observer._isFocusChanging ).toBe( false );
 
-			clock.restore();
+			vi.useRealTimers();
 		} );
 	} );
 
@@ -277,8 +277,8 @@ describe( 'FocusObserver', () => {
 
 			observer.flush();
 
-			expect( viewDocument.isFocused ).to.be.true;
-			expect( observer._isFocusChanging ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( true );
+			expect( observer._isFocusChanging ).toBe( false );
 		} );
 
 		it( 'should do nothing when the _isFocusChanging property is false', () => {
@@ -287,8 +287,8 @@ describe( 'FocusObserver', () => {
 
 			observer.flush();
 
-			expect( viewDocument.isFocused ).to.be.false;
-			expect( observer._isFocusChanging ).to.be.false;
+			expect( viewDocument.isFocused ).toBe( false );
+			expect( observer._isFocusChanging ).toBe( false );
 		} );
 	} );
 
@@ -312,48 +312,53 @@ describe( 'FocusObserver', () => {
 			domRoot.remove();
 		} );
 
-		it( 'should always render document after selectionChange event', done => {
-			const selectionChangeSpy = sinon.spy();
-			const renderSpy = sinon.spy();
+		it( 'should always render document after selectionChange event', () => {
+			return new Promise( resolve => {
+				const selectionChangeSpy = vi.fn();
+				const renderSpy = vi.fn();
 
-			_setViewData( view, '<div contenteditable="true">foo bar</div>' );
-			view.forceRender();
+				_setViewData( view, '<div contenteditable="true">foo bar</div>' );
+				view.forceRender();
 
-			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			view.on( 'render', renderSpy );
+				viewDocument.on( 'selectionChange', selectionChangeSpy );
+				view.on( 'render', renderSpy );
 
-			view.on( 'render', () => {
-				sinon.assert.callOrder( selectionChangeSpy, renderSpy );
-				done();
+				view.on( 'render', () => {
+					expect( selectionChangeSpy.mock.invocationCallOrder[ 0 ] )
+						.toBeLessThan( renderSpy.mock.invocationCallOrder[ 0 ] );
+					resolve();
+				} );
+
+				// Mock selectionchange event after focus event. Render called by focus observer should be fired after
+				// async selection change.
+				viewDocument.fire( 'focus' );
+				viewDocument.fire( 'selectionChange' );
+				view.change( () => {} );
 			} );
-
-			// Mock selectionchange event after focus event. Render called by focus observer should be fired after
-			// async selection change.
-			viewDocument.fire( 'focus' );
-			viewDocument.fire( 'selectionChange' );
-			view.change( () => {} );
 		} );
 
-		it( 'should render without selectionChange event', done => {
-			const selectionChangeSpy = sinon.spy();
-			const renderSpy = sinon.spy();
+		it( 'should render without selectionChange event', () => {
+			return new Promise( resolve => {
+				const selectionChangeSpy = vi.fn();
+				const renderSpy = vi.fn();
 
-			_setViewData( view, '<div contenteditable="true">foo bar</div>' );
-			view.forceRender();
-			const domEditable = domRoot.childNodes[ 0 ];
+				_setViewData( view, '<div contenteditable="true">foo bar</div>' );
+				view.forceRender();
+				const domEditable = domRoot.childNodes[ 0 ];
 
-			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			view.on( 'render', renderSpy );
+				viewDocument.on( 'selectionChange', selectionChangeSpy );
+				view.on( 'render', renderSpy );
 
-			view.on( 'render', () => {
-				sinon.assert.notCalled( selectionChangeSpy );
-				sinon.assert.called( renderSpy );
+				view.on( 'render', () => {
+					expect( selectionChangeSpy ).not.toHaveBeenCalled();
+					expect( renderSpy ).toHaveBeenCalled();
 
-				done();
+					resolve();
+				} );
+
+				observer.onDomEvent( { type: 'focus', target: domEditable } );
+				view.change( () => {} );
 			} );
-
-			observer.onDomEvent( { type: 'focus', target: domEditable } );
-			view.change( () => {} );
 		} );
 	} );
 } );

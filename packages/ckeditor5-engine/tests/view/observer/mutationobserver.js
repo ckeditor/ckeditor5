@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EditingView } from '../../../src/view/view.js';
 import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
 import { ViewUIElement } from '../../../src/view/uielement.js';
@@ -10,12 +11,9 @@ import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MutationObserver', () => {
 	let view, domRoot, viewDocument, viewRoot, mutationObserver, domWrapper, spyRenderedMarkToSync, spyForceRender, mutationsEventData;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		domWrapper = document.createElement( 'div' );
@@ -34,8 +32,8 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( _parseView( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 		view.forceRender();
 
-		spyRenderedMarkToSync = sinon.spy( view._renderer, 'markToSync' );
-		spyForceRender = sinon.spy( view, 'forceRender' );
+		spyRenderedMarkToSync = vi.spyOn( view._renderer, 'markToSync' );
+		spyForceRender = vi.spyOn( view, 'forceRender' );
 
 		viewDocument.on( 'mutations', ( evt, { mutations } ) => {
 			mutationsEventData = mutations;
@@ -43,6 +41,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	afterEach( () => {
+		vi.restoreAllMocks();
 		mutationObserver.disable();
 
 		domWrapper.parentElement.removeChild( domWrapper );
@@ -65,8 +64,8 @@ describe( 'MutationObserver', () => {
 		domAdditionalRoot.textContent = 'foobar';
 		mutationObserver.flush();
 
-		expect( domAdditionalRoot.childNodes.length ).to.equal( 1 );
-		expect( domAdditionalRoot.childNodes[ 0 ].data ).to.equal( 'foobar' );
+		expect( domAdditionalRoot.childNodes.length ).toBe( 1 );
+		expect( domAdditionalRoot.childNodes[ 0 ].data ).toBe( 'foobar' );
 	} );
 
 	it( 'should allow to stop observing a DOM element', () => {
@@ -82,8 +81,8 @@ describe( 'MutationObserver', () => {
 		// Explanation:
 		// Mutation observer is listening on `domAdditionalRoot`. Because of that, the changes done to it are reverted.
 		// Mutation observer was disabled for `domRoot`. Because of that, changes done to it are kept.
-		expect( domAdditionalRoot.innerHTML ).to.equal( '<br data-cke-filler="true">' );
-		expect( domRoot.innerHTML ).to.equal( 'abcabc' );
+		expect( domAdditionalRoot.innerHTML ).toBe( '<br data-cke-filler="true">' );
+		expect( domRoot.innerHTML ).toBe( 'abcabc' );
 	} );
 
 	it( 'should not stop observing a DOM element when observer is disabled', () => {
@@ -97,8 +96,8 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		expect( domAdditionalRoot.innerHTML ).to.equal( 'foobar' );
-		expect( domRoot.innerHTML ).to.equal( 'abcabc' );
+		expect( domAdditionalRoot.innerHTML ).toBe( 'foobar' );
+		expect( domRoot.innerHTML ).toBe( 'abcabc' );
 	} );
 
 	it( 'should handle bold', () => {
@@ -128,14 +127,14 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		// "expectDomEditorNotToChange()".
-		expect( domRoot.childNodes.length ).to.equal( 1 );
-		expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'P' );
+		expect( domRoot.childNodes.length ).toBe( 1 );
+		expect( domRoot.childNodes[ 0 ].tagName ).toBe( 'P' );
 
-		expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
-		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].tagName ).to.equal( 'B' );
+		expect( domRoot.childNodes[ 0 ].childNodes.length ).toBe( 1 );
+		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].tagName ).toBe( 'B' );
 
-		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].childNodes.length ).to.equal( 1 );
-		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].childNodes.length ).toBe( 1 );
+		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 0 ].data ).toBe( 'foo' );
 	} );
 
 	it( 'should deduplicate text changes', () => {
@@ -145,10 +144,11 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
-		sinon.assert.calledOnceWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'text', node: viewRoot.getChild( 0 ).getChild( 0 ) }
 		] );
 	} );
@@ -159,8 +159,8 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/12759.
@@ -168,13 +168,13 @@ describe( 'MutationObserver', () => {
 		view.change( writer => {
 			writer.setAttribute( 'foo', 'bar', viewRoot.getChild( 0 ) );
 		} );
-		spyRenderedMarkToSync.resetHistory();
+		spyRenderedMarkToSync.mockClear();
 
 		domRoot.childNodes[ 0 ].removeAttribute( 'foo' );
 		mutationObserver.flush();
 
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/12759.
@@ -182,13 +182,13 @@ describe( 'MutationObserver', () => {
 		view.change( writer => {
 			writer.setAttribute( 'foo', 'bar', viewRoot.getChild( 0 ) );
 		} );
-		spyRenderedMarkToSync.resetHistory();
+		spyRenderedMarkToSync.mockClear();
 
 		domRoot.childNodes[ 0 ].setAttribute( 'foo', 'abc' );
 		mutationObserver.flush();
 
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should be able to observe multiple roots', () => {
@@ -199,20 +199,20 @@ describe( 'MutationObserver', () => {
 
 		// Render additional root (first editor has been rendered in the beforeEach function).
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		domRoot.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 		domAdditionalRoot.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 
 		mutationObserver.flush();
 
-		sinon.assert.calledTwice( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewAdditionalRoot.getChild( 0 ).getChild( 0 ) );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledTimes( 2 );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'text', viewRoot.getChild( 0 ).getChild( 0 ) );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'text', viewAdditionalRoot.getChild( 0 ).getChild( 0 ) );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'text', node: viewRoot.getChild( 0 ).getChild( 0 ) },
 			{ type: 'text', node: viewAdditionalRoot.getChild( 0 ).getChild( 0 ) }
 		] );
@@ -222,8 +222,8 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should handle children mutation if the mutation occurred in the inline filler', () => {
@@ -236,18 +236,18 @@ describe( 'MutationObserver', () => {
 			writer.setSelection( selection );
 		} );
 
-		spyRenderedMarkToSync.resetHistory();
+		spyRenderedMarkToSync.mockClear();
 
 		const inlineFiller = domRoot.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 
 		inlineFiller.data += 'x';
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', selection.getFirstPosition().parent );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: selection.getFirstPosition().parent }
 		] );
 	} );
@@ -263,7 +263,7 @@ describe( 'MutationObserver', () => {
 			writer.setSelection( selection );
 		} );
 
-		spyRenderedMarkToSync.resetHistory();
+		spyRenderedMarkToSync.mockClear();
 
 		// Appended container is third in the tree.
 		const container = domRoot.childNodes[ 2 ];
@@ -273,11 +273,11 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', selection.getFirstPosition().parent );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: selection.getFirstPosition().parent }
 		] );
 	} );
@@ -293,7 +293,7 @@ describe( 'MutationObserver', () => {
 			writer.setSelection( selection );
 		} );
 
-		spyRenderedMarkToSync.resetHistory();
+		spyRenderedMarkToSync.mockClear();
 
 		// Appended container is third in the tree.
 		const container = domRoot.childNodes[ 2 ];
@@ -303,11 +303,11 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', selection.getFirstPosition().parent );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: selection.getFirstPosition().parent }
 		] );
 	} );
@@ -323,7 +323,7 @@ describe( 'MutationObserver', () => {
 			writer.setSelection( selection );
 		} );
 
-		spyRenderedMarkToSync.resetHistory();
+		spyRenderedMarkToSync.mockClear();
 
 		// Appended container is third in the tree.
 		const container = domRoot.childNodes[ 2 ];
@@ -333,11 +333,11 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', selection.getFirstPosition().parent );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', selection.getFirstPosition().parent );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: selection.getFirstPosition().parent }
 		] );
 	} );
@@ -346,40 +346,40 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( _parseView( '<container:p></container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'br' ) );
 
 		mutationObserver.flush();
 
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
 		viewRoot._appendChild( _parseView( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'br' ) );
 
 		mutationObserver.flush();
 
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
 		viewRoot._appendChild( _parseView( '<container:p>abc</container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.childNodes[ 0 ].data = 'foo ';
@@ -387,11 +387,11 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'text', viewRoot.getChild( 2 ).getChild( 0 ) );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'text', viewRoot.getChild( 2 ).getChild( 0 ) );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'text', node: viewRoot.getChild( 2 ).getChild( 0 ) }
 		] );
 	} );
@@ -400,8 +400,8 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( _parseView( '<container:p><container:x></container:x></container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		const domY = document.createElement( 'y' );
@@ -410,8 +410,8 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		sinon.assert.notCalled( spyRenderedMarkToSync );
-		sinon.assert.notCalled( spyForceRender );
+		expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+		expect( spyForceRender ).not.toHaveBeenCalled();
 	} );
 
 	// This case is more tricky than the previous one because DOMConverter will return a different
@@ -430,11 +430,11 @@ describe( 'MutationObserver', () => {
 		// There was only P2 change. P1 must be ignored.
 		const viewP2 = viewRoot.getChild( 1 );
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewP2 );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', viewP2 );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: viewP2 }
 		] );
 	} );
@@ -443,19 +443,19 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( _parseView( '<container:p>abc</container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.insertBefore( document.createElement( 'br' ), domP.childNodes[ 0 ] );
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 2 ) );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', viewRoot.getChild( 2 ) );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: viewRoot.getChild( 2 ) }
 		] );
 	} );
@@ -464,19 +464,19 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( _parseView( '<container:p></container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'span' ) );
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 2 ) );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', viewRoot.getChild( 2 ) );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: viewRoot.getChild( 2 ) }
 		] );
 	} );
@@ -485,25 +485,25 @@ describe( 'MutationObserver', () => {
 		viewRoot._appendChild( _parseView( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
-		spyRenderedMarkToSync.resetHistory();
-		spyForceRender.resetHistory();
+		spyRenderedMarkToSync.mockClear();
+		spyForceRender.mockClear();
 
 		const domP = domRoot.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'span' ) );
 
 		mutationObserver.flush();
 
-		sinon.assert.calledOnce( spyRenderedMarkToSync );
-		sinon.assert.calledWithExactly( spyRenderedMarkToSync, 'children', viewRoot.getChild( 2 ) );
-		sinon.assert.calledOnce( spyForceRender );
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledOnce();
+		expect( spyRenderedMarkToSync ).toHaveBeenCalledWith( 'children', viewRoot.getChild( 2 ) );
+		expect( spyForceRender ).toHaveBeenCalledOnce();
 
-		expect( mutationsEventData ).to.deep.equal( [
+		expect( mutationsEventData ).toEqual( [
 			{ type: 'children', node: viewRoot.getChild( 2 ) }
 		] );
 	} );
 
 	describe( 'UIElement integration', () => {
-		const renderStub = sinon.stub();
+		let renderStub;
 
 		function createUIElement( name ) {
 			const element = new ViewUIElement( viewDocument, name );
@@ -519,14 +519,14 @@ describe( 'MutationObserver', () => {
 		}
 
 		beforeEach( () => {
+			renderStub = vi.fn();
 			const uiElement = createUIElement( 'div' );
 			viewRoot._appendChild( uiElement );
 
 			view.forceRender();
-			renderStub.reset();
 			view.on( 'render', renderStub );
-			spyRenderedMarkToSync.resetHistory();
-			spyForceRender.resetHistory();
+			spyRenderedMarkToSync.mockClear();
+			spyForceRender.mockClear();
 		} );
 
 		it( 'should not collect text mutations from UIElement', () => {
@@ -534,8 +534,8 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			sinon.assert.notCalled( spyRenderedMarkToSync );
-			sinon.assert.notCalled( spyForceRender );
+			expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+			expect( spyForceRender ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not cause a render from UIElement', () => {
@@ -543,7 +543,7 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( renderStub.callCount ).to.equal( 0 );
+			expect( renderStub ).toHaveBeenCalledTimes( 0 );
 		} );
 
 		it( 'should not collect child mutations from UIElement', () => {
@@ -552,8 +552,8 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			sinon.assert.notCalled( spyRenderedMarkToSync );
-			sinon.assert.notCalled( spyForceRender );
+			expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+			expect( spyForceRender ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not cause a render when UIElement gets a child', () => {
@@ -562,12 +562,12 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( renderStub.callCount ).to.equal( 0 );
+			expect( renderStub ).toHaveBeenCalledTimes( 0 );
 		} );
 	} );
 
 	describe( 'RawElement integration', () => {
-		const renderStub = sinon.stub();
+		let renderStub;
 
 		function createRawElement( name ) {
 			const element = new ViewRawElement( viewDocument, name );
@@ -580,14 +580,14 @@ describe( 'MutationObserver', () => {
 		}
 
 		beforeEach( () => {
+			renderStub = vi.fn();
 			const rawElement = createRawElement( 'div' );
 			viewRoot._appendChild( rawElement );
 
 			view.forceRender();
-			renderStub.reset();
 			view.on( 'render', renderStub );
-			spyRenderedMarkToSync.resetHistory();
-			spyForceRender.resetHistory();
+			spyRenderedMarkToSync.mockClear();
+			spyForceRender.mockClear();
 		} );
 
 		it( 'should not collect text mutations from RawElement', () => {
@@ -595,8 +595,8 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			sinon.assert.notCalled( spyRenderedMarkToSync );
-			sinon.assert.notCalled( spyForceRender );
+			expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+			expect( spyForceRender ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not cause a render from RawElement', () => {
@@ -604,7 +604,7 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( renderStub.callCount ).to.equal( 0 );
+			expect( renderStub ).toHaveBeenCalledTimes( 0 );
 		} );
 
 		it( 'should not collect child mutations from RawElement', () => {
@@ -613,8 +613,8 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			sinon.assert.notCalled( spyRenderedMarkToSync );
-			sinon.assert.notCalled( spyForceRender );
+			expect( spyRenderedMarkToSync ).not.toHaveBeenCalled();
+			expect( spyForceRender ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not cause a render when RawElement gets a child', () => {
@@ -623,7 +623,7 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( renderStub.callCount ).to.equal( 0 );
+			expect( renderStub ).toHaveBeenCalledTimes( 0 );
 		} );
 	} );
 
@@ -639,14 +639,14 @@ describe( 'MutationObserver', () => {
 	}
 
 	function expectDomEditorNotToChange() {
-		expect( domRoot.childNodes.length ).to.equal( 2 );
-		expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'P' );
-		expect( domRoot.childNodes[ 1 ].tagName ).to.equal( 'P' );
+		expect( domRoot.childNodes.length ).toBe( 2 );
+		expect( domRoot.childNodes[ 0 ].tagName ).toBe( 'P' );
+		expect( domRoot.childNodes[ 1 ].tagName ).toBe( 'P' );
 
-		expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
-		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+		expect( domRoot.childNodes[ 0 ].childNodes.length ).toBe( 1 );
+		expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).toBe( 'foo' );
 
-		expect( domRoot.childNodes[ 1 ].childNodes.length ).to.equal( 1 );
-		expect( domRoot.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( 'bar' );
+		expect( domRoot.childNodes[ 1 ].childNodes.length ).toBe( 1 );
+		expect( domRoot.childNodes[ 1 ].childNodes[ 0 ].data ).toBe( 'bar' );
 	}
 } );

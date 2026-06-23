@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { count } from '@ckeditor/ckeditor5-utils';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewElement } from '../../src/view/element.js';
@@ -26,18 +27,18 @@ describe( 'Element', () => {
 		it( 'should create element without attributes', () => {
 			const el = new ViewElement( document, 'p' );
 
-			expect( el ).to.be.an.instanceof( ViewNode );
-			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( el ).to.have.property( 'parent' ).that.is.null;
-			expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
+			expect( el ).toBeInstanceOf( ViewNode );
+			expect( el ).toHaveProperty( 'name', 'p' );
+			expect( el.parent ).toBeNull();
+			expect( count( el.getAttributeKeys() ) ).toBe( 0 );
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
 			const el = new ViewElement( document, 'p', { foo: 'bar' } );
 
-			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
-			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( el ).toHaveProperty( 'name', 'p' );
+			expect( count( el.getAttributeKeys() ) ).toBe( 1 );
+			expect( el.getAttribute( 'foo' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should create element with attributes as map', () => {
@@ -46,36 +47,36 @@ describe( 'Element', () => {
 
 			const el = new ViewElement( document, 'p', attrs );
 
-			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
-			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( el ).toHaveProperty( 'name', 'p' );
+			expect( count( el.getAttributeKeys() ) ).toBe( 1 );
+			expect( el.getAttribute( 'foo' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should stringify attributes', () => {
 			const el = new ViewElement( document, 'p', { foo: true, bar: null, object: {} } );
 
-			expect( el.getAttribute( 'foo' ) ).to.equal( 'true' );
-			expect( el.getAttribute( 'bar' ) ).to.be.undefined;
-			expect( el.getAttribute( 'object' ) ).to.equal( '[object Object]' );
+			expect( el.getAttribute( 'foo' ) ).toBe( 'true' );
+			expect( el.getAttribute( 'bar' ) ).toBeUndefined();
+			expect( el.getAttribute( 'object' ) ).toBe( '[object Object]' );
 		} );
 
 		it( 'should create element with children', () => {
 			const child = new ViewElement( document, 'p', { foo: 'bar' } );
 			const parent = new ViewElement( document, 'div', [], [ child ] );
 
-			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );
-			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
+			expect( parent ).toHaveProperty( 'name', 'div' );
+			expect( parent.childCount ).toBe( 1 );
+			expect( parent.getChild( 0 ) ).toHaveProperty( 'name', 'p' );
 		} );
 
 		it( 'should move class attribute to class set ', () => {
 			const el = new ViewElement( document, 'p', { id: 'test', class: 'one two three' } );
 
-			expect( el._attrs.get( 'class' ) ).to.be.instanceof( ViewTokenList );
-			expect( el._attrs.has( 'id' ) ).to.be.true;
-			expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
-			expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
-			expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.true;
+			expect( el._attrs.get( 'class' ) ).toBeInstanceOf( ViewTokenList );
+			expect( el._attrs.has( 'id' ) ).toBe( true );
+			expect( el._attrs.get( 'class' ).has( 'one' ) ).toBe( true );
+			expect( el._attrs.get( 'class' ).has( 'two' ) ).toBe( true );
+			expect( el._attrs.get( 'class' ).has( 'three' ) ).toBe( true );
 		} );
 
 		it( 'should move style attribute to style proxy', () => {
@@ -83,52 +84,52 @@ describe( 'Element', () => {
 				document, 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' }
 			);
 
-			expect( el._attrs.get( 'style' ) ).to.be.instanceof( StylesMap );
-			expect( el._attrs.has( 'id' ) ).to.be.true;
+			expect( el._attrs.get( 'style' ) ).toBeInstanceOf( StylesMap );
+			expect( el._attrs.has( 'id' ) ).toBe( true );
 
-			expect( el._attrs.get( 'style' ).has( 'one' ) ).to.be.true;
-			expect( el._attrs.get( 'style' ).getAsString( 'one' ) ).to.equal( 'style1' );
-			expect( el._attrs.get( 'style' ).has( 'two' ) ).to.be.true;
-			expect( el._attrs.get( 'style' ).getAsString( 'two' ) ).to.equal( 'style2' );
-			expect( el._attrs.get( 'style' ).has( 'three' ) ).to.be.true;
-			expect( el._attrs.get( 'style' ).getAsString( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+			expect( el._attrs.get( 'style' ).has( 'one' ) ).toBe( true );
+			expect( el._attrs.get( 'style' ).getAsString( 'one' ) ).toBe( 'style1' );
+			expect( el._attrs.get( 'style' ).has( 'two' ) ).toBe( true );
+			expect( el._attrs.get( 'style' ).getAsString( 'two' ) ).toBe( 'style2' );
+			expect( el._attrs.get( 'style' ).has( 'three' ) ).toBe( true );
+			expect( el._attrs.get( 'style' ).getAsString( 'three' ) ).toBe( 'url(http://ckeditor.com)' );
 		} );
 	} );
 
 	describe( 'is()', () => {
 		let el;
 
-		before( () => {
+		beforeEach( () => {
 			el = new ViewElement( document, 'p' );
 		} );
 
 		it( 'should return true for node, element, element with correct name and element name', () => {
-			expect( el.is( 'node' ) ).to.be.true;
-			expect( el.is( 'view:node' ) ).to.be.true;
-			expect( el.is( 'element' ) ).to.be.true;
-			expect( el.is( 'view:element' ) ).to.be.true;
-			expect( el.is( 'element', 'p' ) ).to.be.true;
-			expect( el.is( 'view:element', 'p' ) ).to.be.true;
+			expect( el.is( 'node' ) ).toBe( true );
+			expect( el.is( 'view:node' ) ).toBe( true );
+			expect( el.is( 'element' ) ).toBe( true );
+			expect( el.is( 'view:element' ) ).toBe( true );
+			expect( el.is( 'element', 'p' ) ).toBe( true );
+			expect( el.is( 'view:element', 'p' ) ).toBe( true );
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( el.is( 'element', 'span' ) ).to.be.false;
-			expect( el.is( 'view:element', 'span' ) ).to.be.false;
-			expect( el.is( 'element', 'span' ) ).to.be.false;
-			expect( el.is( 'view:span' ) ).to.be.false;
-			expect( el.is( '$text' ) ).to.be.false;
-			expect( el.is( 'view:$text' ) ).to.be.false;
-			expect( el.is( '$textProxy' ) ).to.be.false;
-			expect( el.is( 'containerElement' ) ).to.be.false;
-			expect( el.is( 'attributeElement' ) ).to.be.false;
-			expect( el.is( 'uiElement' ) ).to.be.false;
-			expect( el.is( 'emptyElement' ) ).to.be.false;
-			expect( el.is( 'view:emptyElement' ) ).to.be.false;
-			expect( el.is( 'rootElement' ) ).to.be.false;
-			expect( el.is( 'view:ootElement' ) ).to.be.false;
-			expect( el.is( 'documentFragment' ) ).to.be.false;
-			expect( el.is( 'node', 'p' ) ).to.be.false;
-			expect( el.is( 'view:node', 'p' ) ).to.be.false;
+			expect( el.is( 'element', 'span' ) ).toBe( false );
+			expect( el.is( 'view:element', 'span' ) ).toBe( false );
+			expect( el.is( 'element', 'span' ) ).toBe( false );
+			expect( el.is( 'view:span' ) ).toBe( false );
+			expect( el.is( '$text' ) ).toBe( false );
+			expect( el.is( 'view:$text' ) ).toBe( false );
+			expect( el.is( '$textProxy' ) ).toBe( false );
+			expect( el.is( 'containerElement' ) ).toBe( false );
+			expect( el.is( 'attributeElement' ) ).toBe( false );
+			expect( el.is( 'uiElement' ) ).toBe( false );
+			expect( el.is( 'emptyElement' ) ).toBe( false );
+			expect( el.is( 'view:emptyElement' ) ).toBe( false );
+			expect( el.is( 'rootElement' ) ).toBe( false );
+			expect( el.is( 'view:ootElement' ) ).toBe( false );
+			expect( el.is( 'documentFragment' ) ).toBe( false );
+			expect( el.is( 'node', 'p' ) ).toBe( false );
+			expect( el.is( 'view:node', 'p' ) ).toBe( false );
 		} );
 	} );
 
@@ -136,13 +137,13 @@ describe( 'Element', () => {
 		it( 'should return true if there are no children in element', () => {
 			const element = new ViewElement( document, 'p' );
 
-			expect( element.isEmpty ).to.be.true;
+			expect( element.isEmpty ).toBe( true );
 		} );
 
 		it( 'should return false if there are children in element', () => {
 			const fragment = new ViewElement( document, 'p', null, new ViewElement( document, 'img' ) );
 
-			expect( fragment.isEmpty ).to.be.false;
+			expect( fragment.isEmpty ).toBe( false );
 		} );
 	} );
 
@@ -151,10 +152,10 @@ describe( 'Element', () => {
 			const el = new ViewElement( document, 'p', { attr1: 'foo', attr2: 'bar' } );
 			const clone = el._clone();
 
-			expect( clone ).to.not.equal( el );
-			expect( clone.name ).to.equal( el.name );
-			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
-			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+			expect( clone ).not.toBe( el );
+			expect( clone.name ).toBe( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).toBe( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should deeply clone element', () => {
@@ -165,19 +166,19 @@ describe( 'Element', () => {
 			const count = el.childCount;
 			const clone = el._clone( true );
 
-			expect( clone ).to.not.equal( el );
-			expect( clone.name ).to.equal( el.name );
-			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
-			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
-			expect( clone.childCount ).to.equal( count );
+			expect( clone ).not.toBe( el );
+			expect( clone.name ).toBe( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).toBe( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).toBe( 'bar' );
+			expect( clone.childCount ).toBe( count );
 
 			for ( let i = 0; i < count; i++ ) {
 				const child = el.getChild( i );
 				const clonedChild = clone.getChild( i );
 
-				expect( clonedChild ).to.not.equal( child );
-				expect( clonedChild.name ).to.equal( child.name );
-				expect( clonedChild.getAttribute( 'attr' ) ).to.equal( child.getAttribute( 'attr' ) );
+				expect( clonedChild ).not.toBe( child );
+				expect( clonedChild.name ).toBe( child.name );
+				expect( clonedChild.getAttribute( 'attr' ) ).toBe( child.getAttribute( 'attr' ) );
 			}
 		} );
 
@@ -188,11 +189,11 @@ describe( 'Element', () => {
 			] );
 			const clone = el._clone( false );
 
-			expect( clone ).to.not.equal( el );
-			expect( clone.name ).to.equal( el.name );
-			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
-			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
-			expect( clone.childCount ).to.equal( 0 );
+			expect( clone ).not.toBe( el );
+			expect( clone.name ).toBe( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).toBe( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).toBe( 'bar' );
+			expect( clone.childCount ).toBe( 0 );
 		} );
 
 		it( 'should clone class attribute', () => {
@@ -200,22 +201,22 @@ describe( 'Element', () => {
 			el._addClass( [ 'baz', 'qux' ] );
 			const clone = el._clone( false );
 
-			expect( clone ).to.not.equal( el );
-			expect( clone.name ).to.equal( el.name );
-			expect( clone.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( clone.getAttribute( 'class' ) ).to.equal( 'baz qux' );
+			expect( clone ).not.toBe( el );
+			expect( clone.name ).toBe( el.name );
+			expect( clone.getAttribute( 'foo' ) ).toBe( 'bar' );
+			expect( clone.getAttribute( 'class' ) ).toBe( 'baz qux' );
 		} );
 
 		it( 'should clone style attribute', () => {
 			const el = new ViewElement( document, 'p', { style: 'color: red; font-size: 12px;' } );
 			const clone = el._clone( false );
 
-			expect( clone ).to.not.equal( el );
-			expect( clone.name ).to.equal( el.name );
-			expect( clone._attrs.get( 'style' ).has( 'color' ) ).to.be.true;
-			expect( clone._attrs.get( 'style' ).getAsString( 'color' ) ).to.equal( 'red' );
-			expect( clone._attrs.get( 'style' ).has( 'font-size' ) ).to.be.true;
-			expect( clone._attrs.get( 'style' ).getAsString( 'font-size' ) ).to.equal( '12px' );
+			expect( clone ).not.toBe( el );
+			expect( clone.name ).toBe( el.name );
+			expect( clone._attrs.get( 'style' ).has( 'color' ) ).toBe( true );
+			expect( clone._attrs.get( 'style' ).getAsString( 'color' ) ).toBe( 'red' );
+			expect( clone._attrs.get( 'style' ).has( 'font-size' ) ).toBe( true );
+			expect( clone._attrs.get( 'style' ).getAsString( 'font-size' ) ).toBe( '12px' );
 		} );
 
 		it( 'should clone custom properties', () => {
@@ -226,20 +227,20 @@ describe( 'Element', () => {
 
 			const cloned = el._clone();
 
-			expect( cloned.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
-			expect( cloned.getCustomProperty( symbol ) ).to.equal( 'baz' );
+			expect( cloned.getCustomProperty( 'foo' ) ).toBe( 'bar' );
+			expect( cloned.getCustomProperty( symbol ) ).toBe( 'baz' );
 		} );
 
 		it( 'should clone getFillerOffset', () => {
 			const el = new ViewElement( document, 'p' );
 			const fm = () => 'foo bar';
 
-			expect( el.getFillerOffset ).to.be.undefined;
+			expect( el.getFillerOffset ).toBeUndefined();
 			el.getFillerOffset = fm;
 
 			const cloned = el._clone();
 
-			expect( cloned.getFillerOffset ).to.equal( fm );
+			expect( cloned.getFillerOffset ).toBe( fm );
 		} );
 	} );
 
@@ -251,24 +252,24 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return false when comparing to non-element', () => {
-			expect( el.isSimilar( null ) ).to.be.false;
-			expect( el.isSimilar( {} ) ).to.be.false;
+			expect( el.isSimilar( null ) ).toBe( false );
+			expect( el.isSimilar( {} ) ).toBe( false );
 		} );
 
 		it( 'should return true when the same node is provided', () => {
-			expect( el.isSimilar( el ) ).to.be.true;
+			expect( el.isSimilar( el ) ).toBe( true );
 		} );
 
 		it( 'should return true for element with same attributes and name', () => {
 			const other = new ViewElement( document, 'p', { foo: 'bar' } );
-			expect( el.isSimilar( other ) ).to.be.true;
+			expect( el.isSimilar( other ) ).toBe( true );
 		} );
 
 		it( 'should return false when name is not the same', () => {
 			const other = el._clone();
 			other.name = 'div';
 
-			expect( el.isSimilar( other ) ).to.be.false;
+			expect( el.isSimilar( other ) ).toBe( false );
 		} );
 
 		it( 'should return false when attributes are not the same', () => {
@@ -278,9 +279,9 @@ describe( 'Element', () => {
 			other1._setAttribute( 'baz', 'qux' );
 			other2._setAttribute( 'foo', 'not-bar' );
 			other3._removeAttribute( 'foo' );
-			expect( el.isSimilar( other1 ) ).to.be.false;
-			expect( el.isSimilar( other2 ) ).to.be.false;
-			expect( el.isSimilar( other3 ) ).to.be.false;
+			expect( el.isSimilar( other1 ) ).toBe( false );
+			expect( el.isSimilar( other2 ) ).toBe( false );
+			expect( el.isSimilar( other3 ) ).toBe( false );
 		} );
 
 		it( 'should compare class attribute', () => {
@@ -294,9 +295,9 @@ describe( 'Element', () => {
 			el3._addClass( 'baz' );
 			el4._addClass( [ 'baz', 'bar' ] );
 
-			expect( el1.isSimilar( el2 ) ).to.be.true;
-			expect( el1.isSimilar( el3 ) ).to.be.false;
-			expect( el1.isSimilar( el4 ) ).to.be.false;
+			expect( el1.isSimilar( el2 ) ).toBe( true );
+			expect( el1.isSimilar( el3 ) ).toBe( false );
+			expect( el1.isSimilar( el4 ) ).toBe( false );
 		} );
 
 		describe( 'comparing styles', () => {
@@ -314,26 +315,26 @@ describe( 'Element', () => {
 				other._setStyle( 'color', 'red' );
 				other._setStyle( 'top', '10px' );
 
-				expect( element.isSimilar( other ) ).to.be.true;
+				expect( element.isSimilar( other ) ).toBe( true );
 			} );
 
 			it( 'should return true when both elements have the same styles set (different order)', () => {
 				other._setStyle( 'top', '10px' );
 				other._setStyle( 'color', 'red' );
 
-				expect( element.isSimilar( other ) ).to.be.true;
+				expect( element.isSimilar( other ) ).toBe( true );
 			} );
 
 			it( 'should return false when the other has fewer styles', () => {
 				other._setStyle( 'top', '20px' );
 
-				expect( element.isSimilar( other ) ).to.be.false;
+				expect( element.isSimilar( other ) ).toBe( false );
 			} );
 
 			it( 'should return false when the other has fewer styles (but with same values)', () => {
 				other._setStyle( 'top', '10px' );
 
-				expect( element.isSimilar( other ) ).to.be.false;
+				expect( element.isSimilar( other ) ).toBe( false );
 			} );
 
 			it( 'should return false when the other has more styles', () => {
@@ -341,14 +342,14 @@ describe( 'Element', () => {
 				other._setStyle( 'color', 'red' );
 				other._setStyle( 'bottom', '10px' );
 
-				expect( element.isSimilar( other ) ).to.be.false;
+				expect( element.isSimilar( other ) ).toBe( false );
 			} );
 
 			it( 'should return false when the other has the same styles set but with different values', () => {
 				other._setStyle( 'top', '10px' );
 				other._setStyle( 'color', 'blue' );
 
-				expect( element.isSimilar( other ) ).to.be.false;
+				expect( element.isSimilar( other ) ).toBe( false );
 			} );
 		} );
 	} );
@@ -369,25 +370,25 @@ describe( 'Element', () => {
 				const count1 = parent._insertChild( 0, [ el1, el3 ] );
 				const count2 = parent._insertChild( 1, el2 );
 
-				expect( parent.childCount ).to.equal( 3 );
-				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
-				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
-				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
-				expect( count1 ).to.equal( 2 );
-				expect( count2 ).to.equal( 1 );
+				expect( parent.childCount ).toBe( 3 );
+				expect( parent.getChild( 0 ) ).toHaveProperty( 'name', 'el1' );
+				expect( parent.getChild( 1 ) ).toHaveProperty( 'name', 'el2' );
+				expect( parent.getChild( 2 ) ).toHaveProperty( 'name', 'el3' );
+				expect( count1 ).toBe( 2 );
+				expect( count2 ).toBe( 1 );
 			} );
 
 			it( 'should accept strings', () => {
 				parent._insertChild( 0, 'abc' );
 
-				expect( parent.childCount ).to.equal( 1 );
-				expect( parent.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+				expect( parent.childCount ).toBe( 1 );
+				expect( parent.getChild( 0 ) ).toHaveProperty( 'data', 'abc' );
 
 				parent._removeChildren( 0, 1 );
 				parent._insertChild( 0, [ new ViewElement( document, 'p' ), 'abc' ] );
 
-				expect( parent.childCount ).to.equal( 2 );
-				expect( parent.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+				expect( parent.childCount ).toBe( 2 );
+				expect( parent.getChild( 1 ) ).toHaveProperty( 'data', 'abc' );
 			} );
 
 			it( 'should append children', () => {
@@ -395,13 +396,13 @@ describe( 'Element', () => {
 				const count2 = parent._appendChild( el2 );
 				const count3 = parent._appendChild( el3 );
 
-				expect( parent.childCount ).to.equal( 3 );
-				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
-				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
-				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
-				expect( count1 ).to.equal( 1 );
-				expect( count2 ).to.equal( 1 );
-				expect( count3 ).to.equal( 1 );
+				expect( parent.childCount ).toBe( 3 );
+				expect( parent.getChild( 0 ) ).toHaveProperty( 'name', 'el1' );
+				expect( parent.getChild( 1 ) ).toHaveProperty( 'name', 'el2' );
+				expect( parent.getChild( 2 ) ).toHaveProperty( 'name', 'el3' );
+				expect( count1 ).toBe( 1 );
+				expect( count2 ).toBe( 1 );
+				expect( count3 ).toBe( 1 );
 			} );
 
 			it( 'should accept and correctly handle text proxies', () => {
@@ -411,9 +412,9 @@ describe( 'Element', () => {
 
 				element._insertChild( 0, textProxy );
 
-				expect( element.childCount ).to.equal( 1 );
-				expect( element.getChild( 0 ) ).to.be.instanceof( ViewText );
-				expect( element.getChild( 0 ).data ).to.equal( 'cxy' );
+				expect( element.childCount ).toBe( 1 );
+				expect( element.getChild( 0 ) ).toBeInstanceOf( ViewText );
+				expect( element.getChild( 0 ).data ).toBe( 'cxy' );
 			} );
 
 			it( 'set proper #document on inserted children', () => {
@@ -422,7 +423,7 @@ describe( 'Element', () => {
 
 				parent._insertChild( 0, anotherEl );
 
-				expect( anotherEl.document ).to.equal( document );
+				expect( anotherEl.document ).toBe( document );
 			} );
 		} );
 
@@ -432,10 +433,10 @@ describe( 'Element', () => {
 				parent._appendChild( el2 );
 				parent._appendChild( el3 );
 
-				expect( parent.childCount ).to.equal( 3 );
-				expect( parent.getChildIndex( el1 ) ).to.equal( 0 );
-				expect( parent.getChildIndex( el2 ) ).to.equal( 1 );
-				expect( parent.getChildIndex( el3 ) ).to.equal( 2 );
+				expect( parent.childCount ).toBe( 3 );
+				expect( parent.getChildIndex( el1 ) ).toBe( 0 );
+				expect( parent.getChildIndex( el2 ) ).toBe( 1 );
+				expect( parent.getChildIndex( el3 ) ).toBe( 2 );
 			} );
 		} );
 
@@ -449,11 +450,11 @@ describe( 'Element', () => {
 				let i = 0;
 
 				for ( const child of parent.getChildren() ) {
-					expect( child ).to.equal( expected[ i ] );
+					expect( child ).toBe( expected[ i ] );
 					i++;
 				}
 
-				expect( i ).to.equal( 3 );
+				expect( i ).toBe( 3 );
 			} );
 		} );
 
@@ -466,13 +467,13 @@ describe( 'Element', () => {
 
 				parent._removeChildren( 1, 2 );
 
-				expect( parent.childCount ).to.equal( 2 );
-				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
-				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el4' );
+				expect( parent.childCount ).toBe( 2 );
+				expect( parent.getChild( 0 ) ).toHaveProperty( 'name', 'el1' );
+				expect( parent.getChild( 1 ) ).toHaveProperty( 'name', 'el4' );
 
-				expect( el1.parent ).to.equal( parent );
-				expect( el2.parent ).to.be.null;
-				expect( el3.parent ).to.be.null;
+				expect( el1.parent ).toBe( parent );
+				expect( el2.parent ).toBeNull();
+				expect( el3.parent ).toBeNull();
 				expect( el4.parent ).equal( parent );
 			} );
 
@@ -483,12 +484,12 @@ describe( 'Element', () => {
 
 				const removed = parent._removeChildren( 1 );
 
-				expect( parent.childCount ).to.equal( 2 );
-				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
-				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el3' );
+				expect( parent.childCount ).toBe( 2 );
+				expect( parent.getChild( 0 ) ).toHaveProperty( 'name', 'el1' );
+				expect( parent.getChild( 1 ) ).toHaveProperty( 'name', 'el3' );
 
-				expect( removed.length ).to.equal( 1 );
-				expect( removed[ 0 ] ).to.have.property( 'name' ).that.equals( 'el2' );
+				expect( removed.length ).toBe( 1 );
+				expect( removed[ 0 ] ).toHaveProperty( 'name', 'el2' );
 			} );
 		} );
 	} );
@@ -504,51 +505,53 @@ describe( 'Element', () => {
 			it( 'should set attribute', () => {
 				el._setAttribute( 'foo', 'bar' );
 
-				expect( el._attrs.has( 'foo' ) ).to.be.true;
-				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
+				expect( el._attrs.has( 'foo' ) ).toBe( true );
+				expect( el._attrs.get( 'foo' ) ).toBe( 'bar' );
 			} );
 
 			it( 'should cast attribute value to a string', () => {
 				el._setAttribute( 'foo', true );
 
-				expect( el._attrs.get( 'foo' ) ).to.equal( 'true' );
+				expect( el._attrs.get( 'foo' ) ).toBe( 'true' );
 			} );
 
-			it( 'should fire change event with attributes type', done => {
-				el.once( 'change:attributes', eventInfo => {
-					expect( eventInfo.source ).to.equal( el );
-					done();
-				} );
+			it( 'should fire change event with attributes type', () => {
+				return new Promise( resolve => {
+					el.once( 'change:attributes', eventInfo => {
+						expect( eventInfo.source ).toBe( el );
+						resolve();
+					} );
 
-				el._setAttribute( 'foo', 'bar' );
+					el._setAttribute( 'foo', 'bar' );
+				} );
 			} );
 
 			it( 'should set class', () => {
 				el._setAttribute( 'class', 'foo bar' );
 
-				expect( el._attrs.get( 'class' ) ).to.be.instanceof( ViewTokenList );
-				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ) ).toBeInstanceOf( ViewTokenList );
+				expect( el._attrs.get( 'class' ).has( 'foo' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'bar' ) ).toBe( true );
 			} );
 
 			it( 'should replace all existing classes', () => {
 				el._setAttribute( 'class', 'foo bar baz' );
 				el._setAttribute( 'class', 'qux' );
 
-				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'baz' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'qux' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'foo' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'bar' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'baz' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'qux' ) ).toBe( true );
 			} );
 
 			it( 'should not replace all existing classes if reset is set to false', () => {
 				el._setAttribute( 'class', 'foo bar baz', false );
 				el._setAttribute( 'class', 'qux', false );
 
-				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'baz' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'qux' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'foo' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'bar' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'baz' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'qux' ) ).toBe( true );
 			} );
 
 			it( 'should replace all styles', () => {
@@ -556,10 +559,10 @@ describe( 'Element', () => {
 				el._setStyle( 'top', '10px' );
 				el._setAttribute( 'style', 'margin-top:2em;' );
 
-				expect( el.hasStyle( 'color' ) ).to.be.false;
-				expect( el.hasStyle( 'top' ) ).to.be.false;
-				expect( el.hasStyle( 'margin-top' ) ).to.be.true;
-				expect( el.getStyle( 'margin-top' ) ).to.equal( '2em' );
+				expect( el.hasStyle( 'color' ) ).toBe( false );
+				expect( el.hasStyle( 'top' ) ).toBe( false );
+				expect( el.hasStyle( 'margin-top' ) ).toBe( true );
+				expect( el.getStyle( 'margin-top' ) ).toBe( '2em' );
 			} );
 
 			it( 'should not replace all styles if reset is set to false', () => {
@@ -567,9 +570,9 @@ describe( 'Element', () => {
 				el._setAttribute( 'style', [ 'top', '10px' ], false );
 				el._setAttribute( 'style', [ 'margin-top', '2em' ], false );
 
-				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( el.getStyle( 'top' ) ).to.equal( '10px' );
-				expect( el.getStyle( 'margin-top' ) ).to.equal( '2em' );
+				expect( el.getStyle( 'color' ) ).toBe( 'red' );
+				expect( el.getStyle( 'top' ) ).toBe( '10px' );
+				expect( el.getStyle( 'margin-top' ) ).toBe( '2em' );
 			} );
 
 			it( 'should replace rel attribute if reset is set to false but not on `a` element', () => {
@@ -577,7 +580,7 @@ describe( 'Element', () => {
 				el._setAttribute( 'rel', 'bar', false );
 				el._setAttribute( 'rel', 'baz', false );
 
-				expect( el.getAttribute( 'rel' ) ).to.equal( 'baz' );
+				expect( el.getAttribute( 'rel' ) ).toBe( 'baz' );
 			} );
 
 			it( 'should not replace all rel attribute tokens if reset is set to false', () => {
@@ -586,7 +589,7 @@ describe( 'Element', () => {
 				el._setAttribute( 'rel', 'bar', false );
 				el._setAttribute( 'rel', 'baz', false );
 
-				expect( el.getAttribute( 'rel' ) ).to.equal( 'foo bar baz' );
+				expect( el.getAttribute( 'rel' ) ).toBe( 'foo bar baz' );
 			} );
 		} );
 
@@ -594,29 +597,29 @@ describe( 'Element', () => {
 			it( 'should return attribute', () => {
 				el._setAttribute( 'foo', 'bar' );
 
-				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( el.getAttribute( 'foo' ) ).toBe( 'bar' );
 				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
 			} );
 
 			it( 'should return class attribute', () => {
 				el._addClass( [ 'foo', 'bar' ] );
 
-				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
+				expect( el.getAttribute( 'class' ) ).toBe( 'foo bar' );
 			} );
 
 			it( 'should return undefined if no class attribute', () => {
-				expect( el.getAttribute( 'class' ) ).to.be.undefined;
+				expect( el.getAttribute( 'class' ) ).toBeUndefined();
 			} );
 
 			it( 'should return style attribute', () => {
 				el._setStyle( 'color', 'red' );
 				el._setStyle( 'top', '10px' );
 
-				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
+				expect( el.getAttribute( 'style' ) ).toBe( 'color:red;top:10px;' );
 			} );
 
 			it( 'should return undefined if no style attribute', () => {
-				expect( el.getAttribute( 'style' ) ).to.be.undefined;
+				expect( el.getAttribute( 'style' ) ).toBeUndefined();
 			} );
 		} );
 
@@ -625,7 +628,7 @@ describe( 'Element', () => {
 				el._setAttribute( 'foo', 'bar' );
 				el._setAttribute( 'abc', 'xyz' );
 
-				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
+				expect( Array.from( el.getAttributes() ) ).toEqual( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
 			} );
 
 			it( 'should return class and style attribute', () => {
@@ -634,7 +637,7 @@ describe( 'Element', () => {
 				el._addClass( 'xyz' );
 				el._setStyle( 'font-weight', 'bold' );
 
-				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
+				expect( Array.from( el.getAttributes() ) ).toEqual( [
 					[ 'class', 'abc xyz' ], [ 'style', 'font-weight:bold;width:20px;' ]
 				] );
 			} );
@@ -644,37 +647,37 @@ describe( 'Element', () => {
 			it( 'should return true if element has attribute', () => {
 				el._setAttribute( 'foo', 'bar' );
 
-				expect( el.hasAttribute( 'foo' ) ).to.be.true;
-				expect( el.hasAttribute( 'bom' ) ).to.be.false;
+				expect( el.hasAttribute( 'foo' ) ).toBe( true );
+				expect( el.hasAttribute( 'bom' ) ).toBe( false );
 			} );
 
 			it( 'should return true if element has class attribute', () => {
-				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				expect( el.hasAttribute( 'class' ) ).toBe( false );
 				el._addClass( 'foo' );
-				expect( el.hasAttribute( 'class' ) ).to.be.true;
+				expect( el.hasAttribute( 'class' ) ).toBe( true );
 			} );
 
 			it( 'should return true if element has style attribute', () => {
-				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				expect( el.hasAttribute( 'style' ) ).toBe( false );
 				el._setStyle( 'border', '1px solid red' );
-				expect( el.hasAttribute( 'style' ) ).to.be.true;
+				expect( el.hasAttribute( 'style' ) ).toBe( true );
 			} );
 
 			describe( 'tokenized attributes', () => {
 				it( 'should check if element has a class', () => {
 					el._addClass( [ 'one', 'two', 'three' ] );
 
-					expect( el.hasAttribute( 'class', 'one' ) ).to.be.true;
-					expect( el.hasAttribute( 'class', 'two' ) ).to.be.true;
-					expect( el.hasAttribute( 'class', 'three' ) ).to.be.true;
-					expect( el.hasAttribute( 'class', 'four' ) ).to.be.false;
+					expect( el.hasAttribute( 'class', 'one' ) ).toBe( true );
+					expect( el.hasAttribute( 'class', 'two' ) ).toBe( true );
+					expect( el.hasAttribute( 'class', 'three' ) ).toBe( true );
+					expect( el.hasAttribute( 'class', 'four' ) ).toBe( false );
 				} );
 
 				it( 'should check if element has a style', () => {
 					el._setStyle( 'padding-top', '10px' );
 
-					expect( el.hasAttribute( 'style', 'padding-top' ) ).to.be.true;
-					expect( el.hasAttribute( 'style', 'padding-left' ) ).to.be.false;
+					expect( el.hasAttribute( 'style', 'padding-top' ) ).toBe( true );
+					expect( el.hasAttribute( 'style', 'padding-left' ) ).toBe( false );
 				} );
 
 				it( 'should check if element has a rel token (on link)', () => {
@@ -682,19 +685,19 @@ describe( 'Element', () => {
 
 					el._setAttribute( 'rel', 'nofollow noreferrer' );
 
-					expect( el.hasAttribute( 'rel', 'nofollow' ) ).to.be.true;
-					expect( el.hasAttribute( 'rel', 'noreferrer' ) ).to.be.true;
-					expect( el.hasAttribute( 'rel', 'noopener' ) ).to.be.false;
+					expect( el.hasAttribute( 'rel', 'nofollow' ) ).toBe( true );
+					expect( el.hasAttribute( 'rel', 'noreferrer' ) ).toBe( true );
+					expect( el.hasAttribute( 'rel', 'noopener' ) ).toBe( false );
 				} );
 
 				it( 'should not tokenize a rel attribute on non link elements', () => {
 					el._setAttribute( 'rel', 'nofollow noreferrer' );
 
-					expect( el.hasAttribute( 'rel' ) ).to.be.true;
-					expect( el.hasAttribute( 'rel', 'nofollow noreferrer' ) ).to.be.true;
-					expect( el.hasAttribute( 'rel', 'nofollow' ) ).to.be.false;
-					expect( el.hasAttribute( 'rel', 'noreferrer' ) ).to.be.false;
-					expect( el.hasAttribute( 'rel', 'noopener' ) ).to.be.false;
+					expect( el.hasAttribute( 'rel' ) ).toBe( true );
+					expect( el.hasAttribute( 'rel', 'nofollow noreferrer' ) ).toBe( true );
+					expect( el.hasAttribute( 'rel', 'nofollow' ) ).toBe( false );
+					expect( el.hasAttribute( 'rel', 'noreferrer' ) ).toBe( false );
+					expect( el.hasAttribute( 'rel', 'noopener' ) ).toBe( false );
 				} );
 			} );
 		} );
@@ -708,11 +711,11 @@ describe( 'Element', () => {
 				let i = 0;
 
 				for ( const key of el.getAttributeKeys() ) {
-					expect( key ).to.equal( expected[ i ] );
+					expect( key ).toBe( expected[ i ] );
 					i++;
 				}
 
-				expect( i ).to.equal( 2 );
+				expect( i ).toBe( 2 );
 			} );
 
 			it( 'should return class key', () => {
@@ -722,7 +725,7 @@ describe( 'Element', () => {
 				let i = 0;
 
 				for ( const key of el.getAttributeKeys() ) {
-					expect( key ).to.equal( expected[ i ] );
+					expect( key ).toBe( expected[ i ] );
 					i++;
 				}
 			} );
@@ -734,7 +737,7 @@ describe( 'Element', () => {
 				let i = 0;
 
 				for ( const key of el.getAttributeKeys() ) {
-					expect( key ).to.equal( expected[ i ] );
+					expect( key ).toBe( expected[ i ] );
 					i++;
 				}
 			} );
@@ -744,23 +747,25 @@ describe( 'Element', () => {
 			it( 'should remove attributes', () => {
 				el._setAttribute( 'foo', true );
 
-				expect( el.hasAttribute( 'foo' ) ).to.be.true;
+				expect( el.hasAttribute( 'foo' ) ).toBe( true );
 
 				el._removeAttribute( 'foo' );
 
-				expect( el.hasAttribute( 'foo' ) ).to.be.false;
+				expect( el.hasAttribute( 'foo' ) ).toBe( false );
 
-				expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
+				expect( count( el.getAttributeKeys() ) ).toBe( 0 );
 			} );
 
-			it( 'should fire change event with attributes type', done => {
+			it( 'should fire change event with attributes type', () => {
 				el._setAttribute( 'foo', 'bar' );
-				el.once( 'change:attributes', eventInfo => {
-					expect( eventInfo.source ).to.equal( el );
-					done();
-				} );
+				return new Promise( resolve => {
+					el.once( 'change:attributes', eventInfo => {
+						expect( eventInfo.source ).toBe( el );
+						resolve();
+					} );
 
-				el._removeAttribute( 'foo' );
+					el._removeAttribute( 'foo' );
+				} );
 			} );
 
 			it( 'should remove class attribute', () => {
@@ -769,27 +774,27 @@ describe( 'Element', () => {
 				const removed1 = el._removeAttribute( 'class' );
 				const removed2 = el2._removeAttribute( 'class' );
 
-				expect( el.hasAttribute( 'class' ) ).to.be.false;
-				expect( el.hasClass( 'foo' ) ).to.be.false;
-				expect( el.hasClass( 'bar' ) ).to.be.false;
-				expect( removed1 ).to.be.true;
-				expect( removed2 ).to.be.false;
+				expect( el.hasAttribute( 'class' ) ).toBe( false );
+				expect( el.hasClass( 'foo' ) ).toBe( false );
+				expect( el.hasClass( 'bar' ) ).toBe( false );
+				expect( removed1 ).toBe( true );
+				expect( removed2 ).toBe( false );
 			} );
 
 			it( 'should remove only specified class tokens', () => {
 				el._addClass( [ 'foo', 'bar' ] );
 
 				const removed1 = el._removeAttribute( 'class', 'foo' );
-				expect( el.hasAttribute( 'class' ) ).to.be.true;
-				expect( el.hasClass( 'foo' ) ).to.be.false;
-				expect( el.hasClass( 'bar' ) ).to.be.true;
-				expect( removed1 ).to.be.false;
+				expect( el.hasAttribute( 'class' ) ).toBe( true );
+				expect( el.hasClass( 'foo' ) ).toBe( false );
+				expect( el.hasClass( 'bar' ) ).toBe( true );
+				expect( removed1 ).toBe( false );
 
 				const removed2 = el._removeAttribute( 'class', 'bar' );
-				expect( el.hasAttribute( 'class' ) ).to.be.false;
-				expect( el.hasClass( 'foo' ) ).to.be.false;
-				expect( el.hasClass( 'bar' ) ).to.be.false;
-				expect( removed2 ).to.be.true;
+				expect( el.hasAttribute( 'class' ) ).toBe( false );
+				expect( el.hasClass( 'foo' ) ).toBe( false );
+				expect( el.hasClass( 'bar' ) ).toBe( false );
+				expect( removed2 ).toBe( true );
 			} );
 
 			it( 'should remove style attribute', () => {
@@ -799,11 +804,11 @@ describe( 'Element', () => {
 				const removed1 = el._removeAttribute( 'style' );
 				const removed2 = el2._removeAttribute( 'style' );
 
-				expect( el.hasAttribute( 'style' ) ).to.be.false;
-				expect( el.hasStyle( 'color' ) ).to.be.false;
-				expect( el.hasStyle( 'position' ) ).to.be.false;
-				expect( removed1 ).to.be.true;
-				expect( removed2 ).to.be.false;
+				expect( el.hasAttribute( 'style' ) ).toBe( false );
+				expect( el.hasStyle( 'color' ) ).toBe( false );
+				expect( el.hasStyle( 'position' ) ).toBe( false );
+				expect( removed1 ).toBe( true );
+				expect( removed2 ).toBe( false );
 			} );
 
 			it( 'should remove only specified style tokens', () => {
@@ -811,29 +816,29 @@ describe( 'Element', () => {
 				el._setStyle( 'position', 'fixed' );
 
 				const removed1 = el._removeAttribute( 'style', 'color' );
-				expect( el.hasAttribute( 'style' ) ).to.be.true;
-				expect( el.hasStyle( 'color' ) ).to.be.false;
-				expect( el.hasStyle( 'position' ) ).to.be.true;
-				expect( removed1 ).to.be.false;
+				expect( el.hasAttribute( 'style' ) ).toBe( true );
+				expect( el.hasStyle( 'color' ) ).toBe( false );
+				expect( el.hasStyle( 'position' ) ).toBe( true );
+				expect( removed1 ).toBe( false );
 
 				const removed2 = el._removeAttribute( 'style', 'position' );
-				expect( el.hasAttribute( 'style' ) ).to.be.false;
-				expect( el.hasStyle( 'color' ) ).to.be.false;
-				expect( el.hasStyle( 'position' ) ).to.be.false;
-				expect( removed2 ).to.be.true;
+				expect( el.hasAttribute( 'style' ) ).toBe( false );
+				expect( el.hasStyle( 'color' ) ).toBe( false );
+				expect( el.hasStyle( 'position' ) ).toBe( false );
+				expect( removed2 ).toBe( true );
 			} );
 
 			it( 'should remove only specified rel tokens', () => {
 				el = new ViewElement( document, 'a', { rel: 'foo bar' } );
 
 				const removed1 = el._removeAttribute( 'rel', 'foo' );
-				expect( el.hasAttribute( 'rel' ) ).to.be.true;
-				expect( el.getAttribute( 'rel' ) ).to.equal( 'bar' );
-				expect( removed1 ).to.be.false;
+				expect( el.hasAttribute( 'rel' ) ).toBe( true );
+				expect( el.getAttribute( 'rel' ) ).toBe( 'bar' );
+				expect( removed1 ).toBe( false );
 
 				const removed2 = el._removeAttribute( 'rel', 'bar' );
-				expect( el.hasAttribute( 'rel' ) ).to.be.false;
-				expect( removed2 ).to.be.true;
+				expect( el.hasAttribute( 'rel' ) ).toBe( false );
+				expect( removed2 ).toBe( true );
 			} );
 		} );
 
@@ -847,8 +852,8 @@ describe( 'Element', () => {
 			it( 'should match attributes when patternKey=true, patternToken=true, patternValue=true', () => {
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'abc def', style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ true, true, true ] ], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ true, true, true ] ], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'foo' ],
 					[ 'class', 'abc' ],
 					[ 'class', 'def' ],
@@ -862,8 +867,8 @@ describe( 'Element', () => {
 					document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' }
 				);
 
-				expect( el._collectAttributesMatch( [ [ true, true, true ] ], match, [ 'class', 'style' ] ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ true, true, true ] ], match, [ 'class', 'style' ] ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'foo' ],
 					[ 'xyz' ]
 				] );
@@ -874,8 +879,8 @@ describe( 'Element', () => {
 					document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' }
 				);
 
-				expect( el._collectAttributesMatch( [ [ 'foo', true, true ] ], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ 'foo', true, true ] ], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'foo' ]
 				] );
 			} );
@@ -888,8 +893,8 @@ describe( 'Element', () => {
 				expect( el._collectAttributesMatch( [
 					[ 'foo', true, true ],
 					[ 'xyz', true, true ]
-				], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'foo' ],
 					[ 'xyz' ]
 				] );
@@ -900,8 +905,8 @@ describe( 'Element', () => {
 					document, 'p', { foo: 'bar', xyz: '123', class: 'abc def', style: 'color: red; position: absolute;' }
 				);
 
-				expect( el._collectAttributesMatch( [ [ /a|z/, true ] ], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ /a|z/, true ] ], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'xyz' ],
 					[ 'class', 'abc' ],
 					[ 'class', 'def' ]
@@ -911,8 +916,8 @@ describe( 'Element', () => {
 			it( 'should match attributes when patternKey=string, patternToken=regexp', () => {
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ 'class', /^b/ ] ], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ 'class', /^b/ ] ], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'class', 'bar' ],
 					[ 'class', 'baz' ]
 				] );
@@ -921,8 +926,8 @@ describe( 'Element', () => {
 			it( 'should match attributes when patternKey=string, patternToken=string, patternValue=string', () => {
 				el = new ViewElement( document, 'p', { style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ 'style', 'color', 'red' ] ], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ 'style', 'color', 'red' ] ], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'style', 'color' ]
 				] );
 			} );
@@ -930,8 +935,8 @@ describe( 'Element', () => {
 			it( 'should match attributes when patternKey=string, patternToken=string, patternValue=regexp', () => {
 				el = new ViewElement( document, 'p', { style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ 'style', 'color', /^r/ ] ], match ) ).to.be.true;
-				expect( match ).to.deep.equal( [
+				expect( el._collectAttributesMatch( [ [ 'style', 'color', /^r/ ] ], match ) ).toBe( true );
+				expect( match ).toEqual( [
 					[ 'style', 'color' ]
 				] );
 			} );
@@ -939,34 +944,62 @@ describe( 'Element', () => {
 			it( 'should not match attributes when patternKey=string, patternToken=string, patternValue=string', () => {
 				el = new ViewElement( document, 'p', { style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ 'style', 'color', 'blue' ] ], match ) ).to.be.false;
-				expect( match ).to.deep.equal( [] );
+				expect( el._collectAttributesMatch( [ [ 'style', 'color', 'blue' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
 			} );
 
 			it( 'should not match attributes when patternKey=string, patternToken=string when not matching', () => {
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ 'class', 'abc' ], [ 'class', 'def' ] ], match ) ).to.be.false;
-				expect( match ).to.deep.equal( [] );
+				expect( el._collectAttributesMatch( [ [ 'class', 'abc' ], [ 'class', 'def' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
 			} );
 
 			it( 'should not match attributes when patternKey=string, patternToken=string when not matching plain value', () => {
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ 'foo', 'abc' ] ], match ) ).to.be.false;
-				expect( match ).to.deep.equal( [] );
+				expect( el._collectAttributesMatch( [ [ 'foo', 'abc' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
+			} );
+
+			it( 'should return false when string attribute value does not match tokenPattern and keyPattern is not a RegExp', () => {
+				el = new ViewElement( document, 'p', { href: 'https://other.com' } );
+
+				expect( el._collectAttributesMatch( [ [ 'href', 'https://specific.com' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
+			} );
+
+			it( 'should return false when tokenized attribute token does not match and keyPattern is not a RegExp', () => {
+				el = new ViewElement( document, 'p', { class: 'bar' } );
+
+				expect( el._collectAttributesMatch( [ [ 'class', 'foo' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
 			} );
 
 			it( 'should not match attributes when patternKey=regexp, patternToken=true when not matching', () => {
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar baz', style: 'color: red; position: absolute;' } );
 
-				expect( el._collectAttributesMatch( [ [ /^q/, true ] ], match ) ).to.be.false;
-				expect( match ).to.deep.equal( [] );
+				expect( el._collectAttributesMatch( [ [ /^q/, true ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
+			} );
+
+			it( 'should return false when string attribute value does not match tokenPattern and keyPattern is a RegExp', () => {
+				el = new ViewElement( document, 'p', { href: 'https://other.com' } );
+
+				expect( el._collectAttributesMatch( [ [ /href/, 'https://specific.com' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
+			} );
+
+			it( 'should return false when tokenized attribute token does not match and keyPattern is a RegExp', () => {
+				el = new ViewElement( document, 'p', { class: 'bar' } );
+
+				expect( el._collectAttributesMatch( [ [ /^class/, 'foo' ] ], match ) ).toBe( false );
+				expect( match ).toEqual( [] );
 			} );
 
 			it( 'should return true if there are no patterns provided', () => {
-				expect( el._collectAttributesMatch( [], match ) ).to.be.true;
-				expect( match.length ).to.equal( 0 );
+				expect( el._collectAttributesMatch( [], match ) ).toBe( true );
+				expect( match.length ).toBe( 0 );
 			} );
 		} );
 
@@ -975,7 +1008,7 @@ describe( 'Element', () => {
 				addMarginStylesRules( document.stylesProcessor );
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
 
-				expect( el._getConsumables() ).to.deep.equal( {
+				expect( el._getConsumables() ).toEqual( {
 					name: true,
 					attributes: [
 						[ 'foo' ],
@@ -995,7 +1028,7 @@ describe( 'Element', () => {
 				addMarginStylesRules( document.stylesProcessor );
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
 
-				expect( el._getConsumables( 'foo' ) ).to.deep.equal( {
+				expect( el._getConsumables( 'foo' ) ).toEqual( {
 					name: false,
 					attributes: [
 						[ 'foo' ]
@@ -1007,7 +1040,7 @@ describe( 'Element', () => {
 				addMarginStylesRules( document.stylesProcessor );
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
 
-				expect( el._getConsumables( 'style', 'margin' ) ).to.deep.equal( {
+				expect( el._getConsumables( 'style', 'margin' ) ).toEqual( {
 					name: false,
 					attributes: [
 						[ 'style', 'margin' ],
@@ -1018,6 +1051,37 @@ describe( 'Element', () => {
 					]
 				} );
 			} );
+
+			it( 'should return filtered consumables for a tokenized attribute with a token reference', () => {
+				el = new ViewElement( document, 'p', { class: 'foo bar' } );
+
+				expect( el._getConsumables( 'class', 'foo' ) ).toEqual( {
+					name: false,
+					attributes: [
+						[ 'class', 'foo' ]
+					]
+				} );
+			} );
+
+			it( 'should return filtered consumables for a plain string attribute when key is provided', () => {
+				el = new ViewElement( document, 'p', { href: 'https://example.com' } );
+
+				expect( el._getConsumables( 'href' ) ).toEqual( {
+					name: false,
+					attributes: [
+						[ 'href' ]
+					]
+				} );
+			} );
+
+			it( 'should return empty attributes for a key not present in element attrs', () => {
+				el = new ViewElement( document, 'p' );
+
+				expect( el._getConsumables( 'nonexistent' ) ).toEqual( {
+					name: false,
+					attributes: []
+				} );
+			} );
 		} );
 
 		describe( '_canMergeAttributesFrom() and _mergeAttributesFrom()', () => {
@@ -1025,67 +1089,67 @@ describe( 'Element', () => {
 				const el = new ViewElement( document, 'p' );
 				const other = new ViewElement( document, 'h2' );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.false;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( false );
 			} );
 
 			it( 'should not merge attributes if plain attribute is conflicting', () => {
 				const el = new ViewElement( document, 'span', { foo: 'a' } );
 				const other = new ViewElement( document, 'span', { foo: 'b' } );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.false;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( false );
 			} );
 
 			it( 'should not merge attributes if style attribute is conflicting', () => {
 				const el = new ViewElement( document, 'span', { style: 'color:red' } );
 				const other = new ViewElement( document, 'span', { style: 'color:blue' } );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.false;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( false );
 			} );
 
 			it( 'should merge attributes if attribute is not set on target', () => {
 				const el = new ViewElement( document, 'span', { foo: 'bar' } );
 				const other = new ViewElement( document, 'span', { baz: '123' } );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.true;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( true );
 
 				el._mergeAttributesFrom( other );
 
-				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( el.getAttribute( 'baz' ) ).to.equal( '123' );
+				expect( el.getAttribute( 'foo' ) ).toBe( 'bar' );
+				expect( el.getAttribute( 'baz' ) ).toBe( '123' );
 			} );
 
 			it( 'should merge attributes if attribute is same on both', () => {
 				const el = new ViewElement( document, 'span', { foo: 'bar' } );
 				const other = new ViewElement( document, 'span', { foo: 'bar', abc: '123' } );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.true;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( true );
 
 				el._mergeAttributesFrom( other );
 
-				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( el.getAttribute( 'abc' ) ).to.equal( '123' );
+				expect( el.getAttribute( 'foo' ) ).toBe( 'bar' );
+				expect( el.getAttribute( 'abc' ) ).toBe( '123' );
 			} );
 
 			it( 'should merge attributes if class attribute is set on both', () => {
 				const el = new ViewElement( document, 'span', { class: 'foo' } );
 				const other = new ViewElement( document, 'span', { class: 'bar' } );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.true;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( true );
 
 				el._mergeAttributesFrom( other );
 
-				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
+				expect( el.getAttribute( 'class' ) ).toBe( 'foo bar' );
 			} );
 
 			it( 'should merge attributes if style attribute is set on both but not conflicting', () => {
 				const el = new ViewElement( document, 'span', { style: 'color:red;' } );
 				const other = new ViewElement( document, 'span', { style: 'margin:10px;' } );
 
-				expect( el._canMergeAttributesFrom( other ) ).to.be.true;
+				expect( el._canMergeAttributesFrom( other ) ).toBe( true );
 
 				el._mergeAttributesFrom( other );
 
-				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;margin:10px;' );
+				expect( el.getAttribute( 'style' ) ).toBe( 'color:red;margin:10px;' );
 			} );
 		} );
 
@@ -1094,90 +1158,90 @@ describe( 'Element', () => {
 				const el = new ViewElement( document, 'p' );
 				const other = new ViewElement( document, 'h2' );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.false;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( false );
 			} );
 
 			it( 'should not subtract attributes if there is no attribute to subtract', () => {
 				const el = new ViewElement( document, 'span', { foo: 'bar' } );
 				const other = new ViewElement( document, 'span', { baz: '123' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.false;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( false );
 			} );
 
 			it( 'should not subtract attributes if the value differs', () => {
 				const el = new ViewElement( document, 'span', { foo: 'bar' } );
 				const other = new ViewElement( document, 'span', { foo: '123' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.false;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( false );
 			} );
 
 			it( 'should not subtract attributes if the classes value differs', () => {
 				const el = new ViewElement( document, 'span', { class: 'foo' } );
 				const other = new ViewElement( document, 'span', { class: 'bar' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.false;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( false );
 			} );
 
 			it( 'should not subtract attributes if the style value differs', () => {
 				const el = new ViewElement( document, 'span', { style: 'color:red' } );
 				const other = new ViewElement( document, 'span', { style: 'color:blue' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.false;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( false );
 			} );
 
 			it( 'should subtract attributes if the value is same', () => {
 				const el = new ViewElement( document, 'span', { foo: 'bar' } );
 				const other = new ViewElement( document, 'span', { foo: 'bar' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.true;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( true );
 
 				el._subtractAttributesOf( other );
 
-				expect( el.hasAttribute( 'foo' ) ).to.be.false;
+				expect( el.hasAttribute( 'foo' ) ).toBe( false );
 			} );
 
 			it( 'should subtract attributes if the classes value matches', () => {
 				const el = new ViewElement( document, 'span', { class: 'foo bar' } );
 				const other = new ViewElement( document, 'span', { class: 'bar' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.true;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( true );
 
 				el._subtractAttributesOf( other );
 
-				expect( el.getAttribute( 'class' ) ).to.equal( 'foo' );
+				expect( el.getAttribute( 'class' ) ).toBe( 'foo' );
 			} );
 
 			it( 'should subtract attributes if the style value matches', () => {
 				const el = new ViewElement( document, 'span', { style: 'color:red;position:absolute;' } );
 				const other = new ViewElement( document, 'span', { style: 'color:red' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.true;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( true );
 
 				el._subtractAttributesOf( other );
 
-				expect( el.getAttribute( 'style' ) ).to.equal( 'position:absolute;' );
+				expect( el.getAttribute( 'style' ) ).toBe( 'position:absolute;' );
 			} );
 
 			it( 'should remove classes attribute if all are subtracted', () => {
 				const el = new ViewElement( document, 'span', { class: 'bar' } );
 				const other = new ViewElement( document, 'span', { class: 'bar' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.true;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( true );
 
 				el._subtractAttributesOf( other );
 
-				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				expect( el.hasAttribute( 'class' ) ).toBe( false );
 			} );
 
 			it( 'should remove style attribute if all are subtracted', () => {
 				const el = new ViewElement( document, 'span', { style: 'color:red' } );
 				const other = new ViewElement( document, 'span', { style: 'color:red' } );
 
-				expect( el._canSubtractAttributesOf( other ) ).to.be.true;
+				expect( el._canSubtractAttributesOf( other ) ).toBe( true );
 
 				el._subtractAttributesOf( other );
 
-				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				expect( el.hasAttribute( 'style' ) ).toBe( false );
 			} );
 		} );
 	} );
@@ -1193,24 +1257,26 @@ describe( 'Element', () => {
 			it( 'should add single class', () => {
 				el._addClass( 'one' );
 
-				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).toBe( true );
 			} );
 
-			it( 'should fire change event with attributes type', done => {
-				el.once( 'change:attributes', eventInfo => {
-					expect( eventInfo.source ).to.equal( el );
-					done();
-				} );
+			it( 'should fire change event with attributes type', () => {
+				return new Promise( resolve => {
+					el.once( 'change:attributes', eventInfo => {
+						expect( eventInfo.source ).toBe( el );
+						resolve();
+					} );
 
-				el._addClass( 'one' );
+					el._addClass( 'one' );
+				} );
 			} );
 
 			it( 'should add multiple classes', () => {
 				el._addClass( [ 'one', 'two', 'three' ] );
 
-				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'two' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'three' ) ).toBe( true );
 			} );
 		} );
 
@@ -1220,29 +1286,31 @@ describe( 'Element', () => {
 
 				el._removeClass( 'one' );
 
-				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
-				expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'two' ) ).toBe( true );
+				expect( el._attrs.get( 'class' ).has( 'three' ) ).toBe( true );
 			} );
 
-			it( 'should fire change event with attributes type', done => {
+			it( 'should fire change event with attributes type', () => {
 				el._addClass( 'one' );
-				el.once( 'change:attributes', eventInfo => {
-					expect( eventInfo.source ).to.equal( el );
-					done();
-				} );
+				return new Promise( resolve => {
+					el.once( 'change:attributes', eventInfo => {
+						expect( eventInfo.source ).toBe( el );
+						resolve();
+					} );
 
-				el._removeClass( 'one' );
+					el._removeClass( 'one' );
+				} );
 			} );
 
 			it( 'should remove multiple classes', () => {
 				el._addClass( [ 'one', 'two', 'three', 'four' ] );
 				el._removeClass( [ 'one', 'two', 'three' ] );
 
-				expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'three' ) ).to.be.false;
-				expect( el._attrs.get( 'class' ).has( 'four' ) ).to.be.true;
+				expect( el._attrs.get( 'class' ).has( 'one' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'two' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'three' ) ).toBe( false );
+				expect( el._attrs.get( 'class' ).has( 'four' ) ).toBe( true );
 			} );
 		} );
 
@@ -1250,19 +1318,19 @@ describe( 'Element', () => {
 			it( 'should check if element has a class', () => {
 				el._addClass( [ 'one', 'two', 'three' ] );
 
-				expect( el.hasClass( 'one' ) ).to.be.true;
-				expect( el.hasClass( 'two' ) ).to.be.true;
-				expect( el.hasClass( 'three' ) ).to.be.true;
-				expect( el.hasClass( 'four' ) ).to.be.false;
+				expect( el.hasClass( 'one' ) ).toBe( true );
+				expect( el.hasClass( 'two' ) ).toBe( true );
+				expect( el.hasClass( 'three' ) ).toBe( true );
+				expect( el.hasClass( 'four' ) ).toBe( false );
 			} );
 
 			it( 'should check if element has multiple classes', () => {
 				el._addClass( [ 'one', 'two', 'three' ] );
 
-				expect( el.hasClass( 'one', 'two' ) ).to.be.true;
-				expect( el.hasClass( 'three', 'two' ) ).to.be.true;
-				expect( el.hasClass( 'three', 'one', 'two' ) ).to.be.true;
-				expect( el.hasClass( 'three', 'one', 'two', 'zero' ) ).to.be.false;
+				expect( el.hasClass( 'one', 'two' ) ).toBe( true );
+				expect( el.hasClass( 'three', 'two' ) ).toBe( true );
+				expect( el.hasClass( 'three', 'one', 'two' ) ).toBe( true );
+				expect( el.hasClass( 'three', 'one', 'two', 'zero' ) ).toBe( false );
 			} );
 		} );
 
@@ -1276,7 +1344,7 @@ describe( 'Element', () => {
 				let i = 0;
 
 				for ( const name of iterable ) {
-					expect( name ).to.equal( names[ i++ ] );
+					expect( name ).toBe( names[ i++ ] );
 				}
 			} );
 
@@ -1289,10 +1357,10 @@ describe( 'Element', () => {
 				const iterator = el.getClassNames();
 				let i = 0;
 
-				expect( iterator.next() ).to.deep.equal( { value: names[ i++ ], done: false } );
-				expect( iterator.next() ).to.deep.equal( { value: names[ i++ ], done: false } );
-				expect( iterator.next() ).to.deep.equal( { value: names[ i++ ], done: false } );
-				expect( iterator.next() ).to.deep.equal( { value: undefined, done: true } );
+				expect( iterator.next() ).toEqual( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).toEqual( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).toEqual( { value: names[ i++ ], done: false } );
+				expect( iterator.next() ).toEqual( { value: undefined, done: true } );
 			} );
 		} );
 	} );
@@ -1308,16 +1376,18 @@ describe( 'Element', () => {
 			it( 'should set element style', () => {
 				el._setStyle( 'color', 'red' );
 
-				expect( el._attrs.get( 'style' )._styles.color ).to.equal( 'red' );
+				expect( el._attrs.get( 'style' )._styles.color ).toBe( 'red' );
 			} );
 
-			it( 'should fire change event with attributes type', done => {
-				el.once( 'change:attributes', eventInfo => {
-					expect( eventInfo.source ).to.equal( el );
-					done();
-				} );
+			it( 'should fire change event with attributes type', () => {
+				return new Promise( resolve => {
+					el.once( 'change:attributes', eventInfo => {
+						expect( eventInfo.source ).toBe( el );
+						resolve();
+					} );
 
-				el._setStyle( 'color', 'red' );
+					el._setStyle( 'color', 'red' );
+				} );
 			} );
 
 			it( 'should set multiple styles by providing an object', () => {
@@ -1326,8 +1396,8 @@ describe( 'Element', () => {
 					position: 'fixed'
 				} );
 
-				expect( el._attrs.get( 'style' )._styles.color ).to.equal( 'red' );
-				expect( el._attrs.get( 'style' )._styles.position ).to.equal( 'fixed' );
+				expect( el._attrs.get( 'style' )._styles.color ).toBe( 'red' );
+				expect( el._attrs.get( 'style' )._styles.position ).toBe( 'fixed' );
 			} );
 		} );
 
@@ -1338,8 +1408,8 @@ describe( 'Element', () => {
 					'margin-top': '1px'
 				} );
 
-				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
-				expect( el.getStyle( 'margin-top' ) ).to.equal( '1px' );
+				expect( el.getStyle( 'color' ) ).toBe( 'red' );
+				expect( el.getStyle( 'margin-top' ) ).toBe( '1px' );
 			} );
 		} );
 
@@ -1350,8 +1420,8 @@ describe( 'Element', () => {
 					'margin-top': '1px'
 				} );
 
-				expect( el.getNormalizedStyle( 'color' ) ).to.equal( 'red' );
-				expect( el.getNormalizedStyle( 'margin-top' ) ).to.equal( '1px' );
+				expect( el.getNormalizedStyle( 'color' ) ).toBe( 'red' );
+				expect( el.getNormalizedStyle( 'margin-top' ) ).toBe( '1px' );
 			} );
 		} );
 
@@ -1368,7 +1438,7 @@ describe( 'Element', () => {
 				let i = 0;
 
 				for ( const name of iterator ) {
-					expect( name ).to.equal( names[ i++ ] );
+					expect( name ).toBe( names[ i++ ] );
 				}
 			} );
 		} );
@@ -1385,7 +1455,7 @@ describe( 'Element', () => {
 
 				const styles = Array.from( el.getStyleNames( true ) );
 
-				expect( styles ).to.deep.equal( [
+				expect( styles ).toEqual( [
 					'border',
 					'border-color',
 					'border-style',
@@ -1419,8 +1489,8 @@ describe( 'Element', () => {
 			it( 'should check if element has a style', () => {
 				el._setStyle( 'padding-top', '10px' );
 
-				expect( el.hasStyle( 'padding-top' ) ).to.be.true;
-				expect( el.hasStyle( 'padding-left' ) ).to.be.false;
+				expect( el.hasStyle( 'padding-top' ) ).toBe( true );
+				expect( el.hasStyle( 'padding-left' ) ).toBe( false );
 			} );
 
 			it( 'should check if element has multiple styles', () => {
@@ -1430,9 +1500,9 @@ describe( 'Element', () => {
 					'color': '10px;'
 				} );
 
-				expect( el.hasStyle( 'padding-top', 'margin-left' ) ).to.be.true;
-				expect( el.hasStyle( 'padding-top', 'margin-left', 'color' ) ).to.be.true;
-				expect( el.hasStyle( 'padding-top', 'padding-left' ) ).to.be.false;
+				expect( el.hasStyle( 'padding-top', 'margin-left' ) ).toBe( true );
+				expect( el.hasStyle( 'padding-top', 'margin-left', 'color' ) ).toBe( true );
+				expect( el.hasStyle( 'padding-top', 'padding-left' ) ).toBe( false );
 			} );
 		} );
 
@@ -1441,17 +1511,19 @@ describe( 'Element', () => {
 				el._setStyle( 'padding-top', '10px' );
 				el._removeStyle( 'padding-top' );
 
-				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
+				expect( el.hasStyle( 'padding-top' ) ).toBe( false );
 			} );
 
-			it( 'should fire change event with attributes type', done => {
+			it( 'should fire change event with attributes type', () => {
 				el._setStyle( 'color', 'red' );
-				el.once( 'change:attributes', eventInfo => {
-					expect( eventInfo.source ).to.equal( el );
-					done();
-				} );
+				return new Promise( resolve => {
+					el.once( 'change:attributes', eventInfo => {
+						expect( eventInfo.source ).toBe( el );
+						resolve();
+					} );
 
-				el._removeStyle( 'color' );
+					el._removeStyle( 'color' );
+				} );
 			} );
 
 			it( 'should remove multiple styles', () => {
@@ -1462,9 +1534,9 @@ describe( 'Element', () => {
 				} );
 				el._removeStyle( [ 'padding-top', 'margin-top' ] );
 
-				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
-				expect( el.hasStyle( 'margin-top' ) ).to.be.false;
-				expect( el.hasStyle( 'color' ) ).to.be.true;
+				expect( el.hasStyle( 'padding-top' ) ).toBe( false );
+				expect( el.hasStyle( 'margin-top' ) ).toBe( false );
+				expect( el.hasStyle( 'color' ) ).toBe( true );
 			} );
 		} );
 	} );
@@ -1473,14 +1545,14 @@ describe( 'Element', () => {
 		it( 'should return null if element have no ancestor', () => {
 			const el = new ViewElement( document, 'p' );
 
-			expect( el.findAncestor( 'div' ) ).to.be.null;
+			expect( el.findAncestor( 'div' ) ).toBeNull();
 		} );
 
 		it( 'should return ancestor if matching', () => {
 			const el1 = new ViewElement( document, 'p' );
 			const el2 = new ViewElement( document, 'div', null, el1 );
 
-			expect( el1.findAncestor( 'div' ) ).to.equal( el2 );
+			expect( el1.findAncestor( 'div' ) ).toBe( el2 );
 		} );
 
 		it( 'should return parent\'s ancestor if matching', () => {
@@ -1488,7 +1560,7 @@ describe( 'Element', () => {
 			const el2 = new ViewElement( document, 'div', null, el1 );
 			const el3 = new ViewElement( document, 'div', { class: 'foo bar' }, el2 );
 
-			expect( el1.findAncestor( { classes: 'foo' } ) ).to.equal( el3 );
+			expect( el1.findAncestor( { classes: 'foo' } ) ).toBe( el3 );
 		} );
 
 		it( 'should return null if no matches found', () => {
@@ -1498,7 +1570,7 @@ describe( 'Element', () => {
 			expect( el1.findAncestor( {
 				name: 'div',
 				classes: 'container'
-			} ) ).to.be.null;
+			} ) ).toBeNull();
 		} );
 	} );
 
@@ -1507,7 +1579,7 @@ describe( 'Element', () => {
 			const el = new ViewElement( document, 'p' );
 			el._setCustomProperty( 'foo', 'bar' );
 
-			expect( el.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+			expect( el.getCustomProperty( 'foo' ) ).toBe( 'bar' );
 		} );
 
 		it( 'should allow to add symbol property', () => {
@@ -1515,7 +1587,7 @@ describe( 'Element', () => {
 			const symbol = Symbol( 'custom' );
 			el._setCustomProperty( symbol, 'bar' );
 
-			expect( el.getCustomProperty( symbol ) ).to.equal( 'bar' );
+			expect( el.getCustomProperty( symbol ) ).toBe( 'bar' );
 		} );
 
 		it( 'should allow to remove custom property', () => {
@@ -1524,14 +1596,14 @@ describe( 'Element', () => {
 			el._setCustomProperty( 'bar', 'baz' );
 			el._setCustomProperty( symbol, 'test' );
 
-			expect( el.getCustomProperty( 'bar' ) ).to.equal( 'baz' );
-			expect( el.getCustomProperty( symbol ) ).to.equal( 'test' );
+			expect( el.getCustomProperty( 'bar' ) ).toBe( 'baz' );
+			expect( el.getCustomProperty( symbol ) ).toBe( 'test' );
 
 			el._removeCustomProperty( 'bar' );
 			el._removeCustomProperty( symbol );
 
-			expect( el.getCustomProperty( 'bar' ) ).to.be.undefined;
-			expect( el.getCustomProperty( symbol ) ).to.be.undefined;
+			expect( el.getCustomProperty( 'bar' ) ).toBeUndefined();
+			expect( el.getCustomProperty( symbol ) ).toBeUndefined();
 		} );
 
 		it( 'should allow to iterate over custom properties', () => {
@@ -1542,12 +1614,12 @@ describe( 'Element', () => {
 
 			const properties = [ ...el.getCustomProperties() ];
 
-			expect( properties[ 0 ][ 0 ] ).to.equal( 'foo' );
-			expect( properties[ 0 ][ 1 ] ).to.equal( 1 );
-			expect( properties[ 1 ][ 0 ] ).to.equal( 'bar' );
-			expect( properties[ 1 ][ 1 ] ).to.equal( 2 );
-			expect( properties[ 2 ][ 0 ] ).to.equal( 'baz' );
-			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
+			expect( properties[ 0 ][ 0 ] ).toBe( 'foo' );
+			expect( properties[ 0 ][ 1 ] ).toBe( 1 );
+			expect( properties[ 1 ][ 0 ] ).toBe( 'bar' );
+			expect( properties[ 1 ][ 1 ] ).toBe( 2 );
+			expect( properties[ 2 ][ 0 ] ).toBe( 'baz' );
+			expect( properties[ 2 ][ 1 ] ).toBe( 3 );
 		} );
 	} );
 
@@ -1555,14 +1627,14 @@ describe( 'Element', () => {
 		it( 'should return only name if no other attributes are present', () => {
 			const el = new ViewElement( document, 'foo' );
 
-			expect( el.getIdentity() ).to.equal( 'foo' );
+			expect( el.getIdentity() ).toBe( 'foo' );
 		} );
 
 		it( 'should return classes in sorted order', () => {
 			const el = new ViewElement( document, 'fruit' );
 			el._addClass( [ 'banana', 'lemon', 'apple' ] );
 
-			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon"' );
+			expect( el.getIdentity() ).toBe( 'fruit class="apple,banana,lemon"' );
 		} );
 
 		it( 'should return styles in sorted order', () => {
@@ -1570,7 +1642,7 @@ describe( 'Element', () => {
 				style: 'margin-top: 2em; background-color: red'
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo style="background-color:red;margin-top:2em;"' );
+			expect( el.getIdentity() ).toBe( 'foo style="background-color:red;margin-top:2em;"' );
 		} );
 
 		it( 'should return attributes in sorted order', () => {
@@ -1580,7 +1652,7 @@ describe( 'Element', () => {
 				b: 3
 			} );
 
-			expect( el.getIdentity() ).to.equal( 'foo a="1" b="3" d="4"' );
+			expect( el.getIdentity() ).toBe( 'foo a="1" b="3" d="4"' );
 		} );
 
 		it( 'should return classes, styles and attributes', () => {
@@ -1592,8 +1664,7 @@ describe( 'Element', () => {
 
 			el._addClass( [ 'three', 'two', 'one' ] );
 
-			expect( el.getIdentity() ).to.equal(
-				'baz class="one,three,two" style="border-radius:10px;text-align:center;" bar="two" foo="one"'
+			expect( el.getIdentity() ).toBe( 'baz class="one,three,two" style="border-radius:10px;text-align:center;" bar="two" foo="one"'
 			);
 		} );
 	} );
@@ -1608,15 +1679,15 @@ describe( 'Element', () => {
 		it( 'should return true if the atribute name is among unsafe attributes', () => {
 			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
 
-			expect( element.shouldRenderUnsafeAttribute( 'foo' ) ).to.be.true;
-			expect( element.shouldRenderUnsafeAttribute( 'bar' ) ).to.be.true;
-			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'foo' ) ).toBe( true );
+			expect( element.shouldRenderUnsafeAttribute( 'bar' ) ).toBe( true );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).toBe( true );
 		} );
 
 		it( 'should return false if the atribute name is not among unsafe attributes', () => {
 			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
 
-			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
+			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).toBe( false );
 		} );
 	} );
 
@@ -1631,7 +1702,7 @@ describe( 'Element', () => {
 			const json = JSON.stringify( paragraph );
 			const parsed = JSON.parse( json );
 
-			expect( parsed ).to.deep.equal( {
+			expect( parsed ).toEqual( {
 				name: 'p',
 				path: [ 0 ],
 				root: 'main',

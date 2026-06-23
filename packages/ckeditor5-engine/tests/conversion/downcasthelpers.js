@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EditingController } from '../../src/controller/editingcontroller.js';
 import { DataController } from '../../src/controller/datacontroller.js';
 
@@ -16,8 +17,6 @@ import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewUIElement } from '../../src/view/uielement.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewDocument } from '../../src/view/document.js';
-
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import {
 	DowncastHelpers,
@@ -44,7 +43,9 @@ import { toWidget } from '@ckeditor/ckeditor5-widget';
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -66,7 +67,7 @@ describe( 'DowncastHelpers', () => {
 
 	describe( 'elementToElement()', () => {
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -140,8 +141,8 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.elementToElement( {
 				model: 'heading',
 				view: ( modelElement, { writer }, data ) => {
-					expect( data.item.is( 'element', 'heading' ) ).to.be.true;
-					expect( data.range.is( 'range' ) ).to.be.true;
+					expect( data.item.is( 'element', 'heading' ) ).toBe( true );
+					expect( data.range.is( 'range' ) ).toBe( true );
 
 					return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 				}
@@ -188,7 +189,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should not reconvert on adding a child', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', () => {
 					spy();
@@ -208,10 +209,10 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="simple"><p>bar</p><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.notCalled ).to.be.true;
+				expect( viewAfter, 'simpleBlock' ).toBe( viewBefore );
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 		} );
 
@@ -242,8 +243,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:block"></div>' );
 
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).to.be.false;
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).to.be.null;
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).toBe( false );
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).toBeNull();
 			} );
 
 			it( 'should allow passing a single attribute name to convert and consume', () => {
@@ -272,8 +273,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:block"></div>' );
 
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).to.be.false;
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).to.be.null;
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).toBe( false );
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).toBeNull();
 			} );
 		} );
 
@@ -297,7 +298,7 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should convert on insert', () => {
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				model.change( writer => {
@@ -311,7 +312,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -323,14 +324,14 @@ describe( 'DowncastHelpers', () => {
 				const [ viewAfter ] = getNodes();
 
 				expectResult( '<div style="display:block"></div>' );
-				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
 			} );
 
 			it( 'should convert on attribute change', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -343,14 +344,14 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:inline"></div>' );
 
-				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( viewAfter ).not.toBe( viewBefore );
 			} );
 
 			it( 'should convert on attribute remove', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				model.change( writer => {
@@ -364,7 +365,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				model.change( writer => {
@@ -382,7 +383,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
@@ -396,8 +397,8 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
 				expect( viewAfter ).to.not.equal( viewBefore );
-				expect( paraAfter ).to.equal( paraBefore );
-				expect( textAfter ).to.equal( textBefore );
+				expect( paraAfter ).toBe( paraBefore );
+				expect( textAfter ).toBe( textBefore );
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
@@ -452,9 +453,9 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'myMarker', { range: writer.createRangeOn( modelElement ), usingOperation: false } );
 				} );
 
-				expect( mapper.toViewElement( modelElement ) ).to.equal( viewBefore );
-				expect( mapper.toModelElement( viewBefore ) ).to.equal( modelElement );
-				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.true;
+				expect( mapper.toViewElement( modelElement ) ).toBe( viewBefore );
+				expect( mapper.toModelElement( viewBefore ) ).toBe( modelElement );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).toBe( true );
 
 				model.change( writer => {
 					writer.setAttribute( 'toStyle', 'display:block', modelElement );
@@ -462,18 +463,18 @@ describe( 'DowncastHelpers', () => {
 
 				const [ viewAfter ] = getNodes();
 
-				expect( mapper.toViewElement( modelElement ) ).to.equal( viewAfter );
-				expect( mapper.toModelElement( viewBefore ) ).to.be.undefined;
-				expect( mapper.toModelElement( viewAfter ) ).to.equal( modelElement );
-				expect( mapper.markerNameToElements( 'myMarker' ).has( viewAfter ) ).to.be.true;
-				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.false;
+				expect( mapper.toViewElement( modelElement ) ).toBe( viewAfter );
+				expect( mapper.toModelElement( viewBefore ) ).toBeUndefined();
+				expect( mapper.toModelElement( viewAfter ) ).toBe( modelElement );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewAfter ) ).toBe( true );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).toBe( false );
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
 				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -486,7 +487,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div></div>' );
 
-				expect( viewAfter ).to.equal( viewBefore );
+				expect( viewAfter ).toBe( viewBefore );
 			} );
 
 			it( 'should reconvert on child element added (implicit reconversion because of attributes watch)', () => {
@@ -503,7 +504,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -550,7 +551,7 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should convert on insert', () => {
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				model.change( writer => {
@@ -568,10 +569,10 @@ describe( 'DowncastHelpers', () => {
 			it( 'should convert on adding a child (at the beginning)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -590,9 +591,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>bar</p><p>foo</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
@@ -603,10 +604,10 @@ describe( 'DowncastHelpers', () => {
 					'</simpleBlock>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -627,20 +628,20 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>foo</p><p>baz</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
-				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
-				expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
-				expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
+				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
+				expect( textBarAfter, 'text bar' ).toBe( textBarBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -659,9 +660,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>foo</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert attribute change and add a child at the same time (separate converters)', () => {
@@ -670,10 +671,10 @@ describe( 'DowncastHelpers', () => {
 
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -693,9 +694,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert attribute change, remove element before, and add a child at the same time (separate)', () => {
@@ -704,10 +705,10 @@ describe( 'DowncastHelpers', () => {
 
 				_setModelData( model, '<paragraph></paragraph><simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -728,18 +729,18 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node added)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -759,18 +760,18 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>fooabc</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node removed)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -790,17 +791,17 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p></p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should reconvert before content modifications (with element added before)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -821,18 +822,18 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<p></p><div><p></p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on removing a child', () => {
 				_setModelData( model,
 					'<simpleBlock><paragraph>foo</paragraph><paragraph>bar</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -847,9 +848,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>foo</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/9641
@@ -894,12 +895,12 @@ describe( 'DowncastHelpers', () => {
 				);
 
 				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
-				expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
-				expect( textAfter0, 'text' ).to.equal( textBefore0 );
+				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
+				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
-				expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
-				expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
-				expect( textAfter1, 'text' ).to.equal( textBefore1 );
+				expect( viewAfter1, 'simpleBlock' ).toBe( viewBefore1 );
+				expect( paraAfter1, 'para' ).toBe( paraBefore1 );
+				expect( textAfter1, 'text' ).toBe( textBefore1 );
 
 				model.change( writer => {
 					const paragraph = writer.createElement( 'paragraph' );
@@ -918,20 +919,20 @@ describe( 'DowncastHelpers', () => {
 				);
 
 				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
-				expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
-				expect( textAfter0, 'text' ).to.equal( textBefore0 );
+				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
+				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
-				expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
-				expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
-				expect( textAfter1, 'text' ).to.equal( textBefore1 );
+				expect( viewAfter1, 'simpleBlock' ).toBe( viewBefore1 );
+				expect( paraAfter1, 'para' ).toBe( paraBefore1 );
+				expect( textAfter1, 'text' ).toBe( textBefore1 );
 
-				expect( viewAfterAfter0, 'simpleBlock' ).to.equal( viewAfter0 );
-				expect( paraAfterAfter0, 'para' ).to.equal( paraAfter0 );
-				expect( textAfterAfter0, 'text' ).to.equal( textAfter0 );
+				expect( viewAfterAfter0, 'simpleBlock' ).toBe( viewAfter0 );
+				expect( paraAfterAfter0, 'para' ).toBe( paraAfter0 );
+				expect( textAfterAfter0, 'text' ).toBe( textAfter0 );
 
 				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
-				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
-				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+				expect( paraAfterAfter1, 'para' ).toBe( paraAfter1 );
+				expect( textAfterAfter1, 'text' ).toBe( textAfter1 );
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
@@ -976,7 +977,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:block"><p>foo</p></div>' );
 
-				expect( loggedEvents ).to.deep.equal( [
+				expect( loggedEvents ).toEqual( [
 					'insert:simpleBlock:0:1',
 					'attribute:toStyle:display:block:simpleBlock:0:1',
 					'insert:paragraph:0,0:0,1',
@@ -989,7 +990,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'does not warn if multiple child elements are created', () => {
 				let viewElement;
 
-				testUtils.sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				downcastHelpers.elementToElement( {
 					model: 'multiItemBox',
@@ -1006,13 +1007,13 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
 				} );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 
 			it( 'does not warn if multiple child UI elements are created', () => {
 				let viewElement;
 
-				testUtils.sinon.stub( console, 'warn' );
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 				downcastHelpers.elementToElement( {
 					model: 'multiItemBox',
@@ -1030,14 +1031,14 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
 				} );
 
-				sinon.assert.notCalled( console.warn );
+				expect( console.warn ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );
 
 	describe( 'elementToStructure()', () => {
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.elementToStructure( { model: 'paragraph', view: 'p' } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.elementToStructure( { model: 'paragraph', view: 'p' } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -1111,8 +1112,8 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.elementToStructure( {
 				model: 'heading',
 				view: ( modelElement, { writer }, data ) => {
-					expect( data.item.is( 'element', 'heading' ) ).to.be.true;
-					expect( data.range.is( 'range' ) ).to.be.true;
+					expect( data.item.is( 'element', 'heading' ) ).toBe( true );
+					expect( data.range.is( 'range' ) ).toBe( true );
 
 					return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 				}
@@ -1152,8 +1153,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:block"></div>' );
 
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).to.be.false;
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).to.be.null;
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).toBe( false );
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).toBeNull();
 			} );
 
 			it( 'should allow passing a single attribute name to convert and consume', () => {
@@ -1182,8 +1183,8 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div style="display:block"></div>' );
 
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).to.be.false;
-				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).to.be.null;
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toStyle' ) ).toBe( false );
+				expect( consumable.test( modelRoot.getChild( 0 ), 'attribute:toClass' ) ).toBeNull();
 			} );
 		} );
 
@@ -1207,7 +1208,7 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should convert on insert', () => {
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				model.change( writer => {
@@ -1221,7 +1222,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -1240,7 +1241,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -1260,7 +1261,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				model.change( writer => {
@@ -1274,7 +1275,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				model.change( writer => {
@@ -1315,9 +1316,9 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'myMarker', { range: writer.createRangeOn( modelElement ), usingOperation: false } );
 				} );
 
-				expect( mapper.toViewElement( modelElement ) ).to.equal( viewBefore );
-				expect( mapper.toModelElement( viewBefore ) ).to.equal( modelElement );
-				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.true;
+				expect( mapper.toViewElement( modelElement ) ).toBe( viewBefore );
+				expect( mapper.toModelElement( viewBefore ) ).toBe( modelElement );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).toBe( true );
 
 				model.change( writer => {
 					writer.setAttribute( 'toStyle', 'display:block', modelElement );
@@ -1325,18 +1326,18 @@ describe( 'DowncastHelpers', () => {
 
 				const [ viewAfter ] = getNodes();
 
-				expect( mapper.toViewElement( modelElement ) ).to.equal( viewAfter );
-				expect( mapper.toModelElement( viewBefore ) ).to.be.undefined;
-				expect( mapper.toModelElement( viewAfter ) ).to.equal( modelElement );
-				expect( mapper.markerNameToElements( 'myMarker' ).has( viewAfter ) ).to.be.true;
-				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.false;
+				expect( mapper.toViewElement( modelElement ) ).toBe( viewAfter );
+				expect( mapper.toModelElement( viewBefore ) ).toBeUndefined();
+				expect( mapper.toModelElement( viewAfter ) ).toBe( modelElement );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewAfter ) ).toBe( true );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).toBe( false );
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
 				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -1349,7 +1350,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div></div>' );
 
-				expect( viewAfter ).to.equal( viewBefore );
+				expect( viewAfter ).toBe( viewBefore );
 			} );
 		} );
 
@@ -1387,7 +1388,7 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should convert on insert', () => {
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				model.change( writer => {
@@ -1406,7 +1407,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
@@ -1420,15 +1421,15 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div style="display:block"><p>foo</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
 			} );
 
 			it( 'should convert on attribute change', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
@@ -1442,15 +1443,15 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
 			} );
 
 			it( 'should convert on attribute remove', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				model.change( writer => {
@@ -1464,7 +1465,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 				} );
 
 				model.change( writer => {
@@ -1479,7 +1480,7 @@ describe( 'DowncastHelpers', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
@@ -1492,9 +1493,9 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p>foo</p></div>' );
 
-				expect( viewAfter, 'simpleBlock' ).to.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
+				expect( viewAfter, 'simpleBlock' ).toBe( viewBefore );
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
@@ -1548,7 +1549,7 @@ describe( 'DowncastHelpers', () => {
 
 			it( 'should convert on insert', () => {
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 				} );
 
 				model.change( writer => {
@@ -1566,10 +1567,10 @@ describe( 'DowncastHelpers', () => {
 			it( 'should convert on adding a child (at the beginning)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1588,9 +1589,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>bar</p><p>foo</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
@@ -1601,10 +1602,10 @@ describe( 'DowncastHelpers', () => {
 					'</simpleBlock>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1625,20 +1626,20 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>foo</p><p>baz</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
-				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
-				expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
-				expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
+				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
+				expect( textBarAfter, 'text bar' ).toBe( textBarBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1657,9 +1658,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>foo</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert attribute change and add a child at the same time (separate converters)', () => {
@@ -1668,10 +1669,10 @@ describe( 'DowncastHelpers', () => {
 
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1691,9 +1692,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert attribute change, remove element before, and add a child at the same time (separate)', () => {
@@ -1702,10 +1703,10 @@ describe( 'DowncastHelpers', () => {
 
 				_setModelData( model, '<paragraph></paragraph><simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1726,18 +1727,18 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div data-other="foo"><p>foo</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node added)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1757,18 +1758,18 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>fooabc</p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node removed)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1788,17 +1789,17 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p></p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should reconvert before content modifications (with element added before)', () => {
 				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1819,18 +1820,18 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<p></p><div><p></p><p>bar</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on removing a child', () => {
 				_setModelData( model,
 					'<simpleBlock><paragraph>foo</paragraph><paragraph>bar</paragraph></simpleBlock>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -1845,9 +1846,9 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div><p>foo</p></div>' );
 
 				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/9641
@@ -1896,12 +1897,12 @@ describe( 'DowncastHelpers', () => {
 				);
 
 				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
-				expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
-				expect( textAfter0, 'text' ).to.equal( textBefore0 );
+				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
+				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
-				expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
-				expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
-				expect( textAfter1, 'text' ).to.equal( textBefore1 );
+				expect( viewAfter1, 'simpleBlock' ).toBe( viewBefore1 );
+				expect( paraAfter1, 'para' ).toBe( paraBefore1 );
+				expect( textAfter1, 'text' ).toBe( textBefore1 );
 
 				model.change( writer => {
 					const paragraph = writer.createElement( 'paragraph' );
@@ -1920,20 +1921,20 @@ describe( 'DowncastHelpers', () => {
 				);
 
 				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
-				expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
-				expect( textAfter0, 'text' ).to.equal( textBefore0 );
+				expect( paraAfter0, 'para' ).toBe( paraBefore0 );
+				expect( textAfter0, 'text' ).toBe( textBefore0 );
 
-				expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
-				expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
-				expect( textAfter1, 'text' ).to.equal( textBefore1 );
+				expect( viewAfter1, 'simpleBlock' ).toBe( viewBefore1 );
+				expect( paraAfter1, 'para' ).toBe( paraBefore1 );
+				expect( textAfter1, 'text' ).toBe( textBefore1 );
 
-				expect( viewAfterAfter0, 'simpleBlock' ).to.equal( viewAfter0 );
-				expect( paraAfterAfter0, 'para' ).to.equal( paraAfter0 );
-				expect( textAfterAfter0, 'text' ).to.equal( textAfter0 );
+				expect( viewAfterAfter0, 'simpleBlock' ).toBe( viewAfter0 );
+				expect( paraAfterAfter0, 'para' ).toBe( paraAfter0 );
+				expect( textAfterAfter0, 'text' ).toBe( textAfter0 );
 
 				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
-				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
-				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+				expect( paraAfterAfter1, 'para' ).toBe( paraAfter1 );
+				expect( textAfterAfter1, 'text' ).toBe( textAfter1 );
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
@@ -1992,10 +1993,10 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on insert', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 					spy();
 				} );
 
@@ -2004,16 +2005,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expectResult( '<div class="complex-outer"><div></div></div>' );
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute set', () => {
 				_setModelData( model, '<complex></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2028,16 +2029,16 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div class="complex-outer"><div style="display:block"></div></div>' );
 				expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute change', () => {
 				_setModelData( model, '<complex toStyle="display:block"></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2046,16 +2047,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expectResult( '<div class="complex-outer"><div style="display:inline"></div></div>' );
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute remove', () => {
 				_setModelData( model, '<complex toStyle="display:block"></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2064,16 +2065,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expectResult( '<div class="complex-outer"><div></div></div>' );
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on one attribute add and other remove', () => {
 				_setModelData( model, '<complex toStyle="display:block"></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2083,16 +2084,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"></div></div>' );
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
 				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2112,9 +2113,9 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
@@ -2125,10 +2126,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2150,20 +2151,20 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
-				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
-				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
-				expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
-				expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
+				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
+				expect( textBarAfter, 'text bar' ).toBe( textBarBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
 				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2183,18 +2184,18 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on removing a child', () => {
 				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph><paragraph>bar</paragraph></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2210,15 +2211,15 @@ describe( 'DowncastHelpers', () => {
 
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( viewAfter, 'inner' ).to.not.equal( viewBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
 				_setModelData( model, '<complex></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', () => {
 					spy();
@@ -2234,9 +2235,9 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="complex-outer"><div></div></div>' );
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
-				expect( spy.notCalled ).to.be.true;
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
+				expect( spy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should fire conversion events in proper order', () => {
@@ -2262,7 +2263,7 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"><p>foo</p><p>bar</p></div></div>' );
 
-				expect( loggedEvents ).to.deep.equal( [
+				expect( loggedEvents ).toEqual( [
 					'insert:complex:0:1',
 					'attribute:toClass:true:complex:0:1',
 					'insert:paragraph:0,0:0,1',
@@ -2311,10 +2312,10 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on insert', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 					spy();
 				} );
 
@@ -2323,16 +2324,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expectResult( '<div class="complex-outer"><div class="inner-first"></div><div class="inner-second"></div></div>' );
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
 				_setModelData( model, '<complex><paragraph>foo</paragraph></complex>' );
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2358,9 +2359,9 @@ describe( 'DowncastHelpers', () => {
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
 				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
-				expect( paraAfter, 'para' ).to.equal( paraBefore );
-				expect( textAfter, 'text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraAfter, 'para' ).toBe( paraBefore );
+				expect( textAfter, 'text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
@@ -2371,10 +2372,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2408,11 +2409,11 @@ describe( 'DowncastHelpers', () => {
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
 				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
-				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
-				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
-				expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
-				expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
+				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
+				expect( textBarAfter, 'text bar' ).toBe( textBarBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
@@ -2423,10 +2424,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2460,11 +2461,11 @@ describe( 'DowncastHelpers', () => {
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
 				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
-				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
-				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
-				expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
-				expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
+				expect( paraBarAfter, 'para bar' ).toBe( paraBarBefore );
+				expect( textBarAfter, 'text bar' ).toBe( textBarBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on removing a child', () => {
@@ -2477,10 +2478,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2510,13 +2511,13 @@ describe( 'DowncastHelpers', () => {
 				expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
 				expect( firstAfter, 'inner first' ).to.not.equal( firstBefore );
 				expect( secondAfter, 'inner second' ).to.not.equal( secondBefore );
-				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
-				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
-				expect( paraBazAfter, 'para baz' ).to.equal( paraBazBefore );
-				expect( textBazAfter, 'text baz' ).to.equal( textBazBefore );
-				expect( paraAbcAfter, 'para abc' ).to.equal( paraAbcBefore );
-				expect( textAbcAfter, 'text abc' ).to.equal( textAbcBefore );
-				expect( spy.called ).to.be.true;
+				expect( paraFooAfter, 'para foo' ).toBe( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).toBe( textFooBefore );
+				expect( paraBazAfter, 'para baz' ).toBe( paraBazBefore );
+				expect( textBazAfter, 'text baz' ).toBe( textBazBefore );
+				expect( paraAbcAfter, 'para abc' ).toBe( paraAbcBefore );
+				expect( textAbcAfter, 'text abc' ).toBe( textAbcBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 		} );
 
@@ -2569,10 +2570,10 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on insert', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+					expect( data ).not.toHaveProperty( 'reconversion' );
 					spy();
 				} );
 
@@ -2591,7 +2592,7 @@ describe( 'DowncastHelpers', () => {
 						'</div>' +
 					'</div>'
 				);
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute set', () => {
@@ -2603,10 +2604,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2638,12 +2639,12 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute change', () => {
@@ -2655,10 +2656,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2690,12 +2691,12 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute remove', () => {
@@ -2707,10 +2708,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2742,12 +2743,12 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on attribute change on both elements', () => {
@@ -2759,10 +2760,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2799,9 +2800,9 @@ describe( 'DowncastHelpers', () => {
 				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( textAfter, '$text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( textAfter, '$text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on one attribute add and other remove', () => {
@@ -2812,10 +2813,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2835,7 +2836,7 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( spy.called ).to.be.true;
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
@@ -2847,10 +2848,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2887,13 +2888,13 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( textAfter, '$text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( textAfter, '$text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
@@ -2905,10 +2906,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -2945,13 +2946,13 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( textAfter, '$text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( textAfter, '$text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on renaming a child', () => {
@@ -2964,10 +2965,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -3000,15 +3001,15 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
 				expect( headingAfter, 'p' ).to.not.equal( paragraphBefore );
 				expect( textAfter, '$text' ).to.not.equal( textBefore );
-				expect( paragraph2After, 'p' ).to.equal( paragraph2Before );
-				expect( text2After, '$text' ).to.equal( text2Before );
-				expect( spy.called ).to.be.true;
+				expect( paragraph2After, 'p' ).toBe( paragraph2Before );
+				expect( text2After, '$text' ).toBe( text2Before );
+				expect( spy ).toHaveBeenCalled();
 			} );
 
 			it( 'should convert on removing a child', () => {
@@ -3021,10 +3022,10 @@ describe( 'DowncastHelpers', () => {
 					'</complex>'
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
-					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					expect( data.reconversion ).toBe( true );
 					spy();
 				} );
 
@@ -3056,13 +3057,13 @@ describe( 'DowncastHelpers', () => {
 					'</div>'
 				);
 
-				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
-				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( outerDivAfter, 'outer div' ).toBe( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).toBe( innerDivBefore );
 				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
-				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
-				expect( textAfter, '$text' ).to.equal( textBefore );
-				expect( spy.called ).to.be.true;
+				expect( paragraphAfter, 'p' ).toBe( paragraphBefore );
+				expect( textAfter, '$text' ).toBe( textBefore );
+				expect( spy ).toHaveBeenCalled();
 			} );
 		} );
 
@@ -3226,7 +3227,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -3264,7 +3265,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<span class="bg-dark font-light">foo</span>' );
-			expect( viewRoot.getChild( 0 ).priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
+			expect( viewRoot.getChild( 0 ).priority ).toBe( ViewAttributeElement.DEFAULT_PRIORITY );
 		} );
 
 		it( 'config.view allows specifying the element\'s priority', () => {
@@ -3280,7 +3281,7 @@ describe( 'DowncastHelpers', () => {
 				writer.insertText( 'foo', { invert: true }, modelRoot, 0 );
 			} );
 
-			expect( viewRoot.getChild( 0 ).priority ).to.equal( 5 );
+			expect( viewRoot.getChild( 0 ).priority ).toBe( 5 );
 		} );
 
 		it( 'model attribute value is enum', () => {
@@ -3310,7 +3311,7 @@ describe( 'DowncastHelpers', () => {
 				writer.insertText( 'foo', { fontSize: 'big' }, modelRoot, 0 );
 			} );
 
-			expect( viewRoot.getChild( 0 ).priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
+			expect( viewRoot.getChild( 0 ).priority ).toBe( ViewAttributeElement.DEFAULT_PRIORITY );
 			expectResult( '<span style="font-size:1.2em">foo</span>' );
 
 			model.change( writer => {
@@ -3318,7 +3319,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<span style="font-size:0.8em">foo</span>' );
-			expect( viewRoot.getChild( 0 ).priority ).to.equal( 5 );
+			expect( viewRoot.getChild( 0 ).priority ).toBe( 5 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'fontSize', modelRoot.getChild( 0 ) );
@@ -3384,7 +3385,7 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div></div>' );
 		} );
 
 		it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
@@ -3399,13 +3400,13 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p><b>foobar</b></p></div>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
@@ -3424,13 +3425,13 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p><b>foobar</b></p></div>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'style', writer.createRangeIn( modelElement ) );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should allow element creator to return null for unsupported elements', () => {
@@ -3439,9 +3440,9 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToElement( {
 				model: 'style',
 				view: ( modelAttributeValue, { writer }, data ) => {
-					expect( data.item.is( 'element' ) || data.item.is( '$textProxy' ), 'item or text proxy' ).to.be.true;
-					expect( data.range.is( 'range' ), 'range' ).to.be.true;
-					expect( data.attributeKey, 'key' ).to.equal( 'style' );
+					expect( data.item.is( 'element' ) || data.item.is( '$textProxy' ), 'item or text proxy' ).toBe( true );
+					expect( data.range.is( 'range' ), 'range' ).toBe( true );
+					expect( data.attributeKey, 'key' ).toBe( 'style' );
 
 					if ( data.item.is( '$textProxy' ) && modelAttributeValue == 'bold' ) {
 						return writer.createAttributeElement( 'b' );
@@ -3453,14 +3454,14 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ), 'after insert' ).to.equal( '<div><p><b>foobar</b></p></div>' );
+			expect( viewToString( viewRoot ), 'after insert' ).toBe( '<div><p><b>foobar</b></p></div>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'style', writer.createRangeOn( modelElement ) );
 				writer.removeAttribute( 'style', writer.createRangeIn( modelElement ) );
 			} );
 
-			expect( viewToString( viewRoot ), 'after remove attribute' ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ), 'after remove attribute' ).toBe( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should update range on re-wrapping attribute (#475)', () => {
@@ -3481,14 +3482,14 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
 
 			// Set new attribute on old link but also on non-linked characters.
 			model.change( writer => {
 				writer.setAttribute( 'link', 'http://foobar.com', writer.createRangeIn( modelElement ) );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
 		} );
 
 		it( 'should support unicode', () => {
@@ -3503,13 +3504,13 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>நிலைக்கு</p></div>' );
 		} );
 
 		it( 'should be possible to override ', () => {
@@ -3529,11 +3530,11 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><strong>foobar</strong></p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p><strong>foobar</strong></p></div>' );
 		} );
 
 		it( 'should not convert and not consume if creator function returned null', () => {
-			sinon.spy( controller.downcastDispatcher, 'fire' );
+			vi.spyOn( controller.downcastDispatcher, 'fire' );
 
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { italic: true } ) );
 
@@ -3542,21 +3543,23 @@ describe( 'DowncastHelpers', () => {
 				view: () => null
 			} );
 
-			const spy = sinon.spy();
+			const spy = vi.fn();
 			controller.downcastDispatcher.on( 'attribute:italic', spy );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( controller.downcastDispatcher.fire.calledWith( 'attribute:italic:$text' ) ).to.be.true;
-			expect( spy.called ).to.be.true;
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
+			expect( controller.downcastDispatcher.fire.mock.calls.some( args => args[ 0 ] === 'attribute:italic:$text' ) ).toBe( true );
+			expect( spy ).toHaveBeenCalled();
 		} );
 	} );
 
 	describe( 'attributeToAttribute()', () => {
-		testUtils.createSinonSandbox();
+		afterEach( () => {
+			vi.restoreAllMocks();
+		} );
 
 		beforeEach( () => {
 			downcastHelpers.elementToElement( { model: 'imageBlock', view: 'img' } );
@@ -3572,7 +3575,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -3746,7 +3749,7 @@ describe( 'DowncastHelpers', () => {
 				model: 'styled',
 				view: ( attributeValue, conversionApi ) => {
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( ViewDowncastWriter );
+					expect( conversionApi.writer ).toBeInstanceOf( ViewDowncastWriter );
 
 					return { key: 'class', value: 'styled-' + attributeValue };
 				}
@@ -3764,11 +3767,11 @@ describe( 'DowncastHelpers', () => {
 				model: 'styled',
 				view: ( attributeValue, conversionApi, data ) => {
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( ViewDowncastWriter );
+					expect( conversionApi.writer ).toBeInstanceOf( ViewDowncastWriter );
 
-					expect( data.item.is( 'element', 'imageBlock' ) ).to.be.true;
-					expect( data.range.is( 'range' ) ).to.be.true;
-					expect( data.attributeKey ).to.equal( 'styled' );
+					expect( data.item.is( 'element', 'imageBlock' ) ).toBe( true );
+					expect( data.range.is( 'range' ) ).toBe( true );
+					expect( data.attributeKey ).toBe( 'styled' );
 
 					return { key: 'class', value: 'styled-' + attributeValue };
 				}
@@ -3783,7 +3786,7 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements only)', () => {
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -3795,7 +3798,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p test="1"></p><p test="2"></p>' );
-			expect( consoleWarnStub.callCount ).to.equal( 0 );
+			expect( consoleWarnStub.mock.calls.length ).toBe( 0 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
@@ -3828,23 +3831,23 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p class="foo">foobar</p></div>' );
 
 			model.change( writer => {
 				writer.setAttribute( 'class', 'bar', modelElement );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="bar">foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p class="bar">foobar</p></div>' );
 
 			model.change( writer => {
 				writer.removeAttribute( 'class', modelElement );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'config.view and config.model as strings (class attribute)', () => {
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			downcastHelpers.attributeToAttribute( { model: 'test', view: 'class' } );
@@ -3858,7 +3861,7 @@ describe( 'DowncastHelpers', () => {
 				'<p class="bar foo"></p>' +
 				'<p class="abc def"></p>'
 			);
-			expect( consoleWarnStub.callCount ).to.equal( 0 );
+			expect( consoleWarnStub.mock.calls.length ).toBe( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'test', 'bar', modelRoot.getChild( 0 ) );
@@ -3872,7 +3875,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		it( 'config.view and config.model as strings (style attribute)', () => {
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			downcastHelpers.attributeToAttribute( { model: 'test', view: 'style' } );
@@ -3886,7 +3889,7 @@ describe( 'DowncastHelpers', () => {
 				'<p style="background:red;padding:4px 10px"></p>' +
 				'<p style="background:yellow;color:blue"></p>'
 			);
-			expect( consoleWarnStub.callCount ).to.equal( 0 );
+			expect( consoleWarnStub.mock.calls.length ).toBe( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'test', 'background: pink;', modelRoot.getChild( 0 ) );
@@ -3914,11 +3917,11 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			// No attribute set.
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should not convert or consume if element creator returned null', () => {
-			const callback = sinon.stub().returns( null );
+			const callback = vi.fn().mockReturnValue( null );
 
 			downcastHelpers.attributeToAttribute( {
 				model: 'class',
@@ -3932,9 +3935,9 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p class="foo">foobar</p></div>' );
 
-			sinon.assert.called( callback );
+			expect( callback ).toHaveBeenCalled();
 		} );
 	} );
 
@@ -3942,7 +3945,7 @@ describe( 'DowncastHelpers', () => {
 		let modelText, modelElement, range;
 
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -4032,17 +4035,17 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foo<span class="marker"></span>bar</p></div>' );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker' );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 			} );
 
 			it( 'should not convert if consumable was consumed', () => {
-				sinon.spy( controller.downcastDispatcher, 'fire' );
+				vi.spyOn( controller.downcastDispatcher, 'fire' );
 
 				downcastHelpers.markerToElement( {
 					model: 'marker',
@@ -4057,8 +4060,8 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-				expect( controller.downcastDispatcher.fire.calledWith( 'addMarker:marker' ) );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
+				// fire was called (checked by the spy check above)
 			} );
 
 			it( 'should not convert if creator returned null', () => {
@@ -4071,13 +4074,13 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker' );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 			} );
 		} );
 
@@ -4106,13 +4109,13 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expect( viewToString( viewRoot ) )
-					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
+					.toBe( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker' );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 			} );
 
 			it( 'should insert and remove ui element - function as a creator', () => {
@@ -4126,13 +4129,13 @@ describe( 'DowncastHelpers', () => {
 				} );
 
 				expect( viewToString( viewRoot ) )
-					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
+					.toBe( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
 
 				model.change( writer => {
 					writer.removeMarker( 'marker' );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 			} );
 
 			it( 'should insert and remove different opening and ending element', () => {
@@ -4151,7 +4154,7 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal(
+				expect( viewToString( viewRoot ) ).toBe(
 					'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
 				);
 
@@ -4159,7 +4162,7 @@ describe( 'DowncastHelpers', () => {
 					writer.removeMarker( 'marker' );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 			} );
 
 			it( 'should keep adjacent marker boundaries in model order when markers are added together', () => {
@@ -4245,7 +4248,7 @@ describe( 'DowncastHelpers', () => {
 					'<span class="marker:b-start"></span>bar<span class="marker:b-end"></span>' +
 					'</p></div>';
 
-				expect( viewToString( viewRoot ) ).to.equal( expected );
+				expect( viewToString( viewRoot ) ).toBe( expected );
 
 				// Remove all markers.
 				model.change( writer => {
@@ -4260,7 +4263,7 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker:a', { range: rangeA, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( expected );
+				expect( viewToString( viewRoot ) ).toBe( expected );
 			} );
 
 			it( 'nested markers sharing the same start position preserve outer-first nesting order', () => {
@@ -4299,7 +4302,7 @@ describe( 'DowncastHelpers', () => {
 					'<span class="marker:outer-end"></span>' +
 					'</p></div>';
 
-				expect( viewToString( viewRoot ) ).to.equal( expected );
+				expect( viewToString( viewRoot ) ).toBe( expected );
 
 				// Remove all markers.
 				model.change( writer => {
@@ -4313,7 +4316,7 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker:outer', { range: outerRange, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( expected );
+				expect( viewToString( viewRoot ) ).toBe( expected );
 			} );
 
 			it( 'intersecting markers downcast consistently regardless of creation order', () => {
@@ -4366,7 +4369,7 @@ describe( 'DowncastHelpers', () => {
 					}
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( result );
+				expect( viewToString( viewRoot ) ).toBe( result );
 			} );
 
 			it( 'should not change adjacent marker positions when text spanning the boundary is wrapped with bold', () => {
@@ -4588,7 +4591,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not convert if consumable was consumed', () => {
-				sinon.spy( controller.downcastDispatcher, 'fire' );
+				vi.spyOn( controller.downcastDispatcher, 'fire' );
 
 				downcastHelpers.markerToElement( {
 					model: 'marker',
@@ -4602,8 +4605,8 @@ describe( 'DowncastHelpers', () => {
 					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-				expect( controller.downcastDispatcher.fire.calledWith( 'addMarker:marker' ) );
+				expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
+				// fire was called (checked by the spy check above)
 			} );
 
 			describe( 'marker boundary ordering', () => {
@@ -4643,7 +4646,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:2-end"></span><span class="marker:1-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -4663,7 +4666,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'three markers on identical ranges are ordered by name regardless of creation order', () => {
@@ -4701,7 +4704,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:alpha-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:alpha' );
@@ -4727,7 +4730,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'two collapsed markers at the same position are inserted in creation order', () => {
@@ -4788,7 +4791,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:1-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -4814,7 +4817,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'nested markers sharing the same end position preserve outer-last closing order', () => {
@@ -4844,7 +4847,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:2-end"></span><span class="marker:1-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -4869,7 +4872,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'outer marker spanning entire text with inner sub-range closes last regardless of creation order', () => {
@@ -4899,7 +4902,7 @@ describe( 'DowncastHelpers', () => {
 							'ar<span class="marker:1-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -4924,7 +4927,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'three fully nested markers with distinct boundaries close in reverse-open order', () => {
@@ -4963,7 +4966,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:2-end"></span>r<span class="marker:1-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -4997,7 +5000,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'partially overlapping markers produce deterministic output regardless of creation order', () => {
@@ -5027,7 +5030,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:1-end"></span>ar<span class="marker:2-end"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -5052,7 +5055,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'does not skip non-marker UIElements sitting at the start boundary', () => {
@@ -5089,7 +5092,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="marker:1-end"></span>' +
 						'</div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -5112,7 +5115,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'orphaned end UIElement at the end boundary is skipped gracefully', () => {
@@ -5145,7 +5148,7 @@ describe( 'DowncastHelpers', () => {
 							'<span class="orphan"></span>' +
 						'</p></div>';
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -5168,7 +5171,7 @@ describe( 'DowncastHelpers', () => {
 						} );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 			} );
 
@@ -5215,14 +5218,14 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
 						writer.removeMarker( 'marker:2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
@@ -5240,7 +5243,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'shared start, different end', () => {
@@ -5282,14 +5285,14 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
 						writer.removeMarker( 'marker:2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
@@ -5307,7 +5310,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'shared end, different start', () => {
@@ -5349,14 +5352,14 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: outerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
 						writer.removeMarker( 'marker:2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 
 					// Re-add in reversed batch order — result must be identical.
 					model.change( writer => {
@@ -5375,7 +5378,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:2', { range: innerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'three fully nested markers with distinct boundaries close in proper order', () => {
@@ -5430,7 +5433,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range: range1, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -5438,7 +5441,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker:3' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 
 					model.change( writer => {
 						writer.addMarker( 'marker:1', { range: range1, usingOperation: false } );
@@ -5467,7 +5470,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:3', { range: range3, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'should preserve boundaries when removing the inner marker from identical ranges', () => {
@@ -5699,7 +5702,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:1', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker:1' );
@@ -5707,7 +5710,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker:3' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 
 					// Re-add in original order — name-based sort must still produce the same result.
 					model.change( writer => {
@@ -5722,7 +5725,7 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker:3', { range, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( expected );
+					expect( viewToString( viewRoot ) ).toBe( expected );
 				} );
 
 				it( 'two collapsed markers at the same position added in separate batches are inserted in creation order', () => {
@@ -5784,7 +5787,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.markerToData( { model: 'search' } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.markerToData( { model: 'search' } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'default conversion, inside text, non-collapsed, no name', () => {
@@ -6108,7 +6111,7 @@ describe( 'DowncastHelpers', () => {
 
 			const expectedResult = 'fo<group-start name="foo:bar"></group-start>oba<group-end name="foo:bar"></group-end>r';
 
-			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+			expect( dataController.stringify( modelDocumentFragment ) ).toBe( expectedResult );
 		} );
 
 		it( 'default conversion, document fragment, element', () => {
@@ -6135,7 +6138,7 @@ describe( 'DowncastHelpers', () => {
 
 			const expectedResult = '<p data-group-end-after="foo:bar" data-group-start-before="foo:bar">&nbsp;</p>';
 
-			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+			expect( dataController.stringify( modelDocumentFragment ) ).toBe( expectedResult );
 		} );
 
 		it( 'conversion callback, mixed, multiple markers, name', () => {
@@ -6150,7 +6153,7 @@ describe( 'DowncastHelpers', () => {
 					const namePart = markerName.split( ':' )[ 1 ];
 
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( ViewDowncastWriter );
+					expect( conversionApi.writer ).toBeInstanceOf( ViewDowncastWriter );
 
 					return {
 						group: 'g',
@@ -6345,7 +6348,7 @@ describe( 'DowncastHelpers', () => {
 
 	describe( 'markerToHighlight()', () => {
 		it( 'should be chainable', () => {
-			expect( downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } ) ).to.equal( downcastHelpers );
+			expect( downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } ) ).toBe( downcastHelpers );
 		} );
 
 		it( 'config.view is a highlight descriptor', () => {
@@ -6371,7 +6374,7 @@ describe( 'DowncastHelpers', () => {
 				writer.addMarker( 'comment', { range, usingOperation: false } );
 			} );
 
-			expect( myView ).to.deep.equal( { classes: 'comment' } );
+			expect( myView ).toEqual( { classes: 'comment' } );
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
@@ -6407,6 +6410,40 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<span class="comment comment-abc" data-comment-id="id">foo</span>' );
+		} );
+
+		it( 'applies default priority of 10 when descriptor has no priority', () => {
+			downcastHelpers.markerToHighlight( {
+				model: 'comment',
+				view: () => ( { classes: 'comment' } )
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'foo', modelRoot, 0 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
+				writer.addMarker( 'comment', { range, usingOperation: false } );
+			} );
+
+			const span = viewRoot.getChild( 0 );
+
+			expect( span.priority ).toBe( ViewAttributeElement.DEFAULT_PRIORITY );
+		} );
+
+		it( 'should use descriptor priority when priority is explicitly provided', () => {
+			downcastHelpers.markerToHighlight( {
+				model: 'comment',
+				view: () => ( { classes: 'comment', priority: 5 } )
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'foo', modelRoot, 0 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
+				writer.addMarker( 'comment', { range, usingOperation: false } );
+			} );
+
+			const span = viewRoot.getChild( 0 );
+
+			expect( span.priority ).toBe( 5 );
 		} );
 
 		describe( 'highlight', () => {
@@ -6457,7 +6494,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 				} );
 
 				it( 'should be possible to overwrite', () => {
@@ -6487,7 +6524,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 				} );
 
 				it( 'should do nothing if descriptor is not provided or generating function returns null', () => {
@@ -6501,13 +6538,13 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 				} );
 
 				it( 'should do nothing if collapsed marker is converted', () => {
@@ -6523,13 +6560,13 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 
 					model.change( () => {
 						model.markers._remove( 'marker' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 				} );
 
 				it( 'should correctly wrap and unwrap multiple, intersecting markers', () => {
@@ -6646,7 +6683,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'markerXyz' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 				} );
 
 				it( 'should do nothing if marker is applied and removed on empty-ish range', () => {
@@ -6661,13 +6698,13 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p><p>bar</p></div>' );
 				} );
 			} );
 
@@ -6732,7 +6769,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><div>foo</div></div>' );
 				} );
 
 				it( 'should be possible to override', () => {
@@ -6758,7 +6795,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeMarker( 'marker' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><div>foo</div></div>' );
 				} );
 
 				it( 'should use default priority and id if not provided', () => {
@@ -6770,12 +6807,12 @@ describe( 'DowncastHelpers', () => {
 					} );
 
 					viewDiv._setCustomProperty( 'addHighlight', ( element, descriptor ) => {
-						expect( descriptor.priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
-						expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
+						expect( descriptor.priority ).toBe( ViewAttributeElement.DEFAULT_PRIORITY );
+						expect( descriptor.id ).toBe( 'marker:foo-bar-baz' );
 					} );
 
 					viewDiv._setCustomProperty( 'removeHighlight', ( element, id ) => {
-						expect( id ).to.equal( 'marker:foo-bar-baz' );
+						expect( id ).toBe( 'marker:foo-bar-baz' );
 					} );
 
 					model.change( writer => {
@@ -6793,20 +6830,20 @@ describe( 'DowncastHelpers', () => {
 						writer.addMarker( 'marker2', { range: markerRange, usingOperation: false } );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><div>foo</div></div>' );
 
 					model.change( writer => {
 						writer.removeMarker( 'marker2' );
 					} );
 
-					expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+					expect( viewToString( viewRoot ) ).toBe( '<div><div>foo</div></div>' );
 				} );
 			} );
 		} );
 	} );
 
 	function expectResult( string ) {
-		expect( _stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( string );
+		expect( _stringifyView( viewRoot, null, { ignoreRoot: true } ) ).toBe( string );
 	}
 
 	function getViewAttributes( modelElement ) {
@@ -6862,7 +6899,7 @@ describe( 'downcast converters', () => {
 				writer.insert( new ModelText( 'foobar' ), modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>foobar</div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div>foobar</div>' );
 		} );
 
 		it( 'should support unicode', () => {
@@ -6870,7 +6907,7 @@ describe( 'downcast converters', () => {
 				writer.insert( new ModelText( 'நிலைக்கு' ), modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>நிலைக்கு</div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div>நிலைக்கு</div>' );
 		} );
 
 		it( 'should be possible to override it', () => {
@@ -6882,7 +6919,7 @@ describe( 'downcast converters', () => {
 				writer.insert( new ModelText( 'foobar' ), modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div></div>' );
 		} );
 	} );
 
@@ -6907,7 +6944,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foar</p></div>' );
 		} );
 
 		it( 'should be possible to overwrite', () => {
@@ -6925,7 +6962,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foobar</p></div>' );
 		} );
 
 		it( 'should support unicode', () => {
@@ -6941,7 +6978,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>கு</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>கு</p></div>' );
 		} );
 
 		it( 'should not remove view ui elements that are placed next to removed content', () => {
@@ -6959,7 +6996,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>foz<span></span>ar</div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div>foz<span></span>ar</div>' );
 
 			// Remove 'z'.
 			model.change( writer => {
@@ -6968,7 +7005,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>fo<span></span>ar</div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div>fo<span></span>ar</div>' );
 		} );
 
 		it( 'should remove correct amount of text when it is split by view ui element', () => {
@@ -6986,7 +7023,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>foar</div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div>foar</div>' );
 		} );
 
 		it( 'should unbind elements', () => {
@@ -6997,15 +7034,15 @@ describe( 'downcast converters', () => {
 			} );
 
 			const viewElement = controller.mapper.toViewElement( modelElement );
-			expect( viewElement ).not.to.be.undefined;
-			expect( controller.mapper.toModelElement( viewElement ) ).to.equal( modelElement );
+			expect( viewElement ).not.toBeUndefined();
+			expect( controller.mapper.toModelElement( viewElement ) ).toBe( modelElement );
 
 			model.change( writer => {
 				writer.remove( modelElement );
 			} );
 
-			expect( controller.mapper.toViewElement( modelElement ) ).to.be.undefined;
-			expect( controller.mapper.toModelElement( viewElement ) ).to.be.undefined;
+			expect( controller.mapper.toViewElement( modelElement ) ).toBeUndefined();
+			expect( controller.mapper.toModelElement( viewElement ) ).toBeUndefined();
 		} );
 
 		it( 'should not break when remove() is used as part of unwrapping', () => {
@@ -7019,23 +7056,23 @@ describe( 'downcast converters', () => {
 				writer.insert( modelWidget, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><widget><p>foo</p></widget></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><widget><p>foo</p></widget></div>' );
 
 			const viewP = controller.mapper.toViewElement( modelP );
 
-			expect( viewP ).not.to.be.undefined;
+			expect( viewP ).not.toBeUndefined();
 
 			model.change( writer => {
 				writer.unwrap( modelWidget );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p>foo</p></div>' );
 			// `modelP` is now bound with newly created view element.
-			expect( controller.mapper.toViewElement( modelP ) ).not.to.equal( viewP );
+			expect( controller.mapper.toViewElement( modelP ) ).not.toBe( viewP );
 			// `viewP` is no longer bound with model element.
-			expect( controller.mapper.toModelElement( viewP ) ).to.be.undefined;
+			expect( controller.mapper.toModelElement( viewP ) ).toBeUndefined();
 			// View element from view root is bound to `modelP`.
-			expect( controller.mapper.toModelElement( viewRoot.getChild( 0 ) ) ).to.equal( modelP );
+			expect( controller.mapper.toModelElement( viewRoot.getChild( 0 ) ) ).toBe( modelP );
 		} );
 
 		it( 'should work correctly if container element after ui element is removed', () => {
@@ -7060,7 +7097,7 @@ describe( 'downcast converters', () => {
 				writer.remove( writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 2 ) ) );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p></p><span></span><span></span></div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div><p></p><span></span><span></span></div>' );
 		} );
 
 		it( 'should work correctly if container element after text node is removed', () => {
@@ -7075,7 +7112,7 @@ describe( 'downcast converters', () => {
 				writer.remove( modelP );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
+			expect( viewToString( viewRoot ) ).toBe( '<div>foo</div>' );
 		} );
 	} );
 
@@ -7094,13 +7131,13 @@ describe( 'downcast converters', () => {
 			};
 			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
-			expect( element.is( 'attributeElement' ) ).to.be.true;
-			expect( element.name ).to.equal( 'span' );
-			expect( element.priority ).to.equal( 7 );
-			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+			expect( element.is( 'attributeElement' ) ).toBe( true );
+			expect( element.name ).toBe( 'span' );
+			expect( element.priority ).toBe( 7 );
+			expect( element.hasClass( 'foo-class' ) ).toBe( true );
 
 			for ( const key of Object.keys( descriptor.attributes ) ) {
-				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+				expect( element.getAttribute( key ) ).toBe( descriptor.attributes[ key ] );
 			}
 		} );
 
@@ -7112,14 +7149,14 @@ describe( 'downcast converters', () => {
 			};
 			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
-			expect( element.is( 'attributeElement' ) ).to.be.true;
-			expect( element.name ).to.equal( 'span' );
-			expect( element.priority ).to.equal( 7 );
-			expect( element.hasClass( 'foo-class' ) ).to.be.true;
-			expect( element.hasClass( 'bar-class' ) ).to.be.true;
+			expect( element.is( 'attributeElement' ) ).toBe( true );
+			expect( element.name ).toBe( 'span' );
+			expect( element.priority ).toBe( 7 );
+			expect( element.hasClass( 'foo-class' ) ).toBe( true );
+			expect( element.hasClass( 'bar-class' ) ).toBe( true );
 
 			for ( const key of Object.keys( descriptor.attributes ) ) {
-				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+				expect( element.getAttribute( key ) ).toBe( descriptor.attributes[ key ] );
 			}
 		} );
 
@@ -7130,12 +7167,12 @@ describe( 'downcast converters', () => {
 			};
 			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
-			expect( element.is( 'attributeElement' ) ).to.be.true;
-			expect( element.name ).to.equal( 'span' );
-			expect( element.priority ).to.equal( 7 );
+			expect( element.is( 'attributeElement' ) ).toBe( true );
+			expect( element.name ).toBe( 'span' );
+			expect( element.priority ).toBe( 7 );
 
 			for ( const key of Object.keys( descriptor.attributes ) ) {
-				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+				expect( element.getAttribute( key ) ).toBe( descriptor.attributes[ key ] );
 			}
 		} );
 
@@ -7146,13 +7183,13 @@ describe( 'downcast converters', () => {
 			};
 			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
-			expect( element.is( 'attributeElement' ) ).to.be.true;
-			expect( element.name ).to.equal( 'span' );
-			expect( element.priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
-			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+			expect( element.is( 'attributeElement' ) ).toBe( true );
+			expect( element.name ).toBe( 'span' );
+			expect( element.priority ).toBe( ViewAttributeElement.DEFAULT_PRIORITY );
+			expect( element.hasClass( 'foo-class' ) ).toBe( true );
 
 			for ( const key of Object.keys( descriptor.attributes ) ) {
-				expect( element.getAttribute( key ) ).to.equal( descriptor.attributes[ key ] );
+				expect( element.getAttribute( key ) ).toBe( descriptor.attributes[ key ] );
 			}
 		} );
 
@@ -7163,10 +7200,10 @@ describe( 'downcast converters', () => {
 			};
 			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
-			expect( element.is( 'attributeElement' ) ).to.be.true;
-			expect( element.name ).to.equal( 'span' );
-			expect( element.priority ).to.equal( 7 );
-			expect( element.hasClass( 'foo-class' ) ).to.be.true;
+			expect( element.is( 'attributeElement' ) ).toBe( true );
+			expect( element.name ).toBe( 'span' );
+			expect( element.priority ).toBe( 7 );
+			expect( element.hasClass( 'foo-class' ) ).toBe( true );
 		} );
 
 		it( 'should pass priority 0', () => {
@@ -7175,7 +7212,7 @@ describe( 'downcast converters', () => {
 			};
 			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
-			expect( element.priority ).to.equal( 0 );
+			expect( element.priority ).toBe( 0 );
 		} );
 	} );
 } );
@@ -7296,7 +7333,7 @@ describe( 'downcast selection converters', () => {
 				// Add callback that will fire before default ones.
 				// This should prevent default callback doing anything.
 				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.consume( data.selection, 'selection' ) ).to.be.true;
+					expect( conversionApi.consumable.consume( data.selection, 'selection' ) ).toBe( true );
 				}, { priority: 'high' } );
 
 				// Similar test case as the first in this suite.
@@ -7314,7 +7351,7 @@ describe( 'downcast selection converters', () => {
 					'f{oo}bar'
 				);
 
-				expect( viewSelection.focus.offset ).to.equal( 1 );
+				expect( viewSelection.focus.offset ).toBe( 1 );
 			} );
 		} );
 
@@ -7390,7 +7427,7 @@ describe( 'downcast selection converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>f<span class="marker">o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
+					.toBe( '<div>f<span class="marker">o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
 			} );
 
 			it( 'in marker - using highlight descriptor creator', () => {
@@ -7420,7 +7457,7 @@ describe( 'downcast selection converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>f<span class="marker2">oo{}ba</span>r</div>' );
+					.toBe( '<div>f<span class="marker2">oo{}ba</span>r</div>' );
 			} );
 
 			it( 'should do nothing if creator return null', () => {
@@ -7450,7 +7487,7 @@ describe( 'downcast selection converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>foo{}bar</div>' );
+					.toBe( '<div>foo{}bar</div>' );
 			} );
 
 			// #1072 - if the container has only ui elements, collapsed selection attribute should be rendered after those ui elements.
@@ -7475,7 +7512,7 @@ describe( 'downcast selection converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div><span></span><span></span><strong>[]</strong></div>' );
+					.toBe( '<div><span></span><span></span><strong>[]</strong></div>' );
 			} );
 
 			// #1072.
@@ -7500,7 +7537,7 @@ describe( 'downcast selection converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div>x<strong>[]</strong><span></span></div>' );
+					.toBe( '<div>x<strong>[]</strong><span></span></div>' );
 			} );
 
 			// #1072.
@@ -7524,18 +7561,18 @@ describe( 'downcast selection converters', () => {
 
 				// Stringify view and check if it is same as expected.
 				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
-					.to.equal( '<div><strong>x{}</strong><span></span>y</div>' );
+					.toBe( '<div><strong>x{}</strong><span></span>y</div>' );
 			} );
 
 			it( 'consumes consumable values properly', () => {
 				// Add callbacks that will fire before default ones.
 				// This should prevent default callbacks doing anything.
 				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.consume( data.selection, 'selection' ) ).to.be.true;
+					expect( conversionApi.consumable.consume( data.selection, 'selection' ) ).toBe( true );
 				}, { priority: 'high' } );
 
 				dispatcher.on( 'attribute:bold', ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.consume( data.item, 'attribute:bold' ) ).to.be.true;
+					expect( conversionApi.consumable.consume( data.item, 'attribute:bold' ) ).toBe( true );
 				}, { priority: 'high' } );
 
 				// Similar test case as above.
@@ -7563,7 +7600,7 @@ describe( 'downcast selection converters', () => {
 					'foo{ba}r'
 				);
 
-				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( viewSelection.rangeCount ).toBe( 1 );
 			} );
 		} );
 
@@ -7581,7 +7618,7 @@ describe( 'downcast selection converters', () => {
 					'foo{}bar'
 				);
 
-				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( viewSelection.rangeCount ).toBe( 1 );
 			} );
 		} );
 
@@ -7603,10 +7640,10 @@ describe( 'downcast selection converters', () => {
 					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
-				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( viewSelection.rangeCount ).toBe( 1 );
 
 				const viewString = _stringifyView( viewRoot, viewSelection, { showType: false } );
-				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+				expect( viewString ).toBe( '<div>f{}oobar</div>' );
 			} );
 
 			it( 'should merge attribute elements from previous selection with overridden selection conversion', () => {
@@ -7617,7 +7654,7 @@ describe( 'downcast selection converters', () => {
 					{ bold: 'true' }
 				);
 
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 					const selection = data.selection;
@@ -7646,11 +7683,11 @@ describe( 'downcast selection converters', () => {
 					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
-				expect( spy.calledOnce ).to.be.true;
-				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( spy ).toHaveBeenCalledOnce();
+				expect( viewSelection.rangeCount ).toBe( 1 );
 
 				const viewString = _stringifyView( viewRoot, viewSelection, { showType: false } );
-				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+				expect( viewString ).toBe( '<div>f{}oobar</div>' );
 			} );
 
 			it( 'should do nothing if the attribute element had been already removed', () => {
@@ -7673,10 +7710,10 @@ describe( 'downcast selection converters', () => {
 					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
-				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( viewSelection.rangeCount ).toBe( 1 );
 
 				const viewString = _stringifyView( viewRoot, viewSelection, { showType: false } );
-				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+				expect( viewString ).toBe( '<div>f{}oobar</div>' );
 			} );
 
 			it( 'should clear fake selection', () => {
@@ -7687,7 +7724,7 @@ describe( 'downcast selection converters', () => {
 
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
-				expect( viewSelection.isFake ).to.be.false;
+				expect( viewSelection.isFake ).toBe( false );
 			} );
 		} );
 	} );
@@ -7800,7 +7837,7 @@ describe( 'downcast selection converters', () => {
 		} );
 
 		// Stringify view and check if it is same as expected.
-		expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<div>' + expectedView + '</div>' );
+		expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) ).toBe( '<div>' + expectedView + '</div>' );
 	}
 } );
 

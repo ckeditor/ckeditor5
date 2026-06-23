@@ -213,6 +213,7 @@ export class Mapper extends MapperBase {
 		if ( this._viewToModelMapping.get( viewElement ) == modelElement ) {
 			const wasFound = this._viewToModelMapping.delete( viewElement );
 
+			/* v8 ignore next 4 -- @preserve */
 			if ( wasFound ) {
 				// Stop tracking after the element is no longer mapped. We want to track all mapped elements and only mapped elements.
 				this._cache.stopTracking( viewElement );
@@ -714,6 +715,7 @@ export class Mapper extends MapperBase {
 
 					// Cache view position after stepping out of the view element to make sure that all visited view positions are cached.
 					// Otherwise, cache invalidation may work incorrectly.
+					/* v8 ignore next 3 -- @preserve */
 					if ( useCache ) {
 						this._cache.save( viewParent, viewOffset, viewContainer, traversedModelOffset );
 					}

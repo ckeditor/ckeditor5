@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../src/model/model.js';
 import { ModelDocument } from '../../src/model/document.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
@@ -19,16 +20,21 @@ describe( 'Document', () => {
 		doc = model.document;
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
 			const doc = new ModelDocument( model );
 
-			expect( doc ).to.have.property( 'model' ).to.equal( model );
-			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Collection );
-			expect( doc.roots.length ).to.equal( 1 );
-			expect( doc.graveyard ).to.be.instanceof( ModelRootElement );
-			expect( doc.graveyard.maxOffset ).to.equal( 0 );
-			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
+			expect( doc ).toHaveProperty( 'model', model );
+			expect( doc ).toHaveProperty( 'roots' );
+			expect( doc.roots ).toBeInstanceOf( Collection );
+			expect( doc.roots.length ).toBe( 1 );
+			expect( doc.graveyard ).toBeInstanceOf( ModelRootElement );
+			expect( doc.graveyard.maxOffset ).toBe( 0 );
+			expect( count( doc.selection.getRanges() ) ).toBe( 1 );
 		} );
 	} );
 
@@ -42,7 +48,7 @@ describe( 'Document', () => {
 				type: 't',
 				baseVersion: 0,
 				isDocumentOperation: true,
-				_execute: sinon.stub().returns( data ),
+				_execute: vi.fn().mockReturnValue( data ),
 				_validate: () => {},
 				toJSON() {
 					// This method creates only a shallow copy, all nested objects should be defined separately.
@@ -63,9 +69,9 @@ describe( 'Document', () => {
 		it( 'for document operation: should increase document version and execute operation', () => {
 			model.applyOperation( operation );
 
-			expect( doc.version ).to.equal( 1 );
-			expect( doc.history.getOperations().length ).to.equal( 1 );
-			sinon.assert.calledOnce( operation._execute );
+			expect( doc.version ).toBe( 1 );
+			expect( doc.history.getOperations().length ).toBe( 1 );
+			expect( operation._execute ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'for non-document operation: should only execute operation', () => {
@@ -73,9 +79,9 @@ describe( 'Document', () => {
 
 			model.applyOperation( operation );
 
-			expect( doc.version ).to.equal( 0 );
-			expect( doc.history.getOperations().length ).to.equal( 0 );
-			sinon.assert.calledOnce( operation._execute );
+			expect( doc.version ).toBe( 0 );
+			expect( doc.history.getOperations().length ).toBe( 0 );
+			expect( operation._execute ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should do nothing if operation event was cancelled', () => {
@@ -83,8 +89,8 @@ describe( 'Document', () => {
 
 			model.applyOperation( operation );
 
-			expect( doc.version ).to.equal( 0 );
-			expect( operation._execute.called ).to.be.false;
+			expect( doc.version ).toBe( 0 );
+			expect( operation._execute.mock.calls.length ).toBe( 0 );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
@@ -92,7 +98,7 @@ describe( 'Document', () => {
 				type: 't',
 				baseVersion: 1,
 				isDocumentOperation: true,
-				_execute: sinon.stub().returns( data ),
+				_execute: vi.fn().mockReturnValue( data ),
 				_validate: () => {}
 			};
 
@@ -109,26 +115,26 @@ describe( 'Document', () => {
 		it( 'should equal to document.history.version', () => {
 			model.document.history.version = 20;
 
-			expect( model.document.version ).to.equal( 20 );
+			expect( model.document.version ).toBe( 20 );
 		} );
 
 		it( 'should set document.history.version', () => {
 			model.document.version = 20;
 
-			expect( model.document.history.version ).to.equal( 20 );
+			expect( model.document.history.version ).toBe( 20 );
 		} );
 	} );
 
 	describe( 'getRootNames()', () => {
 		it( 'should return empty array if no roots exist', () => {
-			expect( count( doc.getRootNames() ) ).to.equal( 0 );
+			expect( count( doc.getRootNames() ) ).toBe( 0 );
 		} );
 
 		it( 'should return array with all roots without the graveyard', () => {
 			doc.createRoot( '$root', 'a' );
 			doc.createRoot( '$root', 'b' );
 
-			expect( doc.getRootNames() ).to.deep.equal( [ 'a', 'b' ] );
+			expect( doc.getRootNames() ).toEqual( [ 'a', 'b' ] );
 		} );
 
 		it( 'should return only attached roots', () => {
@@ -137,7 +143,7 @@ describe( 'Document', () => {
 
 			rootB._isAttached = false;
 
-			expect( doc.getRootNames() ).to.deep.equal( [ 'a' ] );
+			expect( doc.getRootNames() ).toEqual( [ 'a' ] );
 		} );
 
 		it( 'should return detached roots when `includeDetached` flag is set to `true`', () => {
@@ -146,7 +152,7 @@ describe( 'Document', () => {
 
 			rootB._isAttached = false;
 
-			expect( doc.getRootNames( true ) ).to.deep.equal( [ 'a', 'b' ] );
+			expect( doc.getRootNames( true ) ).toEqual( [ 'a', 'b' ] );
 		} );
 
 		it( 'should not return non-loaded roots', () => {
@@ -155,21 +161,21 @@ describe( 'Document', () => {
 
 			rootB._isLoaded = false;
 
-			expect( doc.getRootNames() ).to.deep.equal( [ 'a' ] );
-			expect( doc.getRootNames( true ) ).to.deep.equal( [ 'a' ] );
+			expect( doc.getRootNames() ).toEqual( [ 'a' ] );
+			expect( doc.getRootNames( true ) ).toEqual( [ 'a' ] );
 		} );
 	} );
 
 	describe( 'getRoots()', () => {
 		it( 'should return empty iterator if no roots exist', () => {
-			expect( count( doc.getRoots() ) ).to.equal( 0 );
+			expect( count( doc.getRoots() ) ).toBe( 0 );
 		} );
 
 		it( 'should return an iterator of all roots without the graveyard', () => {
 			const rootA = doc.createRoot( '$root', 'a' );
 			const rootB = doc.createRoot( '$root', 'b' );
 
-			expect( doc.getRoots() ).to.deep.equal( [ rootA, rootB ] );
+			expect( doc.getRoots() ).toEqual( [ rootA, rootB ] );
 		} );
 
 		it( 'should return only attached roots', () => {
@@ -178,7 +184,7 @@ describe( 'Document', () => {
 
 			rootB._isAttached = false;
 
-			expect( doc.getRoots() ).to.deep.equal( [ rootA ] );
+			expect( doc.getRoots() ).toEqual( [ rootA ] );
 		} );
 
 		it( 'should return detached roots when `includeDetached` flag is set to `true`', () => {
@@ -187,7 +193,7 @@ describe( 'Document', () => {
 
 			rootB._isAttached = false;
 
-			expect( doc.getRoots( true ) ).to.deep.equal( [ rootA, rootB ] );
+			expect( doc.getRoots( true ) ).toEqual( [ rootA, rootB ] );
 		} );
 
 		it( 'should not return non-loaded roots', () => {
@@ -196,8 +202,8 @@ describe( 'Document', () => {
 
 			rootA._isLoaded = false;
 
-			expect( doc.getRoots() ).to.deep.equal( [ rootB ] );
-			expect( doc.getRoots( true ) ).to.deep.equal( [ rootB ] );
+			expect( doc.getRoots() ).toEqual( [ rootB ] );
+			expect( doc.getRoots( true ) ).toEqual( [ rootB ] );
 		} );
 	} );
 
@@ -207,23 +213,23 @@ describe( 'Document', () => {
 			', add it to roots map and return it', () => {
 				const root = doc.createRoot();
 
-				expect( root.isAttached() ).to.be.true;
-				expect( doc.roots.length ).to.equal( 2 );
-				expect( root ).to.be.instanceof( ModelRootElement );
-				expect( root.maxOffset ).to.equal( 0 );
-				expect( root ).to.have.property( 'name', '$root' );
-				expect( root ).to.have.property( 'rootName', 'main' );
+				expect( root.isAttached() ).toBe( true );
+				expect( doc.roots.length ).toBe( 2 );
+				expect( root ).toBeInstanceOf( ModelRootElement );
+				expect( root.maxOffset ).toBe( 0 );
+				expect( root ).toHaveProperty( 'name', '$root' );
+				expect( root ).toHaveProperty( 'rootName', 'main' );
 			} );
 
 		it( 'should create a new ModelRootElement, attached, with custom element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot( 'customElementName', 'customRootName' );
 
-			expect( root.isAttached() ).to.be.true;
-			expect( doc.roots.length ).to.equal( 2 );
-			expect( root ).to.be.instanceof( ModelRootElement );
-			expect( root.maxOffset ).to.equal( 0 );
-			expect( root ).to.have.property( 'name', 'customElementName' );
-			expect( root ).to.have.property( 'rootName', 'customRootName' );
+			expect( root.isAttached() ).toBe( true );
+			expect( doc.roots.length ).toBe( 2 );
+			expect( root ).toBeInstanceOf( ModelRootElement );
+			expect( root.maxOffset ).toBe( 0 );
+			expect( root ).toHaveProperty( 'name', 'customElementName' );
+			expect( root ).toHaveProperty( 'rootName', 'customRootName' );
 		} );
 
 		it( 'should throw an error when trying to create a second root with the same name', () => {
@@ -239,17 +245,17 @@ describe( 'Document', () => {
 		it( 'should return a ModelRootElement with default "main" name', () => {
 			const newRoot = doc.createRoot( 'main' );
 
-			expect( doc.getRoot() ).to.equal( newRoot );
+			expect( doc.getRoot() ).toBe( newRoot );
 		} );
 
 		it( 'should return a ModelRootElement with custom name', () => {
 			const newRoot = doc.createRoot( 'custom', 'custom' );
 
-			expect( doc.getRoot( 'custom' ) ).to.equal( newRoot );
+			expect( doc.getRoot( 'custom' ) ).toBe( newRoot );
 		} );
 
 		it( 'should return null when trying to get non-existent root', () => {
-			expect( doc.getRoot( 'not-existing' ) ).to.null;
+			expect( doc.getRoot( 'not-existing' ) ).toBeNull();
 		} );
 
 		it( 'should return a detached root', () => {
@@ -257,13 +263,13 @@ describe( 'Document', () => {
 
 			root._isAttached = false;
 
-			expect( doc.getRoot( 'a' ) ).to.equal( root );
+			expect( doc.getRoot( 'a' ) ).toBe( root );
 		} );
 	} );
 
 	describe( '_getDefaultRoot()', () => {
 		it( 'should return graveyard root if there are no other roots in the document', () => {
-			expect( doc._getDefaultRoot() ).to.equal( doc.graveyard );
+			expect( doc._getDefaultRoot() ).toBe( doc.graveyard );
 		} );
 
 		it( 'should return the first root added to the document', () => {
@@ -271,7 +277,7 @@ describe( 'Document', () => {
 			doc.createRoot( '$root', 'rootB' );
 			doc.createRoot( '$root', 'rootC' );
 
-			expect( doc._getDefaultRoot() ).to.equal( rootA );
+			expect( doc._getDefaultRoot() ).toBe( rootA );
 		} );
 	} );
 
@@ -288,8 +294,8 @@ describe( 'Document', () => {
 			writer.insert( p, root, 0 );
 		} );
 
-		expect( root.isEmpty ).to.be.true;
-		expect( p.parent.rootName ).to.equal( '$graveyard' );
+		expect( root.isEmpty ).toBe( true );
+		expect( p.parent.rootName ).toBe( '$graveyard' );
 
 		model.change( writer => {
 			writer.addMarker( 'newMarker', {
@@ -299,33 +305,33 @@ describe( 'Document', () => {
 			} );
 		} );
 
-		expect( model.markers.get( 'newMarker' ) ).to.be.null;
+		expect( model.markers.get( 'newMarker' ) ).toBeNull();
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy selection instance', () => {
-			const spy = sinon.spy( doc.selection, 'destroy' );
+			const spy = vi.spyOn( doc.selection, 'destroy' );
 
 			doc.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should stop listening to events', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.listenTo( model, 'something', spy );
 
 			model.fire( 'something' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 
 			doc.destroy();
 
 			model.fire( 'something' );
 
 			// Still once.
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 	} );
 
@@ -335,45 +341,45 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should buffer document operations in differ', () => {
-			sinon.spy( doc.differ, 'bufferOperation' );
+			vi.spyOn( doc.differ, 'bufferOperation' );
 
 			model.change( writer => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			expect( doc.differ.bufferOperation.called ).to.be.true;
+			expect( doc.differ.bufferOperation ).toHaveBeenCalled();
 		} );
 
 		it( 'should not buffer changes not done on document', () => {
-			sinon.spy( doc.differ, 'bufferOperation' );
+			vi.spyOn( doc.differ, 'bufferOperation' );
 
 			model.change( writer => {
 				const docFrag = writer.createDocumentFragment();
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			expect( doc.differ.bufferOperation.called ).to.be.false;
+			expect( doc.differ.bufferOperation ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should buffer marker changes in differ', () => {
-			sinon.spy( doc.differ, 'bufferMarkerChange' );
+			vi.spyOn( doc.differ, 'bufferMarkerChange' );
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( doc.getRoot(), 0 ) );
 				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
-			expect( doc.differ.bufferMarkerChange.called ).to.be.true;
+			expect( doc.differ.bufferMarkerChange ).toHaveBeenCalled();
 		} );
 
 		it( 'should reset differ after change block is done', () => {
 			model.change( writer => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 
-				expect( doc.differ.getChanges().length > 0 ).to.be.true;
+				expect( doc.differ.getChanges().length > 0 ).toBe( true );
 			} );
 
-			expect( doc.differ.getChanges().length ).to.equal( 0 );
+			expect( doc.differ.getChanges().length ).toBe( 0 );
 		} );
 	} );
 
@@ -383,7 +389,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should add a callback that is fired after changes are done', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.registerPostFixer( spy );
 
@@ -391,11 +397,11 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not fire callbacks if no changes on document were done', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.registerPostFixer( spy );
 
@@ -405,15 +411,16 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			expect( spy.called ).to.be.false;
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should call all already processed callbacks again if a callback returned true', () => {
-			const callA = sinon.spy();
+			const callA = vi.fn();
 
-			const callB = sinon.stub();
-			callB.onFirstCall().returns( true ).onSecondCall().returns( false );
-			const callC = sinon.spy();
+			const callB = vi.fn()
+				.mockReturnValueOnce( true )
+				.mockReturnValueOnce( false );
+			const callC = vi.fn();
 
 			doc.registerPostFixer( callA );
 			doc.registerPostFixer( callB );
@@ -423,32 +430,32 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			sinon.assert.calledTwice( callA );
-			sinon.assert.calledTwice( callB );
-			sinon.assert.calledOnce( callC );
+			expect( callA ).toHaveBeenCalledTimes( 2 );
+			expect( callB ).toHaveBeenCalledTimes( 2 );
+			expect( callC ).toHaveBeenCalledOnce();
 		} );
 	} );
 
 	describe( 'event change', () => {
 		it( 'should be fired if there was a change in a document tree in a change block and have a batch as a param', () => {
 			doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.on( 'change', ( evt, batch ) => {
 				spy();
-				expect( batch ).to.be.instanceof( Batch );
+				expect( batch ).toBeInstanceOf( Batch );
 			} );
 
 			model.change( writer => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should be fired if there was a selection change in an (enqueue)change block', () => {
 			const root = doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			root._appendChild( new ModelText( 'foo' ) );
 
@@ -458,15 +465,15 @@ describe( 'Document', () => {
 				writer.setSelection( root, 2 );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not be fired if writer was used on non-document tree', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.on( 'change', ( evt, batch ) => {
 				spy();
-				expect( batch ).to.be.instanceof( Batch );
+				expect( batch ).toBeInstanceOf( Batch );
 			} );
 
 			model.change( writer => {
@@ -474,30 +481,30 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
 	describe( 'event change:data', () => {
 		it( 'should be fired if there was a change in a document tree in a change block and have a batch as a param', () => {
 			doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.on( 'change:data', ( evt, batch ) => {
 				spy();
-				expect( batch ).to.be.instanceof( Batch );
+				expect( batch ).toBeInstanceOf( Batch );
 			} );
 
 			model.change( writer => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not be fired if only selection changes', () => {
 			const root = doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			root._appendChild( new ModelText( 'foo' ) );
 
@@ -507,12 +514,12 @@ describe( 'Document', () => {
 				writer.setSelection( root, 2 );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should be fired if default marker operation is applied', () => {
 			const root = doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			root._appendChild( new ModelText( 'foo' ) );
 
@@ -523,12 +530,12 @@ describe( 'Document', () => {
 				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not be fired if the marker operation is applied and marker does not affect data', () => {
 			const root = doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			root._appendChild( new ModelText( 'foo' ) );
 
@@ -539,12 +546,12 @@ describe( 'Document', () => {
 				writer.addMarker( 'name', { range, usingOperation: true } );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should be fired if the writer adds marker not managed by using operations', () => {
 			const root = doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			root._appendChild( new ModelText( 'foo' ) );
 
@@ -555,12 +562,12 @@ describe( 'Document', () => {
 				writer.addMarker( 'name', { range, usingOperation: false, affectsData: true } );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not be fired if the writer adds marker not managed by using operations with affectsData set to false', () => {
 			const root = doc.createRoot();
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			root._appendChild( new ModelText( 'foo' ) );
 
@@ -571,15 +578,15 @@ describe( 'Document', () => {
 				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not be fired if writer was used on non-document tree', () => {
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			doc.on( 'change:data', ( evt, batch ) => {
 				spy();
-				expect( batch ).to.be.instanceof( Batch );
+				expect( batch ).toBeInstanceOf( Batch );
 			} );
 
 			model.change( writer => {
@@ -587,16 +594,15 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should be fired when marker changes affecting data', () => {
 			const root = doc.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 
-			const sandbox = sinon.createSandbox();
-			const changeDataSpy = sandbox.spy();
-			const changeSpy = sandbox.spy();
+			const changeDataSpy = vi.fn();
+			const changeSpy = vi.fn();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
@@ -611,27 +617,27 @@ describe( 'Document', () => {
 				writer.updateMarker( 'name', { range, affectsData: true } );
 			} );
 
-			sinon.assert.calledOnce( changeSpy );
-			sinon.assert.calledOnce( changeDataSpy );
+			expect( changeSpy ).toHaveBeenCalledOnce();
+			expect( changeDataSpy ).toHaveBeenCalledOnce();
 
-			sandbox.resetHistory();
+			changeSpy.mockClear();
+			changeDataSpy.mockClear();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.updateMarker( 'name', { affectsData: false, range } );
 			} );
 
-			sinon.assert.calledOnce( changeSpy );
-			sinon.assert.calledOnce( changeDataSpy );
+			expect( changeSpy ).toHaveBeenCalledOnce();
+			expect( changeDataSpy ).toHaveBeenCalledOnce();
 		} );
 
 		it( 'should not be fired when marker does not affect data', () => {
 			const root = doc.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 
-			const sandbox = sinon.createSandbox();
-			const changeDataSpy = sandbox.spy();
-			const changeSpy = sandbox.spy();
+			const changeDataSpy = vi.fn();
+			const changeSpy = vi.fn();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
@@ -646,15 +652,15 @@ describe( 'Document', () => {
 				writer.updateMarker( 'name', { range } );
 			} );
 
-			sinon.assert.calledOnce( changeSpy );
-			sinon.assert.notCalled( changeDataSpy );
+			expect( changeSpy ).toHaveBeenCalledOnce();
+			expect( changeDataSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should not be fired when the marker range does not change', () => {
 			const root = doc.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 
-			const changeDataSpy = sinon.spy();
+			const changeDataSpy = vi.fn();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
@@ -668,7 +674,7 @@ describe( 'Document', () => {
 				writer.updateMarker( 'name', { range } );
 			} );
 
-			sinon.assert.notCalled( changeDataSpy );
+			expect( changeDataSpy ).not.toHaveBeenCalled();
 		} );
 
 		// There are no strong preferences here.
@@ -678,7 +684,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 
-			const changeDataSpy = sinon.spy();
+			const changeDataSpy = vi.fn();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
@@ -695,14 +701,14 @@ describe( 'Document', () => {
 				writer.updateMarker( 'name', { range: null, usingOperation: true } );
 			} );
 
-			sinon.assert.notCalled( changeDataSpy );
+			expect( changeDataSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should be fired when the marker updates range from non-null range to null', () => {
 			const root = doc.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 
-			const changeDataSpy = sinon.spy();
+			const changeDataSpy = vi.fn();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
@@ -715,14 +721,14 @@ describe( 'Document', () => {
 				writer.updateMarker( 'name', { range: null, usingOperation: true } );
 			} );
 
-			sinon.assert.notCalled( changeDataSpy );
+			expect( changeDataSpy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should be fired when the marker updates range from null to a non-null range', () => {
 			const root = doc.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 
-			const changeDataSpy = sinon.spy();
+			const changeDataSpy = vi.fn();
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
@@ -741,14 +747,14 @@ describe( 'Document', () => {
 				writer.updateMarker( 'name', { range, usingOperation: true } );
 			} );
 
-			sinon.assert.notCalled( changeDataSpy );
+			expect( changeDataSpy ).not.toHaveBeenCalled();
 		} );
 	} );
 
 	it( 'should be correctly converted to json', () => {
 		const serialized = doc.toJSON();
 
-		expect( serialized.selection ).to.equal( '[engine.model.DocumentSelection]' );
-		expect( serialized.model ).to.equal( '[engine.model.Model]' );
+		expect( serialized.selection ).toBe( '[engine.model.DocumentSelection]' );
+		expect( serialized.model ).toBe( '[engine.model.Model]' );
 	} );
 } );
